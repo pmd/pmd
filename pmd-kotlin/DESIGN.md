@@ -937,3 +937,81 @@ registered via `JavaLanguageProcessor`. A Kotlin equivalent would:
 
 Until this is implemented, all rule descriptions and docs must direct users to use `// NOPMD` instead
 of `@Suppress(...)`.
+
+---
+
+## 14. Java-Based Design Rules
+
+Some rules are too stateful or too complex to express cleanly in XPath; they are implemented
+as Java classes extending `AbstractKotlinRule`. This section documents the shared infrastructure
+and design conventions for those rules.
+
+### 14.1 `KotlinAstUtil` -- Shared AST Navigation Helpers
+
+`net.sourceforge.pmd.lang.kotlin.util.KotlinAstUtil` is a utility class (adapted from the
+jPinpoint project) that provides reusable AST traversal methods used across multiple Java-based
+rules. Key method:
+
+```java
+isDirectDescendantOf(node, KtFunctionDeclaration funcDecl)
+```
+
+Walks up the ancestor chain of `node` and returns `true` only if the first
+`KtFunctionDeclaration` ancestor is exactly `funcDecl`. This is critical for complexity
+rules: it ensures that nodes inside **nested function declarations** are not counted
+towards the enclosing function's complexity.
+
+**Lambda caveat:** `KtFunctionLiteral` (a lambda) is NOT a `KtFunctionDeclaration`, so
+lambda bodies ARE counted in the enclosing function's complexity. This is intentional --
+a lambda is logically part of the function that contains it.
+
+### 14.2 `ExcessiveParameterList`
+
+Counts the number of declared parameters for every function/constructor and reports when
+the count exceeds a configurable threshold (default: 10, same as the Java rule).
+
+**AST differences between function types:**
+
+| Function type | Parameter node |
+|---|---|
+| Top-level / member functions | `functionValueParameters() → functionValueParameter()` |
+| Primary constructor | `classParameters() → classParameter()` |
+| Secondary constructor | `functionValueParameters() → functionValueParameter()` |
+
+All three are handled by visiting `KtFunctionDeclaration`, `KtPrimaryConstructor`, and
+`KtSecondaryConstructor` separately.
+
+**Property:** `threshold` (int, default 10). Violation fires when count **strictly exceeds**
+the threshold (`count > threshold`).
+
+### 14.3 `CyclomaticComplexity`
+
+Counts decision points in each function and reports when the total exceeds a configurable
+threshold (default: `methodReportLevel` = 10, same as the Java rule).
+
+**Counting rules (base 1 + 1 per):**
+
+| Construct | AST node | Notes |
+|---|---|---|
+| `if` | `KtIfExpression` | always +1 |
+| `when` branch | `KtWhenEntry` | +1 only when `ELSE() == null` (conditional branches) |
+| `for` | `KtForStatement` | |
+| `while` | `KtWhileStatement` | |
+| `do..while` | `KtDoWhileStatement` | |
+| `catch` | `KtCatchBlock` | |
+| `\|\|` | `KtDisjunction` | +`DISJ().size()` (one per operator) |
+| `&&` | `KtConjunction` | +`CONJ().size()` (one per operator) |
+| `?:` (Elvis) | `KtElvisExpression` | +`elvis().size()` (one per operator) |
+
+Elvis is counted the same as Java's ternary `?:`. `NodeStream` does not support
+`mapToInt()` directly; use `.toList().stream().mapToInt(...).sum()` when summing
+operator counts.
+
+All nodes are filtered with `KotlinAstUtil.isDirectDescendantOf(n, functionNode)` to
+exclude nested function declarations from the enclosing function's count.
+
+The violation message uses `{0}` (function name via `getImage()`) with `{1}` (actual
+complexity) and `{2}` (threshold), matching the Java rule's message format convention.
+
+**Omitted vs Java:** The Java rule also has `classReportLevel` (default 80) for class-level
+complexity rollup. The Kotlin rule is method-only; class-level aggregation is deferred.

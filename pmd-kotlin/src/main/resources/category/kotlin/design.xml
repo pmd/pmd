@@ -270,4 +270,38 @@ fun createRecord(params: RecordParams) { }
         </example>
     </rule>
 
+    <rule name="CyclomaticComplexity"
+          language="kotlin"
+          since="7.14.0"
+          message="The function ''{0}'' has a cyclomatic complexity of {1}, current threshold is {2}."
+          class="net.sourceforge.pmd.lang.kotlin.rule.design.CyclomaticComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#cyclomaticcomplexity">
+        <description>
+Complexity is determined by the number of decision points in a function, plus one for the
+function entry. Decision points are: {@code if}, conditional {@code when} branches,
+{@code for}, {@code while}, {@code do-while}, {@code catch}, {@code &amp;&amp;}, {@code ||},
+and {@code ?:} (Elvis). High complexity correlates with error-prone, hard-to-test code.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="methodReportLevel" value="10"/>
+            <property name="javaEquivalentRule" type="String"
+                      description="The equivalent Java rule"
+                      value="category/java/design.xml/CyclomaticComplexity"/>
+        </properties>
+        <example>
+<![CDATA[
+fun describe(n: Int): String = when {
+    n < 0   -> "negative"   // +1
+    n == 0  -> "zero"       // +1
+    n < 10  -> "small"      // +1
+    n < 100 -> "medium"     // +1
+    n < 1000 -> "large"     // +1
+    else    -> "huge"
+}
+// complexity = 6 (base 1 + 5 branches)
+]]>
+        </example>
+    </rule>
+
 </ruleset>

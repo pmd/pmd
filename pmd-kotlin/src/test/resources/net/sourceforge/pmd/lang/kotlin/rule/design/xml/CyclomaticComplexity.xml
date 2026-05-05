@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>no violation - trivial function, complexity 1</description>
+        <rule-property name="methodReportLevel">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun greet(name: String): String = "Hello, $name"
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation - exactly at threshold, 2 ifs give complexity 3</description>
+        <rule-property name="methodReportLevel">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun process(a: Int, b: Int): String {
+    var result = ""
+    if (a > 0) result += "a"
+    if (b > 0) result += "b"
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - 3 ifs give complexity 4, one over threshold</description>
+        <rule-property name="methodReportLevel">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun process(a: Int, b: Int, c: Int): String {
+    var result = ""
+    if (a > 0) result += "a"
+    if (b > 0) result += "b"
+    if (c > 0) result += "c"
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation - nested function complexity does not count towards outer</description>
+        <rule-property name="methodReportLevel">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun outer(a: Int): String {
+    fun inner(b: Int, c: Int): String {
+        var result = ""
+        if (b > 0) result += "b"
+        if (c > 0) result += "c"
+        return result
+    }
+    return if (a > 0) inner(a, a) else ""
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - when expression with conditional branches</description>
+        <rule-property name="methodReportLevel">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun describe(n: Int): String = when {
+    n < 0    -> "negative"
+    n == 0   -> "zero"
+    n < 100  -> "small"
+    else     -> "large"
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - boolean operators push complexity over threshold</description>
+        <rule-property name="methodReportLevel">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun isValid(a: Int, b: Int, c: Int, d: Int): Boolean {
+    return a > 0 && b > 0 && c > 0 && d > 0
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - elvis operators push complexity over threshold</description>
+        <rule-property name="methodReportLevel">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun resolve(a: String?, b: String?, c: String?): String {
+    return a ?: b ?: c ?: "default"
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
