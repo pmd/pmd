@@ -5,9 +5,8 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>when with 1 branch is a violation (2 WhenEntry nodes including else)</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
+        <description>when with typed subject and 2 branches is ok -- typed subject is idiomatic for exhaustive matching</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 fun describe(x: Int): String {
     return when (x) {
@@ -62,7 +61,7 @@ fun describe(x: Int): String {
     </test-code>
 
     <test-code>
-        <description>when without subject and 2 WhenEntry nodes is a violation</description>
+        <description>condition-only when (no subject) with 2 branches is a violation -- use if/else instead</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[

@@ -728,8 +728,12 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#toofewbranchesforwhenexpression">
         <description>
-A `when` expression or statement with very few branches carries more syntax overhead than
-a plain `if`/`if-else`. Use `if` when only one or two outcomes are needed.
+A condition-only `when` expression (no subject) with very few branches carries more syntax
+overhead than a plain `if`/`if-else`. Use `if` when only one or two conditions are needed.
+
+Note: `when` expressions with a typed subject (e.g., `when (sealedValue)`) are always
+allowed regardless of branch count. They serve as exhaustive pattern matching on enums and
+sealed classes, which is idiomatic Kotlin even with only two outcomes.
 
 Kotlin equivalent of Java rule: category/java/performance.xml/TooFewBranchesForASwitchStatement
         </description>
@@ -739,32 +743,40 @@ Kotlin equivalent of Java rule: category/java/performance.xml/TooFewBranchesForA
                       description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
                       value="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>
             <property name="minimumNumberCaseForAWhen" type="Integer"
-                      description="Minimum number of when-branches to justify using a when instead of if/else"
+                      description="Minimum number of when-branches to justify using a when without a subject instead of if/else"
                       value="3" min="2"/>
             <property name="xpath">
                 <value><![CDATA[
 //WhenExpression[
-    count(WhenEntry) < $minimumNumberCaseForAWhen
-    and count(WhenEntry/WhenCondition) < $minimumNumberCaseForAWhen
+    not(WhenSubject)
+    and count(WhenEntry) < $minimumNumberCaseForAWhen
 ]
                 ]]></value>
             </property>
         </properties>
         <example><![CDATA[
-// violation: only 2 branches -- use if/else instead
+// violation: condition-only when with 2 branches -- use if/else instead
 fun describeSmall(x: Int): String {
-    return when (x) {
-        0    -> "zero"
-        else -> "non-zero"
+    return when {
+        x == 0 -> "zero"
+        else   -> "non-zero"
     }
 }
 
-// ok: 3 branches justify a when
+// ok: condition-only when with 3 branches justifies using when
 fun describeSign(x: Int): String {
     return when {
         x < 0  -> "negative"
         x == 0 -> "zero"
         else   -> "positive"
+    }
+}
+
+// ok: typed subject -- idiomatic exhaustive matching on sealed/enum, always allowed
+fun describe(type: AppType): String {
+    return when (type) {
+        AppType.GAME -> "game"
+        else         -> "other"
     }
 }
         ]]></example>
