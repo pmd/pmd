@@ -22,7 +22,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 /**
  * Checks for variables in methods that are defined long before they are used.
  */
-public class VariableDeclarationDistanceRule extends AbstractJavaRulechainRule {
+public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainRule {
 
     private static final int DEFAULT_DISTANCE = 7;
     private static final PropertyDescriptor<Integer> MAX_DISTANCE =
@@ -31,7 +31,7 @@ public class VariableDeclarationDistanceRule extends AbstractJavaRulechainRule {
             .defaultValue(DEFAULT_DISTANCE)
             .build();
 
-    public VariableDeclarationDistanceRule() {
+    public VariableDeclarationUsageDistanceRule() {
         super(ASTLocalVariableDeclaration.class);
     }
 

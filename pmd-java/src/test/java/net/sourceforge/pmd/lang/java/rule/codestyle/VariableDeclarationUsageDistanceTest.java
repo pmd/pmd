@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
 /**
- * Tests for {@link VariableDeclarationDistanceRule}.
+ * Tests for {@link VariableDeclarationUsageDistanceRule}.
  */
-public class VariableDeclarationDistanceTest extends PmdRuleTst {
+public class VariableDeclarationUsageDistanceTest extends PmdRuleTst {
     // no additional tests
 }

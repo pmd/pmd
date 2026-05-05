@@ -2276,12 +2276,12 @@ public class Foo {
             ]]>
         </example>
     </rule>
-    <rule name="VariableDeclarationDistance"
+    <rule name="VariableDeclarationUsageDistance"
           language="java"
           since="7.25.0"
           message="Declaration of ''{0}'' can be moved closer to its usages"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableDeclarationDistanceRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variabledeclarationdistance">
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableDeclarationUsageDistanceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variabledeclarationusagedistance">
         <description>
             Checks for variables that are defined long before they are used.
 
