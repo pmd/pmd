@@ -16,11 +16,11 @@ Rules which enforce generally accepted best practices.
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidmessagedigestfield">
         <description>
-            java.security.MessageDigest is not thread-safe. Declaring it as a class field exposes
-            it to concurrent access without explicit synchronisation, producing incorrect digests.
-            Create a new instance per method call, or protect shared access with a mutex.
+`java.security.MessageDigest` is not thread-safe. Declaring it as a class field exposes
+it to concurrent access without explicit synchronisation, producing incorrect digests.
+Create a new instance per method call, or protect shared access with a mutex.
 
-            Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidMessageDigestField
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidMessageDigestField
         </description>
         <priority>2</priority>
         <properties>
@@ -64,15 +64,15 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidprintstacktrace">
         <description>
-            Avoid calling Throwable.printStackTrace(); use a proper logger instead.
-            Stack traces printed to standard output can be lost in production and carry no log level,
-            making them hard to control or suppress.
+Avoid calling `Throwable.printStackTrace()`; use a proper logger instead.
+Stack traces printed to standard output can be lost in production and carry no log level,
+making them hard to control or suppress.
 
-            Kotlin idiomatic alternative: use kotlin-logging (io.github.microutils:kotlin-logging):
-                private val log = KotlinLogging.logger {}
-                log.error(e) { "operation failed" }
+Kotlin idiomatic alternative: use kotlin-logging (`io.github.microutils:kotlin-logging`):
+- `private val log = KotlinLogging.logger {}`
+- `log.error(e) { "operation failed" }`
 
-            Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidPrintStackTrace
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidPrintStackTrace
         </description>
         <priority>3</priority>
         <properties>
@@ -129,15 +129,15 @@ class GoodKotlinLogging {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidstringbufferfield">
         <description>
-            StringBuffer and StringBuilder instances can grow considerably and, if held as class
-            fields across long-lived objects, may cause memory leaks.
+`StringBuffer` and `StringBuilder` instances can grow considerably and, if held as class
+fields across long-lived objects, may cause memory leaks.
 
-            Kotlin idiomatic alternatives:
-            - Use buildString { append(...) } for one-shot construction (returns a String directly).
-            - Create a local StringBuilder inside the function that needs it.
-            - Prefer string templates ("$var") which the Kotlin compiler optimises automatically.
+Kotlin idiomatic alternatives:
+- Use `buildString { append(...) }` for one-shot construction (returns a `String` directly).
+- Create a local `StringBuilder` inside the function that needs it.
+- Prefer string templates (`"$var"`) which the Kotlin compiler optimises automatically.
 
-            Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidStringBufferField
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidStringBufferField
         </description>
         <priority>3</priority>
         <properties>
@@ -181,9 +181,9 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#functionnametooshort">
         <description>
-            Function names should be easy to understand and describe the intention. Makes developers happy.
-            Short names that are conventional in Kotlin or platform idioms (e.g. event listener `on`,
-            Android density-pixel helper `dp`) can be excluded via the `allowedNames` property.
+Function names should be easy to understand and describe the intention. Makes developers happy.
+Short names that are conventional in Kotlin or platform idioms (e.g. event listener `on`,
+Android density-pixel helper `dp`) can be excluded via the `allowedNames` property.
         </description>
         <priority>3</priority>
         <properties>
@@ -221,17 +221,17 @@ fun dp(value: Int): Int = (value * 2.5f).toInt() // no violation -- 'dp' is in a
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#loosecoupling">
         <description>
-            Declaring fields or properties with a concrete collection type (ArrayList, HashSet,
-            HashMap, etc.) tightly couples callers to an implementation detail. Declare the type as
-            the appropriate interface (List, Set, Map, MutableList, MutableSet, MutableMap) so the
-            implementation can be swapped without breaking API consumers.
+Declaring fields or properties with a concrete collection type (`ArrayList`, `HashSet`,
+`HashMap`, etc.) tightly couples callers to an implementation detail. Declare the type as
+the appropriate interface (`List`, `Set`, `Map`, `MutableList`, `MutableSet`, `MutableMap`) so the
+implementation can be swapped without breaking API consumers.
 
-            In Kotlin, prefer the idiomatic factory functions:
-            - listOf() / mutableListOf() -> returns MutableList
-            - setOf() / mutableSetOf() -> returns MutableSet
-            - mapOf() / mutableMapOf() -> returns MutableMap
+In Kotlin, prefer the idiomatic factory functions:
+- `listOf()` / `mutableListOf()` -> returns `MutableList`
+- `setOf()` / `mutableSetOf()` -> returns `MutableSet`
+- `mapOf()` / `mutableMapOf()` -> returns `MutableMap`
 
-            Kotlin equivalent of Java rule: category/java/bestpractices.xml/LooseCoupling
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/LooseCoupling
         </description>
         <priority>3</priority>
         <properties>
@@ -283,10 +283,10 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#preservestacktrace">
         <description>
-            When catching an exception and throwing a new one from within a catch block, the original
-            exception should be passed as the cause argument so that the original stack trace is preserved.
-            Without it, the root cause of the problem is lost. Exception: catch variables named with the
-            ignored prefix or underscore are intentionally discarded and are not flagged.
+When catching an exception and throwing a new one from within a catch block, the original
+exception should be passed as the `cause` argument so that the original stack trace is preserved.
+Without it, the root cause of the problem is lost. Exception: catch variables named with the
+`ignored` prefix or underscore are intentionally discarded and are not flagged.
         </description>
         <priority>2</priority>
         <properties>
@@ -353,19 +353,19 @@ fun expected() {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#systemprintln">
         <description>
-            Calls to System.out.print*, System.err.print*, or System.out.printf are typically
-            left-over debug statements. Use a structured logging framework so output can be
-            controlled by log level and configuration without redeploying.
+Calls to `System.out.print*`, `System.err.print*`, or `System.out.printf` are typically
+left-over debug statements. Use a structured logging framework so output can be
+controlled by log level and configuration without redeploying.
 
-            Kotlin idiomatic alternative: kotlin-logging (io.github.microutils:kotlin-logging):
-                private val log = KotlinLogging.logger {}
-                log.info { "message" }
+Kotlin idiomatic alternative: kotlin-logging (`io.github.microutils:kotlin-logging`):
+- `private val log = KotlinLogging.logger {}`
+- `log.info { "message" }`
 
-            Note: Kotlin's built-in top-level println() also maps to System.out and should be
-            replaced in production code. This rule detects the explicit System.out/err variants;
-            treat println() / print() calls as violations in code review.
+Note: Kotlin's built-in top-level `println()` also maps to `System.out` and should be
+replaced in production code. This rule detects the explicit `System.out/err` variants;
+treat `println()` / `print()` calls as violations in code review.
 
-            Kotlin equivalent of Java rule: category/java/bestpractices.xml/SystemPrintln
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/SystemPrintln
         </description>
         <priority>2</priority>
         <properties>

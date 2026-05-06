@@ -54,12 +54,12 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#appendcharacterwithchar">
         <description>
-            Passing a single-character string literal to StringBuilder.append(String) forces the
-            JVM to perform a string comparison and then extract the character internally.
-            Using the Char overload -- append('x') -- is more direct and avoids allocating a
-            temporary String object.
+Passing a single-character string literal to `StringBuilder.append(String)` forces the
+JVM to perform a string comparison and then extract the character internally.
+Using the `Char` overload -- `append('x')` -- is more direct and avoids allocating a
+temporary `String` object.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/AppendCharacterWithChar
+Kotlin equivalent of Java rule: category/java/performance.xml/AppendCharacterWithChar
         </description>
         <priority>3</priority>
         <properties>
@@ -111,16 +111,16 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidarrayloops">
         <description>
-            Manually copying array elements one by one in a loop is less efficient and less clear
-            than using the built-in `copyInto()` or `copyOf()` functions. The built-in functions
-            are implemented natively and avoid the overhead of interpreted looping.
+Manually copying array elements one by one in a loop is less efficient and less clear
+than using the built-in `copyInto()` or `copyOf()` functions. The built-in functions
+are implemented natively and avoid the overhead of interpreted looping.
 
-            Prefer:
-            - `src.copyInto(dst)` for a full copy into an existing array
-            - `src.copyOf()` or `src.copyOf(n)` to produce a new copy
-            - `src.copyOfRange(from, to)` for a partial copy
+Prefer:
+- `src.copyInto(dst)` for a full copy into an existing array
+- `src.copyOf()` or `src.copyOf(n)` to produce a new copy
+- `src.copyOfRange(from, to)` for a partial copy
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/AvoidArrayLoops
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidArrayLoops
         </description>
         <priority>3</priority>
         <properties>
@@ -168,15 +168,15 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidcalendardatecreation">
         <description>
-            java.util.Calendar is a heavyweight, mutable object. Creating a Calendar instance just
-            to obtain the current date or time is expensive and unnecessarily verbose.
+`java.util.Calendar` is a heavyweight, mutable object. Creating a `Calendar` instance just
+to obtain the current date or time is expensive and unnecessarily verbose.
 
-            Prefer the modern java.time API introduced in Java 8:
-            - java.time.LocalDateTime.now() / ZonedDateTime.now() for date-time values
-            - java.time.Instant.now() for a machine timestamp
-            - java.time.LocalDate.today() for date-only values
+Prefer the modern `java.time` API introduced in Java 8:
+- `java.time.LocalDateTime.now()` / `ZonedDateTime.now()` for date-time values
+- `java.time.Instant.now()` for a machine timestamp
+- `java.time.LocalDate.today()` for date-only values
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCalendarDateCreation
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCalendarDateCreation
         </description>
         <priority>3</priority>
         <properties>
@@ -221,12 +221,12 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidcallinggcexplicitly">
         <description>
-            Calling System.gc() or Runtime.getRuntime().gc() requests a GC cycle but does not
-            guarantee one will run. In practice it introduces unpredictable pauses and can degrade
-            throughput. The JVM's garbage collector is designed to manage memory automatically;
-            manual invocations are almost never correct.
+Calling `System.gc()` or `Runtime.getRuntime().gc()` requests a GC cycle but does not
+guarantee one will run. In practice it introduces unpredictable pauses and can degrade
+throughput. The JVM's garbage collector is designed to manage memory automatically;
+manual invocations are almost never correct.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCallingGcExplicitly
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCallingGcExplicitly
         </description>
         <priority>2</priority>
         <properties>
@@ -265,15 +265,15 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidfilestream">
         <description>
-            FileInputStream/OutputStream/Reader/Writer contain a finalizer that can cause GC
-            pressure. In Kotlin prefer:
-            - File.inputStream() / File.outputStream() for byte streams
-            - File.bufferedReader() / File.bufferedWriter() for character streams
-            - File.readBytes() / File.readText() / File.writeText() for one-shot reads/writes
-            - Files.newInputStream(path) / Files.newOutputStream(path) for the NIO2 approach
-            All of these avoid the finalizer and work naturally with use {}.
+`FileInputStream`/`OutputStream`/`Reader`/`Writer` contain a finalizer that can cause GC
+pressure. In Kotlin prefer:
+- `File.inputStream()` / `File.outputStream()` for byte streams
+- `File.bufferedReader()` / `File.bufferedWriter()` for character streams
+- `File.readBytes()` / `File.readText()` / `File.writeText()` for one-shot reads/writes
+- `Files.newInputStream(path)` / `Files.newOutputStream(path)` for the NIO2 approach
+All of these avoid the finalizer and work naturally with `use {}`.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/AvoidFileStream
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidFileStream
         </description>
         <priority>3</priority>
         <properties>
@@ -321,11 +321,11 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidinstantiatingobjectsinloops">
         <description>
-            Creating objects inside a loop may cause unnecessary garbage collection pressure when
-            the same instance could be constructed once outside the loop and reused. If the object
-            can be safely shared or reset across iterations, move its construction before the loop.
+Creating objects inside a loop may cause unnecessary garbage collection pressure when
+the same instance could be constructed once outside the loop and reused. If the object
+can be safely shared or reset across iterations, move its construction before the loop.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/AvoidInstantiatingObjectsInLoops
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidInstantiatingObjectsInLoops
         </description>
         <priority>3</priority>
         <properties>
@@ -393,15 +393,15 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#bigintegerinstantiation">
         <description>
-            BigInteger.valueOf(0), BigInteger.valueOf(1), and BigInteger.valueOf(10) allocate
-            unnecessarily; the JDK already provides BigInteger.ZERO, BigInteger.ONE, and
-            BigInteger.TEN as cached constants.
+`BigInteger.valueOf(0)`, `BigInteger.valueOf(1)`, and `BigInteger.valueOf(10)` allocate
+unnecessarily; the JDK already provides `BigInteger.ZERO`, `BigInteger.ONE`, and
+`BigInteger.TEN` as cached constants.
 
-            Kotlin idiomatic alternatives also include the extension functions:
-            - 0.toBigInteger(), 1.toBigInteger(), 10.toBigInteger()
-            However, the named constants are more readable and allocation-free.
+Kotlin idiomatic alternatives also include the extension functions:
+- `0.toBigInteger()`, `1.toBigInteger()`, `10.toBigInteger()`
+However, the named constants are more readable and allocation-free.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/BigIntegerInstantiation
+Kotlin equivalent of Java rule: category/java/performance.xml/BigIntegerInstantiation
         </description>
         <priority>3</priority>
         <properties>
@@ -629,15 +629,15 @@ class GoodBuildString {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#stringinstantiation">
         <description>
-            Strings are immutable in Kotlin/JVM. Creating String(someString) just copies the
-            reference to a new object; use the string literal or variable directly.
+Strings are immutable in Kotlin/JVM. Creating `String(someString)` just copies the
+reference to a new object; use the string literal or variable directly.
 
-            Note: Unlike Java's `new String(str)`, Kotlin's `kotlin.String` does not expose a
-            String(String) copy constructor, so this rule primarily catches Java-interop patterns
-            where the Java constructor is invoked explicitly (e.g. via reflection or a helper
-            that calls `java.lang.String(String)`).
+Note: Unlike Java's `new String(str)`, Kotlin's `kotlin.String` does not expose a
+`String(String)` copy constructor, so this rule primarily catches Java-interop patterns
+where the Java constructor is invoked explicitly (e.g. via reflection or a helper
+that calls `java.lang.String(String)`).
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/StringInstantiation
+Kotlin equivalent of Java rule: category/java/performance.xml/StringInstantiation
         </description>
         <priority>2</priority>
         <properties>
@@ -672,10 +672,10 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#stringtostring">
         <description>
-            Calling toString() on a String is a no-op; the same String instance is returned.
-            Remove the unnecessary call.
+Calling `toString()` on a `String` is a no-op; the same `String` instance is returned.
+Remove the unnecessary call.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/StringToString
+Kotlin equivalent of Java rule: category/java/performance.xml/StringToString
         </description>
         <priority>3</priority>
         <properties>
@@ -771,12 +771,12 @@ fun describe(type: AppType): String {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#useindexofchar">
         <description>
-            String.indexOf(String) and String.lastIndexOf(String) perform full substring search
-            when given a single-character argument. The Char overloads -- indexOf(Char) and
-            lastIndexOf(Char) -- use a simpler linear scan without the overhead of multi-char
-            matching.
+`String.indexOf(String)` and `String.lastIndexOf(String)` perform full substring search
+when given a single-character argument. The `Char` overloads -- `indexOf(Char)` and
+`lastIndexOf(Char)` -- use a simpler linear scan without the overhead of multi-char
+matching.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/UseIndexOfChar
+Kotlin equivalent of Java rule: category/java/performance.xml/UseIndexOfChar
         </description>
         <priority>3</priority>
         <properties>
@@ -874,12 +874,12 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#usestringbuilderforstringappends">
         <description>
-            Each use of `+=` to concatenate a String inside a loop creates a hidden temporary
-            StringBuilder, a backing char[] array, and a new String object per iteration. These
-            temporaries must all be garbage collected. Using an explicit StringBuilder outside
-            the loop and calling `append()` avoids these repeated allocations.
+Each use of `+=` to concatenate a `String` inside a loop creates a hidden temporary
+`StringBuilder`, a backing `char[]` array, and a new `String` object per iteration. These
+temporaries must all be garbage collected. Using an explicit `StringBuilder` outside
+the loop and calling `append()` avoids these repeated allocations.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBufferForStringAppends
+Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBufferForStringAppends
         </description>
         <priority>3</priority>
         <properties>
@@ -936,11 +936,11 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#usestringbuilderlength">
         <description>
-            Calling toString() on a StringBuilder or StringBuffer just to read its length
-            allocates a temporary String object unnecessarily. StringBuilder and StringBuffer
-            already expose a length property that returns the current character count directly.
+Calling `toString()` on a `StringBuilder` or `StringBuffer` just to read its length
+allocates a temporary `String` object unnecessarily. `StringBuilder` and `StringBuffer`
+already expose a `length` property that returns the current character count directly.
 
-            Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBuilderLength
+Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBuilderLength
         </description>
         <priority>3</priority>
         <properties>

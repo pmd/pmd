@@ -16,9 +16,9 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidbranchingstatementaslastinloop">
         <description>
-            Using a break, continue, or return directly in the body of a loop (not guarded by an if or
-            when) causes the loop to execute at most once. This is almost always a bug or confusing code.
-            Wrap the branching statement inside a conditional to make the intent explicit.
+Using a `break`, `continue`, or `return` directly in the body of a loop (not guarded by an `if` or
+`when`) causes the loop to execute at most once. This is almost always a bug or confusing code.
+Wrap the branching statement inside a conditional to make the intent explicit.
         </description>
         <priority>2</priority>
         <properties>
@@ -74,11 +74,11 @@ fun findFirst(list: List<Int>, target: Int) {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcallingfinalize">
         <description>
-            Finalize() is called by the garbage collector automatically; calling it explicitly
-            bypasses GC timing and can cause objects to be finalized twice. In Kotlin prefer
-            AutoCloseable / use {} for resource cleanup.
+`finalize()` is called by the garbage collector automatically; calling it explicitly
+bypasses GC timing and can cause objects to be finalized twice. In Kotlin prefer
+`AutoCloseable` / `use {}` for resource cleanup.
 
-            Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCallingFinalize
+Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCallingFinalize
         </description>
         <priority>2</priority>
         <properties>
@@ -119,11 +119,11 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcatchinggenericexception">
         <description>
-            Catching Exception or RuntimeException hides real error types and makes error handling
-            imprecise. In Kotlin prefer runCatching {} with .onFailure {}, or catch specific
-            exceptions.
+Catching `Exception` or `RuntimeException` hides real error types and makes error handling
+imprecise. In Kotlin prefer `runCatching {}` with `.onFailure {}`, or catch specific
+exceptions.
 
-            Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCatchingGenericException
+Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCatchingGenericException
         </description>
         <priority>3</priority>
         <properties>
@@ -222,12 +222,12 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcatchingthrowable">
         <description>
-            Throwable is the root of both Exception and Error. Catching it can swallow
-            OutOfMemoryError, StackOverflowError and other JVM errors that are not recoverable.
-            Catch specific exceptions instead. For result-oriented error handling prefer
-            runCatching {} with .onFailure {}, which limits handling to non-fatal exceptions.
+`Throwable` is the root of both `Exception` and `Error`. Catching it can swallow
+`OutOfMemoryError`, `StackOverflowError` and other JVM errors that are not recoverable.
+Catch specific exceptions instead. For result-oriented error handling prefer
+`runCatching {}` with `.onFailure {}`, which limits handling to non-fatal exceptions.
 
-            Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCatchingThrowable
+Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCatchingThrowable
         </description>
         <priority>1</priority>
         <properties>
@@ -274,9 +274,8 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoiddecimalformatasfield">
         <description>
-            DecimalFormat and ChoiceFormat are thread-unsafe. Declaring them as fields introduces
-            race conditions. Create a new instance per method call, or use a ThreadLocal.
-
+`DecimalFormat` and `ChoiceFormat` are thread-unsafe. Declaring them as fields introduces
+race conditions. Create a new instance per method call, or use a `ThreadLocal`.
         </description>
         <priority>1</priority>
         <properties>
@@ -316,11 +315,11 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor">
         <description>
-            BigDecimal(0.1) does not equal 0.1 exactly due to floating-point representation.
-            Use BigDecimal("0.1"), BigDecimal.valueOf(0.1), or the Kotlin idiomatic
-            "0.1".toBigDecimal() extension for exact decimal values.
+`BigDecimal(0.1)` does not equal `0.1` exactly due to floating-point representation.
+Use `BigDecimal("0.1")`, `BigDecimal.valueOf(0.1)`, or the Kotlin idiomatic
+`"0.1".toBigDecimal()` extension for exact decimal values.
 
-            Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor
+Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor
         </description>
         <priority>3</priority>
         <properties>
@@ -362,8 +361,8 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidrethrowingexception">
         <description>
-            A catch block that does nothing but rethrow the caught exception is pointless. Remove the
-            try/catch entirely, or handle the exception in a meaningful way (logging, wrapping, recovery).
+A catch block that does nothing but rethrow the caught exception is pointless. Remove the
+`try/catch` entirely, or handle the exception in a meaningful way (logging, wrapping, recovery).
         </description>
         <priority>3</priority>
         <properties>
@@ -412,10 +411,10 @@ fun good() {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidthrowingnullpointerexception">
         <description>
-            Explicitly throwing NullPointerException is misleading -- callers and tools expect NPE to
-            indicate an unintentional null dereference, not a deliberate contract violation.
-            Use requireNotNull(), checkNotNull(), or error() to signal intentional null checks with
-            a clear message.
+Explicitly throwing `NullPointerException` is misleading -- callers and tools expect NPE to
+indicate an unintentional null dereference, not a deliberate contract violation.
+Use `requireNotNull()`, `checkNotNull()`, or `error()` to signal intentional null checks with
+a clear message.
         </description>
         <priority>1</priority>
         <properties>
@@ -450,9 +449,9 @@ fun good(value: String?) {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidthrowingrawexceptiontypes">
         <description>
-            Throwing generic root types (Throwable, Error, Exception, RuntimeException) loses semantic
-            information. Callers cannot catch the specific condition without catching everything.
-            Use a specific subclass that communicates the failure reason, or define a custom exception.
+Throwing generic root types (`Throwable`, `Error`, `Exception`, `RuntimeException`) loses semantic
+information. Callers cannot catch the specific condition without catching everything.
+Use a specific subclass that communicates the failure reason, or define a custom exception.
         </description>
         <priority>1</priority>
         <properties>
@@ -492,12 +491,12 @@ fun good(input: String) {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#donotextendjavalangerror">
         <description>
-            java.lang.Error and its subclasses (AssertionError, LinkageError, VirtualMachineError,
-            ThreadDeath) represent serious JVM-level problems that application code should not
-            model. Extending them creates custom error types that callers will not catch, since
-            catch(e: Exception) does not catch Error.
+`java.lang.Error` and its subclasses (`AssertionError`, `LinkageError`, `VirtualMachineError`,
+`ThreadDeath`) represent serious JVM-level problems that application code should not
+model. Extending them creates custom error types that callers will not catch, since
+`catch(e: Exception)` does not catch `Error`.
 
-            Use Exception or RuntimeException (or a Kotlin sealed class hierarchy) instead.
+Use `Exception` or `RuntimeException` (or a Kotlin sealed class hierarchy) instead.
         </description>
         <priority>2</priority>
         <properties>
@@ -532,15 +531,15 @@ class MyCheckedException : Exception("checked equivalent")
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#donotterminatevm">
         <description>
-            Calling System.exit() or Runtime.halt() terminates the JVM abruptly, bypassing
-            shutdown hooks, resource cleanup, and normal exception handling. In library code this
-            is especially harmful as it kills the entire host process.
+Calling `System.exit()` or `Runtime.halt()` terminates the JVM abruptly, bypassing
+shutdown hooks, resource cleanup, and normal exception handling. In library code this
+is especially harmful as it kills the entire host process.
 
-            Prefer throwing an appropriate exception, or for application entry points register a
-            shutdown hook via Runtime.addShutdownHook() and signal shutdown through a flag or
-            coroutine cancellation.
+Prefer throwing an appropriate exception, or for application entry points register a
+shutdown hook via `Runtime.addShutdownHook()` and signal shutdown through a flag or
+coroutine cancellation.
 
-            Kotlin equivalent of Java rule: category/java/errorprone.xml/DoNotTerminateVM
+Kotlin equivalent of Java rule: category/java/errorprone.xml/DoNotTerminateVM
         </description>
         <priority>1</priority>
         <properties>
@@ -881,18 +880,17 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#unresolvedtype">
         <description>
-            Reports import declarations whose type could not be resolved by the kotlin-type-mapper
-            pre-analysis step. This typically means that a library or SDK dependency is not on the
-            PMD analysis classpath.
+Reports import declarations whose type could not be resolved by the `kotlin-type-mapper`
+pre-analysis step. This typically means that a library or SDK dependency is not on the
+PMD analysis classpath.
 
-            When types are unresolved, type-aware rules (such as UseStringBuilderForStringAppends,
-            UseLocaleWithCaseConversions, and ReplaceJavaUtilDate) may miss violations or report
-            false positives for code that uses those types.
+When types are unresolved, type-aware rules (such as `UseStringBuilderForStringAppends`,
+`UseLocaleWithCaseConversions`, and `ReplaceJavaUtilDate`) may miss violations or report
+false positives for code that uses those types.
 
-            To fix: pass the missing JARs via the PMD --classpath option (or the
-            auxclasspath configuration in your build plugin) so the type mapper can
-            resolve all referenced types.
-
+To fix: pass the missing JARs via the PMD `--classpath` option (or the
+`auxclasspath` configuration in your build plugin) so the type mapper can
+resolve all referenced types.
         </description>
         <priority>4</priority>
         <properties>
@@ -917,17 +915,17 @@ import java.util.Date                  // ok: java.util is always resolvable
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#uselocalewithcaseconversions">
         <description>
-            Calling java.lang.String#toLowerCase() or #toUpperCase() without a Locale argument
-            uses the default system Locale, which can produce unexpected results for locale-sensitive
-            characters (e.g., Turkish 'i' -> 'I' with toUpperCase(Locale("tr"))).
+Calling `java.lang.String#toLowerCase()` or `#toUpperCase()` without a `Locale` argument
+uses the default system `Locale`, which can produce unexpected results for locale-sensitive
+characters (e.g., Turkish `'i'` -> `'I'` with `toUpperCase(Locale("tr"))`).
 
-            Kotlin idiomatic alternatives:
-            - str.lowercase() / str.uppercase() -- use Locale.ROOT (locale-insensitive, safe for
-              identifiers, file names, protocol keywords)
-            - str.lowercase(Locale.getDefault()) / str.uppercase(Locale.getDefault()) -- explicit
-              locale-sensitive conversion for user-visible strings
+Kotlin idiomatic alternatives:
+- `str.lowercase()` / `str.uppercase()` -- use `Locale.ROOT` (locale-insensitive, safe for
+  identifiers, file names, protocol keywords)
+- `str.lowercase(Locale.getDefault())` / `str.uppercase(Locale.getDefault())` -- explicit
+  locale-sensitive conversion for user-visible strings
 
-            Kotlin equivalent of Java rule: category/java/errorprone.xml/UseLocaleWithCaseConversions
+Kotlin equivalent of Java rule: category/java/errorprone.xml/UseLocaleWithCaseConversions
         </description>
         <priority>3</priority>
         <properties>
