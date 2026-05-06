@@ -284,16 +284,13 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
-     * all required attributes for all rules are specified.
-     *
-     * @throws Exception
-     *             any error
+     * no rules have a suppression XPath
      */
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
-    void testAllPMDBuiltInRulesMeetConventions(String fileName) throws Exception {
-        int invalidXPathSuppress = 0;
-        StringBuilder messages = new StringBuilder();
+    void testAllPMDBuiltInRulesHaveNoSuppressionXPath(String fileName) {
+        List<String> messages = new ArrayList<>();
+
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
         for (Rule rule : ruleSet.getRules()) {
 
@@ -304,16 +301,12 @@ public abstract class AbstractRuleSetFactoryTest {
 
             // Should not have violation suppress xpath property
             if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
-                invalidXPathSuppress++;
-                messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(System.lineSeparator());
+                messages.add("Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "', this is intended for end user customization only.\n");
             }
         }
-        // We do this at the end to ensure we test ALL the rules before failing
-        // the test
-        if (invalidXPathSuppress > 0) {
-            fail("All built-in PMD rules need no '"
-                    + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
-                    + invalidXPathSuppress + " are invalid)\n" + messages);
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules should NOT have a '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property (" + messages.size() + " do)\n" + String.join("\n", messages));
         }
     }
 
