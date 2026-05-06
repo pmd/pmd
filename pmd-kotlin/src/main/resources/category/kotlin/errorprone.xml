@@ -174,16 +174,16 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcatchingnpe">
         <description>
-            Catching NullPointerException is a code smell in Kotlin. Kotlin's type system
-            distinguishes nullable from non-nullable types at compile time, making explicit NPE
-            catches unnecessary and masking real bugs.
+Catching `NullPointerException` is a code smell in Kotlin. Kotlin's type system
+distinguishes nullable from non-nullable types at compile time, making explicit NPE
+catches unnecessary and masking real bugs.
 
-            Kotlin idiomatic alternatives:
-            - Use nullable types (String?) and safe calls (str?.length ?: 0)
-            - Use the Elvis operator (?:) for default values
-            - Use requireNotNull() or checkNotNull() for early validation
+Kotlin idiomatic alternatives:
+- Use nullable types (`String?`) and safe calls (`str?.length ?: 0`)
+- Use the Elvis operator (`?:`) for default values
+- Use `requireNotNull()` or `checkNotNull()` for early validation
 
-            Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCatchingNPE
+Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCatchingNPE
         </description>
         <priority>2</priority>
         <properties>
@@ -614,9 +614,12 @@ class Good {
           class="net.sourceforge.pmd.lang.kotlin.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode">
         <description>
-Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+Override both `equals(other: Any?)` and `hashCode()`, or override neither. Even if
+you are inheriting a `hashCode()` from a parent class, consider implementing it
+explicitly and delegating to the superclass.
 
-The idiomatic Kotlin solution is to use a **data class**, which generates correct equals() and hashCode() automatically based on the primary constructor properties.
+The idiomatic Kotlin solution is to use a `data class`, which generates correct
+`equals()` and `hashCode()` automatically based on the primary constructor properties.
         </description>
         <priority>3</priority>
         <example>
@@ -688,11 +691,12 @@ class Good {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#returnemptycollectionratherthannull">
         <description>
-Returning null from a function that has a nullable Collection or Map return type forces
-callers to null-check the result before using it. Returning an empty collection (e.g.
-emptyList(), emptyMap(), emptySet()) is less error-prone and leads to cleaner call sites.
+Returning `null` from a function that has a nullable `Collection` or `Map` return type
+forces callers to null-check the result before using it. Returning an empty collection
+(`emptyList()`, `emptyMap()`, `emptySet()`) is less error-prone and leads to cleaner
+call sites.
 
-This is the Kotlin equivalent of the Java PMD rule of the same name.
+Kotlin equivalent of Java rule: category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull
         </description>
         <priority>3</priority>
         <properties>
