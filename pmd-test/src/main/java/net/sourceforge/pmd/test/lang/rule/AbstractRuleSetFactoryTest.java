@@ -220,21 +220,15 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
-     * all required attributes for all rules are specified.
-     *
-     * @throws Exception
-     *             any error
+     * all rules have a valid classname
      */
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
-    void testAllPMDBuiltInRulesMeetConventions(String fileName) throws Exception {
-        int invalidClassName = 0;
-        int invalidRegexSuppress = 0;
-        int invalidXPathSuppress = 0;
-        StringBuilder messages = new StringBuilder();
+    void testAllPMDBuiltInRulesHaveValidClassName(String fileName) {
+        List<String> messages = new ArrayList<>();
+
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
         for (Rule rule : ruleSet.getRules()) {
-
             // Skip references
             if (rule instanceof RuleReference) {
                 continue;
@@ -248,21 +242,39 @@ public abstract class AbstractRuleSetFactoryTest {
             }
 
             // Proper class name/packaging?
-            String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group
-                    + "." + rule.getName() + "Rule";
-            if (!rule.getRuleClass().equals(expectedClassName)
-                    && !validXPathClassNames.contains(rule.getRuleClass())) {
-                invalidClassName++;
-                messages.append("Rule ")
-                        .append(fileName)
-                        .append("/")
-                        .append(rule.getName())
-                        .append(" seems to have an invalid 'class' value (")
-                        .append(rule.getRuleClass())
-                        .append("), it should be:")
-                        .append(expectedClassName)
-                        .append('\n');
+            String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group + "." + rule.getName() + "Rule";
+            if (!rule.getRuleClass().equals(expectedClassName) && !validXPathClassNames.contains(rule.getRuleClass())) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value (" + rule.getRuleClass() + "), it should be: " + expectedClassName + '\n');
             }
+        }
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need a class name meeting conventions (" + messages.size() + " are invalid)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
+     * all required attributes for all rules are specified.
+     *
+     * @throws Exception
+     *             any error
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesMeetConventions(String fileName) throws Exception {
+        int invalidRegexSuppress = 0;
+        int invalidXPathSuppress = 0;
+        StringBuilder messages = new StringBuilder();
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
+
             // Should not have violation suppress regex property
             if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
                 invalidRegexSuppress++;
@@ -282,9 +294,9 @@ public abstract class AbstractRuleSetFactoryTest {
         }
         // We do this at the end to ensure we test ALL the rules before failing
         // the test
-        if (invalidClassName > 0 || invalidRegexSuppress > 0
+        if (invalidRegexSuppress > 0
                 || invalidXPathSuppress > 0) {
-            fail("All built-in PMD rules need a class name meeting conventions (" + invalidClassName + " are invalid), no '"
+            fail("All built-in PMD rules need no '"
                     + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
                     + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
                     + invalidXPathSuppress + " are invalid)\n" + messages);
