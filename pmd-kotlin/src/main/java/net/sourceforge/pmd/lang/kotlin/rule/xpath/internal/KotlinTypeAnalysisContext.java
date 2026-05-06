@@ -81,31 +81,26 @@ public final class KotlinTypeAnalysisContext {
             String basename = new File(file.getRelativePath()).getName();
 
             for (CallSiteAst call : file.getCalls()) {
-                callIdx.computeIfAbsent(absPath, k -> new HashMap<>())
-                       .computeIfAbsent(call.getLine(), k -> new ArrayList<>())
-                       .add(call);
-                callIdx.computeIfAbsent(basename, k -> new HashMap<>())
-                       .computeIfAbsent(call.getLine(), k -> new ArrayList<>())
-                       .add(call);
+                addToIndex(callIdx, absPath, basename, call.getLine(), call);
             }
             for (DeclarationAst decl : file.getDeclarations()) {
-                declIdx.computeIfAbsent(absPath, k -> new HashMap<>())
-                       .computeIfAbsent(decl.getLine(), k -> new ArrayList<>())
-                       .add(decl);
-                declIdx.computeIfAbsent(basename, k -> new HashMap<>())
-                       .computeIfAbsent(decl.getLine(), k -> new ArrayList<>())
-                       .add(decl);
+                addToIndex(declIdx, absPath, basename, decl.getLine(), decl);
             }
             for (UnresolvedReferenceAst unresolved : file.getUnresolvedReferences()) {
-                unresolvedIdx.computeIfAbsent(absPath, k -> new HashMap<>())
-                             .computeIfAbsent(unresolved.getLine(), k -> new ArrayList<>())
-                             .add(unresolved);
-                unresolvedIdx.computeIfAbsent(basename, k -> new HashMap<>())
-                             .computeIfAbsent(unresolved.getLine(), k -> new ArrayList<>())
-                             .add(unresolved);
+                addToIndex(unresolvedIdx, absPath, basename, unresolved.getLine(), unresolved);
             }
         }
         return new KotlinTypeAnalysisContext(callIdx, declIdx, ast.getTypeHierarchy(), unresolvedIdx);
+    }
+
+    private static <T> void addToIndex(Map<String, Map<Integer, List<T>>> idx,
+            String absPath, String basename, int line, T item) {
+        idx.computeIfAbsent(absPath, k -> new HashMap<>())
+                .computeIfAbsent(line, k -> new ArrayList<>())
+                .add(item);
+        idx.computeIfAbsent(basename, k -> new HashMap<>())
+                .computeIfAbsent(line, k -> new ArrayList<>())
+                .add(item);
     }
 
     /**
@@ -114,7 +109,7 @@ public final class KotlinTypeAnalysisContext {
      * line-number differences between PMD's ANTLR parser and kotlin-type-mapper's PSI.
      */
     public List<CallSiteAst> callSitesAt(String absFilePath, int line) {
-        return callSitesInRange(absFilePath, line, line);
+        return lookupByLine(callIndex, absFilePath, line);
     }
 
     /**
@@ -124,35 +119,12 @@ public final class KotlinTypeAnalysisContext {
      * than the start of the expression (e.g. chained calls split across lines).
      */
     public List<CallSiteAst> callSitesInRange(String absFilePath, int beginLine, int endLine) {
-        Map<Integer, List<CallSiteAst>> byLine = callIndex.get(absFilePath);
-        if (byLine == null) {
-            // Fallback: try just the filename in case context was built from a different root
-            String basename = new File(absFilePath).getName();
-            byLine = callIndex.get(basename);
-            if (byLine == null && !basename.endsWith(KT_EXTENSION)) {
-                // PmdRuleTst uses synthetic ids without .kt; temp files are written with .kt appended
-                byLine = callIndex.get(basename + KT_EXTENSION);
-            }
+        if (beginLine == endLine) {
+            return lookupByLine(callIndex, absFilePath, beginLine);
         }
+        Map<Integer, List<CallSiteAst>> byLine = resolveByLineMap(callIndex, absFilePath);
         if (byLine == null) {
             return Collections.emptyList();
-        }
-        // Single-line: exact match with +/-1 tolerance for PSI/ANTLR offset differences
-        if (beginLine == endLine) {
-            List<CallSiteAst> exact = byLine.get(beginLine);
-            if (exact != null && !exact.isEmpty()) {
-                return exact;
-            }
-            List<CallSiteAst> result = new ArrayList<>();
-            List<CallSiteAst> prev = byLine.get(beginLine - 1);
-            List<CallSiteAst> next = byLine.get(beginLine + 1);
-            if (prev != null) {
-                result.addAll(prev);
-            }
-            if (next != null) {
-                result.addAll(next);
-            }
-            return result;
         }
         // Multi-line: collect all call sites across the entire range
         List<CallSiteAst> result = new ArrayList<>();
@@ -170,24 +142,30 @@ public final class KotlinTypeAnalysisContext {
      * Also checks line +/- 1 as a fallback.
      */
     public List<DeclarationAst> declarationsAt(String absFilePath, int line) {
-        Map<Integer, List<DeclarationAst>> byLine = declIndex.get(absFilePath);
-        if (byLine == null) {
-            String basename = new File(absFilePath).getName();
-            byLine = declIndex.get(basename);
-            if (byLine == null && !basename.endsWith(KT_EXTENSION)) {
-                byLine = declIndex.get(basename + KT_EXTENSION);
-            }
-        }
+        return lookupByLine(declIndex, absFilePath, line);
+    }
+
+    /**
+     * Returns unresolved references recorded at the given file and line.
+     * Also checks line +/- 1 as a fallback.
+     */
+    public List<UnresolvedReferenceAst> unresolvedReferencesAt(String absFilePath, int line) {
+        return lookupByLine(unresolvedIndex, absFilePath, line);
+    }
+
+    private static <T> List<T> lookupByLine(
+            Map<String, Map<Integer, List<T>>> index, String absFilePath, int line) {
+        Map<Integer, List<T>> byLine = resolveByLineMap(index, absFilePath);
         if (byLine == null) {
             return Collections.emptyList();
         }
-        List<DeclarationAst> exact = byLine.get(line);
+        List<T> exact = byLine.get(line);
         if (exact != null && !exact.isEmpty()) {
             return exact;
         }
-        List<DeclarationAst> result = new ArrayList<>();
-        List<DeclarationAst> prev = byLine.get(line - 1);
-        List<DeclarationAst> next = byLine.get(line + 1);
+        List<T> result = new ArrayList<>();
+        List<T> prev = byLine.get(line - 1);
+        List<T> next = byLine.get(line + 1);
         if (prev != null) {
             result.addAll(prev);
         }
@@ -197,36 +175,19 @@ public final class KotlinTypeAnalysisContext {
         return result;
     }
 
-    /**
-     * Returns unresolved references recorded at the given file and line.
-     * Also checks line +/- 1 as a fallback.
-     */
-    public List<UnresolvedReferenceAst> unresolvedReferencesAt(String absFilePath, int line) {
-        Map<Integer, List<UnresolvedReferenceAst>> byLine = unresolvedIndex.get(absFilePath);
-        if (byLine == null) {
-            String basename = new File(absFilePath).getName();
-            byLine = unresolvedIndex.get(basename);
-            if (byLine == null && !basename.endsWith(KT_EXTENSION)) {
-                byLine = unresolvedIndex.get(basename + KT_EXTENSION);
-            }
+    private static <T> Map<Integer, List<T>> resolveByLineMap(
+            Map<String, Map<Integer, List<T>>> index, String absFilePath) {
+        Map<Integer, List<T>> byLine = index.get(absFilePath);
+        if (byLine != null) {
+            return byLine;
         }
-        if (byLine == null) {
-            return Collections.emptyList();
+        String basename = new File(absFilePath).getName();
+        byLine = index.get(basename);
+        if (byLine == null && !basename.endsWith(KT_EXTENSION)) {
+            // PmdRuleTst uses synthetic ids without .kt; temp files are written with .kt appended
+            byLine = index.get(basename + KT_EXTENSION);
         }
-        List<UnresolvedReferenceAst> exact = byLine.get(line);
-        if (exact != null && !exact.isEmpty()) {
-            return exact;
-        }
-        List<UnresolvedReferenceAst> result = new ArrayList<>();
-        List<UnresolvedReferenceAst> prev = byLine.get(line - 1);
-        List<UnresolvedReferenceAst> next = byLine.get(line + 1);
-        if (prev != null) {
-            result.addAll(prev);
-        }
-        if (next != null) {
-            result.addAll(next);
-        }
-        return result;
+        return byLine;
     }
 
     /**
