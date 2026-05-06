@@ -59,9 +59,6 @@ class Good {
             Using the Char overload -- append('x') -- is more direct and avoids allocating a
             temporary String object.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/performance.xml/AppendCharacterWithChar
         </description>
         <priority>3</priority>
@@ -179,9 +176,6 @@ class Good {
             - java.time.Instant.now() for a machine timestamp
             - java.time.LocalDate.today() for date-only values
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCalendarDateCreation
         </description>
         <priority>3</priority>
@@ -232,9 +226,6 @@ class Good {
             throughput. The JVM's garbage collector is designed to manage memory automatically;
             manual invocations are almost never correct.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCallingGcExplicitly
         </description>
         <priority>2</priority>
@@ -281,9 +272,6 @@ class Good {
             - File.readBytes() / File.readText() / File.writeText() for one-shot reads/writes
             - Files.newInputStream(path) / Files.newOutputStream(path) for the NIO2 approach
             All of these avoid the finalizer and work naturally with use {}.
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/performance.xml/AvoidFileStream
         </description>
@@ -412,9 +400,6 @@ class Good {
             Kotlin idiomatic alternatives also include the extension functions:
             - 0.toBigInteger(), 1.toBigInteger(), 10.toBigInteger()
             However, the named constants are more readable and allocation-free.
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/performance.xml/BigIntegerInstantiation
         </description>
@@ -589,9 +574,6 @@ Kotlin's `buildString { }` builder instead.
 Kotlin idiomatic alternatives:
 - Chain: `sb.append("prefix").append(variable)`
 - Builder: `buildString { append("prefix"); append(variable) }`
-
-Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-See the pmd-kotlin documentation for setup instructions.
 
 Kotlin equivalent of Java rule: category/java/performance.xml/InefficientStringBuffering
         </description>
@@ -794,9 +776,6 @@ fun describe(type: AppType): String {
             lastIndexOf(Char) -- use a simpler linear scan without the overhead of multi-char
             matching.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/performance.xml/UseIndexOfChar
         </description>
         <priority>3</priority>
@@ -900,10 +879,6 @@ class Good {
             temporaries must all be garbage collected. Using an explicit StringBuilder outside
             the loop and calling `append()` avoids these repeated allocations.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to resolve the type of the
-            concatenation target. If type analysis is unavailable, an `UnresolvedType` finding
-            is emitted instead.
-
             Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBufferForStringAppends
         </description>
         <priority>3</priority>
@@ -964,9 +939,6 @@ class Good {
             Calling toString() on a StringBuilder or StringBuffer just to read its length
             allocates a temporary String object unnecessarily. StringBuilder and StringBuffer
             already expose a length property that returns the current character count directly.
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBuilderLength
         </description>

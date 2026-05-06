@@ -20,9 +20,6 @@ Rules which enforce generally accepted best practices.
             it to concurrent access without explicit synchronisation, producing incorrect digests.
             Create a new instance per method call, or protect shared access with a mutex.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidMessageDigestField
         </description>
         <priority>2</priority>
@@ -140,9 +137,6 @@ class GoodKotlinLogging {
             - Create a local StringBuilder inside the function that needs it.
             - Prefer string templates ("$var") which the Kotlin compiler optimises automatically.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidStringBufferField
         </description>
         <priority>3</priority>
@@ -236,9 +230,6 @@ fun dp(value: Int): Int = (value * 2.5f).toInt() // no violation -- 'dp' is in a
             - listOf() / mutableListOf() -> returns MutableList
             - setOf() / mutableSetOf() -> returns MutableSet
             - mapOf() / mutableMapOf() -> returns MutableMap
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/bestpractices.xml/LooseCoupling
         </description>
@@ -373,9 +364,6 @@ fun expected() {
             Note: Kotlin's built-in top-level println() also maps to System.out and should be
             replaced in production code. This rule detects the explicit System.out/err variants;
             treat println() / print() calls as violations in code review.
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/bestpractices.xml/SystemPrintln
         </description>

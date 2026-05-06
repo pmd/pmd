@@ -78,9 +78,6 @@ fun findFirst(list: List<Int>, target: Int) {
             bypasses GC timing and can cause objects to be finalized twice. In Kotlin prefer
             AutoCloseable / use {} for resource cleanup.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCallingFinalize
         </description>
         <priority>2</priority>
@@ -186,9 +183,6 @@ class Good {
             - Use the Elvis operator (?:) for default values
             - Use requireNotNull() or checkNotNull() for early validation
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidCatchingNPE
         </description>
         <priority>2</priority>
@@ -283,8 +277,6 @@ class Good {
             DecimalFormat and ChoiceFormat are thread-unsafe. Declaring them as fields introduces
             race conditions. Create a new instance per method call, or use a ThreadLocal.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
         </description>
         <priority>1</priority>
         <properties>
@@ -327,9 +319,6 @@ class Good {
             BigDecimal(0.1) does not equal 0.1 exactly due to floating-point representation.
             Use BigDecimal("0.1"), BigDecimal.valueOf(0.1), or the Kotlin idiomatic
             "0.1".toBigDecimal() extension for exact decimal values.
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor
         </description>
@@ -550,9 +539,6 @@ class MyCheckedException : Exception("checked equivalent")
             Prefer throwing an appropriate exception, or for application entry points register a
             shutdown hook via Runtime.addShutdownHook() and signal shutdown through a flag or
             coroutine cancellation.
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/errorprone.xml/DoNotTerminateVM
         </description>
@@ -907,8 +893,6 @@ class Good {
             auxclasspath configuration in your build plugin) so the type mapper can
             resolve all referenced types.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
         </description>
         <priority>4</priority>
         <properties>
@@ -942,9 +926,6 @@ import java.util.Date                  // ok: java.util is always resolvable
               identifiers, file names, protocol keywords)
             - str.lowercase(Locale.getDefault()) / str.uppercase(Locale.getDefault()) -- explicit
               locale-sensitive conversion for user-visible strings
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/errorprone.xml/UseLocaleWithCaseConversions
         </description>

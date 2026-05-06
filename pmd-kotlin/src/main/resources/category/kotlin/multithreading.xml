@@ -20,9 +20,6 @@ Rules that flag issues when dealing with multiple threads of execution.
             Use thread.start() to actually create a new thread. For Kotlin prefer coroutines
             (launch {}) over raw threads.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/multithreading.xml/DontCallThreadRun
         </description>
         <priority>4</priority>
@@ -69,9 +66,6 @@ class Good {
             synchronization can corrupt the map. Use ConcurrentHashMap for safe concurrent access,
             or consider Kotlin coroutine-friendly alternatives.
 
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
-
             Kotlin equivalent of Java rule: category/java/multithreading.xml/UseConcurrentHashMap
         </description>
         <priority>3</priority>
@@ -113,9 +107,6 @@ class Good {
             notify() wakes only one thread waiting on an object's monitor, chosen arbitrarily.
             notifyAll() wakes all waiting threads and avoids missed wake-up bugs. For Kotlin prefer
             coroutine primitives (Mutex, Channel, StateFlow) over raw synchronization.
-
-            Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-            See the pmd-kotlin documentation for setup instructions.
 
             Kotlin equivalent of Java rule: category/java/multithreading.xml/UseNotifyAllInsteadOfNotify
         </description>
