@@ -20,13 +20,6 @@ configuration is needed.
 If your code uses external libraries (Spring, JPA, etc.) and you need subtype hierarchy
 across those types, provide the compiled JARs:
 
-```bash
-pmd check \
-  --dir src/main/kotlin \
-  --rulesets category/kotlin/errorprone.xml \
-  --aux-classpath "$(find ~/.gradle/caches -name '*.jar' | tr '\n' ':')"
-```
-
 For a **Maven project**, build the classpath automatically:
 
 ```bash
@@ -36,13 +29,24 @@ pmd check \
   --aux-classpath "$(mvn -q dependency:build-classpath -DforceStdout)"
 ```
 
-For a **Gradle project**:
+For a **Gradle project**, add a helper task to expose the compile classpath:
+
+```kotlin
+// build.gradle.kts
+tasks.register("printClasspath") {
+    doLast {
+        println(configurations.compileClasspath.get().asPath)
+    }
+}
+```
+
+Then:
 
 ```bash
 pmd check \
   --dir src/main/kotlin \
   --rulesets category/kotlin/bestpractices.xml \
-  --aux-classpath "$(./gradlew -q printClasspath)"   # requires a printClasspath task
+  --aux-classpath "$(./gradlew -q printClasspath)"
 ```
 
 ---
@@ -258,16 +262,23 @@ exactly which nodes are annotated and the right XPath function for each pattern.
 
 ### Nodes that receive `@TypeName`
 
-| Node | `@TypeName` value | XPath example |
+> **Prefer `pmd-kotlin:typeIs()` over a raw `@TypeName='...'` comparison** for most rules.
+> `typeIs()` handles subtype hierarchy and Kotlin/Java type equivalences
+> (e.g. `kotlin.String` ↔ `java.lang.String`), while `@TypeName='...'` is a plain string
+> match with no subtype widening.
+> Use `@TypeName` directly only when you explicitly want an exact FQN match
+> (e.g. on `ClassDeclaration` or `DelegationSpecifier` to identify a specific class or supertype).
+
+| Node | `@TypeName` value | Preferred XPath |
 |---|---|---|
-| `PropertyDeclaration` | declared or **inferred** property type | `//PropertyDeclaration[@TypeName='nl.example.Foo']` |
-| `ClassParameter` | primary constructor `val`/`var` type | `//ClassParameter[@TypeName='kotlin.String']` |
-| `FunctionValueParameter` | function parameter type | `//FunctionValueParameter[@TypeName='java.util.Calendar']` |
-| `CatchBlock` | caught exception type | `//CatchBlock[@TypeName='java.io.IOException']` |
-| `ForStatement` | loop variable type | `//ForStatement[@TypeName='kotlin.String']` |
-| `ClassDeclaration` | the class's **own FQN** | `//ClassDeclaration[@TypeName='nl.example.Foo']` |
-| `DelegationSpecifier` | supertype FQN (e.g. `: Serializable`) | `//DelegationSpecifier[@TypeName='java.io.Serializable']` |
-| `UnescapedAnnotation` / `SingleAnnotation` | annotation FQN | `//SingleAnnotation[@TypeName='org.example.Ann']` |
+| `PropertyDeclaration` | declared or **inferred** property type | `//PropertyDeclaration[pmd-kotlin:typeIs('nl.example.Foo')]` |
+| `ClassParameter` | primary constructor `val`/`var` type | `//ClassParameter[pmd-kotlin:typeIs('kotlin.String')]` |
+| `FunctionValueParameter` | function parameter type | `//FunctionValueParameter[pmd-kotlin:typeIs('java.util.Calendar')]` |
+| `CatchBlock` | caught exception type | `//CatchBlock[pmd-kotlin:typeIs('java.io.IOException')]` |
+| `ForStatement` | loop variable type | `//ForStatement[pmd-kotlin:typeIs('kotlin.String')]` |
+| `ClassDeclaration` | the class's **own FQN** | `//ClassDeclaration[@TypeName='nl.example.Foo']` *(exact FQN — `@TypeName` preferred here)* |
+| `DelegationSpecifier` | supertype FQN (e.g. `: Serializable`) | `//DelegationSpecifier[@TypeName='java.io.Serializable']` *(exact FQN — `@TypeName` preferred here)* |
+| `UnescapedAnnotation` / `SingleAnnotation` | annotation FQN | `//SingleAnnotation[@TypeName='org.example.Ann']` *(exact FQN — `@TypeName` preferred here)* |
 
 ### Nodes that do NOT receive `@TypeName`
 
@@ -278,18 +289,21 @@ exactly which nodes are annotated and the right XPath function for each pattern.
 | `UserType` inside an expression (e.g. `Simple` in `Simple("Hello")`) | use `matchesSig` on the enclosing `PostfixUnaryExpression` |
 | `SimpleIdentifier` / `T-Identifier` | `@Identifier` attribute (text only, no type) |
 
-### Decision guide: `typeIs` vs `matchesSig`
+### Decision guide: `@TypeName` vs `typeIs` vs `matchesSig`
 
 ```
-Q: Does the node represent a *declaration* (variable, parameter, field, return)?
-   → use pmd-kotlin:typeIs()    on PropertyDeclaration / FunctionDeclaration / etc.
+Q: Does the node represent a *declaration* (variable, parameter, field, catch, loop var)?
+   → use pmd-kotlin:typeIs() — handles subtypes + Kotlin/Java equivalences
+     e.g. //PropertyDeclaration[pmd-kotlin:typeIs('java.util.Calendar')]
+
+Q: Do you need an exact FQN identity check (ClassDeclaration, DelegationSpecifier, annotation)?
+   → use @TypeName='...' directly — no subtype widening wanted
+     e.g. //ClassDeclaration[@TypeName='nl.example.Foo']
 
 Q: Does the node represent a *call* (method call, constructor call, property read)?
    → use pmd-kotlin:matchesSig() on PostfixUnaryExpression
-
-Q: Is it a constructor call?
-   → pmd-kotlin:matchesSig('com.example.Foo#<init>(*)')
-     method name is always <init>, receiver is the class being constructed
+     e.g. pmd-kotlin:matchesSig('com.example.Foo#<init>(*)')
+          method name is always <init> for constructor calls
 ```
 
 ### Example — inferred type matching a subtype
@@ -314,9 +328,12 @@ val myValue = Simple("Hello")   // @TypeName = "nl.example.Simple" (inferred by 
 //PostfixUnaryExpression[pmd-kotlin:matchesSig('nl.example.Simple#<init>(kotlin.String)')]
 ```
 
-> **Note:** Subtype hierarchy for user-defined classes is extracted from K1 source analysis
-> and does **not** require compiled `.class` files on the aux classpath. External library
-> supertypes (e.g. Spring, JPA) do require compiled JARs for full transitive hierarchy.
+> **Note:** kotlin-type-mapper analyzes Kotlin **source files** (`.kt`) directly using the
+> K1 compiler pipeline. Your own project classes do **not** need to be pre-compiled — the
+> source text is sufficient.
+> However, the **dependency JARs** of your project (e.g. Spring, JPA, any library your
+> classes extend or implement) must be available in `extraClasspath` so that K1 can resolve
+> external type references and build the full transitive subtype hierarchy.
 
 ---
 
