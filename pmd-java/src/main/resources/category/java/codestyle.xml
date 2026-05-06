@@ -1623,25 +1623,35 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryblock">
         <description>
-            This rule reports blocks that don't introduce a scope and are thus unnecessary.
+            You can remove the braces around this block without changing the program.
         </description>
         <priority>3</priority>
         <example><![CDATA[
 public class Foo {
     public void bar() {
-        {
-            // Violation: This block is unnecessary as it doesn't introduce a new scope
+        { // Violation: This block is unnecessary as it doesn't introduce a new scope
             System.out.println("Hello");
         }
 
-        {
-            // No violation: This block is necessary to scope the variable "x"
+        { // No violation: This block is necessary to scope the variable "x"
             int x = 1;
             System.out.println(x);
         }
 
         // "x" can be redefined here because the previous "x" was scoped to the block above
         int x = 2;
+    }
+
+    public void baz() {
+        if (foo) {{ // Violation: Why the second block?
+            int i = 1;
+            System.out.println(i);
+        }}
+
+        if (foo) { // No violation: This is what the above should look like
+            int i = 1;
+            System.out.println(i);
+        }
     }
 }
         ]]>

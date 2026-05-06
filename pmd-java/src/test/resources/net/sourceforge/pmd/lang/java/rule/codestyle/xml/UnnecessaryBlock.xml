@@ -175,4 +175,35 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Unnecessary block created by typo</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bad(boolean foo) {
+        if (foo) {{
+            int i = 1;
+            System.out.println(i);
+        }}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Double-Brace initialization is bad, but not a violation of this rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public List<String> bad() {
+        return new ArrayList<String>(){{
+            add("a");
+            add("b");
+            add("c");
+        }};
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

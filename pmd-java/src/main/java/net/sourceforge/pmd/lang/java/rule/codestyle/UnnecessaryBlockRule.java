@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -20,7 +21,7 @@ public class UnnecessaryBlockRule extends AbstractJavaRulechainRule {
     public RuleContext visit(ASTBlock block, Object data) {
         RuleContext ctx = (RuleContext) data;
 
-        if (doesntRestrictScope(block)) {
+        if (doesntRestrictScope(block) || blockDirectlyInBlock(block)) {
             ctx.addViolation(block);
         }
 
@@ -43,5 +44,11 @@ public class UnnecessaryBlockRule extends AbstractJavaRulechainRule {
 
     private boolean containsClassDeclaration(ASTBlock block) {
         return block.children(ASTLocalClassStatement.class).nonEmpty();
+    }
+
+    private boolean blockDirectlyInBlock(ASTBlock block) {
+        JavaNode parent = block.getParent();
+
+        return (parent instanceof ASTBlock) && (parent.getNumChildren() == 1);
     }
 }
