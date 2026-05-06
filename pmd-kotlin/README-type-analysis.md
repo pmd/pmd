@@ -49,14 +49,31 @@ pmd check \
 
 ### Maven Plugin
 
+> **Compatibility note:** Each `maven-pmd-plugin` version bundles a fixed PMD version
+> internally. `pmd-kotlin` must match that PMD version exactly. Check the plugin's release
+> notes to find which PMD version it bundles, and use the matching `pmd-kotlin` version.
+> For example, when a `maven-pmd-plugin` release bundles PMD 7.25.0, use
+> `pmd-kotlin:7.25.0`.
+
 The `maven-pmd-plugin` sets up the aux-classpath automatically from the project's
-resolved dependencies.
+resolved dependencies. Add `pmd-kotlin` as a plugin dependency so PMD can discover
+the Kotlin language module. Also point the plugin at your Kotlin sources via
+`compileSourceRoots`:
 
 ```xml
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-pmd-plugin</artifactId>
-  <version>3.28.0</version>
+  <version><!-- use the version that bundles your target PMD version --></version>
+  <dependencies>
+    <!-- Required: makes the Kotlin language module available to PMD.
+         Version must match the PMD version bundled in the plugin above. -->
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-kotlin</artifactId>
+      <version>7.25.0</version>
+    </dependency>
+  </dependencies>
   <configuration>
     <rulesets>
       <ruleset>category/kotlin/bestpractices.xml</ruleset>
@@ -65,9 +82,9 @@ resolved dependencies.
       <ruleset>category/kotlin/multithreading.xml</ruleset>
     </rulesets>
     <!-- Kotlin sources live under src/main/kotlin, not src/main/java -->
-    <sourceDirectories>
-      <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-    </sourceDirectories>
+    <compileSourceRoots>
+      <compileSourceRoot>${project.basedir}/src/main/kotlin</compileSourceRoot>
+    </compileSourceRoots>
   </configuration>
 </plugin>
 ```
@@ -83,20 +100,38 @@ mvn pmd:pmd          # generates report only
 
 ### Gradle Plugin
 
+Add `pmd-ant` and `pmd-kotlin` to the `pmd` dependency configuration. When you add
+any dependency to the `pmd` configuration, Gradle skips its default `pmd-ant` resolution,
+so both must be declared explicitly. `pmd-ant` provides the PMD entry point;
+`pmd-kotlin` adds the Kotlin language module.
+
+Use `source = fileTree(...)` (assignment, not the additive `source(...)` method) on each
+PMD task to replace the default Java source with the Kotlin source directories.
+
 ```kotlin
 // build.gradle.kts
 plugins {
     id("pmd")
 }
 
+dependencies {
+    // Required: pmd-ant is the entry point; pmd-kotlin adds Kotlin language support
+    pmd("net.sourceforge.pmd:pmd-ant:7.25.0")
+    pmd("net.sourceforge.pmd:pmd-kotlin:7.25.0")
+}
+
 pmd {
     toolVersion = "7.25.0"
     ruleSetFiles = files("config/pmd/kotlin-rules.xml")
+    ruleSets = listOf()          // clear the default Java ruleset
     isConsoleOutput = true
 }
 
-tasks.withType<Pmd> {
-    source = fileTree("src/main/kotlin")
+tasks.named<Pmd>("pmdMain") {
+    source = fileTree("src/main/kotlin")   // replace, not add
+}
+tasks.named<Pmd>("pmdTest") {
+    source = fileTree("src/test/kotlin")
 }
 ```
 
