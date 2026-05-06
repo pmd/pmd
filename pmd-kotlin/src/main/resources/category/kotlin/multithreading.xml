@@ -11,7 +11,7 @@ Rules that flag issues when dealing with multiple threads of execution.
 
     <rule name="DontCallThreadRun"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Don't call Thread.run() explicitly; call Thread.start() to execute in a new thread. Consider using coroutines instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_multithreading.html#dontcallthreadrun">
@@ -57,7 +57,7 @@ class Good {
 
     <rule name="UseConcurrentHashMap"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use ConcurrentHashMap instead of HashMap for concurrent access. Consider using a coroutine-safe data structure."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_multithreading.html#useconcurrenthashmap">
@@ -99,7 +99,7 @@ class Good {
 
     <rule name="UseNotifyAllInsteadOfNotify"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Call notifyAll() rather than notify() to wake all waiting threads. Consider using coroutines instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_multithreading.html#usenotifyallinsteadofnotify">

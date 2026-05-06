@@ -11,7 +11,7 @@ Rules which enforce generally accepted best practices.
 
     <rule name="AvoidMessageDigestField"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="MessageDigest fields are not thread-safe; declare a local instance instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidmessagedigestfield">
@@ -59,7 +59,7 @@ class Good {
 
     <rule name="AvoidPrintStackTrace"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid printStackTrace(); use kotlin-logging or a SLF4J logger instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidprintstacktrace">
@@ -124,7 +124,7 @@ class GoodKotlinLogging {
 
     <rule name="AvoidStringBufferField"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="StringBuffer/StringBuilder fields can grow large; prefer buildString'{'...'}'or a local instance."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidstringbufferfield">
@@ -216,7 +216,7 @@ fun dp(value: Int): Int = (value * 2.5f).toInt() // no violation -- 'dp' is in a
 
     <rule name="LooseCoupling"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use the interface type (List/Set/Map) instead of a concrete implementation type as the declared type."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#loosecoupling">
@@ -348,7 +348,7 @@ fun expected() {
 
     <rule name="SystemPrintln"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Usage of System.out/err; use kotlin-logging or another logging framework."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#systemprintln">
@@ -402,7 +402,7 @@ class Good {
 
     <rule name="UseCollectionIsEmpty"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Use isEmpty() or isNotEmpty() instead of comparing size to 0"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#usecollectionisempty">
@@ -450,7 +450,7 @@ class Good {
 
     <rule name="UseStandardCharsets"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Use a StandardCharsets constant instead of Charset.forName(String)"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#usestandardcharsets">

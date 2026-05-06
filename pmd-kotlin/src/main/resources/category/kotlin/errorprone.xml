@@ -69,7 +69,7 @@ fun findFirst(list: List<Int>, target: Int) {
 
     <rule name="AvoidCallingFinalize"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Do not call finalize() explicitly; rely on the garbage collector."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcallingfinalize">
@@ -114,7 +114,7 @@ class Good {
 
     <rule name="AvoidCatchingGenericException"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid catching overly broad exception types; catch specific exceptions instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcatchinggenericexception">
@@ -169,7 +169,7 @@ class Good {
 
     <rule name="AvoidCatchingNPE"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid catching NullPointerException; use Kotlin null-safety (?., ?:, !!) instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcatchingnpe">
@@ -217,7 +217,7 @@ class Good {
 
     <rule name="AvoidCatchingThrowable"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid catching Throwable; it includes Errors that should not be caught."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoidcatchingthrowable">
@@ -269,7 +269,7 @@ class Good {
 
     <rule name="AvoidDecimalFormatAsField"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid using DecimalFormat or ChoiceFormat as a field: they are thread-unsafe."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoiddecimalformatasfield">
@@ -311,7 +311,7 @@ class Good {
 
     <rule name="AvoidDecimalLiteralsInBigDecimalConstructor"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid creating BigDecimal with a float/double literal; use a String literal instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor">
@@ -487,7 +487,7 @@ fun good(input: String) {
 
     <rule name="DoNotExtendJavaLangError"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Do not extend Error or its standard subclasses; extend Exception or RuntimeException instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#donotextendjavalangerror">
@@ -527,7 +527,7 @@ class MyCheckedException : Exception("checked equivalent")
 
     <rule name="DoNotTerminateVM"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid calling System.exit() or Runtime.halt(); throw an exception or use a proper shutdown hook instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#donotterminatevm">
@@ -574,7 +574,7 @@ class Good {
 
     <rule name="EqualsNull"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Use == null or != null instead of .equals(null)"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#equalsnull">
@@ -650,7 +650,7 @@ data class Point(val x: Int, val y: Int)  // idiomatic Kotlin: data class auto-g
 
     <rule name="ReplaceJavaUtilDate"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Avoid using java.util.Date; use java.time API instead"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#replacejavautildate">
@@ -684,7 +684,7 @@ class Good {
 
     <rule name="ReturnEmptyCollectionRatherThanNull"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Return an empty collection rather than null from a Collection/Map function"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#returnemptycollectionratherthannull">
@@ -755,7 +755,7 @@ class Good {
 
     <rule name="ReturnFromFinallyBlock"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Avoid returning from a finally block; this can discard exceptions"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#returnfromfinallyblock">
@@ -799,7 +799,7 @@ class Good {
 
     <rule name="SimpleDateFormatNeedsLocale"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Specify a Locale when constructing a SimpleDateFormat"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#simpledateformatneedslocale">
@@ -836,7 +836,7 @@ class Good {
 
     <rule name="UnnecessaryCaseChange"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Unnecessary case change before equals(); use equals with ignoreCase = true instead"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#unnecessarycasechange">
@@ -876,7 +876,7 @@ class Good {
 
     <rule name="UnresolvedType"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Type ''{0}'' could not be resolved -- add the missing dependency to the PMD analysis classpath for full type-aware analysis."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#unresolvedtype">
@@ -912,7 +912,7 @@ import java.util.Date                  // ok: java.util is always resolvable
 
     <rule name="UseLocaleWithCaseConversions"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="String.toLowerCase()/toUpperCase() use the default system Locale; pass an explicit Locale or use Kotlin's lowercase()/uppercase()."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_errorprone.html#uselocalewithcaseconversions">

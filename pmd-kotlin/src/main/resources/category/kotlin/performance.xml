@@ -11,7 +11,7 @@ Rules that flag suboptimal code.
 
     <rule name="AddEmptyString"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Avoid using empty string concatenation to convert to String; use a string template instead"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#addemptystring">
@@ -49,7 +49,7 @@ class Good {
 
     <rule name="AppendCharacterWithChar"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use a Char literal instead of a single-character String when calling StringBuilder.append()."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#appendcharacterwithchar">
@@ -106,7 +106,7 @@ class Good {
 
     <rule name="AvoidArrayLoops"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use copyInto() or copyOf() instead of manually copying array elements in a loop."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidarrayloops">
@@ -163,7 +163,7 @@ class Good {
 
     <rule name="AvoidCalendarDateCreation"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid creating Calendar instances; use the java.time API (LocalDateTime, ZonedDateTime) instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidcalendardatecreation">
@@ -216,7 +216,7 @@ class Good {
 
     <rule name="AvoidCallingGcExplicitly"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid explicit garbage-collection calls; the JVM manages memory automatically."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidcallinggcexplicitly">
@@ -260,7 +260,7 @@ class Good {
 
     <rule name="AvoidFileStream"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid FileInputStream/FileOutputStream/FileReader/FileWriter; use File.inputStream() or Files.newInputStream()."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidfilestream">
@@ -316,7 +316,7 @@ class Good {
 
     <rule name="AvoidInstantiatingObjectsInLoops"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid creating new objects inside loops -- consider moving the instantiation outside the loop."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidinstantiatingobjectsinloops">
@@ -388,7 +388,7 @@ class Good {
 
     <rule name="BigIntegerInstantiation"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use BigInteger.ZERO, BigInteger.ONE, or BigInteger.TEN instead of BigInteger.valueOf(0/1/10)."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#bigintegerinstantiation">
@@ -451,7 +451,7 @@ class Good {
 
     <rule name="ConsecutiveLiteralAppends"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Consecutive calls to append() with string literals should be combined into a single call"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#consecutiveliteralappends">
@@ -503,7 +503,7 @@ class Good {
 
     <rule name="InefficientEmptyStringCheck"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="String.trim().length / String.trim().isEmpty() is an inefficient way to check for a blank string; use isBlank() instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#inefficientemptystringcheck">
@@ -562,7 +562,7 @@ class Good {
 
     <rule name="InefficientStringBuffering"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid concatenating non-literals in a StringBuilder.append() call; use chained append() calls instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#inefficientstringbuffering">
@@ -624,7 +624,7 @@ class GoodBuildString {
 
     <rule name="StringInstantiation"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid creating String objects unnecessarily; use a String literal instead."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#stringinstantiation">
@@ -667,7 +667,7 @@ class Good {
 
     <rule name="StringToString"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Avoid calling toString() on a String; it returns the same object."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#stringtostring">
@@ -705,7 +705,7 @@ class Good {
 
     <rule name="TooFewBranchesForWhenExpression"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="A when expression with too few branches can be replaced with a simpler if/else."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#toofewbranchesforwhenexpression">
@@ -766,7 +766,7 @@ fun describe(type: AppType): String {
 
     <rule name="UseIndexOfChar"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use indexOf(Char) instead of indexOf(String) when searching for a single character."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#useindexofchar">
@@ -828,7 +828,7 @@ class Good {
 
     <rule name="UselessStringValueOf"
           language="kotlin"
-          since="7.14.0"
+          since="7.25.0"
           message="Avoid using String.valueOf(); use a string template or toString() instead"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#uselessstringvalueof">
@@ -869,7 +869,7 @@ class Good {
 
     <rule name="UseStringBuilderForStringAppends"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use a StringBuilder instead of concatenating strings with += inside a loop."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#usestringbuilderforstringappends">
@@ -931,7 +931,7 @@ class Good {
 
     <rule name="UseStringBuilderLength"
           language="kotlin"
-          since="7.x"
+          since="7.25.0"
           message="Use StringBuilder.length instead of StringBuilder.toString().length to avoid creating a temporary String."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#usestringbuilderlength">
