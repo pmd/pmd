@@ -56,7 +56,7 @@ resolved dependencies.
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-pmd-plugin</artifactId>
-  <version>3.24.0</version>
+  <version>3.28.0</version>
   <configuration>
     <rulesets>
       <ruleset>category/kotlin/bestpractices.xml</ruleset>
@@ -90,7 +90,7 @@ plugins {
 }
 
 pmd {
-    toolVersion = "7.x.x"
+    toolVersion = "7.25.0"
     ruleSetFiles = files("config/pmd/kotlin-rules.xml")
     isConsoleOutput = true
 }
@@ -285,11 +285,10 @@ val myValue = Simple("Hello")   // @TypeName = "nl.example.Simple" (inferred by 
 
 ---
 
-
-
-`typeIs` and `matchesSig` rely on a `KotlinTypeAnalysisContext` that must be populated
-**before** PMD runs its analysis. The context holds a pre-computed index of all resolved
-declarations and call sites, produced by [kotlin-type-mapper](https://github.com/stokpop/kotlin-type-mapper).
+`KotlinLanguageProcessor` runs type analysis automatically in `launchAnalysis()` before any
+rules are evaluated — no extra wiring is needed. The context holds a pre-computed index of all
+resolved declarations and call sites, produced by
+[kotlin-type-mapper](https://github.com/stokpop/kotlin-type-mapper).
 
 ### In tests
 
@@ -307,13 +306,6 @@ void tearDown() {
     KotlinTypeAnalysisContextHolder.clearGlobal();
 }
 ```
-
-### In production
-
-Run `kotlin-type-mapper` as a pre-analysis step (e.g. in your build) to produce a `TypedAst`
-serialized to JSON, then wire it to `KotlinTypeAnalysisContextHolder.setGlobal(...)` via a
-PMD language property or a custom `KotlinHandler` extension. Without a context, both functions
-return `false` for all nodes (no false positives, no analysis).
 
 ---
 
@@ -384,7 +376,7 @@ for simple structural checks, but Java rules are preferable for complex logic.
 | `pmd-kotlin:modifiers()` | `node.getModifiers()` — parse the space-separated string |
 
 `KotlinTypeAnalysisContext` is obtained via `KotlinTypeAnalysisContextHolder.get()`.
-It may return `null` if type analysis was not run (no aux classpath) — always null-check it.
+It may return `null` in unusual scenarios (e.g. running without the language processor) — always null-check it.
 
 ### Why a ContextHolder? (comparison with Java PMD)
 
@@ -468,72 +460,8 @@ public Object visitFunctionDeclaration(KtFunctionDeclaration node, Object data) 
 
 ## Design Notes
 
-### `matchesSig` multi-line matching — why `PostfixUnarySuffix` begin-lines are used
-
-`matchesSig` needs to work for both single-line and multi-line call expressions. The type-mapper
-records each call site as a `(line, column)` pair; PMD's ANTLR AST records each node as a
-`(beginLine, beginCol, endLine, endCol)` rectangle. The challenge is mapping one to the other.
-
-**Single-line case** is simple: column is in `[beginCol, endCol]` on the same line.
-
-**Multi-line case** arises when a method-call chain is split across lines:
-
-```kotlin
-val expr = xpath
-    .compile("//book")      // PostfixUnarySuffix on line N+1
-```
-
-Here the outer `PostfixUnaryExpression` spans lines N–(N+1), so a naive "collect all call
-sites in [beginLine, endLine]" works. But it over-collects for block expressions:
-
-```kotlin
-synchronized(lock) {        // PostfixUnaryExpression for the synchronized() call: lines 1-4
-    lock.notify()           // inner PostfixUnaryExpression: line 3 — should NOT fire on outer
-}
-
-try {                       // PostfixUnaryExpression for the try block: lines 1-5
-    doWork()
-} catch (e: Exception) {
-    e.printStackTrace()     // inner PostfixUnaryExpression: line 4 — should NOT fire on outer
-}
-```
-
-The fix (introduced after a regression in the `callSitesInRange` expansion): for multi-line
-nodes, **only accept call sites whose line matches the begin-line of a direct
-`PostfixUnarySuffix` child**.
-
-```
-PostfixUnaryExpression (lines 1-4)         ← outer, synchronized() call
-  simpleIdentifier "synchronized" (line 1)
-  PostfixUnarySuffix (line 1)              ← call args — begin-line 1
-    CallSuffix
-      ValueArguments (line 1) [lock]
-      AnnotatedLambda/LambdaBody (lines 1-4)
-        PostfixUnaryExpression (line 3)    ← inner, lock.notify() — NOT a direct child
-```
-
-The outer node has one direct `PostfixUnarySuffix` starting on **line 1**. The inner
-`lock.notify()` call site is on **line 3** — not in `{1}` → excluded. ✓
-
-For a chained call:
-
-```
-PostfixUnaryExpression (lines 1-2)         ← outer, xpath.compile() chain
-  simpleIdentifier "xpath" (line 1)
-  PostfixUnarySuffix (line 2)              ← NavigationSuffix ".compile" — begin-line 2
-  PostfixUnarySuffix (line 2)              ← CallSuffix "()" — begin-line 2
-```
-
-Direct `PostfixUnarySuffix` begin-lines: `{2}`. The `.compile()` call site is on **line 2** →
-included. ✓
-
-`try {}` and `when {}` expressions have **no direct `PostfixUnarySuffix` children** at all,
-so they return `false` immediately (early exit before even checking signatures).
-
-This design means rule authors do **not** need to add extra structural guards to XPath rules
-using `matchesSig` — the function itself is precise. Compare with rules that use structural
-attributes directly (e.g. `PostfixUnarySuffix/NavigationSuffix[@Identifier='toString']`), where
-the guard is part of the XPath and `matchesSig` is purely for type validation.
+For the detailed algorithm behind `matchesSig` multi-line matching (why `PostfixUnarySuffix`
+begin-lines are used, and how `synchronized`/`try` blocks are excluded), see **DESIGN.md §2.3**.
 
 ---
 

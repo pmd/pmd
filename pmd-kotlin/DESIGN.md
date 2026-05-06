@@ -223,7 +223,8 @@ The same `Modifiers` sub-tree applies to `ClassDeclaration`, `PropertyDeclaratio
 ### 2.1 `pmd-kotlin:typeIs(fqcn)`
 
 Returns `true` if the **type** of the context node is `fqcn` or a subtype.
-See Section9 for details on where and how type resolution works.
+See Section 9 for details on where and how type resolution works.
+See also `README-type-analysis.md` for the user-facing function reference and examples.
 
 Most reliable placements:
 - `PropertyDeclaration` -- resolves the declared variable type
@@ -245,6 +246,44 @@ matching the signature. Signature format: `receiverType#methodName(paramType,...
   starts. This avoids matching deeply-nested call sites inside lambda/block arguments.
 - Block-like nodes with no direct `PostfixUnarySuffix` children (e.g. bare `try`, `when`)
   never match.
+
+**Why `PostfixUnarySuffix` begin-lines — detailed algorithm:**
+
+`matchesSig` maps between type-mapper call sites (recorded as `(line, column)` pairs) and
+PMD AST nodes (recorded as `(beginLine, beginCol, endLine, endCol)` rectangles).
+
+The naive "collect all call sites in `[beginLine, endLine]`" over-collects for block expressions:
+
+```kotlin
+synchronized(lock) {        // PostfixUnaryExpression for the call: lines 1-4
+    lock.notify()           // inner PUE: line 3 — should NOT fire on outer
+}
+try {                       // PostfixUnaryExpression for the try block: lines 1-5
+    doWork()
+} catch (e: Exception) {
+    e.printStackTrace()     // inner PUE: line 4 — should NOT fire on outer
+}
+```
+
+Fix: for multi-line nodes, **only accept call sites whose line matches the begin-line of a
+direct `PostfixUnarySuffix` child**:
+
+```
+PostfixUnaryExpression (lines 1-4)         <- outer, synchronized() call
+  simpleIdentifier "synchronized" (line 1)
+  PostfixUnarySuffix (line 1)              <- call args, begin-line 1
+    CallSuffix
+      ValueArguments (line 1) [lock]
+      AnnotatedLambda/LambdaBody (lines 1-4)
+        PostfixUnaryExpression (line 3)    <- inner lock.notify() — NOT a direct child
+```
+
+The outer node's direct `PostfixUnarySuffix` begin-lines: `{1}`. The inner `lock.notify()`
+call site is on line 3 — excluded. For a chained call like `xpath\n    .compile("//book")`,
+the direct suffixes are on line 2 → the `.compile()` call site on line 2 is included.
+
+`try {}` and `when {}` have **no direct `PostfixUnarySuffix` children** at all → they return
+`false` immediately without signature matching.
 
 **Chained-call use case (e.g. `UseStringBuilderLength`):**
 ```xpath
@@ -399,16 +438,7 @@ Rules ported from Java should include:
           value="category/java/performance.xml/SomeName"/>
 ```
 
-### 3.3 Type-analysis requirement note
-
-Rules using `typeIs`, `typeIsExactly`, or `matchesSig` should include in their
-description:
-```
-Note: this rule requires kotlin-type-mapper pre-analysis to be available.
-See the pmd-kotlin documentation for setup instructions.
-```
-
-### 3.4 Kotlin idiomatic alternatives
+### 3.3 Kotlin idiomatic alternatives
 
 Always document the Kotlin-idiomatic fix in the rule description.  
 Examples:
@@ -416,7 +446,7 @@ Examples:
 - `sb.append("x" + y)` -> `sb.append("x").append(y)` or `buildString { append("x"); append(y) }`
 - `when` with 1-2 branches -> `if`/`if-else`
 
-### 3.5 `except` clause in XPath
+### 3.4 `except` clause in XPath
 
 PMD supports the `except` set-difference operator:
 ```xpath
@@ -455,7 +485,7 @@ Kotlin's `FastJarHandler` / `LargeDynamicMappedBuffer` throws
 `IllegalArgumentException` when given a `.pom` file (empty / non-ZIP).
 Maven's Surefire and `URLClassLoader` hierarchies can include `.pom` entries.
 
-**Fix location:** `KotlinLanguageProcessor.filterAuxClasspathEntries()` -- retains
+**Fix location:** `KotlinAuxClasspathResolver.filterEntries()` -- retains
 only entries that are existing directories or `.jar` files; logs `WARN` for anything
 skipped. Applied at all three classpath-source points (string property, URLClassLoader,
 `java.class.path`).
@@ -569,7 +599,7 @@ For type resolution to work in a test case CDATA snippet:
    type not available on the Kotlin compiler's default classpath (e.g. `kotlinx.coroutines`,
    Spring, OkHttp, etc.).
 
-   `KotlinLanguageProcessor.getAuxClasspathEntries()` has three fallback sources it checks
+   `KotlinAuxClasspathResolver.resolve()` has three fallback sources it checks
    in order:
    1. The `--aux-classpath` CLI property (used in production)
    2. A `URLClassLoader` hierarchy (used by PMD Designer)
