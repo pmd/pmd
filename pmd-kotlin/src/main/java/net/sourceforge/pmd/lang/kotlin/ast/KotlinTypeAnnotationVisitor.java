@@ -11,14 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import nl.stokpop.typemapper.model.AnnotationAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.DeclarationKind;
 import nl.stokpop.typemapper.model.FileAst;
-import nl.stokpop.typemapper.model.ParameterAst;
 import nl.stokpop.typemapper.model.TypedAst;
 
 /**
@@ -30,12 +25,17 @@ import nl.stokpop.typemapper.model.TypedAst;
  *   <li>{@link KotlinNode#TYPE_NAME_KEY} on {@code ClassParameter} nodes -- primary constructor
  *       {@code val}/{@code var} params (e.g. {@code class Foo(val name: String)})</li>
  *   <li>{@link KotlinNode#RETURN_TYPE_KEY} on {@code FunctionDeclaration} nodes (return type)</li>
- *   <li>{@link KotlinNode#TYPE_NAME_KEY} on {@code FunctionValueParameter} nodes (parameter type)</li>
+ *   <li>{@link KotlinNode#TYPE_NAME_KEY} on {@code FunctionValueParameter} nodes (parameter type)
+ *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
  *   <li>{@link KotlinNode#TYPE_NAME_KEY} on {@code CatchBlock} nodes (caught exception type)</li>
  *   <li>{@link KotlinNode#TYPE_NAME_KEY} on {@code ForStatement} nodes (loop variable type)</li>
  *   <li>{@link KotlinNode#TYPE_NAME_KEY} on {@code UnescapedAnnotation} <em>and</em>
- *       {@code SingleAnnotation} nodes (annotation FQN -- set on both for convenience)</li>
- *   <li>{@link KotlinNode#ANNOTATION_NAMES_KEY} on declaration nodes (comma-joined FQN list)</li>
+ *       {@code SingleAnnotation} nodes (annotation FQN)
+ *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
+ *   <li>{@link KotlinNode#ANNOTATION_NAMES_KEY} on declaration nodes (comma-joined FQN list)
+ *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
+ *   <li>{@link KotlinNode#TYPE_NAME_KEY} on {@code DelegationSpecifier} nodes (supertype FQN)
+ *       -- delegated to {@link DelegationSpecifierAnnotator}</li>
  * </ul>
  *
  * <p>The visitor is constructed once per analysis run (from the {@link TypedAst}
@@ -47,8 +47,6 @@ import nl.stokpop.typemapper.model.TypedAst;
  * a temporary directory or analyzed from their original location.
  */
 public final class KotlinTypeAnnotationVisitor {
-
-    private static final Logger LOG = LoggerFactory.getLogger(KotlinTypeAnnotationVisitor.class);
 
     /** Map from base filename (e.g. "Foo.kt") -> per-line declarations index. */
     private final Map<String, Map<Integer, List<DeclarationAst>>> byFilename;
@@ -94,6 +92,10 @@ public final class KotlinTypeAnnotationVisitor {
     /**
      * Visitor that annotates PMD AST nodes with type/annotation attributes from
      * the kotlin-type-mapper data indexed by line number.
+     *
+     * <p>Delegation-specifier and annotation-attribute logic is delegated to
+     * {@link DelegationSpecifierAnnotator} and {@link AnnotationAttributeAnnotator}
+     * respectively.
      */
     private static final class AnnotatingVisitor extends KotlinVisitorBase<Void, Void> {
 
@@ -109,7 +111,7 @@ public final class KotlinTypeAnnotationVisitor {
             for (DeclarationAst decl : decls) {
                 if (decl.getType() != null) {
                     node.getUserMap().set(KotlinNode.TYPE_NAME_KEY, decl.getType());
-                    setAnnotationAttributes(node, decl.getAnnotations());
+                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
                     break;
                 }
             }
@@ -125,7 +127,7 @@ public final class KotlinTypeAnnotationVisitor {
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.PROPERTY && decl.getType() != null) {
                     node.getUserMap().set(KotlinNode.TYPE_NAME_KEY, decl.getType());
-                    setAnnotationAttributes(node, decl.getAnnotations());
+                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
                     break;
                 }
             }
@@ -138,8 +140,8 @@ public final class KotlinTypeAnnotationVisitor {
             for (DeclarationAst decl : decls) {
                 if (decl.getReturnType() != null) {
                     node.getUserMap().set(KotlinNode.RETURN_TYPE_KEY, decl.getReturnType());
-                    setAnnotationAttributes(node, decl.getAnnotations());
-                    setFunctionParameterTypes(node, decl.getParameters());
+                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
+                    AnnotationAttributeAnnotator.setFunctionParameterTypes(node, decl.getParameters());
                     break;
                 }
             }
@@ -181,8 +183,8 @@ public final class KotlinTypeAnnotationVisitor {
                         || decl.getKind() == DeclarationKind.ENUM) {
                     // Set @TypeName to the class's own FQN (useful in Designer + XPath)
                     node.getUserMap().set(KotlinNode.TYPE_NAME_KEY, decl.getFqName());
-                    setAnnotationAttributes(node, decl.getAnnotations());
-                    setDelegationSpecifierTypes(node, decl.getSuperTypes());
+                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
+                    DelegationSpecifierAnnotator.setDelegationSpecifierTypes(node, decl.getSuperTypes());
                     break;
                 }
             }
@@ -190,294 +192,18 @@ public final class KotlinTypeAnnotationVisitor {
         }
     }
 
-    /**
-     * Sets {@link KotlinNode#TYPE_NAME_KEY} on each {@code KtDelegationSpecifier}
-     * node inside the class declaration, matching the written supertype name (e.g.
-     * {@code Serializable}) against the FQNs in {@code superTypes}.
-     */
-    private static void setDelegationSpecifierTypes(KotlinParser.KtClassDeclaration classNode,
-            List<String> superTypes) {
-        if (superTypes.isEmpty()) {
-            return;
-        }
-        Map<String, String> simpleToFqn = new HashMap<>();
-        for (String fqn : superTypes) {
-            simpleToFqn.put(simpleNameOf(fqn), fqn);
-        }
-        KotlinParser.KtDelegationSpecifiers specsNode = findDelegationSpecifiersNode(classNode);
-        if (specsNode != null) {
-            annotateDelegationSpecifiersNode(specsNode, simpleToFqn);
-        }
-    }
-
-    private static KotlinParser.KtDelegationSpecifiers findDelegationSpecifiersNode(
-            KotlinParser.KtClassDeclaration classNode) {
-        for (int i = 0; i < classNode.getNumChildren(); i++) {
-            KotlinNode child = classNode.getChild(i);
-            if (child instanceof KotlinParser.KtDelegationSpecifiers) {
-                return (KotlinParser.KtDelegationSpecifiers) child;
-            }
-        }
-        return null;
-    }
-
-    private static void annotateDelegationSpecifiersNode(KotlinParser.KtDelegationSpecifiers specsNode,
-            Map<String, String> simpleToFqn) {
-        for (int j = 0; j < specsNode.getNumChildren(); j++) {
-            KotlinNode spec = specsNode.getChild(j);
-            if (spec instanceof KotlinParser.KtAnnotatedDelegationSpecifier) {
-                annotateAnnotatedDelegationSpecifier(
-                        (KotlinParser.KtAnnotatedDelegationSpecifier) spec, simpleToFqn);
-            }
-        }
-    }
-
-    private static void annotateAnnotatedDelegationSpecifier(
-            KotlinParser.KtAnnotatedDelegationSpecifier annotated, Map<String, String> simpleToFqn) {
-        for (int k = 0; k < annotated.getNumChildren(); k++) {
-            KotlinNode inner = annotated.getChild(k);
-            if (inner instanceof KotlinParser.KtDelegationSpecifier) {
-                annotateDelegationSpecifier((KotlinParser.KtDelegationSpecifier) inner, simpleToFqn);
-            }
-        }
+    /** Extracts the simple (unqualified) name from a fully-qualified name. */
+    static String simpleNameOf(String name) {
+        int dot = name.lastIndexOf('.');
+        return dot >= 0 ? name.substring(dot + 1) : name;
     }
 
     /**
-     * Sets {@link KotlinNode#TYPE_NAME_KEY} on a single {@code KtDelegationSpecifier}
-     * by extracting the written type name from its contained {@code KtUserType}.
+     * Finds the first {@code KtUserType} directly inside a {@code KtConstructorInvocation}.
+     * Shared helper used by both {@link DelegationSpecifierAnnotator} and
+     * {@link AnnotationAttributeAnnotator}.
      */
-    private static void annotateDelegationSpecifier(KotlinParser.KtDelegationSpecifier spec,
-            Map<String, String> simpleToFqn) {
-        KotlinParser.KtUserType userType = findUserTypeInDelegationSpecifier(spec);
-        if (userType == null) {
-            return;
-        }
-        try {
-            String written = userType.getTextDocument()
-                    .sliceOriginalText(userType.getTextRegion())
-                    .toString();
-            int angle = written.indexOf('<');
-            if (angle >= 0) {
-                written = written.substring(0, angle).trim();
-            }
-            String fqn = simpleToFqn.get(simpleNameOf(written));
-            if (fqn != null) {
-                spec.getUserMap().set(KotlinNode.TYPE_NAME_KEY, fqn);
-            }
-        } catch (IndexOutOfBoundsException e) {
-            LOG.debug("Could not read text region for delegation specifier in {}", spec, e);
-        }
-    }
-
-    /**
-     * Finds the {@code KtUserType} inside a {@code KtDelegationSpecifier}.
-     * Handles both direct {@code userType()} cases and {@code constructorInvocation()}
-     * (superclass with constructor call).
-     */
-    private static KotlinParser.KtUserType findUserTypeInDelegationSpecifier(
-            KotlinParser.KtDelegationSpecifier spec) {
-        for (int i = 0; i < spec.getNumChildren(); i++) {
-            KotlinNode child = spec.getChild(i);
-            if (child instanceof KotlinParser.KtUserType) {
-                return (KotlinParser.KtUserType) child;
-            }
-            if (child instanceof KotlinParser.KtConstructorInvocation) {
-                return findUserTypeInConstructorInvocation(
-                        (KotlinParser.KtConstructorInvocation) child);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Sets {@link KotlinNode#TYPE_NAME_KEY} on each {@code KtFunctionValueParameter}
-     * child of the given function declaration, matching by position against the
-     * {@code parameters} list from the kotlin-type-mapper {@link DeclarationAst}.
-     */
-    private static void setFunctionParameterTypes(KotlinParser.KtFunctionDeclaration funcNode,
-            List<ParameterAst> parameters) {
-        if (parameters.isEmpty()) {
-            return;
-        }
-        KotlinParser.KtFunctionValueParameters paramsNode = findFunctionValueParametersNode(funcNode);
-        if (paramsNode != null) {
-            annotateParameterNodes(paramsNode, parameters);
-        }
-    }
-
-    private static KotlinParser.KtFunctionValueParameters findFunctionValueParametersNode(
-            KotlinParser.KtFunctionDeclaration funcNode) {
-        for (int i = 0; i < funcNode.getNumChildren(); i++) {
-            KotlinNode child = funcNode.getChild(i);
-            if (child instanceof KotlinParser.KtFunctionValueParameters) {
-                return (KotlinParser.KtFunctionValueParameters) child;
-            }
-        }
-        return null;
-    }
-
-    private static void annotateParameterNodes(KotlinParser.KtFunctionValueParameters paramsNode,
-            List<ParameterAst> parameters) {
-        int paramIdx = 0;
-        for (int j = 0; j < paramsNode.getNumChildren(); j++) {
-            KotlinNode sub = paramsNode.getChild(j);
-            if (sub instanceof KotlinParser.KtFunctionValueParameter && paramIdx < parameters.size()) {
-                String type = parameters.get(paramIdx).getType();
-                if (type != null) {
-                    sub.getUserMap().set(KotlinNode.TYPE_NAME_KEY, type);
-                }
-                paramIdx++;
-            }
-        }
-    }
-
-    /**
-     * Sets {@link KotlinNode#ANNOTATION_NAMES_KEY} on the declaration node and
-     * {@link KotlinNode#TYPE_NAME_KEY} on each of its {@code KtUnescapedAnnotation}
-     * children, matching by simple (unqualified) name.
-     */
-    private static void setAnnotationAttributes(KotlinNode declNode, List<AnnotationAst> annotations) {
-        if (annotations.isEmpty()) {
-            return;
-        }
-        // Build a simple-name -> FQN lookup (last match wins; duplicates are rare)
-        Map<String, String> simpleToFqn = new HashMap<>();
-        StringBuilder fqnList = new StringBuilder();
-        for (AnnotationAst ann : annotations) {
-            String fqn = ann.getFqName();
-            if (fqn == null || fqn.isEmpty()) {
-                continue;
-            }
-            simpleToFqn.put(simpleNameOf(fqn), fqn);
-            if (fqnList.length() > 0) {
-                fqnList.append(',');
-            }
-            fqnList.append(fqn);
-        }
-        if (fqnList.length() > 0) {
-            declNode.getUserMap().set(KotlinNode.ANNOTATION_NAMES_KEY, fqnList.toString());
-        }
-
-        // Set @TypeName on each KtUnescapedAnnotation in the declaration's modifiers
-        List<KotlinParser.KtUnescapedAnnotation> annNodes = collectAnnotationNodes(declNode);
-        for (KotlinParser.KtUnescapedAnnotation annNode : annNodes) {
-            String writtenName = getAnnotationWrittenName(annNode);
-            if (writtenName == null) {
-                continue;
-            }
-            // Try exact FQN match first, then simple-name match
-            String fqn = simpleToFqn.get(simpleNameOf(writtenName));
-            if (fqn == null) {
-                fqn = simpleToFqn.get(writtenName); // handles fully-qualified written name
-            }
-            if (fqn != null) {
-                annNode.getUserMap().set(KotlinNode.TYPE_NAME_KEY, fqn);
-                // Also set on the parent SingleAnnotation so users can query
-                // //SingleAnnotation[@TypeName='org.example.Foo'] directly.
-                KotlinNode parent = annNode.getParent();
-                if (parent instanceof KotlinParser.KtSingleAnnotation) {
-                    parent.getUserMap().set(KotlinNode.TYPE_NAME_KEY, fqn);
-                }
-            }
-        }
-    }
-
-    /**
-     * Collects all {@code KtUnescapedAnnotation} nodes from the direct modifiers
-     * of a declaration node (does not recurse into function/class bodies).
-     */
-    private static List<KotlinParser.KtUnescapedAnnotation> collectAnnotationNodes(KotlinNode declNode) {
-        List<KotlinParser.KtUnescapedAnnotation> result = new ArrayList<>();
-        for (int i = 0; i < declNode.getNumChildren(); i++) {
-            KotlinNode child = declNode.getChild(i);
-            if (child instanceof KotlinParser.KtModifiers) {
-                collectFromModifiers((KotlinParser.KtModifiers) child, result);
-                break;
-            }
-        }
-        return result;
-    }
-
-    private static void collectFromModifiers(KotlinParser.KtModifiers mods,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
-        for (int i = 0; i < mods.getNumChildren(); i++) {
-            KotlinNode child = mods.getChild(i);
-            if (child instanceof KotlinParser.KtAnnotation) {
-                collectFromAnnotationRule((KotlinParser.KtAnnotation) child, result);
-            }
-        }
-    }
-
-    private static void collectFromAnnotationRule(KotlinParser.KtAnnotation ann,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
-        for (int i = 0; i < ann.getNumChildren(); i++) {
-            KotlinNode child = ann.getChild(i);
-            if (child instanceof KotlinParser.KtSingleAnnotation) {
-                collectFromSingleAnnotation((KotlinParser.KtSingleAnnotation) child, result);
-            } else if (child instanceof KotlinParser.KtMultiAnnotation) {
-                collectFromMultiAnnotation((KotlinParser.KtMultiAnnotation) child, result);
-            }
-        }
-    }
-
-    private static void collectFromSingleAnnotation(KotlinParser.KtSingleAnnotation singleAnn,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
-        for (int j = 0; j < singleAnn.getNumChildren(); j++) {
-            KotlinNode sub = singleAnn.getChild(j);
-            if (sub instanceof KotlinParser.KtUnescapedAnnotation) {
-                result.add((KotlinParser.KtUnescapedAnnotation) sub);
-                break;
-            }
-        }
-    }
-
-    private static void collectFromMultiAnnotation(KotlinParser.KtMultiAnnotation multiAnn,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
-        for (int j = 0; j < multiAnn.getNumChildren(); j++) {
-            KotlinNode sub = multiAnn.getChild(j);
-            if (sub instanceof KotlinParser.KtUnescapedAnnotation) {
-                result.add((KotlinParser.KtUnescapedAnnotation) sub);
-            }
-        }
-    }
-
-    /**
-     * Extracts the annotation name as written in source from a
-     * {@code KtUnescapedAnnotation} node, using the text region of the contained
-     * {@code KtUserType} node. Returns e.g. {@code "Column"} or
-     * {@code "javax.persistence.Column"}, or {@code null} on failure.
-     */
-    private static String getAnnotationWrittenName(KotlinParser.KtUnescapedAnnotation annNode) {
-        KotlinParser.KtUserType userType = findUserType(annNode);
-        if (userType == null) {
-            return null;
-        }
-        try {
-            return userType.getTextDocument()
-                    .sliceOriginalText(userType.getTextRegion())
-                    .toString();
-        } catch (IndexOutOfBoundsException e) {
-            LOG.debug("Could not read text region for annotation in {}", annNode, e);
-            return null;
-        }
-    }
-
-    /** Finds the {@code KtUserType} directly inside a {@code KtUnescapedAnnotation}. */
-    private static KotlinParser.KtUserType findUserType(KotlinParser.KtUnescapedAnnotation annNode) {
-        for (int i = 0; i < annNode.getNumChildren(); i++) {
-            KotlinNode child = annNode.getChild(i);
-            if (child instanceof KotlinParser.KtUserType) {
-                return (KotlinParser.KtUserType) child;
-            }
-            if (child instanceof KotlinParser.KtConstructorInvocation) {
-                return findUserTypeInConstructorInvocation(
-                        (KotlinParser.KtConstructorInvocation) child);
-            }
-        }
-        return null;
-    }
-
-    private static KotlinParser.KtUserType findUserTypeInConstructorInvocation(
+    static KotlinParser.KtUserType findUserTypeInConstructorInvocation(
             KotlinParser.KtConstructorInvocation ctorInvocation) {
         for (int j = 0; j < ctorInvocation.getNumChildren(); j++) {
             if (ctorInvocation.getChild(j) instanceof KotlinParser.KtUserType) {
@@ -487,12 +213,7 @@ public final class KotlinTypeAnnotationVisitor {
         return null;
     }
 
-    private static String simpleNameOf(String name) {
-        int dot = name.lastIndexOf('.');
-        return dot >= 0 ? name.substring(dot + 1) : name;
-    }
-
-    private static List<DeclarationAst> lookupWithFallback(
+    static List<DeclarationAst> lookupWithFallback(
             Map<Integer, List<DeclarationAst>> byLine, int line) {
         List<DeclarationAst> exact = byLine.get(line);
         if (exact != null && !exact.isEmpty()) {

@@ -365,6 +365,41 @@ class KotlinTypeIsFunctionTest {
                         + "when declared type is List interface");
     }
 
+    // --- TypeName on CatchBlock, FunctionValueParameter, UnescapedAnnotation ---
+
+    @Test
+    void catchBlockHasTypeNameAttribute() {
+        // CatchBlock nodes should have @TypeName set to the caught exception's FQN
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
+        Report report = runXPath(
+                "//CatchBlock[@TypeName='java.lang.IllegalArgumentException']", kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertTrue(!report.getViolations().isEmpty(),
+                "Expected CatchBlock[@TypeName='java.lang.IllegalArgumentException'] to match");
+    }
+
+    @Test
+    void functionParameterHasTypeNameAttribute() {
+        // FunctionValueParameter nodes should have @TypeName set to the parameter's FQN
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
+        Report report = runXPath(
+                "//FunctionValueParameter[@TypeName='java.util.Calendar']", kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertTrue(!report.getViolations().isEmpty(),
+                "Expected FunctionValueParameter[@TypeName='java.util.Calendar'] to match");
+    }
+
+    @Test
+    void annotationNodeHasTypeNameAttribute() {
+        // UnescapedAnnotation and SingleAnnotation nodes should have @TypeName set to the annotation FQN
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
+        Report report = runXPath(
+                "//UnescapedAnnotation[@TypeName='kotlin.Deprecated']", kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertTrue(!report.getViolations().isEmpty(),
+                "Expected UnescapedAnnotation[@TypeName='kotlin.Deprecated'] to match");
+    }
+
     private Report runXPath(String xpathExpr, File kotlinFile) {
         PMDConfiguration config = new PMDConfiguration();
         config.setIgnoreIncrementalAnalysis(true);
