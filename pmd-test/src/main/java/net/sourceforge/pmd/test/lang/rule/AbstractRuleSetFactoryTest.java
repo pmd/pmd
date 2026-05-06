@@ -129,6 +129,30 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
+     * all rules are in alphabetical order.
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRuleSetsAreSorted(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        String lastName = null;
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+            if (lastName != null && String.CASE_INSENSITIVE_ORDER.compare(rule.getName(), lastName) < 0) {
+                messages.add(rule.getName() + " should be before " + lastName);
+            }
+            lastName = rule.getName();
+        }
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need to be alphabetically sorted (" + messages.size() + " misplaced)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
      * all required attributes for all rules are specified.
      *
      * @throws Exception
@@ -142,9 +166,7 @@ public abstract class AbstractRuleSetFactoryTest {
         int invalidClassName = 0;
         int invalidRegexSuppress = 0;
         int invalidXPathSuppress = 0;
-        int invalidOrder = 0;
         StringBuilder messages = new StringBuilder();
-        String lastName = null;
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
         for (Rule rule : ruleSet.getRules()) {
 
@@ -152,13 +174,6 @@ public abstract class AbstractRuleSetFactoryTest {
             if (rule instanceof RuleReference) {
                 continue;
             }
-            if (lastName != null
-                    && String.CASE_INSENSITIVE_ORDER.compare(rule.getName(), lastName) < 0) {
-                invalidOrder++;
-                messages.append(rule.getName()).append(" should be before ")
-                    .append(lastName).append("\n");
-            }
-            lastName = rule.getName();
 
             Language language = rule.getLanguage();
             String group = fileName.substring(fileName.lastIndexOf('/') + 1);
@@ -240,14 +255,13 @@ public abstract class AbstractRuleSetFactoryTest {
         // We do this at the end to ensure we test ALL the rules before failing
         // the test
         if (invalidSinceAttributes > 0 || invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidRegexSuppress > 0
-                || invalidXPathSuppress > 0 || invalidOrder > 0) {
+                || invalidXPathSuppress > 0) {
             fail("All built-in PMD rules need 'since' attribute (" + invalidSinceAttributes
                     + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL
                     + " are invalid), a class name meeting conventions (" + invalidClassName + " are invalid), no '"
                     + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
                     + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
-                    + invalidXPathSuppress + " are invalid) and be alphabetically sorted ("
-                    + invalidOrder + " misplaced)\n" + messages);
+                    + invalidXPathSuppress + " are invalid)\n" + messages);
         }
     }
 
