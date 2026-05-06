@@ -20,19 +20,17 @@ public class UnnecessaryBlockRule extends AbstractJavaRulechainRule {
     public RuleContext visit(ASTBlock block, Object data) {
         RuleContext ctx = (RuleContext) data;
 
-        if (!isInsideAnotherBlock(block)) {
-            return ctx;
+        if (doesntRestrictScope(block)) {
+            ctx.addViolation(block);
         }
-
-        if (containsVariableDeclaration(block)
-                || containsClassDeclaration(block)
-        ) {
-            return ctx;
-        }
-
-        ctx.addViolation(block);
 
         return ctx;
+    }
+
+    private boolean doesntRestrictScope(ASTBlock block) {
+        return isInsideAnotherBlock(block)
+                && !(containsVariableDeclaration(block)
+                    || containsClassDeclaration(block));
     }
 
     private boolean isInsideAnotherBlock(ASTBlock block) {
