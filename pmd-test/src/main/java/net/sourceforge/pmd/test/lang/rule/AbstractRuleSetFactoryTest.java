@@ -181,6 +181,45 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
+     * all rules have the correct externalInfoUrl
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesHaveCorrectExternalInfoUrl(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
+
+            Language language = rule.getLanguage();
+
+            // Is URL correct ?
+            if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute\n");
+            } else {
+                String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
+                        + language.getId() + "_"
+                        + IOUtil.getFilenameBase(fileName)
+                        + ".html#"
+                        + rule.getName().toLowerCase(Locale.ROOT);
+                if (rule.getExternalInfoUrl() == null || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
+                    messages.add("Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be: " + expectedExternalInfoURL + '\n');
+                }
+            }
+        }
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need a proper ExternalURLInfo (" + messages.size() + " are incorrect)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
      * all required attributes for all rules are specified.
      *
      * @throws Exception
@@ -189,7 +228,6 @@ public abstract class AbstractRuleSetFactoryTest {
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRulesMeetConventions(String fileName) throws Exception {
-        int invalidExternalInfoURL = 0;
         int invalidClassName = 0;
         int invalidRegexSuppress = 0;
         int invalidXPathSuppress = 0;
@@ -209,34 +247,6 @@ public abstract class AbstractRuleSetFactoryTest {
                 group = group.substring(0, group.indexOf('-'));
             }
 
-            // Is URL valid ?
-            if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
-                invalidExternalInfoURL++;
-                messages.append("Rule ")
-                        .append(fileName)
-                        .append("/")
-                        .append(rule.getName())
-                        .append(" is missing 'externalInfoURL' attribute\n");
-            } else {
-                String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
-                        + language.getId() + "_"
-                        + IOUtil.getFilenameBase(fileName)
-                        + ".html#"
-                        + rule.getName().toLowerCase(Locale.ROOT);
-                if (rule.getExternalInfoUrl() == null
-                        || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
-                    invalidExternalInfoURL++;
-                    messages.append("Rule ")
-                            .append(fileName)
-                            .append("/")
-                            .append(rule.getName())
-                            .append(" seems to have an invalid 'externalInfoURL' value (")
-                            .append(rule.getExternalInfoUrl())
-                            .append("), it should be:")
-                            .append(expectedExternalInfoURL)
-                            .append('\n');
-                }
-            }
             // Proper class name/packaging?
             String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group
                     + "." + rule.getName() + "Rule";
@@ -272,10 +282,9 @@ public abstract class AbstractRuleSetFactoryTest {
         }
         // We do this at the end to ensure we test ALL the rules before failing
         // the test
-        if (invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidRegexSuppress > 0
+        if (invalidClassName > 0 || invalidRegexSuppress > 0
                 || invalidXPathSuppress > 0) {
-            fail("All built-in PMD rules need a proper ExternalURLInfo (" + invalidExternalInfoURL
-                    + " are invalid), a class name meeting conventions (" + invalidClassName + " are invalid), no '"
+            fail("All built-in PMD rules need a class name meeting conventions (" + invalidClassName + " are invalid), no '"
                     + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
                     + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
                     + invalidXPathSuppress + " are invalid)\n" + messages);
