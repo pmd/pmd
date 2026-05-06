@@ -195,7 +195,7 @@ type cannot be resolved by the kotlin-type-mapper. Common causes:
 >   import statements alone
 > - **Package-level declarations** in external libraries
 >
-> These can be suppressed with `// NOPMD` or a ruleset override (see below).
+> These can be suppressed with a ruleset override (see below).
 
 ## Suppressing `UnresolvedType` for Known Missing Deps
 

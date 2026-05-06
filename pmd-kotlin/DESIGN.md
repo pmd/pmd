@@ -922,23 +922,35 @@ Java XPath rules do not have this either -- Java class-based rules use the type 
 
 **Defer until** a second rule needs the same `let $lhsName` workaround.
 
-### 12.2 Implement `KotlinAnnotationSuppressor`
+### 12.2 Implement `KotlinAnnotationSuppressor` and `KotlinSuppressionComment`
 
-PMD currently has **no annotation suppressor for Kotlin**. This means Kotlin's `@Suppress("PMD.RuleName")`
-annotation is silently ignored. The only suppression mechanism that works is the comment-based
-`// NOPMD` marker on the offending line.
+PMD currently has **no suppression support for Kotlin** at all. Both mechanisms that work in Java are absent:
 
-Java's suppression is implemented in `JavaAnnotationSuppressor` (extends `AbstractAnnotationSuppressor`),
-registered via `JavaLanguageProcessor`. A Kotlin equivalent would:
+- **`@Suppress("PMD.RuleName")`** — silently ignored. Kotlin's `@Suppress` is not processed
+  because there is no `KotlinAnnotationSuppressor` (contrast with `JavaAnnotationSuppressor`).
+- **`// NOPMD`** — silently ignored. The NOPMD comment mechanism is implemented in
+  `AbstractTokenManager` for JavaCC-based languages. Kotlin uses ANTLR; `PmdKotlinParser`
+  never calls `withSuppressionComments(...)` on the `AstInfo`, so no comment suppression is
+  wired up.
 
-1. Extend `AbstractAnnotationSuppressor<KotlinNode>` (or the appropriate Kotlin AST annotation node)
-2. Walk the `@Suppress(...)` annotation arguments and match against `"PMD"` / `"PMD.RuleName"`
-3. Register the suppressor via `KotlinLanguageProcessor`
+**Verified:** Running PMD on a Kotlin file with `// NOPMD` on a violation line or `@Suppress`
+on the enclosing declaration still produces the violation. The only working suppression
+mechanisms are ruleset-level:
 
-Until this is implemented, all rule descriptions and docs must direct users to use `// NOPMD` instead
-of `@Suppress(...)`.
+- `violationSuppressRegex` — regex matched against the violation message
+- `violationSuppressXPath` — XPath expression matched against the violation node
 
----
+**To implement full suppression support:**
+
+1. **Annotation suppressor:** Extend `AbstractAnnotationSuppressor<KotlinNode>`, walk the
+   `@Suppress(...)` arguments, match against `"PMD"` / `"PMD.RuleName"`, register via
+   `KotlinLanguageProcessor`.
+
+2. **Comment suppressor:** In `PmdKotlinParser`, after building the ANTLR token stream,
+   scan for `NOPMD` in comment tokens and populate `AstInfo.withSuppressionComments(...)`.
+
+Until both are implemented, direct users to use `violationSuppressRegex` or
+`violationSuppressXPath` in a ruleset override.
 
 ## 14. Java-Based Design Rules
 

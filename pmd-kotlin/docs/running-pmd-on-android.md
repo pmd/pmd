@@ -227,7 +227,7 @@ With a complete classpath (as above), only a small number of hard-to-resolve typ
 >   extension members are not always resolvable from import statements alone
 > - **Project submodule classes** not compiled as part of the debug variant
 >
-> These can be suppressed with `// NOPMD` or a ruleset override (see below).
+> These can be suppressed with a ruleset override (see below).
 
 ## Example Results
 
