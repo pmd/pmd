@@ -15,7 +15,6 @@ import java.util.concurrent.TimeoutException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 /**
  * Adapter for the KotlinParser.
  *
- * <p>Each parse gets its own fresh {@link ParserATNSimulator} (new DFA array and
+ * <p>Each parse gets its own fresh {@link InterruptibleParserATNSimulator} (new DFA array and
  * {@link PredictionContextCache}) to prevent cross-file ATN state accumulation.
  * The generated KotlinParser has static shared fields that accumulate LL prediction
  * state across all parse invocations; isolating them per file prevents exponential
@@ -78,7 +77,7 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
         for (int i = 0; i < numDecisions; i++) {
             decisionToDfa[i] = new DFA(KotlinParser._ATN.getDecisionState(i), i);
         }
-        parser.setInterpreter(new ParserATNSimulator(
+        parser.setInterpreter(new InterruptibleParserATNSimulator(
                 parser,
                 KotlinParser._ATN,
                 decisionToDfa,
@@ -100,6 +99,9 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
             Throwable cause = e.getCause();
             if (cause instanceof ParseException) {
                 throw (ParseException) cause;
+            }
+            if (cause instanceof InterruptibleParserATNSimulator.ParseCancelledException) {
+                throw new ParseException("Parse cancelled (interrupted) for " + fileName);
             }
             throw new ParseException(cause);
         } catch (InterruptedException | CancellationException e) {
