@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -297,7 +298,7 @@ public final class KotlinTypeAnalysisContext {
     private static String canonicalize(String path) {
         try {
             return new File(path).getCanonicalPath();
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             return new File(path).getAbsolutePath();
         }
     }

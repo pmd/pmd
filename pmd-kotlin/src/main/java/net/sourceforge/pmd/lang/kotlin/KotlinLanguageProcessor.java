@@ -7,11 +7,14 @@ package net.sourceforge.pmd.lang.kotlin;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
@@ -139,7 +142,7 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
         if (raw != null && !raw.isEmpty()) {
             String sep = System.getProperty("path.separator", ":");
             List<File> entries = new ArrayList<>();
-            for (String entry : raw.split(java.util.regex.Pattern.quote(sep))) {
+            for (String entry : raw.split(Pattern.quote(sep))) {
                 String trimmed = entry.trim();
                 if (!trimmed.isEmpty()) {
                     entries.add(new File(trimmed));
@@ -152,8 +155,8 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
         ClassLoader cl = jvmBundle.getAnalysisClassLoader();
         List<File> urlEntries = new ArrayList<>();
         while (cl != null) {
-            if (cl instanceof java.net.URLClassLoader) {
-                for (java.net.URL url : ((java.net.URLClassLoader) cl).getURLs()) {
+            if (cl instanceof URLClassLoader) {
+                for (URL url : ((URLClassLoader) cl).getURLs()) {
                     if (FILE_PROTOCOL.equals(url.getProtocol())) {
                         try {
                             urlEntries.add(new File(url.toURI()));
@@ -173,7 +176,7 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
         String javaClassPath = System.getProperty("java.class.path");
         if (javaClassPath != null && !javaClassPath.isEmpty()) {
             List<File> entries = new ArrayList<>();
-            for (String entry : javaClassPath.split(java.util.regex.Pattern.quote(File.pathSeparator))) {
+            for (String entry : javaClassPath.split(Pattern.quote(File.pathSeparator))) {
                 if (!entry.isEmpty()) {
                     entries.add(new File(entry));
                 }
