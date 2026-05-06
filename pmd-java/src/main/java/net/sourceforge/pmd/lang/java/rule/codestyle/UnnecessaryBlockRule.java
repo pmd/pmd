@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -23,7 +24,9 @@ public class UnnecessaryBlockRule extends AbstractJavaRulechainRule {
             return ctx;
         }
 
-        if (containsVariableDeclaration(block)) {
+        if (containsVariableDeclaration(block)
+                || containsClassDeclaration(block)
+        ) {
             return ctx;
         }
 
@@ -38,5 +41,9 @@ public class UnnecessaryBlockRule extends AbstractJavaRulechainRule {
 
     private boolean containsVariableDeclaration(ASTBlock block) {
         return block.children(ASTLocalVariableDeclaration.class).nonEmpty();
+    }
+
+    private boolean containsClassDeclaration(ASTBlock block) {
+        return block.children(ASTLocalClassStatement.class).nonEmpty();
     }
 }

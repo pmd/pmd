@@ -1623,7 +1623,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryblock">
         <description>
-            This rule reports blocks that don't introduce a variable scope and are thus unnecessary.
+            This rule reports blocks that don't introduce a scope and are thus unnecessary.
         </description>
         <priority>3</priority>
         <example><![CDATA[

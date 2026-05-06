@@ -143,7 +143,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Block is necessary, because it contains variable declaration</description>
+        <description>Block is necessary, because it restricts scope of variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -153,7 +153,25 @@ public class Foo {
             Object blub;
         }
         return true;
-    }}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Block is necessary, because it restricts scope of local class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void good() {
+		{
+			class C { }
+		}
+		{
+			enum C { X }
+		}
+    }
+}
         ]]></code>
     </test-code>
 
