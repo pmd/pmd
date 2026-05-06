@@ -153,6 +153,34 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
+     * all rules have a 'since' attribute.
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesHaveSince(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
+
+            // Is since missing ?
+            if (rule.getSince() == null) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute\n");
+            }
+        }
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need 'since' attribute (" + messages.size() + " are missing)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
      * all required attributes for all rules are specified.
      *
      * @throws Exception
@@ -161,7 +189,6 @@ public abstract class AbstractRuleSetFactoryTest {
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRulesMeetConventions(String fileName) throws Exception {
-        int invalidSinceAttributes = 0;
         int invalidExternalInfoURL = 0;
         int invalidClassName = 0;
         int invalidRegexSuppress = 0;
@@ -182,15 +209,6 @@ public abstract class AbstractRuleSetFactoryTest {
                 group = group.substring(0, group.indexOf('-'));
             }
 
-            // Is since missing ?
-            if (rule.getSince() == null) {
-                invalidSinceAttributes++;
-                messages.append("Rule ")
-                        .append(fileName)
-                        .append("/")
-                        .append(rule.getName())
-                        .append(" is missing 'since' attribute\n");
-            }
             // Is URL valid ?
             if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
                 invalidExternalInfoURL++;
@@ -254,10 +272,9 @@ public abstract class AbstractRuleSetFactoryTest {
         }
         // We do this at the end to ensure we test ALL the rules before failing
         // the test
-        if (invalidSinceAttributes > 0 || invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidRegexSuppress > 0
+        if (invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidRegexSuppress > 0
                 || invalidXPathSuppress > 0) {
-            fail("All built-in PMD rules need 'since' attribute (" + invalidSinceAttributes
-                    + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL
+            fail("All built-in PMD rules need a proper ExternalURLInfo (" + invalidExternalInfoURL
                     + " are invalid), a class name meeting conventions (" + invalidClassName + " are invalid), no '"
                     + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
                     + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
