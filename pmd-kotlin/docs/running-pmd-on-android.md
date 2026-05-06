@@ -251,13 +251,19 @@ genuine code quality issues — no noise.
 
 ## Suppressing `UnresolvedType` for Known Missing Deps
 
-Add a `@Suppress` annotation or use a PMD suppress comment:
+`// NOPMD` comments do not suppress violations on import statements; use a ruleset
+override with `violationSuppressRegex` to silence known-missing packages:
 
-```kotlin
-import com.example.missing.Dep // NOPMD - dependency not available at analysis time
+```xml
+<rule ref="category/kotlin/errorprone.xml/UnresolvedType">
+  <properties>
+    <!-- suppress generated or runtime-only types by package prefix -->
+    <property name="violationSuppressRegex" value=".*com\.example\.generated.*"/>
+  </properties>
+</rule>
 ```
 
-Or exclude the rule entirely for generated/vendor packages via a ruleset override:
+Or suppress by XPath expression (matches on the import node text):
 
 ```xml
 <rule ref="category/kotlin/errorprone.xml/UnresolvedType">
