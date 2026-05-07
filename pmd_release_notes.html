@@ -2090,6 +2090,11 @@ is still ongoing, the following Java rules have been updated in this release:
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6517">#6517</a>: [java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream</li>
+    </ul>
+  </li>
   <li>java-multithreading
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6520">#6520</a>: [java] DoNotUseThreads: False positive on legitimate java.lang.Thread.onSpinWait() call</li>
@@ -2104,6 +2109,7 @@ is still ongoing, the following Java rules have been updated in this release:
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/6084">#6084</a>: [java] Shrink reported locations for some rules - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6522">#6522</a>: [java] Fix #6520: DoNotUseThreads: fix false positive on Thread.onSpinWait()  - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6524">#6524</a>: [java] Fix #6517: UselessPureMethodCall: fix false negative for primitive streams - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
