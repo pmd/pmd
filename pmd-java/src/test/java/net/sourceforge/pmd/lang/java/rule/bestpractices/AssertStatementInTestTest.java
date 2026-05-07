@@ -9,6 +9,6 @@ import net.sourceforge.pmd.test.PmdRuleTst;
 /**
  * Tests for {@link AssertStatementInTestRule}.
  */
-public class AssertStatementInTestTest extends PmdRuleTst {
+class AssertStatementInTestTest extends PmdRuleTst {
     // no additional tests
 }
