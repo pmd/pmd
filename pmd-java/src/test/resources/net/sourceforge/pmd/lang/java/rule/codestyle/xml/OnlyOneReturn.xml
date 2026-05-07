@@ -191,4 +191,146 @@ public class Person implements Comparable<Person> {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>one guard if</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int foo(int x) {
+        if (x == 0) {
+            return 3;
+        }
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>two guard ifs</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int foo(int x) {
+        if (x == 0) {
+            return 3;
+        }
+        if (x == 1) {
+            return 4;
+        }
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>two guard ifs, first one throws</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int foo(int x) {
+        if (x == 0) {
+            throw IllegalArgumentException();
+        }
+        if (x == 1) {
+            return 4;
+        }
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>guard if without braces</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int foo(int x) {
+        if (x == 0)
+            return 3;
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if there's a statement before the if, it's not a guard if</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int x) {
+        x++;
+        if (x == 0) {
+            return 3;
+        }
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if there's an else statement, it's not a guard if</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int x) {
+        if (x == 0) {
+            return 3;
+        } else {}
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if there's more stuff in the if block, it's not a guard if</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int x) {
+        if (x == 0) {
+            x++;
+            return 3;
+        }
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if there's no return, it's not a guard if</description>
+        <rule-property name="allowGuardIfs">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int x) {
+        if (x == 0) {
+            x++;
+        }
+        if (x == 1) {
+            return 3;
+        }
+        return 2;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
