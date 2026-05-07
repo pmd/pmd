@@ -1215,7 +1215,8 @@ public class ClassInDefaultPackage {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#onlyonereturn">
         <description>
 A method should have only one exit point, and that should be the last statement in the method.
-If allowGuardIfs is set to true, an unlimited amount of guard ifs at the beginning of the method are allows.
+
+If the property `allowGuardIfs` is set to true, an unlimited amount of guard ifs at the beginning of the method are allowed.
 A guard if is an if of the form `if (cond) { return somevalue; }` or `if (cond) { throw ex }`. In the example below,
 the first exit is part of a guard if, so it isn't counted.
         </description>
