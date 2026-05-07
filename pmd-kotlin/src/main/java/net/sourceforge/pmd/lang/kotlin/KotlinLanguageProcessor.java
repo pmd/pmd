@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.document.TextFileContent;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTypeAnnotationVisitor;
@@ -91,45 +90,31 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
             return;
         }
 
-        File tempDir = null;
-        try {
-            tempDir = Files.createTempDirectory("pmd-kotlin-analysis-").toFile();
-            writeToTempDir(ktFiles, tempDir);
+        Map<String, String> sources = buildSourceMap(ktFiles);
 
-            TypedAst ast = new KotlinTypeMapper(tempDir, classpathResolver.resolve(), false).analyze();
+        try {
+            TypedAst ast = KotlinTypeMapper.fromSources(sources, classpathResolver.resolve());
             KotlinTypeAnalysisContext context = KotlinTypeAnalysisContext.from(ast);
             KotlinTypeAnalysisContextHolder.setGlobal(context);
             annotationVisitor.set(new KotlinTypeAnnotationVisitor(ast));
             LOG.debug("kotlin-type-mapper analyzed {} file(s)", ktFiles.size());
-        } catch (IOException | RuntimeException e) {
+        } catch (RuntimeException e) {
             LOG.warn("kotlin-type-mapper analysis failed; typeIs/matchesSig will return false", e);
-        } finally {
-            if (tempDir != null) {
-                deleteRecursively(tempDir);
-            }
         }
     }
 
-    private static void writeToTempDir(List<TextFile> ktFiles, File tempDir) throws IOException {
-        for (int i = 0; i < ktFiles.size(); i++) {
-            String filename = sanitizeKtFilename(ktFiles.get(i).getFileId().getFileName());
-            TextFileContent content = ktFiles.get(i).readContents();
-            String text = content.getNormalizedText().toString();
-            Files.write(new File(tempDir, filename).toPath(),
-                        text.getBytes(StandardCharsets.UTF_8));
-        }
-    }
-
-    private static void deleteRecursively(File file) {
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            if (children != null) {
-                for (File child : children) {
-                    deleteRecursively(child);
-                }
+    private static Map<String, String> buildSourceMap(List<TextFile> ktFiles) {
+        Map<String, String> sources = new LinkedHashMap<>();
+        for (TextFile ktFile : ktFiles) {
+            try {
+                String filename = sanitizeKtFilename(ktFile.getFileId().getFileName());
+                String text = ktFile.readContents().getNormalizedText().toString();
+                sources.put(filename, text);
+            } catch (java.io.IOException e) {
+                throw new java.io.UncheckedIOException(e);
             }
         }
-        file.delete();
+        return sources;
     }
 
     void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
@@ -164,23 +149,16 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
     }
 
     private KotlinTypeAnnotationVisitor runSingleFileAnalysis(String filename, String sourceText) {
-        File tempDir = null;
         try {
-            tempDir = Files.createTempDirectory("pmd-kotlin-analysis-").toFile();
-            Files.write(new File(tempDir, filename).toPath(),
-                        sourceText.getBytes(StandardCharsets.UTF_8));
-            TypedAst ast = new KotlinTypeMapper(tempDir, classpathResolver.resolve(), false).analyze();
+            TypedAst ast = KotlinTypeMapper.fromSources(
+                    Collections.singletonMap(filename, sourceText), classpathResolver.resolve());
             KotlinTypeAnalysisContext context = KotlinTypeAnalysisContext.from(ast);
             KotlinTypeAnalysisContextHolder.setGlobal(context);
             LOG.debug("kotlin-type-mapper single-file analysis complete for {}", filename);
             return new KotlinTypeAnnotationVisitor(ast);
-        } catch (IOException | RuntimeException e) {
+        } catch (RuntimeException e) {
             LOG.warn("kotlin-type-mapper single-file analysis failed for {}; typeIs/matchesSig will return false", filename, e);
             return null;
-        } finally {
-            if (tempDir != null) {
-                deleteRecursively(tempDir);
-            }
         }
     }
 
