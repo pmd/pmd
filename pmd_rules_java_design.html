@@ -3926,8 +3926,8 @@ possibly through grouping related fields in new objects.  For example, a class w
 city/state/zip fields could park them within a single Address field.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
-  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">FieldDeclaration</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
+  </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="w">
             </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'final'</span><span class="p">)]</span><span class="w">
             </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'static'</span><span class="p">)]</span><span class="w">
         </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$maxfields</span><span class="p">]</span><span class="w">
@@ -3990,9 +3990,9 @@ city/state/zip fields could park them within a single Address field.</p>
 complexity and find a way to have more fine grained objects.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
      </span><span class="p">[</span><span class="w">
-      </span><span class="nf">count</span><span class="p">(</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
+      </span><span class="nf">count</span><span class="p">(</span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
          </span><span class="ow">not</span><span class="w"> </span><span class="p">(</span><span class="w">
                 </span><span class="p">(</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'get'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'set'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="s1">'is'</span><span class="p">))</span><span class="w">
                 </span><span class="ow">and</span><span class="w">
@@ -4184,7 +4184,7 @@ remember to add a private constructor to prevent instantiation.
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 1, 2026 <br />
+             Site last generated: May 7, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

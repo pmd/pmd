@@ -2037,6 +2037,56 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
+<h4 id="️-changed-rules">🌟️ Changed Rules</h4>
+<ul>
+  <li>We are continuously working to improve the precision of violation reporting for various rules.
+The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
+For example, instead of flagging an entire class declaration (including its body), we now generally report only
+the class name. For more details, see <a href="https://github.com/pmd/pmd/issues/730">[java] Single Line Warnings #730</a>
+and <a href="https://github.com/pmd/pmd/issues/3769">[java] Review reported locations of rules #3769</a>. While this effort
+is still ongoing, the following Java rules have been updated in this release:
+    <ul>
+      <li><a href="pmd_rules_java_bestpractices.html#abstractclasswithoutabstractmethod"><code class="language-plaintext highlighter-rouge">AbstractClassWithoutAbstractMethod</code></a></li>
+      <li><a href="pmd_rules_java_design.html#abstractclasswithoutanymethod"><code class="language-plaintext highlighter-rouge">AbstractClassWithoutAnyMethod</code></a></li>
+      <li><a href="pmd_rules_java_codestyle.html#atleastoneconstructor"><code class="language-plaintext highlighter-rouge">AtLeastOneConstructor</code></a></li>
+      <li><a href="pmd_rules_java_codestyle.html#avoiddollarsigns"><code class="language-plaintext highlighter-rouge">AvoidDollarSigns</code></a></li>
+      <li><a href="pmd_rules_java_errorprone.html#avoidcatchinggenericexception"><code class="language-plaintext highlighter-rouge">AvoidCatchingGenericException</code></a></li>
+      <li><a href="pmd_rules_java_multithreading.html#avoidsynchronizedstatement"><code class="language-plaintext highlighter-rouge">AvoidSynchronizedStatement</code></a> (now reports only on synchronized keyword and not the whole synchronized block)</li>
+      <li><a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a></li>
+      <li><a href="pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal"><code class="language-plaintext highlighter-rouge">ClassWithOnlyPrivateConstructorsShouldBeFinal</code></a></li>
+      <li><a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a></li>
+      <li><a href="pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a></li>
+      <li><a href="pmd_rules_java_design.html#couplingbetweenobjects"><code class="language-plaintext highlighter-rouge">CouplingBetweenObjects</code></a> (now reports only on class identifier and not whole compilation unit anymore)</li>
+      <li><a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
+      <li><a href="pmd_rules_java_design.html#dataclass"><code class="language-plaintext highlighter-rouge">DataClass</code></a></li>
+      <li><a href="pmd_rules_java_design.html#excessiveimports"><code class="language-plaintext highlighter-rouge">ExcessiveImports</code></a> (now reports only on imports and not the whole compilation unit anymore)</li>
+      <li><a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a></li>
+      <li><a href="pmd_rules_java_design.html#excessivepubliccount"><code class="language-plaintext highlighter-rouge">ExcessivePublicCount</code></a></li>
+      <li><a href="pmd_rules_java_bestpractices.html#exhaustiveswitchhasdefault"><code class="language-plaintext highlighter-rouge">ExhaustiveSwitchHasDefault</code></a> (now reports only on switch keyword and not the whole switch block)</li>
+      <li><a href="pmd_rules_java_design.html#godclass"><code class="language-plaintext highlighter-rouge">GodClass</code></a></li>
+      <li><a href="pmd_rules_java_bestpractices.html#implicitfunctionalinterface"><code class="language-plaintext highlighter-rouge">ImplicitFunctionalInterface</code></a></li>
+      <li><a href="pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate"><code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code></a></li>
+      <li><a href="pmd_rules_java_codestyle.html#localhomenamingconvention"><code class="language-plaintext highlighter-rouge">LocalHomeNamingConvention</code></a></li>
+      <li><a href="pmd_rules_java_codestyle.html#localinterfacesessionnamingconvention"><code class="language-plaintext highlighter-rouge">LocalInterfaceSessionNamingConvention</code></a></li>
+      <li><a href="pmd_rules_java_errorprone.html#missingserialversionuid"><code class="language-plaintext highlighter-rouge">MissingSerialVersionUID</code></a></li>
+      <li><a href="pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass"><code class="language-plaintext highlighter-rouge">MissingStaticMethodInNonInstantiatableClass</code></a></li>
+      <li><a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
+      <li><a href="pmd_rules_java_bestpractices.html#nonexhaustiveswitch"><code class="language-plaintext highlighter-rouge">NonExhaustiveSwitch</code></a> (now reports only on switch keyword and not the whole switch block)</li>
+      <li><a href="pmd_rules_java_codestyle.html#nopackage"><code class="language-plaintext highlighter-rouge">NoPackage</code></a></li>
+      <li><a href="pmd_rules_java_design.html#publicmemberinnonpublictype"><code class="language-plaintext highlighter-rouge">PublicMemberInNonPublicType</code></a></li>
+      <li><a href="pmd_rules_java_codestyle.html#shortclassname"><code class="language-plaintext highlighter-rouge">ShortClassName</code></a></li>
+      <li><a href="pmd_rules_java_errorprone.html#singlemethodsingleton"><code class="language-plaintext highlighter-rouge">SingleMethodSingleton</code></a></li>
+      <li><a href="pmd_rules_java_design.html#switchdensity"><code class="language-plaintext highlighter-rouge">SwitchDensity</code></a> (now reports only on switch keyword and not the whole switch block)</li>
+      <li><a href="pmd_rules_java_errorprone.html#testclasswithouttestcases"><code class="language-plaintext highlighter-rouge">TestClassWithoutTestCases</code></a></li>
+      <li><a href="pmd_rules_java_performance.html#toofewbranchesforswitch"><code class="language-plaintext highlighter-rouge">TooFewBranchesForSwitch</code></a> (now reports only on switch keyword and not the whole switch block)</li>
+      <li><a href="pmd_rules_java_design.html#toomanyfields"><code class="language-plaintext highlighter-rouge">TooManyFields</code></a> (now reports only on class identifier and not the whole class body anymore)</li>
+      <li><a href="pmd_rules_java_design.html#toomanymethods"><code class="language-plaintext highlighter-rouge">TooManyMethods</code></a> (now reports only on class identifier and not the whole class body anymore)</li>
+      <li><a href="pmd_rules_java_codestyle.html#toomanystaticimports"><code class="language-plaintext highlighter-rouge">TooManyStaticImports</code></a> (now reports only on the first static import and not the whole compilation unit anymore)</li>
+      <li><a href="pmd_rules_java_codestyle.html#unnecessarymodifier"><code class="language-plaintext highlighter-rouge">UnnecessaryModifier</code></a></li>
+      <li><a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a></li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 
@@ -2044,6 +2094,9 @@
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/6084">#6084</a>: [java] Shrink reported locations for some rules - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+</ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2080,7 +2133,7 @@
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 1, 2026 <br />
+             Site last generated: May 7, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
