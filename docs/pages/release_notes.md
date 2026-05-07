@@ -70,12 +70,15 @@ This is a {{ site.pmd.release_type }} release.
   * {% rule java/design/UseUtilityClass %}
 
 ### 🐛️ Fixed Issues
+* java-errorprone
+  * [#6517](https://github.com/pmd/pmd/issues/6517): \[java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream
 
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#6084](https://github.com/pmd/pmd/pull/6084): \[java] Shrink reported locations for some rules - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6524](https://github.com/pmd/pmd/pull/6524): \[java] Fix #6517: UselessPureMethodCall: fix false negative for primitive streams - [leemeii](https://github.com/leemeii) (@leemeii)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
