@@ -124,7 +124,7 @@ constructs (`when` expressions, coroutine contracts, Elvis operator, extension f
   Explicitly throwing `NullPointerException` is misleading; throw a more specific exception instead.
 * [`AvoidThrowingRawExceptionTypes`]({{ baseurl }}pmd_rules_kotlin_errorprone.html#avoidthrowingrawexceptiontypes):
   Throwing root types like `RuntimeException` or `Exception` loses semantic information; use or create a specific subtype.
-* [`DoNotExtendJavaLangError`]({{ baseurl }}pmd_rules_kotlin_errorprone.html#donotextendjavalang):
+* [`DoNotExtendJavaLangError`]({{ baseurl }}pmd_rules_kotlin_errorprone.html#donotextendjavalangerror):
   Do not extend `Error` or its standard subclasses; extend `Exception` or `RuntimeException` instead.
 * [`DoNotTerminateVM`]({{ baseurl }}pmd_rules_kotlin_errorprone.html#donotterminatevm):
   Calling `System.exit()` or `Runtime.halt()` terminates the JVM abruptly, bypassing shutdown hooks and `finally` blocks.
