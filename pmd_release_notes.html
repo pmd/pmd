@@ -2090,6 +2090,11 @@ is still ongoing, the following Java rules have been updated in this release:
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5721">#5721</a>: [java] StackOverflowError in 7.17.0 with nested wildcard generics</li>
+    </ul>
+  </li>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6517">#6517</a>: [java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream</li>
@@ -2110,6 +2115,7 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6084">#6084</a>: [java] Shrink reported locations for some rules - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6522">#6522</a>: [java] Fix #6520: DoNotUseThreads: fix false positive on Thread.onSpinWait()  - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6524">#6524</a>: [java] Fix #6517: UselessPureMethodCall: fix false negative for primitive streams - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6553">#6553</a>: [java] Fix StackOverflowError in TypeOps projection of cyclic captured type vars - <a href="https://github.com/slovdahl">Sebastian Lövdahl</a> (@slovdahl)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
