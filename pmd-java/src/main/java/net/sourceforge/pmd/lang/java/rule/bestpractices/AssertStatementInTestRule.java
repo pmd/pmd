@@ -9,6 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 
+/**
+ * @since 7.25.0
+ */
 public class AssertStatementInTestRule extends AbstractJavaRulechainRule {
 
     public AssertStatementInTestRule() {
