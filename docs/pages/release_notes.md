@@ -24,6 +24,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+The new Java rule {% rule apex/bestpractices/AssertStatementInTest %} detects usages of `assert` statement in tests. 
+These should be replaced by framework assertion methods such as `assertEquals`. 
+Such methods provide better error messages and make test behave correctly when running without `-ea`. 
+
 ### 🐛️ Fixed Issues
 
 ### 🚨️ API Changes
