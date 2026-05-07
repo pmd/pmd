@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * A synchronized statement.
  *
@@ -38,5 +40,10 @@ public final class ASTSynchronizedStatement extends AbstractStatement {
      */
     public ASTBlock getBody() {
         return (ASTBlock) getChild(1);
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
     }
 }

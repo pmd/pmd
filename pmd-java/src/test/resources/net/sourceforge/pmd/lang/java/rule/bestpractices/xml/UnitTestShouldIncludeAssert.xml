@@ -1037,4 +1037,22 @@ class ShouldIncludeAssertTest {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>#4272: False positive with assert in lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class FooTest {
+    @Test
+    void testWhenComplete() {
+        CompletableFuture<Object> future = CompletableFuture.completedFuture("foo");
+        future.whenComplete((data, exception) -> {
+            assertNotNull(data, "Data shouldn't be null");
+        });
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

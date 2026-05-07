@@ -67,7 +67,7 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
     }
 
     private void renderMeasurement(final String label, final TimedResult timedResult,
-            final PrintWriter writer) throws IOException {
+            final PrintWriter writer) {
         writer.write(StringUtils.rightPad(label, LABEL_COLUMN_WIDTH));
 
         final String time = MessageFormat.format(TIME_FORMAT, timedResult.totalTimeNanos.get() / 1000000000.0);
