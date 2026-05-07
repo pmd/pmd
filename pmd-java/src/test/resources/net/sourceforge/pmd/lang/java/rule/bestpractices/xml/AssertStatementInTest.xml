@@ -30,7 +30,7 @@ public class FooTest extends TestCase {
 import org.junit.Test;
 import org.junit.Before;
 
-public class FooTest extends TestCase {
+public class FooTest {
 
     @Test
     public void assertSomething() {
