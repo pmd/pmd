@@ -103,6 +103,7 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
         }
     }
 
+    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework (closed by PMDRunnable); same pattern used in MonoThreadProcessor
     private static Map<String, String> buildSourceMap(List<TextFile> ktFiles) {
         Map<String, String> sources = new LinkedHashMap<>();
         for (TextFile ktFile : ktFiles) {
