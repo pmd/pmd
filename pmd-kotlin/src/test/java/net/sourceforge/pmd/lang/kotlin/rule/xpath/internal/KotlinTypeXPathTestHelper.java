@@ -59,7 +59,7 @@ public class KotlinTypeXPathTestHelper implements AutoCloseable {
         try {
             File tempDir = Files.createTempDirectory("pmd-kotlin-test-").toFile();
             File snippetFile = new File(tempDir, "snippet.kt");
-            Files.write(snippetFile.toPath(), kotlinCode.getBytes(StandardCharsets.UTF_8));
+            Files.write(snippetFile.toPath(), normalizeLf(kotlinCode).getBytes(StandardCharsets.UTF_8));
             KotlinTypeXPathTestHelper helper = new KotlinTypeXPathTestHelper(tempDir) {
                 @Override
                 public void close() {
@@ -78,10 +78,42 @@ public class KotlinTypeXPathTestHelper implements AutoCloseable {
      * Runs kotlin-type-mapper analysis and injects the context into the global holder
      * so PMD's worker threads can access it during analysis.
      * Call this in {@code @BeforeEach}.
+     *
+     * <p>Source files are copied to a temp directory with LF line endings before
+     * analysis to match PMD's own line-ending normalization. Without this, K1
+     * analysis on Windows (where files are checked out with CRLF) would produce
+     * offsets that do not align with PMD's LF-normalized text, causing position
+     * mismatches and "Wrong line separators" processing errors.
      */
     public void injectContext() {
-        TypedAst ast = new KotlinTypeMapper(sourceDir, new java.util.ArrayList<>(), false).analyze();
-        KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
+        File analysisDir = writeLfNormalizedTempDir(sourceDir);
+        try {
+            TypedAst ast = new KotlinTypeMapper(analysisDir, new java.util.ArrayList<>(), false).analyze();
+            KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
+        } finally {
+            deleteRecursively(analysisDir);
+        }
+    }
+
+    private static File writeLfNormalizedTempDir(File sourceDir) {
+        try {
+            File tempDir = Files.createTempDirectory("pmd-kotlin-test-norm-").toFile();
+            File[] ktFiles = sourceDir.listFiles((d, name) -> name.endsWith(".kt"));
+            if (ktFiles != null) {
+                for (File src : ktFiles) {
+                    String content = new String(Files.readAllBytes(src.toPath()), StandardCharsets.UTF_8);
+                    Files.write(new File(tempDir, src.getName()).toPath(),
+                            normalizeLf(content).getBytes(StandardCharsets.UTF_8));
+                }
+            }
+            return tempDir;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static String normalizeLf(String text) {
+        return text.replace("\r\n", "\n").replace("\r", "\n");
     }
 
     @Override
