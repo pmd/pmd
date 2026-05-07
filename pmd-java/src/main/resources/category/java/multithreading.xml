@@ -358,6 +358,50 @@ public static Foo getFoo() {
         </example>
     </rule>
 
+    <rule name="OverridingThreadRun"
+          language="java"
+          since="7.24.0"
+          message="Don't override Thread.run() method, use Runnable instead"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#overridingthreadrun">
+        <description>
+            Overriding `Thread::run` method is not recommended. Instead, implement `Runnable`
+            and pass an instance to the thread constructor. Using `Runnable` to represent a task
+            makes it more reusable and allows your class to extend another class.
+            When you use lambdas, this also allows you to write more concise code,
+            e.g. `new Thread(() -> System.out.println("Hello!")).start();`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration[ pmd-java:typeIs('java.lang.Thread') ]/ClassBody
+    /MethodDeclaration[@Name="run"][count(//FormalParameter)=0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class GreetingThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Hello!");
+    }
+}
+new GreetingThread().start(); // not recommended, use Runnable instead
+
+public class GreetingRunnable implements Runnable {
+    @Override
+    public void run() {
+        System.out.println("Hello!");
+    }
+}
+new Thread(new GreetingRunnable()).start(); // preferred
+]]>
+        </example>
+    </rule>
     <rule name="UnsynchronizedStaticFormatter"
           language="java"
           since="6.11.0"

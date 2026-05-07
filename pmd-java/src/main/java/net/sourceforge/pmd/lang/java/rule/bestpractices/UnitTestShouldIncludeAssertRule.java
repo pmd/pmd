@@ -8,9 +8,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -47,12 +49,16 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
         if (body != null
             && TestFrameworksUtil.isTestMethod(method)
             && !TestFrameworksUtil.isExpectAnnotated(method)
-            && body.descendants(ASTMethodCall.class)
+            && getAllMethodCallsFrom(body)
                 .none(isAssertCall
                         .or(call -> extraAsserts.contains(call.getMethodName())))) {
             asCtx(data).addViolation(method);
         }
         return data;
+    }
+
+    private static NodeStream<ASTMethodCall> getAllMethodCallsFrom(ASTBlock body) {
+        return NodeStream.union(body.descendants(ASTMethodCall.class), body.descendants(ASTLambdaExpression.class).descendants(ASTMethodCall.class));
     }
 
     private boolean usesSoftAssertExtension(ASTTypeDeclaration typeDeclaration) {

@@ -8531,6 +8531,34 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "JonnyPower",
+      "name": "Jonny Alexander Power",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1668924?v=4",
+      "profile": "https://jonnypower.com/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "martinvisser",
+      "name": "Martin Visser",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3170236?v=4",
+      "profile": "https://warriorofmars.com/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "praful-gupta",
+      "name": "P Gupta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18356661?v=4",
+      "profile": "https://github.com/praful-gupta",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

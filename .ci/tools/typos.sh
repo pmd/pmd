@@ -6,7 +6,7 @@ TYPOS_GH_ANNOTATE=${TYPOS_GH_ANNOTATE:=""}
 # whether to check for a new version of typos
 TYPOS_CHECK_UPDATE=${TYPOS_CHECK_UPDATE:=""}
 
-TYPOS_VERSION="v1.44.0"
+TYPOS_VERSION="v1.45.1"
 if [ -n "$TYPOS_CHECK_UPDATE" ]; then
   echo "Checking for latest typos version..."
   LATEST_TYPO_VERSION=$(curl -s -L \

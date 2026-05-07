@@ -601,4 +601,41 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>2-2,6-6,10-10,14-14,18-18,22-22,27-27</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    Foo // <--violation: line 2
+    () {}
+
+    void
+    method // <--violation: line 6
+    () {}
+
+    int
+    field // <--violation: line 10
+    = 1;
+
+    interface
+    Intf // <--violation: line 14
+    {}
+
+    class
+    C // <--violation: line 18
+    {}
+
+    record
+    R // <--violation: line 22
+    ()
+    {}
+
+    enum
+    E // <--violation: line 27
+    { A }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
