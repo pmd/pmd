@@ -21,11 +21,10 @@ together with {% jdoc core::lang.metrics.MetricsUtil %}.
 ## Multifile Analysis
 
 Integration happens in {% jdoc apex::lang.apex.multifile.ApexMultifileAnalysis %}. It uses
-[ApexLink](https://github.com/nawforce/apex-link). For detailed information, see also [Apexlink POC #2830](https://github.com/pmd/pmd/pull/2830).
+[Apex Language Server](https://github.com/apex-dev-tools/apex-ls). For detailed information, see also [Apexlink POC #2830](https://github.com/pmd/pmd/pull/2830).
+This feature requires the language property/environment variable `PMD_APEX_ROOT_DIRECTORY`.
 
-{% include note.html content="ApexLink's new home: <https://github.com/apex-dev-tools>" %}
-
-Used for rule {% rule apex/design/UnusedMethod %}
+Used for rules {% rule apex/design/UnusedMethod %} and {% rule apex/errorprone/AvoidInterfaceAsMapKey %}.
 
 ## Language Properties
 

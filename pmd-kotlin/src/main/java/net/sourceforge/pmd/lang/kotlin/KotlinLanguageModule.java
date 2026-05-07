@@ -21,7 +21,10 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
                               .extensions("kt", "ktm")
                               .addVersion("1.6")
                               .addVersion("1.7")
-                              .addDefaultVersion("1.8"),
+                              .addDefaultVersion("1.8")
+                              // Newer versions are informational only.
+                              // Unlike Java, we don't restrict parsing based on selected language version.
+                              .addVersion("2.2.0"),
               new KotlinHandler());
 
     }

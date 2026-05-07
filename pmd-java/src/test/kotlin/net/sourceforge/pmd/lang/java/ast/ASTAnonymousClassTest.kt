@@ -8,8 +8,51 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_ANONYMOUS
+import net.sourceforge.pmd.lang.test.ast.assertPosition
 
 class ASTAnonymousClassTest : ParserTestSpec({
+    parserTestContainer("Report location") {
+        inContext(RootParsingCtx) {
+            """
+                public class MyClass { {
+                    new Runnable() {
+                        public void run() {
+                        }
+                    };
+                } }
+            """.trimIndent() should parseAs {
+                classDecl("MyClass", ) {
+                    child<ASTModifierList> {}
+                    child<ASTClassBody> {
+                        child<ASTInitializer> {
+                            it.body shouldBe child<ASTBlock> {
+                                child<ASTExpressionStatement> {
+                                    it.expr shouldBe child<ASTConstructorCall> {
+                                        it.typeNode shouldBe child<ASTClassType> {
+                                            it.assertPosition(2, 9, 2, 17)
+                                        }
+                                        it.arguments shouldBe child<ASTArgumentList> {}
+                                        it.anonymousClassDeclaration shouldBe child<ASTAnonymousClassDeclaration> {
+                                            it.assertPosition(2, 9, 2, 17)
+                                            child<ASTModifierList> {}
+                                            child<ASTClassBody> {
+                                                child<ASTMethodDeclaration> {
+                                                    child<ASTModifierList> {}
+                                                    it.resultTypeNode shouldBe child<ASTVoidType> {}
+                                                    child<ASTFormalParameters> {}
+                                                    child<ASTBlock> {}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     parserTestContainer("Anon class modifiers") {
         inContext(StatementParsingCtx) {

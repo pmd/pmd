@@ -95,6 +95,11 @@ public abstract class BaseAntlrTerminalNode<N extends AntlrNode<N>>
         public BaseAntlrNode<?, N> getPmdNode() {
             return pmdNode;
         }
+
+        @Override
+        public String toString() {
+            return String.valueOf(pmdNode);
+        }
     }
 
     protected static class AntlrErrorPmdAdapter<N extends AntlrNode<N>> extends AntlrTerminalPmdAdapter<N> implements ErrorNode {

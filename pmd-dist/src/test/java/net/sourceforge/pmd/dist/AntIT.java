@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -77,7 +78,11 @@ class AntIT extends AbstractBinaryDistributionTest {
 
     private ExecutionResult runAnt(String antLibPath, String pmdHomePath, File antTestProjectFolder)
             throws IOException, InterruptedException {
-        String cmd = System.getenv("JAVA_HOME") + "/bin/java" + " -cp \"" + antLibPath + "/*\""
+        String javaHome = Objects.requireNonNull(
+                System.getenv("JAVA_HOME"),
+                "Environment variable JAVA_HOME is unset. Please set it to the location of the JRE to use."
+        );
+        String cmd = javaHome + "/bin/java" + " -cp \"" + antLibPath + "/*\""
                 + " -jar " + antLibPath + "/ant-launcher.jar -Dpmd.home=" + pmdHomePath;
 
         // https://stackoverflow.com/questions/1401002/how-to-trick-an-application-into-thinking-its-stdout-is-a-terminal-not-a-pipe/20401674#20401674
@@ -87,15 +92,12 @@ class AntIT extends AbstractBinaryDistributionTest {
 
         final ExecutionResult.Builder result = new ExecutionResult.Builder();
         final Process process = pb.start();
-        Thread outputReader = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try (InputStream in = process.getInputStream()) {
-                    String output = IOUtil.readToString(process.getInputStream(), StandardCharsets.UTF_8);
-                    result.withOutput(output);
-                } catch (IOException e) {
-                    result.withOutput("Exception occurred: " + e.toString());
-                }
+        Thread outputReader = new Thread(() -> {
+            try (InputStream in = process.getInputStream()) {
+                String output = IOUtil.readToString(in, StandardCharsets.UTF_8);
+                result.withOutput(output);
+            } catch (IOException e) {
+                result.withOutput("Exception occurred: " + e.toString());
             }
         });
         outputReader.start();

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.multifile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,10 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
 import com.nawforce.apexlink.api.Org;
+import com.nawforce.apexlink.api.Package;
+import com.nawforce.apexlink.api.TypeSummary;
 import com.nawforce.pkgforce.diagnostics.LoggerOps;
+import com.nawforce.pkgforce.names.TypeIdentifier;
 import io.github.apexdevtools.api.Issue;
 
 /**
@@ -40,9 +44,14 @@ public final class ApexMultifileAnalysis {
     // test only
     static final Logger LOG = LoggerFactory.getLogger(ApexMultifileAnalysis.class);
 
+    private boolean warnedAboutMissingOrg = false;
+
     // Create a new org for each analysis
     // Null if failed.
     private final @Nullable Org org;
+
+    // Lazily computed flat list of all TypeSummary objects in the org (including nested types).
+    private List<TypeSummary> allTypeSummaries = null;
 
     static {
         // Setup logging
@@ -93,7 +102,7 @@ public final class ApexMultifileAnalysis {
             // com.nawforce.apexlink.types.platform.PlatformTypeDeclaration we get a ExceptionInInitializerError
             // and later NoClassDefFoundErrors, because PlatformTypeDeclaration couldn't be loaded.
             LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
-            LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
+            LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod and AvoidInterfaceAsMapKey to be dysfunctional");
         }
         this.org = org;
     }
@@ -108,10 +117,64 @@ public final class ApexMultifileAnalysis {
         return org == null;
     }
 
+    private void maybeWarnAboutMissingOrg() {
+        if (isFailed() && !warnedAboutMissingOrg) {
+            warnedAboutMissingOrg = true;
+            LOG.warn("Multifile analysis unavailable. "
+                    + "Set PMD_APEX_ROOT_DIRECTORY to enable cross-file type resolution.");
+        }
+    }
+
     public List<Issue> getFileIssues(String filename) {
+        maybeWarnAboutMissingOrg();
         // Extract issues for a specific metadata file from the org
         return org == null ? Collections.emptyList()
                            : Collections.unmodifiableList(Arrays.asList(org.issues().issuesForFile(filename)));
+    }
+
+    /**
+     * Returns an unmodifiable list of all type summaries in the org.
+     * Returns an empty list when multifile analysis is unavailable.
+     * This enables rules to perform complex cross-type analysis.
+     * @since 7.24.0
+     */
+    public List<TypeSummary> getTypeSummaries() {
+        maybeWarnAboutMissingOrg();
+        return getAllTypeSummaries();
+    }
+
+    /**
+     * Returns a flat list of all TypeSummary objects in the org, including nested types.
+     * The result is computed once and then cached.
+     */
+    private synchronized List<TypeSummary> getAllTypeSummaries() {
+        if (allTypeSummaries != null) {
+            return allTypeSummaries;
+        }
+        if (org == null) {
+            allTypeSummaries = Collections.emptyList();
+            return allTypeSummaries;
+        }
+        List<TypeSummary> summaries = new ArrayList<>();
+        for (Package pkg : org.getPackages()) {
+            for (TypeIdentifier typeId : pkg.getTypeIdentifiers(false)) {
+                TypeSummary summary = pkg.getSummaryOfType(typeId);
+                if (summary != null) {
+                    collectTypeSummaries(summary, summaries);
+                }
+            }
+        }
+        allTypeSummaries = Collections.unmodifiableList(summaries);
+        return allTypeSummaries;
+    }
+
+    /** Adds the given summary and all its nested type summaries (recursively) to the list. */
+    private static void collectTypeSummaries(TypeSummary summary, List<TypeSummary> result) {
+        result.add(summary);
+        scala.collection.Iterator<TypeSummary> nested = summary.nestedTypes().iterator();
+        while (nested.hasNext()) {
+            collectTypeSummaries(nested.next(), result);
+        }
     }
 
     /*
