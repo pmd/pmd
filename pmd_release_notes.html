@@ -2039,6 +2039,8 @@
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 <h4 id="️-changed-rules">🌟️ Changed Rules</h4>
 <ul>
+  <li>The rule <a href="pmd_rules_java_codestyle.html#onlyonereturn"><code class="language-plaintext highlighter-rouge">OnlyOneReturn</code></a> has a new property <code class="language-plaintext highlighter-rouge">allowGuardIfs</code>. When this property is
+true, then guard ifs at the beginning of a method are allowed their return statements don’t count.</li>
   <li>We are continuously working to improve the precision of violation reporting for various rules.
 The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
 For example, instead of flagging an entire class declaration (including its body), we now generally report only
@@ -2095,13 +2097,20 @@ is still ongoing, the following Java rules have been updated in this release:
       <li><a href="https://github.com/pmd/pmd/issues/5721">#5721</a>: [java] StackOverflowError in 7.17.0 with nested wildcard generics</li>
     </ul>
   </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3212">#3212</a>: [java] Enhance UseStandardCharsets to flag some constructors of IO-related classes</li>
+    </ul>
+  </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2801">#2801</a>: [java] OnlyOneReturn should have a property to allow early exits (guard clauses)</li>
       <li><a href="https://github.com/pmd/pmd/issues/6427">#6427</a>: [java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte</li>
     </ul>
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4288">#4288</a>: [java] Document that CallSuperFirst/CallSuperLast are Android specific</li>
       <li><a href="https://github.com/pmd/pmd/issues/6163">#6163</a>: [java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class</li>
       <li><a href="https://github.com/pmd/pmd/issues/6517">#6517</a>: [java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream</li>
     </ul>
@@ -2124,6 +2133,9 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6553">#6553</a>: [java] Fix StackOverflowError in TypeOps projection of cyclic captured type vars - <a href="https://github.com/slovdahl">Sebastian Lövdahl</a> (@slovdahl)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6561">#6561</a>: [java] Fix #6163: ConstructorCallsOverridableMethod: False positive with call to enclosing class - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6573">#6573</a>: [java] Fix #6427: Add bitwise and/or/xor to BINARY_PROMOTED_OPS - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6587">#6587</a>: [java] Fix #2801: Add a property to OnlyOneReturnRule to allow guard ifs - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6597">#6597</a>: [java] Fix #3212: Enhance UseStandardCharsets - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6601">#6601</a>: [java] Fix #4288: Document that CallSuperFirst and CallSuperLast are android only - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>

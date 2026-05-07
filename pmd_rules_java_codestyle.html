@@ -3906,6 +3906,10 @@ modifiers.</li>
 
 <p>A method should have only one exit point, and that should be the last statement in the method.</p>
 
+<p>If the property <code class="language-plaintext highlighter-rouge">allowGuardIfs</code> is set to true, an unlimited amount of guard ifs at the beginning of the method are allowed.
+A guard if is an if of the form <code class="language-plaintext highlighter-rouge">if (cond) { return somevalue; }</code> or <code class="language-plaintext highlighter-rouge">if (cond) { throw ex }</code>. In the example below,
+the first exit is part of a guard if, so it isn’t counted.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/OnlyOneReturnRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.OnlyOneReturnRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -3936,6 +3940,11 @@ modifiers.</li>
       <td>compareTo , equals</td>
       <td>Method names that are ignored from checking for only one return.</td>
     </tr>
+    <tr>
+      <td>allowGuardIfs</td>
+      <td>false</td>
+      <td>Are guard ifs allowed? Guard ifs are statements "like if (cond()) return" or "if (cond()) throw exception" at the beginning of a method.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -3947,6 +3956,7 @@ modifiers.</li>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/OnlyOneReturn"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredMethodNames"</span> <span class="na">value=</span><span class="s">"compareTo,equals"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowGuardIfs"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>

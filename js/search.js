@@ -3096,7 +3096,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Call Super First",
   "url": "pmd_rules_java_errorprone.html#callsuperfirst",
-  "summary": "Super should be called at the start of the method"
+  "summary": "Super should be called at the start of the method This rule is intended for..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",
@@ -3104,7 +3104,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Call Super Last",
   "url": "pmd_rules_java_errorprone.html#callsuperlast",
-  "summary": "Super should be called at the end of the method"
+  "summary": "Super should be called at the end of the method This rule is intended for..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",

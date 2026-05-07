@@ -5095,30 +5095,27 @@ type is an enum type.</p>
 
 <p>Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
 Using the constants is less error prone, and can provide a small performance advantage compared to <code class="language-plaintext highlighter-rouge">Charset.forName(...)</code>
-since no scan across the internal <code class="language-plaintext highlighter-rouge">Charset</code> caches is needed.</p>
+or <code class="language-plaintext highlighter-rouge">String.getBytes(String)</code> since no scan across the internal <code class="language-plaintext highlighter-rouge">Charset</code> caches is needed.</p>
 
-<p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="na">@MethodName</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'forName'</span><span class="p">][</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.nio.charset.Charset'</span><span class="p">)]</span><span class="w">
-    </span><span class="p">[</span><span class="w">
-        </span><span class="nt">ArgumentList</span><span class="o">/</span><span class="nt">StringLiteral</span><span class="w">
-            </span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">(</span><span class="s1">'"US-ASCII"'</span><span class="p">,</span><span class="w"> </span><span class="s1">'"ISO-8859-1"'</span><span class="p">,</span><span class="w"> </span><span class="s1">'"UTF-8"'</span><span class="p">,</span><span class="w"> </span><span class="s1">'"UTF-16BE"'</span><span class="p">,</span><span class="w"> </span><span class="s1">'"UTF-16LE"'</span><span class="p">,</span><span class="w"> </span><span class="s1">'"UTF-16"'</span><span class="p">)]</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-</span></code></pre></div></div>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UseStandardCharsetsRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UseStandardCharsetsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UseStandardCharsets</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bad</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">// looking up the charset dynamically</span>
         <span class="k">try</span> <span class="o">(</span><span class="nc">OutputStreamWriter</span> <span class="n">osw</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">OutputStreamWriter</span><span class="o">(</span><span class="n">out</span><span class="o">,</span> <span class="nc">Charset</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">)))</span> <span class="o">{</span>
             <span class="n">osw</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="s">"test"</span><span class="o">);</span>
         <span class="o">}</span>
+        <span class="s">"foo"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">);</span>
+    <span class="o">}</span>
 
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">good</span><span class="o">()</span> <span class="o">{</span>
         <span class="c1">// best to use StandardCharsets</span>
         <span class="k">try</span> <span class="o">(</span><span class="nc">OutputStreamWriter</span> <span class="n">osw</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">OutputStreamWriter</span><span class="o">(</span><span class="n">out</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">))</span> <span class="o">{</span>
             <span class="n">osw</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="s">"test"</span><span class="o">);</span>
         <span class="o">}</span>
+        <span class="s">"foo"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
