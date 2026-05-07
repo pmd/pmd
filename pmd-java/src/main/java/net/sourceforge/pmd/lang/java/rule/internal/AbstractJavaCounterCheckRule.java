@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
@@ -44,6 +45,10 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
 
     protected abstract int getMetric(T node);
 
+    protected FileLocation getReportLocation(T node) {
+        return node.getReportLocation();
+    }
+
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
         @SuppressWarnings("unchecked")
@@ -54,7 +59,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
             int metric = getMetric(t);
             int threshold = getProperty(reportLevel);
             if (metric >= threshold) {
-                asCtx(data).addViolation(node, metric, threshold);
+                asCtx(data).addViolationWithPosition(t, t.getAstInfo(), getReportLocation(t), getMessage(), metric, threshold);
             }
         }
 

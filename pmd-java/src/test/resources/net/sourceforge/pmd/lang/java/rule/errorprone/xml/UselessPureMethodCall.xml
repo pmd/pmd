@@ -455,4 +455,31 @@ class Tester {
         }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UselessPureMethodCall false negative for primitive stream peek #6517</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,11,14,17</expected-linenumbers>
+        <code><![CDATA[
+import java.util.stream.Stream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.DoubleStream;
+
+public class a {
+    public void tp() {
+        Stream.of("A", "B").peek(System.out::println);
+    }
+    public void fn1() {
+        IntStream.of(1, 2).peek(System.out::println);
+    }
+    public void fn2() {
+        LongStream.of(1, 2).peek(System.out::println);
+    }
+    public void fn3() {
+        DoubleStream.of(1.0, 2.0).peek(System.out::println);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
