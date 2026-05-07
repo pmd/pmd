@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
  * Helper methods
  *
  * @author sergey.gorbaty
+ * @author dschach
  *
  */
 public final class Helper {
@@ -43,15 +44,23 @@ public final class Helper {
         throw new AssertionError("Can't instantiate helper classes");
     }
 
+    /**
+     * Check if this node is a test method or a test class.
+     * It used to do a check if the class name ended in "Test", but that is not specific.
+     * @author sergey.gorbaty
+     * @author dschach
+     * @since 7.24.0 No longer check class name. Only isTest() in apex parser is used.
+     * 
+     * @param node The node to check
+     * @return `true` if test class or method
+     */
     public static boolean isTestMethodOrClass(final ApexNode<?> node) {
         for (final ASTModifierNode m : node.children(ASTModifierNode.class)) {
             if (m.isTest()) {
                 return true;
             }
         }
-
-        final String className = node.getDefiningType();
-        return className.endsWith("Test");
+        return false;
     }
 
     public static boolean foundAnySOQLorSOSL(final ApexNode<?> node) {
@@ -194,5 +203,41 @@ public final class Helper {
      */
     public static boolean isAnyDatabaseMethodCall(ASTMethodCallExpression node) {
         return isMethodName(node, DATABASE_CLASS_NAME, ANY_METHOD);
+    }
+
+    /**
+     * Extracts the key type from a Map type string, e.g. {@code "Map<IKey, String>"} returns {@code "IKey"}.
+     * Handles nested generics e.g. {@code "Map<List<A>, B>"} returns {@code "List<A>"}.
+     *
+     * @param typeName full type string (e.g. from {@link net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration#getType()})
+     * @return the key type, or null if the type is not Map&lt;K,V&gt; or malformed
+     */
+    public static String getMapKeyType(String typeName) {
+        if (typeName == null) {
+            return null;
+        }
+        String t = typeName.trim();
+        if (!t.startsWith("Map<")) {
+            return null;
+        }
+        int start = t.indexOf('<');
+        if (start < 0) {
+            return null;
+        }
+        int depth = 1;
+        int i = start + 1;
+        int keyStart = i;
+        while (i < t.length() && depth > 0) {
+            char c = t.charAt(i);
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            } else if (c == ',' && depth == 1) {
+                return t.substring(keyStart, i).trim();
+            }
+            i++;
+        }
+        return null;
     }
 }

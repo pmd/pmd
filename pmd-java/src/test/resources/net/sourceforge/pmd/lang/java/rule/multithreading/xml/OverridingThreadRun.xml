@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Overriding run</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code>
+            public class Foo extends Thread {
+                @Override
+                public void run() {
+                }
+            }
+        </code>
+    </test-code>
+    <test-code>
+        <description>Not overriding run</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            public class Foo extends Thread {
+                public Foo(Runnable r) {
+                    super(r);
+                }
+
+                public void run(String s) {
+                    // unrelated method, not overriding Thread.run()
+                }
+            }
+
+            public class Bar implements Runnable {
+                @Override
+                public void run() {
+                }
+
+                public static void main(String[] args) {
+                    new Foo(new Bar()).run();
+                }
+            }
+        </code>
+    </test-code>
+</test-data>

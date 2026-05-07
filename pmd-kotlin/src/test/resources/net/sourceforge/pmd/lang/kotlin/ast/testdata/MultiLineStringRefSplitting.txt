@@ -1,0 +1,118 @@
++- KotlinFile
+   +- PackageHeader
+   +- ImportList
+   +- TopLevelObject
+   |  +- Declaration
+   |  |  +- ClassDeclaration
+   |  |     +- T-CLASS
+   |  |     +- SimpleIdentifier
+   |  |     |  +- T-Identifier
+   |  |     +- ClassBody
+   |  |        +- T-LCURL
+   |  |        +- T-NL
+   |  |        +- ClassMemberDeclarations
+   |  |        |  +- ClassMemberDeclaration
+   |  |        |  |  +- Declaration
+   |  |        |  |     +- FunctionDeclaration
+   |  |        |  |        +- T-FUN
+   |  |        |  |        +- SimpleIdentifier
+   |  |        |  |        |  +- T-Identifier
+   |  |        |  |        +- FunctionValueParameters
+   |  |        |  |        |  +- T-LPAREN
+   |  |        |  |        |  +- T-RPAREN
+   |  |        |  |        +- FunctionBody
+   |  |        |  |           +- Block
+   |  |        |  |              +- T-LCURL
+   |  |        |  |              +- T-NL
+   |  |        |  |              +- Statements
+   |  |        |  |              |  +- Statement
+   |  |        |  |              |  |  +- Declaration
+   |  |        |  |              |  |     +- PropertyDeclaration
+   |  |        |  |              |  |        +- T-VAL
+   |  |        |  |              |  |        +- VariableDeclaration
+   |  |        |  |              |  |        |  +- SimpleIdentifier
+   |  |        |  |              |  |        |     +- T-Identifier
+   |  |        |  |              |  |        +- T-ASSIGNMENT
+   |  |        |  |              |  |        +- Expression
+   |  |        |  |              |  |           +- Disjunction
+   |  |        |  |              |  |              +- Conjunction
+   |  |        |  |              |  |                 +- Equality
+   |  |        |  |              |  |                    +- Comparison
+   |  |        |  |              |  |                       +- GenericCallLikeComparison
+   |  |        |  |              |  |                          +- InfixOperation
+   |  |        |  |              |  |                             +- ElvisExpression
+   |  |        |  |              |  |                                +- InfixFunctionCall
+   |  |        |  |              |  |                                   +- RangeExpression
+   |  |        |  |              |  |                                      +- AdditiveExpression
+   |  |        |  |              |  |                                         +- MultiplicativeExpression
+   |  |        |  |              |  |                                            +- AsExpression
+   |  |        |  |              |  |                                               +- PrefixUnaryExpression
+   |  |        |  |              |  |                                                  +- PostfixUnaryExpression
+   |  |        |  |              |  |                                                     +- PrimaryExpression
+   |  |        |  |              |  |                                                        +- StringLiteral
+   |  |        |  |              |  |                                                           +- LineStringLiteral
+   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN
+   |  |        |  |              |  |                                                              +- LineStringContent
+   |  |        |  |              |  |                                                              |  +- T-LineStrText
+   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE
+   |  |        |  |              |  +- Semis
+   |  |        |  |              |  |  +- T-NL
+   |  |        |  |              |  +- Statement
+   |  |        |  |              |     +- Declaration
+   |  |        |  |              |        +- PropertyDeclaration
+   |  |        |  |              |           +- T-VAL
+   |  |        |  |              |           +- VariableDeclaration
+   |  |        |  |              |           |  +- SimpleIdentifier
+   |  |        |  |              |           |     +- T-Identifier
+   |  |        |  |              |           +- T-ASSIGNMENT
+   |  |        |  |              |           +- T-NL
+   |  |        |  |              |           +- Expression
+   |  |        |  |              |           |  +- Disjunction
+   |  |        |  |              |           |     +- Conjunction
+   |  |        |  |              |           |        +- Equality
+   |  |        |  |              |           |           +- Comparison
+   |  |        |  |              |           |              +- GenericCallLikeComparison
+   |  |        |  |              |           |                 +- InfixOperation
+   |  |        |  |              |           |                    +- ElvisExpression
+   |  |        |  |              |           |                       +- InfixFunctionCall
+   |  |        |  |              |           |                          +- RangeExpression
+   |  |        |  |              |           |                             +- AdditiveExpression
+   |  |        |  |              |           |                                +- MultiplicativeExpression
+   |  |        |  |              |           |                                   +- AsExpression
+   |  |        |  |              |           |                                      +- PrefixUnaryExpression
+   |  |        |  |              |           |                                         +- PostfixUnaryExpression
+   |  |        |  |              |           |                                            +- PrimaryExpression
+   |  |        |  |              |           |                                               +- StringLiteral
+   |  |        |  |              |           |                                                  +- MultiLineStringLiteral
+   |  |        |  |              |           |                                                     +- T-MultiDollarPrefix
+   |  |        |  |              |           |                                                     +- T-TRIPLE_QUOTE_OPEN
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrRef
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
+   |  |        |  |              |           |                                                     +- MultiLineStringContent
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
+   |  |        |  |              |           |                                                     +- T-TRIPLE_QUOTE_CLOSE
+   |  |        |  |              |           +- T-NL
+   |  |        |  |              +- T-RCURL
+   |  |        |  +- Semis
+   |  |        |     +- T-NL
+   |  |        +- T-RCURL
+   |  +- Semis
+   |     +- T-NL
+   |     +- T-NL
+   +- EOF

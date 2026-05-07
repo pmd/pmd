@@ -22,7 +22,7 @@ fi
 #
 set +e # don't stop for error "command not found" - it is handled
 ruby_version_full=$(ruby --version 2>&1)
-if ruby_version=$(echo "${ruby_version_full}" | grep "ruby 3" | head -1 2>&1) && [ -n "${ruby_version}" ]; then
+if ruby_version=$(echo "${ruby_version_full}" | grep "ruby 4" | head -1 2>&1) && [ -n "${ruby_version}" ]; then
   echo "Using ${ruby_version_full}"
 else
   echo "Wrong ruby version! Expected ruby 3"
