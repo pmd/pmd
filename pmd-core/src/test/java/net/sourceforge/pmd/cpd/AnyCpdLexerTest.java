@@ -52,11 +52,13 @@ class AnyCpdLexerTest {
      * Tests that [core][cpd] AnyTokenizer doesn't count columns correctly #2760 is actually fixed.
      */
     @Test
-    void testTokenPosition() throws IOException {
+    void testTokenPosition() {
         AnyCpdLexer tokenizer = new AnyCpdLexer();
         TextDocument code = TextDocument.readOnlyString("a;\nbbbb\n;", FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        CpdLexer.tokenize(tokenizer, code, tokens);
+        try (TokenFactory tf = tokens.factoryForFile(code)) {
+            tokenizer.tokenize(code, tf);
+        }
         TokenEntry bbbbToken = tokens.getTokens().get(2);
         assertEquals(2, bbbbToken.getBeginLine());
         assertEquals(1, bbbbToken.getBeginColumn());
@@ -64,10 +66,12 @@ class AnyCpdLexerTest {
     }
 
 
-    private Tokens compareResult(AnyCpdLexer tokenizer, String source, List<String> expectedImages) throws IOException {
+    private Tokens compareResult(AnyCpdLexer tokenizer, String source, List<String> expectedImages) {
         TextDocument code = TextDocument.readOnlyString(source, FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
-        CpdLexer.tokenize(tokenizer, code, tokens);
+        try (TokenFactory tf = tokens.factoryForFile(code)) {
+            tokenizer.tokenize(code, tf);
+        }
 
         List<String> tokenStrings = new ArrayList<>();
         for (TokenEntry token : tokens.getTokens()) {

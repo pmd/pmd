@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Iterator;
@@ -17,6 +18,7 @@ public class SimpleRenderer implements CPDReportRenderer {
 
     private String separator;
     private boolean trimLeadingWhitespace;
+    private boolean printAllMarks = false;
 
     public static final String DEFAULT_SEPARATOR = "=====================================================================";
 
@@ -31,6 +33,16 @@ public class SimpleRenderer implements CPDReportRenderer {
 
     public SimpleRenderer(String theSeparator) {
         separator = theSeparator;
+    }
+
+    public void setPrintAllMarks(boolean printAllMarks) {
+        this.printAllMarks = printAllMarks;
+    }
+
+    static void printlnReport(PrintStream out, CPDReport report) throws IOException {
+        SimpleRenderer renderer = new SimpleRenderer();
+        PrintWriter pw = new PrintWriter(out);
+        renderer.render(report, pw);
     }
 
     @Override
@@ -51,7 +63,10 @@ public class SimpleRenderer implements CPDReportRenderer {
 
     private void renderOn(CPDReport report, PrintWriter writer, Match match) throws IOException {
 
-        writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(String.valueOf(match.getTokenCount()))
+        String tokenCount = match.getMinTokenCount() == match.getMaxTokenCount() ? String.valueOf(match.getMinTokenCount())
+                                                                                 : match.getMinTokenCount() + ".." + match.getMaxTokenCount();
+
+        writer.append("Found a ").append(String.valueOf(match.getLineCount())).append(" line (").append(tokenCount)
               .append(" tokens) duplication in the following files: ").println();
 
         for (Mark mark : match) {
@@ -64,18 +79,54 @@ public class SimpleRenderer implements CPDReportRenderer {
 
         writer.println(); // add a line to separate the source from the desc above
 
-        Chars source = report.getSourceCodeSlice(match.getFirstMark());
+        if (printAllMarks) {
+            for (Mark mark : match) {
+                writer.println(mark.getLocation().startPosToStringWithFile());
+                printMark(report, writer, mark);
+                writer.println();
+            }
+        } else {
+            Mark firstMark = match.getFirstMark();
+            printMark(report, writer, firstMark);
+        }
+    }
+
+    private void printMark(CPDReport report, PrintWriter writer, Mark firstMark) throws IOException {
+        FileLocation firstLoc = firstMark.getLocation();
+        writeColumnMarker(true, firstLoc.getStartColumn(), writer);
+        Chars source = report.getSourceCodeSlice(firstMark);
 
         if (trimLeadingWhitespace) {
             for (Chars line : StringUtil.linesWithTrimIndent(source)) {
                 line.writeFully(writer);
                 writer.println();
             }
-            return;
+        } else {
+            for (Chars line : source.lines()) {
+                line.writeFully(writer);
+                writer.println();
+            }
+            if (!source.endsWith("\n")) {
+                writer.println();
+            }
         }
-
-        source.writeFully(writer);
-        writer.println();
+        writeColumnMarker(false, firstLoc.getEndColumn(), writer);
     }
 
+    private static void writeColumnMarker(boolean start, int col, PrintWriter writer) {
+        if (!start) {
+            // end col is exclusive
+            col--;
+        }
+        char marker = start ? 'v' : '^';
+        String hinweis = start ? " starting from here (col " + col + ")"
+                               : " ending here (col " + col + ")";
+
+        StringBuilder sb = new StringBuilder(col + hinweis.length());
+        for (int i = 0; i < col - 1; i++) {
+            sb.append('-');
+        }
+        sb.append(marker).append(hinweis);
+        writer.append(sb).println();
+    }
 }

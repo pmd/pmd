@@ -50,6 +50,8 @@ public abstract class AbstractConfiguration {
 
     private Path reportFile;
 
+    private int threads = Runtime.getRuntime().availableProcessors();
+
     private boolean failOnViolation = true;
     private boolean failOnError = true;
 
@@ -203,6 +205,32 @@ public abstract class AbstractConfiguration {
         for (LanguageVersion languageVersion : languageVersions) {
             setDefaultLanguageVersion(languageVersion);
         }
+    }
+
+    /**
+     * Get the number of threads to use when processing files.
+     * A value of zero means the main thread will be used to run the
+     * analyses.
+     *
+     * @return The number of threads.
+     */
+    public int getThreads() {
+        return threads;
+    }
+
+    /**
+     * Set the number of threads to use when processing files.
+     * A value of zero means the main thread will be used to run the
+     * analyses.
+     *
+     * @param threads The number of threads.
+     * @throws IllegalArgumentException If the parameter is negative
+     */
+    public void setThreads(int threads) {
+        if (threads < 0) {
+            throw new IllegalArgumentException("threads cannot be negative: " + threads);
+        }
+        this.threads = threads;
     }
 
     /**

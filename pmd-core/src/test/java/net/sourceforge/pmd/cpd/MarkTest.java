@@ -43,8 +43,7 @@ class MarkTest {
         TokenEntry endToken = tokens.addToken("}", filename,
                                               beginLine + lineCount, 1, beginLine + lineCount - 1, endColumn);
 
-        final Mark mark = new Mark(token);
-        mark.setEndToken(endToken);
+        final Mark mark = new Mark(token, endToken);
         FileLocation loc = mark.getLocation();
 
         assertEquals(token, mark.getToken());

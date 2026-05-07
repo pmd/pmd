@@ -8,7 +8,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.IteratorUtil;
@@ -70,8 +72,36 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
     }
 
 
-    /** Returns a text region with the coordinates of this token. */
+    /**
+     * Returns a text region with the coordinates of this token in the source
+     * document (after escape translation). The coordinates are compatible with
+     * {@link TextDocument#sliceTranslatedText(TextRegion)}.
+     *
+     * @see TextDocument#sliceTranslatedText(TextRegion)
+     * @see #getInputRegion()
+     */
     TextRegion getRegion();
+
+    /**
+     * Return the region corresponding to this token in the source
+     * document (before escape translation). You should only use this
+     * when you don't have access to the translated TextDocument and
+     * need to slice the untranslated one yourself. The use case for
+     * now is CPD internals. If you are using this from within PMD's
+     * AST, you will not need to use this and should prefer
+     * {@link #getRegion()}.
+     *
+     * @experimental The only use case for now is CPD internals, and
+     *     this method may be confused with the usually more appropriate
+     *     {@link #getRegion()}. Maybe we will manage to remove this
+     *     method.
+     * @see TextDocument#sliceOriginalText(TextRegion)
+     * @see TextDocument#inputRegion(TextRegion)
+     */
+    @Experimental
+    default TextRegion getInputRegion() {
+        return getRegion();
+    }
 
     /**
      * Returns true if this token is an end-of-file token. This is the

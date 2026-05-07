@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -207,15 +208,14 @@ class CpdAnalysisTest {
         PmdReporter reporter = mock(PmdReporter.class);
         config.setReporter(reporter);
 
-        config.setSkipLexicalErrors(false);
+        config.setFailOnError(false);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
             cpd.performAnalysis();
         }
-        verify(reporter).errorEx(eq("Error while tokenizing"), any(LexException.class));
-        verify(reporter).errorEx(eq("Error while tokenizing"), any(MalformedSourceException.class));
-        verify(reporter).error(eq("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset."));
+        verify(reporter).logEx(eq(Level.WARN), eq("Skipping file"), any(), any(LexException.class));
+        verify(reporter).logEx(eq(Level.WARN), eq("Skipping file"), any(), any(MalformedSourceException.class));
         verifyNoMoreInteractions(reporter);
     }
 
@@ -243,8 +243,8 @@ class CpdAnalysisTest {
         assertEquals("foo2.dummy", error2.getFileId().getFileName());
         assertThat(error2.getDetail(), containsString(MalformedSourceException.class.getSimpleName()));
 
-        verify(reporter).errorEx(eq("Skipping file"), any(LexException.class));
-        verify(reporter).errorEx(eq("Skipping file"), any(MalformedSourceException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(LexException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(MalformedSourceException.class));
         verifyNoMoreInteractions(reporter);
     }
 
@@ -303,8 +303,8 @@ class CpdAnalysisTest {
             assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
             cpd.performAnalysis();
         }
-        verify(reporter).errorEx(eq("Skipping file"), any(LexException.class));
-        verify(reporter).errorEx(eq("Skipping file"), any(MalformedSourceException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(LexException.class));
+        verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(MalformedSourceException.class));
         verifyNoMoreInteractions(reporter);
     }
 

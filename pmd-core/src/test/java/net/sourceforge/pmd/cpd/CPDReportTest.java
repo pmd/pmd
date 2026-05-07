@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class CPDReportTest {
         assertEquals(2, filtered.getMatches().size());
         for (Match match : filtered.getMatches()) {
             boolean containsFile1 =
-                match.getMarkSet().stream().map(Mark::getFileId)
+                match.getMarks().stream().map(Mark::getFileId)
                      .anyMatch(file1::equals);
             assertTrue(containsFile1);
         }
@@ -49,8 +50,10 @@ class CPDReportTest {
     }
 
     private Match createMatch(CpdReportBuilder builder, FileId file1, FileId file2, int line) {
-        return new Match(5,
-                         builder.tokens.addToken("firstToken", file1, line, 1, line, 1),
-                         builder.tokens.addToken("secondToken", file2, line, 2, line, 2));
+        Mark fst = builder.createMark("firstToken", file1, line, 1);
+        Mark snd = builder.createMark("secondToken", file2, line, 1);
+        Match match = new Match.MatchBuilder().addMark(fst).addMark(snd).build();
+        assertNotNull(match);
+        return match;
     }
 }

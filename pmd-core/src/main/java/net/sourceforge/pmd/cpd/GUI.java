@@ -26,10 +26,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -617,10 +617,7 @@ public class GUI implements CPDListener {
 
     private static String getLabel(Match match) {
 
-        Set<FileId> sourceIDs = new HashSet<>(match.getMarkCount());
-        for (Mark mark : match) {
-            sourceIDs.add(mark.getLocation().getFileId());
-        }
+        Set<FileId> sourceIDs = match.getMarks().stream().map(Mark::getFileId).collect(Collectors.toSet());
 
         if (sourceIDs.size() == 1) {
             FileId sourceId = sourceIDs.iterator().next();
