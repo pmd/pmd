@@ -130,7 +130,7 @@ public class Foo {
     </rule>
     <rule name="AssertStatementInTest"
             language="java"
-            since="7.24.0"
+            since="7.25.0"
             message="Assert statements should not be used in test code."
             class="net.sourceforge.pmd.lang.java.rule.bestpractices.AssertStatementInTestRule"
             externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#assertstatementintest">
