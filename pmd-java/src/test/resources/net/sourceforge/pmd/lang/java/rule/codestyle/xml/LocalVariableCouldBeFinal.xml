@@ -450,6 +450,9 @@ public class Test {
         <description>[java] false negative in LocalVariableCouldBeFinal when multiple variables are declared in the same line #6602</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable 'j' could be declared final</message>
+        </expected-messages>
         <code><![CDATA[
 class Foo {
     void foo(boolean cond1) {
