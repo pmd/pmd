@@ -492,4 +492,59 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation (TODO)</description>
+        <rule-property name="checkCaseStmt">true</rule-property>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>5-5,9-10,14-15,17-20,22-25,27-30,32-35,39-41,42-43</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (x == 0)
+            synchronized // <--violation: line 5 (reported on synchronized, first statement of if)
+            (Foo.class) { x++; }
+
+        if (x == 0)
+            x++ // <--violation: line 9
+        ;       //    |- until line 10 to the semicolon, which is part of the first statement of if
+
+        if (x == 0) { x++; }
+        else
+        x-- // <--violation: line 14
+        ;   //    |- until line 15
+
+        while // <--violation: line 17
+        (true) //   |
+        x++ //      |
+        ; //        |- until line 20
+
+        for // <--violation: line 22
+        (; ; ) // |
+        x++ //    |
+        ; //      |- until line 25
+
+        for // <--violation: line 27
+        (String s : new String[] {"a"})
+        x++ //    |
+        ;   //    |- until line 30
+
+        do // <--violation: line 32
+        x++; //        |
+        while(true) // |
+        ; //           |-until line 35
+
+        switch (x) {
+        case 1:
+        case 2:    // <--violation: line 39
+            x++;   //    |
+            break; //    |- until line 41
+        default:   // <--violation: line 42
+            break; //    |- until line 43
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -1044,7 +1044,29 @@ public final class TypeOps {
         @Override
         public JTypeMirror visitTypeVar(JTypeVar t, RecursionStop recursionStop) {
             if (t.isCaptured()) {
-                return t.getUpperBound().acceptVisitor(UPWARDS_PROJECTOR, recursionStop);
+                if (recursionStop.contains(t)) {
+                    // Called via recurseIfNotDone body (direct type-arg path).
+                    // Guard separately against re-entry through wildcards within this traversal.
+                    if (recursionStop.enterContainsVar(t)) {
+                        try {
+                            return t.getUpperBound().acceptVisitor(UPWARDS_PROJECTOR, recursionStop);
+                        } finally {
+                            recursionStop.leaveContainsVar(t);
+                        }
+                    }
+                    // Cycle: t's bound is already being projected via the contains path.
+                    return t;
+                } else if (recursionStop.enterFreshVar(t)) {
+                    // Fresh call or via wildcard bound. Guard against re-entry through wildcards.
+                    try {
+                        return t.getUpperBound().acceptVisitor(UPWARDS_PROJECTOR, recursionStop);
+                    } finally {
+                        recursionStop.leaveFreshVar(t);
+                    }
+                } else {
+                    // Cycle via wildcard path: this captured var's bound is already being visited.
+                    return t;
+                }
             }
             return t;
         }
@@ -1098,7 +1120,24 @@ public final class TypeOps {
         @Override
         public JTypeMirror visitTypeVar(JTypeVar t, RecursionStop recursionStop) {
             if (t.isCaptured()) {
-                return t.getLowerBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
+                if (recursionStop.contains(t)) {
+                    if (recursionStop.enterContainsVar(t)) {
+                        try {
+                            return t.getLowerBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
+                        } finally {
+                            recursionStop.leaveContainsVar(t);
+                        }
+                    }
+                    return NO_DOWN_PROJECTION;
+                } else if (recursionStop.enterFreshVar(t)) {
+                    try {
+                        return t.getLowerBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
+                    } finally {
+                        recursionStop.leaveFreshVar(t);
+                    }
+                } else {
+                    return NO_DOWN_PROJECTION;
+                }
             }
             return t;
         }
@@ -1112,12 +1151,66 @@ public final class TypeOps {
     static final class RecursionStop {
 
         private Set<JTypeVar> set;
+        /**
+         * Tracks captured vars currently being projected via a fresh call or wildcard-bound
+         * path (i.e., NOT via a {@link #recurseIfNotDone} body). Used to detect cycles where
+         * a wildcard's bound leads back to the same captured var.
+         */
+        private Set<JTypeVar> freshCallStack;
+        /**
+         * Tracks captured vars currently being projected via a {@link #recurseIfNotDone} body
+         * call (i.e., {@link #contains} returned true). Used to detect cycles where the var's
+         * bound, followed from inside a recurseIfNotDone body, leads back to the same var via
+         * a wildcard rather than as a direct type argument.
+         */
+        private Set<JTypeVar> containsCallStack;
 
         boolean isAbsent(JTypeVar tvar) {
             if (set == null) {
                 set = new LinkedHashSet<>(1);
             }
             return set.add(tvar);
+        }
+
+        /** Returns true if {@code tvar} is already in the set managed by {@link #recurseIfNotDone}. */
+        boolean contains(JTypeVar tvar) {
+            return set != null && set.contains(tvar);
+        }
+
+        /**
+         * Enters a captured var projection via a fresh or wildcard-bound path.
+         * Returns true if the var was not already being projected this way (no cycle),
+         * false if a cycle is detected.
+         */
+        boolean enterFreshVar(JTypeVar tvar) {
+            if (freshCallStack == null) {
+                freshCallStack = new HashSet<>(2);
+            }
+            return freshCallStack.add(tvar);
+        }
+
+        void leaveFreshVar(JTypeVar tvar) {
+            if (freshCallStack != null) {
+                freshCallStack.remove(tvar);
+            }
+        }
+
+        /**
+         * Enters a captured var projection via a {@link #recurseIfNotDone} body.
+         * Returns true if the var was not already being projected this way (no cycle),
+         * false if a cycle is detected.
+         */
+        boolean enterContainsVar(JTypeVar tvar) {
+            if (containsCallStack == null) {
+                containsCallStack = new HashSet<>(2);
+            }
+            return containsCallStack.add(tvar);
+        }
+
+        void leaveContainsVar(JTypeVar tvar) {
+            if (containsCallStack != null) {
+                containsCallStack.remove(tvar);
+            }
         }
 
         <T extends JTypeMirror> JTypeMirror recurseIfNotDone(T t, BiFunction<T, RecursionStop, JTypeMirror> body) {
