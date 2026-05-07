@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
 import nl.stokpop.typemapper.model.TypedAst;
@@ -17,6 +21,8 @@ import nl.stokpop.typemapper.model.TypedAst;
  * Test utility that runs kotlin-type-mapper analysis on Kotlin source files (or inline
  * code strings) and injects the resulting {@link KotlinTypeAnalysisContext} into
  * {@link KotlinTypeAnalysisContextHolder} so XPath functions have type data available.
+ *
+ * <p>Analysis is done entirely in memory — no temporary files are written to disk.
  *
  * <p>Usage in tests:
  * <pre>{@code
@@ -28,111 +34,58 @@ import nl.stokpop.typemapper.model.TypedAst;
  *
  * @AfterEach
  * void tearDown() {
- *     KotlinTypeAnalysisContextHolder.clear();
+ *     KotlinTypeAnalysisContextHolder.clearGlobal();
  * }
  * }</pre>
  */
-public class KotlinTypeXPathTestHelper implements AutoCloseable {
+public class KotlinTypeXPathTestHelper {
 
-    private final File sourceDir;
-    private File tempDir;
+    private final Map<String, String> sources;
 
-    KotlinTypeXPathTestHelper(File sourceDir) {
-        this.sourceDir = sourceDir;
+    private KotlinTypeXPathTestHelper(Map<String, String> sources) {
+        this.sources = sources;
     }
 
-    /** Creates a helper that will analyze all .kt files in the given directory. */
+    /**
+     * Creates a helper that will analyze all .kt files in the given directory.
+     * Files are read into memory and LF-normalized; no temp directory is created.
+     */
     public static KotlinTypeXPathTestHelper forDirectory(File dir) {
-        return new KotlinTypeXPathTestHelper(dir);
-    }
-
-    /** Returns the source directory used by this helper (for locating snippet files). */
-    public File getSourceDir() {
-        return sourceDir;
+        try {
+            File[] ktFiles = dir.listFiles((d, name) -> name.endsWith(".kt"));
+            Map<String, String> sources = new LinkedHashMap<>();
+            if (ktFiles != null) {
+                Arrays.sort(ktFiles);
+                for (File f : ktFiles) {
+                    String content = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
+                    sources.put(f.getName(), normalizeLf(content));
+                }
+            }
+            return new KotlinTypeXPathTestHelper(Collections.unmodifiableMap(sources));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     /**
      * Creates a helper that will analyze a single Kotlin source code string.
-     * The code is written to a temporary file named {@code snippet.kt}.
+     * The code is analyzed as a virtual file named {@code snippet.kt}; no disk I/O occurs.
      */
     public static KotlinTypeXPathTestHelper forCode(String kotlinCode) {
-        try {
-            File tempDir = Files.createTempDirectory("pmd-kotlin-test-").toFile();
-            File snippetFile = new File(tempDir, "snippet.kt");
-            Files.write(snippetFile.toPath(), normalizeLf(kotlinCode).getBytes(StandardCharsets.UTF_8));
-            KotlinTypeXPathTestHelper helper = new KotlinTypeXPathTestHelper(tempDir) {
-                @Override
-                public void close() {
-                    KotlinTypeAnalysisContextHolder.clear();
-                    deleteRecursively(tempDir);
-                }
-            };
-            helper.tempDir = tempDir;
-            return helper;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        return new KotlinTypeXPathTestHelper(Collections.singletonMap("snippet.kt", normalizeLf(kotlinCode)));
     }
 
     /**
-     * Runs kotlin-type-mapper analysis and injects the context into the global holder
-     * so PMD's worker threads can access it during analysis.
+     * Runs kotlin-type-mapper analysis entirely in memory and injects the context into the
+     * global holder so PMD's worker threads can access it during analysis.
      * Call this in {@code @BeforeEach}.
-     *
-     * <p>Source files are copied to a temp directory with LF line endings before
-     * analysis to match PMD's own line-ending normalization. Without this, K1
-     * analysis on Windows (where files are checked out with CRLF) would produce
-     * offsets that do not align with PMD's LF-normalized text, causing position
-     * mismatches and "Wrong line separators" processing errors.
      */
     public void injectContext() {
-        File analysisDir = writeLfNormalizedTempDir(sourceDir);
-        try {
-            TypedAst ast = new KotlinTypeMapper(analysisDir, new java.util.ArrayList<>(), false).analyze();
-            KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
-        } finally {
-            deleteRecursively(analysisDir);
-        }
-    }
-
-    private static File writeLfNormalizedTempDir(File sourceDir) {
-        try {
-            File tempDir = Files.createTempDirectory("pmd-kotlin-test-norm-").toFile();
-            File[] ktFiles = sourceDir.listFiles((d, name) -> name.endsWith(".kt"));
-            if (ktFiles != null) {
-                for (File src : ktFiles) {
-                    String content = new String(Files.readAllBytes(src.toPath()), StandardCharsets.UTF_8);
-                    Files.write(new File(tempDir, src.getName()).toPath(),
-                            normalizeLf(content).getBytes(StandardCharsets.UTF_8));
-                }
-            }
-            return tempDir;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        TypedAst ast = KotlinTypeMapper.fromSources(sources, Collections.<java.io.File>emptyList());
+        KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
     }
 
     private static String normalizeLf(String text) {
         return text.replace("\r\n", "\n").replace("\r", "\n");
-    }
-
-    @Override
-    public void close() {
-        KotlinTypeAnalysisContextHolder.clearGlobal();
-        if (tempDir != null) {
-            deleteRecursively(tempDir);
-        }
-    }
-
-    static void deleteRecursively(File file) {
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            if (children != null) {
-                for (File child : children) {
-                    deleteRecursively(child);
-                }
-            }
-        }
-        file.delete();
     }
 }
