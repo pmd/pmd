@@ -1,5 +1,6 @@
 *       text=auto
 *.java  text
+*.kt    text eol=lf
 *.xml   text
 *.jjt   text
 *.jj    text
