@@ -2037,6 +2037,16 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
+<h4 id="updated-antlr-library-to-4132">Updated antlr library to 4.13.2</h4>
+<p>We have updated the antlr library (parser generator) from 4.9.3 to the latest version 4.13.2,
+in order to be able to use the latest version of Apex parser library.</p>
+
+<p>This is an incompatible update: In case you use custom language modules based on antlr, you
+need to make sure to regenerate all of your lexers and parsers with the new antlr version.</p>
+
+<p>For the antlr based language modules, that PMD ships (kotlin and swift and various CPD modules),
+this is already done.</p>
+
 <h4 id="️-changed-rules">🌟️ Changed Rules</h4>
 <ul>
   <li>The rule <a href="pmd_rules_java_codestyle.html#onlyonereturn"><code class="language-plaintext highlighter-rouge">OnlyOneReturn</code></a> has a new property <code class="language-plaintext highlighter-rouge">allowGuardIfs</code>. When this property is
@@ -2094,6 +2104,7 @@ is still ongoing, the following Java rules have been updated in this release:
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4972">#4972</a>: [core] Update antlr to 4.13.2</li>
       <li><a href="https://github.com/pmd/pmd/issues/6308">#6308</a>: [core] CPD Markdown format: Add syntax highlighting</li>
     </ul>
   </li>
@@ -2142,6 +2153,8 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6597">#6597</a>: [java] Fix #3212: Enhance UseStandardCharsets - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6601">#6601</a>: [java] Fix #4288: Document that CallSuperFirst and CallSuperLast are android only - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6605">#6605</a>: [java] Fix #6308: Add syntax highlighting to MarkdownRenderer - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6621">#6621</a>: [core] Fix #4972: Update antlr from 4.9.3 to 4.13.2 - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6654">#6654</a>: [swift] Fix invalid swift token OSXApplicationExtension - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
