@@ -1623,7 +1623,19 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryblock">
         <description>
-            You can remove the braces around this block without changing the program.
+Reports blocks that are unnecessary as they don't introduce a new scope.
+
+Unnecessary blocks can make code harder to read and may be misleading. They are often used
+to introduce a new variable scope, but if no variables or classes are declared within the
+block, it serves no purpose. Similarly, a block that is the only statement within another
+block is redundant. Removing them simplifies the code structure.
+
+* A block is considered unnecessary if:
+    * It is nested within another block and does not contain any local variable or local
+      class declarations.
+    * It is the only child of another block.
+* Blocks that are required by the language syntax (e.g., as the body of an `if`, `for`,
+  `while` statement, or a method body) are not reported.
         </description>
         <priority>3</priority>
         <example><![CDATA[
