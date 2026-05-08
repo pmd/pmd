@@ -1619,7 +1619,7 @@ public class Foo {
     <rule name="UnnecessaryBlock"
           language="java"
           since="7.25.0"
-          message="This block isn't necessary."
+          message="This block isn''t necessary."
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryblock">
         <description>
