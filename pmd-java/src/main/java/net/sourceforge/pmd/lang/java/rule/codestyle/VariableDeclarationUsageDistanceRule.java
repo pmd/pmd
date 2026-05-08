@@ -53,14 +53,14 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
                 || JavaRuleUtil.hasSideEffect(initializer, emptySet())) {
                 continue;
             }
-            boolean referencedEarly = false;
-            for (ASTStatement stmt : statementsAfter(node).take(getProperty(MAX_DISTANCE))) {
+            int distance = 1;
+            for (ASTStatement stmt : statementsAfter(node)) {
                 if (JavaRuleUtil.hasReferencesIn(stmt, id)) {
-                    referencedEarly = true;
                     break;
                 }
+                distance++;
             }
-            if (!referencedEarly) {
+            if (distance > getProperty(MAX_DISTANCE)) {
                 asCtx(data).addViolation(node, id.getName());
             }
         }
