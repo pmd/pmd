@@ -9,6 +9,6 @@ import net.sourceforge.pmd.test.PmdRuleTst;
 /**
  * Tests for {@link VariableDeclarationUsageDistanceRule}.
  */
-public class VariableDeclarationUsageDistanceTest extends PmdRuleTst {
+class VariableDeclarationUsageDistanceTest extends PmdRuleTst {
     // no additional tests
 }
