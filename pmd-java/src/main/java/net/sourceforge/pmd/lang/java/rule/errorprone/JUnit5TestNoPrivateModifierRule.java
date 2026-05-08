@@ -13,6 +13,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
+/**
+ * @since 7.25.0
+ */
 public class JUnit5TestNoPrivateModifierRule extends AbstractJavaRulechainRule {
 
     public JUnit5TestNoPrivateModifierRule() {
