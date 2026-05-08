@@ -40,4 +40,9 @@ class KotlinParserMultiLineStringTest extends BaseKotlinTreeDumpTest {
     void testSingleDollarExpressionWithoutPrefix() {
         doTest("SingleDollarExprNoPrefix");
     }
+
+    @Test
+    void testMultiDollarLineStringRefAndExpr() {
+        doTest("MultiDollarLineStringRef");
+    }
 }
