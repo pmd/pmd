@@ -110,18 +110,13 @@ public final class TestFrameworksUtil {
     }
 
     public static boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return method.getDeclaredAnnotations().any(
-            it -> {
-                String canonicalName = it.getTypeMirror().getSymbol().getCanonicalName();
-                return JUNIT5_ALL_TEST_ANNOTS.contains(canonicalName);
-            }
-        );
+        return isJUnit5Method(method.getSymbol());
     }
 
-    public static boolean isJUnit5Method(JMethodSymbol methodSymbol) {
-        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(it -> {
-            return JUNIT5_ALL_TEST_ANNOTS.contains(it.getBinaryName());
-        });
+    private static boolean isJUnit5Method(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(
+                it -> JUNIT5_ALL_TEST_ANNOTS.contains(it.getBinaryName())
+        );
     }
 
     public static boolean isJUnit3Method(ASTMethodDeclaration method) {
