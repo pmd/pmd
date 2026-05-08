@@ -42,4 +42,36 @@ import java.util.List;
 public class Foo{}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="minimum">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1-6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Vector; // <--violation: line 1
+import java.util.Vector;
+import java.util.Vector;
+// unrelated comment
+import java.util.Vector
+; // line 6
+
+public class Foo{}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation (only one import)</description>
+        <rule-property name="minimum">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-4</expected-linenumbers>
+        <code><![CDATA[
+// unrelated comment
+import // <--violation: line 2
+java.util.Vector
+;
+
+public class Foo{}
+        ]]></code>
+    </test-code>
 </test-data>
