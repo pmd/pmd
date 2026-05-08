@@ -133,6 +133,72 @@ class Foo {
                 }
             }
 
+            test("Bug: projectUpwards does not StackOverflow with cyclic captured type var bounds") {
+                // Container<T extends Container<? extends T>> has an F-bound that contains
+                // a wildcard self-reference. Calling getValue() on Container<?> returns a
+                // captured type variable α whose upper bound is Container<? extends α>.
+                // Projecting α upwards visits Container<? extends α>, then tries to project
+                // the wildcard bound α again — a cycle. Without the fix, this SOEs because
+                // visitTypeVar for captured vars followed the bound without tracking the var
+                // in the RecursionStop, so the guard in recurseIfNotDone (which only fires
+                // for JTypeVar args in visitClass) was never reached for this path.
+                val (acu, spy) = javaParser.parseWithTypeInferenceSpy(
+                    """
+                    class Container<T extends Container<? extends T>> {
+                        T getValue() { return null; }
+                    }
+                    class Foo {
+                        void test(Container<?> c) {
+                            var x = c.getValue();
+                        }
+                    }
+                    """.trimIndent()
+                )
+
+                val (containerT) = acu.declaredTypeSignatures()
+                val xVar = acu.varId("x")
+
+                // α is the capture variable created from the `?` in Container<?>
+                val alpha = captureMatcher(`?`)
+
+                // projectUpwards(α) = Container<? extends α>
+                // (α's upper bound is Container<? extends α>; projecting it visits the
+                // wildcard bound α again but the cycle guard stops the recursion there,
+                // returning α unchanged, so the wildcard ? extends α is also unchanged)
+                spy.shouldBeOk {
+                    xVar shouldHaveType containerT[`?` extends alpha]
+                }
+            }
+
+            test("Bug: projectUpwards does not StackOverflow when captured var is a direct type arg whose bound cycles back via wildcard") {
+                // Variant of the previous test: here the captured var α appears as a DIRECT
+                // type argument of the class being projected (not just via a wildcard bound).
+                // visitClass calls recurseIfNotDone(α, body); body calls visitTypeVar(α) via
+                // the `contains` path. Without a guard there, following α's bound leads to
+                // Container<? extends α>, the wildcard path visits α again via `contains`,
+                // and the recursion never terminates.
+                val (acu, spy) = javaParser.parseWithTypeInferenceSpy(
+                    """
+                    class Container<T extends Container<? extends T>> {
+                        Container<T> wrap() { return null; }
+                    }
+                    class Foo {
+                        void test(Container<?> c) {
+                            var x = c.wrap();
+                        }
+                    }
+                    """.trimIndent()
+                )
+
+                val (containerT) = acu.declaredTypeSignatures()
+                val xVar = acu.varId("x")
+                val alpha = captureMatcher(`?`)
+
+                spy.shouldBeOk {
+                    xVar shouldHaveType containerT[`?` extends containerT[`?` extends alpha]]
+                }
+            }
+
             test("isSpecialUnresolved") {
                 val unresolved = ts.declaration(ts.createUnresolvedAsmSymbol("Unknown"))
                 TypeOps.isSpecialUnresolved(unresolved) shouldBe false

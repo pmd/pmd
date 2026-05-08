@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -21,7 +22,7 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
 
     private String binaryName;
     private @Nullable String canonicalName;
-    private String simpleName;
+    private JavaccToken simpleName;
 
     AbstractTypeDeclaration(int i) {
         super(i);
@@ -30,10 +31,18 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
     @Override
     public FileLocation getReportLocation() {
         if (isAnonymous()) {
+            ASTConstructorCall constructorCall = ancestors(ASTConstructorCall.class).first();
+            if (constructorCall != null) {
+                return constructorCall.getTypeNode().getReportLocation();
+            }
+            ASTEnumConstant enumConstant = ancestors(ASTEnumConstant.class).first();
+            if (enumConstant != null) {
+                return enumConstant.getReportLocation();
+            }
             return super.getReportLocation();
         } else {
             // report on the identifier, not the entire class.
-            return getModifiers().getLastToken().getNext().getReportLocation();
+            return simpleName.getReportLocation();
         }
     }
 
@@ -41,10 +50,10 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
     @Override
     public String getSimpleName() {
         assert simpleName != null : "Null simple name";
-        return simpleName;
+        return simpleName.getImage();
     }
 
-    final void setSimpleName(String simpleName) {
+    final void setSimpleName(JavaccToken simpleName) {
         this.simpleName = simpleName;
     }
 
