@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -155,7 +156,9 @@ public final class TestFrameworksUtil {
                    .any(TestFrameworksUtil::isTestMethod));
     }
 
-    public static boolean isJUnit5Class(JClassType typeMirror) {
+    public static boolean isJUnit5Class(ASTClassDeclaration node) {
+        JClassType typeMirror = node.getTypeMirror();
+
         return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
                 && typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
                         .findAny().isPresent();
