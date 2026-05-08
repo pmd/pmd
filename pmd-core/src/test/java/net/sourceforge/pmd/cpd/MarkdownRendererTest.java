@@ -32,7 +32,7 @@ class MarkdownRendererTest {
         FileId foo = CpdTestUtils.FOO_FILE_ID;
         FileId bar = CpdTestUtils.BAR_FILE_ID;
 
-        builder.setLanguageVersionOfFile(foo, java25).setLanguageVersionOfFile(bar, java25);
+        builder.setFileContent(foo, java25).setFileContent(bar, java25);
 
         int lineCount1 = 6;
         Mark mark1 = builder.createMark("public", foo, 48, lineCount1);

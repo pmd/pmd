@@ -23,6 +23,8 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -143,8 +145,10 @@ class XMLRendererTest {
 
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                                              .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
-        assertEquals(2, doc.getElementsByTagName("duplication").getLength());
-        assertEquals(4, doc.getElementsByTagName("file").getLength());
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertEquals(2, Integer.parseInt(xpath.evaluate("count(/pmd-cpd/duplication)", doc)), "duplication elements");
+        assertEquals(4, Integer.parseInt(xpath.evaluate("count(/pmd-cpd/duplication/file)", doc)), "file elements inside duplication");
+        assertEquals(2, Integer.parseInt(xpath.evaluate("count(/pmd-cpd/file[@totalNumberOfTokens])", doc)), "totalNumberOfTokens entries");
     }
 
     @Test
@@ -212,11 +216,11 @@ class XMLRendererTest {
         final CPDReportRenderer renderer = new XMLRenderer();
         CpdReportBuilder builder = new CpdReportBuilder();
         final FileId filename = CpdTestUtils.FOO_FILE_ID;
+        builder.setFileContent(filename, 888);
         final int lineCount = 2;
         final Mark mark1 = builder.createMark("public", filename, 1, lineCount, 2, 3);
         final Mark mark2 = builder.createMark("stuff", filename, 3, lineCount, 4, 5);
         builder.addMatch(new Match(75, mark1, mark2));
-        builder.recordNumTokens(filename, 888);
 
         final CPDReport report = builder.build();
 
@@ -238,11 +242,11 @@ class XMLRendererTest {
         final CPDReportRenderer renderer = new XMLRenderer();
         CpdReportBuilder builder = new CpdReportBuilder();
         final FileId filename = CpdTestUtils.FOO_FILE_ID;
+        builder.setFileContent(filename, 888);
         final int lineCount = 6;
         final Mark mark1 = builder.createMark("public", filename, 1, lineCount, 2, 3);
         final Mark mark2 = builder.createMark("stuff", filename, 73, lineCount, 4, 5);
         builder.addMatch(new Match(75, mark1, mark2));
-        builder.recordNumTokens(filename, 888);
 
         final CPDReport report = builder.build();
 

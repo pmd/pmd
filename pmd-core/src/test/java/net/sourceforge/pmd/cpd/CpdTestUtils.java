@@ -4,12 +4,12 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -27,70 +27,76 @@ final class CpdTestUtils {
     }
 
     static class CpdReportBuilder {
+        static final String DUMMY_FILE_CONTENT = generateDummyContent(60);
 
-        private final Map<FileId, String> fileContents = new HashMap<>();
-        final Tokens tokens = new Tokens();
+        private final Map<FileId, TextFile> files = new HashMap<>();
+        private final Map<FileId, Integer> numTokensPerFile = new HashMap<>();
+
+        private final Tokens tokens = new Tokens();
         private final List<Match> matches = new ArrayList<>();
-        private Map<FileId, Integer> numTokensPerFile = new HashMap<>();
-        private final Map<FileId, LanguageVersion> languageVersionPerFile = new HashMap<>();
         private final List<Report.ProcessingError> processingErrors = new ArrayList<>();
 
+        CpdReportBuilder setFileContent(FileId fileName) {
+            setFileContent(fileName, DUMMY_FILE_CONTENT);
+            return this;
+        }
+
+        CpdReportBuilder setFileContent(FileId fileName, LanguageVersion version) {
+            setFileContent(fileName, DUMMY_FILE_CONTENT, version);
+            return this;
+        }
+
+        CpdReportBuilder setFileContent(FileId fileName, int numTokens) {
+            setFileContent(fileName, DUMMY_FILE_CONTENT, DummyLanguageModule.getInstance().getDefaultVersion(), numTokens);
+            return this;
+        }
+
         CpdReportBuilder setFileContent(FileId fileName, String content) {
-            fileContents.put(fileName, content);
+            setFileContent(fileName, content, DummyLanguageModule.getInstance().getDefaultVersion());
             return this;
         }
 
-        public CpdReportBuilder setNumTokensPerFile(Map<FileId, Integer> numTokensPerFile) {
-            this.numTokensPerFile = numTokensPerFile;
+        CpdReportBuilder setFileContent(FileId fileName, String content, LanguageVersion version) {
+            setFileContent(fileName, content, version, 10);
             return this;
         }
 
-        public CpdReportBuilder recordNumTokens(FileId fileName, int numTokens) {
-            this.numTokensPerFile.put(fileName, numTokens);
+        CpdReportBuilder setFileContent(FileId fileName, String content, LanguageVersion version, int numTokens) {
+            files.put(fileName, TextFile.forCharSeq(
+                    content,
+                    fileName,
+                    version
+            ));
+            numTokensPerFile.put(fileName, numTokens);
             return this;
         }
 
-        public CpdReportBuilder setLanguageVersionOfFile(FileId fileName, LanguageVersion languageVersion) {
-            languageVersionPerFile.put(fileName, languageVersion);
-            return this;
-        }
-
-        public CpdReportBuilder addProcessingError(Report.ProcessingError processingError) {
+        CpdReportBuilder addProcessingError(Report.ProcessingError processingError) {
             processingErrors.add(processingError);
             return this;
         }
 
-        CPDReport build() {
-            Set<TextFile> textFiles = new HashSet<>();
-            fileContents.forEach((fname, contents) -> {
-                textFiles.add(TextFile.forCharSeq(
-                        contents,
-                        fname,
-                        languageVersionPerFile.getOrDefault(fname, DummyLanguageModule.getInstance().getDefaultVersion())
-                ));
-            });
-            return new CPDReport(
-                new SourceManager(new ArrayList<>(textFiles)),
-                matches,
-                numTokensPerFile,
-                processingErrors
-            );
-
-        }
-
         Mark createMark(String image, FileId fileName, int beginLine, int lineCount) {
-            fileContents.putIfAbsent(fileName, DUMMY_FILE_CONTENT);
+            if (!files.containsKey(fileName)) {
+                setFileContent(fileName);
+            }
             return new Mark(tokens.addToken(image, fileName, beginLine, 1, beginLine + lineCount - 1, 1));
         }
 
         CpdReportBuilder addMatch(Match match) {
-            fileContents.putIfAbsent(match.getFirstMark().getLocation().getFileId(), DUMMY_FILE_CONTENT);
+            for (Mark mark : match) {
+                if (!files.containsKey(mark.getLocation().getFileId())) {
+                    setFileContent(mark.getLocation().getFileId());
+                }
+            }
             matches.add(match);
             return this;
         }
 
         Mark createMark(String image, FileId fileId, int beginLine, int lineCount, int beginColumn, int endColumn) {
-            fileContents.putIfAbsent(fileId, DUMMY_FILE_CONTENT);
+            if (!files.containsKey(fileId)) {
+                setFileContent(fileId);
+            }
             final TokenEntry beginToken = tokens.addToken(image, fileId, beginLine, beginColumn, beginLine,
                                                           beginColumn + image.length());
             final TokenEntry endToken = tokens.addToken(image, fileId,
@@ -102,9 +108,17 @@ final class CpdTestUtils {
             return result;
         }
 
-    }
+        CPDReport build() {
+            assertEquals(files.size(), numTokensPerFile.size(), "files size/numTokensPerFile mismatch");
 
-    public static final String DUMMY_FILE_CONTENT = generateDummyContent(60);
+            return new CPDReport(
+                    new SourceManager(new ArrayList<>(files.values())),
+                    matches,
+                    numTokensPerFile,
+                    processingErrors
+            );
+        }
+    }
 
     static String generateDummyContent(int lengthInLines) {
         StringBuilder sb = new StringBuilder();

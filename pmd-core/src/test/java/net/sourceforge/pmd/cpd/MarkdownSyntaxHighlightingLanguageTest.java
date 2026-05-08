@@ -40,7 +40,7 @@ class MarkdownSyntaxHighlightingLanguageTest {
 
         FileId foo = CpdTestUtils.FOO_FILE_ID;
 
-        builder.setLanguageVersionOfFile(foo, langVer);
+        builder.setFileContent(foo, langVer);
 
         int lineCount1 = 6;
         Mark mark1 = builder.createMark("public", foo, 48, lineCount1);
