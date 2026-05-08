@@ -2066,9 +2066,12 @@ public class JumbledIncrementerRule1 {
           message="JUnit tests cannot be private"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnit5TestNoPrivateModifierRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junit5testnoprivatemodifier">
-        <description>
-            JUnit 5/6 tests cannot be private. Otherwise, they won't be found by the framework
-        </description>
+        <description><![CDATA[
+JUnit 5/6 tests cannot be private. Otherwise, they won't be found by the framework:
+
+> Test classes, test methods, and lifecycle methods are not required to be `public`, but they must not be `private`.
+> — [JUnit Documentation](https://docs.junit.org/6.0.3/writing-tests/test-classes-and-methods.html)
+        ]]></description>
         <priority>3</priority>
         <example>
 import org.junit.jupiter.api.Test;
