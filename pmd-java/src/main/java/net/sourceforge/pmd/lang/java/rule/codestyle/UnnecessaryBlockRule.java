@@ -11,6 +11,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
+/**
+ * @since 7.25.0
+ */
 public class UnnecessaryBlockRule extends AbstractJavaRulechainRule {
 
     public UnnecessaryBlockRule() {
