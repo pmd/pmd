@@ -23,6 +23,16 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Updated antlr library to 4.13.2
+We have updated the antlr library (parser generator) from 4.9.3 to the latest version 4.13.2,
+in order to be able to use the latest version of Apex parser library.
+
+This is an incompatible update: In case you use custom language modules based on antlr, you
+need to make sure to regenerate all of your lexers and parsers with the new antlr version.
+
+For the antlr based language modules, that PMD ships (kotlin and swift and various CPD modules),
+this is already done.
+
 #### 🌟️ Changed Rules
 * The rule {% rule java/codestyle/OnlyOneReturn %} has a new property `allowGuardIfs`. When this property is
   true, then guard ifs at the beginning of a method are allowed their return statements don't count.
@@ -73,6 +83,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 * core
+  * [#4972](https://github.com/pmd/pmd/issues/4972): \[core] Update antlr to 4.13.2
   * [#6308](https://github.com/pmd/pmd/issues/6308): \[core] CPD Markdown format: Add syntax highlighting
 * java
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
@@ -102,6 +113,8 @@ This is a {{ site.pmd.release_type }} release.
 * [#6597](https://github.com/pmd/pmd/pull/6597): \[java] Fix #3212: Enhance UseStandardCharsets - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6601](https://github.com/pmd/pmd/pull/6601): \[java] Fix #4288: Document that CallSuperFirst and CallSuperLast are android only - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6605](https://github.com/pmd/pmd/pull/6605): \[java] Fix #6308: Add syntax highlighting to MarkdownRenderer - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6621](https://github.com/pmd/pmd/pull/6621): \[core] Fix #4972: Update antlr from 4.9.3 to 4.13.2 - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6654](https://github.com/pmd/pmd/pull/6654): \[swift] Fix invalid swift token OSXApplicationExtension - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
