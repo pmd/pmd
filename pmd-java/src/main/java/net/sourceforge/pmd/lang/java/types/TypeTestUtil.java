@@ -11,7 +11,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -172,14 +175,20 @@ public final class TypeTestUtil {
         if (exactMatch == OptionalBool.YES) {
             return true;
         }
-        JTypeMirror closestNamedSuperclass = thisType;
+        // Look for canonicalName in supertypes.
+        // In case of anonymous classes start from direct supertype (class or interface)
+        // so that isA("Foo$1", anonymous) is false ("Foo$1" is not a canonical name).
+        JTypeMirror closestNamedSupertype = thisType;
         if (exactMatch == OptionalBool.UNKNOWN && thisType instanceof JClassType) {
-            closestNamedSuperclass = ((JClassType) thisType).getSuperClass();
+            ASTTypeDeclaration typeDecl = ((JClassType) thisType).getSymbol().tryGetNode();
+            JavaNode anonNode = typeDecl == null ? null : typeDecl.getParent();
+            if (anonNode instanceof ASTConstructorCall) {
+                closestNamedSupertype = ((ASTConstructorCall) anonNode).getTypeMirror();
+            } else {
+                return false;
+            }
         }
-        if (closestNamedSuperclass == null) {
-            return false;
-        }
-        JTypeDeclSymbol closestNamedSuperclassSymbol = closestNamedSuperclass.getSymbol();
+        JTypeDeclSymbol closestNamedSuperclassSymbol = closestNamedSupertype.getSymbol();
 
         if (closestNamedSuperclassSymbol != null && closestNamedSuperclassSymbol.isUnresolved()) {
             // we can't get any useful info from this, isSubtypeOf would return true
@@ -190,7 +199,7 @@ public final class TypeTestUtil {
         TypeSystem ts = thisType.getTypeSystem();
         @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
 
-        return isA(otherType, closestNamedSuperclass);
+        return isA(otherType, closestNamedSupertype);
     }
 
     /**
