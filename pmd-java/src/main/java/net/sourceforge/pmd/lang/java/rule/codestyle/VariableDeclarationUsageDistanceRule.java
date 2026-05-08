@@ -21,6 +21,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Checks for variables in methods that are defined long before they are used.
+ * @since 7.25.0
  */
 public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainRule {
 
