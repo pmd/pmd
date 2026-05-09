@@ -468,4 +468,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Class has state, but no public accessors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final int x;
+
+    private Foo(int x) {
+        this.x = x;
+    }
+
+    public static Foo fooFactory(int x) {
+        return new Foo(x);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
