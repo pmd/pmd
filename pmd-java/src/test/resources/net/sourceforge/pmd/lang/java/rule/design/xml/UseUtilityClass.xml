@@ -417,6 +417,23 @@ public class Outer extends Object {
     </test-code>
 
     <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+public class
+Foo // <--violation: line 2
+{
+    public Foo() { }
+    public static void doSomething() {}
+    public static void main(String args[]) {
+        doSomething();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>only static fields</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
