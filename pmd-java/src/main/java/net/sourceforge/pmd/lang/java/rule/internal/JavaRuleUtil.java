@@ -18,16 +18,20 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -62,6 +66,9 @@ public final class JavaRuleUtil {
         // actually not all of them, probs only stream of some type
         // arg which doesn't implement Closeable...
         "java.util.stream.Stream#_(_*)",
+        "java.util.stream.IntStream#_(_*)",
+        "java.util.stream.LongStream#_(_*)",
+        "java.util.stream.DoubleStream#_(_*)",
         "java.util.Collection#contains(_)",
         "java.util.Collection#size()",
         "java.util.List#get(int)",
@@ -483,6 +490,37 @@ public final class JavaRuleUtil {
         return false;
     }
 
+    /**
+     * Determine if the node argument has the typical form of a "guard if", that is
+     * an if statement with no else block, and the only thing the then block does is either
+     * return or throw an expression.
+     *
+     * Does NOT check if the node is at the beginning of a function!
+     */
+    public static boolean isGuardIf(JavaNode node) {
+        if (!(node instanceof ASTIfStatement)) {
+            return false;
+        }
+        ASTIfStatement ifStatement = (ASTIfStatement) node;
+
+        if (ifStatement.getElseBranch() != null) {
+            return false;
+        }
+
+        ASTStatement thenBranch = ifStatement.getThenBranch();
+        ASTStatement onlyStatementInThenBranch;
+        if (thenBranch instanceof ASTBlock) {
+            onlyStatementInThenBranch = ASTList.singleOrNull((ASTBlock) thenBranch);
+            if (onlyStatementInThenBranch == null) {
+                return false;
+            }
+        } else {
+            onlyStatementInThenBranch = thenBranch;
+        }
+
+        return onlyStatementInThenBranch instanceof ASTReturnStatement
+                || onlyStatementInThenBranch instanceof ASTThrowStatement;
+    }
 
     /**
      * Returns whether the variable is mentioned within the statement or not.

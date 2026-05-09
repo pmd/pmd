@@ -71,24 +71,36 @@ record MyRecord(String a) {
 
     <test-code>
         <description>Verify location of violation</description>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>4-4,10-10,14-14,15-15</expected-linenumbers>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>3-3,7-7,11-11,12-12,15-15,19-19,23-23,26-26</expected-linenumbers>
         <code><![CDATA[
 class Wrong {
-    public
-    void
-    method // violation
-    ()
-    {
-    }
-    public
-    int
-    field // violation
+    public void
+    method // <--violation: line 3
+    () {}
+
+    public int
+    field // <--violation: line 7
     ;
-    public
-    int
-    iField1, // violation
-    iField2; // violation
+
+    public int
+    iField1, // <--violation: line 11
+    iField2; // <--violation: line 12
+
+    public class
+    Nested // <--violation: line 15
+    {}
+
+    public enum
+    Foo // <--violation: line 19
+    { A }
+
+    public interface
+    Intf // <--violation: line 23
+    {}
+    public @interface
+    Annotation // <--violation: line 26
+    {}
 }
 ]]></code>
     </test-code>
