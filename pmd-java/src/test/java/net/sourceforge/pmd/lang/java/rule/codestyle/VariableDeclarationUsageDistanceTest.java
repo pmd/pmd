@@ -11,4 +11,7 @@ import net.sourceforge.pmd.test.PmdRuleTst;
  */
 class VariableDeclarationUsageDistanceTest extends PmdRuleTst {
     // no additional tests
+    public void a() {
+        Runtime.getRuntime().freeMemory();
+    }
 }

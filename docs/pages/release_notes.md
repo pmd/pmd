@@ -23,6 +23,11 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+### 🌟️ New and Changed Rules
+#### New Rules
+* The new  rule {% rule java/codestyle/VariableDeclarationUsageDistance %} flags local variables that are declared far from their usage, 
+  which can make code harder to read. The rule has a property `maxDistance` that allows to configure the 
+  maximum allowed distance between declaration and usage.
 
 ### 🐛️ Fixed Issues
 

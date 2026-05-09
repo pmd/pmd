@@ -44,7 +44,7 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
             // those don't count
             return null;
         }
-
+        int maxDistance = getProperty(MAX_DISTANCE);
         for (ASTVariableId id : node) {
             ASTExpression initializer = id.getInitializer();
 
@@ -60,8 +60,8 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
                 }
                 distance++;
             }
-            if (distance > getProperty(MAX_DISTANCE)) {
-                asCtx(data).addViolation(node, id.getName());
+            if (distance > maxDistance) {
+                asCtx(data).addViolation(node, id.getName(), distance, maxDistance);
             }
         }
 
