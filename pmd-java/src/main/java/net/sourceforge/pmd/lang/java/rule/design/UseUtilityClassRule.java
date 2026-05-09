@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -45,48 +47,31 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
             return data;
         }
 
-        boolean hasNonPrivateMethods = false;
-        boolean hasNonPrivateFields = false;
-        boolean hasNonPrivateNestedClasses = false;
-        for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
-            if (declaration instanceof ASTFieldDeclaration) {
-                ASTFieldDeclaration fieldDeclaration = (ASTFieldDeclaration) declaration;
-
-                if (fieldDeclaration.getVisibility() != V_PRIVATE) {
-                    hasNonPrivateFields = true;
-                }
-                if (!fieldDeclaration.isStatic()) {
-                    return null;
-                }
-            }
-
-            if (declaration instanceof ASTMethodDeclaration) {
-                ASTMethodDeclaration methodDeclaration = (ASTMethodDeclaration) declaration;
-
-                if (methodDeclaration.getVisibility() != V_PRIVATE) {
-                    hasNonPrivateMethods = true;
-                }
-                if (!methodDeclaration.isStatic()) {
-                    return null;
-                }
-            }
-
-            if (declaration instanceof ASTClassDeclaration) {
-                ASTClassDeclaration classDeclaration = (ASTClassDeclaration) declaration;
-
-                if (classDeclaration.getVisibility() != V_PRIVATE) {
-                    hasNonPrivateNestedClasses = true;
-                }
-                if (!classDeclaration.isStatic()) {
-                    return null;
-                }
-            }
-        }
-
-        if ((hasNonPrivateMethods || hasNonPrivateFields || hasNonPrivateNestedClasses) && hasWrongKindOfConstructor(klass)) {
+        if (allNonPrivateMembersAreStatic(klass) && hasWrongKindOfConstructor(klass)) {
             asCtx(data).addViolation(klass);
         }
         return null;
+    }
+
+    private boolean allNonPrivateMembersAreStatic(ASTClassDeclaration klass) {
+        boolean hasNonPrivateMembers = false;
+
+        for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
+            if (declaration instanceof ASTFieldDeclaration
+                    || declaration instanceof ASTMethodDeclaration
+                    || declaration instanceof ASTClassDeclaration
+            ) {
+                ModifierOwner fieldDeclaration = (ModifierOwner) declaration;
+
+                if (fieldDeclaration.getVisibility() != V_PRIVATE) {
+                    hasNonPrivateMembers = true;
+                }
+                if (!fieldDeclaration.hasModifiers(STATIC)) {
+                    return false;
+                }
+            }
+        }
+        return hasNonPrivateMembers;
     }
 
     private boolean hasWrongKindOfConstructor(ASTClassDeclaration klass) {
