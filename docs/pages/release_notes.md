@@ -23,14 +23,14 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
-#### Updated antlr library to 4.13.2
-We have updated the antlr library (parser generator) from 4.9.3 to the latest version 4.13.2,
+#### Updated ANTLR library to 4.13.2
+We have updated the ANTLR library (parser generator) from 4.9.3 to the latest version 4.13.2,
 in order to be able to use the latest version of Apex parser library.
 
-This is an incompatible update: In case you use custom language modules based on antlr, you
-need to make sure to regenerate all of your lexers and parsers with the new antlr version.
+This is an incompatible update: In case you use custom language modules based on ANTLR, you
+need to make sure to regenerate all of your lexers and parsers with the new ANTLR version.
 
-For the antlr based language modules, that PMD ships (kotlin and swift and various CPD modules),
+For the ANTLR based language modules, that PMD ships (kotlin and swift and various CPD modules),
 this is already done.
 
 #### 🌟️ Changed Rules
