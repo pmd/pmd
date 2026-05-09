@@ -47,6 +47,7 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
         boolean hasNonPrivateMethods = false;
         boolean hasNonPrivateFields = false;
+        boolean hasNonPrivateNestedClasses = false;
         boolean hasNonPrivateCtor = false;
         boolean hasAnyCtor = false;
         for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
@@ -79,6 +80,17 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
                     return null;
                 }
             }
+
+            if (declaration instanceof ASTClassDeclaration) {
+                ASTClassDeclaration classDeclaration = (ASTClassDeclaration) declaration;
+
+                if (classDeclaration.getVisibility() != V_PRIVATE) {
+                    hasNonPrivateNestedClasses = true;
+                }
+                if (!classDeclaration.isStatic()) {
+                    return null;
+                }
+            }
         }
 
         // account for default ctor
@@ -87,7 +99,7 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
             && !hasLombokPrivateCtor(klass);
 
 
-        if ((hasNonPrivateMethods || hasNonPrivateFields) && hasNonPrivateCtor) {
+        if ((hasNonPrivateMethods || hasNonPrivateFields || hasNonPrivateNestedClasses) && hasNonPrivateCtor) {
             asCtx(data).addViolation(klass);
         }
         return null;

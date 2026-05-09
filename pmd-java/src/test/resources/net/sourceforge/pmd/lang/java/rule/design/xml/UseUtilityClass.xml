@@ -486,4 +486,44 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>only static nested classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static class Bar {};
+
+    public static enum Baz { X };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>both static and non-static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static class Bar {};
+
+    public class Baz {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of a static field, a static member function, and a static nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+
+    public static class Bar {};
+}
+        ]]></code>
+    </test-code>
 </test-data>
