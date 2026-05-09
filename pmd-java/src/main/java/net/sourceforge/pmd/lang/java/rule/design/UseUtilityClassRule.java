@@ -48,8 +48,6 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
         boolean hasNonPrivateMethods = false;
         boolean hasNonPrivateFields = false;
         boolean hasNonPrivateNestedClasses = false;
-        boolean hasNonPrivateCtor = false;
-        boolean hasAnyCtor = false;
         for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
             if (declaration instanceof ASTFieldDeclaration) {
                 ASTFieldDeclaration fieldDeclaration = (ASTFieldDeclaration) declaration;
@@ -59,14 +57,6 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
                 }
                 if (!fieldDeclaration.isStatic()) {
                     return null;
-                }
-            }
-            if (declaration instanceof ASTConstructorDeclaration) {
-                ASTConstructorDeclaration constructorDeclaration = (ASTConstructorDeclaration) declaration;
-
-                hasAnyCtor = true;
-                if (constructorDeclaration.getVisibility() != V_PRIVATE) {
-                    hasNonPrivateCtor = true;
                 }
             }
 
@@ -93,16 +83,29 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
             }
         }
 
-        // account for default ctor
-        hasNonPrivateCtor |= !hasAnyCtor
-            && klass.getVisibility() != V_PRIVATE
-            && !hasLombokPrivateCtor(klass);
-
-
-        if ((hasNonPrivateMethods || hasNonPrivateFields || hasNonPrivateNestedClasses) && hasNonPrivateCtor) {
+        if ((hasNonPrivateMethods || hasNonPrivateFields || hasNonPrivateNestedClasses) && hasWrongKindOfConstructor(klass)) {
             asCtx(data).addViolation(klass);
         }
         return null;
+    }
+
+    private boolean hasWrongKindOfConstructor(ASTClassDeclaration klass) {
+        boolean hasNonPrivateCtor = false;
+        boolean hasAnyCtor = false;
+
+        for (ASTConstructorDeclaration constructorDeclaration : klass.getDeclarations(ASTConstructorDeclaration.class)) {
+            hasAnyCtor = true;
+            if (constructorDeclaration.getVisibility() != V_PRIVATE) {
+                hasNonPrivateCtor = true;
+            }
+        }
+
+        // account for default ctor
+        hasNonPrivateCtor |= !hasAnyCtor
+                && klass.getVisibility() != V_PRIVATE
+                && !hasLombokPrivateCtor(klass);
+
+        return hasNonPrivateCtor;
     }
 
     private boolean hasLombokPrivateCtor(ASTClassDeclaration parent) {
