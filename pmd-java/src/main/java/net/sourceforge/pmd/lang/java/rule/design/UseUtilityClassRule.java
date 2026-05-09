@@ -61,12 +61,12 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
                     || declaration instanceof ASTMethodDeclaration
                     || declaration instanceof ASTClassDeclaration
             ) {
-                ModifierOwner fieldDeclaration = (ModifierOwner) declaration;
+                ModifierOwner modifierOwner = (ModifierOwner) declaration;
 
-                if (fieldDeclaration.getVisibility() != V_PRIVATE) {
+                if (modifierOwner.getVisibility() != V_PRIVATE) {
                     hasNonPrivateMembers = true;
                 }
-                if (!fieldDeclaration.hasModifiers(STATIC)) {
+                if (!modifierOwner.hasModifiers(STATIC)) {
                     return false;
                 }
             }
