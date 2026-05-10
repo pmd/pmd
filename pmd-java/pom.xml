@@ -28,12 +28,6 @@
             <testResource>
                 <directory>${project.basedir}/src/test/kotlin</directory>
             </testResource>
-            <testResource>
-                <directory>${basedir}/src/test/kotlin</directory>
-                <includes>
-                    <include>**/testdata/**/*.java</include>
-                </includes>
-            </testResource>
         </testResources>
         <resources>
             <resource>
