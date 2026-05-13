@@ -79,7 +79,7 @@ public class LocalVariableShadowsParameterRule extends AbstractKotlinRule {
                 }
                 String name = KotlinAstUtil.getIdentifierText(varDecl.simpleIdentifier());
                 if (name != null && shadowableParams.contains(name)) {
-                    data.addViolation(propDecl);
+                    data.addViolation(propDecl, name);
                 }
             }
         }
@@ -102,7 +102,7 @@ public class LocalVariableShadowsParameterRule extends AbstractKotlinRule {
                     }
                     String name = KotlinAstUtil.getIdentifierText(varDecl.simpleIdentifier());
                     if (name != null && shadowableParams.contains(name)) {
-                        data.addViolation(param);
+                        data.addViolation(param, name);
                     }
                 }
             }

@@ -8,6 +8,9 @@
         <description>Local variable shadows function parameter</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable 'result' shadows a parameter of the enclosing function.</message>
+        </expected-messages>
         <code><![CDATA[
 fun compute(result: Int): Int {
     val result = 42
