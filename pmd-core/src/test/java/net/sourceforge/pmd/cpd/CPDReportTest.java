@@ -21,12 +21,12 @@ class CPDReportTest {
         FileId file1 = FileId.fromPathLikeString("file1.java");
         FileId file2 = FileId.fromPathLikeString("file2.java");
         FileId file3 = FileId.fromPathLikeString("file3.java");
+        reportBuilder.setFileContent(file1, 10);
+        reportBuilder.setFileContent(file2, 15);
+        reportBuilder.setFileContent(file3, 20);
         reportBuilder.addMatch(createMatch(reportBuilder, file1, file2, 1));
         reportBuilder.addMatch(createMatch(reportBuilder, file1, file3, 2));
         reportBuilder.addMatch(createMatch(reportBuilder, file2, file3, 3));
-        reportBuilder.recordNumTokens(file1, 10);
-        reportBuilder.recordNumTokens(file2, 15);
-        reportBuilder.recordNumTokens(file3, 20);
         CPDReport original = reportBuilder.build();
 
         assertEquals(3, original.getMatches().size());
@@ -49,8 +49,8 @@ class CPDReportTest {
     }
 
     private Match createMatch(CpdReportBuilder builder, FileId file1, FileId file2, int line) {
-        return new Match(5,
-                         builder.tokens.addToken("firstToken", file1, line, 1, line, 1),
-                         builder.tokens.addToken("secondToken", file2, line, 2, line, 2));
+        Mark mark1 = builder.createMark("firstToken", file1, line, 1, 1, 1);
+        Mark mark2 = builder.createMark("secondToken", file2, line, 1, 2, 2);
+        return new Match(5, mark1, mark2);
     }
 }

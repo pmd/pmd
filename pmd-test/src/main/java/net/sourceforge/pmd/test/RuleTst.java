@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.xml.sax.InputSource;
@@ -427,9 +428,9 @@ public abstract class RuleTst {
         URI testSourceUri = URI.create(
             collection.getAbsoluteUriToTestXmlFile() + "?line=" + testDescriptor.getLineNumber());
         if (testDescriptor.isDisabled()) {
-            return DynamicTest.dynamicTest("[IGNORED] " + testDescriptor.getDescription(),
+            return DynamicTest.dynamicTest(testDescriptor.getDescription(),
                                            testSourceUri,
-                                           () -> { });
+                                           () -> Assumptions.abort("Test is disabled"));
         }
         return DynamicTest.dynamicTest(testDescriptor.getDescription(),
                                        testSourceUri,

@@ -311,6 +311,17 @@ public final class JavaAstUtils {
     }
 
     /**
+     * Given a statement inside a method, returns the ancestor statement that is directly below the method body.
+     */
+    public static @NonNull ASTStatement getMethodLevelStatement(ASTStatement expr) {
+        JavaNode last = expr
+                .ancestorsOrSelf()
+                .takeWhile(node -> !(node.getParent() instanceof ASTMethodDeclaration))
+                .last();
+        return (ASTStatement) Objects.requireNonNull(last);
+    }
+
+    /**
      * Returns the variable IDS corresponding to variables declared in
      * the init clause of the loop.
      */
@@ -898,4 +909,5 @@ public final class JavaAstUtils {
         }
         return switchLike.isExhaustive();
     }
+
 }

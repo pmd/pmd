@@ -59,7 +59,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "java-26", "java-26-preview",
         "java-5", "java-6", "java-7",
         "java-8", "java-9", "jsp-2", "jsp-3", "kotlin-1.6",
-        "kotlin-1.7", "kotlin-1.8", "modelica-3.4", "modelica-3.5",
+        "kotlin-1.7", "kotlin-1.8", "kotlin-2.2.0", "modelica-3.4", "modelica-3.5",
         "plsql-11g", "plsql-12.1", "plsql-12.2",
         "plsql-12c_Release_1", "plsql-12c_Release_2",
         "plsql-18c", "plsql-19c", "plsql-21c", "pom-4.0.0",

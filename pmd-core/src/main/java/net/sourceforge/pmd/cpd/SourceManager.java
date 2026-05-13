@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -92,5 +93,9 @@ class SourceManager implements AutoCloseable {
 
     String getFileDisplayName(FileId fileId) {
         return fileNameRenderer.getDisplayName(fileId);
+    }
+
+    LanguageVersion getFileLanguageVersion(FileId fileId) {
+        return fileByPathId.get(fileId).getLanguageVersion();
     }
 }

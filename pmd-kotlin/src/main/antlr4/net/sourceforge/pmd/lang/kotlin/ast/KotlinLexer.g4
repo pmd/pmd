@@ -7,6 +7,34 @@ lexer grammar KotlinLexer;
 
 import UnicodeClasses;
 
+@members {
+    /**
+     * For multi-dollar string literals (e.g. {@code $$"..."} or {@code $$$"""..."""}),
+     * this stores the number of {@code $} characters required to start a string template
+     * entry within the current string literal.
+     *
+     * <p>Kotlin rule (KEEP-375, stable in Kotlin 2.2,
+     * <a href="https://github.com/Kotlin/KEEP/blob/main/proposals/KEEP-0375-dollar-escape.md">spec</a>):
+     * a run of N {@code $} chars before the opening quote means interpolation requires exactly N
+     * {@code $} chars. A shorter run is literal; a longer run splits into literal dollars plus
+     * an interpolation start.
+     *
+     * <p><b>Performance note:</b> this is a single field, not a stack. Nested multi-dollar
+     * strings with different prefix counts (e.g. {@code $$"outer $${inner $$"nested"} end"})
+     * will overwrite this field; after the inner string closes the outer count is lost.
+     * This is a known limitation inherited from the original multi-line string handling.
+     */
+    private int multiLineMinDollars = 1;
+
+    private static int countLeadingDollars(String s) {
+        int i = 0;
+        while (i < s.length() && s.charAt(i) == '$') {
+            i++;
+        }
+        return i;
+    }
+}
+
 // SECTION: lexicalGeneral
 
 ShebangLine
@@ -338,14 +366,32 @@ QUOTE_OPEN: '"' -> pushMode(LineString);
 
 TRIPLE_QUOTE_OPEN: '"""' -> pushMode(MultiLineString);
 
+// Kotlin supports multi-dollar raw strings (e.g. $$$""" ... """), where the number of '$'
+// increases the amount of escaping needed for template entries.
+MultiDollarPrefix
+    : '$'+
+      { multiLineMinDollars = getText().length(); }
+    ;
+
 mode LineString;
 
 QUOTE_CLOSE
-    : '"' -> popMode
+    : '"' { multiLineMinDollars = 1; } -> popMode
     ;
 
 LineStrRef
-    : FieldIdentifier
+    : '$'+ IdentifierOrSoftKey
+      {
+          int dollarCount = countLeadingDollars(getText());
+          if (dollarCount < multiLineMinDollars) {
+              setType(LineStrText);
+          } else if (dollarCount > multiLineMinDollars) {
+              int rewind = getText().length() - 1; // keep the first '$'
+              setText("$");
+              setType(LineStrText);
+              _input.seek(_input.index() - rewind);
+          }
+      }
     ;
 
 LineStrText
@@ -358,13 +404,26 @@ LineStrEscapedChar
     ;
 
 LineStrExprStart
-    : '${' -> pushMode(DEFAULT_MODE)
+    : '$'+ '{'
+      {
+          int dollarCount = countLeadingDollars(getText());
+          if (dollarCount < multiLineMinDollars) {
+              setType(LineStrText);
+          } else if (dollarCount > multiLineMinDollars) {
+              int rewind = getText().length() - 1; // keep the first '$'
+              setText("$");
+              setType(LineStrText);
+              _input.seek(_input.index() - rewind);
+          } else {
+              pushMode(DEFAULT_MODE);
+          }
+      }
     ;
 
 mode MultiLineString;
 
 TRIPLE_QUOTE_CLOSE
-    : MultiLineStringQuote? '"""' -> popMode
+    : MultiLineStringQuote? '"""' { multiLineMinDollars = 1; } -> popMode
     ;
 
 MultiLineStringQuote
@@ -372,7 +431,22 @@ MultiLineStringQuote
     ;
 
 MultiLineStrRef
-    : FieldIdentifier
+    : '$'+ IdentifierOrSoftKey
+      {
+          int dollarCount = countLeadingDollars(getText());
+
+          // Too short -> literal text
+          if (dollarCount < multiLineMinDollars) {
+              setType(MultiLineStrText);
+          } else if (dollarCount > multiLineMinDollars) {
+              // Too long -> split: emit one literal '$' and re-lex the remainder as a normal ref.
+              // Example (prefix=3): 4 dollars + identifier => `$` (text) + `$$$<identifier>` (ref)
+              int rewind = getText().length() - 1; // keep the first '$'
+              setText("$");
+              setType(MultiLineStrText);
+              _input.seek(_input.index() - rewind);
+          }
+      }
     ;
 
 MultiLineStrText
@@ -380,7 +454,26 @@ MultiLineStrText
     ;
 
 MultiLineStrExprStart
-    : '${' -> pushMode(DEFAULT_MODE)
+    : '$'+ '{'
+      {
+          int dollarCount = countLeadingDollars(getText());
+
+          // In multi-dollar raw strings, only '$' runs of length >= the prefix start a template entry.
+          // Shorter runs must be treated as literal text, otherwise the parser will see a stray '{'.
+          if (dollarCount < multiLineMinDollars) {
+              // Re-type this token to plain text; it will be consumed as content.
+              setType(MultiLineStrText);
+          } else if (dollarCount > multiLineMinDollars) {
+              // Too long -> split: emit one literal '$' and re-lex the remainder as `$$$...{`.
+              // Example (prefix=3): 4 dollars + '{' => `$` (text) + `$$$` + '{' (expr start)
+              int rewind = getText().length() - 1; // keep the first '$'
+              setText("$");
+              setType(MultiLineStrText);
+              _input.seek(_input.index() - rewind);
+          } else {
+              pushMode(DEFAULT_MODE);
+          }
+      }
     ;
 
 // SECTION: inside
@@ -443,6 +536,7 @@ Inside_EQEQ: EQEQ  -> type(EQEQ);
 Inside_EQEQEQ: EQEQEQ  -> type(EQEQEQ);
 Inside_SINGLE_QUOTE: SINGLE_QUOTE  -> type(SINGLE_QUOTE);
 Inside_AMP: AMP  -> type(AMP);
+Inside_MultiDollarPrefix: '$'+ { multiLineMinDollars = getText().length(); } -> type(MultiDollarPrefix);
 Inside_QUOTE_OPEN: QUOTE_OPEN -> pushMode(LineString), type(QUOTE_OPEN);
 Inside_TRIPLE_QUOTE_OPEN: TRIPLE_QUOTE_OPEN -> pushMode(MultiLineString), type(TRIPLE_QUOTE_OPEN);
 

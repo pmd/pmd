@@ -68,8 +68,7 @@ modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifi
 sources. Alternatively You can use the `-d` or `--dir` flag, which is equivalent.
 
 {% include note.html
-   content="At the moment the formerly provided rulesets (eg `rulesets/java/basic.xml`) are deprecated,
-   though you can still use them. PMD includes a quickstart ruleset for some languages (currently, Java)
+   content="PMD includes a quickstart ruleset for some languages (currently, Java)
    as base configurations, which you can reference as e.g. `rulesets/java/quickstart.xml`. You're strongly
    encouraged to [create your own ruleset](pmd_userdocs_making_rulesets.html) from the start though." %}
 
