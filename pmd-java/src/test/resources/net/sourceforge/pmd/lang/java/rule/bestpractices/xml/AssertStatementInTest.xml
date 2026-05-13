@@ -49,6 +49,32 @@ public class FooTest {
         ]]></code>
     </test-code>
     <test-code>
+        <description>assert in JUnit 5 class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,13</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach
+
+public class FooTest {
+
+    @Test
+    public void assertSomething() {
+        assert true;
+    }
+
+    @BeforeEach
+    public void setup() {
+        assert true;
+    }
+
+    public void skipSomething() {
+        assert true;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
         <description>assert in TestNG class</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>7,12</expected-linenumbers>
