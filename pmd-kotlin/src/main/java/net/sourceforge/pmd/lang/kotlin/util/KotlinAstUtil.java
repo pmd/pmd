@@ -93,7 +93,7 @@ public final class KotlinAstUtil {
     /**
      * Returns the names of all parameters in the function declaration (regardless of type).
      */
-    public static Set<String> collectAllParamNames(KtFunctionDeclaration funcDecl) {
+    public static Set<String> collectParamNames(KtFunctionDeclaration funcDecl) {
         Set<String> result = new HashSet<>();
         if (funcDecl == null) {
             return result;

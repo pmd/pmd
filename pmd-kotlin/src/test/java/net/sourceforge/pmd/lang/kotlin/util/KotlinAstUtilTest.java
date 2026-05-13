@@ -44,23 +44,23 @@ class KotlinAstUtilTest {
     }
 
     @Test
-    void collectAllParamNamesReturnsParameterNames() {
+    void collectParamNamesReturnsParameterNames() {
         KtKotlinFile file =
                 KotlinParsingHelper.DEFAULT.parse("fun greet(name: String, age: Int) {}");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        Set<String> params = KotlinAstUtil.collectAllParamNames(func);
+        Set<String> params = KotlinAstUtil.collectParamNames(func);
         assertEquals(2, params.size());
         assertTrue(params.contains("name"));
         assertTrue(params.contains("age"));
     }
 
     @Test
-    void collectAllParamNamesReturnsEmptyForNoParams() {
+    void collectParamNamesReturnsEmptyForNoParams() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun noArgs() {}");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        assertTrue(KotlinAstUtil.collectAllParamNames(func).isEmpty());
+        assertTrue(KotlinAstUtil.collectParamNames(func).isEmpty());
     }
 
     @Test

@@ -59,9 +59,9 @@ public class LocalVariableShadowsParameterRule extends AbstractKotlinRule {
         }
 
         private static Set<String> collectShadowableParams(KtFunctionDeclaration func) {
-            Set<String> params = new HashSet<>(KotlinAstUtil.collectAllParamNames(func));
+            Set<String> params = new HashSet<>(KotlinAstUtil.collectParamNames(func));
             for (KtFunctionDeclaration outer : func.ancestors(KtFunctionDeclaration.class)) {
-                params.addAll(KotlinAstUtil.collectAllParamNames(outer));
+                params.addAll(KotlinAstUtil.collectParamNames(outer));
             }
             return params;
         }
