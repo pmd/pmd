@@ -16,6 +16,9 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionBody;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameters;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtLambdaLiteral;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtLambdaParameter;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtLambdaParameters;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPrimaryExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
@@ -115,6 +118,28 @@ public final class KotlinAstUtil {
             KtParameter p = param.parameter();
             if (p != null) {
                 String name = getIdentifierText(p.simpleIdentifier());
+                if (name != null) {
+                    result.add(name);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the explicit parameter names of a lambda literal.
+     * Returns an empty set for lambdas that use the implicit {@code it} parameter.
+     */
+    public static Set<String> collectLambdaParamNames(KtLambdaLiteral lambda) {
+        Set<String> result = new HashSet<>();
+        KtLambdaParameters params = lambda.lambdaParameters();
+        if (params == null) {
+            return result;
+        }
+        for (KtLambdaParameter param : params.lambdaParameter()) {
+            KtVariableDeclaration varDecl = param.variableDeclaration();
+            if (varDecl != null) {
+                String name = getIdentifierText(varDecl.simpleIdentifier());
                 if (name != null) {
                     result.add(name);
                 }
