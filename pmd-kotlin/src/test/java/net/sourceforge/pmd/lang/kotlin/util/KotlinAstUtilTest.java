@@ -18,44 +18,29 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPrimaryExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
 
 class KotlinAstUtilTest {
 
     @Test
-    void getIdentifierTextReturnsName() {
+    void textOfSimpleIdentifierReturnsName() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("val foo = 1");
         KtSimpleIdentifier si =
                 file.descendants(KtSimpleIdentifier.class).first();
-        assertEquals("foo", KotlinAstUtil.getIdentifierText(si));
+        assertEquals("foo", KotlinAstUtil.textOf(si));
     }
 
     @Test
-    void getIdentifierTextReturnsNullForNull() {
-        assertNull(KotlinAstUtil.getIdentifierText(null));
+    void textOfSimpleIdentifierReturnsNullForNull() {
+        assertNull(KotlinAstUtil.textOf((KtSimpleIdentifier) null));
     }
 
     @Test
-    void getPrimaryExpressionTextReturnsIdentifier() {
+    void textOfPrimaryExpressionReturnsIdentifier() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("val x = bar");
         KtPrimaryExpression pe =
                 file.descendants(KtPrimaryExpression.class).first();
-        assertEquals("bar", KotlinAstUtil.getPrimaryExpressionText(pe));
-    }
-
-    @Test
-    void typeContainsNameReturnsTrueForMatch() {
-        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("val x: String = \"\"");
-        KtType type = file.descendants(KtType.class).first();
-        assertTrue(KotlinAstUtil.typeContainsName(type, "String"));
-    }
-
-    @Test
-    void typeContainsNameReturnsFalseForMismatch() {
-        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("val x: Int = 0");
-        KtType type = file.descendants(KtType.class).first();
-        assertFalse(KotlinAstUtil.typeContainsName(type, "String"));
+        assertEquals("bar", KotlinAstUtil.textOf(pe));
     }
 
     @Test

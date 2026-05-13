@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPrimaryExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 
@@ -40,7 +39,7 @@ public final class KotlinAstUtil {
      * Returns the text of the first terminal-node child of a {@link KtSimpleIdentifier},
      * or {@code null} if the node itself is {@code null} or has no terminal children.
      */
-    public static String getIdentifierText(KtSimpleIdentifier simpleId) {
+    public static String textOf(KtSimpleIdentifier simpleId) {
         if (simpleId == null) {
             return null;
         }
@@ -52,22 +51,11 @@ public final class KotlinAstUtil {
      * Returns the text of the SimpleIdentifier child of a {@link KtPrimaryExpression},
      * or {@code null} if none is present.
      */
-    public static String getPrimaryExpressionText(KtPrimaryExpression pe) {
+    public static String textOf(KtPrimaryExpression pe) {
         if (pe == null) {
             return null;
         }
-        return getIdentifierText(pe.simpleIdentifier());
-    }
-
-    /**
-     * Returns {@code true} if any terminal-node descendant of {@code type} has text equal to
-     * {@code typeName}. Useful for checking type annotations like {@code var x: String}.
-     */
-    public static boolean typeContainsName(KtType type, String typeName) {
-        if (type == null || typeName == null) {
-            return false;
-        }
-        return type.descendants(KotlinTerminalNode.class).any(t -> typeName.equals(t.getText()));
+        return textOf(pe.simpleIdentifier());
     }
 
     /**
@@ -87,7 +75,7 @@ public final class KotlinAstUtil {
     public static String getLhsVarName(KtAssignment assignment) {
         KtDirectlyAssignableExpression dae = assignment.directlyAssignableExpression();
         if (dae != null) {
-            String name = getIdentifierText(dae.simpleIdentifier());
+            String name = textOf(dae.simpleIdentifier());
             if (name != null) {
                 return name;
             }
@@ -117,7 +105,7 @@ public final class KotlinAstUtil {
         for (KtFunctionValueParameter param : params.functionValueParameter()) {
             KtParameter p = param.parameter();
             if (p != null) {
-                String name = getIdentifierText(p.simpleIdentifier());
+                String name = textOf(p.simpleIdentifier());
                 if (name != null) {
                     result.add(name);
                 }
@@ -139,7 +127,7 @@ public final class KotlinAstUtil {
         for (KtLambdaParameter param : params.lambdaParameter()) {
             KtVariableDeclaration varDecl = param.variableDeclaration();
             if (varDecl != null) {
-                String name = getIdentifierText(varDecl.simpleIdentifier());
+                String name = textOf(varDecl.simpleIdentifier());
                 if (name != null) {
                     result.add(name);
                 }
@@ -161,7 +149,7 @@ public final class KotlinAstUtil {
                 : functionBody.descendants(KtPropertyDeclaration.class).toList()) {
             KtVariableDeclaration varDecl = propDecl.variableDeclaration();
             if (varDecl != null) {
-                String name = getIdentifierText(varDecl.simpleIdentifier());
+                String name = textOf(varDecl.simpleIdentifier());
                 if (name != null) {
                     result.add(name);
                 }
@@ -186,7 +174,7 @@ public final class KotlinAstUtil {
             if (propDecl.VAR() != null) {
                 KtVariableDeclaration varDecl = propDecl.variableDeclaration();
                 if (varDecl != null) {
-                    String name = getIdentifierText(varDecl.simpleIdentifier());
+                    String name = textOf(varDecl.simpleIdentifier());
                     if (name != null) {
                         result.add(name);
                     }
