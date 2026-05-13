@@ -33,7 +33,7 @@ import org.antlr.v4.runtime.dfa.DFA;
  *
  * <p><b>Usage:</b> create a fresh instance per parse (new {@code DFA[]} array and
  * a new {@link PredictionContextCache}) and inject it into the generated parser via
- * {@link Parser#setInterpreter(org.antlr.v4.runtime.atn.ParserATNSimulator)}.
+ * {@link org.antlr.v4.runtime.Recognizer#setInterpreter(org.antlr.v4.runtime.atn.ATNSimulator)}.
  * Creating a fresh instance per parse also prevents cross-file ATN state
  * accumulation from the static shared fields in generated ANTLR parsers.
  */
