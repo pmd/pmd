@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -50,11 +51,27 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        assert node instanceof ASTTypeDeclaration;
-        return visit((ASTTypeDeclaration) node, data);
+        ASTTypeDeclaration typeDeclaration = (ASTTypeDeclaration) node;
+        RuleContext ctx = (RuleContext) data;
+
+        visitTypeDeclaration(typeDeclaration, ctx);
+
+        return null;
     }
 
+    /**
+     * @deprecated since 7.25.0. This method should have never been public.
+     */
+    @Deprecated
     public Object visit(ASTTypeDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
+        visitTypeDeclaration(node, ctx);
+
+        return null;
+    }
+
+    private void visitTypeDeclaration(ASTTypeDeclaration node, RuleContext ctx) {
         boolean inStartOfClass = true;
         for (ASTBodyDeclaration declaration : node.getDeclarations()) {
             if (!isAllowedAtStartOfClass(declaration)) {
@@ -63,11 +80,10 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             if (!inStartOfClass && declaration instanceof ASTFieldDeclaration) {
                 ASTFieldDeclaration field = (ASTFieldDeclaration) declaration;
                 if (!isInitializerOk(field)) {
-                    asCtx(data).addViolation(declaration);
+                    ctx.addViolation(declaration);
                 }
             }
         }
-        return null;
     }
 
     private boolean isAllowedAtStartOfClass(ASTBodyDeclaration declaration) {
