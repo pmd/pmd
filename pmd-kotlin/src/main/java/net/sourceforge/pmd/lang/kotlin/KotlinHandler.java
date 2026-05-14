@@ -12,11 +12,16 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
 public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
 
-    private static final XPathHandler XPATH_HANDLER = XPathHandler.noFunctionDefinitions();
+    // Holder-class pattern: defers initialization until getXPathHandler() is first called,
+    // by which time KotlinLanguageModule is fully registered in LanguageRegistry.
+    // XPath functions (hasAnnotation, hasImport, etc.) are registered in a follow-up PR.
+    private static final class XPathHandlerHolder {
+        static final XPathHandler HANDLER = XPathHandler.noFunctionDefinitions();
+    }
 
     @Override
     public XPathHandler getXPathHandler() {
-        return XPATH_HANDLER;
+        return XPathHandlerHolder.HANDLER;
     }
 
     @Override
