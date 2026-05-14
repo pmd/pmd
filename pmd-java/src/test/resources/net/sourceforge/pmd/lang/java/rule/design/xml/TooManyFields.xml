@@ -198,4 +198,20 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="maxfields">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+public class
+Foo // <--violation: line 2
+{
+    int a1;
+    int a2;
+    int a3;
+}
+        ]]></code>
+    </test-code>
 </test-data>

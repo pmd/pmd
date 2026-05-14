@@ -548,6 +548,100 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>Verify location of violation (TODO)</description>
+        <expected-problems>20</expected-problems>
+        <expected-linenumbers>2-3,5-7,10-15,17-22,20-22,24-27,29-29,32-32,37-38,40-43,44-46,48-53,54-58,60-63,64-66,68-71,72-74,76-82,81-82,83-85</expected-linenumbers>
+        <code><![CDATA[
+public class Empty {
+    { // <--violation: line 2
+    }
+
+    static // <--violation: line 5
+    {
+    }
+
+    public void bar(int x, java.io.InputStream in) {
+        try // <--violation: line 10
+        {
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try // <--violation: line 17
+        {
+        }
+        finally // <--violation: line 20
+        {
+        }
+
+        try // <--violation: line 24
+        (in)
+        {
+        }
+
+        switch // <--violation: line 29
+        (x)
+        {}
+        synchronized // <--violation: line 32
+        (this)
+        {}
+
+        // empty block
+        { // <--violation: line 37
+        }
+
+        for // <--violation: line 40
+        (int i = 0; i < 2; i++)
+        {
+        }
+        for // <--violation: line 44
+        (int i = 0; i < 2; i++)
+        ;
+
+        do // <--violation: line 48
+        {
+        }
+        while
+        (i < 3)
+        ;
+        do // <--violation: line 54
+        ;
+        while
+        (i < 3)
+        ;
+
+        for // <--violation: line 60
+        (int i : list)
+        {
+        }
+        for // <--violation: line 64
+        (int i : list)
+        ;
+
+        while // <--violation: line 68
+        (true)
+        {
+        }
+        while // <--violation: line 72
+        (true)
+        ;
+
+        if // <--violation: line 76
+        (x > 2)
+        {
+        }
+        else
+        { // <--violation: line 81
+        }
+        if // <--violation: line 83
+        (x > 2)
+        ;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

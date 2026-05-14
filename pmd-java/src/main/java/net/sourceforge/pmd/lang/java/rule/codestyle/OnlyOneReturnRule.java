@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.getMethodLevelStatement;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGuardIf;
+
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -20,10 +24,16 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
                     .defaultValues("compareTo", "equals")
                     .desc("Method names that are ignored from checking for only one return.")
                     .build();
+    private static final PropertyDescriptor<Boolean> ALLOW_GUARD_IFS
+            = PropertyFactory.booleanProperty("allowGuardIfs")
+                    .defaultValue(false)
+                    .desc("Are guard ifs allowed? Guard ifs are statements \"like if (cond()) return\" or \"if (cond()) throw exception\" at the beginning of a method.")
+                    .build();
 
     public OnlyOneReturnRule() {
         super(ASTMethodDeclaration.class);
         definePropertyDescriptor(IGNORED_METHOD_NAMES);
+        definePropertyDescriptor(ALLOW_GUARD_IFS);
     }
 
     @Override
@@ -32,10 +42,15 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        NodeStream<ASTReturnStatement> returnsExceptLast =
-            node.getBody().descendants(ASTReturnStatement.class).dropLast(1);
+        List<ASTReturnStatement> returnsToViolate =
+            node.getBody().descendants(ASTReturnStatement.class).dropLast(1).toList();
 
-        for (ASTReturnStatement returnStmt : returnsExceptLast) {
+        if (getProperty(ALLOW_GUARD_IFS)) {
+            List<ASTIfStatement> guardIfs = findGuardIfs(node.getBody());
+            removeGuardIfs(returnsToViolate, guardIfs);
+        }
+
+        for (ASTReturnStatement returnStmt : returnsToViolate) {
             asCtx(data).addViolation(returnStmt);
         }
         return null;
@@ -43,5 +58,23 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
 
     private boolean isIgnoredMethod(ASTMethodDeclaration node) {
         return getProperty(IGNORED_METHOD_NAMES).contains(node.getName());
+    }
+
+    private List<ASTIfStatement> findGuardIfs(ASTBlock body) {
+        return body.children()
+                .takeWhile(node -> isGuardIf(node))
+                .map(node -> (ASTIfStatement) node)
+                .toList();
+    }
+
+    /**
+     * removes return statements, if they are part of a guard if.
+     */
+    private void removeGuardIfs(List<ASTReturnStatement> returnsToViolate, List<ASTIfStatement> guardIfs) {
+        while (!returnsToViolate.isEmpty()
+                && guardIfs.contains(getMethodLevelStatement(returnsToViolate.get(0)))
+        ) {
+            returnsToViolate.remove(0);
+        }
     }
 }
