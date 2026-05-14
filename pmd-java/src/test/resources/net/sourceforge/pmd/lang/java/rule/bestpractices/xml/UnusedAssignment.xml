@@ -4022,6 +4022,30 @@ class Lock {
     </test-code>
 
     <test-code>
+        <description>Verify location of violation (TODO)</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4-4,7-7,10-10</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        int x =
+            0 // <--violation: line 4
+            ;
+        x =
+            1 // <--violation: line 7
+            ;
+        int c;
+        c = switch // <--violation: line 10
+        (a) {
+            case 0 -> 0;
+            default -> 1;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>[java] UnusedAssignment: fix false negative with unconditional if(true) overwrite #6518</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>

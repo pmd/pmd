@@ -119,10 +119,10 @@ The Java language can be configured with the following properties:
 ## Apex language properties
 
 - `rootDirectory`: With this property the root directory of the Salesforce metadata, where `sfdx-project.json`
-  resides, is specified. [ApexLink](https://github.com/nawforce/ApexLink) can then load all the classes
-  in the project and figure out, whether a method is used or not.
+  resides, is specified. [Apex Language Server](https://github.com/apex-dev-tools/apex-ls) can then load all the classes
+  in the project and figure out, whether a method is used or not, and retrieve the type hierarchy.
 
-  This property is needed for {% rule apex/design/UnusedMethod %}.
+  This property is needed for {% rule apex/design/UnusedMethod %} and {% rule apex/errorprone/AvoidInterfaceAsMapKey %}.
 
   Environment variable: `PMD_APEX_ROOT_DIRECTORY`
 

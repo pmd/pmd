@@ -565,12 +565,15 @@ stringLiteral
     | multiLineStringLiteral
     ;
 
+// Multi-dollar prefix support per KEEP-375 (stable in Kotlin 2.2):
+// https://github.com/Kotlin/KEEP/blob/main/proposals/KEEP-0375-dollar-escape.md
+// N '$' chars before the quote means N '$' chars are required to start interpolation.
 lineStringLiteral
-    : QUOTE_OPEN (lineStringContent | lineStringExpression)* QUOTE_CLOSE
+    : MultiDollarPrefix? QUOTE_OPEN (lineStringContent | lineStringExpression)* QUOTE_CLOSE
     ;
 
 multiLineStringLiteral
-    : TRIPLE_QUOTE_OPEN (multiLineStringContent | multiLineStringExpression | MultiLineStringQuote)* TRIPLE_QUOTE_CLOSE
+    : MultiDollarPrefix? TRIPLE_QUOTE_OPEN (multiLineStringContent | multiLineStringExpression | MultiLineStringQuote)* TRIPLE_QUOTE_CLOSE
     ;
 
 lineStringContent

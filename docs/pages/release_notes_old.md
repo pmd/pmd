@@ -7,6 +7,98 @@ Previous versions of PMD can be downloaded here: [Releases - pmd/pmd (GitHub)](h
 
 
 
+## 24-April-2026 - 7.24.0
+
+The PMD team is pleased to announce PMD 7.24.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🌟️ New Rules](#new-rules)
+* [🐛️ Fixed Issues](#fixed-issues)
+* [✨️ Merged pull requests](#merged-pull-requests)
+* [📦️ Dependency updates](#dependency-updates)
+* [📈️ Stats](#stats)
+
+### 🌟️ New Rules
+* The new Apex rule [`AvoidInterfaceAsMapKey`](https://docs.pmd-code.org/pmd-doc-7.24.0/pmd_rules_apex_errorprone.html#avoidinterfaceasmapkey) reports `Map` declarations
+  (fields, variables, parameters) whose key type is an interface that has at least one abstract implementing
+  class defining `equals` or `hashCode`. Using such maps results in potentially duplicated map entries or
+  not being able to get entries by key.
+* The new Java rule [`OverridingThreadRun`](https://docs.pmd-code.org/pmd-doc-7.24.0/pmd_rules_java_multithreading.html#overridingthreadrun) finds overridden `Thread::run` methods.
+  This is not recommended. Instead, implement `Runnable` and pass an instance to the thread constructor.
+
+### 🐛️ Fixed Issues
+* apex
+  * [#5386](https://github.com/pmd/pmd/issues/5386): \[apex] Apex files ending in "Test" are skipped with a number of rules
+* apex-errorprone
+  * [#6492](https://github.com/pmd/pmd/issues/6492): \[apex] New rule: Prevent use of interface -&gt; abstract class with equals/hashCode as key in Map
+* apex-security
+  * [#5385](https://github.com/pmd/pmd/issues/5385): \[apex] ApexCRUDViolation not reported even if SOQL doesn't have permissions check on it
+* java-bestpractices
+  * [#4272](https://github.com/pmd/pmd/issues/4272): \[java] JUnitTestsShouldIncludeAssert: False positive with assert in lambda
+* java-multithreading
+  * [#595](https://github.com/pmd/pmd/issues/595): \[java] New rule: Implement Runnable instead of extending Thread
+* kotlin
+  * [#6003](https://github.com/pmd/pmd/issues/6003): \[kotlin] Support multidollar interpolation (Kotlin 2.2)
+
+### ✨️ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6493](https://github.com/pmd/pmd/pull/6493): \[apex] New Rule: AvoidInterfaceAsMapKeyRule - [Jonny Alexander Power](https://github.com/JonnyPower) (@JonnyPower)
+* [#6497](https://github.com/pmd/pmd/pull/6497): \[kotlin] Fix kotlin grammar for parsing multidollar interpolation - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#6555](https://github.com/pmd/pmd/pull/6555): \[java] New rule: OverridingThreadRun to prefer using Runnable - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6556](https://github.com/pmd/pmd/pull/6556): \[java] Fix #4272: False positive in UnitTestShouldIncludeAssert when using assertion in lambda - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6563](https://github.com/pmd/pmd/pull/6563): \[apex] Remove class name suffix "Test" as indicator of test classes - [David Schach](https://github.com/dschach) (@dschach)
+* [#6576](https://github.com/pmd/pmd/pull/6576): \[test] chore: Throw a TestAbortedException on disabled tests - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6577](https://github.com/pmd/pmd/pull/6577): \[dist] chore: Improve error message for missing JAVA_HOME in AntIT.java - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6607](https://github.com/pmd/pmd/pull/6607): \[doc] basic.xml has been gone for a long time - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+
+### 📦️ Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6515](https://github.com/pmd/pmd/pull/6515): chore: bump pmd-regression-tester from 1.6.2 to 1.7.0
+* [#6552](https://github.com/pmd/pmd/pull/6552): Bump PMD from 7.22.0 to 7.23.0
+* [#6564](https://github.com/pmd/pmd/pull/6564): chore(deps): bump ruby/setup-ruby from 1.295.0 to 1.299.0
+* [#6565](https://github.com/pmd/pmd/pull/6565): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.7 to 1.18.8
+* [#6566](https://github.com/pmd/pmd/pull/6566): chore(deps): bump com.puppycrawl.tools:checkstyle from 13.3.0 to 13.4.0
+* [#6567](https://github.com/pmd/pmd/pull/6567): chore(deps-dev): bump log4j.version from 2.25.3 to 2.25.4
+* [#6569](https://github.com/pmd/pmd/pull/6569): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.7 to 1.18.8
+* [#6570](https://github.com/pmd/pmd/pull/6570): chore(deps): bump org.apache.groovy:groovy from 5.0.4 to 5.0.5
+* [#6571](https://github.com/pmd/pmd/pull/6571): chore(deps-dev): bump io.github.git-commit-id:git-commit-id-maven-plugin from 9.0.2 to 9.1.0
+* [#6572](https://github.com/pmd/pmd/pull/6572): chore(deps): bump bigdecimal from 4.0.1 to 4.1.0 in /docs
+* [#6578](https://github.com/pmd/pmd/pull/6578): chore(deps): bump marocchino/sticky-pull-request-comment from 3.0.2 to 3.0.3
+* [#6579](https://github.com/pmd/pmd/pull/6579): chore(deps): bump crate-ci/typos from 1.44.0 to 1.45.0
+* [#6580](https://github.com/pmd/pmd/pull/6580): chore(deps): bump ruby/setup-ruby from 1.299.0 to 1.300.0
+* [#6581](https://github.com/pmd/pmd/pull/6581): chore(deps-dev): bump io.github.git-commit-id:git-commit-id-maven-plugin from 9.1.0 to 10.0.0
+* [#6582](https://github.com/pmd/pmd/pull/6582): chore(deps): bump org.checkerframework:checker-qual from 3.54.0 to 4.0.0
+* [#6583](https://github.com/pmd/pmd/pull/6583): chore(deps-dev): bump ant.version from 1.10.15 to 1.10.16
+* [#6584](https://github.com/pmd/pmd/pull/6584): chore(deps): bump bigdecimal from 4.1.0 to 4.1.1 in /docs
+* [#6588](https://github.com/pmd/pmd/pull/6588): chore(deps): bump actions/cache from 5.0.4 to 5.0.5
+* [#6589](https://github.com/pmd/pmd/pull/6589): chore(deps): bump marocchino/sticky-pull-request-comment from 3.0.3 to 3.0.4
+* [#6590](https://github.com/pmd/pmd/pull/6590): chore(deps): bump crate-ci/typos from 1.45.0 to 1.45.1
+* [#6591](https://github.com/pmd/pmd/pull/6591): chore(deps): bump actions/upload-artifact from 7.0.0 to 7.0.1
+* [#6592](https://github.com/pmd/pmd/pull/6592): chore(deps): bump actions/create-github-app-token from 3.0.0 to 3.1.1
+* [#6593](https://github.com/pmd/pmd/pull/6593): chore(deps): bump scalameta.version from 4.15.2 to 4.16.0
+* [#6594](https://github.com/pmd/pmd/pull/6594): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.25.4 to 0.25.5
+* [#6595](https://github.com/pmd/pmd/pull/6595): chore(deps-dev): bump com.google.guava:guava from 33.5.0-jre to 33.6.0-jre
+* [#6596](https://github.com/pmd/pmd/pull/6596): chore(deps-dev): bump ant.version from 1.10.16 to 1.10.17
+* [#6599](https://github.com/pmd/pmd/pull/6599): chore(deps-dev): Bump lodash from 4.17.23 to 4.18.1
+* [#6600](https://github.com/pmd/pmd/pull/6600): chore(deps-dev): Bump addressable from 2.8.9 to 2.9.0
+* [#6613](https://github.com/pmd/pmd/pull/6613): chore(deps): bump ruby/setup-ruby from 1.300.0 to 1.305.0
+* [#6614](https://github.com/pmd/pmd/pull/6614): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.25.5 to 0.25.6
+* [#6615](https://github.com/pmd/pmd/pull/6615): chore(deps): bump scalameta.version from 4.16.0 to 4.16.1
+* [#6616](https://github.com/pmd/pmd/pull/6616): chore(deps-dev): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.5.0.6356 to 5.6.0.6792
+* [#6617](https://github.com/pmd/pmd/pull/6617): chore(deps): bump org.jsoup:jsoup from 1.22.1 to 1.22.2
+* [#6618](https://github.com/pmd/pmd/pull/6618): chore(deps): bump bigdecimal from 4.1.1 to 4.1.2 in /docs
+
+### 📈️ Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 82 commits
+* 14 closed tickets & PRs
+* Days since last release: 27
+
+
+
 ## 27-March-2026 - 7.23.0
 
 The PMD team is pleased to announce PMD 7.23.0.

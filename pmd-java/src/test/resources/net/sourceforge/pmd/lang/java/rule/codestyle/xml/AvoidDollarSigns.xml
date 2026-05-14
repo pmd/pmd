@@ -50,4 +50,40 @@ public class Foo {
 public interface Baz {}
         ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>2-2,5-5,9-9,13-13,17-17,21-21,25-25</expected-linenumbers>
+        <code><![CDATA[
+public class
+F$oo // <--violation: line 2
+{
+    int
+    fo$o // <--violation: line 5
+    ;
+
+    void
+    fo$o // <--violation: line 9
+    () {}
+
+    public interface
+    Foo$oo // <--violation: line 13
+    {}
+
+    public enum
+    Foo$enum // <--violation: line 17
+    { A }
+
+    public record
+    Foo$record // <--violation: line 21
+    (int a) {}
+
+    public record MyRecord (int
+        a$foo // <--violation: line 25
+    ) {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

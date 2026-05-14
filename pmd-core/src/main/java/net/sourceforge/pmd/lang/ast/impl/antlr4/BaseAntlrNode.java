@@ -12,9 +12,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Base class for an antlr node. This implements the PMD interfaces only,
@@ -34,7 +36,8 @@ import net.sourceforge.pmd.util.DataMap.DataKey;
  * @param <A> Type of the underlying antlr node
  * @param <N> Public interface (eg SwiftNode)
  */
-public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends AntlrNode<N>> implements AntlrNode<N> {
+public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends AntlrNode<N>>
+    implements AntlrNode<N> {
 
     private DataMap<DataKey<?, ?>> userMap;
 
@@ -48,6 +51,18 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
         // protected
     }
 
+    /**
+     * This implementation is only meant for debugging purposes.
+     */
+    @Override
+    public String toString() {
+        FileLocation loc = getReportLocation();
+        return "!debug only! [" + getXPathNodeName() + ":" + loc.getStartPos().toDisplayStringWithColon() + "] "
+            + StringUtil.elide(getAstInfo().getTextDocument().sliceTranslatedText(getTextRegion()).toString(),
+            80,
+            "(truncated)");
+    }
+
     // these are an implementation detail, meant as a crutch while some
     // rules depend on it
     // Should be made protected
@@ -58,8 +73,14 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
 
     @Override
     public TextRegion getTextRegion() {
-        return TextRegion.fromBothOffsets(getFirstAntlrToken().getStartIndex(),
-                                          getLastAntlrToken().getStopIndex() + 1);
+        Token firstAntlrToken = getFirstAntlrToken();
+        Token lastAntlrToken = getLastAntlrToken();
+        if (lastAntlrToken == null) {
+            return TextRegion.fromOffsetLength(firstAntlrToken.getStartIndex(), firstAntlrToken.getStopIndex() + 1);
+        } else {
+            return TextRegion.fromBothOffsets(firstAntlrToken.getStartIndex(),
+                    lastAntlrToken.getStopIndex() + 1);
+        }
     }
 
     void setIndexInParent(int indexInParent) {
