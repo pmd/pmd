@@ -114,6 +114,7 @@
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBlock"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBoxing" /> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
