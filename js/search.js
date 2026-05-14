@@ -3364,6 +3364,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",
+  "title": "JUnit5TestNoPrivateModifier (Java, Error Prone)",
+  "tags": "",
+  "keywords": "J Unit5 Test No Private Modifier",
+  "url": "pmd_rules_java_errorprone.html#junit5testnoprivatemodifier",
+  "summary": "JUnit 5/6 tests cannot be private. Otherwise, they won't be found by the framework: >..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/errorprone.md",
   "title": "JUnitSpelling (Java, Error Prone)",
   "tags": "",
   "keywords": "J Unit Spelling",

@@ -2047,7 +2047,15 @@ need to make sure to regenerate all of your lexers and parsers with the new antl
 <p>For the antlr based language modules, that PMD ships (kotlin and swift and various CPD modules),
 this is already done.</p>
 
-<h4 id="️-changed-rules">🌟️ Changed Rules</h4>
+<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#junit5testnoprivatemodifier"><code class="language-plaintext highlighter-rouge">JUnit5TestNoPrivateModifier</code></a> find JUnit test classes and
+methods that are private. Test classes, test methods, and lifecycle methods are not required to be public,
+but they must not be private. Otherwise, they won’t be found by the test framework.</li>
+</ul>
+
+<h4 id="changed-rules">Changed Rules</h4>
 <ul>
   <li>The rule <a href="pmd_rules_java_codestyle.html#onlyonereturn"><code class="language-plaintext highlighter-rouge">OnlyOneReturn</code></a> has a new property <code class="language-plaintext highlighter-rouge">allowGuardIfs</code>. When this property is
 true, then guard ifs at the beginning of a method are allowed their return statements don’t count.</li>
@@ -2127,6 +2135,7 @@ is still ongoing, the following Java rules have been updated in this release:
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3288">#3288</a>: [java] New Rule: JUnit5TestNoPrivateModifier</li>
       <li><a href="https://github.com/pmd/pmd/issues/4288">#4288</a>: [java] Document that CallSuperFirst/CallSuperLast are Android specific</li>
       <li><a href="https://github.com/pmd/pmd/issues/6163">#6163</a>: [java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class</li>
       <li><a href="https://github.com/pmd/pmd/issues/6517">#6517</a>: [java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream</li>
@@ -2165,6 +2174,7 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6653">#6653</a>: [kotlin] Fix #6648: Multi-dollar interpolation for regular strings - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6654">#6654</a>: [swift] Fix invalid swift token OSXApplicationExtension - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6603">#6603</a>: [java] Fix #6602: Fix false negative in LocalVariableCouldBeFinalRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6604">#6604</a>: [java] Fix #3288: New rule JUnit5TestNoPrivateModifierRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>

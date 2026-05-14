@@ -11,7 +11,9 @@ This is a minor release.
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
     * [Updated antlr library to 4.13.2](#updated-antlr-library-to-4132)
-    * [🌟️ Changed Rules](#changed-rules)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
+    * [Changed Rules](#changed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
 * [✨️ Merged pull requests](#merged-pull-requests)
@@ -29,7 +31,13 @@ need to make sure to regenerate all of your lexers and parsers with the new antl
 For the antlr based language modules, that PMD ships (kotlin and swift and various CPD modules),
 this is already done.
 
-#### 🌟️ Changed Rules
+### 🌟️ New and Changed Rules
+#### New Rules
+* The new Java rule [`JUnit5TestNoPrivateModifier`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_errorprone.html#junit5testnoprivatemodifier) find JUnit test classes and
+  methods that are private. Test classes, test methods, and lifecycle methods are not required to be public,
+  but they must not be private. Otherwise, they won’t be found by the test framework.
+
+#### Changed Rules
 * The rule [`OnlyOneReturn`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#onlyonereturn) has a new property `allowGuardIfs`. When this property is
   true, then guard ifs at the beginning of a method are allowed their return statements don't count.
 * We are continuously working to improve the precision of violation reporting for various rules.
@@ -90,6 +98,7 @@ this is already done.
   * [#6427](https://github.com/pmd/pmd/issues/6427): \[java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte
   * [#6602](https://github.com/pmd/pmd/issues/6602): \[java] LocalVariableCouldBeFinal: False negative when multiple variables are declared at once
 * java-errorprone
+  * [#3288](https://github.com/pmd/pmd/issues/3288): \[java] New Rule: JUnit5TestNoPrivateModifier
   * [#4288](https://github.com/pmd/pmd/issues/4288): \[java] Document that CallSuperFirst/CallSuperLast are Android specific
   * [#6163](https://github.com/pmd/pmd/issues/6163): \[java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class
   * [#6517](https://github.com/pmd/pmd/issues/6517): \[java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream
@@ -118,6 +127,7 @@ this is already done.
 * [#6653](https://github.com/pmd/pmd/pull/6653): \[kotlin] Fix #6648: Multi-dollar interpolation for regular strings - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6654](https://github.com/pmd/pmd/pull/6654): \[swift] Fix invalid swift token OSXApplicationExtension - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6603](https://github.com/pmd/pmd/pull/6603): \[java] Fix #6602: Fix false negative in LocalVariableCouldBeFinalRule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6604](https://github.com/pmd/pmd/pull/6604): \[java] Fix #3288: New rule JUnit5TestNoPrivateModifierRule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
