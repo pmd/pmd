@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBlock, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined, VariableDeclarationUsageDistance">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -4470,6 +4470,68 @@ Type parameters can appear on classes, interfaces, enums, records, and methods.<
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="unnecessaryblock">UnnecessaryBlock</h2>
+
+<p><strong>Since:</strong> PMD 7.25.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports blocks that are unnecessary as they don’t introduce a new scope.</p>
+
+<p>Unnecessary blocks can make code harder to read and may be misleading. They are often used
+to introduce a new variable scope, but if no variables or classes are declared within the
+block, it serves no purpose. Similarly, a block that is the only statement within another
+block is redundant. Removing them simplifies the code structure.</p>
+
+<ul>
+  <li>A block is considered unnecessary if:
+    <ul>
+      <li>It is nested within another block and does not contain any local variable or local
+class declarations.</li>
+      <li>It is the only child of another block.</li>
+    </ul>
+  </li>
+  <li>Blocks that are required by the language syntax (e.g., as the body of an <code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">for</code>,
+<code class="language-plaintext highlighter-rouge">while</code> statement, or a method body) are not reported.</li>
+</ul>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryBlockRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBlockRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="o">{</span> <span class="c1">// Violation: This block is unnecessary as it doesn't introduce a new scope</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello"</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="o">{</span> <span class="c1">// No violation: This block is necessary to scope the variable "x"</span>
+            <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">x</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="c1">// "x" can be redefined here because the previous "x" was scoped to the block above</span>
+        <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">foo</span><span class="o">)</span> <span class="o">{{</span> <span class="c1">// Violation: Why the second block?</span>
+            <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+        <span class="o">}}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">foo</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// No violation: This is what the above should look like</span>
+            <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/UnnecessaryBlock"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="unnecessaryboxing">UnnecessaryBoxing</h2>
 
 <p><strong>Since:</strong> PMD 7.0.0</p>
@@ -5364,6 +5426,78 @@ It is often simpler and cleaner to return or throw the value directly.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/VariableCanBeInlined"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"statementOrderMatters"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="variabledeclarationusagedistance">VariableDeclarationUsageDistance</h2>
+
+<p><strong>Since:</strong> PMD 7.25.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Checks for variables that are defined long before they are used.</p>
+
+<p>Keeping variable declaration closer to its usage makes the code more readable.</p>
+
+<p>Final variables are exempt from the rule to allow snapshot comparison,
+the same applies to variables defined using time measurement methods.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/VariableDeclarationUsageDistanceRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.VariableDeclarationUsageDistanceRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">lengthSum</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">strings</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="c1">// violation: could be moved closer to the loop</span>
+
+    <span class="c1">// ... many unrelated statements</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">str</span> <span class="o">:</span> <span class="n">strings</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">length</span> <span class="o">+=</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Total length "</span> <span class="o">+</span> <span class="n">length</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">measure</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span> <span class="c1">// OK, time measurement cannot be moved</span>
+    <span class="kd">final</span> <span class="nc">State</span> <span class="n">state</span> <span class="o">=</span> <span class="n">getState</span><span class="o">();</span> <span class="c1">// OK, final variables are exempt from the rule to allow snapshot comparison</span>
+    <span class="c1">// ... many unrelated statements</span>
+
+    <span class="kt">long</span> <span class="n">duration</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">;</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Duration: "</span> <span class="o">+</span> <span class="n">duration</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"State changed: "</span> <span class="o">+</span> <span class="o">!</span><span class="n">state</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">getState</span><span class="o">()));</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>maxDistance</td>
+      <td>7</td>
+      <td>Maximum distance between declaration and usage</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/VariableDeclarationUsageDistance"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/VariableDeclarationUsageDistance"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxDistance"</span> <span class="na">value=</span><span class="s">"7"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>

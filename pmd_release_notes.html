@@ -2053,6 +2053,12 @@ this is already done.</p>
   <li>The new Java rule <a href="pmd_rules_java_errorprone.html#junit5testnoprivatemodifier"><code class="language-plaintext highlighter-rouge">JUnit5TestNoPrivateModifier</code></a> find JUnit test classes and
 methods that are private. Test classes, test methods, and lifecycle methods are not required to be public,
 but they must not be private. Otherwise, they won’t be found by the test framework.</li>
+  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#unnecessaryblock"><code class="language-plaintext highlighter-rouge">UnnecessaryBlock</code></a> reports blocks that are unnecessary as
+they don’t introduce a new scope. This rule helps simplify code structure by identifying and flagging
+redundant blocks that can make code harder to read and may be misleading.</li>
+  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#variabledeclarationusagedistance"><code class="language-plaintext highlighter-rouge">VariableDeclarationUsageDistance</code></a> flags local variables that are declared
+far from their usage, which can make code harder to read. The rule has a property <code class="language-plaintext highlighter-rouge">maxDistance</code> that allows to
+configure the maximum allowed distance between declaration and usage.</li>
 </ul>
 
 <h4 id="changed-rules">Changed Rules</h4>
@@ -2132,6 +2138,13 @@ is still ongoing, the following Java rules have been updated in this release:
       <li><a href="https://github.com/pmd/pmd/issues/2801">#2801</a>: [java] OnlyOneReturn should have a property to allow early exits (guard clauses)</li>
       <li><a href="https://github.com/pmd/pmd/issues/6427">#6427</a>: [java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte</li>
       <li><a href="https://github.com/pmd/pmd/issues/6602">#6602</a>: [java] LocalVariableCouldBeFinal: False negative when multiple variables are declared at once</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6622">#6622</a>: [java] New rule: UnnecessaryBlock</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6640">#6640</a>: [java] New rule: VariableDeclarationUsageDistance</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/559">#559</a>: [java] UseUtilityClass: False negative for constant only classes</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -2145,6 +2158,7 @@ is still ongoing, the following Java rules have been updated in this release:
   <li>java-multithreading
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6520">#6520</a>: [java] DoNotUseThreads: False positive on legitimate java.lang.Thread.onSpinWait() call</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6636">#6636</a>: [java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes</li>
     </ul>
   </li>
   <li>kotlin
@@ -2174,6 +2188,10 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6619">#6619</a>: [java] Fix #5746: Separate test sources and resources - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6621">#6621</a>: [core] Fix #4972: Update antlr from 4.9.3 to 4.13.2 - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6623">#6623</a>: [java] Cleanup: Remove TODO from ModifierOwner.getVisibility() - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6636">#6636</a>: [java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6638">#6638</a>: [java] Fix #559: Improve UseUtilityClassRule to trigger also on static members - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6639">#6639</a>: [java] New rule: UnnecessaryBlock - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6640">#6640</a>: [java] New rule: VariableDeclarationUsageDistance - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6646">#6646</a>: [test] Split up AbstractRuleSetFactoryTest.testAllPMDBuiltInRulesMeetConventions() - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6653">#6653</a>: [kotlin] Fix #6648: Multi-dollar interpolation for regular strings - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6654">#6654</a>: [swift] Fix invalid swift token OSXApplicationExtension - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>

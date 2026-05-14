@@ -2388,6 +2388,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/codestyle.md",
+  "title": "UnnecessaryBlock (Java, Code Style)",
+  "tags": "",
+  "keywords": "Unnecessary Block",
+  "url": "pmd_rules_java_codestyle.html#unnecessaryblock",
+  "summary": "Reports blocks that are unnecessary as they don't introduce a new scope. Unnecessary blocks can..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/codestyle.md",
   "title": "UnnecessaryBoxing (Java, Code Style)",
   "tags": "",
   "keywords": "Unnecessary Boxing",
@@ -2521,6 +2529,14 @@ let pmd_doc_search_index = [
   "keywords": "Variable Can Be Inlined",
   "url": "pmd_rules_java_codestyle.html#variablecanbeinlined",
   "summary": "Local variables should not be declared and then immediately returned or thrown. Such variable declarations..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/codestyle.md",
+  "title": "VariableDeclarationUsageDistance (Java, Code Style)",
+  "tags": "",
+  "keywords": "Variable Declaration Usage Distance",
+  "url": "pmd_rules_java_codestyle.html#variabledeclarationusagedistance",
+  "summary": "Checks for variables that are defined long before they are used. Keeping variable declaration closer..."
 },{
   "type": "ruledoc ruleset",
   "source": "pages/pmd/rules/java/design.md",
@@ -2864,7 +2880,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Use Utility Class",
   "url": "pmd_rules_java_design.html#useutilityclass",
-  "summary": "For classes that only have static methods, consider making them utility classes. Note that this..."
+  "summary": "For classes that only have static members, consider making them utility classes. Note that this..."
 },{
   "type": "ruledoc ruleset",
   "source": "pages/pmd/rules/java/documentation.md",

@@ -2147,6 +2147,7 @@
   <li><a href="pmd_rules_java_codestyle.html#toomanystaticimports">TooManyStaticImports</a>: If you overuse the static import feature, it can make your program unreadable and unmaintainable,…</li>
   <li><a href="pmd_rules_java_codestyle.html#typeparameternamingconventions">TypeParameterNamingConventions</a>: Configurable naming conventions for type parameters in generic types and methods.             Thi…</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryannotationvalueelement">UnnecessaryAnnotationValueElement</a>: Avoid the use of value in annotations when it’s the only element.</li>
+  <li><a href="pmd_rules_java_codestyle.html#unnecessaryblock">UnnecessaryBlock</a>: Reports blocks that are unnecessary as they don’t introduce a new scope. Unnecessary blocks can m…</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryboxing">UnnecessaryBoxing</a>: Reports explicit boxing and unboxing conversions that may safely be removed,             either b…</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessarycast">UnnecessaryCast</a>: Detects casts which could be removed as the operand of the cast is already suitable for the conte…</li>
   <li><a href="pmd_rules_java_codestyle.html#unnecessaryconstructor">UnnecessaryConstructor</a>: This rule detects when a constructor is not necessary; i.e., when there is only one constructor a…</li>
@@ -2164,6 +2165,7 @@
   <li><a href="pmd_rules_java_codestyle.html#useshortarrayinitializer">UseShortArrayInitializer</a>: When declaring and initializing array fields or variables, it is not necessary to explicitly crea…</li>
   <li><a href="pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">UseUnderscoresInNumericLiterals</a>: Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that …</li>
   <li><a href="pmd_rules_java_codestyle.html#variablecanbeinlined">VariableCanBeInlined</a>: Local variables should not be declared and then immediately returned or thrown. Such             …</li>
+  <li><a href="pmd_rules_java_codestyle.html#variabledeclarationusagedistance">VariableDeclarationUsageDistance</a>: Checks for variables that are defined long before they are used.             Keeping variable dec…</li>
 </ul>
 
 <h2 id="design">Design</h2>
@@ -2212,7 +2214,7 @@
   <li><a href="pmd_rules_java_design.html#toomanymethods">TooManyMethods</a>: A class with too many methods is probably a good suspect for refactoring, in order to reduce its …</li>
   <li><a href="pmd_rules_java_design.html#uselessoverridingmethod">UselessOverridingMethod</a>: The overriding method merely calls the same method defined in a superclass.</li>
   <li><a href="pmd_rules_java_design.html#useobjectforclearerapi">UseObjectForClearerAPI</a>: When you write a public method, you should be thinking in terms of an API. If your method is publ…</li>
-  <li><a href="pmd_rules_java_design.html#useutilityclass">UseUtilityClass</a>: For classes that only have static methods, consider making them utility classes. Note that this d…</li>
+  <li><a href="pmd_rules_java_design.html#useutilityclass">UseUtilityClass</a>: For classes that only have static members, consider making them utility classes. Note that this d…</li>
 </ul>
 
 <h2 id="documentation">Documentation</h2>
