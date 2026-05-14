@@ -151,12 +151,6 @@
                             <excludeFromFailureFile>${project.basedir}/pmd-java-exclude-pmd.properties</excludeFromFailureFile>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>pmd-test</id>
-                        <configuration combine.children="append">
-                            <includeTests>false</includeTests>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 
