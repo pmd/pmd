@@ -2217,7 +2217,7 @@ public class Foo {
         <description>
 <![CDATA[
 When declaring and initializing array fields or variables, it is not necessary to explicitly create a new array
-using `new`. Instead one can simply define the initial content of the array as a expression in curly braces.
+using `new`. Instead, one can simply define the initial content of the array as an expression in curly braces.
 
 E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 };`.
 ]]>
