@@ -481,30 +481,30 @@ public final class DataflowPass {
             return makeConditional(data, node.getCondition(), node.getThenBranch(), node.getElseBranch());
         }
 
-    SpanInfo makeConditional(SpanInfo before, ASTExpression condition, JavaNode thenBranch, JavaNode elseBranch) {
-        // Handle literal boolean conditions specially
-        if (JavaAstUtils.isBooleanLiteral(condition, true)) {
-            // if (true): evaluate only condition and then-branch
-            SpanInfo state = acceptOpt(condition, before);
-            state = acceptOpt(thenBranch, state);
-            return state;
-        } else if (JavaAstUtils.isBooleanLiteral(condition, false)) {
-            // if (false): evaluate only condition and else-branch
-            SpanInfo state = acceptOpt(condition, before);
-            state = acceptOpt(elseBranch, state);
-            return state;
+        SpanInfo makeConditional(SpanInfo before, ASTExpression condition, JavaNode thenBranch, JavaNode elseBranch) {
+            // Handle literal boolean conditions specially
+            if (JavaAstUtils.isBooleanLiteral(condition, true)) {
+                // if (true): evaluate only condition and then-branch
+                SpanInfo state = acceptOpt(condition, before);
+                state = acceptOpt(thenBranch, state);
+                return state;
+            } else if (JavaAstUtils.isBooleanLiteral(condition, false)) {
+                // if (false): evaluate only condition and else-branch
+                SpanInfo state = acceptOpt(condition, before);
+                state = acceptOpt(elseBranch, state);
+                return state;
+            }
+
+            SpanInfo thenState = before.fork();
+            SpanInfo elseState = elseBranch != null ? before.fork() : before;
+
+            linkConditional(before, condition, thenState, elseState, true);
+
+            thenState = acceptOpt(thenBranch, thenState);
+            elseState = acceptOpt(elseBranch, elseState);
+
+            return elseState.absorb(thenState);
         }
-        
-        SpanInfo thenState = before.fork();
-        SpanInfo elseState = elseBranch != null ? before.fork() : before;
-
-        linkConditional(before, condition, thenState, elseState, true);
-
-        thenState = acceptOpt(thenBranch, thenState);
-        elseState = acceptOpt(elseBranch, elseState);
-
-        return elseState.absorb(thenState);
-    }
 
         /*
          * This recursive procedure translates shortcut conditionals
