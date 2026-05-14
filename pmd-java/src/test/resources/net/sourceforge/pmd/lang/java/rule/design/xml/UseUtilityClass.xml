@@ -434,7 +434,7 @@ Foo // <--violation: line 2
     </test-code>
 
     <test-code>
-        <description>only static fields</description>
+        <description>#559 only static fields</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
