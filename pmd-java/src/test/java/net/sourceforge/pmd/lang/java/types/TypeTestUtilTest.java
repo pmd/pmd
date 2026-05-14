@@ -229,6 +229,7 @@ class TypeTestUtilTest extends BaseParserTest {
 
         assertTrue(anon.getSymbol().isAnonymousClass(), "Anon class");
         assertTrue(TypeTestUtil.isA(Runnable.class, anon), "Should be a Runnable");
+        assertTrue(TypeTestUtil.isA(Runnable.class.getName(), anon), "Should be a Runnable (by name)");
 
         // This is not a canonical name, so we give up early
         assertFalse(TypeTestUtil.isA(SomeClassWithAnon.class.getName() + "$1", anon));

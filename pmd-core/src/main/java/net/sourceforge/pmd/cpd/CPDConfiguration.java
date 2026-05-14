@@ -140,7 +140,7 @@ public class CPDConfiguration extends AbstractConfiguration {
                 method.invoke(renderer, encoding.name());
             }
         } catch (IntrospectionException | ReflectiveOperationException ignored) {
-            // ignored - maybe this renderer doesn't have a encoding property
+            // ignored - maybe this renderer doesn't have an encoding property
         }
     }
 
