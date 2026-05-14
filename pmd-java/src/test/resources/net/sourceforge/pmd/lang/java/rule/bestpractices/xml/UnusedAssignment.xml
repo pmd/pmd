@@ -4067,15 +4067,11 @@ public class Test {
 
     <test-code>
         <description>[java] UnusedAssignment: if(false) case</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>The initializer for variable 'x' is never used</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {
     void test() {
-        int x = 0; // should be reported as unused
+        int x = 0; // should not be reported as unused, because it's only overwritten in dead code
         if (false) {
             x = 1;
         }
