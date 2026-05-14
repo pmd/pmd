@@ -1357,8 +1357,8 @@ city/state/zip fields could park them within a single Address field.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration/ClassBody
-  [count(FieldDeclaration
+//ClassDeclaration
+  [count(ClassBody/FieldDeclaration
             [not(pmd-java:modifiers() = 'final')]
             [not(pmd-java:modifiers() = 'static')]
         ) > $maxfields]
@@ -1400,9 +1400,9 @@ complexity and find a way to have more fine grained objects.
             <property name="xpath">
                 <value>
 <![CDATA[
- //ClassDeclaration/ClassBody
+ //ClassDeclaration
      [
-      count(MethodDeclaration[
+      count(ClassBody/MethodDeclaration[
          not (
                 (starts-with(@Name,'get') or starts-with(@Name,'set') or starts-with(@Name,'is'))
                 and
@@ -1491,11 +1491,11 @@ public class MyClass {
     <rule name="UseUtilityClass"
           language="java"
           since="0.3"
-          message="All methods are static. Consider adding a private no-args constructor to prevent instantiation."
+          message="All members are static. Consider adding a private no-args constructor to prevent instantiation."
           class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#useutilityclass">
         <description>
-For classes that only have static methods, consider making them utility classes.
+For classes that only have static members, consider making them utility classes.
 Note that this doesn't apply to abstract classes, since their subclasses may
 well include non-static methods.  Also, if you want this class to be a utility class,
 remember to add a private constructor to prevent instantiation.
@@ -1505,8 +1505,10 @@ remember to add a private constructor to prevent instantiation.
         <example>
 <![CDATA[
 public class MaybeAUtility {
-  public static void foo() {}
-  public static void bar() {}
+    public static final int SOME_CONST = 42;
+
+    public static void foo() {}
+    public static void bar() {}
 }
 ]]>
         </example>

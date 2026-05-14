@@ -8,7 +8,7 @@
         <description>should be utility class since all static, public constructor</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>All methods are static. Consider adding a private no-args constructor to prevent instantiation.</message>
+            <message>All members are static. Consider adding a private no-args constructor to prevent instantiation.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -412,6 +412,117 @@ public class Outer extends Object {
             return a != 0;
         }
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+public class
+Foo // <--violation: line 2
+{
+    public Foo() { }
+    public static void doSomething() {}
+    public static void main(String args[]) {
+        doSomething();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#559 only static fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>both static and non-static fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public final int instance_const = 1337;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of static fields and static member function</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class has state, but no public accessors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final int x;
+
+    private Foo(int x) {
+        this.x = x;
+    }
+
+    public static Foo fooFactory(int x) {
+        return new Foo(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>only static nested classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static class Bar {};
+
+    public static enum Baz { X };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>both static and non-static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static class Bar {};
+
+    public class Baz {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of a static field, a static member function, and a static nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+
+    public static class Bar {};
 }
         ]]></code>
     </test-code>

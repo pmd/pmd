@@ -129,36 +129,110 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
-     * all required attributes for all rules are specified.
-     *
-     * @throws Exception
-     *             any error
+     * all rules are in alphabetical order.
      */
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
-    void testAllPMDBuiltInRulesMeetConventions(String fileName) throws Exception {
-        int invalidSinceAttributes = 0;
-        int invalidExternalInfoURL = 0;
-        int invalidClassName = 0;
-        int invalidRegexSuppress = 0;
-        int invalidXPathSuppress = 0;
-        int invalidOrder = 0;
-        StringBuilder messages = new StringBuilder();
+    void testAllPMDBuiltInRuleSetsAreSorted(String fileName) {
+        List<String> messages = new ArrayList<>();
+
         String lastName = null;
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
         for (Rule rule : ruleSet.getRules()) {
+            if (lastName != null && String.CASE_INSENSITIVE_ORDER.compare(rule.getName(), lastName) < 0) {
+                messages.add(rule.getName() + " should be before " + lastName);
+            }
+            lastName = rule.getName();
+        }
 
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need to be alphabetically sorted (" + messages.size() + " misplaced)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
+     * all rules have a 'since' attribute.
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesHaveSince(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
             // Skip references
             if (rule instanceof RuleReference) {
                 continue;
             }
-            if (lastName != null
-                    && String.CASE_INSENSITIVE_ORDER.compare(rule.getName(), lastName) < 0) {
-                invalidOrder++;
-                messages.append(rule.getName()).append(" should be before ")
-                    .append(lastName).append("\n");
+
+            // Is since missing ?
+            if (rule.getSince() == null) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute\n");
             }
-            lastName = rule.getName();
+        }
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need 'since' attribute (" + messages.size() + " are missing)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
+     * all rules have the correct externalInfoUrl
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesHaveCorrectExternalInfoUrl(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
+
+            Language language = rule.getLanguage();
+
+            // Is URL correct ?
+            if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute\n");
+            } else {
+                String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
+                        + language.getId() + "_"
+                        + IOUtil.getFilenameBase(fileName)
+                        + ".html#"
+                        + rule.getName().toLowerCase(Locale.ROOT);
+                if (rule.getExternalInfoUrl() == null || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
+                    messages.add("Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be: " + expectedExternalInfoURL + '\n');
+                }
+            }
+        }
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need a proper ExternalURLInfo (" + messages.size() + " are incorrect)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
+     * all rules have a valid classname
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesHaveValidClassName(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
 
             Language language = rule.getLanguage();
             String group = fileName.substring(fileName.lastIndexOf('/') + 1);
@@ -167,87 +241,72 @@ public abstract class AbstractRuleSetFactoryTest {
                 group = group.substring(0, group.indexOf('-'));
             }
 
-            // Is since missing ?
-            if (rule.getSince() == null) {
-                invalidSinceAttributes++;
-                messages.append("Rule ")
-                        .append(fileName)
-                        .append("/")
-                        .append(rule.getName())
-                        .append(" is missing 'since' attribute\n");
-            }
-            // Is URL valid ?
-            if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
-                invalidExternalInfoURL++;
-                messages.append("Rule ")
-                        .append(fileName)
-                        .append("/")
-                        .append(rule.getName())
-                        .append(" is missing 'externalInfoURL' attribute\n");
-            } else {
-                String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
-                        + language.getId() + "_"
-                        + IOUtil.getFilenameBase(fileName)
-                        + ".html#"
-                        + rule.getName().toLowerCase(Locale.ROOT);
-                if (rule.getExternalInfoUrl() == null
-                        || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
-                    invalidExternalInfoURL++;
-                    messages.append("Rule ")
-                            .append(fileName)
-                            .append("/")
-                            .append(rule.getName())
-                            .append(" seems to have an invalid 'externalInfoURL' value (")
-                            .append(rule.getExternalInfoUrl())
-                            .append("), it should be:")
-                            .append(expectedExternalInfoURL)
-                            .append('\n');
-                }
-            }
             // Proper class name/packaging?
-            String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group
-                    + "." + rule.getName() + "Rule";
-            if (!rule.getRuleClass().equals(expectedClassName)
-                    && !validXPathClassNames.contains(rule.getRuleClass())) {
-                invalidClassName++;
-                messages.append("Rule ")
-                        .append(fileName)
-                        .append("/")
-                        .append(rule.getName())
-                        .append(" seems to have an invalid 'class' value (")
-                        .append(rule.getRuleClass())
-                        .append("), it should be:")
-                        .append(expectedClassName)
-                        .append('\n');
-            }
-            // Should not have violation suppress regex property
-            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
-                invalidRegexSuppress++;
-                messages.append("Rule ")
-                        .append(fileName)
-                        .append("/")
-                        .append(rule.getName())
-                        .append(" should not have '")
-                        .append(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name())
-                        .append("', this is intended for end user customization only.\n");
-            }
-            // Should not have violation suppress xpath property
-            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
-                invalidXPathSuppress++;
-                messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(System.lineSeparator());
+            String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group + "." + rule.getName() + "Rule";
+            if (!rule.getRuleClass().equals(expectedClassName) && !validXPathClassNames.contains(rule.getRuleClass())) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value (" + rule.getRuleClass() + "), it should be: " + expectedClassName + '\n');
             }
         }
-        // We do this at the end to ensure we test ALL the rules before failing
-        // the test
-        if (invalidSinceAttributes > 0 || invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidRegexSuppress > 0
-                || invalidXPathSuppress > 0 || invalidOrder > 0) {
-            fail("All built-in PMD rules need 'since' attribute (" + invalidSinceAttributes
-                    + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL
-                    + " are invalid), a class name meeting conventions (" + invalidClassName + " are invalid), no '"
-                    + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
-                    + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
-                    + invalidXPathSuppress + " are invalid) and be alphabetically sorted ("
-                    + invalidOrder + " misplaced)\n" + messages);
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules need a class name meeting conventions (" + messages.size() + " are invalid)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
+     * no rules have a suppression regex
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesHaveNoSuppressionRegex(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
+
+            // Should not have violation suppress regex property
+            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "', this is intended for end user customization only.\n");
+            }
+        }
+
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules should NOT have a " + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + " property (" + messages.size() + " do)\n" + String.join("\n", messages));
+        }
+    }
+
+    /**
+     * Checks all rulesets of all languages on the classpath and verifies that
+     * no rules have a suppression XPath
+     */
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesHaveNoSuppressionXPath(String fileName) {
+        List<String> messages = new ArrayList<>();
+
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
+
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
+
+            // Should not have violation suppress xpath property
+            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
+                messages.add("Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "', this is intended for end user customization only.\n");
+            }
+        }
+        // We do this at the end to ensure we test ALL the rules before failing the test
+        if (!messages.isEmpty()) {
+            fail("All built-in PMD rules should NOT have a '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property (" + messages.size() + " do)\n" + String.join("\n", messages));
         }
     }
 

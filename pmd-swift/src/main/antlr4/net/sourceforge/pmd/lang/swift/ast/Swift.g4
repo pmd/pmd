@@ -969,7 +969,7 @@ contextSensitiveKeyword :
  'associativity' | 'convenience' | 'dynamic' | 'didSet' | 'final' | 'get' | 'infix' | 'indirect' |
  'lazy' | 'left' | 'mutating' | 'none' | 'nonmutating' | 'optional' | 'operator' | 'override' | 'postfix' | 'precedence' |
  'prefix' | 'Protocol' | 'required' | 'right' | 'set' | 'Type' | 'unowned' | 'weak' | 'willSet' |
- 'iOS' | 'iOSApplicationExtension' | 'OSX' | 'OSXApplicationExtension­' | 'watchOS' | 'x86_64' |
+ 'iOS' | 'iOSApplicationExtension' | 'OSX' | 'OSXApplicationExtension-' | 'watchOS' | 'x86_64' |
  'arm' | 'arm64' | 'i386' | 'os' | 'arch' | 'safe' | 'tvOS' | 'file' | 'line' | 'default' | 'Self' | 'var' |
  'some'
  ;
