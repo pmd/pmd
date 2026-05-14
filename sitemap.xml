@@ -106,7 +106,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_apex.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_apex.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -115,7 +115,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_apex.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_apex.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -142,7 +142,16 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_swift_bestpractices.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_kotlin_bestpractices.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_bestpractices.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -160,7 +169,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_apex_bestpractices.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_modelica_bestpractices.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -169,7 +178,16 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_kotlin_bestpractices.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_swift_bestpractices.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_apex_bestpractices.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -187,7 +205,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_bestpractices.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_velocity_bestpractices.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -205,24 +223,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_velocity_bestpractices.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_modelica_bestpractices.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_html_bestpractices.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -232,7 +232,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_bestpractices.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_bestpractices.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -331,6 +331,15 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_codestyle.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_ecmascript_codestyle.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -349,7 +358,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_codestyle.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_xsl_codestyle.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -367,16 +376,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_xsl_codestyle.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_codestyle.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_codestyle.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -484,25 +484,16 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_design.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_apex_design.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_design.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_design.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -520,7 +511,16 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_design.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_design.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_design.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -574,25 +574,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_swift_errorprone.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_ecmascript_errorprone.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_apex_errorprone.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_pom_errorprone.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -610,25 +592,43 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_errorprone.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_ecmascript_errorprone.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_swift_errorprone.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_apex_errorprone.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_xml_errorprone.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_errorprone.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_errorprone.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -646,7 +646,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_pom_errorprone.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_errorprone.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -655,7 +655,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql_errorprone.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_errorprone.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -747,7 +747,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_html.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_html.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -756,7 +756,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_html.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_html.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -828,7 +828,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_java.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_java.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -837,7 +837,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_java.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_java.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -855,7 +855,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_jsp.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -864,7 +864,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_jsp.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -882,7 +882,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_kotlin.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_kotlin.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -891,7 +891,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_kotlin.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_kotlin.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1008,7 +1008,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_modelica.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_modelica.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1017,7 +1017,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_modelica.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_modelica.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1080,7 +1080,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_performance.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_xsl_performance.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1089,7 +1089,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_xsl_performance.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_performance.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1116,7 +1116,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_plsql.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1125,7 +1125,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_plsql.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_plsql.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1251,7 +1251,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_userdocs_extending_rule_guidelines.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_devdocs_major_rule_guidelines.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1260,7 +1260,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_devdocs_major_rule_guidelines.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_userdocs_extending_rule_guidelines.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1278,15 +1278,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_scala.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_languages_scala.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -1295,14 +1286,14 @@
   
   
   
-  
-  
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_about_security.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_scala.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
   </url>
+  
+  
   
   
   
@@ -1325,6 +1316,15 @@
   
   
   <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_security.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_rules_jsp_security.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -1334,7 +1334,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_java_security.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_about_security.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1381,7 +1381,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_swift.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_swift.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1390,7 +1390,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_swift.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_swift.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1452,15 +1452,6 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_velocity.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-05-14</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_languages_velocity.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
@@ -1470,7 +1461,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_visualforce.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_velocity.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1480,6 +1471,15 @@
   
   <url>
     <loc>https://docs.pmd-code.org/latest/pmd_languages_visualforce.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-05-14</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_visualforce.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1533,7 +1533,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_rules_xml.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_languages_xml.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
@@ -1542,7 +1542,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_languages_xml.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_rules_xml.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-05-14</lastmod>
