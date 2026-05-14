@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.AND;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.DIV;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GE;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.GT;
@@ -12,8 +13,10 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LE;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MOD;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MUL;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.OR;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SHIFT_OPS;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.XOR;
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
 
 import java.util.EnumSet;
@@ -53,7 +56,7 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
     private static final Set<BinaryOp> BINARY_PROMOTED_OPS =
-        EnumSet.of(LE, GE, GT, LT, ADD, SUB, MUL, DIV, MOD);
+        EnumSet.of(LE, GE, GT, LT, ADD, SUB, MUL, DIV, MOD, AND, OR, XOR);
 
     public UnnecessaryCastRule() {
         super(ASTCastExpression.class);

@@ -50,9 +50,6 @@ public interface ModifierOwner extends Annotatable {
      * There cannot be any conflict with {@link #hasModifiers(JModifier, JModifier...)}} on
      * well-formed code (e.g. for any {@code n}, {@code (n.getVisibility() == V_PROTECTED) ==
      * n.hasModifiers(PROTECTED)})
-     *
-     * <p>TODO a public method of a private class can be considered to be private
-     * we could probably add another method later on that takes this into account
      */
     default Visibility getVisibility() {
         Set<JModifier> effective = getModifiers().getEffectiveModifiers();
