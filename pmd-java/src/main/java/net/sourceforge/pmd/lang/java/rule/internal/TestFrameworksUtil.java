@@ -9,13 +9,16 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -108,11 +111,12 @@ public final class TestFrameworksUtil {
     }
 
     public static boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return method.getDeclaredAnnotations().any(
-            it -> {
-                String canonicalName = it.getTypeMirror().getSymbol().getCanonicalName();
-                return JUNIT5_ALL_TEST_ANNOTS.contains(canonicalName);
-            }
+        return isJUnit5Method(method.getSymbol());
+    }
+
+    private static boolean isJUnit5Method(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(
+                it -> JUNIT5_ALL_TEST_ANNOTS.contains(it.getBinaryName())
         );
     }
 
@@ -152,6 +156,13 @@ public final class TestFrameworksUtil {
                    .any(TestFrameworksUtil::isTestMethod));
     }
 
+    public static boolean isJUnit5Class(ASTClassDeclaration node) {
+        JClassType typeMirror = node.getTypeMirror();
+
+        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
+                && typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
+                        .findAny().isPresent();
+    }
 
     public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {
         return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
