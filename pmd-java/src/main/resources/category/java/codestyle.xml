@@ -2337,4 +2337,49 @@ public class Foo {
             ]]>
         </example>
     </rule>
+    <rule name="VariableDeclarationUsageDistance"
+          language="java"
+          since="7.25.0"
+          message="Distance between declaration of ''{0}'' and its first usage is {1}, current threshold is {2}"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableDeclarationUsageDistanceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variabledeclarationusagedistance">
+        <description>
+            Checks for variables that are defined long before they are used.
+
+            Keeping variable declaration closer to its usage makes the code more readable.
+
+            Final variables are exempt from the rule to allow snapshot comparison,
+            the same applies to variables defined using time measurement methods.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="maxDistance" type="Integer" value="7" description="Maximum distance between declaration and usage" />
+        </properties>
+        <example>
+            <![CDATA[
+public void lengthSum(String[] strings) {
+
+    int length = 0; // violation: could be moved closer to the loop
+
+    // ... many unrelated statements
+
+    for (String str : strings) {
+        length += str.length();
+    }
+
+    System.out.println("Total length " + length);
+}
+
+public void measure() {
+    long start = System.currentTimeMillis(); // OK, time measurement cannot be moved
+    final State state = getState(); // OK, final variables are exempt from the rule to allow snapshot comparison
+    // ... many unrelated statements
+
+    long duration = System.currentTimeMillis() - start;
+    System.out.println("Duration: " + duration);
+    System.out.println("State changed: " + !state.equals(getState()));
+}
+]]>
+        </example>
+    </rule>
 </ruleset>

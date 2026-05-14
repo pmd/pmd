@@ -127,6 +127,7 @@
     <rule ref="category/java/codestyle.xml/UselessParentheses"/>
     <rule ref="category/java/codestyle.xml/UselessQualifiedThis"/>
     <rule ref="category/java/codestyle.xml/VariableCanBeInlined"/>
+    <!-- <rule ref="category/java/codestyle.xml/VariableDeclarationUsageDistance" /> -->
 
 
     <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod"/>
