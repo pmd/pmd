@@ -143,7 +143,7 @@ public final class ASTExpression extends AbstractVfNode {
 
 
     /**
-     * Thrown in cases where the the Identifiers in this node aren't ALL successfully parsed in a call to
+     * Thrown in cases where the Identifiers in this node aren't ALL successfully parsed in a call to
      * {@link #getDataNodes()}
      */
     public static final class DataNodeStateException extends Exception {

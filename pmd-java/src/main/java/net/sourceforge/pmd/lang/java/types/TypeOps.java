@@ -1497,7 +1497,7 @@ public final class TypeOps {
     /**
      * Two methods or constructors, M and N, have the same signature if
      * they have the same name, the same type parameters (if any) (§8.4.4),
-     * and, after adapting the formal parameter types of N to the the type
+     * and, after adapting the formal parameter types of N to the type
      * parameters of M, the same formal parameter types.
      *
      * Thrown exceptions are not part of the signature of a method.
