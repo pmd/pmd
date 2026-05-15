@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Collections;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -28,7 +27,7 @@ class XMLOldRendererTest {
     void testWithNoDuplication() throws IOException, ParserConfigurationException, SAXException {
         CPDReportRenderer renderer = new XMLOldRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(CpdTestUtils.makeReport(Collections.emptyList()), sw);
+        renderer.render(new CpdTestUtils.CpdReportBuilder().build(), sw);
         String report = sw.toString();
 
         assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<pmd-cpd/>\n",

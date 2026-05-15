@@ -901,9 +901,9 @@ class InvalidLogMessageFormatTest {
     }
 
     public static void main(String[] args) {
-        foo(arg -> LOGGER.error("Foo", arg)); // missing violation: extra argument, that is not a exception
+        foo(arg -> LOGGER.error("Foo", arg)); // missing violation: extra argument, that is not an exception
         // explicit cast helps type resolution
-        foo((String arg) -> LOGGER.error("Foo", arg)); // violation: extra argument, that is not a exception
+        foo((String arg) -> LOGGER.error("Foo", arg)); // violation: extra argument, that is not an exception
         foo((String arg) -> LOGGER.error("Foo {}", arg)); // no violation: correct number of arguments
         foo(arg -> LOGGER.error("Foo {}", arg)); // no violation: correct number of arguments
         foo(arg -> LOGGER.error("Foo {} {}", arg)); // violation: missing argument

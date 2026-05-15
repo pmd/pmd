@@ -35,7 +35,6 @@ final class SwiftNameDictionary extends AntlrNameDictionary {
         case "unowned(unsafe)": return "unowned-unsafe";
         case "getter:": return "getter";
         case "setter:": return "setter";
-        case "OSXApplicationExtension\u00AD": return "OSXApplicationExtension-";
         default: return null;
         }
     }

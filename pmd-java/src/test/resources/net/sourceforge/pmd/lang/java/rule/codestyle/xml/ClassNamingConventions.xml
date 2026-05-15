@@ -474,4 +474,29 @@ public interface TestInterface {
 }
 ]]></code>
     </test-code>
+
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>2-2,5-5,8-8,11-11,14-14</expected-linenumbers>
+        <code><![CDATA[
+public class
+foo // <--violation: line 2
+{
+    public @interface
+    Foo_Bar // <--violation: line 5
+    { }
+    public enum
+    $Enum$ // <--violation: line 8
+    { }
+    interface
+    café // <--violation: line 11
+    { }
+    public abstract class
+    tehehe // <--violation: line 14
+    { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
