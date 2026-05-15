@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.InterruptibleParserATNSimulator;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**

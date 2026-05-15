@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.impl.antlr4;
+package net.sourceforge.pmd.lang.kotlin.ast;
 
 import java.util.Set;
 
@@ -21,26 +21,14 @@ import org.antlr.v4.runtime.dfa.DFA;
  *
  * <p>ANTLR's {@code closure_()} and {@code closureCheckingStopState()} are a
  * tight mutual recursion with no interruption points. Overriding
- * {@code closureCheckingStopState} to check {@link Thread#interrupted()} lets
+ * {@code closureCheckingStopState} to check thread interruption lets
  * a timeout mechanism terminate the parse thread promptly rather than leaving
  * it spinning until JVM exit.
- *
- * <p><b>Scope:</b> This only intercepts the <em>parser</em>'s ATN closure loop,
- * which is the main source of exponential state explosion in ANTLR grammars.
- * The ANTLR lexer ({@link org.antlr.v4.runtime.atn.LexerATNSimulator}) is not
- * covered here; lexer execution is typically linear in the input length and
- * therefore not a practical source of unbounded loops.
- *
- * <p><b>Usage:</b> create a fresh instance per parse (new {@code DFA[]} array and
- * a new {@link PredictionContextCache}) and inject it into the generated parser via
- * {@link org.antlr.v4.runtime.Recognizer#setInterpreter(org.antlr.v4.runtime.atn.ATNSimulator)}.
- * Creating a fresh instance per parse also prevents cross-file ATN state
- * accumulation from the static shared fields in generated ANTLR parsers.
  */
-public final class InterruptibleParserATNSimulator extends ParserATNSimulator {
+final class InterruptibleParserATNSimulator extends ParserATNSimulator {
 
-    public InterruptibleParserATNSimulator(Parser parser, ATN atn, DFA[] decisionToDfa,
-                                           PredictionContextCache sharedContextCache) {
+    InterruptibleParserATNSimulator(Parser parser, ATN atn, DFA[] decisionToDfa,
+                                    PredictionContextCache sharedContextCache) {
         super(parser, atn, decisionToDfa, sharedContextCache);
     }
 
@@ -49,7 +37,7 @@ public final class InterruptibleParserATNSimulator extends ParserATNSimulator {
                                             Set<ATNConfig> closureBusy,
                                             boolean collectPredicates, boolean fullCtx,
                                             int depth, boolean treatEofAsEpsilon) {
-        if (Thread.interrupted()) {
+        if (Thread.currentThread().isInterrupted()) {
             throw new ParseCancelledException();
         }
         super.closureCheckingStopState(config, configs, closureBusy,
@@ -57,8 +45,8 @@ public final class InterruptibleParserATNSimulator extends ParserATNSimulator {
     }
 
     /** Unchecked exception thrown when the parse thread is interrupted. */
-    public static final class ParseCancelledException extends RuntimeException {
-        public ParseCancelledException() {
+    static final class ParseCancelledException extends RuntimeException {
+        ParseCancelledException() {
             super("Parse cancelled due to thread interruption");
         }
     }
