@@ -128,6 +128,12 @@ this is already done.
 
 ### 🚨️ API Changes
 
+#### Deprecations
+* java
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.24.0/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html#visit(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>FieldDeclarationsShouldBeAtStartOfClassRule.visit(JavaNode, Object)</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.24.0/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html"><code>FieldDeclarationsShouldBeAtStartOfClassRule</code></a>. It will be removed in a later release.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.24.0/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html#visitTypeDecl(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>CyclomaticComplexityRule.visitTypeDecl(ASTTypeDeclaration, Object)</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.24.0/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html"><code>CyclomaticComplexityRule</code></a>. It will be removed in a later release.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.24.0/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html#visitSwitchLike(net.sourceforge.pmd.lang.java.ast.ASTSwitchLike,java.lang.Object)"><code>SwitchDensityRule.visitSwitchLike(ASTSwitchLike, Object)</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.24.0/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html"><code>SwitchDensityRule</code></a>. It will be removed in a later release.
+
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#6084](https://github.com/pmd/pmd/pull/6084): \[java] Shrink reported locations for some rules - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
@@ -155,6 +161,7 @@ this is already done.
 * [#6654](https://github.com/pmd/pmd/pull/6654): \[swift] Fix invalid swift token OSXApplicationExtension - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6658](https://github.com/pmd/pmd/pull/6658): \[doc] Fix capitalization of ANTLR in release notes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6671](https://github.com/pmd/pmd/pull/6671): \[java] Work on #4814: Deprecate 3 methods - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
