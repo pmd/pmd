@@ -579,7 +579,9 @@
                             <configuration>
                                 <skip>${pmd.skip}</skip>
                                 <targetDirectory>${project.build.directory}/pmdTest/</targetDirectory>
-                                <includeTests>true</includeTests>
+                                <!-- includeTests is false. We configure compileSourceRoots and
+                                     do not use testSourceRoots... -->
+                                <includeTests>false</includeTests>
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
                                 </rulesets>

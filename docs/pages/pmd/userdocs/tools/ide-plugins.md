@@ -276,7 +276,7 @@ source file in your project.
 
 ### JBuilder
 
-Was once a IDE by Borland (later Embarcadero): see <https://en.wikipedia.org/wiki/JBuilder> and
+Was once an IDE by Borland (later Embarcadero): see <https://en.wikipedia.org/wiki/JBuilder> and
 <https://web.archive.org/web/20090228184200/http://www.embarcadero.com/products/jbuilder/>
 
 Source code for the plugin is here: <https://github.com/pmd/pmd-misc/tree/main/pmd-jbuilder/>
