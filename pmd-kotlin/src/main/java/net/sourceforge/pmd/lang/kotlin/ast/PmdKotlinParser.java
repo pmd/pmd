@@ -30,16 +30,12 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  * ensure per-file ATN state isolation and prevent exponential state explosion on large
  * or complex Kotlin files.
  *
- * <p>A per-file parse timeout (default {@value #DEFAULT_TIMEOUT_SECONDS}s) acts as a
- * safety net. Files exceeding the timeout are skipped with a warning.
+ * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a warning.
+ * The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
  */
 public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinFile> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PmdKotlinParser.class);
-
-    /** System property to override the per-file parse timeout (seconds). */
-    static final String TIMEOUT_PROP = "pmd.kotlin.parseTimeoutSeconds";
-    static final int DEFAULT_TIMEOUT_SECONDS = 30;
 
     private static final ExecutorService PARSE_EXECUTOR =
             Executors.newCachedThreadPool(r -> {
@@ -48,10 +44,14 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
                 return t;
             });
 
+    private final int timeoutSeconds;
+
+    public PmdKotlinParser(int timeoutSeconds) {
+        this.timeoutSeconds = timeoutSeconds;
+    }
+
     @Override
     protected KtKotlinFile parse(final Lexer lexer, ParserTask task) {
-        int timeoutSeconds = readTimeoutSeconds();
-
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         KotlinParser parser = new KotlinParser(tokens);
         parser.setInterpreter(freshSimulator(parser));
@@ -77,18 +77,6 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
     private static InterruptibleParserATNSimulator freshSimulator(KotlinParser parser) {
         return new InterruptibleParserATNSimulator(
                 parser, KotlinParser._ATN, KotlinParser._decisionToDFA, KotlinParser._sharedContextCache);
-    }
-
-    private static int readTimeoutSeconds() {
-        String prop = System.getProperty(TIMEOUT_PROP);
-        if (prop != null) {
-            try {
-                return Integer.parseInt(prop);
-            } catch (NumberFormatException e) {
-                LOG.warn("Invalid value for {}: '{}', using default {}s", TIMEOUT_PROP, prop, DEFAULT_TIMEOUT_SECONDS);
-            }
-        }
-        return DEFAULT_TIMEOUT_SECONDS;
     }
 
     private static KtKotlinFile unwrapExecutionException(ExecutionException e, String fileName) {
