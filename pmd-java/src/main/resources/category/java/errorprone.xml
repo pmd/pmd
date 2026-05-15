@@ -554,7 +554,7 @@ Each caught exception type should be handled in its own catch clause.
 //CatchParameter
     /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
         /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
-            /following-sibling::TypeExpression/*
+            /following-sibling::*[self::TypeExpression or self::PatternExpression]//ClassType[1]
 ]]>
                 </value>
             </property>
