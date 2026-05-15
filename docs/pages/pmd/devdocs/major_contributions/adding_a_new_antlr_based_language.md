@@ -149,24 +149,6 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
     implementation that you need to extend to create your own adapter as we do with
     [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java).
-*   **ATN state isolation**: The generated ANTLR parser class has static shared `_decisionToDFA` and
-    `_sharedContextCache` fields. These accumulate LL prediction state across all parse invocations and
-    can cause exponential parse time on large or complex files. To prevent this, create a fresh
-    `DFA[]` array and `PredictionContextCache` per parse and inject them via a custom
-    `ParserATNSimulator`. See `PmdKotlinParser` for a reference implementation.
-*   **Stopping a hanging parse (interruptible ATN simulator)**: ANTLR's internal ATN closure loop
-    (`closureCheckingStopState`) is a tight mutual recursion with no interruption points, so calling
-    `Thread.interrupt()` on a parse thread has no effect by default. To make the parse stoppable,
-    use `InterruptibleParserATNSimulator` (in `pmd-core`, package
-    `net.sourceforge.pmd.lang.ast.impl.antlr4`). It overrides `closureCheckingStopState` to check
-    `Thread.interrupted()` at every step and throw `ParseCancelledException` when the flag is set.
-    This is what made it possible to implement a reliable parse timeout for Kotlin: the parse runs in
-    a daemon thread; when the timeout fires, `Future.cancel(true)` interrupts the thread, and the
-    next closure step sees the flag and stops immediately.
-*   **Parse timeout**: Wrap the parse call in a daemon thread with a configurable timeout
-    (e.g. via `ExecutorService` + `Future.get(timeout, SECONDS)`). This acts as a safety net for
-    files that would otherwise cause the parser to run indefinitely. Use a system property so the
-    timeout is configurable without a code change. See `PmdKotlinParser` for a reference implementation.
 
 ### 7.  Create a language version handler
 *   Now you need to create your version handler, as we did with [`SwiftHandler`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
