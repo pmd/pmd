@@ -483,7 +483,8 @@ class FooTest {
         ]]></code>
     </test-code>
 
-    <test-code>
+    <test-code disabled="true">
+<!--        See https://github.com/pmd/pmd/issues/6681 for why this is disabled-->
         <description>#1435 Treat AssertJ soft assertion rule for JUnit 4 as assert expressions</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -497,7 +498,7 @@ public class FooTest {
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     @Test
-    void testFoo() {
+    public void testFoo() {
         softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
     }
 }

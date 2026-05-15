@@ -110,8 +110,7 @@ public final class TestFrameworksUtil {
     }
 
     public static boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(JUNIT4_TEST_ANNOT)
-                && method.getVisibility() == Visibility.V_PUBLIC;
+        return method.isAnnotationPresent(JUNIT4_TEST_ANNOT);
     }
 
     public static boolean isJUnit5Method(ASTMethodDeclaration method) {
