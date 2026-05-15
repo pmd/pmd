@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>declaration before unrelated statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Distance between declaration of 'sum' and its first usage is 8, current threshold is 7</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Bar {
+    public int lengthSumOf(String[] strings) {
+        int sum = 0; // premature
+        int unused = 0; // this is not used: not a problem
+        System.out.println("unrelated 2");
+        System.out.println("unrelated 3");
+        System.out.println("unrelated 4");
+        System.out.println("unrelated 5");
+        System.out.println("unrelated 6");
+        System.out.println("unrelated 7");
+
+        for (int i = 0; i < strings.length; i++) {
+            sum += strings[i].length();
+        }
+
+        return sum + offset;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>declaration before unrelated block</description>
+        <rule-property name="maxDistance">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Distance between declaration of 'sum' and its first usage is 5, current threshold is 3</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Bar {
+    public int lengthSumOf(String[] strings) {
+        int sum = 0; // premature
+        System.out.println("unrelated 1");
+        System.out.println("unrelated 2");
+        System.out.println("unrelated 3");
+        {
+            int blockScoped = 0;
+            System.out.println("unrelated 4");
+            System.out.println("unrelated 5");
+            System.out.println("unrelated 6");
+        }
+
+        for (int i = 0; i < strings.length; i++) {
+            sum += strings[i].length();
+        }
+
+        return sum + offset;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>final and time variables</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+    private double offset = 0;
+    public void measure() {
+        long start = System.currentTimeMillis();
+        final double initialOffset = offset;
+        offset += Math.random() * 1;
+        offset += Math.random() * 2;
+        offset += Math.random() * 3;
+        offset += Math.random() * 4;
+        offset += Math.random() * 5;
+        offset += Math.random() * 6;
+        offset += Math.random() * 7;
+        System.out.println(System.currentTimeMillis() - start);
+        System.out.println(offset - initialOffset);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom maximum distance</description>
+        <rule-property name="maxDistance">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+    public int lengthSumOf(String[] strings) {
+        int sum = 0; // premature
+        System.out.println("unrelated 1");
+        System.out.println("unrelated 2");
+        System.out.println("unrelated 3");
+        System.out.println("unrelated 4");
+        System.out.println("unrelated 5");
+        System.out.println("unrelated 6");
+        System.out.println("unrelated 7");
+        System.out.println("unrelated 8");
+        System.out.println("unrelated 9");
+
+        for (int i = 0; i < strings.length; i++) {
+            sum += strings[i].length();
+        }
+
+        return sum;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>no unrelated statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+    public int lengthSumOf(String[] strings) {
+
+        int sum = 0; // only one statement in between: not a problem
+        int unused = 0;
+        for (int i = 0; i < strings.length; i++) {
+            sum += strings[i].length();
+        }
+
+        return sum;
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

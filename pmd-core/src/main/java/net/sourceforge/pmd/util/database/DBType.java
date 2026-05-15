@@ -193,7 +193,7 @@ public class DBType {
                     } catch (Exception notInJarWithPath) {
                         notInJarWithPath.printStackTrace();
                         notFoundOnFilesystemWithExtensionTackedOn.printStackTrace();
-                        throw new RuntimeException(" Could not locate DBTYpe settings : " + matchString,
+                        throw new RuntimeException(" Could not locate DBType settings : " + matchString,
                                 notInJarWithPath);
                     }
                 }
