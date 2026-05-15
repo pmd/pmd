@@ -137,7 +137,7 @@ public final class ExprOps {
     }
 
     /**
-     * Returns true if the the argument expression is pertinent
+     * Returns true if the argument expression is pertinent
      * to applicability for the potentially applicable method m,
      * called at site 'invoc', as specified by JLS§15.12.2.2:
      *
