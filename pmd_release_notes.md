@@ -10,7 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
-    * [Updated antlr library to 4.13.2](#updated-antlr-library-to-4132)
+    * [Updated ANTLR library to 4.13.2](#updated-antlr-library-to-4132)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
@@ -21,14 +21,14 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
-#### Updated antlr library to 4.13.2
-We have updated the antlr library (parser generator) from 4.9.3 to the latest version 4.13.2,
+#### Updated ANTLR library to 4.13.2
+We have updated the ANTLR library (parser generator) from 4.9.3 to the latest version 4.13.2,
 in order to be able to use the latest version of Apex parser library.
 
-This is an incompatible update: In case you use custom language modules based on antlr, you
-need to make sure to regenerate all of your lexers and parsers with the new antlr version.
+This is an incompatible update: In case you use custom language modules based on ANTLR, you
+need to make sure to regenerate all of your lexers and parsers with the new ANTLR version.
 
-For the antlr based language modules, that PMD ships (kotlin and swift and various CPD modules),
+For the ANTLR based language modules, that PMD ships (kotlin and swift and various CPD modules),
 this is already done.
 
 ### 🌟️ New and Changed Rules
@@ -42,6 +42,9 @@ this is already done.
 * The new Java rule [`VariableDeclarationUsageDistance`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#variabledeclarationusagedistance) flags local variables that are declared
   far from their usage, which can make code harder to read. The rule has a property `maxDistance` that allows to
   configure the maximum allowed distance between declaration and usage.
+* The new Java rule [`AssertStatementInTest`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_bestpractices.html#assertstatementintest) detects usages of `assert` statement in tests.
+  These should be replaced by framework assertion methods such as `assertEquals`.
+  Such methods provide better error messages and make test behave correctly when running without `-ea`.
 
 #### Changed Rules
 * The rule [`OnlyOneReturn`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#onlyonereturn) has a new property `allowGuardIfs`. When this property is
@@ -93,13 +96,14 @@ this is already done.
 
 ### 🐛️ Fixed Issues
 * core
-  * [#4972](https://github.com/pmd/pmd/issues/4972): \[core] Update antlr to 4.13.2
+  * [#4972](https://github.com/pmd/pmd/issues/4972): \[core] Update ANTLR to 4.13.2
   * [#6308](https://github.com/pmd/pmd/issues/6308): \[core] CPD Markdown format: Add syntax highlighting
 * java
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
 * java-bestpractices
   * [#3212](https://github.com/pmd/pmd/issues/3212): \[java] Enhance UseStandardCharsets to flag some constructors of IO-related classes
+  * [#3777](https://github.com/pmd/pmd/issues/3777): \[java] New rule: AssertStatementInTest
 * java-codestyle
   * [#2801](https://github.com/pmd/pmd/issues/2801): \[java] OnlyOneReturn should have a property to allow early exits (guard clauses)
   * [#6427](https://github.com/pmd/pmd/issues/6427): \[java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte
@@ -127,6 +131,7 @@ this is already done.
 * [#6522](https://github.com/pmd/pmd/pull/6522): \[java] Fix #6520: DoNotUseThreads: fix false positive on Thread.onSpinWait()  - [leemeii](https://github.com/leemeii) (@leemeii)
 * [#6524](https://github.com/pmd/pmd/pull/6524): \[java] Fix #6517: UselessPureMethodCall: fix false negative for primitive streams - [leemeii](https://github.com/leemeii) (@leemeii)
 * [#6553](https://github.com/pmd/pmd/pull/6553): \[java] Fix StackOverflowError in TypeOps projection of cyclic captured type vars - [Sebastian Lövdahl](https://github.com/slovdahl) (@slovdahl)
+* [#6557](https://github.com/pmd/pmd/pull/6557): \[java] New rule: AssertStatementInTest - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6561](https://github.com/pmd/pmd/pull/6561): \[java] Fix #6163: ConstructorCallsOverridableMethod: False positive with call to enclosing class - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6573](https://github.com/pmd/pmd/pull/6573): \[java] Fix #6427: Add bitwise and/or/xor to BINARY_PROMOTED_OPS - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6587](https://github.com/pmd/pmd/pull/6587): \[java] Fix #2801: Add a property to OnlyOneReturnRule to allow guard ifs - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
@@ -136,7 +141,7 @@ this is already done.
 * [#6604](https://github.com/pmd/pmd/pull/6604): \[java] Fix #3288: New rule JUnit5TestNoPrivateModifierRule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6605](https://github.com/pmd/pmd/pull/6605): \[java] Fix #6308: Add syntax highlighting to MarkdownRenderer - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6619](https://github.com/pmd/pmd/pull/6619): \[java] Fix #5746: Separate test sources and resources - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#6621](https://github.com/pmd/pmd/pull/6621): \[core] Fix #4972: Update antlr from 4.9.3 to 4.13.2 - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6621](https://github.com/pmd/pmd/pull/6621): \[core] Fix #4972: Update ANTLR from 4.9.3 to 4.13.2 - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6623](https://github.com/pmd/pmd/pull/6623): \[java] Cleanup: Remove TODO from ModifierOwner.getVisibility() - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6636](https://github.com/pmd/pmd/pull/6636): \[java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6638](https://github.com/pmd/pmd/pull/6638): \[java] Fix #559: Improve UseUtilityClassRule to trigger also on static members - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
@@ -145,6 +150,7 @@ this is already done.
 * [#6646](https://github.com/pmd/pmd/pull/6646): \[test] Split up AbstractRuleSetFactoryTest.testAllPMDBuiltInRulesMeetConventions() - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6653](https://github.com/pmd/pmd/pull/6653): \[kotlin] Fix #6648: Multi-dollar interpolation for regular strings - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6654](https://github.com/pmd/pmd/pull/6654): \[swift] Fix invalid swift token OSXApplicationExtension - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6658](https://github.com/pmd/pmd/pull/6658): \[doc] Fix capitalization of ANTLR in release notes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

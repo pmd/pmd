@@ -2037,14 +2037,14 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-<h4 id="updated-antlr-library-to-4132">Updated antlr library to 4.13.2</h4>
-<p>We have updated the antlr library (parser generator) from 4.9.3 to the latest version 4.13.2,
+<h4 id="updated-antlr-library-to-4132">Updated ANTLR library to 4.13.2</h4>
+<p>We have updated the ANTLR library (parser generator) from 4.9.3 to the latest version 4.13.2,
 in order to be able to use the latest version of Apex parser library.</p>
 
-<p>This is an incompatible update: In case you use custom language modules based on antlr, you
-need to make sure to regenerate all of your lexers and parsers with the new antlr version.</p>
+<p>This is an incompatible update: In case you use custom language modules based on ANTLR, you
+need to make sure to regenerate all of your lexers and parsers with the new ANTLR version.</p>
 
-<p>For the antlr based language modules, that PMD ships (kotlin and swift and various CPD modules),
+<p>For the ANTLR based language modules, that PMD ships (kotlin and swift and various CPD modules),
 this is already done.</p>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
@@ -2059,6 +2059,9 @@ redundant blocks that can make code harder to read and may be misleading.</li>
   <li>The new Java rule <a href="pmd_rules_java_codestyle.html#variabledeclarationusagedistance"><code class="language-plaintext highlighter-rouge">VariableDeclarationUsageDistance</code></a> flags local variables that are declared
 far from their usage, which can make code harder to read. The rule has a property <code class="language-plaintext highlighter-rouge">maxDistance</code> that allows to
 configure the maximum allowed distance between declaration and usage.</li>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#assertstatementintest"><code class="language-plaintext highlighter-rouge">AssertStatementInTest</code></a> detects usages of <code class="language-plaintext highlighter-rouge">assert</code> statement in tests.
+These should be replaced by framework assertion methods such as <code class="language-plaintext highlighter-rouge">assertEquals</code>.
+Such methods provide better error messages and make test behave correctly when running without <code class="language-plaintext highlighter-rouge">-ea</code>.</li>
 </ul>
 
 <h4 id="changed-rules">Changed Rules</h4>
@@ -2118,7 +2121,7 @@ is still ongoing, the following Java rules have been updated in this release:
 <ul>
   <li>core
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4972">#4972</a>: [core] Update antlr to 4.13.2</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4972">#4972</a>: [core] Update ANTLR to 4.13.2</li>
       <li><a href="https://github.com/pmd/pmd/issues/6308">#6308</a>: [core] CPD Markdown format: Add syntax highlighting</li>
     </ul>
   </li>
@@ -2131,6 +2134,7 @@ is still ongoing, the following Java rules have been updated in this release:
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3212">#3212</a>: [java] Enhance UseStandardCharsets to flag some constructors of IO-related classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3777">#3777</a>: [java] New rule: AssertStatementInTest</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -2177,6 +2181,7 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6522">#6522</a>: [java] Fix #6520: DoNotUseThreads: fix false positive on Thread.onSpinWait()  - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6524">#6524</a>: [java] Fix #6517: UselessPureMethodCall: fix false negative for primitive streams - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6553">#6553</a>: [java] Fix StackOverflowError in TypeOps projection of cyclic captured type vars - <a href="https://github.com/slovdahl">Sebastian Lövdahl</a> (@slovdahl)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6557">#6557</a>: [java] New rule: AssertStatementInTest - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6561">#6561</a>: [java] Fix #6163: ConstructorCallsOverridableMethod: False positive with call to enclosing class - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6573">#6573</a>: [java] Fix #6427: Add bitwise and/or/xor to BINARY_PROMOTED_OPS - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6587">#6587</a>: [java] Fix #2801: Add a property to OnlyOneReturnRule to allow guard ifs - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
@@ -2186,7 +2191,7 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6604">#6604</a>: [java] Fix #3288: New rule JUnit5TestNoPrivateModifierRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6605">#6605</a>: [java] Fix #6308: Add syntax highlighting to MarkdownRenderer - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6619">#6619</a>: [java] Fix #5746: Separate test sources and resources - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6621">#6621</a>: [core] Fix #4972: Update antlr from 4.9.3 to 4.13.2 - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6621">#6621</a>: [core] Fix #4972: Update ANTLR from 4.9.3 to 4.13.2 - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6623">#6623</a>: [java] Cleanup: Remove TODO from ModifierOwner.getVisibility() - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6636">#6636</a>: [java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6638">#6638</a>: [java] Fix #559: Improve UseUtilityClassRule to trigger also on static members - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
@@ -2195,6 +2200,7 @@ is still ongoing, the following Java rules have been updated in this release:
   <li><a href="https://github.com/pmd/pmd/pull/6646">#6646</a>: [test] Split up AbstractRuleSetFactoryTest.testAllPMDBuiltInRulesMeetConventions() - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6653">#6653</a>: [kotlin] Fix #6648: Multi-dollar interpolation for regular strings - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6654">#6654</a>: [swift] Fix invalid swift token OSXApplicationExtension - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6658">#6658</a>: [doc] Fix capitalization of ANTLR in release notes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
@@ -2232,7 +2238,7 @@ is still ongoing, the following Java rules have been updated in this release:
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 14, 2026 <br />
+             Site last generated: May 15, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -1524,6 +1524,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "AssertStatementInTest (Java, Best Practices)",
+  "tags": "",
+  "keywords": "Assert Statement In Test",
+  "url": "pmd_rules_java_bestpractices.html#assertstatementintest",
+  "summary": "Assert statements should not be used in test code. Instead, use the assertion methods provided..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
   "title": "AvoidMessageDigestField (Java, Best Practices)",
   "tags": "",
   "keywords": "Avoid Message Digest Field",
