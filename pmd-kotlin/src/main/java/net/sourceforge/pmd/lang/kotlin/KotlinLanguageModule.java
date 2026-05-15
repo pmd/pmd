@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
-import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;

@@ -15,6 +15,8 @@ import java.util.concurrent.TimeoutException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +27,10 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 /**
  * Adapter for the KotlinParser.
  *
- * <p>Each parse injects a fresh {@link InterruptibleParserATNSimulator} using the shared
- * {@code KotlinParser._decisionToDFA} and {@code KotlinParser._sharedContextCache} to
- * ensure per-file ATN state isolation and prevent exponential state explosion on large
- * or complex Kotlin files.
+ * <p>Each parse injects a fresh {@link InterruptibleParserATNSimulator} with its own DFA arrays
+ * and {@link PredictionContextCache}. Using per-parse instances avoids lock contention when
+ * PMD parses files in parallel, which would otherwise cause severe performance degradation due
+ * to the complexity of the Kotlin grammar.
  *
  * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a warning.
  * The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
@@ -75,8 +77,12 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
     }
 
     private static InterruptibleParserATNSimulator freshSimulator(KotlinParser parser) {
+        DFA[] decisionToDfa = new DFA[KotlinParser._ATN.getNumberOfDecisions()];
+        for (int i = 0; i < decisionToDfa.length; i++) {
+            decisionToDfa[i] = new DFA(KotlinParser._ATN.getDecisionState(i), i);
+        }
         return new InterruptibleParserATNSimulator(
-                parser, KotlinParser._ATN, KotlinParser._decisionToDFA, KotlinParser._sharedContextCache);
+                parser, KotlinParser._ATN, decisionToDfa, new PredictionContextCache());
     }
 
     private static KtKotlinFile unwrapExecutionException(ExecutionException e, String fileName) {
