@@ -44,6 +44,9 @@ this is already done.
 * The new Java rule {% rule java/codestyle/VariableDeclarationUsageDistance %} flags local variables that are declared
   far from their usage, which can make code harder to read. The rule has a property `maxDistance` that allows to
   configure the maximum allowed distance between declaration and usage.
+* The new Java rule {% rule java/bestpractices/AssertStatementInTest %} detects usages of `assert` statement in tests.
+  These should be replaced by framework assertion methods such as `assertEquals`.
+  Such methods provide better error messages and make test behave correctly when running without `-ea`.
 
 #### Changed Rules
 * The rule {% rule java/codestyle/OnlyOneReturn %} has a new property `allowGuardIfs`. When this property is
@@ -102,6 +105,7 @@ this is already done.
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
 * java-bestpractices
   * [#3212](https://github.com/pmd/pmd/issues/3212): \[java] Enhance UseStandardCharsets to flag some constructors of IO-related classes
+  * [#3777](https://github.com/pmd/pmd/issues/3777): \[java] New rule: AssertStatementInTest
 * java-codestyle
   * [#2801](https://github.com/pmd/pmd/issues/2801): \[java] OnlyOneReturn should have a property to allow early exits (guard clauses)
   * [#6427](https://github.com/pmd/pmd/issues/6427): \[java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte
@@ -129,6 +133,7 @@ this is already done.
 * [#6522](https://github.com/pmd/pmd/pull/6522): \[java] Fix #6520: DoNotUseThreads: fix false positive on Thread.onSpinWait()  - [leemeii](https://github.com/leemeii) (@leemeii)
 * [#6524](https://github.com/pmd/pmd/pull/6524): \[java] Fix #6517: UselessPureMethodCall: fix false negative for primitive streams - [leemeii](https://github.com/leemeii) (@leemeii)
 * [#6553](https://github.com/pmd/pmd/pull/6553): \[java] Fix StackOverflowError in TypeOps projection of cyclic captured type vars - [Sebastian Lövdahl](https://github.com/slovdahl) (@slovdahl)
+* [#6557](https://github.com/pmd/pmd/pull/6557): \[java] New rule: AssertStatementInTest - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6561](https://github.com/pmd/pmd/pull/6561): \[java] Fix #6163: ConstructorCallsOverridableMethod: False positive with call to enclosing class - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6573](https://github.com/pmd/pmd/pull/6573): \[java] Fix #6427: Add bitwise and/or/xor to BINARY_PROMOTED_OPS - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6587](https://github.com/pmd/pmd/pull/6587): \[java] Fix #2801: Add a property to OnlyOneReturnRule to allow guard ifs - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
