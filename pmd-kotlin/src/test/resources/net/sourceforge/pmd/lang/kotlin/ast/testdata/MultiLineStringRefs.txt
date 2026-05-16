@@ -1,168 +1,168 @@
-+- KotlinFile
-   +- PackageHeader
-   +- ImportList
-   +- TopLevelObject
-   |  +- Declaration
-   |  |  +- ClassDeclaration
-   |  |     +- T-CLASS
-   |  |     +- SimpleIdentifier
-   |  |     |  +- T-Identifier
-   |  |     +- ClassBody
-   |  |        +- T-LCURL
-   |  |        +- T-NL
-   |  |        +- ClassMemberDeclarations
-   |  |        |  +- ClassMemberDeclaration
-   |  |        |  |  +- Declaration
-   |  |        |  |     +- FunctionDeclaration
-   |  |        |  |        +- T-FUN
-   |  |        |  |        +- SimpleIdentifier
-   |  |        |  |        |  +- T-Identifier
-   |  |        |  |        +- FunctionValueParameters
-   |  |        |  |        |  +- T-LPAREN
-   |  |        |  |        |  +- T-RPAREN
-   |  |        |  |        +- FunctionBody
-   |  |        |  |           +- Block
-   |  |        |  |              +- T-LCURL
-   |  |        |  |              +- T-NL
-   |  |        |  |              +- Statements
-   |  |        |  |              |  +- Statement
-   |  |        |  |              |  |  +- Declaration
-   |  |        |  |              |  |     +- PropertyDeclaration
-   |  |        |  |              |  |        +- T-VAL
-   |  |        |  |              |  |        +- VariableDeclaration
-   |  |        |  |              |  |        |  +- SimpleIdentifier
-   |  |        |  |              |  |        |     +- T-Identifier
-   |  |        |  |              |  |        +- T-ASSIGNMENT
-   |  |        |  |              |  |        +- Expression
-   |  |        |  |              |  |           +- Disjunction
-   |  |        |  |              |  |              +- Conjunction
-   |  |        |  |              |  |                 +- Equality
-   |  |        |  |              |  |                    +- Comparison
-   |  |        |  |              |  |                       +- GenericCallLikeComparison
-   |  |        |  |              |  |                          +- InfixOperation
-   |  |        |  |              |  |                             +- ElvisExpression
-   |  |        |  |              |  |                                +- InfixFunctionCall
-   |  |        |  |              |  |                                   +- RangeExpression
-   |  |        |  |              |  |                                      +- AdditiveExpression
-   |  |        |  |              |  |                                         +- MultiplicativeExpression
-   |  |        |  |              |  |                                            +- AsExpression
-   |  |        |  |              |  |                                               +- PrefixUnaryExpression
-   |  |        |  |              |  |                                                  +- PostfixUnaryExpression
-   |  |        |  |              |  |                                                     +- PrimaryExpression
-   |  |        |  |              |  |                                                        +- StringLiteral
-   |  |        |  |              |  |                                                           +- LineStringLiteral
-   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN
-   |  |        |  |              |  |                                                              +- LineStringContent
-   |  |        |  |              |  |                                                              |  +- T-LineStrText
-   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE
-   |  |        |  |              |  +- Semis
-   |  |        |  |              |  |  +- T-NL
-   |  |        |  |              |  +- Statement
-   |  |        |  |              |     +- Declaration
-   |  |        |  |              |        +- PropertyDeclaration
-   |  |        |  |              |           +- T-VAL
-   |  |        |  |              |           +- VariableDeclaration
-   |  |        |  |              |           |  +- SimpleIdentifier
-   |  |        |  |              |           |     +- T-Identifier
-   |  |        |  |              |           +- T-ASSIGNMENT
-   |  |        |  |              |           +- T-NL
-   |  |        |  |              |           +- Expression
-   |  |        |  |              |           |  +- Disjunction
-   |  |        |  |              |           |     +- Conjunction
-   |  |        |  |              |           |        +- Equality
-   |  |        |  |              |           |           +- Comparison
-   |  |        |  |              |           |              +- GenericCallLikeComparison
-   |  |        |  |              |           |                 +- InfixOperation
-   |  |        |  |              |           |                    +- ElvisExpression
-   |  |        |  |              |           |                       +- InfixFunctionCall
-   |  |        |  |              |           |                          +- RangeExpression
-   |  |        |  |              |           |                             +- AdditiveExpression
-   |  |        |  |              |           |                                +- MultiplicativeExpression
-   |  |        |  |              |           |                                   +- AsExpression
-   |  |        |  |              |           |                                      +- PrefixUnaryExpression
-   |  |        |  |              |           |                                         +- PostfixUnaryExpression
-   |  |        |  |              |           |                                            +- PrimaryExpression
-   |  |        |  |              |           |                                               +- StringLiteral
-   |  |        |  |              |           |                                                  +- MultiLineStringLiteral
-   |  |        |  |              |           |                                                     +- T-MultiDollarPrefix
-   |  |        |  |              |           |                                                     +- T-TRIPLE_QUOTE_OPEN
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrRef
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote
-   |  |        |  |              |           |                                                     +- MultiLineStringContent
-   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText
-   |  |        |  |              |           |                                                     +- T-TRIPLE_QUOTE_CLOSE
-   |  |        |  |              |           +- T-NL
-   |  |        |  |              +- T-RCURL
-   |  |        |  +- Semis
-   |  |        |     +- T-NL
-   |  |        +- T-RCURL
-   |  +- Semis
-   |     +- T-NL
-   |     +- T-NL
-   +- EOF
++- KotlinFile[]
+   +- PackageHeader[]
+   +- ImportList[]
+   +- TopLevelObject[]
+   |  +- Declaration[]
+   |  |  +- ClassDeclaration[@Identifier = "Foo", @Modifiers = null]
+   |  |     +- T-CLASS[@Text = "class"]
+   |  |     +- SimpleIdentifier[]
+   |  |     |  +- T-Identifier[@Text = "Foo"]
+   |  |     +- ClassBody[]
+   |  |        +- T-LCURL[@Text = "{"]
+   |  |        +- T-NL[@Text = "\n"]
+   |  |        +- ClassMemberDeclarations[]
+   |  |        |  +- ClassMemberDeclaration[]
+   |  |        |  |  +- Declaration[]
+   |  |        |  |     +- FunctionDeclaration[@Identifier = "foo", @Modifiers = null]
+   |  |        |  |        +- T-FUN[@Text = "fun"]
+   |  |        |  |        +- SimpleIdentifier[]
+   |  |        |  |        |  +- T-Identifier[@Text = "foo"]
+   |  |        |  |        +- FunctionValueParameters[]
+   |  |        |  |        |  +- T-LPAREN[@Text = "("]
+   |  |        |  |        |  +- T-RPAREN[@Text = ")"]
+   |  |        |  |        +- FunctionBody[]
+   |  |        |  |           +- Block[]
+   |  |        |  |              +- T-LCURL[@Text = "{"]
+   |  |        |  |              +- T-NL[@Text = "\n"]
+   |  |        |  |              +- Statements[]
+   |  |        |  |              |  +- Statement[]
+   |  |        |  |              |  |  +- Declaration[]
+   |  |        |  |              |  |     +- PropertyDeclaration[]
+   |  |        |  |              |  |        +- T-VAL[@Text = "val"]
+   |  |        |  |              |  |        +- VariableDeclaration[@Identifier = "productName"]
+   |  |        |  |              |  |        |  +- SimpleIdentifier[]
+   |  |        |  |              |  |        |     +- T-Identifier[@Text = "productName"]
+   |  |        |  |              |  |        +- T-ASSIGNMENT[@Text = "="]
+   |  |        |  |              |  |        +- Expression[]
+   |  |        |  |              |  |           +- Disjunction[]
+   |  |        |  |              |  |              +- Conjunction[]
+   |  |        |  |              |  |                 +- Equality[]
+   |  |        |  |              |  |                    +- Comparison[]
+   |  |        |  |              |  |                       +- GenericCallLikeComparison[]
+   |  |        |  |              |  |                          +- InfixOperation[]
+   |  |        |  |              |  |                             +- ElvisExpression[]
+   |  |        |  |              |  |                                +- InfixFunctionCall[]
+   |  |        |  |              |  |                                   +- RangeExpression[]
+   |  |        |  |              |  |                                      +- AdditiveExpression[]
+   |  |        |  |              |  |                                         +- MultiplicativeExpression[]
+   |  |        |  |              |  |                                            +- AsExpression[]
+   |  |        |  |              |  |                                               +- PrefixUnaryExpression[]
+   |  |        |  |              |  |                                                  +- PostfixUnaryExpression[]
+   |  |        |  |              |  |                                                     +- PrimaryExpression[]
+   |  |        |  |              |  |                                                        +- StringLiteral[]
+   |  |        |  |              |  |                                                           +- LineStringLiteral[]
+   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN[@Text = "\""]
+   |  |        |  |              |  |                                                              +- LineStringContent[]
+   |  |        |  |              |  |                                                              |  +- T-LineStrText[@Text = "carrot"]
+   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE[@Text = "\""]
+   |  |        |  |              |  +- Semis[]
+   |  |        |  |              |  |  +- T-NL[@Text = "\n"]
+   |  |        |  |              |  +- Statement[]
+   |  |        |  |              |     +- Declaration[]
+   |  |        |  |              |        +- PropertyDeclaration[]
+   |  |        |  |              |           +- T-VAL[@Text = "val"]
+   |  |        |  |              |           +- VariableDeclaration[@Identifier = "requestedData"]
+   |  |        |  |              |           |  +- SimpleIdentifier[]
+   |  |        |  |              |           |     +- T-Identifier[@Text = "requestedData"]
+   |  |        |  |              |           +- T-ASSIGNMENT[@Text = "="]
+   |  |        |  |              |           +- T-NL[@Text = "\n"]
+   |  |        |  |              |           +- Expression[]
+   |  |        |  |              |           |  +- Disjunction[]
+   |  |        |  |              |           |     +- Conjunction[]
+   |  |        |  |              |           |        +- Equality[]
+   |  |        |  |              |           |           +- Comparison[]
+   |  |        |  |              |           |              +- GenericCallLikeComparison[]
+   |  |        |  |              |           |                 +- InfixOperation[]
+   |  |        |  |              |           |                    +- ElvisExpression[]
+   |  |        |  |              |           |                       +- InfixFunctionCall[]
+   |  |        |  |              |           |                          +- RangeExpression[]
+   |  |        |  |              |           |                             +- AdditiveExpression[]
+   |  |        |  |              |           |                                +- MultiplicativeExpression[]
+   |  |        |  |              |           |                                   +- AsExpression[]
+   |  |        |  |              |           |                                      +- PrefixUnaryExpression[]
+   |  |        |  |              |           |                                         +- PostfixUnaryExpression[]
+   |  |        |  |              |           |                                            +- PrimaryExpression[]
+   |  |        |  |              |           |                                               +- StringLiteral[]
+   |  |        |  |              |           |                                                  +- MultiLineStringLiteral[]
+   |  |        |  |              |           |                                                     +- T-MultiDollarPrefix[@Text = "$$$"]
+   |  |        |  |              |           |                                                     +- T-TRIPLE_QUOTE_OPEN[@Text = "\"\"\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "{\n              "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "currency"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = ": "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "$"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = ",\n              "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "enteredAmount"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = ": "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "42.45 "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "$"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "$"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = ",\n              "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "$$serviceField"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = ": "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "none"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = ",\n              "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "product"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = ": "]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrRef[@Text = "$$$productName"]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStringQuote[@Text = "\""]
+   |  |        |  |              |           |                                                     +- MultiLineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-MultiLineStrText[@Text = "\n            }\n            "]
+   |  |        |  |              |           |                                                     +- T-TRIPLE_QUOTE_CLOSE[@Text = "\"\"\""]
+   |  |        |  |              |           +- T-NL[@Text = "\n"]
+   |  |        |  |              +- T-RCURL[@Text = "}"]
+   |  |        |  +- Semis[]
+   |  |        |     +- T-NL[@Text = "\n"]
+   |  |        +- T-RCURL[@Text = "}"]
+   |  +- Semis[]
+   |     +- T-NL[@Text = "\n"]
+   |     +- T-NL[@Text = "\n"]
+   +- EOF[@Text = "<EOF>"]

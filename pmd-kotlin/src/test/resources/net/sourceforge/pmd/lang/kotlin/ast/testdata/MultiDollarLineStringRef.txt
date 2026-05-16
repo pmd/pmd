@@ -1,196 +1,196 @@
-+- KotlinFile
-   +- PackageHeader
-   +- ImportList
-   +- TopLevelObject
-   |  +- Declaration
-   |  |  +- ClassDeclaration
-   |  |     +- T-CLASS
-   |  |     +- SimpleIdentifier
-   |  |     |  +- T-Identifier
-   |  |     +- ClassBody
-   |  |        +- T-LCURL
-   |  |        +- T-NL
-   |  |        +- ClassMemberDeclarations
-   |  |        |  +- ClassMemberDeclaration
-   |  |        |  |  +- Declaration
-   |  |        |  |     +- FunctionDeclaration
-   |  |        |  |        +- T-FUN
-   |  |        |  |        +- SimpleIdentifier
-   |  |        |  |        |  +- T-Identifier
-   |  |        |  |        +- FunctionValueParameters
-   |  |        |  |        |  +- T-LPAREN
-   |  |        |  |        |  +- T-RPAREN
-   |  |        |  |        +- FunctionBody
-   |  |        |  |           +- Block
-   |  |        |  |              +- T-LCURL
-   |  |        |  |              +- T-NL
-   |  |        |  |              +- Statements
-   |  |        |  |              |  +- Statement
-   |  |        |  |              |  |  +- Declaration
-   |  |        |  |              |  |     +- PropertyDeclaration
-   |  |        |  |              |  |        +- T-VAL
-   |  |        |  |              |  |        +- VariableDeclaration
-   |  |        |  |              |  |        |  +- SimpleIdentifier
-   |  |        |  |              |  |        |     +- T-Identifier
-   |  |        |  |              |  |        +- T-ASSIGNMENT
-   |  |        |  |              |  |        +- Expression
-   |  |        |  |              |  |           +- Disjunction
-   |  |        |  |              |  |              +- Conjunction
-   |  |        |  |              |  |                 +- Equality
-   |  |        |  |              |  |                    +- Comparison
-   |  |        |  |              |  |                       +- GenericCallLikeComparison
-   |  |        |  |              |  |                          +- InfixOperation
-   |  |        |  |              |  |                             +- ElvisExpression
-   |  |        |  |              |  |                                +- InfixFunctionCall
-   |  |        |  |              |  |                                   +- RangeExpression
-   |  |        |  |              |  |                                      +- AdditiveExpression
-   |  |        |  |              |  |                                         +- MultiplicativeExpression
-   |  |        |  |              |  |                                            +- AsExpression
-   |  |        |  |              |  |                                               +- PrefixUnaryExpression
-   |  |        |  |              |  |                                                  +- PostfixUnaryExpression
-   |  |        |  |              |  |                                                     +- PrimaryExpression
-   |  |        |  |              |  |                                                        +- StringLiteral
-   |  |        |  |              |  |                                                           +- LineStringLiteral
-   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN
-   |  |        |  |              |  |                                                              +- LineStringContent
-   |  |        |  |              |  |                                                              |  +- T-LineStrText
-   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE
-   |  |        |  |              |  +- Semis
-   |  |        |  |              |  |  +- T-NL
-   |  |        |  |              |  +- Statement
-   |  |        |  |              |  |  +- Declaration
-   |  |        |  |              |  |     +- PropertyDeclaration
-   |  |        |  |              |  |        +- T-VAL
-   |  |        |  |              |  |        +- VariableDeclaration
-   |  |        |  |              |  |        |  +- SimpleIdentifier
-   |  |        |  |              |  |        |     +- T-Identifier
-   |  |        |  |              |  |        +- T-ASSIGNMENT
-   |  |        |  |              |  |        +- Expression
-   |  |        |  |              |  |           +- Disjunction
-   |  |        |  |              |  |              +- Conjunction
-   |  |        |  |              |  |                 +- Equality
-   |  |        |  |              |  |                    +- Comparison
-   |  |        |  |              |  |                       +- GenericCallLikeComparison
-   |  |        |  |              |  |                          +- InfixOperation
-   |  |        |  |              |  |                             +- ElvisExpression
-   |  |        |  |              |  |                                +- InfixFunctionCall
-   |  |        |  |              |  |                                   +- RangeExpression
-   |  |        |  |              |  |                                      +- AdditiveExpression
-   |  |        |  |              |  |                                         +- MultiplicativeExpression
-   |  |        |  |              |  |                                            +- AsExpression
-   |  |        |  |              |  |                                               +- PrefixUnaryExpression
-   |  |        |  |              |  |                                                  +- PostfixUnaryExpression
-   |  |        |  |              |  |                                                     +- PrimaryExpression
-   |  |        |  |              |  |                                                        +- StringLiteral
-   |  |        |  |              |  |                                                           +- LineStringLiteral
-   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN
-   |  |        |  |              |  |                                                              +- LineStringContent
-   |  |        |  |              |  |                                                              |  +- T-LineStrText
-   |  |        |  |              |  |                                                              +- LineStringContent
-   |  |        |  |              |  |                                                              |  +- T-LineStrRef
-   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE
-   |  |        |  |              |  +- Semis
-   |  |        |  |              |  |  +- T-NL
-   |  |        |  |              |  +- Statement
-   |  |        |  |              |  |  +- Declaration
-   |  |        |  |              |  |     +- PropertyDeclaration
-   |  |        |  |              |  |        +- T-VAL
-   |  |        |  |              |  |        +- VariableDeclaration
-   |  |        |  |              |  |        |  +- SimpleIdentifier
-   |  |        |  |              |  |        |     +- T-Identifier
-   |  |        |  |              |  |        +- T-ASSIGNMENT
-   |  |        |  |              |  |        +- Expression
-   |  |        |  |              |  |           +- Disjunction
-   |  |        |  |              |  |              +- Conjunction
-   |  |        |  |              |  |                 +- Equality
-   |  |        |  |              |  |                    +- Comparison
-   |  |        |  |              |  |                       +- GenericCallLikeComparison
-   |  |        |  |              |  |                          +- InfixOperation
-   |  |        |  |              |  |                             +- ElvisExpression
-   |  |        |  |              |  |                                +- InfixFunctionCall
-   |  |        |  |              |  |                                   +- RangeExpression
-   |  |        |  |              |  |                                      +- AdditiveExpression
-   |  |        |  |              |  |                                         +- MultiplicativeExpression
-   |  |        |  |              |  |                                            +- AsExpression
-   |  |        |  |              |  |                                               +- PrefixUnaryExpression
-   |  |        |  |              |  |                                                  +- PostfixUnaryExpression
-   |  |        |  |              |  |                                                     +- PrimaryExpression
-   |  |        |  |              |  |                                                        +- StringLiteral
-   |  |        |  |              |  |                                                           +- LineStringLiteral
-   |  |        |  |              |  |                                                              +- T-MultiDollarPrefix
-   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN
-   |  |        |  |              |  |                                                              +- LineStringContent
-   |  |        |  |              |  |                                                              |  +- T-LineStrRef
-   |  |        |  |              |  |                                                              +- LineStringContent
-   |  |        |  |              |  |                                                              |  +- T-LineStrText
-   |  |        |  |              |  |                                                              +- LineStringContent
-   |  |        |  |              |  |                                                              |  +- T-LineStrText
-   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE
-   |  |        |  |              |  +- Semis
-   |  |        |  |              |  |  +- T-NL
-   |  |        |  |              |  +- Statement
-   |  |        |  |              |     +- Declaration
-   |  |        |  |              |        +- PropertyDeclaration
-   |  |        |  |              |           +- T-VAL
-   |  |        |  |              |           +- VariableDeclaration
-   |  |        |  |              |           |  +- SimpleIdentifier
-   |  |        |  |              |           |     +- T-Identifier
-   |  |        |  |              |           +- T-ASSIGNMENT
-   |  |        |  |              |           +- Expression
-   |  |        |  |              |           |  +- Disjunction
-   |  |        |  |              |           |     +- Conjunction
-   |  |        |  |              |           |        +- Equality
-   |  |        |  |              |           |           +- Comparison
-   |  |        |  |              |           |              +- GenericCallLikeComparison
-   |  |        |  |              |           |                 +- InfixOperation
-   |  |        |  |              |           |                    +- ElvisExpression
-   |  |        |  |              |           |                       +- InfixFunctionCall
-   |  |        |  |              |           |                          +- RangeExpression
-   |  |        |  |              |           |                             +- AdditiveExpression
-   |  |        |  |              |           |                                +- MultiplicativeExpression
-   |  |        |  |              |           |                                   +- AsExpression
-   |  |        |  |              |           |                                      +- PrefixUnaryExpression
-   |  |        |  |              |           |                                         +- PostfixUnaryExpression
-   |  |        |  |              |           |                                            +- PrimaryExpression
-   |  |        |  |              |           |                                               +- StringLiteral
-   |  |        |  |              |           |                                                  +- LineStringLiteral
-   |  |        |  |              |           |                                                     +- T-MultiDollarPrefix
-   |  |        |  |              |           |                                                     +- T-QUOTE_OPEN
-   |  |        |  |              |           |                                                     +- LineStringExpression
-   |  |        |  |              |           |                                                     |  +- T-LineStrExprStart
-   |  |        |  |              |           |                                                     |  +- Expression
-   |  |        |  |              |           |                                                     |  |  +- Disjunction
-   |  |        |  |              |           |                                                     |  |     +- Conjunction
-   |  |        |  |              |           |                                                     |  |        +- Equality
-   |  |        |  |              |           |                                                     |  |           +- Comparison
-   |  |        |  |              |           |                                                     |  |              +- GenericCallLikeComparison
-   |  |        |  |              |           |                                                     |  |                 +- InfixOperation
-   |  |        |  |              |           |                                                     |  |                    +- ElvisExpression
-   |  |        |  |              |           |                                                     |  |                       +- InfixFunctionCall
-   |  |        |  |              |           |                                                     |  |                          +- RangeExpression
-   |  |        |  |              |           |                                                     |  |                             +- AdditiveExpression
-   |  |        |  |              |           |                                                     |  |                                +- MultiplicativeExpression
-   |  |        |  |              |           |                                                     |  |                                   +- AsExpression
-   |  |        |  |              |           |                                                     |  |                                      +- PrefixUnaryExpression
-   |  |        |  |              |           |                                                     |  |                                         +- PostfixUnaryExpression
-   |  |        |  |              |           |                                                     |  |                                            +- PrimaryExpression
-   |  |        |  |              |           |                                                     |  |                                            |  +- SimpleIdentifier
-   |  |        |  |              |           |                                                     |  |                                            |     +- T-Identifier
-   |  |        |  |              |           |                                                     |  |                                            +- PostfixUnarySuffix
-   |  |        |  |              |           |                                                     |  |                                               +- NavigationSuffix
-   |  |        |  |              |           |                                                     |  |                                                  +- MemberAccessOperator
-   |  |        |  |              |           |                                                     |  |                                                  |  +- T-DOT
-   |  |        |  |              |           |                                                     |  |                                                  +- SimpleIdentifier
-   |  |        |  |              |           |                                                     |  |                                                     +- T-Identifier
-   |  |        |  |              |           |                                                     |  +- T-RCURL
-   |  |        |  |              |           |                                                     +- LineStringContent
-   |  |        |  |              |           |                                                     |  +- T-LineStrText
-   |  |        |  |              |           |                                                     +- T-QUOTE_CLOSE
-   |  |        |  |              |           +- T-NL
-   |  |        |  |              +- T-RCURL
-   |  |        |  +- Semis
-   |  |        |     +- T-NL
-   |  |        +- T-RCURL
-   |  +- Semis
-   |     +- T-NL
-   +- EOF
++- KotlinFile[]
+   +- PackageHeader[]
+   +- ImportList[]
+   +- TopLevelObject[]
+   |  +- Declaration[]
+   |  |  +- ClassDeclaration[@Identifier = "Foo", @Modifiers = null]
+   |  |     +- T-CLASS[@Text = "class"]
+   |  |     +- SimpleIdentifier[]
+   |  |     |  +- T-Identifier[@Text = "Foo"]
+   |  |     +- ClassBody[]
+   |  |        +- T-LCURL[@Text = "{"]
+   |  |        +- T-NL[@Text = "\n"]
+   |  |        +- ClassMemberDeclarations[]
+   |  |        |  +- ClassMemberDeclaration[]
+   |  |        |  |  +- Declaration[]
+   |  |        |  |     +- FunctionDeclaration[@Identifier = "foo", @Modifiers = null]
+   |  |        |  |        +- T-FUN[@Text = "fun"]
+   |  |        |  |        +- SimpleIdentifier[]
+   |  |        |  |        |  +- T-Identifier[@Text = "foo"]
+   |  |        |  |        +- FunctionValueParameters[]
+   |  |        |  |        |  +- T-LPAREN[@Text = "("]
+   |  |        |  |        |  +- T-RPAREN[@Text = ")"]
+   |  |        |  |        +- FunctionBody[]
+   |  |        |  |           +- Block[]
+   |  |        |  |              +- T-LCURL[@Text = "{"]
+   |  |        |  |              +- T-NL[@Text = "\n"]
+   |  |        |  |              +- Statements[]
+   |  |        |  |              |  +- Statement[]
+   |  |        |  |              |  |  +- Declaration[]
+   |  |        |  |              |  |     +- PropertyDeclaration[]
+   |  |        |  |              |  |        +- T-VAL[@Text = "val"]
+   |  |        |  |              |  |        +- VariableDeclaration[@Identifier = "myVar"]
+   |  |        |  |              |  |        |  +- SimpleIdentifier[]
+   |  |        |  |              |  |        |     +- T-Identifier[@Text = "myVar"]
+   |  |        |  |              |  |        +- T-ASSIGNMENT[@Text = "="]
+   |  |        |  |              |  |        +- Expression[]
+   |  |        |  |              |  |           +- Disjunction[]
+   |  |        |  |              |  |              +- Conjunction[]
+   |  |        |  |              |  |                 +- Equality[]
+   |  |        |  |              |  |                    +- Comparison[]
+   |  |        |  |              |  |                       +- GenericCallLikeComparison[]
+   |  |        |  |              |  |                          +- InfixOperation[]
+   |  |        |  |              |  |                             +- ElvisExpression[]
+   |  |        |  |              |  |                                +- InfixFunctionCall[]
+   |  |        |  |              |  |                                   +- RangeExpression[]
+   |  |        |  |              |  |                                      +- AdditiveExpression[]
+   |  |        |  |              |  |                                         +- MultiplicativeExpression[]
+   |  |        |  |              |  |                                            +- AsExpression[]
+   |  |        |  |              |  |                                               +- PrefixUnaryExpression[]
+   |  |        |  |              |  |                                                  +- PostfixUnaryExpression[]
+   |  |        |  |              |  |                                                     +- PrimaryExpression[]
+   |  |        |  |              |  |                                                        +- StringLiteral[]
+   |  |        |  |              |  |                                                           +- LineStringLiteral[]
+   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN[@Text = "\""]
+   |  |        |  |              |  |                                                              +- LineStringContent[]
+   |  |        |  |              |  |                                                              |  +- T-LineStrText[@Text = "hello"]
+   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE[@Text = "\""]
+   |  |        |  |              |  +- Semis[]
+   |  |        |  |              |  |  +- T-NL[@Text = "\n"]
+   |  |        |  |              |  +- Statement[]
+   |  |        |  |              |  |  +- Declaration[]
+   |  |        |  |              |  |     +- PropertyDeclaration[]
+   |  |        |  |              |  |        +- T-VAL[@Text = "val"]
+   |  |        |  |              |  |        +- VariableDeclaration[@Identifier = "s1"]
+   |  |        |  |              |  |        |  +- SimpleIdentifier[]
+   |  |        |  |              |  |        |     +- T-Identifier[@Text = "s1"]
+   |  |        |  |              |  |        +- T-ASSIGNMENT[@Text = "="]
+   |  |        |  |              |  |        +- Expression[]
+   |  |        |  |              |  |           +- Disjunction[]
+   |  |        |  |              |  |              +- Conjunction[]
+   |  |        |  |              |  |                 +- Equality[]
+   |  |        |  |              |  |                    +- Comparison[]
+   |  |        |  |              |  |                       +- GenericCallLikeComparison[]
+   |  |        |  |              |  |                          +- InfixOperation[]
+   |  |        |  |              |  |                             +- ElvisExpression[]
+   |  |        |  |              |  |                                +- InfixFunctionCall[]
+   |  |        |  |              |  |                                   +- RangeExpression[]
+   |  |        |  |              |  |                                      +- AdditiveExpression[]
+   |  |        |  |              |  |                                         +- MultiplicativeExpression[]
+   |  |        |  |              |  |                                            +- AsExpression[]
+   |  |        |  |              |  |                                               +- PrefixUnaryExpression[]
+   |  |        |  |              |  |                                                  +- PostfixUnaryExpression[]
+   |  |        |  |              |  |                                                     +- PrimaryExpression[]
+   |  |        |  |              |  |                                                        +- StringLiteral[]
+   |  |        |  |              |  |                                                           +- LineStringLiteral[]
+   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN[@Text = "\""]
+   |  |        |  |              |  |                                                              +- LineStringContent[]
+   |  |        |  |              |  |                                                              |  +- T-LineStrText[@Text = "normal "]
+   |  |        |  |              |  |                                                              +- LineStringContent[]
+   |  |        |  |              |  |                                                              |  +- T-LineStrRef[@Text = "$myVar"]
+   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE[@Text = "\""]
+   |  |        |  |              |  +- Semis[]
+   |  |        |  |              |  |  +- T-NL[@Text = "\n"]
+   |  |        |  |              |  +- Statement[]
+   |  |        |  |              |  |  +- Declaration[]
+   |  |        |  |              |  |     +- PropertyDeclaration[]
+   |  |        |  |              |  |        +- T-VAL[@Text = "val"]
+   |  |        |  |              |  |        +- VariableDeclaration[@Identifier = "s2"]
+   |  |        |  |              |  |        |  +- SimpleIdentifier[]
+   |  |        |  |              |  |        |     +- T-Identifier[@Text = "s2"]
+   |  |        |  |              |  |        +- T-ASSIGNMENT[@Text = "="]
+   |  |        |  |              |  |        +- Expression[]
+   |  |        |  |              |  |           +- Disjunction[]
+   |  |        |  |              |  |              +- Conjunction[]
+   |  |        |  |              |  |                 +- Equality[]
+   |  |        |  |              |  |                    +- Comparison[]
+   |  |        |  |              |  |                       +- GenericCallLikeComparison[]
+   |  |        |  |              |  |                          +- InfixOperation[]
+   |  |        |  |              |  |                             +- ElvisExpression[]
+   |  |        |  |              |  |                                +- InfixFunctionCall[]
+   |  |        |  |              |  |                                   +- RangeExpression[]
+   |  |        |  |              |  |                                      +- AdditiveExpression[]
+   |  |        |  |              |  |                                         +- MultiplicativeExpression[]
+   |  |        |  |              |  |                                            +- AsExpression[]
+   |  |        |  |              |  |                                               +- PrefixUnaryExpression[]
+   |  |        |  |              |  |                                                  +- PostfixUnaryExpression[]
+   |  |        |  |              |  |                                                     +- PrimaryExpression[]
+   |  |        |  |              |  |                                                        +- StringLiteral[]
+   |  |        |  |              |  |                                                           +- LineStringLiteral[]
+   |  |        |  |              |  |                                                              +- T-MultiDollarPrefix[@Text = "$$"]
+   |  |        |  |              |  |                                                              +- T-QUOTE_OPEN[@Text = "\""]
+   |  |        |  |              |  |                                                              +- LineStringContent[]
+   |  |        |  |              |  |                                                              |  +- T-LineStrRef[@Text = "$$myVar"]
+   |  |        |  |              |  |                                                              +- LineStringContent[]
+   |  |        |  |              |  |                                                              |  +- T-LineStrText[@Text = " and literal "]
+   |  |        |  |              |  |                                                              +- LineStringContent[]
+   |  |        |  |              |  |                                                              |  +- T-LineStrText[@Text = "$end"]
+   |  |        |  |              |  |                                                              +- T-QUOTE_CLOSE[@Text = "\""]
+   |  |        |  |              |  +- Semis[]
+   |  |        |  |              |  |  +- T-NL[@Text = "\n"]
+   |  |        |  |              |  +- Statement[]
+   |  |        |  |              |     +- Declaration[]
+   |  |        |  |              |        +- PropertyDeclaration[]
+   |  |        |  |              |           +- T-VAL[@Text = "val"]
+   |  |        |  |              |           +- VariableDeclaration[@Identifier = "s3"]
+   |  |        |  |              |           |  +- SimpleIdentifier[]
+   |  |        |  |              |           |     +- T-Identifier[@Text = "s3"]
+   |  |        |  |              |           +- T-ASSIGNMENT[@Text = "="]
+   |  |        |  |              |           +- Expression[]
+   |  |        |  |              |           |  +- Disjunction[]
+   |  |        |  |              |           |     +- Conjunction[]
+   |  |        |  |              |           |        +- Equality[]
+   |  |        |  |              |           |           +- Comparison[]
+   |  |        |  |              |           |              +- GenericCallLikeComparison[]
+   |  |        |  |              |           |                 +- InfixOperation[]
+   |  |        |  |              |           |                    +- ElvisExpression[]
+   |  |        |  |              |           |                       +- InfixFunctionCall[]
+   |  |        |  |              |           |                          +- RangeExpression[]
+   |  |        |  |              |           |                             +- AdditiveExpression[]
+   |  |        |  |              |           |                                +- MultiplicativeExpression[]
+   |  |        |  |              |           |                                   +- AsExpression[]
+   |  |        |  |              |           |                                      +- PrefixUnaryExpression[]
+   |  |        |  |              |           |                                         +- PostfixUnaryExpression[]
+   |  |        |  |              |           |                                            +- PrimaryExpression[]
+   |  |        |  |              |           |                                               +- StringLiteral[]
+   |  |        |  |              |           |                                                  +- LineStringLiteral[]
+   |  |        |  |              |           |                                                     +- T-MultiDollarPrefix[@Text = "$$"]
+   |  |        |  |              |           |                                                     +- T-QUOTE_OPEN[@Text = "\""]
+   |  |        |  |              |           |                                                     +- LineStringExpression[]
+   |  |        |  |              |           |                                                     |  +- T-LineStrExprStart[@Text = "$${"]
+   |  |        |  |              |           |                                                     |  +- Expression[]
+   |  |        |  |              |           |                                                     |  |  +- Disjunction[]
+   |  |        |  |              |           |                                                     |  |     +- Conjunction[]
+   |  |        |  |              |           |                                                     |  |        +- Equality[]
+   |  |        |  |              |           |                                                     |  |           +- Comparison[]
+   |  |        |  |              |           |                                                     |  |              +- GenericCallLikeComparison[]
+   |  |        |  |              |           |                                                     |  |                 +- InfixOperation[]
+   |  |        |  |              |           |                                                     |  |                    +- ElvisExpression[]
+   |  |        |  |              |           |                                                     |  |                       +- InfixFunctionCall[]
+   |  |        |  |              |           |                                                     |  |                          +- RangeExpression[]
+   |  |        |  |              |           |                                                     |  |                             +- AdditiveExpression[]
+   |  |        |  |              |           |                                                     |  |                                +- MultiplicativeExpression[]
+   |  |        |  |              |           |                                                     |  |                                   +- AsExpression[]
+   |  |        |  |              |           |                                                     |  |                                      +- PrefixUnaryExpression[]
+   |  |        |  |              |           |                                                     |  |                                         +- PostfixUnaryExpression[]
+   |  |        |  |              |           |                                                     |  |                                            +- PrimaryExpression[]
+   |  |        |  |              |           |                                                     |  |                                            |  +- SimpleIdentifier[]
+   |  |        |  |              |           |                                                     |  |                                            |     +- T-Identifier[@Text = "myVar"]
+   |  |        |  |              |           |                                                     |  |                                            +- PostfixUnarySuffix[]
+   |  |        |  |              |           |                                                     |  |                                               +- NavigationSuffix[]
+   |  |        |  |              |           |                                                     |  |                                                  +- MemberAccessOperator[]
+   |  |        |  |              |           |                                                     |  |                                                  |  +- T-DOT[@Text = "."]
+   |  |        |  |              |           |                                                     |  |                                                  +- SimpleIdentifier[]
+   |  |        |  |              |           |                                                     |  |                                                     +- T-Identifier[@Text = "length"]
+   |  |        |  |              |           |                                                     |  +- T-RCURL[@Text = "}"]
+   |  |        |  |              |           |                                                     +- LineStringContent[]
+   |  |        |  |              |           |                                                     |  +- T-LineStrText[@Text = " chars"]
+   |  |        |  |              |           |                                                     +- T-QUOTE_CLOSE[@Text = "\""]
+   |  |        |  |              |           +- T-NL[@Text = "\n"]
+   |  |        |  |              +- T-RCURL[@Text = "}"]
+   |  |        |  +- Semis[]
+   |  |        |     +- T-NL[@Text = "\n"]
+   |  |        +- T-RCURL[@Text = "}"]
+   |  +- Semis[]
+   |     +- T-NL[@Text = "\n"]
+   +- EOF[@Text = "<EOF>"]
