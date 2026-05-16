@@ -317,7 +317,7 @@ import junit.framework.TestCase;
 public class Foo extends TestCase {
     public void testBar() { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -330,7 +330,7 @@ public class Foo {
     @Test
     public void testBar() { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -343,7 +343,7 @@ class Foo {
     @Test
     void testBar() { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -355,7 +355,7 @@ class FooTest {
     @Test
     void testBar() { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -368,7 +368,7 @@ class TestFoo {
     @Test
     void testBar() { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -383,7 +383,7 @@ class Foo {
     @ValueSource(ints = {1})
     void testBar(int i) { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -396,7 +396,7 @@ public class Foo {
     @Test
     public void testBar() {}
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -406,7 +406,7 @@ public class Foo {
 public class FooTest {
     public void testBar() { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -425,7 +425,7 @@ class MyTests {
         void secondCheck() {}
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -434,7 +434,7 @@ class MyTests {
         <code><![CDATA[
 import junit.framework.TestCase;
 public class ExampleTestCase extends TestCase { }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -443,7 +443,7 @@ public class ExampleTestCase extends TestCase { }
         <code><![CDATA[
 import junit.framework.TestCase;
 public class ExampleIT extends TestCase { }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -452,7 +452,7 @@ public class ExampleIT extends TestCase { }
         <code><![CDATA[
 import junit.framework.TestCase;
 public class ExampleITCase extends TestCase { }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -461,7 +461,7 @@ public class ExampleITCase extends TestCase { }
         <code><![CDATA[
 import junit.framework.TestCase;
 public class ITExample extends TestCase { }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -472,7 +472,7 @@ public class ITExample extends TestCase { }
 public interface TestInterface {
   void test();
 }
-]]></code>
+        ]]></code>
     </test-code>
 
 
@@ -497,6 +497,54 @@ foo // <--violation: line 2
     tehehe // <--violation: line 14
     { }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (JUnit 5/6) with test only in parent class #4350</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+abstract class Parent {
+    @Test
+    void testBar() { }
+}
+
+class Foo extends Parent {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (JUnit4) with test only in parent class #4350</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+
+abstract class Parent {
+    @Test
+    void testBar() { }
+}
+
+class Foo extends Parent {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test class (TestNG) with test only in parent class #4350</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+
+abstract class Parent {
+    @Test
+    void testBar() { }
+}
+
+class Foo extends Parent {}
         ]]></code>
     </test-code>
 </test-data>
