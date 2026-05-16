@@ -210,9 +210,21 @@ public final class TextFileContent {
 
         int bufOffset = 0;
         int nextCharToCopy = 0;
-        int n = input.read(cbuf);
-        if (n > 0 && cbuf[0] == IOUtil.UTF_BOM) {
-            nextCharToCopy = 1;
+        int firstChar = input.read();
+        int n;
+        if (firstChar == IOUtil.UTF_BOM) {
+            // ignore the first char if it's the BOM header
+            n = input.read(cbuf);
+        } else {
+            // fill cbuf with remaining chars starting from offset 1
+            n = input.read(cbuf, 1, bufSize - 1);
+            // handle the first char we already read before
+            if (firstChar > 0) {
+                cbuf[0] = (char) firstChar;
+                //increment n while also handling the edge case that n might be -1
+                //this edge case happens when the input is only a single character
+                n = Math.max(0, n) + 1;
+            }
         }
 
         while (n != IOUtil.EOF) {
