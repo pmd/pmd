@@ -101,6 +101,7 @@ this is already done.
 * java
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
+  * [#6688](https://github.com/pmd/pmd/issues/6688): \[java] LocalVariableCouldBeFinalRule API changed
 * java-bestpractices
   * [#3212](https://github.com/pmd/pmd/issues/3212): \[java] Enhance UseStandardCharsets to flag some constructors of IO-related classes
   * [#3777](https://github.com/pmd/pmd/issues/3777): \[java] New rule: AssertStatementInTest
