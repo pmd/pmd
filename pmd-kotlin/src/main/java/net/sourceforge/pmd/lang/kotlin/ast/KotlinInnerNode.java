@@ -4,21 +4,15 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtIdentifier;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtImportHeader;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifier;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
 
@@ -46,141 +40,67 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         return KotlinParser.DICO.getXPathNameOfRule(getRuleIndex());
     }
 
+    private AttributeView<?> attributes() {
+        final AttributeView<?> result;
+        if (this instanceof KotlinParser.KtImportHeader) {
+            result = new KtImportHeaderAttributes((KotlinParser.KtImportHeader) this);
+        } else if (this instanceof KotlinParser.KtImportAlias) {
+            result = new KtImportAliasAttributes((KotlinParser.KtImportAlias) this);
+        } else if (this instanceof KotlinParser.KtClassDeclaration) {
+            result = new KtClassDeclarationAttributes((KotlinParser.KtClassDeclaration) this);
+        } else if (this instanceof KotlinParser.KtClassParameter) {
+            result = new KtClassParameterAttributes((KotlinParser.KtClassParameter) this);
+        } else if (this instanceof KotlinParser.KtFunctionDeclaration) {
+            result = new KtFunctionDeclarationAttributes((KotlinParser.KtFunctionDeclaration) this);
+        } else if (this instanceof KotlinParser.KtVariableDeclaration) {
+            result = new KtVariableDeclarationAttributes((KotlinParser.KtVariableDeclaration) this);
+        } else {
+            result = null;
+        }
+        return result;
+    }
+
+
     /**
-     * Returns the explicit modifier keywords of this declaration node as a
-     * space-separated string (e.g. {@code "override suspend"}), or {@code null}
-     * if this node has no modifier keywords. Annotations inside the modifier list
-     * are excluded. Exposed as XPath attribute {@code @Modifiers}.
+     * Returns the corresponding attributes class for this node.
+     * The returned type is already cast to have the correct type.
+     *
+     * <p>Usage example:
+     * <pre>{@code
+     * String id = classDecl.attributes(KtClassDeclarationAttributes.class).getIdentifier();
+     * }</pre>
+     *
+     * @throws IllegalArgumentException if the given attribute view type doesn't match this node's type.
+     *
+     * @since 7.25.0
+     * @experimental See {@link AttributeView}.
      */
-    @Override
-    public @Nullable String getModifiers() {
-        KtModifiers mods = findModifiersNode();
-        if (mods == null) {
+    @Experimental
+    public <A extends AttributeView<?>> A attributes(Class<A> type) {
+        AttributeView<?> view = attributes();
+        if (view == null) {
             return null;
         }
-        return buildModifiersString(mods);
-    }
 
-    private @Nullable KtModifiers findModifiersNode() {
-        for (int i = 0; i < getNumChildren(); i++) {
-            KotlinNode child = getChild(i);
-            if (child instanceof KtModifiers) {
-                return (KtModifiers) child;
-            }
+        if (!type.isInstance(view)) {
+            throw new IllegalArgumentException("Expected type " + view.getClass().getName() + " but got " + type.getName());
         }
-        return null;
-    }
-
-    private static @Nullable String buildModifiersString(KtModifiers mods) {
-        StringBuilder sb = new StringBuilder();
-        for (int j = 0; j < mods.getNumChildren(); j++) {
-            KotlinNode mod = mods.getChild(j);
-            if (mod instanceof KtModifier) {
-                String kw = firstModifierKeyword(mod);
-                if (kw != null) {
-                    if (sb.length() > 0) {
-                        sb.append(' ');
-                    }
-                    sb.append(kw);
-                }
-            }
-            // KtAnnotation children are skipped
-        }
-        return sb.length() > 0 ? sb.toString() : null;
+        return type.cast(view);
     }
 
     /**
-     * Returns the imported type's fully-qualified name for {@code ImportHeader} nodes
-     * (e.g. {@code "com.example.Foo"} for {@code import com.example.Foo}).
-     * Returns {@code null} for all other node types.
+     * Returns the attributes on the node and additionally the attributes of
+     * the corresponding attribute view, if there is one.
      *
-     * <p>This is used by PMD's XPath rule engine as {@code {0}} in violation messages,
-     * so that the unresolved type name appears in the message text.
-     */
-    @Override
-    public @Nullable String getImage() {
-        if (this instanceof KtImportHeader) {
-            return buildImportFqn();
-        }
-        return null;
-    }
-
-    private @Nullable String buildImportFqn() {
-        for (int i = 0; i < getNumChildren(); i++) {
-            KotlinNode child = getChild(i);
-            if (child instanceof KtIdentifier) {
-                return buildFqnFromIdentifier(child);
-            }
-        }
-        return null;
-    }
-
-    private static @Nullable String buildFqnFromIdentifier(KotlinNode identifierNode) {
-        StringBuilder sb = new StringBuilder();
-        for (int j = 0; j < identifierNode.getNumChildren(); j++) {
-            KotlinNode part = identifierNode.getChild(j);
-            if (part instanceof KtSimpleIdentifier && part.getNumChildren() > 0) {
-                KotlinNode token = part.getChild(0);
-                if (token instanceof KotlinTerminalNode) {
-                    if (sb.length() > 0) {
-                        sb.append('.');
-                    }
-                    sb.append(((KotlinTerminalNode) token).getText());
-                }
-            }
-        }
-        return sb.length() > 0 ? sb.toString() : null;
-    }
-
-    /**
-     * Returns the text of the first {@code SimpleIdentifier} direct child,
-     * or {@code null} if none is present.
-     */
-    @Override
-    public @Nullable String getIdentifier() {
-        for (int i = 0; i < getNumChildren(); i++) {
-            KotlinNode child = getChild(i);
-            if (child instanceof KtSimpleIdentifier) {
-                KtSimpleIdentifier si = (KtSimpleIdentifier) child;
-                if (si.getNumChildren() > 0) {
-                    KotlinNode token = si.getChild(0);
-                    if (token instanceof KotlinTerminalNode) {
-                        return ((KotlinTerminalNode) token).getText();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private static @Nullable String firstModifierKeyword(KotlinNode node) {
-        if (node instanceof KotlinTerminalNode) {
-            return ((KotlinTerminalNode) node).getText();
-        }
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            String found = firstModifierKeyword(node.getChild(i));
-            if (found != null) {
-                return found;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Filters out XPath attributes with a {@code null} value, so optional
-     * attributes like {@code @Modifiers} and {@code @Identifier} only appear
-     * in the PMD Designer on nodes where they are meaningful.
+     * @see #attributes(Class)
      */
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
-        List<Attribute> attrs = new ArrayList<>();
         Iterator<Attribute> base = super.getXPathAttributesIterator();
-        while (base.hasNext()) {
-            Attribute attr = base.next();
-            if (attr.getValue() != null) {
-                attrs.add(attr);
-            }
+        AttributeView<?> attributeView = attributes();
+        if (attributeView != null) {
+            return IteratorUtil.concat(base, attributeView.getXPathAttributesIterator());
         }
-        return attrs.iterator();
+        return base;
     }
 }

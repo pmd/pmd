@@ -4,16 +4,11 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.antlr.v4.runtime.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> implements KotlinNode {
 
@@ -42,23 +37,6 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
             return ((KotlinVisitor<? super P, ? extends R>) visitor).visitKotlinNode(this, data);
         }
         return super.acceptVisitor(visitor, data);
-    }
-
-    /**
-     * Filters out XPath attributes with a {@code null} value, keeping the PMD
-     * Designer clean by only showing attributes that have meaningful values.
-     */
-    @Override
-    public Iterator<Attribute> getXPathAttributesIterator() {
-        List<Attribute> attrs = new ArrayList<>();
-        Iterator<Attribute> base = super.getXPathAttributesIterator();
-        while (base.hasNext()) {
-            Attribute attr = base.next();
-            if (attr.getValue() != null) {
-                attrs.add(attr);
-            }
-        }
-        return attrs.iterator();
     }
 
 }

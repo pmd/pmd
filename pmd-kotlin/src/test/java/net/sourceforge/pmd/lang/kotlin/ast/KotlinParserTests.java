@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtImportHeader;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 
 /**
  * Miscellaneous Kotlin parser regression tests.
@@ -92,16 +91,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class Foo");
         KtClassDeclaration clazz =
                 file.descendants(KtClassDeclaration.class).first();
-        assertEquals("Foo", clazz.getIdentifier());
-    }
-
-    @Test
-    void identifierAttributeAbsentWhenNoSimpleIdentifierChild() {
-        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("val x = 1");
-        KtPropertyDeclaration prop =
-                file.descendants(KtPropertyDeclaration.class).first();
-        // PropertyDeclaration wraps a VariableDeclaration, not a SimpleIdentifier directly
-        assertNull(prop.getIdentifier());
+        assertEquals("Foo", clazz.attributes(KtClassDeclarationAttributes.class).getIdentifier());
     }
 
     @Test
@@ -110,7 +100,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                 "abstract class Base { open suspend fun doWork() {} }");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        assertEquals("open suspend", func.getModifiers());
+        assertEquals("open suspend", func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
     }
 
     @Test
@@ -118,16 +108,16 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun plain() {}");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        assertNull(func.getModifiers());
+        assertNull(func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
     }
 
     @Test
-    void imageAttributeOnImportHeader() {
+    void nameAttributeOnImportHeader() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
                 "import com.example.Foo\nfun f() {}");
         KtImportHeader imp =
                 file.descendants(KtImportHeader.class).first();
-        assertEquals("com.example.Foo", imp.getImage());
+        assertEquals("com.example.Foo", imp.attributes(KtImportHeaderAttributes.class).getName());
     }
 
 }
