@@ -106,7 +106,13 @@ public final class TestFrameworksUtil {
     }
 
     private static boolean isTestNgMethod(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(TEST_NG_TEST_ANNOT);
+        return isTestNgMethod(method.getSymbol());
+    }
+
+    private static boolean isTestNgMethod(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(
+                it -> TEST_NG_TEST_ANNOT.equals(it.getBinaryName())
+        );
     }
 
     public static boolean isJUnit4Method(ASTMethodDeclaration method) {
@@ -178,6 +184,14 @@ public final class TestFrameworksUtil {
 
         return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
                 && typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
+                        .findAny().isPresent();
+    }
+
+    public static boolean isTestNGClass(ASTClassDeclaration node) {
+        JClassType typeMirror = node.getTypeMirror();
+
+        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
+                && typeMirror.streamMethods(TestFrameworksUtil::isTestNgMethod)
                         .findAny().isPresent();
     }
 
