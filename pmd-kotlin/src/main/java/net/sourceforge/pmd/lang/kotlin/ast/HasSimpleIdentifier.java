@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.kotlin.util.KotlinAstUtil;
+import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
 
 /**
  * @since 7.25.0

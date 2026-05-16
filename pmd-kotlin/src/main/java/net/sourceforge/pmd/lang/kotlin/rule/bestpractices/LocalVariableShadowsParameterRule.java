@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
-import net.sourceforge.pmd.lang.kotlin.util.KotlinAstUtil;
+import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -30,6 +30,8 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * lambda parameter directly inside that function (checked via
  * {@link KotlinAstUtil#isWithin}) is then compared against the combined set
  * of params from that function and all its enclosing functions.
+ *
+ * @since 7.25.0
  */
 public class LocalVariableShadowsParameterRule extends AbstractKotlinRule {
 

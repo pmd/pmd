@@ -2,12 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.util;
+package net.sourceforge.pmd.lang.kotlin.ast.internal;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignableExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignment;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
@@ -63,7 +63,7 @@ public final class KotlinAstUtil {
      * for {@code node} is exactly {@code ancestor}. Used to scope descendant searches
      * to a single enclosing node without crossing into nested scopes of the same type.
      */
-    public static <T extends Node> boolean isWithin(Node node, Class<T> type, T ancestor) {
+    public static <T extends KotlinNode> boolean isWithin(KotlinNode node, Class<T> type, T ancestor) {
         return node.ancestors(type).first() == ancestor;
     }
 
@@ -162,7 +162,7 @@ public final class KotlinAstUtil {
      * Returns the names of all mutable ({@code var}) class fields declared in the class body
      * that encloses {@code node}.
      */
-    public static Set<String> collectClassVarFieldNames(Node node) {
+    public static Set<String> collectClassVarFieldNames(KotlinNode node) {
         Set<String> result = new HashSet<>();
         KtClassDeclaration classDecl =
                 node.ancestors(KtClassDeclaration.class).first();
