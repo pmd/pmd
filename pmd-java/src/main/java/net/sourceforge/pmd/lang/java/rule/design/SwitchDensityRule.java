@@ -14,13 +14,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Switch Density - This is the number of statements over the number of
  * cases within a switch. The higher the value, the more work each case
  * is doing.
  *
- * <p>Its my theory, that when the Switch Density is high, you should start
+ * <p>It's my theory, that when the Switch Density is high, you should start
  * looking at Subclasses or State Pattern to alleviate the problem.</p>
  *
  * @author David Dixon-Peugh
@@ -42,15 +43,35 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
-        return visitSwitchLike(node, data);
+        RuleContext ctx = (RuleContext) data;
+
+        visitSwitchLike(node, ctx);
+
+        return null;
     }
 
     @Override
     public Object visit(ASTSwitchExpression node, Object data) {
-        return visitSwitchLike(node, data);
+        RuleContext ctx = (RuleContext) data;
+
+        visitSwitchLike(node, ctx);
+
+        return null;
     }
 
+    /**
+     * @deprecated since 7.25.0. This method should have never been public.
+     */
+    @Deprecated
     public Void visitSwitchLike(ASTSwitchLike node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
+        visitSwitchLike(node, ctx);
+
+        return null;
+    }
+
+    private void visitSwitchLike(ASTSwitchLike node, RuleContext ctx) {
         // note: this does not cross find boundaries.
         int stmtCount = node.descendants(ASTStatement.class).count();
         int labelCount = node.getBranches()
@@ -60,8 +81,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
         // note: if labelCount is zero, double division will produce +Infinity or NaN, not ArithmeticException
         double density = stmtCount / (double) labelCount;
         if (density >= getProperty(REPORT_LEVEL)) {
-            asCtx(data).addViolation(node);
+            ctx.addViolation(node);
         }
-        return null;
     }
 }
