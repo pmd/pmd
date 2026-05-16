@@ -110,8 +110,13 @@ public final class TestFrameworksUtil {
     }
 
     public static boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(JUNIT4_TEST_ANNOT)
-                && method.getVisibility() == Visibility.V_PUBLIC;
+        return isJUnit4Method(method.getSymbol());
+    }
+
+    private static boolean isJUnit4Method(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(
+                it -> JUNIT4_TEST_ANNOT.equals(it.getBinaryName())
+        );
     }
 
     public static boolean isJUnit5Method(ASTMethodDeclaration method) {
@@ -158,6 +163,14 @@ public final class TestFrameworksUtil {
             && (isJUnit3Class(node)
             || node.getDeclarations(ASTMethodDeclaration.class)
                    .any(TestFrameworksUtil::isTestMethod));
+    }
+
+    public static boolean isJUnit4Class(ASTClassDeclaration node) {
+        JClassType typeMirror = node.getTypeMirror();
+
+        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
+                && typeMirror.streamMethods(TestFrameworksUtil::isJUnit4Method)
+                        .findAny().isPresent();
     }
 
     public static boolean isJUnit5Class(ASTClassDeclaration node) {
