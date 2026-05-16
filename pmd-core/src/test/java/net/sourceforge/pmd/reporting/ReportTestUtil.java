@@ -19,12 +19,12 @@ public final class ReportTestUtil {
         // utility
     }
 
-    public static Report getReport(Rule rule, BiConsumer<Rule, RuleContext> sideEffects) {
-        return Report.buildReport(listener -> sideEffects.accept(rule, InternalApiBridge.createRuleContext(listener, rule)));
+    public static Report getReport(Rule rule, RootNode root, BiConsumer<Rule, RuleContext> sideEffects) {
+        return Report.buildReport(listener -> sideEffects.accept(rule, InternalApiBridge.createRuleContext(listener, rule, root)));
     }
 
     public static Report getReportForRuleApply(Rule rule, Node node) {
-        return getReport(rule, (r, ctx) -> {
+        return getReport(rule, node.getRoot(), (r, ctx) -> {
             r.initialize(node.getAstInfo().getLanguageProcessor());
             r.apply(node, ctx);
         });
