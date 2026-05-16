@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
+import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 
@@ -38,6 +39,23 @@ class CppCpdTest {
                 // There should only be 1 duplication, and it should be maximal
                 assertEquals(1, matches.getMatches().size());
                 assertEquals(128, matches.getMatches().get(0).getTokenCount());
+            });
+        }
+    }
+
+    @Test
+    void testIssue6641() throws Exception {
+        CPDConfiguration configuration = new CPDConfiguration();
+        configuration.setMinimumTileSize(1);
+        configuration.setOnlyRecognizeLanguage(CppLanguageModule.getInstance());
+        try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
+            cpd.files().addFile(testdir.resolve("issue-6641_1.cpp"));
+            cpd.files().addFile(testdir.resolve("issue-6641_2.cpp"));
+
+            cpd.performAnalysis(matches -> {
+                assertEquals(1, matches.getMatches().size());
+                Match firstDuplication = matches.getMatches().get(0);
+                assertEquals(";\n", matches.getSourceCodeSlice(firstDuplication.getFirstMark()).toString());
             });
         }
     }
