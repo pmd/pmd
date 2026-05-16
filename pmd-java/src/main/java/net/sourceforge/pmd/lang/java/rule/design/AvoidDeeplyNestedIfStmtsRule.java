@@ -38,7 +38,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         if (depth + 1 == depthLimit) {
-            asCtx(data).addViolation(node);
+            asCtx(data).addViolation(node.getCondition());
             // return early so that if-else chains are only reported once
             return data;
         }
