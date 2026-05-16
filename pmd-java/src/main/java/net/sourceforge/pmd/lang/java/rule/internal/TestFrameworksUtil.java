@@ -164,11 +164,8 @@ public final class TestFrameworksUtil {
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
     }
 
-    public static boolean isTestClass(ASTTypeDeclaration node) {
-        return node.isRegularClass() && !node.isAbstract() && !node.isNested()
-            && (isJUnit3Class(node)
-            || node.getDeclarations(ASTMethodDeclaration.class)
-                   .any(TestFrameworksUtil::isTestMethod));
+    public static boolean isTestClass(ASTClassDeclaration node) {
+        return isJUnit3Class(node) || isJUnit4Class(node) || isJUnit5Class(node) || isTestNGClass(node);
     }
 
     public static boolean isJUnit4Class(ASTClassDeclaration node) {
