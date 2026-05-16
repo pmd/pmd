@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -205,6 +207,232 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         verify(log, times(2)).boundAdded(any(), any(), any(), any(), eq(false));
         verify(log, never()).boundAdded(any(), any(), any(), any(), eq(true));
     }
+
+    @Test
+    void testDoubleUpperBoundReconciliation() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+        InferenceVar c = newIvar(ctx);
+
+        // 'a <: List<'b>
+        // 'a <: List<'c>
+        // ~> 'b = 'c
+        addSubtypeConstraint(ctx, a, listType(b));
+        addSubtypeConstraint(ctx, a, listType(c));
+
+        assertThat(a, hasBoundsExactly(upper(listType(c))));
+        verify(ctx).onIvarMerged(same(b), same(c));
+        assertThat(c, hasBoundsExactly(upper(ts.OBJECT)));
+    }
+
+    @Test
+    void testDoubleUpperBoundReconciliationWithSuperType() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+        InferenceVar c = newIvar(ctx);
+
+        // 'a <: List<'b>
+        // 'a <: Collection<'c>
+        // ~> 'b = 'c
+        addSubtypeConstraint(ctx, a, listType(b));
+        addSubtypeConstraint(ctx, a, collectionType(c));
+
+        assertThat(a, hasBoundsExactly(upper(listType(b)), upper(collectionType(b))));
+        verify(ctx).onIvarMerged(same(c), same(b));
+        assertThat(b, hasBoundsExactly(upper(ts.OBJECT)));
+    }
+
+    @Test
+    void testDoubleUpperBoundReconciliationWithWildcard() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+        InferenceVar c = newIvar(ctx);
+
+        // 'a <: List<'b>
+        // 'a <: Collection<? extends 'c>
+        // ~> 'b <: 'c
+        addSubtypeConstraint(ctx, a, listType(b));
+        addSubtypeConstraint(ctx, a, collectionType(extendsWild(c)));
+
+        assertThat(a, hasBoundsExactly(upper(listType(b)), upper(collectionType(extendsWild(c)))));
+        assertThat(b, hasBoundsExactly(upper(c)));
+        verify(ctx, Mockito.never()).onIvarMerged(any(), any());
+    }
+
+    static class Fsuperclass<T> {
+    }
+
+    static class Fbounded<T extends Fbounded<T>> extends Fsuperclass<T> {
+    }
+
+    static class Fsubclass extends Fbounded<Fsubclass> {
+    }
+
+    JTypeMirror fbounded(JTypeMirror arg) {
+        return ts.parameterise(ts.getClassSymbol(Fbounded.class), listOf(arg));
+    }
+
+    JTypeMirror fsuperclass(JTypeMirror arg) {
+        return ts.parameterise(ts.getClassSymbol(Fsuperclass.class), listOf(arg));
+    }
+
+    @Test
+    void testDoubleUpperBoundReconciliationWithFbound() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        // Fbounded<?>
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+
+        // 'a <: Fbounded<'a>
+        // 'a <: Fbounded<'b>
+        // ~> 'a = 'b
+        addSubtypeConstraint(ctx, a, fbounded(a));
+        addSubtypeConstraint(ctx, a, fbounded(b));
+
+        verify(ctx).onIvarMerged(same(a), same(b));
+        assertThat(b, hasBoundsExactly(upper(fbounded(b))));
+        ctx.solve();
+        assertEquals(fbounded(ts.UNBOUNDED_WILD), a.getInst());
+    }
+
+    @Test
+    void testGlbWithFboundAndWildcardTy() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        // Fbounded<?>
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: Fbounded<'a>
+        // 'a <: Fbounded<?>
+        addSubtypeConstraint(ctx, a, fbounded(a));
+        addSubtypeConstraint(ctx, a, fbounded(ts.UNBOUNDED_WILD));
+
+        assertThat(a, hasBoundsExactly(upper(fbounded(a)), upper(fbounded(ts.UNBOUNDED_WILD))));
+        ctx.solve();
+        assertEquals(fbounded(ts.UNBOUNDED_WILD), a.getInst());
+    }
+
+    @Test
+    void testForConcurrentModificationInIncorporate() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        // We want a situation where incorporating
+        //      'a <: A   and   'a <: B
+        // causes a new upper bound to be added on 'a,
+        // which would cause a concurrent modification.
+        //
+        // First off, nothing will happen if A is unrelated to B,
+        // and if |A| = |B|, we cannot add an upper bound, only eq bounds.
+        // It must be that |A| <: |B| or |A| >: |B|, let's assume the first case.
+        // We also know that nothing interesting can happen if A and B
+        // are non-generic types. So A = Sub<X> and B = Sup<Y> with Sub <: Sup.
+        // What are type arguments X and Y such that X <= Y adds an upper bound
+        // on 'a?
+        // Well it could be an extends wildcard, like:
+        //    'a <= ? extends T ~> 'a <: T
+        // So this means that the bound set is something like
+        //      'a <: Sub<'a>    and    'a <: Sup<? extends T>
+        // which means 'a is f-bounded. For this test we will also
+        // make sure 'a <: T is consistent with the other bounds, so
+        // T must be a type that extends Sub<T> conforms to Sup<? extends T>.
+
+        InferenceVar a = newIvar(ctx);
+
+        JTypeMirror fsubclass = ts.declaration(ts.getClassSymbol(Fsubclass.class));
+        JTypeMirror superclass = fsuperclass(ts.wildcard(true, fsubclass));
+
+        // 'a <: Fbounded<'a>
+        // 'a <: Fsuperclass<? extends Fsubclass>
+        // ~> 'a <: Fsubclass
+        addSubtypeConstraint(ctx, a, fbounded(a));
+        addSubtypeConstraint(ctx, a, superclass);
+
+        Mockito.verify(ctx).onBoundAdded(same(a), eq(BoundKind.UPPER), same(fsubclass), eq(false));
+        ctx.solve();
+        assertEquals(fsubclass, a.getInst());
+    }
+
+    @Test
+    void testDoubleUpperBoundIncompatible() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: List<Object>
+        // ~> contradiction
+        addSubtypeConstraint(ctx, a, listType(ts.OBJECT));
+        subtypeConstraintShouldFail(ctx, a, listType(ts.INT.box()));
+    }
+
+
+    @Test
+    void testDoubleUpperBoundCompatibleWithWild() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: List<? extends Integer>
+        // ~> ok.
+        addSubtypeConstraint(ctx, a, listType(ts.INT.box()));
+        addSubtypeConstraint(ctx, a, listType(extendsWild(ts.INT.box())));
+    }
+
+    @Test
+    void testDoubleUpperBoundIncompatibleWithArray() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: Object[]
+        // ~> this is ok, even though it yields an uninhabited type
+        addSubtypeConstraint(ctx, a, listType(ts.OBJECT));
+        addSubtypeConstraint(ctx, a, ts.arrayType(ts.OBJECT));
+
+        ctx.solve();
+
+        assertThat("solution is uninhabited: Object[] & List<Integer>",
+            TypeOps.isUninhabitedIntersection(a.getInst()).isTrue());
+    }
+
+    @Test
+    void testDoubleUpperBoundInCompatibleWithArray() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: Number
+        // 'a <: Object[]
+        // ~> contradiction, because number is not an interface.
+        addSubtypeConstraint(ctx, a, ts.declaration(ts.getClassSymbol(Number.class)));
+        subtypeConstraintShouldFail(ctx, a, ts.arrayType(ts.OBJECT));
+    }
+
+    @Test
+    void testDoubleUpperBoundIncompatibleWithSuperTypes() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: Collection<Object>
+        // ~> contradiction
+        addSubtypeConstraint(ctx, a, listType(ts.OBJECT));
+        addSubtypeConstraint(ctx, a, collectionType(ts.OBJECT));
+        subtypeConstraintShouldFail(ctx, a, collectionType(ts.INT.box()));
+    }
+
 
     @Test
     void testWildLowerLower() {

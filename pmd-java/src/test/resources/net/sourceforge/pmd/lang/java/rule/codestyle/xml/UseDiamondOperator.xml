@@ -573,5 +573,30 @@ public class Foo {
             }]]>
         </code>
     </test-code>
+    <test-code>
+        <description>Test case with fbound</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Explicit type arguments can be replaced by a diamond: `new ComparableComparator&lt;&gt;()`</message>
+        </expected-messages>
+        <code><![CDATA[
+            interface Comparator<T> { }
+            interface Map<K, V> {
+                interface Entry<K,V> { }
+            }
+
+            class ConvertingComparator<S, T> implements Comparator<S> {
+                public static <K, V> ConvertingComparator<Map.Entry<K, V>, K> mapEntryKeys(Comparator<K> comparator) {}
+            }
+            class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {}
+
+            class Test {
+                static {
+                    Comparator<Map.Entry<String, Integer>> comparator = ConvertingComparator.mapEntryKeys(new ComparableComparator<String>());
+                }
+            }
+
+            ]]></code>
+    </test-code>
 
 </test-data>
