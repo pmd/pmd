@@ -26,7 +26,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public RuleContext visit(ASTLocalVariableDeclaration node, Object data) {
+    public Object visit(ASTLocalVariableDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
 
         if (node.isFinal()) { // also for implicit finals, like resources, or lombok.val
@@ -43,7 +43,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
                 ctx.addViolation(vid, vid.getName());
             }
         }
-        return ctx;
+        return null;
     }
 
     private RuleContext specialCaseForInit(ASTLocalVariableDeclaration node, RuleContext ctx) {
