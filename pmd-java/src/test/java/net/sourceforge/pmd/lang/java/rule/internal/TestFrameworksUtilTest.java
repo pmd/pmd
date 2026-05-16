@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit4Class;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isTestNGClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -86,6 +87,57 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
 
             assertFalse(isJUnit4Class(classDecl));
+        }
+    }
+
+    @Nested
+    class IsTestNGClass {
+        @Test
+        void aBasicClassIsNotATestNGClass() {
+            ASTCompilationUnit root = java.parse("public class A {}");
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertFalse(isTestNGClass(classDecl));
+        }
+
+        @Test
+        void aClassWithATestIsATestNGClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.testng.annotations.Test; public class A { @Test public void foo() {} }"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertTrue(isTestNGClass(classDecl));
+        }
+
+        @Test
+        void anInterfaceWithATestIsANotTestNGClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.testng.annotations.Test; public interface A { @Test public default void foo() {} }"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertFalse(isTestNGClass(classDecl));
+        }
+
+        @Test
+        void anAbstractClassWithATestIsANotTestNGClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.testng.annotations.Test; public abstract class A { @Test public void foo() {} }"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertFalse(isTestNGClass(classDecl));
+        }
+
+        @Test
+        void aNestedClassWithATestIsANotTestNGClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.testng.annotations.Test; class A { class B { @Test void foo() {} } }"
+            );
+            ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
+
+            assertFalse(isTestNGClass(classDecl));
         }
     }
 }
