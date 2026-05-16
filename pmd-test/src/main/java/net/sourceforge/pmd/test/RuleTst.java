@@ -12,11 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +27,7 @@ import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -48,6 +43,7 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.test.schema.RuleTestCollection;
 import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 import net.sourceforge.pmd.test.schema.TestSchemaParser;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 
 /**
  * Advanced methods for test cases
@@ -273,34 +269,6 @@ public abstract class RuleTst {
         return runTestFromString(test.getCode(), rule, test.getLanguageVersion());
     }
 
-    private static final ClassLoader TEST_AUXCLASSPATH_CLASSLOADER;
-
-    static {
-        final Path PATH_TO_JRT_FS_JAR;
-        // find jrt-fs.jar to be added to auxclasspath
-        // Similar logic like jdk.internal.jrtfs.SystemImage
-        CodeSource codeSource = Object.class.getProtectionDomain().getCodeSource();
-        if (codeSource == null) {
-            PATH_TO_JRT_FS_JAR = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar");
-        } else {
-            URL location = codeSource.getLocation();
-            if (!"file".equalsIgnoreCase(location.getProtocol())) {
-                throw new IllegalStateException("Object.class loaded in unexpected way from " + location);
-            }
-            try {
-                PATH_TO_JRT_FS_JAR = Paths.get(location.toURI());
-            } catch (URISyntaxException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        try {
-            TEST_AUXCLASSPATH_CLASSLOADER = new ClasspathClassLoader(PATH_TO_JRT_FS_JAR.toString(), PMDConfiguration.class.getClassLoader());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Run the rule on the given code and put the violations in the report.
      */
@@ -309,7 +277,8 @@ public abstract class RuleTst {
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
         configuration.setThreads(0); // don't use separate threads
-        configuration.setClassLoader(TEST_AUXCLASSPATH_CLASSLOADER);
+        configuration.setAnalysisClasspath(AnalysisClasspath.currentJvm());
+        JvmLanguagePropertyBundle.enabledCacheClassLoader();
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
