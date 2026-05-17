@@ -557,6 +557,7 @@ public final class JavaRuleUtil {
      *
      * @param unit compilation unit
      * @param parameterless parameterless annotation that references members of the same name
+     *                      as the annotated member
      * @return members potentially referenced by annotations
      */
     public static Set<String> getMembersUsedByAnnotations(ASTCompilationUnit unit, String parameterless) {
