@@ -922,12 +922,19 @@ public class Foo {
         <description>field used by FieldSource</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.FieldSource;
+
+import net.sourceforge.pmd.util.CollectionUtil;
+
 public class Foo {
-    private String foo;
-    private String bar;
-    private String test;
+    private static List<String> foo = CollectionUtil.listOf("a", "b");
+    private static Supplier<Stream<String>> bar = () -> Stream.of("c", "d");
+    private static String[] test = {"e", "f"};
 
     @ParameterizedTest
     @FieldSource("foo")
