@@ -4,25 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
-import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isMainMethod;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isUtilityClass;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
@@ -35,49 +30,12 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration klass, Object data) {
-        if (klass.isInterface()
-            || klass.isAbstract()
-            || klass.getSuperClassTypeNode() != null
-            || klass.getSuperInterfaceTypeNodes().nonEmpty()
-        ) {
-            return data;
-        }
+        RuleContext ctx = (RuleContext) data;
 
-        if (allNonPrivateMembersAreStatic(klass) && hasWrongKindOfConstructor(klass)) {
-            asCtx(data).addViolation(klass);
+        if (isUtilityClass(klass) && hasWrongKindOfConstructor(klass)) {
+            ctx.addViolation(klass);
         }
         return null;
-    }
-
-    private boolean allNonPrivateMembersAreStatic(ASTClassDeclaration klass) {
-        boolean hasNonPrivateMembers = false;
-
-        for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
-            if (isMainMethod(declaration)) {
-                return false;
-            }
-
-            if (declaration instanceof ASTFieldDeclaration
-                    || declaration instanceof ASTMethodDeclaration
-                    || declaration instanceof ASTClassDeclaration
-            ) {
-                ModifierOwner modifierOwner = (ModifierOwner) declaration;
-
-                if (modifierOwner.getVisibility() != V_PRIVATE) {
-                    hasNonPrivateMembers = true;
-                }
-                if (!modifierOwner.hasModifiers(STATIC)) {
-                    return false;
-                }
-            } else if (declaration instanceof ASTInitializer) {
-                ASTInitializer initializer = (ASTInitializer) declaration;
-
-                if (!initializer.isStatic()) {
-                    return false;
-                }
-            }
-        }
-        return hasNonPrivateMembers;
     }
 
     private boolean hasWrongKindOfConstructor(ASTClassDeclaration klass) {
