@@ -64,7 +64,7 @@ public final class JavaRuleUtil {
         "_#hashCode()",
         "_#equals(java.lang.Object)",
         "java.lang.String#_(_*)",
-        // actually not all of them, probs only stream of some type
+        // actually not all of them, probably only stream of some type
         // arg which doesn't implement Closeable...
         "java.util.stream.Stream#_(_*)",
         "java.util.stream.IntStream#_(_*)",
@@ -159,7 +159,7 @@ public final class JavaRuleUtil {
 
 
     /**
-     * Returns true if the expression is a stringbuilder (or stringbuffer)
+     * Returns true if the expression is a StringBuilder (or StringBuffer)
      * append call, or a constructor call for one of these classes.
      *
      * <p>If it is a constructor call, returns false if this is a call to
@@ -190,7 +190,7 @@ public final class JavaRuleUtil {
      *     <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
      *     <li>The class has at least one member function, member variable, or nested class that is not private.</li>
      *     <li>The class is neither abstract nor an interface.</li>
-     *     <li>The class has no superclasses and implements no interfacees. (This might change in the future.)</li>
+     *     <li>The class has no superclasses and implements no interfaces. (This might change in the future.)</li>
      *     <li>The class has no main method.</li>
      * </ul>
      */
@@ -292,7 +292,7 @@ public final class JavaRuleUtil {
      * @throws AssertionError If the word is empty or not capitalized
      */
     public static boolean containsCamelCaseWord(String camelCaseString, String capitalizedWord) {
-        assert capitalizedWord.length() > 0 && Character.isUpperCase(capitalizedWord.charAt(0))
+        assert !capitalizedWord.isEmpty() && Character.isUpperCase(capitalizedWord.charAt(0))
             : "Not a capitalized string \"" + capitalizedWord + "\"";
 
         int index = camelCaseString.indexOf(capitalizedWord);
@@ -307,7 +307,7 @@ public final class JavaRuleUtil {
     }
 
     private static boolean isSetterCall(ASTMethodCall call) {
-        return call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+        return !call.getArguments().isEmpty() && startsWithCamelCaseWord(call.getMethodName(), "set");
     }
 
     public static boolean isGetterCall(ASTMethodCall call) {
@@ -388,11 +388,11 @@ public final class JavaRuleUtil {
 
     /**
      * Whether the node or one of its descendants is an expression with
-     * side effects. Conservatively, any method call is a potential side-effect,
+     * side effects. Conservatively, any method call is a potential side effect,
      * as well as assignments to fields or array elements. We could relax
      * this assumption with (much) more data-flow logic, including a memory model.
      *
-     * <p>By default assignments to locals are not counted as side-effects,
+     * <p>By default, assignments to locals are not counted as side effects,
      * unless the lhs is in the given set of symbols.
      *
      * @param node             A node
@@ -432,7 +432,7 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Whether the invocation has no side-effects. Very conservative.
+     * Whether the invocation has no side effects. Very conservative.
      */
     private static boolean isPure(ASTMethodCall call) {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
@@ -553,7 +553,7 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Time methods cannot be moved ever, even when there are no side-effects.
+     * Time methods cannot be moved ever, even when there are no side effects.
      * The side effect they depend on is the program being executed. Are they
      * the only methods like that?
      */
