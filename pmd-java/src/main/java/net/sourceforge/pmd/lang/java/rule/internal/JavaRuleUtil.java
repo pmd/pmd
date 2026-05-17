@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isMainMethod;
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
@@ -183,46 +184,65 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Returns true if the node is a utility class, according to this
-     * custom definition.
+     * Returns true if the node is a utility class, according to this custom definition. <br />
+     * A class is a utility class, if and only if it fulfills ALL of the following criteria:
+     * <ul>
+     *     <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
+     *     <li>The class has at least one member function, member variable, or nested class that is not private.</li>
+     *     <li>The class is neither abstract nor an interface.</li>
+     *     <li>The class has no superclasses and implements no interfacees. (This might change in the future.)</li>
+     *     <li>The class has no main method.</li>
+     * </ul>
      */
     public static boolean isUtilityClass(ASTTypeDeclaration node) {
-        if (!node.isRegularClass()) {
+        if (!(node instanceof ASTClassDeclaration)) {
             return false;
         }
 
         ASTClassDeclaration classNode = (ASTClassDeclaration) node;
 
+        // abstract classes and interfaces aren't utility classes.
+        if (classNode.isInterface() || classNode.isAbstract()) {
+            return false;
+        }
+
         // A class with a superclass or interfaces should not be considered
         if (classNode.getSuperClassTypeNode() != null
-            || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
+                || !classNode.getSuperInterfaceTypeNodes().isEmpty()
+        ) {
             return false;
         }
 
         // A class without declarations shouldn't be reported
-        boolean hasAny = false;
+        boolean hasNonPrivateMembers = false;
 
         for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
-            if (declNode instanceof ASTFieldDeclaration
-                || declNode instanceof ASTMethodDeclaration) {
+            if (isMainMethod(declNode)) {
+                return false;
+            }
 
-                hasAny = isNonPrivate(declNode) && !JavaAstUtils.isMainMethod(declNode);
-                if (!((ModifierOwner) declNode).hasModifiers(JModifier.STATIC)) {
+            if (declNode instanceof ASTFieldDeclaration
+                    || declNode instanceof ASTMethodDeclaration
+                    || declNode instanceof ASTClassDeclaration
+            ) {
+                ModifierOwner modifierOwner = (ModifierOwner) declNode;
+
+                if (modifierOwner.getVisibility() != Visibility.V_PRIVATE) {
+                    hasNonPrivateMembers = true;
+                }
+                if (!modifierOwner.hasModifiers(JModifier.STATIC)) {
                     return false;
                 }
-
             } else if (declNode instanceof ASTInitializer) {
-                if (!((ASTInitializer) declNode).isStatic()) {
+                ASTInitializer initializer = (ASTInitializer) declNode;
+
+                if (!initializer.isStatic()) {
                     return false;
                 }
             }
         }
 
-        return hasAny;
-    }
-
-    private static boolean isNonPrivate(ASTBodyDeclaration decl) {
-        return ((ModifierOwner) decl).getVisibility() != Visibility.V_PRIVATE;
+        return hasNonPrivateMembers;
     }
 
     /**
