@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isMainMethod;
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
@@ -63,7 +64,7 @@ public final class JavaRuleUtil {
         "_#hashCode()",
         "_#equals(java.lang.Object)",
         "java.lang.String#_(_*)",
-        // actually not all of them, probs only stream of some type
+        // actually not all of them, probably only stream of some type
         // arg which doesn't implement Closeable...
         "java.util.stream.Stream#_(_*)",
         "java.util.stream.IntStream#_(_*)",
@@ -158,7 +159,7 @@ public final class JavaRuleUtil {
 
 
     /**
-     * Returns true if the expression is a stringbuilder (or stringbuffer)
+     * Returns true if the expression is a StringBuilder (or StringBuffer)
      * append call, or a constructor call for one of these classes.
      *
      * <p>If it is a constructor call, returns false if this is a call to
@@ -183,46 +184,65 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Returns true if the node is a utility class, according to this
-     * custom definition.
+     * Returns true if the node is a utility class, according to this custom definition. <br />
+     * A class is a utility class, if and only if it fulfills ALL of the following criteria:
+     * <ul>
+     *     <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
+     *     <li>The class has at least one member function, member variable, or nested class that is not private.</li>
+     *     <li>The class is neither abstract nor an interface.</li>
+     *     <li>The class has no superclasses and implements no interfaces. (This might change in the future.)</li>
+     *     <li>The class has no main method.</li>
+     * </ul>
      */
     public static boolean isUtilityClass(ASTTypeDeclaration node) {
-        if (!node.isRegularClass()) {
+        if (!(node instanceof ASTClassDeclaration)) {
             return false;
         }
 
         ASTClassDeclaration classNode = (ASTClassDeclaration) node;
 
+        // abstract classes and interfaces aren't utility classes.
+        if (classNode.isInterface() || classNode.isAbstract()) {
+            return false;
+        }
+
         // A class with a superclass or interfaces should not be considered
         if (classNode.getSuperClassTypeNode() != null
-            || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
+                || !classNode.getSuperInterfaceTypeNodes().isEmpty()
+        ) {
             return false;
         }
 
         // A class without declarations shouldn't be reported
-        boolean hasAny = false;
+        boolean hasNonPrivateMembers = false;
 
         for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
-            if (declNode instanceof ASTFieldDeclaration
-                || declNode instanceof ASTMethodDeclaration) {
+            if (isMainMethod(declNode)) {
+                return false;
+            }
 
-                hasAny = isNonPrivate(declNode) && !JavaAstUtils.isMainMethod(declNode);
-                if (!((ModifierOwner) declNode).hasModifiers(JModifier.STATIC)) {
+            if (declNode instanceof ASTFieldDeclaration
+                    || declNode instanceof ASTMethodDeclaration
+                    || declNode instanceof ASTClassDeclaration
+            ) {
+                ModifierOwner modifierOwner = (ModifierOwner) declNode;
+
+                if (modifierOwner.getVisibility() != Visibility.V_PRIVATE) {
+                    hasNonPrivateMembers = true;
+                }
+                if (!modifierOwner.hasModifiers(JModifier.STATIC)) {
                     return false;
                 }
-
             } else if (declNode instanceof ASTInitializer) {
-                if (!((ASTInitializer) declNode).isStatic()) {
+                ASTInitializer initializer = (ASTInitializer) declNode;
+
+                if (!initializer.isStatic()) {
                     return false;
                 }
             }
         }
 
-        return hasAny;
-    }
-
-    private static boolean isNonPrivate(ASTBodyDeclaration decl) {
-        return ((ModifierOwner) decl).getVisibility() != Visibility.V_PRIVATE;
+        return hasNonPrivateMembers;
     }
 
     /**
@@ -272,7 +292,7 @@ public final class JavaRuleUtil {
      * @throws AssertionError If the word is empty or not capitalized
      */
     public static boolean containsCamelCaseWord(String camelCaseString, String capitalizedWord) {
-        assert capitalizedWord.length() > 0 && Character.isUpperCase(capitalizedWord.charAt(0))
+        assert !capitalizedWord.isEmpty() && Character.isUpperCase(capitalizedWord.charAt(0))
             : "Not a capitalized string \"" + capitalizedWord + "\"";
 
         int index = camelCaseString.indexOf(capitalizedWord);
@@ -287,7 +307,7 @@ public final class JavaRuleUtil {
     }
 
     private static boolean isSetterCall(ASTMethodCall call) {
-        return call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+        return !call.getArguments().isEmpty() && startsWithCamelCaseWord(call.getMethodName(), "set");
     }
 
     public static boolean isGetterCall(ASTMethodCall call) {
@@ -368,11 +388,11 @@ public final class JavaRuleUtil {
 
     /**
      * Whether the node or one of its descendants is an expression with
-     * side effects. Conservatively, any method call is a potential side-effect,
+     * side effects. Conservatively, any method call is a potential side effect,
      * as well as assignments to fields or array elements. We could relax
      * this assumption with (much) more data-flow logic, including a memory model.
      *
-     * <p>By default assignments to locals are not counted as side-effects,
+     * <p>By default, assignments to locals are not counted as side effects,
      * unless the lhs is in the given set of symbols.
      *
      * @param node             A node
@@ -412,7 +432,7 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Whether the invocation has no side-effects. Very conservative.
+     * Whether the invocation has no side effects. Very conservative.
      */
     private static boolean isPure(ASTMethodCall call) {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
@@ -533,7 +553,7 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Time methods cannot be moved ever, even when there are no side-effects.
+     * Time methods cannot be moved ever, even when there are no side effects.
      * The side effect they depend on is the program being executed. Are they
      * the only methods like that?
      */
