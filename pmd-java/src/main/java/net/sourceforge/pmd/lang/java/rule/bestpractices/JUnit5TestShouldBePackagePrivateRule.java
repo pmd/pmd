@@ -24,18 +24,18 @@ public class JUnit5TestShouldBePackagePrivateRule extends AbstractJavaRulechainR
     }
 
     @Override
-    public RuleContext visit(ASTClassDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
 
         if (isJUnit5Class(node) && (node.hasVisibility(V_PROTECTED) || node.hasVisibility(V_PUBLIC))) {
             ctx.addViolation(node);
         }
 
-        return ctx;
+        return null;
     }
 
     @Override
-    public RuleContext visit(ASTMethodDeclaration node, Object data) {
+    public Object visit(ASTMethodDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
 
         if (isJUnit5Method(node)
@@ -45,6 +45,6 @@ public class JUnit5TestShouldBePackagePrivateRule extends AbstractJavaRulechainR
             ctx.addViolation(node);
         }
 
-        return ctx;
+        return null;
     }
 }
