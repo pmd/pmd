@@ -40,6 +40,9 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
 
     private static final Logger LOG = LoggerFactory.getLogger(PmdKotlinParser.class);
 
+    // TODO: introduce KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLanguageProperties>
+    //       to own the executor (proper shutdown via AutoCloseable) and supply timeout via
+    //       task.getLanguageProcessor(), removing the need for constructor injection.
     private static final ExecutorService PARSE_EXECUTOR =
             Executors.newCachedThreadPool(r -> {
                 Thread t = new Thread(r, "kotlin-parser");
