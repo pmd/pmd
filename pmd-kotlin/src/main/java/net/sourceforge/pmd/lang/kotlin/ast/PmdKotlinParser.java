@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
@@ -47,6 +48,10 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
             });
 
     private final int timeoutSeconds;
+
+    public PmdKotlinParser() {
+        this(KotlinLanguageProperties.PARSE_TIMEOUT_SECONDS.defaultValue());
+    }
 
     public PmdKotlinParser(int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;

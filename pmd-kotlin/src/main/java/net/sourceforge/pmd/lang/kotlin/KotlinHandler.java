@@ -16,6 +16,10 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
 
     private final int parseTimeoutSeconds;
 
+    public KotlinHandler() {
+        this.parseTimeoutSeconds = KotlinLanguageProperties.PARSE_TIMEOUT_SECONDS.defaultValue();
+    }
+
     KotlinHandler(KotlinLanguageProperties properties) {
         this.parseTimeoutSeconds = properties.getParseTimeoutSeconds();
     }
