@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>when with typed subject and 2 branches is ok -- typed subject is idiomatic for exhaustive matching</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun describe(x: Int): String {
+    return when (x) {
+        0    -> "zero"
+        else -> "other"
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when with 3 WhenEntry nodes (two cases plus else) is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun describe(x: Int): String {
+    return when (x) {
+        0    -> "zero"
+        1    -> "one"
+        else -> "other"
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when with 3 branches is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun describe(x: Int): String {
+    return when (x) {
+        0    -> "zero"
+        1    -> "one"
+        2    -> "two"
+        else -> "many"
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when without subject and 3 branches is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun describe(x: Int): String {
+    return when {
+        x < 0  -> "negative"
+        x == 0 -> "zero"
+        else   -> "positive"
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>condition-only when (no subject) with 2 branches is a violation -- use if/else instead</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun describe(x: Int): String {
+    return when {
+        x == 0 -> "zero"
+        else   -> "other"
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>multi-value when branch groups many enum cases into one -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum class Shape {
+    Circle, Square, Triangle, Rectangle, Pentagon, Hexagon, Octagon, Ellipse, Rhombus, Star;
+
+    val isRound: Boolean
+        get() = when (this) {
+            Circle, Ellipse -> true
+            Square, Triangle, Rectangle, Pentagon, Hexagon, Octagon, Rhombus, Star -> false
+        }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>multi-value single branch covers all cases at threshold -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum class Season { Spring, Summer, Autumn, Winter }
+fun isWarm(s: Season): Boolean = when (s) {
+    Season.Spring, Season.Summer, Season.Autumn -> true
+    else -> false
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

@@ -39,8 +39,8 @@ public class KotlinCpdLexer extends AntlrCpdLexer {
      * </p>
      */
     private static class KotlinTokenFilter extends AntlrTokenFilter {
-        private boolean discardingPackageAndImport = false;
-        private boolean discardingNL = false;
+        private boolean discardingPackageAndImport;
+        private boolean discardingNL;
 
         /* default */ KotlinTokenFilter(final TokenManager<AntlrToken> tokenManager) {
             super(tokenManager);

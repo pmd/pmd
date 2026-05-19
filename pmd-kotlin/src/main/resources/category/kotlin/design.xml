@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Design"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that help you discover design issues.
+    </description>
+
+    <rule name="CognitiveComplexity"
+          language="kotlin"
+          since="7.14.0"
+          message="The function ''{0}'' has a cognitive complexity of {1}, current threshold is {2}."
+          class="net.sourceforge.pmd.lang.kotlin.rule.design.CognitiveComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#cognitivecomplexity">
+        <description>
+Cognitive complexity measures how difficult a function is to understand by penalising nested
+decision points. Each structural construct (if, for, while, do-while, catch, when, ?:) adds
+1 + nesting_level to the score and increases the nesting level for its body. An else or
+else-if adds 1 without a nesting penalty. Each distinct boolean operator sequence (AND or OR)
+adds 1. Lambda bodies increase nesting without adding complexity. Nested local functions are
+analysed separately.
+
+Functions with a high cognitive complexity are hard to read, test, and maintain.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="reportLevel" value="15"/>
+            <property name="javaEquivalentRule" type="String"
+                      description="The equivalent Java rule"
+                      value="category/java/design.xml/CognitiveComplexity"/>
+        </properties>
+        <example>
+<![CDATA[
+fun process(items: List<Int>, threshold: Int): Int {
+    var result = 0
+    for (item in items) {              // +1 (nesting 0)
+        if (item > threshold) {        // +2 (nesting 1)
+            if (item % 2 == 0) {       // +3 (nesting 2)
+                result += item
+            }
+        }
+    }
+    return result
+}
+// cognitive complexity = 6 (1 + 2 + 3)
+]]>
+        </example>
+    </rule>
+
+    <rule name="CollapsibleIfStatements"
+          language="kotlin"
+          since="7.x"
+          message="This if statement could be combined with its parent using &amp;&amp;"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#collapsibleifstatements">
+        <description>
+            Reports nested `if` statements that can be merged together by joining their
+            conditions with a boolean `&amp;&amp;` operator.
+
+            Only flags the inner `if` when it is the sole statement of the outer `if`'s body
+            and neither has an `else` branch. For example:
+
+            ```kotlin
+            if (x) {
+                if (y) { ... }     // violation: merge to: if (x &amp;&amp; y) { ... }
+            }
+            ```
+
+            Kotlin equivalent of Java rule: category/java/design.xml/CollapsibleIfStatements
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/design.xml/CollapsibleIfStatements"/>
+            <property name="xpath">
+                <value><![CDATA[
+(: No-braces outer body: if (a) if (b) { ... } :)
+//IfExpression[not(T-ELSE)]
+    /ControlStructureBody[not(Block)]
+    /Statement/Expression//PrimaryExpression
+    /IfExpression[not(T-ELSE) and not(ancestor::CallSuffix)]
+|
+(: Braces outer body with a single inner statement :)
+//IfExpression[not(T-ELSE)]
+    /ControlStructureBody/Block[count(Statements/Statement) = 1]
+    /Statements/Statement/Expression//PrimaryExpression
+    /IfExpression[not(T-ELSE) and not(ancestor::CallSuffix)]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Foo {
+    fun bar(x: Boolean, y: Boolean) {
+        if (x) {            // violation: can be merged
+            if (y) {
+                println("both")
+            }
+        }
+        if (x) {            // ok: outer has else
+            if (y) { println("both") }
+        } else {
+            println("neither")
+        }
+        if (x && y) {       // ok: already merged
+            println("both")
+        }
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="CyclomaticComplexity"
+          language="kotlin"
+          since="7.14.0"
+          message="The function ''{0}'' has a cyclomatic complexity of {1}, current threshold is {2}."
+          class="net.sourceforge.pmd.lang.kotlin.rule.design.CyclomaticComplexityRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#cyclomaticcomplexity">
+        <description>
+Complexity is determined by the number of decision points in a function, plus one for the
+function entry. Decision points are: {@code if}, conditional {@code when} branches,
+{@code for}, {@code while}, {@code do-while}, {@code catch}, {@code &amp;&amp;}, {@code ||},
+and {@code ?:} (Elvis). High complexity correlates with error-prone, hard-to-test code.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="methodReportLevel" value="10"/>
+            <property name="javaEquivalentRule" type="String"
+                      description="The equivalent Java rule"
+                      value="category/java/design.xml/CyclomaticComplexity"/>
+        </properties>
+        <example>
+<![CDATA[
+fun describe(n: Int): String = when {
+    n < 0   -> "negative"   // +1
+    n == 0  -> "zero"       // +1
+    n < 10  -> "small"      // +1
+    n < 100 -> "medium"     // +1
+    n < 1000 -> "large"     // +1
+    else    -> "huge"
+}
+// complexity = 6 (base 1 + 5 branches)
+]]>
+        </example>
+    </rule>
+
+    <rule name="ExcessiveParameterList"
+          language="kotlin"
+          since="7.14.0"
+          message="Avoid long parameter lists ({0} parameters - threshold is {1})."
+          class="net.sourceforge.pmd.lang.kotlin.rule.design.ExcessiveParameterListRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#excessiveparameterlist">
+        <description>
+Functions and constructors with numerous parameters are a challenge to maintain, especially if most
+of them share the same datatype. These situations usually denote the need for new data classes to
+wrap the numerous parameters.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="threshold" value="10"/>
+            <property name="javaEquivalentRule" type="String"
+                      description="The equivalent Java rule"
+                      value="category/java/design.xml/ExcessiveParameterList"/>
+        </properties>
+        <example>
+<![CDATA[
+// violation: too many parameters
+fun createRecord(a: Int, b: Int, c: Int, d: Int, e: Int,
+                 f: Int, g: Int, h: Int, i: Int, j: Int, k: Int) { }
+
+// ok: wrap related parameters in a data class
+data class RecordParams(val a: Int, val b: Int, val c: Int)
+fun createRecord(params: RecordParams) { }
+]]>
+        </example>
+    </rule>
+
+    <rule name="SimplifyBooleanExpressions"
+          language="kotlin"
+          since="7.x"
+          message="Avoid unnecessary comparisons in boolean expressions"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#simplifybooleanexpressions">
+        <description>
+            Avoid redundant boolean identity expressions using `&amp;&amp;` or `||` with a literal:
+            `x &amp;&amp; true` and `x || false` are no-ops and can be simplified to just `x`.
+
+            Note: `x == true` and similar equality comparisons are intentionally not flagged --
+            in Kotlin these are idiomatic for nullable `Boolean?` values.
+
+            Kotlin equivalent of Java rule: category/java/design.xml/SimplifyBooleanExpressions
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/design.xml/SimplifyBooleanExpressions"/>
+            <property name="xpath">
+                <value><![CDATA[
+(: x && true, true && x :)
+//Conjunction[T-CONJ and Equality[pmd-kotlin:nodeText() = 'true']]
+|
+(: x || false, false || x :)
+//Disjunction[T-DISJ and Conjunction[pmd-kotlin:nodeText() = 'false']]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bar {
+    val isFoo: Boolean = false
+
+    fun check(): Boolean {
+        val a = isFoo && true      // violation: use isFoo directly
+        val b = isFoo || false     // violation: use isFoo directly
+        val c = isFoo              // ok
+        val d = isFoo == true      // ok: idiomatic nullable Boolean check
+        return a && b && c && d
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="SimplifyBooleanReturns"
+          language="kotlin"
+          since="7.x"
+          message="This if/else expression can be simplified by using the condition directly"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#simplifybooleanreturns">
+        <description>
+            Avoid unnecessary `if`/`else` or `when` expressions when both branches yield a bare
+            boolean literal. The condition itself (or its negation) can be used directly in any
+            context: return, assignment, expression body, or function argument.
+
+            ```kotlin
+            // violation -- return form:
+            if (bar == x) return true else return false
+            // simplify to:
+            return bar == x
+
+            // violation -- expression/assignment form (Kotlin-specific):
+            fun isEqual(bar: Int, x: Int) = if (bar == x) true else false
+            val result = if (bar == x) true else false
+            // simplify to:
+            fun isEqual(bar: Int, x: Int) = bar == x
+            val result = bar == x
+
+            // violation -- when form (Kotlin-specific):
+            val result = when { bar == x -> true; else -> false }
+            // simplify to:
+            val result = bar == x
+            ```
+
+            Kotlin equivalent of Java rule: category/java/design.xml/SimplifyBooleanReturns
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/design.xml/SimplifyBooleanReturns"/>
+            <property name="xpath">
+                <value><![CDATA[
+(: Return form: if (cond) { return true } else { return false } :)
+//IfExpression[
+    T-ELSE
+    and (
+        ControlStructureBody[1][not(Block)]/Statement//JumpExpression[
+            T-RETURN and Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        ]
+        or ControlStructureBody[1]/Block[count(Statements/Statement) = 1]//JumpExpression[
+            T-RETURN and Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        ]
+    )
+    and (
+        ControlStructureBody[2][not(Block)]/Statement//JumpExpression[
+            T-RETURN and Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        ]
+        or ControlStructureBody[2]/Block[count(Statements/Statement) = 1]//JumpExpression[
+            T-RETURN and Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        ]
+    )
+]
+|
+(: Expression form: fun f() = if (cond) true else false  /  val x = if (cond) true else false :)
+//IfExpression[
+    T-ELSE
+    and (
+        ControlStructureBody[1][not(Block)]/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        or ControlStructureBody[1]/Block[count(Statements/Statement) = 1]/Statements/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+    )
+    and (
+        ControlStructureBody[2][not(Block)]/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        or ControlStructureBody[2]/Block[count(Statements/Statement) = 1]/Statements/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+    )
+]
+|
+(: when form (Kotlin-specific): when { cond -> true; else -> false } :)
+//WhenExpression[
+    count(WhenEntry) = 2
+    and WhenEntry[not(T-ELSE)][count(WhenCondition) = 1]
+    and (
+        WhenEntry[not(T-ELSE)]/ControlStructureBody[not(Block)]/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        or WhenEntry[not(T-ELSE)]/ControlStructureBody/Block[count(Statements/Statement) = 1]/Statements/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+    )
+    and (
+        WhenEntry[T-ELSE]/ControlStructureBody[not(Block)]/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+        or WhenEntry[T-ELSE]/ControlStructureBody/Block[count(Statements/Statement) = 1]/Statements/Statement/Expression[pmd-kotlin:nodeText() = ('true', 'false')]
+    )
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Foo {
+    // violation -- return form: replace with return bar == x
+    fun isBarEqualTo(bar: Int, x: Int): Boolean {
+        if (bar == x) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    // violation -- expression body: replace with fun isBarSame(bar: Int, x: Int) = bar == x
+    fun isBarSame(bar: Int, x: Int): Boolean = if (bar == x) true else false
+
+    // violation -- assignment: replace with val result = bar == x
+    fun compute(bar: Int, x: Int): Boolean {
+        val result = if (bar == x) true else false
+        return result
+    }
+
+    // violation -- when form: replace with return bar == x
+    fun isBarSameWhen(bar: Int, x: Int): Boolean = when {
+        bar == x -> true
+        else -> false
+    }
+
+    fun isBarGreaterThan(bar: Int, x: Int): Boolean {
+        return bar > x      // ok: already a direct boolean expression
+    }
+}
+        ]]></example>
+    </rule>
+
+</ruleset>

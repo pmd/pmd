@@ -18,6 +18,11 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
         doTest("Simple");
     }
 
+    @Test
+    void testDesignPatterns() {
+        doTest("DesignPatterns");
+    }
+
     // Regression tests for https://github.com/pmd/pmd/issues/6648
     // Multi-dollar string interpolation (Kotlin 2.2, KEEP-375) in function and annotation args.
 

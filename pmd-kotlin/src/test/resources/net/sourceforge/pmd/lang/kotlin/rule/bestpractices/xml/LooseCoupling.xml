@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>ArrayList field is a violation - use MutableList</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList
+
+class Bad {
+    private val items: ArrayList<String> = ArrayList()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HashMap field is a violation - use MutableMap</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashMap
+
+class Bad {
+    private val cache: HashMap<String, Int> = HashMap()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HashSet field is a violation - use MutableSet</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashSet
+
+class Bad {
+    private val seen: HashSet<String> = HashSet()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TreeMap field is a violation - use MutableMap (sorted)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.TreeMap
+
+class Bad {
+    private val sorted: TreeMap<String, Int> = TreeMap()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>MutableList field is not a violation - already uses interface type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    private val items: MutableList<String> = mutableListOf()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>MutableMap field is not a violation - already uses interface type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    private val cache: MutableMap<String, Int> = mutableMapOf()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local ArrayList variable is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList
+
+class Good {
+    fun build(): List<String> {
+        val local: ArrayList<String> = ArrayList()
+        local.add("hello")
+        return local
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple violations in one class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList
+import java.util.HashMap
+
+class Bad {
+    private val items: ArrayList<String> = ArrayList()
+    private val cache: HashMap<String, Int> = HashMap()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>List interface declared type with ArrayList initializer is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    val allowedCns: List<String> = ArrayList()
+    val allowedJwt: List<String> = ArrayList()
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>StringBuilder.toString().length is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun isLong(sb: StringBuilder): Boolean {
+        return sb.toString().length > 100
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuffer.toString().length is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun isEmpty(sb: StringBuffer): Boolean {
+        return sb.toString().length == 0
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuilder.length accessed directly is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun isLong(sb: StringBuilder): Boolean {
+        return sb.length > 100
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuilder.toString() used as a String (not .length) is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun build(sb: StringBuilder): String {
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String.length (not StringBuilder) is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun strLen(s: String): Int {
+        return s.length
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

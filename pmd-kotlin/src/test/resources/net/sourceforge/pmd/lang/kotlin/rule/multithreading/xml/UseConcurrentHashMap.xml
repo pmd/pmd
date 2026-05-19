@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>HashMap field with explicit type annotation is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashMap
+
+class Bad {
+    private val map: HashMap<String, Int> = HashMap()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ConcurrentHashMap field is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.concurrent.ConcurrentHashMap
+
+class Good {
+    private val map = ConcurrentHashMap<String, Int>()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local HashMap variable inside a function is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.HashMap
+
+class Good {
+    fun localOnly() {
+        val local: HashMap<String, Int> = HashMap()
+        local["key"] = 1
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

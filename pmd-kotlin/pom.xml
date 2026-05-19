@@ -84,6 +84,11 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nl.stokpop.typemapper</groupId>
+            <artifactId>kotlin-type-mapper-model</artifactId>
+            <version>0.5.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -98,6 +103,20 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-lang-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>nl.stokpop.typemapper</groupId>
+            <artifactId>kotlin-type-mapper-analyzer</artifactId>
+            <version>0.5.0</version>
+        </dependency>
+        <!-- Needed so KotlinLanguageProcessor resolves kotlinx.coroutines types in tests.
+             Maven Surefire adds test-scope deps to java.class.path, which the language
+             processor uses as its aux-classpath fallback. -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+            <version>1.8.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

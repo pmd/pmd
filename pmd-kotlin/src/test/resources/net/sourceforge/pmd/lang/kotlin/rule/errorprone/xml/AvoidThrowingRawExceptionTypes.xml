@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>throw Exception is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun bad() {
+    throw Exception("something went wrong")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw RuntimeException is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun bad() {
+    throw RuntimeException("something went wrong")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw Error is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun bad() {
+    throw Error("out of memory")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw Throwable is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun bad() {
+    throw Throwable("root cause")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw IllegalArgumentException is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(value: String) {
+    throw IllegalArgumentException("bad value: $value")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw IllegalStateException is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good() {
+    throw IllegalStateException("invalid state")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw custom exception is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class DataException(msg: String) : RuntimeException(msg)
+
+fun good() {
+    throw DataException("data error")
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.antlr.v4.runtime.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> implements KotlinNode {
 
@@ -39,4 +43,41 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
         return super.acceptVisitor(visitor, data);
     }
 
+    @Override
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        Iterator<Attribute> base = super.getXPathAttributesIterator();
+        return new Iterator<Attribute>() {
+            private Attribute pending;
+
+            {
+                advance();
+            }
+
+            private void advance() {
+                pending = null;
+                while (base.hasNext()) {
+                    Attribute attr = base.next();
+                    if (attr.getValue() != null) {
+                        pending = attr;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                return pending != null;
+            }
+
+            @Override
+            public Attribute next() {
+                if (pending == null) {
+                    throw new NoSuchElementException();
+                }
+                Attribute result = pending;
+                advance();
+                return result;
+            }
+        };
+    }
 }
