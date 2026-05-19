@@ -14,6 +14,16 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
 
     private static final XPathHandler XPATH_HANDLER = XPathHandler.noFunctionDefinitions();
 
+    private final int parseTimeoutSeconds;
+
+    public KotlinHandler() {
+        this.parseTimeoutSeconds = KotlinLanguageProperties.PARSE_TIMEOUT_SECONDS.defaultValue();
+    }
+
+    KotlinHandler(KotlinLanguageProperties properties) {
+        this.parseTimeoutSeconds = properties.getParseTimeoutSeconds();
+    }
+
     @Override
     public XPathHandler getXPathHandler() {
         return XPATH_HANDLER;
@@ -21,6 +31,6 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser() {
-        return new PmdKotlinParser();
+        return new PmdKotlinParser(parseTimeoutSeconds);
     }
 }
