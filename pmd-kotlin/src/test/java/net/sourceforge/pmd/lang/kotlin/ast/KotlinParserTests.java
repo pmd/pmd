@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.kotlin.ast;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.ast.LexException;
+import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Miscellaneous Kotlin parser regression tests.
@@ -16,6 +20,21 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     @Test
     void testSimpleKotlin() {
         doTest("Simple");
+    }
+
+    @Test
+    void syntaxErrorThrowsParseException() {
+        assertThrows(ParseException.class, () ->
+            KotlinParsingHelper.DEFAULT.parse("fun foo( { }")
+        );
+    }
+
+    @Test
+    void lexerErrorThrowsLexException() {
+        // ^ is Java XOR but not a valid Kotlin token - triggers a lexer error
+        assertThrows(LexException.class, () ->
+            KotlinParsingHelper.DEFAULT.parse("fun xor(a: Int, b: Int) = (a ^ b)")
+        );
     }
 
     // Regression tests for https://github.com/pmd/pmd/issues/6648

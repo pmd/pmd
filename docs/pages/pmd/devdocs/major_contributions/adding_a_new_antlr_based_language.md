@@ -144,11 +144,27 @@ definitely don't come for free. It is much effort and requires perseverance to i
     If you don't need a custom token filter, you don't need to override the method. It returns the default
     `AntlrTokenFilter` which doesn't filter anything.
 
-### 6.  Create a PMD parser “adapter”
-*   Create your own parser, that adapts the ANLTR interface to PMD's parser interface.
+### 6.  Create a PMD parser "adapter"
+*   Create your own parser, that adapts the ANTLR interface to PMD's parser interface.
 *   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
-    implementation that you need to extend to create your own adapter as we do with
-    [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java).
+    implementation that you need to extend to create your own adapter. See
+    [`PmdKotlinParser`](https://github.com/stokpop/pmd/blob/main/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.java)
+    as the reference implementation.
+*   **Error handling**: ANTLR by default swallows errors silently. You must register custom
+    `BaseErrorListener`s on both the lexer and the parser to surface errors properly:
+    *   **Lexer errors** (unrecognized tokens): log a `WARN` and throw a
+        [`LexException`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/LexException.java)
+        with the file id and position from the `ParserTask`.
+    *   **Parser errors** (unexpected token structure): log a `WARN` with a short message
+        (strip the verbose `expecting {...}` token list), log the full message at `DEBUG`,
+        and throw a [`ParseException`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/ParseException.java)
+        with `.withLocation(FileLocation.caret(...))`.
+    *   Both exception types extend `FileAnalysisException`, which automatically includes the
+        file name and location in `getMessage()`, so you only need to pass the ANTLR error
+        message itself as the exception message.
+    *   PMD catches these exceptions, reports the file as a `ProcessingError`, and continues
+        processing all other files. The CLI returns exit code 5 if any processing errors occurred
+        (suppressible with `--no-fail-on-error`).
 
 ### 7.  Create a language version handler
 *   Now you need to create your version handler, as we did with [`SwiftHandler`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
