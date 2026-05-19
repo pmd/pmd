@@ -19,6 +19,8 @@ Rules that flag issues when dealing with multiple threads of execution.
 Method-level synchronization will pin virtual threads and can cause performance problems. Additionally, it can cause
 problems when new code is added to the method.  Block-level ReentrantLock helps to ensure that only the code that
 needs mutual exclusion will be locked.
+
+See also {% rule AvoidSynchronizedStatement %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -40,14 +42,16 @@ public class Foo {
         // more code, that doesn't need synchronization
         // ...
     }
+
     // Prefer this:
     Lock instanceLock = new ReentrantLock();
 
     void bar() {
         // code, that doesn't need synchronization
         // ...
+        instanceLock.lock();
         try {
-            instanceLock.lock();  // or instanceLock.tryLock(long time, TimeUnit unit)
+            // code, that requires synchronization
             if (!sharedData.has("bar")) {
                 sharedData.add("bar");
             }
@@ -58,6 +62,30 @@ public class Foo {
         // ...
     }
 
+    // Or prefer this with tryLock:
+    Lock instanceLock = new ReentrantLock();
+
+    void bar() {
+        // code, that doesn't need synchronization
+        // ...
+        if (instanceLock.tryLock(10, TimeUnit.SECONDS)) {
+            try {
+                // code, that requires synchronization
+                if (!sharedData.has("bar")) {
+                    sharedData.add("bar");
+                }
+            } finally {
+                instanceLock.unlock();
+            }
+        } else {
+            // unable to acquire the lock
+        }
+        // more code, that doesn't need synchronization
+        // ...
+    }
+]]>
+        </example>
+        <example><![CDATA[
     // Try to avoid this for static methods:
     static synchronized void fooStatic() {
     }
@@ -68,8 +96,8 @@ public class Foo {
     static void barStatic() {
         // code, that doesn't need synchronization
         // ...
+        CLASS_LOCK.lock();
         try {
-            CLASS_LOCK.lock();
             // code, that requires synchronization
         } finally {
             CLASS_LOCK.unlock();
@@ -92,7 +120,7 @@ public class Foo {
       Reports any synchronization statements.
 
       Virtual threads (introduced by Java 21 via [JEP 444](https://openjdk.org/jeps/444)) are pinned to their
-      carrier thread when executing code protected by synchronized (either synchronized blocks or synchronized
+      carrier thread when executing code protected by `synchronized` (either synchronized blocks or synchronized
       methods). When the virtual threads are blocked by I/O and need to wait, the carrier thread stays unavailable
       for other virtual threads. If this happens with all carrier threads, no new virtual threads can be
       executed and this can cause performance problems.
