@@ -20,6 +20,7 @@ import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -211,8 +212,9 @@ public final class TextFileContent {
         int bufOffset = 0;
         int nextCharToCopy = 0;
         int n = input.read(cbuf);
-        if (n > 0 && cbuf[0] == IOUtil.UTF_BOM) {
-            nextCharToCopy = 1;
+        if (cbuf[0] == IOUtil.UTF_BOM) {
+            cbuf = ArrayUtils.remove(cbuf, 0);
+            n--;
         }
 
         while (n != IOUtil.EOF) {
