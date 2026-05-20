@@ -5,8 +5,15 @@
 package net.sourceforge.pmd.lang.kotlin.ast;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtImportHeader;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
  * Miscellaneous Kotlin parser regression tests.
@@ -77,6 +84,40 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
             + "  \"title\": \"$${title}\"\n"
             + "\"\"\""
         ));
+    }
+
+    @Test
+    void identifierAttributeOnClassDeclaration() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class Foo");
+        KtClassDeclaration clazz =
+                file.descendants(KtClassDeclaration.class).first();
+        assertEquals("Foo", clazz.attributes(KtClassDeclarationAttributes.class).getIdentifier());
+    }
+
+    @Test
+    void modifiersAttributeOnFunctionDeclaration() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "abstract class Base { open suspend fun doWork() {} }");
+        KtFunctionDeclaration func =
+                file.descendants(KtFunctionDeclaration.class).first();
+        assertEquals("open suspend", func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+    }
+
+    @Test
+    void modifiersAttributeNullWhenNoModifiers() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun plain() {}");
+        KtFunctionDeclaration func =
+                file.descendants(KtFunctionDeclaration.class).first();
+        assertNull(func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+    }
+
+    @Test
+    void nameAttributeOnImportHeader() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "import com.example.Foo\nfun f() {}");
+        KtImportHeader imp =
+                file.descendants(KtImportHeader.class).first();
+        assertEquals("com.example.Foo", imp.attributes(KtImportHeaderAttributes.class).getName());
     }
 
 }
