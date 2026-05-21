@@ -3744,7 +3744,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Avoid Synchronized Statement",
   "url": "pmd_rules_java_multithreading.html#avoidsynchronizedstatement",
-  "summary": "Synchronization will pin virtual threads and can cause performance problems."
+  "summary": "Reports any synchronization statements. Virtual threads (introduced by Java 21 via [JEP 444](https://openjdk.org/jeps/444)) are pinned..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/multithreading.md",
