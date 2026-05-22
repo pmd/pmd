@@ -2185,10 +2185,28 @@ and return your custom filter. See the CpdLexer for C# as an example:
 
 <h3 id="6--create-a-pmd-parser-adapter">6.  Create a PMD parser “adapter”</h3>
 <ul>
-  <li>Create your own parser, that adapts the ANLTR interface to PMD’s parser interface.</li>
+  <li>Create your own parser, that adapts the ANTLR interface to PMD’s parser interface.</li>
   <li>We provide a <a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java"><code class="language-plaintext highlighter-rouge">AntlrBaseParser</code></a>
-implementation that you need to extend to create your own adapter as we do with
-<a href="https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java"><code class="language-plaintext highlighter-rouge">PmdSwiftParser</code></a>.</li>
+implementation that you need to extend to create your own adapter. See
+<a href="https://github.com/pmd/pmd/blob/main/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.java"><code class="language-plaintext highlighter-rouge">PmdKotlinParser</code></a>
+as the reference implementation.</li>
+  <li><strong>Error handling</strong>: ANTLR by default prints errors to stderr only and otherwise ignores them. You must register custom
+<code class="language-plaintext highlighter-rouge">BaseErrorListener</code>s on both the lexer and the parser to surface errors properly:
+    <ul>
+      <li><strong>Lexer errors</strong> (unrecognized tokens) should throw a
+<a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/LexException.java"><code class="language-plaintext highlighter-rouge">LexException</code></a>
+with the file id and position from the <code class="language-plaintext highlighter-rouge">ParserTask</code>.</li>
+      <li><strong>Parser errors</strong> (unexpected token structure): should throw a
+<a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/ParseException.java"><code class="language-plaintext highlighter-rouge">ParseException</code></a>
+with <code class="language-plaintext highlighter-rouge">.withLocation(FileLocation.caret(...))</code>.</li>
+      <li>Both exception types extend <code class="language-plaintext highlighter-rouge">FileAnalysisException</code>, which automatically includes the
+file name and location in <code class="language-plaintext highlighter-rouge">getMessage()</code>, so you only need to pass the ANTLR error
+message itself as the exception message.</li>
+      <li>PMD catches these exceptions, reports the file as a <code class="language-plaintext highlighter-rouge">ProcessingError</code>, and continues
+processing all other files. The CLI returns exit code 5 if any processing errors occurred
+(suppressible with <code class="language-plaintext highlighter-rouge">--no-fail-on-error</code>).</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="7--create-a-language-version-handler">7.  Create a language version handler</h3>
@@ -2381,7 +2399,7 @@ syntax tree) is not suitable to add methods such as <code class="language-plaint
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2025 (7.13.0)<br /> Site last generated: May 22, 2026 <br />
+            May 2026 (7.25.0)<br /> Site last generated: May 22, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
