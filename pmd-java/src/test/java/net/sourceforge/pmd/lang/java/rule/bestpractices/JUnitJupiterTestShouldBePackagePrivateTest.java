@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class JUnit5TestShouldBePackagePrivateTest extends PmdRuleTst {
+class JUnitJupiterTestShouldBePackagePrivateTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -832,12 +832,14 @@ public class GoodTest {
 
     <rule name="JUnit4TestShouldUseTestAnnotation" deprecated="true" ref="UnitTestShouldUseTestAnnotation" />
 
-    <rule name="JUnit5TestShouldBePackagePrivate"
+    <rule name="JUnit5TestShouldBePackagePrivate" deprecated="true" ref="JUnitJupiterTestShouldBePackagePrivate" />
+
+    <rule name="JUnitJupiterTestShouldBePackagePrivate"
           language="java"
           since="6.35.0"
           message="JUnit 5 tests should be package-private."
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnit5TestShouldBePackagePrivateRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitJupiterTestShouldBePackagePrivateRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitjupitertestshouldbepackageprivate">
         <description><![CDATA[
 Reports JUnit 5 test classes and methods that are not package-private.
 Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
@@ -846,6 +848,8 @@ is a good practice to limit their visibility.
 
 Test methods are identified as those which use `@Test`, `@RepeatedTest`,
 `@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
+
+Note: This rule was named `JUnit5TestShouldBePackagePrivate` before PMD 7.25.0.
             ]]></description>
         <priority>3</priority>
         <example>

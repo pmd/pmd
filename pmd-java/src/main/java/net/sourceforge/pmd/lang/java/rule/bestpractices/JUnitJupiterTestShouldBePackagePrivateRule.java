@@ -17,9 +17,9 @@ import net.sourceforge.pmd.reporting.RuleContext;
 /**
  * @since 6.35.0 (as XPath) / 7.25.0 (as Java)
  */
-public class JUnit5TestShouldBePackagePrivateRule extends AbstractJavaRulechainRule {
+public class JUnitJupiterTestShouldBePackagePrivateRule extends AbstractJavaRulechainRule {
 
-    public JUnit5TestShouldBePackagePrivateRule() {
+    public JUnitJupiterTestShouldBePackagePrivateRule() {
         super(ASTClassDeclaration.class, ASTMethodDeclaration.class);
     }
 
