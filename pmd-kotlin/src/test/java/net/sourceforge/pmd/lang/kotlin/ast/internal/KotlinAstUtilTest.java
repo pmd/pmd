@@ -13,9 +13,11 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignment;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionBody;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtLambdaLiteral;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPrimaryExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
@@ -85,5 +87,35 @@ class KotlinAstUtilTest {
                 file.descendants(KtFunctionDeclaration.class).get(1);
         assertTrue(KotlinAstUtil.isWithin(inner, KtFunctionDeclaration.class, outer));
         assertFalse(KotlinAstUtil.isWithin(inner, KtFunctionDeclaration.class, inner));
+    }
+
+    @Test
+    void collectLambdaParamNamesReturnsExplicitParams() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "fun foo() { listOf(1).forEach { item -> println(item) } }");
+        KtLambdaLiteral lambda = file.descendants(KtLambdaLiteral.class).first();
+        Set<String> params = KotlinAstUtil.collectLambdaParamNames(lambda);
+        assertEquals(1, params.size());
+        assertTrue(params.contains("item"));
+    }
+
+    @Test
+    void collectClassVarFieldNamesReturnsOnlyVarFields() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "class Foo { val id: Int = 0; var name: String = \"\" }");
+        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
+        // use any node inside the class to look up class fields
+        KtSimpleIdentifier si = file.descendants(KtSimpleIdentifier.class).first();
+        Set<String> fields = KotlinAstUtil.collectClassVarFieldNames(si);
+        assertFalse(fields.contains("id"), "val field should not be included");
+        assertTrue(fields.contains("name"), "var field should be included");
+    }
+
+    @Test
+    void getLhsVarNameReturnsSimpleIdentifier() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "fun foo() { var x = 0; x = 1 }");
+        KtAssignment assignment = file.descendants(KtAssignment.class).first();
+        assertEquals("x", KotlinAstUtil.getLhsVarName(assignment));
     }
 }
