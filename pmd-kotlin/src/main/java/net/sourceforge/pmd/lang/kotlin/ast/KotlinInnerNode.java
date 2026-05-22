@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.util.IteratorUtil;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -102,7 +104,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         Iterator<Attribute> base = super.getXPathAttributesIterator();
         AttributeView<?> attributeView = attributes();
         if (attributeView == null) {
-            return base;
+            return IteratorUtil.filter(base, attr -> attr.getValue() != null);
         }
         // Note: IteratorUtil.concat cannot be used here because it eagerly calls
         // bs.hasNext() at construction time, before base is consumed. The view
