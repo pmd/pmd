@@ -102,7 +102,7 @@ See also <https://central.sonatype.org/publish/publish-portal-snapshots/>.
 
 ## General Development Tips
 
-* Use a IDE, see one of the other guides
+* Use an IDE, see one of the other guides
   * [Building PMD with IntelliJ IDEA](pmd_devdocs_building_intellij.html)
   * [Building PMD with Eclipse](pmd_devdocs_building_eclipse.html)
   * [Building PMD with Netbeans](pmd_devdocs_building_netbeans.html)

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
@@ -11,9 +12,14 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -21,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -28,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
@@ -36,6 +44,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
@@ -100,6 +109,12 @@ public final class JavaRuleUtil {
         "lombok.EqualsAndHashCode",
         "lombok.experimental.Delegate"
     );
+
+    private static final InvocationMatcher.CompoundInvocationMatcher TIME_METHODS =
+        InvocationMatcher.parseAll(
+            "java.lang.System#nanoTime()",
+            "java.lang.System#currentTimeMillis()"
+        );
 
     private JavaRuleUtil() {
         // utility class
@@ -515,4 +530,57 @@ public final class JavaRuleUtil {
                 || onlyStatementInThenBranch instanceof ASTThrowStatement;
     }
 
+    /**
+     * Returns whether the variable is mentioned within the statement or not.
+     */
+    public static boolean hasReferencesIn(ASTStatement stmt, ASTVariableId var) {
+        return stmt.descendants(ASTVariableAccess.class)
+            .crossFindBoundaries()
+            .filterMatching(ASTNamedReferenceExpr::getReferencedSym, var.getSymbol())
+            .nonEmpty();
+    }
+
+    /**
+     * Time methods cannot be moved ever, even when there are no side-effects.
+     * The side effect they depend on is the program being executed. Are they
+     * the only methods like that?
+     */
+    public static boolean cannotBeMoved(ASTExpression initializer) {
+        return TIME_METHODS.anyMatch(initializer);
+    }
+
+    /**
+     * Finds names of members potentially referenced by annotations: either by their string
+     * values or by given parameterless annotation. Prefers false negatives to false positives,
+     * so in file containing {@code SuppressWarnings("foo")} field {@code foo} is considered as
+     * referenced.
+     *
+     * @param unit compilation unit
+     * @param parameterless parameterless annotation that references members of the same name
+     *                      as the annotated member
+     * @return members potentially referenced by annotations
+     */
+    public static Set<String> getMembersUsedByAnnotations(ASTCompilationUnit unit, String parameterless) {
+        return unit.descendants(ASTAnnotation.class)
+            .crossFindBoundaries()
+            .toStream()
+            .flatMap(a -> extractMethodsFromAnnotation(a, parameterless))
+            .collect(Collectors.toSet());
+    }
+
+    private static Stream<String> extractMethodsFromAnnotation(ASTAnnotation a, String parameterless) {
+        return Stream.concat(
+            a.getFlatValues().toStream()
+                .map(ASTMemberValue::getConstValue)
+                .map(asInstanceOf(String.class))
+                .filter(StringUtils::isNotEmpty),
+            NodeStream.of(a)
+                .filter(it -> TypeTestUtil.isA(parameterless, it)
+                    && it.getFlatValue("value").isEmpty())
+                .ancestors(ASTMethodDeclaration.class)
+                .take(1)
+                .toStream()
+                .map(ASTMethodDeclaration::getName)
+        );
+    }
 }

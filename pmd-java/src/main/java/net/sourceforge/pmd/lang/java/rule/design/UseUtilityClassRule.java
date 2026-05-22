@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
+import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
@@ -17,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -45,41 +47,50 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
             return data;
         }
 
-        boolean hasAnyMethods = false;
-        boolean hasNonPrivateCtor = false;
-        boolean hasAnyCtor = false;
+        if (allNonPrivateMembersAreStatic(klass) && hasWrongKindOfConstructor(klass)) {
+            asCtx(data).addViolation(klass);
+        }
+        return null;
+    }
+
+    private boolean allNonPrivateMembersAreStatic(ASTClassDeclaration klass) {
+        boolean hasNonPrivateMembers = false;
+
         for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
             if (declaration instanceof ASTFieldDeclaration
-                && !((ASTFieldDeclaration) declaration).isStatic()) {
-                return null;
-            }
-            if (declaration instanceof ASTConstructorDeclaration) {
-                hasAnyCtor = true;
-                if (((ASTConstructorDeclaration) declaration).getVisibility() != Visibility.V_PRIVATE) {
-                    hasNonPrivateCtor = true;
-                }
-            }
+                    || declaration instanceof ASTMethodDeclaration
+                    || declaration instanceof ASTClassDeclaration
+            ) {
+                ModifierOwner modifierOwner = (ModifierOwner) declaration;
 
-            if (declaration instanceof ASTMethodDeclaration) {
-                if (((ASTMethodDeclaration) declaration).getVisibility() != Visibility.V_PRIVATE) {
-                    hasAnyMethods = true;
+                if (modifierOwner.getVisibility() != V_PRIVATE) {
+                    hasNonPrivateMembers = true;
                 }
-                if (!((ASTMethodDeclaration) declaration).isStatic()) {
-                    return null;
+                if (!modifierOwner.hasModifiers(STATIC)) {
+                    return false;
                 }
+            }
+        }
+        return hasNonPrivateMembers;
+    }
+
+    private boolean hasWrongKindOfConstructor(ASTClassDeclaration klass) {
+        boolean hasNonPrivateCtor = false;
+        boolean hasAnyCtor = false;
+
+        for (ASTConstructorDeclaration constructorDeclaration : klass.getDeclarations(ASTConstructorDeclaration.class)) {
+            hasAnyCtor = true;
+            if (constructorDeclaration.getVisibility() != V_PRIVATE) {
+                hasNonPrivateCtor = true;
             }
         }
 
         // account for default ctor
         hasNonPrivateCtor |= !hasAnyCtor
-            && klass.getVisibility() != Visibility.V_PRIVATE
-            && !hasLombokPrivateCtor(klass);
+                && klass.getVisibility() != V_PRIVATE
+                && !hasLombokPrivateCtor(klass);
 
-
-        if (hasAnyMethods && hasNonPrivateCtor) {
-            asCtx(data).addViolation(klass);
-        }
-        return null;
+        return hasNonPrivateCtor;
     }
 
     private boolean hasLombokPrivateCtor(ASTClassDeclaration parent) {

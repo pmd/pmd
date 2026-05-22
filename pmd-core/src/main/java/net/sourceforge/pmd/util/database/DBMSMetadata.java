@@ -499,7 +499,7 @@ public class DBMSMetadata {
 
             /*
              * From Javadoc .... Each procedure description
-             * has the the following columns: PROCEDURE_CAT
+             * has the following columns: PROCEDURE_CAT
              * String => procedure catalog (may be null)
              * PROCEDURE_SCHEM String => procedure schema
              * (may be null) PROCEDURE_NAME String =>

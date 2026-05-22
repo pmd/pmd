@@ -128,7 +128,32 @@ public class Foo {
 ]]>
         </example>
     </rule>
+    <rule name="AssertStatementInTest"
+            language="java"
+            since="7.25.0"
+            message="Assert statements should not be used in test code."
+            class="net.sourceforge.pmd.lang.java.rule.bestpractices.AssertStatementInTestRule"
+            externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#assertstatementintest">
+            <description>
+                Assert statements should not be used in test code. Instead, use the assertion methods provided by
+                the testing framework, such as JUnit 4's `Assert`, JUnit 5's `Assertions` or TestNG's `Assert` class.
+                These helper methods provide better error messages and make test code more readable.
+                They also are not disabled when tests are run without `-ea`.
+            </description>
+            <priority>3</priority>
+        <example>
+        <![CDATA[
+import org.junit.Test;
 
+public class FooTest {
+    @Test
+    public void testSomething() {
+        assert Foo.bar == 1; // violation, should use Assert.assertEquals(1, Foo.bar);
+    }
+}
+        ]]>
+        </example>
+    </rule>
     <rule name="AvoidMessageDigestField"
           language="java"
           since="6.18.0"
@@ -811,7 +836,7 @@ public class GoodTest {
           language="java"
           since="6.35.0"
           message="JUnit 5 tests should be package-private."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnit5TestShouldBePackagePrivateRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate">
         <description><![CDATA[
 Reports JUnit 5 test classes and methods that are not package-private.
@@ -823,37 +848,6 @@ Test methods are identified as those which use `@Test`, `@RepeatedTest`,
 `@TestFactory`, `@TestTemplate` or `@ParameterizedTest`.
             ]]></description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassDeclaration[
-    (: a Junit 5 test class, ie, it has methods with the annotation :)
-    @Interface = false() and
-    ClassBody/MethodDeclaration
-    [ModifierList/Annotation[
-               pmd-java:typeIs('org.junit.jupiter.api.Test')
-            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-    ]]
-]/(
-       self::*[@Abstract = false() and @Visibility = ("public", "protected")]
-|      ClassBody/MethodDeclaration
-       [@Visibility = ("public", "protected")]
-       [ModifierList/Annotation[
-               pmd-java:typeIs('org.junit.jupiter.api.Test')
-            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-       ]]
-)
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
             <![CDATA[
 class MyTest { // not public, that's fine

@@ -35,6 +35,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Distinct error messages for the same line</description>
         <expected-problems>2</expected-problems>
@@ -49,6 +50,26 @@ public class Foo {
             foo();
         } catch (Exception e) {
             if (e instanceof NullPointerException || e instanceof IndexOutOfBoundsException) { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6652 - bad, instanceof with pattern matching</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>An instanceof check is being performed on the caught exception. Create a separate catch clause for FooException.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+            foo();
+        } catch (Exception e) {
+            if (e instanceof FooException fooException) {}
         }
     }
 }
