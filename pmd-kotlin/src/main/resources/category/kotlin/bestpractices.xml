@@ -35,29 +35,4 @@ fun calculateLayout() // no violation
         </example>
     </rule>
 
-    <rule name="LocalVariableShadowsParameter"
-          since="7.25.0"
-          language="kotlin"
-          message="Local variable ''{0}'' shadows a parameter of the enclosing function."
-          class="net.sourceforge.pmd.lang.kotlin.rule.bestpractices.LocalVariableShadowsParameterRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#localvariableshadowsparameter">
-        <description>
-            A local variable declaration uses the same name as a parameter of the enclosing function.
-            This shadows the parameter and may lead to confusion about which value is used.
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-fun compute(result: Int): Int {
-    val result = 42  // violation - shadows parameter 'result'
-    return result
-}
-
-fun compute2(input: Int): Int {
-    val result = input + 1  // no violation - different name
-    return result
-}
-]]>
-        </example>
-    </rule>
 </ruleset>
