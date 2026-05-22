@@ -3,7 +3,7 @@ title: Adding PMD support for a new ANTLR grammar based language
 short_title: Adding a new language with ANTLR
 tags: [devdocs, extending]
 summary: "How to add a new language to PMD using ANTLR grammar."
-last_updated: April 2025 (7.13.0)
+last_updated: May 2026 (7.25.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_antlr.html
 folder: pmd/devdocs
@@ -148,16 +148,15 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   Create your own parser, that adapts the ANTLR interface to PMD's parser interface.
 *   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
     implementation that you need to extend to create your own adapter. See
-    [`PmdKotlinParser`](https://github.com/stokpop/pmd/blob/main/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.java)
+    [`PmdKotlinParser`](https://github.com/pmd/pmd/blob/main/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.java)
     as the reference implementation.
-*   **Error handling**: ANTLR by default swallows errors silently. You must register custom
+*   **Error handling**: ANTLR by default prints errors to stderr only and otherwise ignores them. You must register custom
     `BaseErrorListener`s on both the lexer and the parser to surface errors properly:
-    *   **Lexer errors** (unrecognized tokens): log a `WARN` and throw a
+    *   **Lexer errors** (unrecognized tokens) should throw a
         [`LexException`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/LexException.java)
         with the file id and position from the `ParserTask`.
-    *   **Parser errors** (unexpected token structure): log a `WARN` with a short message
-        (strip the verbose `expecting {...}` token list), log the full message at `DEBUG`,
-        and throw a [`ParseException`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/ParseException.java)
+    *   **Parser errors** (unexpected token structure): should throw a
+        [`ParseException`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/ParseException.java)
         with `.withLocation(FileLocation.caret(...))`.
     *   Both exception types extend `FileAnalysisException`, which automatically includes the
         file name and location in `getMessage()`, so you only need to pass the ANTLR error
