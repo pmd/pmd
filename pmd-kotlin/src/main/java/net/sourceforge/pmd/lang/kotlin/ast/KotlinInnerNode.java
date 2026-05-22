@@ -4,7 +4,11 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -12,7 +16,6 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-import net.sourceforge.pmd.util.IteratorUtil;
 
 abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
 
@@ -98,9 +101,29 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     public Iterator<Attribute> getXPathAttributesIterator() {
         Iterator<Attribute> base = super.getXPathAttributesIterator();
         AttributeView<?> attributeView = attributes();
-        if (attributeView != null) {
-            return IteratorUtil.concat(base, attributeView.getXPathAttributesIterator());
+        if (attributeView == null) {
+            return base;
         }
-        return base;
+        // Note: IteratorUtil.concat cannot be used here because it eagerly calls
+        // bs.hasNext() at construction time, before base is consumed. The view
+        // filter predicate depends on names collected from base, so base must be
+        // fully drained first.
+        List<Attribute> result = new ArrayList<>();
+        Set<String> names = new HashSet<>();
+        while (base.hasNext()) {
+            Attribute attr = base.next();
+            if (attr.getValue() != null) {
+                result.add(attr);
+                names.add(attr.getName());
+            }
+        }
+        Iterator<Attribute> viewIt = attributeView.getXPathAttributesIterator();
+        while (viewIt.hasNext()) {
+            Attribute attr = viewIt.next();
+            if (attr.getValue() != null && !names.contains(attr.getName())) {
+                result.add(attr);
+            }
+        }
+        return result.iterator();
     }
 }

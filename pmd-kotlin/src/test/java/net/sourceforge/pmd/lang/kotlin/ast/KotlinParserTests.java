@@ -6,7 +6,13 @@ package net.sourceforge.pmd.lang.kotlin.ast;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +20,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtImportHeader;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 /**
  * Miscellaneous Kotlin parser regression tests.
@@ -118,6 +125,39 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
         KtImportHeader imp =
                 file.descendants(KtImportHeader.class).first();
         assertEquals("com.example.Foo", imp.attributes(KtImportHeaderAttributes.class).getName());
+    }
+
+    @Test
+    void xpathAttributesHaveNoNullValues() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "import com.example.Foo\nfun greet(name: String) {}");
+        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
+        KtImportHeader imp = file.descendants(KtImportHeader.class).first();
+        Stream.of(func, imp).forEach(node -> {
+            Iterator<Attribute> it = node.getXPathAttributesIterator();
+            while (it.hasNext()) {
+                Attribute attr = it.next();
+                assertNotNull(attr.getValue(),
+                        "Attribute @" + attr.getName() + " has null value on " + node.getXPathNodeName());
+            }
+        });
+    }
+
+    @Test
+    void xpathAttributesHaveNoDuplicates() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "import com.example.Foo\nfun greet(name: String) {}");
+        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
+        KtImportHeader imp = file.descendants(KtImportHeader.class).first();
+        Stream.of(func, imp).forEach(node -> {
+            List<String> names = new ArrayList<>();
+            Iterator<Attribute> it = node.getXPathAttributesIterator();
+            while (it.hasNext()) {
+                names.add(it.next().getName());
+            }
+            assertEquals(names.stream().distinct().count(), names.size(),
+                    "Duplicate XPath attributes on " + node.getXPathNodeName() + ": " + names);
+        });
     }
 
 }
