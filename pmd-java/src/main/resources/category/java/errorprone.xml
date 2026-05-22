@@ -2066,12 +2066,12 @@ public class JumbledIncrementerRule1 {
         </example>
     </rule>
 
-    <rule name="JUnit5TestNoPrivateModifier"
+    <rule name="JUnitJupiterTestNoPrivateModifier"
           language="java"
           since="7.25.0"
           message="JUnit tests cannot be private"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnit5TestNoPrivateModifierRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junit5testnoprivatemodifier">
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitJupiterTestNoPrivateModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier">
         <description><![CDATA[
 JUnit 5/6 tests cannot be private. Otherwise, they won't be found by the framework:
 

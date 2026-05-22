@@ -16,31 +16,31 @@ import net.sourceforge.pmd.reporting.RuleContext;
 /**
  * @since 7.25.0
  */
-public class JUnit5TestNoPrivateModifierRule extends AbstractJavaRulechainRule {
+public class JUnitJupiterTestNoPrivateModifierRule extends AbstractJavaRulechainRule {
 
-    public JUnit5TestNoPrivateModifierRule() {
+    public JUnitJupiterTestNoPrivateModifierRule() {
         super(ASTClassDeclaration.class, ASTMethodDeclaration.class);
     }
 
     @Override
-    public RuleContext visit(ASTClassDeclaration node, Object data) {
+    public Object visit(ASTClassDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
 
         if (isJUnit5Class(node) && node.hasVisibility(V_PRIVATE)) {
             ctx.addViolation(node);
         }
 
-        return ctx;
+        return null;
     }
 
     @Override
-    public RuleContext visit(ASTMethodDeclaration node, Object data) {
+    public Object visit(ASTMethodDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
 
         if (isJUnit5Method(node) && node.hasVisibility(V_PRIVATE)) {
             ctx.addViolation(node);
         }
 
-        return ctx;
+        return null;
     }
 }

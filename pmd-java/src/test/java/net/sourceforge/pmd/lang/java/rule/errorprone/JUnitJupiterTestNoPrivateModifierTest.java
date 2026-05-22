@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class JUnit5TestNoPrivateModifierTest extends PmdRuleTst {
+class JUnitJupiterTestNoPrivateModifierTest extends PmdRuleTst {
     // no additional unit tests
 }
