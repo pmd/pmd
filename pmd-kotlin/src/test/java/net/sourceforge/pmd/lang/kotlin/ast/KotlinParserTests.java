@@ -133,8 +133,10 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                 "import com.example.Foo\nfun greet(name: String) {}");
         KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
         KtImportHeader imp = file.descendants(KtImportHeader.class).first();
-        // file has no AttributeView; func and imp do
-        Stream.of(file, func, imp).forEach(node -> {
+        KotlinNode terminal = file.descendants(KotlinNode.class)
+                .filter(n -> n instanceof KotlinTerminalNode).first();
+        // file and terminal have no AttributeView; func and imp do
+        Stream.of(file, func, imp, terminal).forEach(node -> {
             Iterator<Attribute> it = node.getXPathAttributesIterator();
             while (it.hasNext()) {
                 Attribute attr = it.next();
@@ -150,8 +152,10 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                 "import com.example.Foo\nfun greet(name: String) {}");
         KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
         KtImportHeader imp = file.descendants(KtImportHeader.class).first();
-        // file has no AttributeView; func and imp do
-        Stream.of(file, func, imp).forEach(node -> {
+        KotlinNode terminal = file.descendants(KotlinNode.class)
+                .filter(n -> n instanceof KotlinTerminalNode).first();
+        // file and terminal have no AttributeView; func and imp do
+        Stream.of(file, func, imp, terminal).forEach(node -> {
             List<String> names = new ArrayList<>();
             Iterator<Attribute> it = node.getXPathAttributesIterator();
             while (it.hasNext()) {

@@ -4,11 +4,15 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import java.util.Iterator;
+
 import org.antlr.v4.runtime.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> implements KotlinNode {
 
@@ -37,6 +41,11 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
             return ((KotlinVisitor<? super P, ? extends R>) visitor).visitKotlinNode(this, data);
         }
         return super.acceptVisitor(visitor, data);
+    }
+
+    @Override
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        return IteratorUtil.filter(super.getXPathAttributesIterator(), attr -> attr.getValue() != null);
     }
 
 }
