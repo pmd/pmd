@@ -13,8 +13,8 @@ author: Clément Fournier <clement.fournier76@gmail.com>
 The designer is part of PMD's binary distributions. To **install a distribution**, see the
 [documentation page about installing PMD](pmd_userdocs_installation.html).
 
-The designer still works with Java 8 from Oracle, which includes JavaFX up until Java 8u441. It also works
-with Java 8+ from Azul (Zulu JDK FX) or Bellsoft (Liberica Full JDK) which also include JavaFX.
+The designer still works with Java {{ site.pmd.jre_version }} from Oracle, which includes JavaFX up until Java 8u441. It also works
+with Java {{ site.pmd.jre_version }}+ from Azul (Zulu JDK FX) or Bellsoft (Liberica Full JDK) which also include JavaFX.
 Note: The latest Java 8 from Oracle does _not_ include JavaFX anymore, see <https://www.oracle.com/javase/javafx/>.
 
 If you use a Java version, which includes JavaFX, then all is set.

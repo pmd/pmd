@@ -170,10 +170,10 @@ selecting the "Ask for Directory" checkbox.
 
 **Assumptions**
 
-*   The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed
-    into your machine, and exists in `D:\java\jdk\_142\`. This means that `D:\java\jdk\_142\bin\java.exe` exists.
-*   PMD version 5.0 exists in `D:\java\pmd-bin-{{pmd.site.version}}\`.
-    This means that `D:\java\pmd-bin-{{pmd.site.version}}\lib\pmd-{{pmd.site.version}}.jar` (among other jar files
+*   The Java Development Kit, version {{ site.pmd.jre_version }} or higher, is properly installed
+    into your machine, and exists in `D:\java\jdk-VERSION\`. This means that `D:\java\jdk-VERSION\bin\java.exe` exists.
+*   PMD version 5.0 exists in `D:\java\pmd-bin-{{ site.pmd.version }}\`.
+    This means that `D:\java\pmd-bin-{{ site.pmd.version }}\lib\pmd-{{ site.pmd.version }}.jar` (among other jar files
     in the same directory) exist.
 
 **To integrate into TextPad**
@@ -182,7 +182,7 @@ selecting the "Ask for Directory" checkbox.
 2.  In the left pane of the Preferences dialog, choose the **Tools** branch by clicking on the *word* "Tools".
 3.  On the far right of the dialog, click on the **Add** button, and then select **Program...** from the drop-down.
     This opens the standard Windows Open File dialog.
-4.  Type `D:\java\jdk_142\bin\java.exe` and click the **Open** button.  In the center pane of the Preferences dialog,
+4.  Type `D:\java\jdk-VERSION\bin\java.exe` and click the **Open** button.  In the center pane of the Preferences dialog,
     an item "Java" has now been added, and is currently selected.
 5.  Click the word Java, which makes the word editable. Select the entire word, and type "PMD directory". Press Return.
 6.  Repeat steps three through five, but type "PMD file", instead of "PMD directory".
@@ -190,7 +190,7 @@ selecting the "Ask for Directory" checkbox.
 8.  Expand the **Tools** branch (if not already) by clicking on the '`+`' directly to its left.
 9.  In the expanded list, select **PMD directory**. This changes the right side of this dialog to the "tool" form.
 10. In the "tool" form, enter these parameters:
-    *   **Parameters:**  `-classpath D:\java\pmd-bin-{{pmd.site.version}}\lib\pmd-{{pmd.site.version}}.jar;D:\java\pmd-bin-{{pmd.site.version}}\lib\asm-3.2.jar;D:\java\pmd-bin-{{pmd.site.version}}\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d <i><b>$FileDir</b></i> -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug`
+    *   **Parameters:**  `-classpath D:\java\pmd-bin-{{ site.pmd.version }}\lib\pmd-{{ site.pmd.version }}.jar;D:\java\pmd-bin-{{ site.pmd.version }}\lib\asm-3.2.jar;D:\java\pmd-bin-{{ site.pmd.version }}\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d <i><b>$FileDir</b></i> -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug`
     *   **Initial Folder:**  `$FileDir`
     *   **Save all documents first:**  `Checked`
     *   **Capture output:**  `Checked`

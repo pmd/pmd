@@ -16,7 +16,7 @@ last_updated: January 2025 (7.10.0)
    Make sure, you have previously built PMD on command line via `./mvnw clean verify`, as described in the general
    info page.
 5. If you are using IJ for the first time, you'll need to configure the path to your installed Java SDK. You
-   have to use at least Java 11 here.
+   have to use at least Java {{ site.pmd.jdk_version }} here.
    If the dialog doesn't show automatically, you can open it with menu `File > Project Structure` (CTRL+ALT+SHIFT+S).
    On the left, choose "Platform Settings > SDK" and add your Java SDK. Then choose "Project Settings > Project" and
    select the SDK for PMD.

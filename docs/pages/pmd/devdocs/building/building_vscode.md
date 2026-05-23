@@ -25,8 +25,8 @@ This needs to be done only once.
 You'll get the notification "Build failed". You can try to ignore the error and continue, but you might end
 up with "Unresolved compilation problems". See below under "Known Issues" for more information.
 
-PMD currently is still built for Java 8 and the VS Code plugin chooses a Java 8 runtime. For building however,
-we use Java 11 and also the tests require some Java 11 features. You might need to override the java version
+PMD currently is still built for Java {{ site.pmd.jre_version }} and the VS Code plugin chooses a Java {{ site.pmd.jre_version }} runtime. For building however,
+we use Java {{ site.pmd.jdk_version }} and also the tests require some Java {{ site.pmd.jdk_version }} features. You might need to override the java version
 manually: Ctlr+Shift+P and enter "configure java runtime". There you can override the java version for
 each project/module.
 {%endcapture%}

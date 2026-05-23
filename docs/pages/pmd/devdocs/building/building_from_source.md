@@ -6,11 +6,10 @@ author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 last_updated: January 2025 (7.10.0)
 ---
 
-# Compiling PMD
+## Compiling PMD
 
-*   JDK 11 or higher
-
-{% include note.html content="While Java 11 is required for building, running PMD only requires Java 8." %}
+{% capture noteText %}You will need {{ site.pmd.jdk_version }} to build PMD, even though running PMD only requires Java {{ site.pmd.jre_version }}.{% endcapture %}
+{% include note.html content=noteText %}
 
 You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:
 
