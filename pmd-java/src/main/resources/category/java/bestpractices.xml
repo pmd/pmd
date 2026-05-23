@@ -841,7 +841,7 @@ public class GoodTest {
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitJupiterTestShouldBePackagePrivateRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#junitjupitertestshouldbepackageprivate">
         <description><![CDATA[
-Reports JUnit 5 test classes and methods that are not package-private.
+Reports JUnit Jupiter test classes and methods that are not package-private.
 Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
 JUnit 5 tests can also be run if they're package-private. Marking them as such
 is a good practice to limit their visibility.
