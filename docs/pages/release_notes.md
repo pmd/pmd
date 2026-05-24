@@ -51,6 +51,9 @@ this is already done.
 #### Changed Rules
 * The rule {% rule java/codestyle/OnlyOneReturn %} has a new property `allowGuardIfs`. When this property is
   true, then guard ifs at the beginning of a method are allowed their return statements don't count.
+* The rules {% rule java/design/UseUtilityClass %} and {% rule java/codestyle/ClassNamingConventions %} now use the
+  same definition of what a utility class is. The most significant change is, that classes with main() methods are
+  no longer considered utility classes by `UseUtilityClass`.
 * We are continuously working to improve the precision of violation reporting for various rules.
   The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
   For example, instead of flagging an entire class declaration (including its body), we now generally report only
@@ -101,6 +104,7 @@ this is already done.
   * [#4972](https://github.com/pmd/pmd/issues/4972): \[core] Update ANTLR to 4.13.2
   * [#6308](https://github.com/pmd/pmd/issues/6308): \[core] CPD Markdown format: Add syntax highlighting
 * java
+  * [#1102](https://github.com/pmd/pmd/issues/1102): \[java] Improve consistency of utility class detection across rules
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
   * [#6688](https://github.com/pmd/pmd/issues/6688): \[java] LocalVariableCouldBeFinalRule API changed
