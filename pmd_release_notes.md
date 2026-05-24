@@ -14,6 +14,7 @@ This is a minor release.
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
+    * [Renamed rules and properties](#renamed-rules-and-properties)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
 * [✨️ Merged pull requests](#merged-pull-requests)
@@ -33,7 +34,7 @@ this is already done.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
-* The new Java rule [`JUnit5TestNoPrivateModifier`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_errorprone.html#junit5testnoprivatemodifier) find JUnit test classes and
+* The new Java rule [`JUnitJupiterTestNoPrivateModifier`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier) find JUnit test classes and
   methods that are private. Test classes, test methods, and lifecycle methods are not required to be public,
   but they must not be private. Otherwise, they won’t be found by the test framework.
 * The new Java rule [`UnnecessaryBlock`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#unnecessaryblock) reports blocks that are unnecessary as
@@ -94,6 +95,14 @@ this is already done.
   * [`UnnecessaryModifier`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#unnecessarymodifier)
   * [`UseUtilityClass`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_design.html#useutilityclass)
 
+#### Renamed rules and properties
+
+* One rule and one property have been renamed to reflect the fact that they work for both JUnit 5 and 6:
+  * The rule [`JUnitJupiterTestShouldBePackagePrivate`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_bestpractices.html#junitjupitertestshouldbepackageprivate) (Java Best Practices) was renamed from `JUnit5TestShouldBePackagePrivate`.
+  * The property `junitJupiterTestPattern` of rule [`MethodNamingConventions`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#methodnamingconventions) (Java Code Style) was renamed from `junit5TestPattern`.
+
+The old names still work but are deprecated.
+
 ### 🐛️ Fixed Issues
 * core
   * [#4972](https://github.com/pmd/pmd/issues/4972): \[core] Update ANTLR to 4.13.2
@@ -102,11 +111,13 @@ this is already done.
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
   * [#6688](https://github.com/pmd/pmd/issues/6688): \[java] LocalVariableCouldBeFinalRule API changed
+  * [#6704](https://github.com/pmd/pmd/issues/6704): \[java] Rename rules and properties with JUnit5 in the name
 * java-bestpractices
   * [#3212](https://github.com/pmd/pmd/issues/3212): \[java] Enhance UseStandardCharsets to flag some constructors of IO-related classes
   * [#3777](https://github.com/pmd/pmd/issues/3777): \[java] New rule: AssertStatementInTest
   * [#5477](https://github.com/pmd/pmd/issues/5477): \[java] JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class
   * [#6606](https://github.com/pmd/pmd/issues/6606): \[java] UnusedPrivateField: False positive on JUnit Jupiter `@FieldSource`
+  * [#6681](https://github.com/pmd/pmd/issues/6681): \[java] UnitTestShouldIncludeAssert: False positive with JUnitSoftAssertions Rule (JUnit 4)
 * java-codestyle
   * [#2801](https://github.com/pmd/pmd/issues/2801): \[java] OnlyOneReturn should have a property to allow early exits (guard clauses)
   * [#6427](https://github.com/pmd/pmd/issues/6427): \[java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte

@@ -1712,7 +1712,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "J Unit5 Test Should Be Package Private",
   "url": "pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate",
-  "summary": "Reports JUnit 5 test classes and methods that are not package-private. Contrary to JUnit 4..."
+  "summary": "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> This rule..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
@@ -1721,6 +1721,14 @@ let pmd_doc_search_index = [
   "keywords": "J Unit Assertions Should Include Message",
   "url": "pmd_rules_java_bestpractices.html#junitassertionsshouldincludemessage",
   "summary": "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> This rule..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "JUnitJupiterTestShouldBePackagePrivate (Java, Best Practices)",
+  "tags": "",
+  "keywords": "J Unit Jupiter Test Should Be Package Private",
+  "url": "pmd_rules_java_bestpractices.html#junitjupitertestshouldbepackageprivate",
+  "summary": "Reports JUnit Jupiter test classes and methods that are not package-private. Contrary to JUnit 4..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
@@ -3388,11 +3396,11 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",
-  "title": "JUnit5TestNoPrivateModifier (Java, Error Prone)",
+  "title": "JUnitJupiterTestNoPrivateModifier (Java, Error Prone)",
   "tags": "",
-  "keywords": "J Unit5 Test No Private Modifier",
-  "url": "pmd_rules_java_errorprone.html#junit5testnoprivatemodifier",
-  "summary": "JUnit 5/6 tests cannot be private. Otherwise, they won't be found by the framework: >..."
+  "keywords": "J Unit Jupiter Test No Private Modifier",
+  "url": "pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier",
+  "summary": "JUnit Jupiter tests cannot be private. Otherwise, they won't be found by the framework: >..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",

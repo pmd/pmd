@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AssertStatementInTest, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, EnumComparison, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AssertStatementInTest, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, EnumComparison, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitJupiterTestShouldBePackagePrivate, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2195,7 +2195,7 @@ This prevents future changes from the user from affecting the original array.</p
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Assert statements should not be used in test code. Instead, use the assertion methods provided by
-the testing framework, such as JUnit 4’s <code class="language-plaintext highlighter-rouge">Assert</code>, JUnit 5’s <code class="language-plaintext highlighter-rouge">Assertions</code> or TestNG’s <code class="language-plaintext highlighter-rouge">Assert</code> class.
+the testing framework, such as JUnit 4’s <code class="language-plaintext highlighter-rouge">Assert</code>, JUnit Jupiter’s <code class="language-plaintext highlighter-rouge">Assertions</code> or TestNG’s <code class="language-plaintext highlighter-rouge">Assert</code> class.
 These helper methods provide better error messages and make test code more readable.
 They also are not disabled when tests are run without <code class="language-plaintext highlighter-rouge">-ea</code>.</p>
 
@@ -3075,7 +3075,7 @@ as long as you are following this convention to name the methods.</p>
 
 <ul>
   <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.</li>
-  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after
+  <li>JUnit Jupiter introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after
 all tests in the class, respectively.</li>
   <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@AfterMethod</code> and <code class="language-plaintext highlighter-rouge">@AfterClass</code> to execute methods after each test or after
 tests in the class, respectively.</li>
@@ -3092,7 +3092,7 @@ tests in the class, respectively.</li>
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterClass'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterMethod'</span><span class="p">)</span><span class="w">
     </span><span class="p">])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/Jupiter or TestNG class :)</span><span class="w">
     </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
             </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
@@ -3137,7 +3137,7 @@ as long as you are following this convention to name the methods.</p>
 
 <ul>
   <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.</li>
-  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all
+  <li>JUnit Jupiter introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all
 tests in the class, respectively.</li>
   <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@BeforeMethod</code> and <code class="language-plaintext highlighter-rouge">@BeforeClass</code> to execute methods before each test or before
 tests in the class, respectively.</li>
@@ -3154,7 +3154,7 @@ tests in the class, respectively.</li>
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeMethod'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeClass'</span><span class="p">)</span><span class="w">
     </span><span class="p">])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/Jupiter or TestNG class :)</span><span class="w">
     </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
                </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
             </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
@@ -3195,7 +3195,7 @@ tests in the class, respectively.</li>
 <p>The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.</p>
 
 <p>In JUnit 4, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.
-In JUnit 5, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
+In JUnit Jupiter, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
 In TestNG, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.</p>
 
 <p>Note: This rule was named JUnit4TestShouldUseTestAnnotation before PMD 7.7.0.</p>
@@ -3266,19 +3266,27 @@ In TestNG, only methods annotated with the <code class="language-plaintext highl
 
 <h2 id="junit5testshouldbepackageprivate">JUnit5TestShouldBePackagePrivate</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#junitjupitertestshouldbepackageprivate">JUnitJupiterTestShouldBePackagePrivate</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 6.35.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Reports JUnit 5 test classes and methods that are not package-private.
+<p>Reports JUnit Jupiter test classes and methods that are not package-private.
 Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
-JUnit 5 tests can also be run if they’re package-private. Marking them as such
+JUnit Jupiter tests can also be run if they’re package-private. Marking them as such
 is a good practice to limit their visibility.</p>
 
 <p>Test methods are identified as those which use <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>,
 <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnit5TestShouldBePackagePrivateRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnit5TestShouldBePackagePrivateRule</a></p>
+<p>Note: This rule was named <code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code> before PMD 7.25.0.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitJupiterTestShouldBePackagePrivateRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitJupiterTestShouldBePackagePrivateRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -3316,7 +3324,7 @@ is a good practice to limit their visibility.</p>
 <p>Unit assertions should include an informative message - i.e., use the three-argument version of
 <code class="language-plaintext highlighter-rouge">assertEquals()</code>, not the two-argument version.</p>
 
-<p>This rule supports tests using JUnit (3, 4 and 5) and TestNG.</p>
+<p>This rule supports tests using JUnit (3, 4 and Jupiter) and TestNG.</p>
 
 <p>Note: This rule was named JUnitAssertionsShouldIncludeMessage before PMD 7.7.0.</p>
 
@@ -3339,6 +3347,45 @@ is a good practice to limit their visibility.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnitAssertionsShouldIncludeMessage"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="junitjupitertestshouldbepackageprivate">JUnitJupiterTestShouldBePackagePrivate</h2>
+
+<p><strong>Since:</strong> PMD 6.35.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reports JUnit Jupiter test classes and methods that are not package-private.
+Contrary to JUnit 4 tests, which required public visibility to be run by the engine,
+JUnit Jupiter tests can also be run if they’re package-private. Marking them as such
+is a good practice to limit their visibility.</p>
+
+<p>Test methods are identified as those which use <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>,
+<code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.</p>
+
+<p>Note: This rule was named <code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code> before PMD 7.25.0.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/JUnitJupiterTestShouldBePackagePrivateRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.JUnitJupiterTestShouldBePackagePrivateRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MyTest</span> <span class="o">{</span> <span class="c1">// not public, that's fine</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testBad</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// should not have a public modifier</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">testAlsoBad</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// should not have a protected modifier</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">testNoRun</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// should not have a private modifier</span>
+
+    <span class="nd">@Test</span>
+    <span class="kt">void</span> <span class="nf">testGood</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// package private as expected</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnitJupiterTestShouldBePackagePrivate"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="junittestcontainstoomanyasserts">JUnitTestContainsTooManyAsserts</h2>
 
 <p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
@@ -3355,7 +3402,7 @@ is a good practice to limit their visibility.</p>
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.</p>
 
-<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+<p>This rule checks for JUnit (3, 4 and Jupiter) and TestNG Tests.</p>
 
 <p>Note: This rule was named JUnitTestContainsTooManyAsserts before PMD 7.7.0.</p>
 
@@ -3433,7 +3480,7 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 <p>Unit tests should include at least one assertion. This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.</p>
 
-<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+<p>This rule checks for JUnit (3, 4 and Jupiter) and TestNG Tests.</p>
 
 <p>Note: This rule was named JUnitTestsShouldIncludeAssert before PMD 7.7.0.</p>
 
@@ -4225,7 +4272,7 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 <p>Unit assertions should include an informative message - i.e., use the three-argument version of
 <code class="language-plaintext highlighter-rouge">assertEquals()</code>, not the two-argument version.</p>
 
-<p>This rule supports tests using JUnit (3, 4 and 5) and TestNG.</p>
+<p>This rule supports tests using JUnit (3, 4 and Jupiter) and TestNG.</p>
 
 <p>Note: This rule was named JUnitAssertionsShouldIncludeMessage before PMD 7.7.0.</p>
 
@@ -4258,7 +4305,7 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.
 Customize the maximum number of assertions used by this Rule to suit your needs.</p>
 
-<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+<p>This rule checks for JUnit (3, 4 and Jupiter) and TestNG Tests.</p>
 
 <p>Note: This rule was named JUnitTestContainsTooManyAsserts before PMD 7.7.0.</p>
 
@@ -4330,7 +4377,7 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 <p>Unit tests should include at least one assertion. This makes the tests more robust, and using assert
 with messages provide the developer a clearer idea of what the test does.</p>
 
-<p>This rule checks for JUnit (3, 4 and 5) and TestNG Tests.</p>
+<p>This rule checks for JUnit (3, 4 and Jupiter) and TestNG Tests.</p>
 
 <p>Note: This rule was named JUnitTestsShouldIncludeAssert before PMD 7.7.0.</p>
 
@@ -4393,7 +4440,7 @@ as long as you are following this convention to name the methods.</p>
 
 <ul>
   <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@After</code> after running each test.</li>
-  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after
+  <li>JUnit Jupiter introduced <code class="language-plaintext highlighter-rouge">@AfterEach</code> and <code class="language-plaintext highlighter-rouge">@AfterAll</code> annotations to execute methods after each test or after
 all tests in the class, respectively.</li>
   <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@AfterMethod</code> and <code class="language-plaintext highlighter-rouge">@AfterClass</code> to execute methods after each test or after
 tests in the class, respectively.</li>
@@ -4410,7 +4457,7 @@ tests in the class, respectively.</li>
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterClass'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.AfterMethod'</span><span class="p">)</span><span class="w">
     </span><span class="p">])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/Jupiter or TestNG class :)</span><span class="w">
     </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
             </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
          </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
@@ -4449,7 +4496,7 @@ as long as you are following this convention to name the methods.</p>
 
 <ul>
   <li>JUnit 4 will only execute methods annotated with <code class="language-plaintext highlighter-rouge">@Before</code> before all tests.</li>
-  <li>JUnit 5 introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all
+  <li>JUnit Jupiter introduced <code class="language-plaintext highlighter-rouge">@BeforeEach</code> and <code class="language-plaintext highlighter-rouge">@BeforeAll</code> annotations to execute methods before each test or before all
 tests in the class, respectively.</li>
   <li>TestNG provides the annotations <code class="language-plaintext highlighter-rouge">@BeforeMethod</code> and <code class="language-plaintext highlighter-rouge">@BeforeClass</code> to execute methods before each test or before
 tests in the class, respectively.</li>
@@ -4466,7 +4513,7 @@ tests in the class, respectively.</li>
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeMethod'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.BeforeClass'</span><span class="p">)</span><span class="w">
     </span><span class="p">])]</span><span class="w">
-    </span><span class="c">(: Make sure this is a JUnit 4/5 or TestNG class :)</span><span class="w">
+    </span><span class="c">(: Make sure this is a JUnit 4/Jupiter or TestNG class :)</span><span class="w">
     </span><span class="p">[..</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w">
                </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
             </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
@@ -4501,7 +4548,7 @@ tests in the class, respectively.</li>
 <p>The rule will detect any test method starting with "test" that is not properly annotated, and will therefore not be run.</p>
 
 <p>In JUnit 4, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.
-In JUnit 5, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
+In JUnit Jupiter, one of the following annotations should be used for tests: <code class="language-plaintext highlighter-rouge">@Test</code>, <code class="language-plaintext highlighter-rouge">@RepeatedTest</code>, <code class="language-plaintext highlighter-rouge">@TestFactory</code>, <code class="language-plaintext highlighter-rouge">@TestTemplate</code> or <code class="language-plaintext highlighter-rouge">@ParameterizedTest</code>.
 In TestNG, only methods annotated with the <code class="language-plaintext highlighter-rouge">@Test</code> annotation are executed.</p>
 
 <p>Note: This rule was named JUnit4TestShouldUseTestAnnotation before PMD 7.7.0.</p>
@@ -5340,7 +5387,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 22, 2026 <br />
+             Site last generated: May 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2050,7 +2050,7 @@ this is already done.</p>
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
 <h4 id="new-rules">New Rules</h4>
 <ul>
-  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#junit5testnoprivatemodifier"><code class="language-plaintext highlighter-rouge">JUnit5TestNoPrivateModifier</code></a> find JUnit test classes and
+  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier"><code class="language-plaintext highlighter-rouge">JUnitJupiterTestNoPrivateModifier</code></a> find JUnit test classes and
 methods that are private. Test classes, test methods, and lifecycle methods are not required to be public,
 but they must not be private. Otherwise, they won’t be found by the test framework.</li>
   <li>The new Java rule <a href="pmd_rules_java_codestyle.html#unnecessaryblock"><code class="language-plaintext highlighter-rouge">UnnecessaryBlock</code></a> reports blocks that are unnecessary as
@@ -2117,6 +2117,19 @@ is still ongoing, the following Java rules have been updated in this release:
   </li>
 </ul>
 
+<h4 id="renamed-rules-and-properties">Renamed rules and properties</h4>
+
+<ul>
+  <li>One rule and one property have been renamed to reflect the fact that they work for both JUnit 5 and 6:
+    <ul>
+      <li>The rule <a href="pmd_rules_java_bestpractices.html#junitjupitertestshouldbepackageprivate"><code class="language-plaintext highlighter-rouge">JUnitJupiterTestShouldBePackagePrivate</code></a> (Java Best Practices) was renamed from <code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code>.</li>
+      <li>The property <code class="language-plaintext highlighter-rouge">junitJupiterTestPattern</code> of rule <a href="pmd_rules_java_codestyle.html#methodnamingconventions"><code class="language-plaintext highlighter-rouge">MethodNamingConventions</code></a> (Java Code Style) was renamed from <code class="language-plaintext highlighter-rouge">junit5TestPattern</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The old names still work but are deprecated.</p>
+
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
   <li>core
@@ -2130,6 +2143,7 @@ is still ongoing, the following Java rules have been updated in this release:
       <li><a href="https://github.com/pmd/pmd/issues/5721">#5721</a>: [java] StackOverflowError in 7.17.0 with nested wildcard generics</li>
       <li><a href="https://github.com/pmd/pmd/issues/5746">#5746</a>: [java] Separate test sources and resources</li>
       <li><a href="https://github.com/pmd/pmd/issues/6688">#6688</a>: [java] LocalVariableCouldBeFinalRule API changed</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6704">#6704</a>: [java] Rename rules and properties with JUnit5 in the name</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -2138,6 +2152,7 @@ is still ongoing, the following Java rules have been updated in this release:
       <li><a href="https://github.com/pmd/pmd/issues/3777">#3777</a>: [java] New rule: AssertStatementInTest</li>
       <li><a href="https://github.com/pmd/pmd/issues/5477">#5477</a>: [java] JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class</li>
       <li><a href="https://github.com/pmd/pmd/issues/6606">#6606</a>: [java] UnusedPrivateField: False positive on JUnit Jupiter <code class="language-plaintext highlighter-rouge">@FieldSource</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/6681">#6681</a>: [java] UnitTestShouldIncludeAssert: False positive with JUnitSoftAssertions Rule (JUnit 4)</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -2246,7 +2261,7 @@ is still ongoing, the following Java rules have been updated in this release:
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 22, 2026 <br />
+             Site last generated: May 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
