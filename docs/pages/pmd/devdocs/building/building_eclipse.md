@@ -23,7 +23,7 @@ the `Project Explorer`.
 While PMD still runs with Java {{ site.pmd.java_run_version }}, we need at least Java {{ site.pmd.java_build_version }} for building and running unit tests.
 To make sure, Eclipse uses Java {{ site.pmd.java_build_version }} instead of Java {{ site.pmd.java_run_version }}, go to Window > Preferences and select
 Java > Installed JREs. Make sure, you have a Java {{ site.pmd.java_build_version }} or newer available. Then go to "Execution Environments",
-choose "JavaSE-1.8" and check your Java {{ site.pmd.java_build_version }} installation on the right.
+choose "JavaSE-{{ site.java_build_version }}" and check your Java {{ site.pmd.java_build_version }} installation on the right.
 
 ## Running unit tests
 
