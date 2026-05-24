@@ -8,9 +8,9 @@ last_updated: January 2026 (7.21.0)
 
 ## Before Development
 
-1. Ensure that [Git](https://git-scm.com/) and Java JDK >= {{ site.pmd.jdk_version }} are installed.  
+1. Ensure that [Git](https://git-scm.com/) and Java JDK >= {{ site.pmd.java_build_version }} are installed.  
    You can get a OpenJDK distribution from e.g. [Adoptium](https://adoptium.net/).  
-   **Note:**  While Java {{ site.pmd.jdk_version }} is required for building, running PMD only requires Java {{ site.pmd.jre_version }}.
+   **Note:**  While Java {{ site.pmd.java_build_version }} is required for building, running PMD only requires Java {{ site.pmd.java_run_version }}.
 2. Fork the [PMD repository](https://github.com/pmd/pmd) on GitHub as explained in [Fork a repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo).
 3. Clone your forked repository to your computer:
    ```shell

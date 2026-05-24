@@ -20,10 +20,10 @@ last_updated: January 2025 (7.10.0)
 Now all PMD projects are imported. This might take a while. All the projects will appear on the left inside
 the `Project Explorer`.
 
-While PMD still runs with Java {{ site.pmd.jre_version }}, we need at least Java {{ site.pmd.jdk_version }} for building and running unit tests.
-To make sure, Eclipse uses Java {{ site.pmd.jdk_version }} instead of Java {{ site.pmd.jre_version }}, go to Window > Preferences and select
-Java > Installed JREs. Make sure, you have a Java {{ site.pmd.jdk_version }} or newer available. Then go to "Execution Environments",
-choose "JavaSE-1.8" and check your Java {{ site.pmd.jdk_version }} installation on the right.
+While PMD still runs with Java {{ site.pmd.java_run_version }}, we need at least Java {{ site.pmd.java_build_version }} for building and running unit tests.
+To make sure, Eclipse uses Java {{ site.pmd.java_build_version }} instead of Java {{ site.pmd.java_run_version }}, go to Window > Preferences and select
+Java > Installed JREs. Make sure, you have a Java {{ site.pmd.java_build_version }} or newer available. Then go to "Execution Environments",
+choose "JavaSE-1.8" and check your Java {{ site.pmd.java_build_version }} installation on the right.
 
 ## Running unit tests
 

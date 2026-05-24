@@ -170,7 +170,7 @@ selecting the "Ask for Directory" checkbox.
 
 **Assumptions**
 
-*   The Java Development Kit, version {{ site.pmd.jre_version }} or higher, is properly installed
+*   The Java Development Kit, version {{ site.pmd.java_run_version }} or higher, is properly installed
     into your machine, and exists in `D:\java\jdk-VERSION\`. This means that `D:\java\jdk-VERSION\bin\java.exe` exists.
 *   PMD version 5.0 exists in `D:\java\pmd-bin-{{ site.pmd.version }}\`.
     This means that `D:\java\pmd-bin-{{ site.pmd.version }}\lib\pmd-{{ site.pmd.version }}.jar` (among other jar files
