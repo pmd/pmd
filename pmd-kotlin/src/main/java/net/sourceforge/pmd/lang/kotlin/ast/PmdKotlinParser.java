@@ -45,8 +45,8 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  * PMD parses files in parallel, which would otherwise cause severe performance degradation due
  * to the complexity of the Kotlin grammar.
  *
- * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a warning.
- * The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
+ * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a processing
+ * error. The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
  *
  * <p>Error handling strategy:
  * <ul>
@@ -134,6 +134,9 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
         }
     }
 
+    // Note: Not using the static KotlinParser._decisionToDFA and KotlinParser._sharedContextCache
+    // as this turned out to introduce thread contention. Needed unshared DFA and contextCache per
+    // file/simulator to prevent this.
     private static InterruptibleParserATNSimulator freshSimulator(KotlinParser parser) {
         DFA[] decisionToDfa = new DFA[KotlinParser._ATN.getNumberOfDecisions()];
         for (int i = 0; i < decisionToDfa.length; i++) {
