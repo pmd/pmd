@@ -3,7 +3,7 @@ title: Building PMD with Eclipse
 tags: [devdocs]
 permalink: pmd_devdocs_building_eclipse.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2025 (7.10.0)
+last_updated: May 2026 (7.25.0)
 ---
 
 ## Import PMD Project
@@ -20,10 +20,10 @@ last_updated: January 2025 (7.10.0)
 Now all PMD projects are imported. This might take a while. All the projects will appear on the left inside
 the `Project Explorer`.
 
-While PMD still runs with Java 8, we need at least Java 11 for building and running unit tests.
-To make sure, Eclipse uses Java 11 instead of Java 8, go to Window > Preferences and select
-Java > Installed JREs. Make sure, you have a Java 11 or newer available. Then go to "Execution Environments",
-choose "JavaSE-1.8" and check your Java 11 installation on the right.
+While PMD still runs with Java {{ site.pmd.java_run_version }}, we need at least Java {{ site.pmd.java_build_version }} for building and running unit tests.
+To make sure, Eclipse uses Java {{ site.pmd.java_build_version }} instead of Java {{ site.pmd.java_run_version }}, go to Window > Preferences and select
+Java > Installed JREs. Make sure, you have a Java {{ site.pmd.java_build_version }} or newer available. Then go to "Execution Environments",
+choose "JavaSE-{{ site.java_build_version }}" and check your Java {{ site.pmd.java_build_version }} installation on the right.
 
 ## Running unit tests
 

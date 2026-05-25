@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
       - name: Spell Check Repo
-        uses: crate-ci/typos@bbaefadf97b0ec5fdc942684b647f1a6ab250274 #v1.46.0
+        uses: crate-ci/typos@aca895bf05aec0cb7dffa6f94495e923224d9f17 #v1.46.2
         # note: don't fail the build on typos, just annotate them
         # so that publish-pull-requests job still runs.
         continue-on-error: true
@@ -302,7 +302,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f #v1.306.0
+        uses: ruby/setup-ruby@97ecb7b512899eb71ab1bf2310a624c6f1589ac6 #v1.308.0
         with:
           ruby-version: 4
       - name: Setup bundler
@@ -343,7 +343,7 @@ jobs:
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@c4e5b1316158f92e3d49443a9d58b31d25ac0f8f #v1.306.0
+        uses: ruby/setup-ruby@97ecb7b512899eb71ab1bf2310a624c6f1589ac6 #v1.308.0
         with:
           ruby-version: 4
       - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5

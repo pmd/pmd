@@ -86,7 +86,7 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit.version>6.0.3</junit.version>
+        <junit.version>6.1.0</junit.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
@@ -536,7 +536,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.6.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -579,7 +579,9 @@
                             <configuration>
                                 <skip>${pmd.skip}</skip>
                                 <targetDirectory>${project.build.directory}/pmdTest/</targetDirectory>
-                                <includeTests>true</includeTests>
+                                <!-- includeTests is false. We configure compileSourceRoots and
+                                     do not use testSourceRoots... -->
+                                <includeTests>false</includeTests>
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
                                 </rulesets>
@@ -699,7 +701,7 @@
                 <plugin>
                     <groupId>com.github.siom79.japicmp</groupId>
                     <artifactId>japicmp-maven-plugin</artifactId>
-                    <version>0.25.6</version>
+                    <version>0.25.7</version>
                     <configuration>
                         <parameter>
                             <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
@@ -887,7 +889,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.9.1</version>
+                <version>9.10</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -947,7 +949,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>5.0.5</version>
+                <version>5.0.6</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -1143,7 +1145,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.34.1</version>
+                <version>4.35.0</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit6 needs.

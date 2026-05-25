@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -38,10 +39,13 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
-        boolean usesSoftAssertExtension = usesSoftAssertExtension(method.getEnclosingType());
+        ASTTypeDeclaration enclosingType = method.getEnclosingType();
+        // marks the usage of a SoftAssertionExtension (JUnit 5+) or SoftAssertionRule (JUnit 4)
+        // effects are the same -> no explicit call to .assertAll() necessary
+        boolean usesSoftAssertionEnvironment = usesSoftAssertExtension(enclosingType) || usesSoftAssertRule(enclosingType);
         Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
         Predicate<ASTMethodCall> isAssertCall = TestFrameworksUtil::isProbableAssertCall;
-        if (usesSoftAssertExtension) {
+        if (usesSoftAssertionEnvironment) {
             isAssertCall = isAssertCall.or(TestFrameworksUtil::isSoftAssert);
         }
 
@@ -73,5 +77,12 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
                 .filterIs(ASTClassLiteral.class)
                 .map(ASTClassLiteral::getTypeNode)
                 .any(c -> TypeTestUtil.isA("org.assertj.core.api.junit.jupiter.SoftAssertionsExtension", c));
+    }
+
+    private boolean usesSoftAssertRule(ASTTypeDeclaration typeDeclaration) {
+        return typeDeclaration.getDeclarations(ASTFieldDeclaration.class)
+                .filter(x -> x.isAnnotationPresent("org.junit.Rule"))
+                .map(ASTFieldDeclaration::getTypeNode)
+                .any(type -> TypeTestUtil.isA("org.assertj.core.api.JUnitSoftAssertions", type));
     }
 }

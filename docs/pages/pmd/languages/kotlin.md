@@ -1,7 +1,7 @@
 ---
 title: Kotlin Support
 permalink: pmd_languages_kotlin.html
-last_updated: March 2024 (7.0.0)
+last_updated: May 2026 (7.25.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Kotlin-specific features and guidance"
 ---
@@ -26,3 +26,6 @@ Selecting a different Kotlin language version does not currently change the pars
 Other Kotlin 2.0.0 / 2.1.0 / 2.2.0 / 2.3.0 language features are not supported at this time.
 PRs to improve Kotlin parser coverage are welcome.
 
+## Language Properties
+
+See [Kotlin language properties](pmd_languages_configuration.html#kotlin-language-properties)

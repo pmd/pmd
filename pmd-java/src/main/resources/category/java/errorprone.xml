@@ -554,7 +554,7 @@ Each caught exception type should be handled in its own catch clause.
 //CatchParameter
     /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
         /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
-            /following-sibling::TypeExpression/*
+            /following-sibling::*[self::TypeExpression or self::PatternExpression]//ClassType[1]
 ]]>
                 </value>
             </property>
@@ -2063,6 +2063,43 @@ public class JumbledIncrementerRule1 {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitJupiterTestNoPrivateModifier"
+          language="java"
+          since="7.25.0"
+          message="JUnit tests cannot be private"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitJupiterTestNoPrivateModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier">
+        <description><![CDATA[
+JUnit Jupiter tests cannot be private. Otherwise, they won't be found by the framework:
+
+> Test classes, test methods, and lifecycle methods are not required to be `public`, but they must not be `private`.
+
+— [JUnit Documentation](https://docs.junit.org/6.0.3/writing-tests/test-classes-and-methods.html)
+        ]]></description>
+        <priority>3</priority>
+        <example>
+import org.junit.jupiter.api.Test;
+
+//bad
+class MyTests {
+    @Test
+    private void testFoo() { }
+}
+
+//bad
+private class MyTests {
+    @Test
+    void testFoo() { }
+}
+
+//good
+class MyTests {
+    @Test
+    void testFoo() { }
+}
         </example>
     </rule>
 
