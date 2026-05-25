@@ -1505,7 +1505,7 @@ A class is a utility class, if and only if it fulfills ALL the following criteri
 Utility classes should not be instantiable. Make sure that the only constructor is a
 private no-args constructor to enforce this.
 
-(Note, that this use was known before PMD 5.1.0 as UseSingleton).
+(Note, that this rule was known before PMD 5.1.0 as UseSingleton).
         </description>
         <priority>3</priority>
         <example>
