@@ -17,6 +17,8 @@ This is a minor release.
     * [Renamed rules and properties](#renamed-rules-and-properties)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
+    * [Deprecations](#deprecations)
+    * [Experimental API](#experimental-api)
 * [✨️ Merged pull requests](#merged-pull-requests)
 * [📦️ Dependency updates](#dependency-updates)
 * [📈️ Stats](#stats)
@@ -140,8 +142,26 @@ The old names still work but are deprecated.
 * kotlin
   * [#6608](https://github.com/pmd/pmd/issues/6608): \[kotlin] Lexer or parse errors are reported to stderr only without file context
   * [#6648](https://github.com/pmd/pmd/issues/6648): \[kotlin] Multi-dollar interpolation parse error in annotations
+  * [#6659](https://github.com/pmd/pmd/issues/6659): \[kotlin] Parser hangs on complex files due to unbounded ATN prediction loop
 
 ### 🚨️ API Changes
+#### Deprecations
+* kotlin
+  * The constructor <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.html#PmdKotlinParser()"><code>PmdKotlinParser#PmdKotlinParser</code></a> has been deprecated.
+    Use <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#getInstance()"><code>KotlinLanguageModule#getInstance</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#createProcessor(net.sourceforge.pmd.lang.LanguagePropertyBundle)"><code>createProcessor</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProcessor.html#services()"><code>services</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinHandler.html#getParser()"><code>getParser</code></a> instead
+    to retrieve a correctly configured parser instance.
+  * The constructor <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinHandler.html#KotlinHandler()"><code>KotlinHandler#KotlinHandler</code></a> has been deprecated.
+    Use <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#getInstance()"><code>getInstance</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#createProcessor(net.sourceforge.pmd.lang.LanguagePropertyBundle)"><code>createProcessor</code></a> and
+    <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProcessor.html#services()"><code>services</code></a> instead to access the LanguageVersionHandler
+    for Kotlin.
+
+#### Experimental API
+* kotlin
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProperties.html#PARSE_TIMEOUT_SECONDS"><code>KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProperties.html#getParseTimeoutSeconds()"><code>KotlinLanguageProperties#getParseTimeoutSeconds</code></a>
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -170,6 +190,7 @@ The old names still work but are deprecated.
 * [#6653](https://github.com/pmd/pmd/pull/6653): \[kotlin] Fix #6648: Multi-dollar interpolation for regular strings - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6654](https://github.com/pmd/pmd/pull/6654): \[swift] Fix invalid swift token OSXApplicationExtension - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6658](https://github.com/pmd/pmd/pull/6658): \[doc] Fix capitalization of ANTLR in release notes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6660](https://github.com/pmd/pmd/pull/6660): \[kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
