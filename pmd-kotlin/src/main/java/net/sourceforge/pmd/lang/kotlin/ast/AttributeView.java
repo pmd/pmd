@@ -48,7 +48,7 @@ public abstract class AttributeView<T extends KotlinNode> implements Node {
     }
 
     @Experimental
-    public static AttributeView<?> create(KotlinNode kotlinNode) {
+    public static @Nullable AttributeView<?> create(KotlinNode kotlinNode) {
         final AttributeView<?> result;
         if (kotlinNode instanceof KotlinParser.KtImportHeader) {
             result = new KtImportHeaderAttributes((KotlinParser.KtImportHeader) kotlinNode);

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
@@ -69,7 +70,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
      * @experimental See {@link AttributeView}.
      */
     @Experimental
-    public <A extends AttributeView<?>> A attributes(Class<A> type) {
+    public <A extends AttributeView<?>> @Nullable A attributes(Class<A> type) {
         AttributeView<?> view = AttributeView.create(this);
         if (view == null) {
             return null;
