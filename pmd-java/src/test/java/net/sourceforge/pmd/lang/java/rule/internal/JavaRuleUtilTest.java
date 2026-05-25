@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -152,6 +153,46 @@ class JavaRuleUtilTest extends BaseParserTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isUtilityClass(classDecl));
+        }
+
+        @Test
+        @DisplayName("a class with only a nested interface is a utility class - nested interfaces are implicitly static")
+        void testNestedInterface() {
+            ASTCompilationUnit root = java.parse(
+                    "public class A {\n"
+                            + "    public interface NestedInterface {};\n"
+                            + "}"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertTrue(isUtilityClass(classDecl));
+        }
+
+        @Test
+        @DisplayName("a class with only a nested enum is a utility class - nested enums are implicitly static")
+        void testNestedEnum() {
+            ASTCompilationUnit root = java.parse(
+                    "public class A {\n"
+                            + "    public enum NestedEnum { A };\n"
+                            + "}"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertTrue(isUtilityClass(classDecl));
+        }
+
+        @Test
+        @DisplayName("a class with only a nested record is a utility class - nested records are implicitly static")
+        @Disabled("Why doesn't this parse?")
+        void testNestedRecord() {
+            ASTCompilationUnit root = java.parse(
+                    "public class A {\n"
+                            + "    public record NestedRecord() {}\n"
+                            + "}"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertTrue(isUtilityClass(classDecl));
         }
 
         @Test

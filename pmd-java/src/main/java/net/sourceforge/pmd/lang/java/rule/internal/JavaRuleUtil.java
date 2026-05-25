@@ -231,7 +231,7 @@ public final class JavaRuleUtil {
 
             if (declNode instanceof ASTFieldDeclaration
                     || declNode instanceof ASTMethodDeclaration
-                    || declNode instanceof ASTClassDeclaration
+                    || declNode instanceof ASTTypeDeclaration
             ) {
                 ModifierOwner modifierOwner = (ModifierOwner) declNode;
 
