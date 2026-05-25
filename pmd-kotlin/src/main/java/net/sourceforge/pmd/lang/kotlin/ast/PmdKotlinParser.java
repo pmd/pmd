@@ -24,6 +24,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -75,6 +76,11 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
         this(KotlinLanguageProperties.PARSE_TIMEOUT_SECONDS.defaultValue());
     }
 
+    /**
+     * @since 7.25.0
+     * @experimental See {@link KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}
+     */
+    @Experimental
     public PmdKotlinParser(int timeoutSeconds) {
         this.timeoutSeconds = timeoutSeconds;
     }
