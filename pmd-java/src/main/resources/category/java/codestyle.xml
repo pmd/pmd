@@ -268,7 +268,7 @@ public class Foo extends Bar{
 
             This rule detects test classes using the following convention: Test classes are top-level classes, that
             either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
-            JUnit4/5 or TestNG.
+            JUnit4/Jupiter or TestNG.
         </description>
         <priority>1</priority>
         <example>
@@ -300,7 +300,7 @@ To avoid mistakes if we want that an Annotation, Class, Enum, Method, Constructo
 we must add a comment at the beginning of its declaration.
 By default, the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
 
-This rule ignores by default all cases that have a `@VisibleForTesting` annotation or any JUnit5/TestNG annotation. Use the
+This rule ignores by default all cases that have a `@VisibleForTesting` annotation or any JUnit Jupiter/TestNG annotation. Use the
 property "ignoredAnnotations" to customize the recognized annotations.
         </description>
         <priority>3</priority>
@@ -1623,6 +1623,60 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryBlock"
+          language="java"
+          since="7.25.0"
+          message="This block isn''t necessary."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryBlockRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryblock">
+        <description>
+Reports blocks that are unnecessary as they don't introduce a new scope.
+
+Unnecessary blocks can make code harder to read and may be misleading. They are often used
+to introduce a new variable scope, but if no variables or classes are declared within the
+block, it serves no purpose. Similarly, a block that is the only statement within another
+block is redundant. Removing them simplifies the code structure.
+
+* A block is considered unnecessary if:
+    * It is nested within another block and does not contain any local variable or local
+      class declarations.
+    * It is the only child of another block.
+* Blocks that are required by the language syntax (e.g., as the body of an `if`, `for`,
+  `while` statement, or a method body) are not reported.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+public class Foo {
+    public void bar() {
+        { // Violation: This block is unnecessary as it doesn't introduce a new scope
+            System.out.println("Hello");
+        }
+
+        { // No violation: This block is necessary to scope the variable "x"
+            int x = 1;
+            System.out.println(x);
+        }
+
+        // "x" can be redefined here because the previous "x" was scoped to the block above
+        int x = 2;
+    }
+
+    public void baz() {
+        if (foo) {{ // Violation: Why the second block?
+            int i = 1;
+            System.out.println(i);
+        }}
+
+        if (foo) { // No violation: This is what the above should look like
+            int i = 1;
+            System.out.println(i);
+        }
+    }
+}
+        ]]>
+        </example>
+    </rule>
+
     <rule name="UnnecessaryBoxing"
           language="java"
           since="7.0.0"
@@ -2163,7 +2217,7 @@ public class Foo {
         <description>
 <![CDATA[
 When declaring and initializing array fields or variables, it is not necessary to explicitly create a new array
-using `new`. Instead one can simply define the initial content of the array as a expression in curly braces.
+using `new`. Instead, one can simply define the initial content of the array as an expression in curly braces.
 
 E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 };`.
 ]]>
@@ -2281,6 +2335,51 @@ public class Foo {
                     }
                 }
             ]]>
+        </example>
+    </rule>
+    <rule name="VariableDeclarationUsageDistance"
+          language="java"
+          since="7.25.0"
+          message="Distance between declaration of ''{0}'' and its first usage is {1}, current threshold is {2}"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableDeclarationUsageDistanceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variabledeclarationusagedistance">
+        <description>
+            Checks for variables that are defined long before they are used.
+
+            Keeping variable declaration closer to its usage makes the code more readable.
+
+            Final variables are exempt from the rule to allow snapshot comparison,
+            the same applies to variables defined using time measurement methods.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="maxDistance" type="Integer" value="7" description="Maximum distance between declaration and usage" />
+        </properties>
+        <example>
+            <![CDATA[
+public void lengthSum(String[] strings) {
+
+    int length = 0; // violation: could be moved closer to the loop
+
+    // ... many unrelated statements
+
+    for (String str : strings) {
+        length += str.length();
+    }
+
+    System.out.println("Total length " + length);
+}
+
+public void measure() {
+    long start = System.currentTimeMillis(); // OK, time measurement cannot be moved
+    final State state = getState(); // OK, final variables are exempt from the rule to allow snapshot comparison
+    // ... many unrelated statements
+
+    long duration = System.currentTimeMillis() - start;
+    System.out.println("Duration: " + duration);
+    System.out.println("State changed: " + !state.equals(getState()));
+}
+]]>
         </example>
     </rule>
 </ruleset>

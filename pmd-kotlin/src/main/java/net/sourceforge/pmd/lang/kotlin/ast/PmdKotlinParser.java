@@ -12,16 +12,23 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
@@ -35,6 +42,18 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  *
  * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a warning.
  * The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
+ *
+ * <p>Error handling strategy:
+ * <ul>
+ *   <li><b>Lexer errors</b> (e.g. unrecognized tokens) and <b>Parser errors</b> (e.g. unexpected token structure)
+ *       are collected and lexing/parsing continues.</li>
+ *   <li>Further lexer/parser errors are collected as suppressed exceptions.</li>
+ *   <li>The first occurred lexer/parser exception is thrown at the end and no rules are executed.</li>
+ * </ul>
+ *
+ * <p>PMD reports the file as a {@code ProcessingError} and skips rule analysis for it.
+ * All other files continue to be processed. Exit code 5 is returned by the CLI if
+ * any processing errors occurred (suppressible with {@code --no-fail-on-error}).
  */
 public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinFile> {
 
@@ -62,16 +81,27 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
 
     @Override
     protected KtKotlinFile parse(final Lexer lexer, ParserTask task) {
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        KotlinParser parser = new KotlinParser(tokens);
+        AntlrErrorListener errorListener = new AntlrErrorListener(task);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener.lexerErrorListener());
+
+        KotlinParser parser = new KotlinParser(new CommonTokenStream(lexer));
         parser.setInterpreter(freshSimulator(parser));
+        parser.removeErrorListeners();
+        parser.addErrorListener(errorListener.parserErrorListener());
 
         String fileName = task.getFileId().getFileName();
+        LOG.debug("Parsing Kotlin file {}", fileName);
+
         Future<KtKotlinFile> future = PARSE_EXECUTOR.submit(
                 () -> parser.kotlinFile().makeAstInfo(task));
 
         try {
-            return future.get(timeoutSeconds, TimeUnit.SECONDS);
+            KtKotlinFile ktKotlinFile = future.get(timeoutSeconds, TimeUnit.SECONDS);
+            if (errorListener.hasErrors()) {
+                throw errorListener.getException();
+            }
+            return ktKotlinFile;
         } catch (TimeoutException e) {
             future.cancel(true);
             LOG.warn("Kotlin parse timeout ({}s) exceeded for file: {}. Skipping.", timeoutSeconds, fileName);
@@ -102,6 +132,54 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
             throw new ParseException("Parse cancelled (interrupted) for " + fileName);
         }
         throw new ParseException(cause);
+    }
+
+    private static final class AntlrErrorListener {
+        private final ParserTask task;
+        private FileAnalysisException exception;
+
+        private AntlrErrorListener(ParserTask task) {
+            this.task = task;
+        }
+
+        private void addException(FileAnalysisException exception) {
+            if (this.exception == null) {
+                this.exception = exception;
+            } else {
+                this.exception.addSuppressed(exception);
+            }
+        }
+
+        boolean hasErrors() {
+            return exception != null;
+        }
+
+        FileAnalysisException getException() {
+            return exception;
+        }
+
+        ANTLRErrorListener lexerErrorListener() {
+            return new BaseErrorListener() {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+                                        int line, int charPositionInLine,
+                                        String msg, RecognitionException e) {
+                    addException(new LexException(line, charPositionInLine, task.getFileId(), msg, null));
+                }
+            };
+        }
+
+        ANTLRErrorListener parserErrorListener() {
+            return new BaseErrorListener() {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+                                        int line, int charPositionInLine,
+                                        String msg, RecognitionException e) {
+                    addException(new ParseException(msg)
+                            .withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine)));
+                }
+            };
+        }
     }
 
     @Override

@@ -312,6 +312,7 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#1619 FP with loop variable</description>
         <expected-problems>0</expected-problems>
@@ -323,6 +324,7 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#3122 should consider blank variables</description>
         <expected-problems>2</expected-problems>
@@ -362,6 +364,7 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#3122 should consider blank variables</description>
         <expected-problems>1</expected-problems>
@@ -390,6 +393,7 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description> [java] LocalVariableCouldBeFinal false positive with try/catch #5046 </description>
         <expected-problems>0</expected-problems>
@@ -410,6 +414,7 @@ public class ClassWithLambda {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>[java] LocalVariableCouldBeFinal false-positive with lombok.val #5079</description>
         <expected-problems>0</expected-problems>
@@ -439,5 +444,30 @@ public class Test {
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] false negative in LocalVariableCouldBeFinal when multiple variables are declared in the same line #6602, verify message location</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-4</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable 'j' could be declared final</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void foo(boolean cond1) {
+        int i=0,
+            j
+            =
+            1
+            ;
+
+        if (cond1) {
+            i = 3;
+        }
+
+        System.out.println(i + " " + j);
+    }
+}            ]]></code>
     </test-code>
 </test-data>
