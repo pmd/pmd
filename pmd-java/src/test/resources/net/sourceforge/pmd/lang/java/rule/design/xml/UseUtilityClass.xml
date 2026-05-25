@@ -14,9 +14,7 @@
 public class Foo {
     public Foo() { }
     public static void doSomething() {}
-    public static void main(String args[]) {
-        doSomething();
-    }
+    public static void doSomethingElse(String args[]) {}
 }
         ]]></code>
     </test-code>
@@ -426,9 +424,7 @@ Foo // <--violation: line 2
 {
     public Foo() { }
     public static void doSomething() {}
-    public static void main(String args[]) {
-        doSomething();
-    }
+    public static void doSomethingElse(String args[]) {}
 }
         ]]></code>
     </test-code>
@@ -523,6 +519,46 @@ public class Foo {
     public static void foo() {};
 
     public static class Bar {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-static initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static void privateStaticMemberFunction() {};
+    {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of a static field, a static member function, a static nested class, and a static initializer</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+
+    public static class Bar {};
+
+    static {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>with a main method, this isn't a utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String... args) {};
+
+    public static void staticMemberFunction() {};
 }
         ]]></code>
     </test-code>
