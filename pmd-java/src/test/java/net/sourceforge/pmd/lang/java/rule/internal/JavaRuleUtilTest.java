@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -183,7 +182,6 @@ class JavaRuleUtilTest extends BaseParserTest {
 
         @Test
         @DisplayName("a class with only a nested record is a utility class - nested records are implicitly static")
-        @Disabled("Why doesn't this parse?")
         void testNestedRecord() {
             ASTCompilationUnit root = java.parse(
                     "public class A {\n"
