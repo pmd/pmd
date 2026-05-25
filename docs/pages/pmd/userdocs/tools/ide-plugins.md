@@ -172,7 +172,7 @@ selecting the "Ask for Directory" checkbox.
 
 *   The Java Development Kit, version {{ site.pmd.java_run_version }} or higher, is properly installed
     into your machine, and exists in `D:\java\jdk-VERSION\`. This means that `D:\java\jdk-VERSION\bin\java.exe` exists.
-*   PMD version 5.0 exists in `D:\java\pmd-bin-{{ site.pmd.version }}\`.
+*   PMD version {{ site.pmd.version }} exists in `D:\java\pmd-bin-{{ site.pmd.version }}\`.
     This means that `D:\java\pmd-bin-{{ site.pmd.version }}\lib\pmd-{{ site.pmd.version }}.jar` (among other jar files
     in the same directory) exist.
 
@@ -190,7 +190,7 @@ selecting the "Ask for Directory" checkbox.
 8.  Expand the **Tools** branch (if not already) by clicking on the '`+`' directly to its left.
 9.  In the expanded list, select **PMD directory**. This changes the right side of this dialog to the "tool" form.
 10. In the "tool" form, enter these parameters:
-    *   **Parameters:**  `-classpath D:\java\pmd-bin-{{ site.pmd.version }}\lib\pmd-{{ site.pmd.version }}.jar;D:\java\pmd-bin-{{ site.pmd.version }}\lib\asm-3.2.jar;D:\java\pmd-bin-{{ site.pmd.version }}\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d <i><b>$FileDir</b></i> -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug`
+    *   **Parameters:**  `-classpath D:\java\pmd-bin-{{ site.pmd.version }}\lib\* net.sourceforge.pmd.cli.PmdCli check -d $FileDir -f textpad -R E:\directory\my_pmd_ruleset.xml -debug`
     *   **Initial Folder:**  `$FileDir`
     *   **Save all documents first:**  `Checked`
     *   **Capture output:**  `Checked`
