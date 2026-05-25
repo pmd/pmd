@@ -2896,7 +2896,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Use Utility Class",
   "url": "pmd_rules_java_design.html#useutilityclass",
-  "summary": "For classes that only have static members, consider making them utility classes. Note that this..."
+  "summary": "A class is a utility class, if and only if it fulfills ALL the following..."
 },{
   "type": "ruledoc ruleset",
   "source": "pages/pmd/rules/java/documentation.md",

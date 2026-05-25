@@ -2310,9 +2310,14 @@ on those. E.g. setting the property <code class="language-plaintext highlighter-
 <code class="language-plaintext highlighter-rouge">[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)</code> reports any utility class, whose name
 does not end in "Util(s)", "Helper" or "Constants".</p>
 
-<p>For this rule, a utility class is defined as: a concrete class that does not
-inherit from a super class or implement any interface and only has static fields
-or methods.</p>
+<p>A class is a utility class, if and only if it fulfills ALL the following criteria:</p>
+<ul>
+  <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
+  <li>The class has at least one member function, member variable, or nested class that is not private.</li>
+  <li>The class is a concrete class (neither abstract nor an interface).</li>
+  <li>The class has no superclasses and implements no interfaces.</li>
+  <li>The class has no main method.</li>
+</ul>
 
 <p>This rule detects test classes using the following convention: Test classes are top-level classes, that
 either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from

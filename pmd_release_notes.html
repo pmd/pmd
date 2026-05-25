@@ -2068,6 +2068,9 @@ Such methods provide better error messages and make test behave correctly when r
 <ul>
   <li>The rule <a href="pmd_rules_java_codestyle.html#onlyonereturn"><code class="language-plaintext highlighter-rouge">OnlyOneReturn</code></a> has a new property <code class="language-plaintext highlighter-rouge">allowGuardIfs</code>. When this property is
 true, then guard ifs at the beginning of a method are allowed their return statements don’t count.</li>
+  <li>The rules <a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a> and <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a> now use the
+same definition of what a utility class is. The most significant change is, that classes with <code class="language-plaintext highlighter-rouge">main()</code> methods are
+no longer considered utility classes by <code class="language-plaintext highlighter-rouge">UseUtilityClass</code>.</li>
   <li>We are continuously working to improve the precision of violation reporting for various rules.
 The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
 For example, instead of flagging an entire class declaration (including its body), we now generally report only
@@ -2145,6 +2148,7 @@ is still ongoing, the following Java rules have been updated in this release:
   </li>
   <li>java
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1102">#1102</a>: [java] Improve consistency of utility class detection across rules</li>
       <li><a href="https://github.com/pmd/pmd/issues/5721">#5721</a>: [java] StackOverflowError in 7.17.0 with nested wildcard generics</li>
       <li><a href="https://github.com/pmd/pmd/issues/5746">#5746</a>: [java] Separate test sources and resources</li>
       <li><a href="https://github.com/pmd/pmd/issues/6688">#6688</a>: [java] LocalVariableCouldBeFinalRule API changed</li>

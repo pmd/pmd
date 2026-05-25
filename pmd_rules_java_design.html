@@ -4135,11 +4135,19 @@ your API.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>For classes that only have static members, consider making them utility classes.
-Note that this doesn’t apply to abstract classes, since their subclasses may
-well include non-static methods.  Also, if you want this class to be a utility class,
-remember to add a private constructor to prevent instantiation.
-(Note, that this use was known before PMD 5.1.0 as UseSingleton).</p>
+<p>A class is a utility class, if and only if it fulfills ALL the following criteria:</p>
+<ul>
+  <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
+  <li>The class has at least one member function, member variable, or nested class that is not private.</li>
+  <li>The class is a concrete class (neither abstract nor an interface).</li>
+  <li>The class has no superclasses and implements no interfaces.</li>
+  <li>The class has no main method.</li>
+</ul>
+
+<p>Utility classes should not be instantiable. Make sure that the only constructor is a
+private no-args constructor to enforce this.</p>
+
+<p>(Note, that this rule was known before PMD 5.1.0 as UseSingleton).</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseUtilityClassRule.java">net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule</a></p>
 

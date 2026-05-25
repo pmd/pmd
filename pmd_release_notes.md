@@ -52,6 +52,9 @@ this is already done.
 #### Changed Rules
 * The rule [`OnlyOneReturn`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#onlyonereturn) has a new property `allowGuardIfs`. When this property is
   true, then guard ifs at the beginning of a method are allowed their return statements don't count.
+* The rules [`UseUtilityClass`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_design.html#useutilityclass) and [`ClassNamingConventions`](https://docs.pmd-code.org/pmd-doc-7.25.0-SNAPSHOT/pmd_rules_java_codestyle.html#classnamingconventions) now use the
+  same definition of what a utility class is. The most significant change is, that classes with `main()` methods are
+  no longer considered utility classes by `UseUtilityClass`.
 * We are continuously working to improve the precision of violation reporting for various rules.
   The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
   For example, instead of flagging an entire class declaration (including its body), we now generally report only
@@ -112,6 +115,7 @@ The old names still work but are deprecated.
 * doc
   * [#6708](https://github.com/pmd/pmd/issues/6708): \[doc] Update minimal Java version for building PMD in documentation
 * java
+  * [#1102](https://github.com/pmd/pmd/issues/1102): \[java] Improve consistency of utility class detection across rules
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
   * [#6688](https://github.com/pmd/pmd/issues/6688): \[java] LocalVariableCouldBeFinalRule API changed
