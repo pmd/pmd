@@ -193,12 +193,12 @@ public final class JavaRuleUtil {
 
     /**
      * Returns true if the node is a utility class, according to this custom definition. <br />
-     * A class is a utility class, if and only if it fulfills ALL of the following criteria:
+     * A class is a utility class, if and only if it fulfills ALL the following criteria:
      * <ul>
      *     <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
      *     <li>The class has at least one member function, member variable, or nested class that is not private.</li>
      *     <li>The class is a concrete class (neither abstract nor an interface).</li>
-     *     <li>The class has no superclasses and implements no interfaces. (This might change in the future.)</li>
+     *     <li>The class has no superclasses and implements no interfaces.</li>
      *     <li>The class has no main method.</li>
      * </ul>
      */

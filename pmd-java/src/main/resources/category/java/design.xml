@@ -1495,10 +1495,16 @@ public class MyClass {
           class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#useutilityclass">
         <description>
-For classes that only have static members, consider making them utility classes.
-Note that this doesn't apply to abstract classes, since their subclasses may
-well include non-static methods.  Also, if you want this class to be a utility class,
-remember to add a private constructor to prevent instantiation.
+A class is a utility class, if and only if it fulfills ALL the following criteria:
+* ALL member functions, member variables, nested classes, and initializers are static.
+* The class has at least one member function, member variable, or nested class that is not private.
+* The class is a concrete class (neither abstract nor an interface).
+* The class has no superclasses and implements no interfaces.
+* The class has no main method.
+
+Utility classes should not be instantiable. Make sure that the only constructor is a
+private no-args constructor to enforce this.
+
 (Note, that this use was known before PMD 5.1.0 as UseSingleton).
         </description>
         <priority>3</priority>
