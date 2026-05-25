@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
+import java.util.concurrent.ExecutorService;
+
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.kotlin.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.kotlin.ast.PmdKotlinParser;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
@@ -14,14 +18,20 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
 
     private static final XPathHandler XPATH_HANDLER = XPathHandler.noFunctionDefinitions();
 
-    private final int parseTimeoutSeconds;
+    private PmdKotlinParser parser;
 
+    /**
+     * @deprecated Since 7.25.0. Don't create this class directly, use {@link KotlinLanguageModule#getInstance()},
+     *             {@link KotlinLanguageModule#createProcessor(LanguagePropertyBundle)},
+     *             {@link KotlinLanguageProcessor#services()} instead.
+     */
+    @Deprecated
     public KotlinHandler() {
-        this.parseTimeoutSeconds = KotlinLanguageProperties.PARSE_TIMEOUT_SECONDS.defaultValue();
+        // default constructor - needed for backwards compatibility
     }
 
-    KotlinHandler(KotlinLanguageProperties properties) {
-        this.parseTimeoutSeconds = properties.getParseTimeoutSeconds();
+    KotlinHandler(ExecutorService timeoutExecutor) {
+        this.parser = InternalApiBridge.newPmdKotlinParser(timeoutExecutor);
     }
 
     @Override
@@ -31,6 +41,6 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public Parser getParser() {
-        return new PmdKotlinParser(parseTimeoutSeconds);
+        return parser;
     }
 }
