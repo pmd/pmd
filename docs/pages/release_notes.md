@@ -141,8 +141,26 @@ The old names still work but are deprecated.
 * kotlin
   * [#6608](https://github.com/pmd/pmd/issues/6608): \[kotlin] Lexer or parse errors are reported to stderr only without file context
   * [#6648](https://github.com/pmd/pmd/issues/6648): \[kotlin] Multi-dollar interpolation parse error in annotations
+  * [#6659](https://github.com/pmd/pmd/issues/6659): \[kotlin] Parser hangs on complex files due to unbounded ATN prediction loop
 
 ### 🚨️ API Changes
+#### Deprecations
+* kotlin
+  * The constructor {%jdoc !!kotlin::lang.kotlin.ast.PmdKotlinParser#PmdKotlinParser() %} has been deprecated.
+    Use {%jdoc !!kotlin::lang.kotlin.KotlinLanguageModule#getInstance() %},
+    {%jdoc kotlin::lang.kotlin.KotlinLanguageModule#createProcessor(core::lang.LanguagePropertyBundle) %},
+    {%jdoc kotlin::lang.kotlin.KotlinLanguageProcessor#services() %} and {%jdoc kotlin::lang.kotlin.KotlinHandler#getParser() %} instead
+    to retrieve a correctly configured parser instance.
+  * The constructor {%jdoc !!kotlin::lang.kotlin.KotlinHandler#KotlinHandler() %} has been deprecated.
+    Use {%jdoc kotlin::lang.kotlin.KotlinLanguageModule#getInstance() %},
+    {%jdoc kotlin::lang.kotlin.KotlinLanguageModule#createProcessor(core::lang.LanguagePropertyBundle) %} and
+    {%jdoc kotlin::lang.kotlin.KotlinLanguageProcessor#services() %} instead to access the LanguageVersionHandler
+    for Kotlin.
+
+#### Experimental API
+* kotlin
+  * {%jdoc !!kotlin::lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS %}
+  * {%jdoc !!kotlin::lang.kotlin.KotlinLanguageProperties#getParseTimeoutSeconds() %}
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -171,6 +189,7 @@ The old names still work but are deprecated.
 * [#6653](https://github.com/pmd/pmd/pull/6653): \[kotlin] Fix #6648: Multi-dollar interpolation for regular strings - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6654](https://github.com/pmd/pmd/pull/6654): \[swift] Fix invalid swift token OSXApplicationExtension - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6658](https://github.com/pmd/pmd/pull/6658): \[doc] Fix capitalization of ANTLR in release notes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6660](https://github.com/pmd/pmd/pull/6660): \[kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 

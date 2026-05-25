@@ -2,7 +2,7 @@
 title: Language configuration
 permalink: pmd_languages_configuration.html
 author: Clément Fournier
-last_updated: March 2025 (7.12.0)
+last_updated: May 2026 (7.25.0)
 tags: [languages]
 keywords: [pmd, cpd, options, command, auxclasspath, language, properties]
 summary: "Summary of language configuration options and properties"
@@ -147,3 +147,12 @@ The Java language can be configured with the following properties:
   that is conditionally compiled out. Set this property to empty to disable this.
 
   This property can also be set via the CLI option `--skip-blocks-pattern`.
+
+## Kotlin language properties
+
+- `xParseTimeoutSeconds`: Timeout in seconds after which the parsing of a single Kotlin source file
+  is canceled. This avoids parser hangs for complex files.
+
+  Since: 7.25.0  
+  Environment variable: `PMD_KOTLIN_X_PARSE_TIMEOUT_SECONDS`  
+  Default: "30"
