@@ -124,9 +124,10 @@ public class Foo {
     <test-code>
         <description>JUnit 4 - failure case</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import org.junit.Test;
+import static org.junit.Assert.*;
 public class Foo {
     @Test
     void bar() {
@@ -137,7 +138,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>JUnit 5 - failure case - @Test</description>
+        <description>JUnit Jupiter - failure case - @Test</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -145,6 +146,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Foo {
     @Test
+    void bar() {
+        assertTrue(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure in helper method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import static org.junit.Assert.*;
+public class FooUtil {
+
     void bar() {
         assertTrue(true);
     }
