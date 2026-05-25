@@ -170,7 +170,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     @Test
     void xpathAttributesHaveNoNullValues() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
-                "import com.example.Foo\nfun greet(name: String) {}");
+                "import com.example.Foo\npublic fun greet(name: String) {}");
         KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
         KtImportHeader imp = file.descendants(KtImportHeader.class).first();
         KotlinNode terminal = file.descendants(KotlinNode.class)

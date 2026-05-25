@@ -59,9 +59,14 @@ public abstract class AttributeView<T extends KotlinNode> implements Node {
         return node.hasImageEqualTo(image);
     }
 
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     */
     @Override
+    @NoAttribute
+    @Deprecated
     public String getImage() {
-        return node.getImage();
+        return null;
     }
 
     @Override

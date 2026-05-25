@@ -16,7 +16,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-import net.sourceforge.pmd.util.IteratorUtil;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
 
@@ -42,6 +42,16 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     @Override
     public String getXPathNodeName() {
         return KotlinParser.DICO.getXPathNameOfRule(getRuleIndex());
+    }
+
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     */
+    @Override
+    @NoAttribute
+    @Deprecated
+    public String getImage() {
+        return null;
     }
 
     private AttributeView<?> attributes() {
@@ -103,7 +113,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         Iterator<Attribute> base = super.getXPathAttributesIterator();
         AttributeView<?> attributeView = attributes();
         if (attributeView == null) {
-            return IteratorUtil.filter(base, attr -> attr.getValue() != null);
+            return base;
         }
         // Note: IteratorUtil.concat cannot be used here because it eagerly calls
         // bs.hasNext() at construction time, before base is consumed. The view
@@ -113,15 +123,13 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         Set<String> names = new HashSet<>();
         while (base.hasNext()) {
             Attribute attr = base.next();
-            if (attr.getValue() != null) {
-                result.add(attr);
-                names.add(attr.getName());
-            }
+            result.add(attr);
+            names.add(attr.getName());
         }
         Iterator<Attribute> viewIt = attributeView.getXPathAttributesIterator();
         while (viewIt.hasNext()) {
             Attribute attr = viewIt.next();
-            if (attr.getValue() != null && !names.contains(attr.getName())) {
+            if (!names.contains(attr.getName())) {
                 result.add(attr);
             }
         }
