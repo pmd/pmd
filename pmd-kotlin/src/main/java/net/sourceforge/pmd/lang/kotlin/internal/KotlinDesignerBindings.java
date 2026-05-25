@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.kotlin.internal;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.kotlin.ast.AttributeView;
 import net.sourceforge.pmd.lang.kotlin.ast.HasModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.HasSimpleIdentifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
@@ -32,14 +34,16 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
                 return new Attribute(node, "Text", text);
             }
         }
-        if (node instanceof HasSimpleIdentifier) {
-            String id = ((HasSimpleIdentifier) node).getIdentifier();
+
+        AttributeView<?> attributeView = AttributeView.create((KotlinNode) node);
+        if (attributeView instanceof HasSimpleIdentifier) {
+            String id = ((HasSimpleIdentifier) attributeView).getIdentifier();
             if (id != null) {
                 return new Attribute(node, "Identifier", id);
             }
         }
-        if (node instanceof HasModifiers) {
-            String mods = ((HasModifiers) node).getModifiers();
+        if (attributeView instanceof HasModifiers) {
+            String mods = ((HasModifiers) attributeView).getModifiers();
             if (mods != null) {
                 return new Attribute(node, "Modifiers", mods);
             }

@@ -47,6 +47,29 @@ public abstract class AttributeView<T extends KotlinNode> implements Node {
         return node;
     }
 
+    @Experimental
+    public static AttributeView<?> create(KotlinNode kotlinNode) {
+        final AttributeView<?> result;
+        if (kotlinNode instanceof KotlinParser.KtImportHeader) {
+            result = new KtImportHeaderAttributes((KotlinParser.KtImportHeader) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtImportAlias) {
+            result = new KtImportAliasAttributes((KotlinParser.KtImportAlias) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtClassDeclaration) {
+            result = new KtClassDeclarationAttributes((KotlinParser.KtClassDeclaration) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtClassParameter) {
+            result = new KtClassParameterAttributes((KotlinParser.KtClassParameter) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtFunctionDeclaration) {
+            result = new KtFunctionDeclarationAttributes((KotlinParser.KtFunctionDeclaration) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtVariableDeclaration) {
+            result = new KtVariableDeclarationAttributes((KotlinParser.KtVariableDeclaration) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtCompanionObject) {
+            result = new KtCompanionObjectAttributes((KotlinParser.KtCompanionObject) kotlinNode);
+        } else {
+            result = null;
+        }
+        return result;
+    }
+
     // --- delegations for Node
 
     @Override

@@ -54,27 +54,6 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         return null;
     }
 
-    private AttributeView<?> attributes() {
-        final AttributeView<?> result;
-        if (this instanceof KotlinParser.KtImportHeader) {
-            result = new KtImportHeaderAttributes((KotlinParser.KtImportHeader) this);
-        } else if (this instanceof KotlinParser.KtImportAlias) {
-            result = new KtImportAliasAttributes((KotlinParser.KtImportAlias) this);
-        } else if (this instanceof KotlinParser.KtClassDeclaration) {
-            result = new KtClassDeclarationAttributes((KotlinParser.KtClassDeclaration) this);
-        } else if (this instanceof KotlinParser.KtClassParameter) {
-            result = new KtClassParameterAttributes((KotlinParser.KtClassParameter) this);
-        } else if (this instanceof KotlinParser.KtFunctionDeclaration) {
-            result = new KtFunctionDeclarationAttributes((KotlinParser.KtFunctionDeclaration) this);
-        } else if (this instanceof KotlinParser.KtVariableDeclaration) {
-            result = new KtVariableDeclarationAttributes((KotlinParser.KtVariableDeclaration) this);
-        } else {
-            result = null;
-        }
-        return result;
-    }
-
-
     /**
      * Returns the corresponding attributes class for this node.
      * The returned type is already cast to have the correct type.
@@ -91,7 +70,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
      */
     @Experimental
     public <A extends AttributeView<?>> A attributes(Class<A> type) {
-        AttributeView<?> view = attributes();
+        AttributeView<?> view = AttributeView.create(this);
         if (view == null) {
             return null;
         }
@@ -111,7 +90,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
         Iterator<Attribute> base = super.getXPathAttributesIterator();
-        AttributeView<?> attributeView = attributes();
+        AttributeView<?> attributeView = AttributeView.create(this);
         if (attributeView == null) {
             return base;
         }
