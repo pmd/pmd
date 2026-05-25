@@ -2369,10 +2369,10 @@ selecting the “Ask for Directory” checkbox.</p>
 <p><strong>Assumptions</strong></p>
 
 <ul>
-  <li>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed
-into your machine, and exists in <code class="language-plaintext highlighter-rouge">D:\java\jdk\_142\</code>. This means that <code class="language-plaintext highlighter-rouge">D:\java\jdk\_142\bin\java.exe</code> exists.</li>
-  <li>PMD version 5.0 exists in <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-\</code>.
-This means that <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-\lib\pmd-.jar</code> (among other jar files
+  <li>The Java Development Kit, version 8 or higher, is properly installed
+into your machine, and exists in <code class="language-plaintext highlighter-rouge">D:\java\jdk-VERSION\</code>. This means that <code class="language-plaintext highlighter-rouge">D:\java\jdk-VERSION\bin\java.exe</code> exists.</li>
+  <li>PMD version 7.25.0-SNAPSHOT exists in <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-7.25.0-SNAPSHOT\</code>.
+This means that <code class="language-plaintext highlighter-rouge">D:\java\pmd-bin-7.25.0-SNAPSHOT\lib\pmd-7.25.0-SNAPSHOT.jar</code> (among other jar files
 in the same directory) exist.</li>
 </ul>
 
@@ -2383,7 +2383,7 @@ in the same directory) exist.</li>
   <li>In the left pane of the Preferences dialog, choose the <strong>Tools</strong> branch by clicking on the <em>word</em> “Tools”.</li>
   <li>On the far right of the dialog, click on the <strong>Add</strong> button, and then select <strong>Program…</strong> from the drop-down.
 This opens the standard Windows Open File dialog.</li>
-  <li>Type <code class="language-plaintext highlighter-rouge">D:\java\jdk_142\bin\java.exe</code> and click the <strong>Open</strong> button.  In the center pane of the Preferences dialog,
+  <li>Type <code class="language-plaintext highlighter-rouge">D:\java\jdk-VERSION\bin\java.exe</code> and click the <strong>Open</strong> button.  In the center pane of the Preferences dialog,
 an item “Java” has now been added, and is currently selected.</li>
   <li>Click the word Java, which makes the word editable. Select the entire word, and type “PMD directory”. Press Return.</li>
   <li>Repeat steps three through five, but type “PMD file”, instead of “PMD directory”.</li>
@@ -2392,7 +2392,7 @@ an item “Java” has now been added, and is currently selected.</li>
   <li>In the expanded list, select <strong>PMD directory</strong>. This changes the right side of this dialog to the “tool” form.</li>
   <li>In the “tool” form, enter these parameters:
     <ul>
-      <li><strong>Parameters:</strong>  <code class="language-plaintext highlighter-rouge">-classpath D:\java\pmd-bin-\lib\pmd-.jar;D:\java\pmd-bin-\lib\asm-3.2.jar;D:\java\pmd-bin-\lib\jaxen-1.1.1.jar net.sourceforge.pmd.PMD -d &lt;i&gt;&lt;b&gt;$FileDir&lt;/b&gt;&lt;/i&gt; -f net.sourceforge.pmd.renderers.TextPadRenderer -R E:\directory\my_pmd_ruleset.xml -debug</code></li>
+      <li><strong>Parameters:</strong>  <code class="language-plaintext highlighter-rouge">-classpath D:\java\pmd-bin-7.25.0-SNAPSHOT\lib\* net.sourceforge.pmd.cli.PmdCli check -d $FileDir -f textpad -R E:\directory\my_pmd_ruleset.xml -debug</code></li>
       <li><strong>Initial Folder:</strong>  <code class="language-plaintext highlighter-rouge">$FileDir</code></li>
       <li><strong>Save all documents first:</strong>  <code class="language-plaintext highlighter-rouge">Checked</code></li>
       <li><strong>Capture output:</strong>  <code class="language-plaintext highlighter-rouge">Checked</code></li>
@@ -2581,7 +2581,7 @@ The new versions are based on Eclipse and don’t require this plugin anymore.</
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2026 (7.22.0)<br /> Site last generated: May 24, 2026 <br />
+            May 2026 (7.25.0)<br /> Site last generated: May 25, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

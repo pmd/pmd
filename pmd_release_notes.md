@@ -107,6 +107,8 @@ The old names still work but are deprecated.
 * core
   * [#4972](https://github.com/pmd/pmd/issues/4972): \[core] Update ANTLR to 4.13.2
   * [#6308](https://github.com/pmd/pmd/issues/6308): \[core] CPD Markdown format: Add syntax highlighting
+* doc
+  * [#6708](https://github.com/pmd/pmd/issues/6708): \[doc] Update minimal Java version for building PMD in documentation
 * java
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
