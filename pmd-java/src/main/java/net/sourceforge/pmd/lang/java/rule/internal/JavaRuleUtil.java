@@ -197,7 +197,7 @@ public final class JavaRuleUtil {
      * <ul>
      *     <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
      *     <li>The class has at least one member function, member variable, or nested class that is not private.</li>
-     *     <li>The class is neither abstract nor an interface.</li>
+     *     <li>The class is a concrete class (neither abstract nor an interface).</li>
      *     <li>The class has no superclasses and implements no interfaces. (This might change in the future.)</li>
      *     <li>The class has no main method.</li>
      * </ul>
