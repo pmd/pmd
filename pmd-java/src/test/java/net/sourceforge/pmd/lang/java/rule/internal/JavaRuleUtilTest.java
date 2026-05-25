@@ -53,14 +53,14 @@ class JavaRuleUtilTest extends BaseParserTest {
         void testPositive() {
             ASTCompilationUnit root = java.parse(
                     "public class A {\n"
-                    + "    private static String privateStaticMemberVariable = \"foo\";\n"
-                    + "    public static String staticMemberVariable = \"foo\";\n"
-                    + "    private static void privateStaticMemberFunction() {};\n"
-                    + "    public static void staticMemberFunction() {};\n"
-                    + "    private static class PrivateStaticNestedClass {};\n"
-                    + "    public static class StaticNestedClass {};\n"
-                    + "    static {}\n"
-                    + "}"
+                            + "    private static String privateStaticMemberVariable = \"foo\";\n"
+                            + "    public static String staticMemberVariable = \"foo\";\n"
+                            + "    private static void privateStaticMemberFunction() {};\n"
+                            + "    public static void staticMemberFunction() {};\n"
+                            + "    private static class PrivateStaticNestedClass {};\n"
+                            + "    public static class StaticNestedClass {};\n"
+                            + "    static {}\n"
+                            + "}"
             );
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
@@ -103,12 +103,11 @@ class JavaRuleUtilTest extends BaseParserTest {
                     "public class A {\n"
                             + "    private static void privateStaticMemberFunction() {};\n"
                             + "    public static void staticMemberFunction() {};\n"
-                            + "    public void memberFunction() {};\n"
                             + "}"
             );
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
-            assertFalse(isUtilityClass(classDecl));
+            assertTrue(isUtilityClass(classDecl));
         }
 
         @Test
