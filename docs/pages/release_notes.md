@@ -52,7 +52,7 @@ this is already done.
 * The rule {% rule java/codestyle/OnlyOneReturn %} has a new property `allowGuardIfs`. When this property is
   true, then guard ifs at the beginning of a method are allowed their return statements don't count.
 * The rules {% rule java/design/UseUtilityClass %} and {% rule java/codestyle/ClassNamingConventions %} now use the
-  same definition of what a utility class is. The most significant change is, that classes with main() methods are
+  same definition of what a utility class is. The most significant change is, that classes with `main()` methods are
   no longer considered utility classes by `UseUtilityClass`.
 * We are continuously working to improve the precision of violation reporting for various rules.
   The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
