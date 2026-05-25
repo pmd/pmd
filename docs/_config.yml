@@ -6,6 +6,10 @@ pmd:
     date: 2026-05-29
     # release types: major, minor, bugfix
     release_type: minor
+    # minimal version to build PMD
+    java_build_version: 21
+    # minimal version to run PMD
+    java_run_version: 8
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.
