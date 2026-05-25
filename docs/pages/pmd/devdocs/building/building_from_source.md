@@ -3,7 +3,7 @@ title: Building PMD from source
 tags: [devdocs]
 permalink: pmd_devdocs_building.html
 author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
-last_updated: January 2025 (7.10.0)
+last_updated: May 2026 (7.25.0)
 ---
 
 ## Compiling PMD

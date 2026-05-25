@@ -3,7 +3,7 @@ title: Building PMD General Info
 tags: [devdocs]
 permalink: pmd_devdocs_building_general.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2026 (7.21.0)
+last_updated: May 2026 (7.25.0)
 ---
 
 ## Before Development

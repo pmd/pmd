@@ -3,7 +3,7 @@ title: Building PMD with IntelliJ IDEA
 tags: [devdocs]
 permalink: pmd_devdocs_building_intellij.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>, Clément Fournier <clement.fournier76@gmail.com>
-last_updated: January 2025 (7.10.0)
+last_updated: May 2026 (7.25.0)
 ---
 
 ## Import PMD Project

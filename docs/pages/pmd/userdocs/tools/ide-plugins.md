@@ -3,7 +3,7 @@ title: IDE Plugins
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_ide_plugins.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>, Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: February 2026 (7.22.0)
+last_updated: May 2026 (7.25.0)
 ---
 
 ## IDE Integrations
