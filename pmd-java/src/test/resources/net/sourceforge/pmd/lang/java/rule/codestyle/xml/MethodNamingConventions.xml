@@ -177,7 +177,7 @@ public class TournamentTest {
     </test-code>
 
     <test-code>
-        <description>JUnit 5 test detection</description>
+        <description>JUnit 5 test detection (old, deprecated property)</description>
         <rule-property name="junit5TestPattern">[a-z][A-Za-z]*Test</rule-property>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>6,10,14</expected-linenumbers>
@@ -206,6 +206,84 @@ public class TournamentTest {
     // this is ok
     @Test
     public void getBestTeamTest() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 5 test detection (new property)</description>
+        <rule-property name="junitJupiterTestPattern">[a-z][A-Za-z]*Test</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,10,14</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit Jupiter test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+            <message>The JUnit Jupiter test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+            <message>The JUnit Jupiter test method name 'getWorstTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+
+public class TournamentTest {
+    @Test // note that this is also a junit 3 test, but the junit 5 rule applies
+    public void testGetBestTeam() {
+    }
+
+    @Test // this is just a junit 5 test
+    public void getBestTeam() {
+    }
+
+    @ParameterizedTest // this is a parameterized junit 5 test
+    public void getWorstTeam(String param) {
+    }
+
+    // this is ok
+    @Test
+    public void getBestTeamTest() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 5 test detection (property unset)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit Jupiter test method name 'test_' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public class TournamentTest {
+    @Test
+    public void test_() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Uses the correct pattern if both junit5TestPattern and junitJupiterTestPattern are defined</description>
+        <rule-property name="junit5TestPattern">A</rule-property>
+        <rule-property name="junitJupiterTestPattern">B</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,13</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public class TournamentTest {
+    @Test
+    public void A() {
+    }
+
+    @Test
+    public void B() {
+    }
+
+    @Test
+    public void C() {
     }
 }
         ]]></code>

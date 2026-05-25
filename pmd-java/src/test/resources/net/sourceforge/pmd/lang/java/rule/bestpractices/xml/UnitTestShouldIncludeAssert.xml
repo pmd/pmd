@@ -497,7 +497,7 @@ public class FooTest {
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     @Test
-    void testFoo() {
+    public void testFoo() {
         softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
     }
 }

@@ -35,7 +35,7 @@ this is already done.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
-* The new Java rule {% rule java/errorprone/JUnit5TestNoPrivateModifier %} find JUnit test classes and
+* The new Java rule {% rule java/errorprone/JUnitJupiterTestNoPrivateModifier %} find JUnit test classes and
   methods that are private. Test classes, test methods, and lifecycle methods are not required to be public,
   but they must not be private. Otherwise, they won’t be found by the test framework.
 * The new Java rule {% rule java/codestyle/UnnecessaryBlock %} reports blocks that are unnecessary as
@@ -96,6 +96,14 @@ this is already done.
   * {% rule java/codestyle/UnnecessaryModifier %}
   * {% rule java/design/UseUtilityClass %}
 
+#### Renamed rules and properties
+
+* One rule and one property have been renamed to reflect the fact that they work for both JUnit 5 and 6:
+  * The rule {%rule java/bestpractices/JUnitJupiterTestShouldBePackagePrivate %} (Java Best Practices) was renamed from `JUnit5TestShouldBePackagePrivate`.
+  * The property `junitJupiterTestPattern` of rule {% rule java/codestyle/MethodNamingConventions %} (Java Code Style) was renamed from `junit5TestPattern`.
+
+The old names still work but are deprecated.
+
 ### 🐛️ Fixed Issues
 * core
   * [#4972](https://github.com/pmd/pmd/issues/4972): \[core] Update ANTLR to 4.13.2
@@ -106,11 +114,13 @@ this is already done.
   * [#5721](https://github.com/pmd/pmd/issues/5721): \[java] StackOverflowError in 7.17.0 with nested wildcard generics
   * [#5746](https://github.com/pmd/pmd/issues/5746): \[java] Separate test sources and resources
   * [#6688](https://github.com/pmd/pmd/issues/6688): \[java] LocalVariableCouldBeFinalRule API changed
+  * [#6704](https://github.com/pmd/pmd/issues/6704): \[java] Rename rules and properties with JUnit5 in the name
 * java-bestpractices
   * [#3212](https://github.com/pmd/pmd/issues/3212): \[java] Enhance UseStandardCharsets to flag some constructors of IO-related classes
   * [#3777](https://github.com/pmd/pmd/issues/3777): \[java] New rule: AssertStatementInTest
   * [#5477](https://github.com/pmd/pmd/issues/5477): \[java] JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class
   * [#6606](https://github.com/pmd/pmd/issues/6606): \[java] UnusedPrivateField: False positive on JUnit Jupiter `@FieldSource`
+  * [#6681](https://github.com/pmd/pmd/issues/6681): \[java] UnitTestShouldIncludeAssert: False positive with JUnitSoftAssertions Rule (JUnit 4)
 * java-codestyle
   * [#2801](https://github.com/pmd/pmd/issues/2801): \[java] OnlyOneReturn should have a property to allow early exits (guard clauses)
   * [#6427](https://github.com/pmd/pmd/issues/6427): \[java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte

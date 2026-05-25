@@ -30,7 +30,7 @@ public final class PropertyParsingUtil {
 
     /**
      * Marker used for rule properties, that are deprecated. If the description of a property
-     * starts exactly with that string, then are warning is issued when the ruleset is loaded
+     * starts exactly with that string, then a warning is issued when the ruleset is loaded
      * and the property is used and the rule documentation displays a deprecated label.
      * @since 7.21.0
      */
