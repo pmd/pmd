@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -40,6 +41,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
@@ -231,7 +233,9 @@ public final class JavaRuleUtil {
 
             if (declNode instanceof ASTFieldDeclaration
                     || declNode instanceof ASTMethodDeclaration
-                    || declNode instanceof ASTTypeDeclaration
+                    || declNode instanceof ASTClassDeclaration
+                    || declNode instanceof ASTRecordDeclaration
+                    || declNode instanceof ASTEnumDeclaration
             ) {
                 ModifierOwner modifierOwner = (ModifierOwner) declNode;
 
