@@ -46,7 +46,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     }
 
     /**
-     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
      */
     @Override
     @NoAttribute
@@ -56,7 +56,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     }
 
     /**
-     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
      */
     @Override
     @Deprecated

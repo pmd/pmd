@@ -26,7 +26,7 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
     }
 
     /**
-     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
      */
     @Override
     @NoAttribute
@@ -36,7 +36,7 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
     }
 
     /**
-     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
      */
     @Override
     @Deprecated
