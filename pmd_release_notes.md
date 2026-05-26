@@ -147,6 +147,7 @@ The old names still work but are deprecated.
   * [#6608](https://github.com/pmd/pmd/issues/6608): \[kotlin] Lexer or parse errors are reported to stderr only without file context
   * [#6648](https://github.com/pmd/pmd/issues/6648): \[kotlin] Multi-dollar interpolation parse error in annotations
   * [#6659](https://github.com/pmd/pmd/issues/6659): \[kotlin] Parser hangs on complex files due to unbounded ATN prediction loop
+  * [#6669](https://github.com/pmd/pmd/issues/6669): \[kotlin] Add AST improvements, KotlinAstUtil
 
 ### 🚨️ API Changes
 #### Deprecations
@@ -161,11 +162,31 @@ The old names still work but are deprecated.
     <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#createProcessor(net.sourceforge.pmd.lang.LanguagePropertyBundle)"><code>createProcessor</code></a> and
     <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProcessor.html#services()"><code>services</code></a> instead to access the LanguageVersionHandler
     for Kotlin.
+  * The methods <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#getImage()"><code>KotlinInnerNode#getImage</code></a> and
+    <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#hasImageEqualTo(java.lang.String)"><code>KotlinInnerNode#hasImageEqualTo</code></a> have been deprecated.
+    They have not been used yet in Kotlin and the long-term plan is to remove these methods on each node.
+    Concrete nodes (subclasses of KotlinInnerNode) should provide a more specific attribute like
+    "getName" or "getIdentifier" instead and not rely on "getImage".  
+    The same deprecation has been done for <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinTerminalNode.html#"><code>KotlinTerminalNode</code></a>.  
+    See [#4787](https://github.com/pmd/pmd/issues/4787) for more information.
 
 #### Experimental API
 * kotlin
   * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProperties.html#PARSE_TIMEOUT_SECONDS"><code>KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS</code></a>
   * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProperties.html#getParseTimeoutSeconds()"><code>KotlinLanguageProperties#getParseTimeoutSeconds</code></a>
+  * Multiple classes have been added that provide an experimental way to add custom attributes to nodes:
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/AttributeView.html#"><code>AttributeView</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtClassDeclarationAttributes.html#"><code>KtClassDeclarationAttributes</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtClassParameterAttributes.html#"><code>KtClassParameterAttributes</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtCompanionObjectAttributes.html#"><code>KtCompanionObjectAttributes</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtFunctionDeclarationAttributes.html#"><code>KtFunctionDeclarationAttributes</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtImportAliasAttributes.html#"><code>KtImportAliasAttributes</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtImportHeaderAttributes.html#"><code>KtImportHeaderAttributes</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtVariableDeclarationAttributes.html#"><code>KtVariableDeclarationAttributes</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasModifiers.html#"><code>HasModifiers</code></a>
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasSimpleIdentifier.html#"><code>HasSimpleIdentifier</code></a>
+  * Attributes can be accessed on each node in Java-based rules via <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#attributes(java.lang.Class)"><code>KotlinInnerNode#attributes</code></a>.  
+    The attributes are also automatically exposed for XPath rules.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -196,6 +217,7 @@ The old names still work but are deprecated.
 * [#6658](https://github.com/pmd/pmd/pull/6658): \[doc] Fix capitalization of ANTLR in release notes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6660](https://github.com/pmd/pmd/pull/6660): \[kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6670](https://github.com/pmd/pmd/pull/6670): \[kotlin] Add AST improvements, KotlinAstUtil - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦️ Dependency updates
