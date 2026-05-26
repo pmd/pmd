@@ -157,6 +157,13 @@ The old names still work but are deprecated.
     {%jdoc kotlin::lang.kotlin.KotlinLanguageModule#createProcessor(core::lang.LanguagePropertyBundle) %} and
     {%jdoc kotlin::lang.kotlin.KotlinLanguageProcessor#services() %} instead to access the LanguageVersionHandler
     for Kotlin.
+  * The methods {%jdoc !!kotlin::lang.kotlin.ast.KotlinInnerNode#getImage() %} and
+    {%jdoc !!kotlin::lang.kotlin.ast.KotlinInnerNode#hasImageEqualTo(java.lang.String) %} have been deprecated.
+    They have not been used yet in Kotlin and the long-term plan is to remove these methods on each node.
+    Concrete nodes (subclasses of KotlinInnerNode) should provide a more specific attribute like
+    "getName" or "getIdentifier" instead and not rely on "getImage".  
+    The same deprecation has been done for {% jdoc kotlin::lang.kotlin.ast.KotlinTerminalNode %}.  
+    See [#4787](https://github.com/pmd/pmd/issues/4787) for more information.
 
 #### Experimental API
 * kotlin

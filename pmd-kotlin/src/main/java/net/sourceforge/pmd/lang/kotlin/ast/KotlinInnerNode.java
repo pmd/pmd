@@ -56,6 +56,15 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     }
 
     /**
+     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     */
+    @Override
+    @Deprecated
+    public boolean hasImageEqualTo(String image) {
+        return super.hasImageEqualTo(image);
+    }
+
+    /**
      * Returns the corresponding attributes class for this node.
      * The returned type is already cast to have the correct type.
      *

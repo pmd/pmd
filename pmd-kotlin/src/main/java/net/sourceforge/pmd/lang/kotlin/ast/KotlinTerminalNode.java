@@ -35,6 +35,15 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
         return null;
     }
 
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage()! See #4787.
+     */
+    @Override
+    @Deprecated
+    public boolean hasImageEqualTo(String image) {
+        return super.hasImageEqualTo(image);
+    }
+
     @Override
     public String getXPathNodeName() {
         return KotlinParser.DICO.getXPathNameOfToken(getFirstAntlrToken().getType());
