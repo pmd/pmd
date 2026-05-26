@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> implements KotlinNode {
 
@@ -24,6 +25,24 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
         return constImage == null ? getFirstAntlrToken().getText() : constImage;
     }
 
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
+     */
+    @Override
+    @NoAttribute
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
+
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
+     */
+    @Override
+    @Deprecated
+    public boolean hasImageEqualTo(String image) {
+        return super.hasImageEqualTo(image);
+    }
 
     @Override
     public String getXPathNodeName() {
@@ -38,5 +57,4 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
         }
         return super.acceptVisitor(visitor, data);
     }
-
 }

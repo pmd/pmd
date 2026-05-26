@@ -9,13 +9,25 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtImportHeader;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 /**
  * Miscellaneous Kotlin parser regression tests.
@@ -45,7 +57,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     @Test
-    void multipleErrorsSholdBeCollectedAsSuppressedExceptions() {
+    void multipleErrorsShouldBeCollectedAsSuppressedExceptions() {
         String badCode = "package nl.stokpop\n"
                 + "\n"
                 + "fun xor1(a: Int, b: Int) = (a ^ b)\n"
@@ -119,6 +131,79 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
             + "  \"title\": \"$${title}\"\n"
             + "\"\"\""
         ));
+    }
+
+    @Test
+    void identifierAttributeOnClassDeclaration() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class Foo");
+        KtClassDeclaration clazz =
+                file.descendants(KtClassDeclaration.class).first();
+        assertEquals("Foo", clazz.attributes(KtClassDeclarationAttributes.class).getIdentifier());
+    }
+
+    @Test
+    void modifiersAttributeOnFunctionDeclaration() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "abstract class Base { open suspend fun doWork() {} }");
+        KtFunctionDeclaration func =
+                file.descendants(KtFunctionDeclaration.class).first();
+        assertEquals("open suspend", func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+    }
+
+    @Test
+    void modifiersAttributeNullWhenNoModifiers() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun plain() {}");
+        KtFunctionDeclaration func =
+                file.descendants(KtFunctionDeclaration.class).first();
+        assertNull(func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+    }
+
+    @Test
+    void nameAttributeOnImportHeader() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "import com.example.Foo\nfun f() {}");
+        KtImportHeader imp =
+                file.descendants(KtImportHeader.class).first();
+        assertEquals("com.example.Foo", imp.attributes(KtImportHeaderAttributes.class).getName());
+    }
+
+    @Test
+    void xpathAttributesHaveNoNullValues() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "import com.example.Foo\npublic fun greet(name: String) {}");
+        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
+        KtImportHeader imp = file.descendants(KtImportHeader.class).first();
+        KotlinNode terminal = file.descendants(KotlinNode.class)
+                .filter(n -> n instanceof KotlinTerminalNode).first();
+        // file and terminal have no AttributeView; func and imp do
+        Stream.of(file, func, imp, terminal).forEach(node -> {
+            Iterator<Attribute> it = node.getXPathAttributesIterator();
+            while (it.hasNext()) {
+                Attribute attr = it.next();
+                assertNotNull(attr.getValue(),
+                        "Attribute @" + attr.getName() + " has null value on " + node.getXPathNodeName());
+            }
+        });
+    }
+
+    @Test
+    void xpathAttributesHaveNoDuplicates() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "import com.example.Foo\nfun greet(name: String) {}");
+        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
+        KtImportHeader imp = file.descendants(KtImportHeader.class).first();
+        KotlinNode terminal = file.descendants(KotlinNode.class)
+                .filter(n -> n instanceof KotlinTerminalNode).first();
+        // file and terminal have no AttributeView; func and imp do
+        Stream.of(file, func, imp, terminal).forEach(node -> {
+            List<String> names = new ArrayList<>();
+            Iterator<Attribute> it = node.getXPathAttributesIterator();
+            while (it.hasNext()) {
+                names.add(it.next().getName());
+            }
+            assertEquals(names.stream().distinct().count(), names.size(),
+                    "Duplicate XPath attributes on " + node.getXPathNodeName() + ": " + names);
+        });
     }
 
 }

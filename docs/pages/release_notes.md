@@ -146,6 +146,7 @@ The old names still work but are deprecated.
   * [#6608](https://github.com/pmd/pmd/issues/6608): \[kotlin] Lexer or parse errors are reported to stderr only without file context
   * [#6648](https://github.com/pmd/pmd/issues/6648): \[kotlin] Multi-dollar interpolation parse error in annotations
   * [#6659](https://github.com/pmd/pmd/issues/6659): \[kotlin] Parser hangs on complex files due to unbounded ATN prediction loop
+  * [#6669](https://github.com/pmd/pmd/issues/6669): \[kotlin] Add AST improvements, KotlinAstUtil
 
 ### 🚨️ API Changes
 #### Deprecations
@@ -160,11 +161,31 @@ The old names still work but are deprecated.
     {%jdoc kotlin::lang.kotlin.KotlinLanguageModule#createProcessor(core::lang.LanguagePropertyBundle) %} and
     {%jdoc kotlin::lang.kotlin.KotlinLanguageProcessor#services() %} instead to access the LanguageVersionHandler
     for Kotlin.
+  * The methods {%jdoc !!kotlin::lang.kotlin.ast.KotlinInnerNode#getImage() %} and
+    {%jdoc !!kotlin::lang.kotlin.ast.KotlinInnerNode#hasImageEqualTo(java.lang.String) %} have been deprecated.
+    They have not been used yet in Kotlin and the long-term plan is to remove these methods on each node.
+    Concrete nodes (subclasses of KotlinInnerNode) should provide a more specific attribute like
+    "getName" or "getIdentifier" instead and not rely on "getImage".  
+    The same deprecation has been done for {% jdoc kotlin::lang.kotlin.ast.KotlinTerminalNode %}.  
+    See [#4787](https://github.com/pmd/pmd/issues/4787) for more information.
 
 #### Experimental API
 * kotlin
   * {%jdoc !!kotlin::lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS %}
   * {%jdoc !!kotlin::lang.kotlin.KotlinLanguageProperties#getParseTimeoutSeconds() %}
+  * Multiple classes have been added that provide an experimental way to add custom attributes to nodes:
+    * {%jdoc kotlin::lang.kotlin.ast.AttributeView %}
+    * {%jdoc kotlin::lang.kotlin.ast.KtClassDeclarationAttributes %}
+    * {%jdoc kotlin::lang.kotlin.ast.KtClassParameterAttributes %}
+    * {%jdoc kotlin::lang.kotlin.ast.KtCompanionObjectAttributes %}
+    * {%jdoc kotlin::lang.kotlin.ast.KtFunctionDeclarationAttributes %}
+    * {%jdoc kotlin::lang.kotlin.ast.KtImportAliasAttributes %}
+    * {%jdoc kotlin::lang.kotlin.ast.KtImportHeaderAttributes %}
+    * {%jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %}
+    * {%jdoc kotlin::lang.kotlin.ast.HasModifiers %}
+    * {%jdoc kotlin::lang.kotlin.ast.HasSimpleIdentifier %}
+  * Attributes can be accessed on each node in Java-based rules via {%jdoc !!kotlin::lang.kotlin.ast.KotlinInnerNode#attributes(java.lang.Class) %}.  
+    The attributes are also automatically exposed for XPath rules.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -195,6 +216,7 @@ The old names still work but are deprecated.
 * [#6658](https://github.com/pmd/pmd/pull/6658): \[doc] Fix capitalization of ANTLR in release notes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6660](https://github.com/pmd/pmd/pull/6660): \[kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6670](https://github.com/pmd/pmd/pull/6670): \[kotlin] Add AST improvements, KotlinAstUtil - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦️ Dependency updates

@@ -11,7 +11,9 @@ import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.kotlin.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.kotlin.ast.PmdKotlinParser;
+import net.sourceforge.pmd.lang.kotlin.internal.KotlinDesignerBindings;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 
 public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
@@ -42,5 +44,10 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
     @Override
     public Parser getParser() {
         return parser;
+    }
+
+    @Override
+    public DesignerBindings getDesignerBindings() {
+        return KotlinDesignerBindings.INSTANCE;
     }
 }
