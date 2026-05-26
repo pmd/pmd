@@ -180,7 +180,8 @@ The old names still work but are deprecated.
     * {%jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %}
     * {%jdoc kotlin::lang.kotlin.ast.HasModifiers %}
     * {%jdoc kotlin::lang.kotlin.ast.HasSimpleIdentifier %}
-  * Attributes can be accessed on each node via {%jdoc !!kotlin::lang.kotlin.ast.KotlinInnerNode#attributes(java.lang.Class) %}.
+  * Attributes can be accessed on each node in Java-based rules via {%jdoc !!kotlin::lang.kotlin.ast.KotlinInnerNode#attributes(java.lang.Class) %}.  
+    The attributes are also automatically exposed for XPath rules.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
