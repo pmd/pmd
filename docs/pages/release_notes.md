@@ -151,6 +151,10 @@ The old names still work but are deprecated.
 
 ### 🚨️ API Changes
 #### Deprecations
+* java
+    * {% jdoc !!java::lang.java.rule.codestyle.FieldDeclarationsShouldBeAtStartOfClassRule#visit(java::lang.java.ast.ASTTypeDeclaration,java.lang.Object) %} is an implementation detail of {% jdoc java::lang.java.rule.codestyle.FieldDeclarationsShouldBeAtStartOfClassRule %}. It will be removed in a later release.
+    * {% jdoc !!java::lang.java.rule.design.CyclomaticComplexityRule#visitTypeDecl(java::lang.java.ast.ASTTypeDeclaration,java.lang.Object) %} is an implementation detail of {% jdoc java::lang.java.rule.design.CyclomaticComplexityRule %}. It will be removed in a later release.
+    * {% jdoc !!java::lang.java.rule.design.SwitchDensityRule#visitSwitchLike(java::lang.java.ast.ASTSwitchLike,java.lang.Object) %} is an implementation detail of {% jdoc java::lang.java.rule.design.SwitchDensityRule %}. It will be removed in a later release.
 * kotlin
   * The constructor {%jdoc !!kotlin::lang.kotlin.ast.PmdKotlinParser#PmdKotlinParser() %} has been deprecated.
     Use {%jdoc !!kotlin::lang.kotlin.KotlinLanguageModule#getInstance() %},
@@ -218,6 +222,7 @@ The old names still work but are deprecated.
 * [#6660](https://github.com/pmd/pmd/pull/6660): \[kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6670](https://github.com/pmd/pmd/pull/6670): \[kotlin] Add AST improvements, KotlinAstUtil - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#6671](https://github.com/pmd/pmd/pull/6671): \[java] Part of #4841: Deprecate unnecessary public methods in FieldDeclarationsShouldBeAtStartOfClassRule/CyclomaticComplexityRule/SwitchDensityRule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦️ Dependency updates
