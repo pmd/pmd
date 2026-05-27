@@ -95,12 +95,17 @@ public final class InvocationMatcher {
             return false;
         }
         if (expectedName != null && !node.getMethodName().equals(expectedName)
-            || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
+                || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
             return false;
         }
         OverloadSelectionResult info = node.getOverloadSelectionInfo();
-        return !info.isFailed() && matchQualifier(node)
-                && argsMatchOverload(info.getMethodType());
+        return matchQualifier(node)
+            && (info.isFailed() ? argsMatchByDefault(node) : argsMatchOverload(info.getMethodType()));
+    }
+
+    private boolean argsMatchByDefault(InvocationNode node) {
+        int count = ASTList.sizeOrZero(node.getArguments());
+        return argMatchers == null || argMatchers.isEmpty() && count == 0;
     }
 
     private boolean matchQualifier(InvocationNode node) {

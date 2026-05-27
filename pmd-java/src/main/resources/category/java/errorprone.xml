@@ -3334,7 +3334,11 @@ an error, use the `fail()` method and provide an indication message of why it di
     or pmd-java:matchesSig('org.junit.Assert#assertFalse(_*)')
     or pmd-java:matchesSig('org.junit.Assert#assertTrue(_*)')
     or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertFalse(_*)')
-    or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertTrue(_*)')]
+    or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertTrue(_*)')
+    or pmd-java:matchesSig('org.testng.Assert#assertFalse(_*)')
+    or pmd-java:matchesSig('org.testng.Assert#assertTrue(_*)')
+    or pmd-java:matchesSig('org.springframework.test.util.AssertionErrors#assertFalse(_*)')
+    or pmd-java:matchesSig('org.springframework.test.util.AssertionErrors#assertTrue(_*)')]
         [ArgumentList
             [
                 BooleanLiteral or

@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>failure case</description>
@@ -148,6 +148,25 @@ public class Foo {
     @Test
     void bar() {
         assertTrue(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG and Spring - failure case</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,7,8,9</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.Assert;
+import org.springframework.test.util.AssertionErrors;
+public class Foo {
+    @Test
+    void bar() {
+        Assert.assertTrue(true);
+        Assert.assertFalse(true);
+        AssertionErrors.assertTrue(true);
+        AssertionErrors.assertFalse(true);
     }
 }
         ]]></code>
