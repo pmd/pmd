@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -41,10 +41,11 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
     public RuleContext visit(ASTMethodCall call, Object data) {
         RuleContext ctx = (RuleContext) data;
 
-        if (CHARSET_FOR_NAME.matchesCall(call)
-                && STANDARD_CHARSET_EXISTS.contains(call.getArguments().get(0).getConstValue())
-        ) {
-            ctx.addViolation(call);
+        if (CHARSET_FOR_NAME.matchesCall(call)) {
+            String callArgument = (String) call.getArguments().get(0).getConstValue();
+            if (callArgument != null && STANDARD_CHARSET_EXISTS.contains(callArgument.toUpperCase(Locale.ROOT))) {
+                ctx.addViolation(call);
+            }
         }
 
         for (int i = 0; i < call.getArguments().size(); i++) {
@@ -66,17 +67,20 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
     }
 
     private void checkIthArgument(RuleContext ctx, InvocationNode call, int index) {
-        ASTExpression ex = call.getArguments().get(index);
-        if (STANDARD_CHARSET_EXISTS.contains(ex.getConstValue())) {
-            JMethodSig callSignature = call.getMethodType();
-            Stream<JMethodSig> otherSignatures = streamMethodSignatures(call);
-            long count = otherSignatures
-                    .filter(sig -> Modifier.isPublic(sig.getModifiers()))
-                    .filter(sig -> isSameSignatureExcept(callSignature, sig, index))
-                    .filter(sig -> CHARSET.equals(sig.getFormalParameters().get(index).toString()))
-                    .count();
-            if (count > 0) {
-                ctx.addViolation(call);
+        Object callArgument = call.getArguments().get(index).getConstValue();
+        if (callArgument instanceof String) {
+            String stringArgument = (String) callArgument;
+            if (STANDARD_CHARSET_EXISTS.contains(stringArgument.toUpperCase(Locale.ROOT))) {
+                JMethodSig callSignature = call.getMethodType();
+                Stream<JMethodSig> otherSignatures = streamMethodSignatures(call);
+                long count = otherSignatures
+                        .filter(sig -> Modifier.isPublic(sig.getModifiers()))
+                        .filter(sig -> isSameSignatureExcept(callSignature, sig, index))
+                        .filter(sig -> CHARSET.equals(sig.getFormalParameters().get(index).toString()))
+                        .count();
+                if (count > 0) {
+                    ctx.addViolation(call);
+                }
             }
         }
     }
