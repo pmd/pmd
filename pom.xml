@@ -574,15 +574,19 @@
                             <configuration>
                                 <skip>${pmd.skip}</skip>
                                 <targetDirectory>${project.build.directory}/pmdTest/</targetDirectory>
-                                <!-- includeTests is false. We configure compileSourceRoots and
-                                     do not use testSourceRoots... -->
-                                <includeTests>false</includeTests>
+                                <includeTests>true</includeTests>
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
                                 </rulesets>
-                                <compileSourceRoots>
-                                    <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
-                                </compileSourceRoots>
+                                <excludeRoots>
+                                    <excludeRoot>${project.basedir}/src/main/java</excludeRoot>
+                                    <excludeRoot>${project.basedir}/src/main/resources</excludeRoot>
+                                    <excludeRoot>${javacc.outputDirectory}</excludeRoot>
+                                    <excludeRoot>${antlr4.outputDirectory}</excludeRoot>
+                                </excludeRoots>
+                                <testSourceRoots>
+                                    <testSourceRoot>${project.basedir}/src/test/java</testSourceRoot>
+                                </testSourceRoots>
                             </configuration>
                         </execution>
                     </executions>
