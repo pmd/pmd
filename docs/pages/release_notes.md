@@ -123,6 +123,7 @@ this is already done.
   * [#6163](https://github.com/pmd/pmd/issues/6163): \[java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class
   * [#6517](https://github.com/pmd/pmd/issues/6517): \[java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream
   * [#6652](https://github.com/pmd/pmd/issues/6652): \[java] AvoidInstanceofChecksInCatchClause: false negative when pattern-matching instanceof
+  * [#6712](https://github.com/pmd/pmd/issues/6712): \[java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions
 * java-multithreading
   * [#6520](https://github.com/pmd/pmd/issues/6520): \[java] DoNotUseThreads: False positive on legitimate java.lang.Thread.onSpinWait() call
   * [#6636](https://github.com/pmd/pmd/issues/6636): \[java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes
@@ -161,6 +162,7 @@ this is already done.
 * [#6658](https://github.com/pmd/pmd/pull/6658): \[doc] Fix capitalization of ANTLR in release notes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6712](https://github.com/pmd/pmd/pull/6712): \[java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
