@@ -129,6 +129,9 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
                                  JVariableSymbol sym = lhs instanceof ASTNamedReferenceExpr
                                      ? ((ASTNamedReferenceExpr) lhs).getReferencedSym() : null;
                                  return sym == null ? null : sym.tryGetNode();
+                             } else if (JavaAstUtils.isAssignmentExprWithOperator(it, AssignmentOp.ASSIGN)) {
+                                 // x = x + 1
+                                 return asIEqualIPlusOne((ASTAssignmentExpression) it);
                              }
                              return null;
                          })
@@ -147,6 +150,29 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
                          .orElse(null);
     }
 
+    /**
+     * @return the index variable if the expression is {@code x = x + 1} or {@code x = 1 + x},
+     *         which are semantically equivalent to {@code x += 1} and {@code x++}.
+     */
+    private @Nullable ASTVariableId asIEqualIPlusOne(ASTAssignmentExpression assign) {
+        ASTAssignableExpr lhs = assign.getLeftOperand();
+        if (!(lhs instanceof ASTNamedReferenceExpr)) {
+            return null;
+        }
+        JVariableSymbol sym = ((ASTNamedReferenceExpr) lhs).getReferencedSym();
+        ASTExpression rhs = assign.getRightOperand();
+        if (sym == null || !(rhs instanceof ASTInfixExpression)
+                || ((ASTInfixExpression) rhs).getOperator() != BinaryOp.ADD) {
+            return null;
+        }
+        ASTExpression left = ((ASTInfixExpression) rhs).getLeftOperand();
+        ASTExpression right = ((ASTInfixExpression) rhs).getRightOperand();
+        if (JavaAstUtils.isReferenceToVar(left, sym) && JavaAstUtils.isLiteralInt(right, 1)
+                || JavaAstUtils.isReferenceToVar(right, sym) && JavaAstUtils.isLiteralInt(left, 1)) {
+            return sym.tryGetNode();
+        }
+        return null;
+    }
 
     /**
      * Gets the name of the iterable array or list. The condition has the form i < arr.length or i < coll.size()
