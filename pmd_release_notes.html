@@ -2163,11 +2163,13 @@ is still ongoing, the following Java rules have been updated in this release:
       <li><a href="https://github.com/pmd/pmd/issues/6606">#6606</a>: [java] UnusedPrivateField: False positive on JUnit Jupiter <code class="language-plaintext highlighter-rouge">@FieldSource</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/6681">#6681</a>: [java] UnitTestShouldIncludeAssert: False positive with JUnitSoftAssertions Rule (JUnit 4)</li>
       <li><a href="https://github.com/pmd/pmd/issues/6710">#6710</a>: [java] UseStandardCharsets: False negative when using lowercase standard charset names</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6719">#6719</a>: [java] UseStandardCharsets: False negative with Java 22+ and UTF-32 charsets</li>
     </ul>
   </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2801">#2801</a>: [java] OnlyOneReturn should have a property to allow early exits (guard clauses)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4350">#4350</a>: [java] ClassNamingConventions: testClassPattern not applied to class that inherits all its @<!-- -->Test methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/6427">#6427</a>: [java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte</li>
       <li><a href="https://github.com/pmd/pmd/issues/6602">#6602</a>: [java] LocalVariableCouldBeFinal: False negative when multiple variables are declared at once</li>
       <li><a href="https://github.com/pmd/pmd/issues/6622">#6622</a>: [java] New rule: UnnecessaryBlock</li>
@@ -2186,6 +2188,7 @@ is still ongoing, the following Java rules have been updated in this release:
       <li><a href="https://github.com/pmd/pmd/issues/6163">#6163</a>: [java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class</li>
       <li><a href="https://github.com/pmd/pmd/issues/6517">#6517</a>: [java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream</li>
       <li><a href="https://github.com/pmd/pmd/issues/6652">#6652</a>: [java] AvoidInstanceofChecksInCatchClause: false negative when pattern-matching instanceof</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6712">#6712</a>: [java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -2207,6 +2210,13 @@ is still ongoing, the following Java rules have been updated in this release:
 <h3 id="️-api-changes">🚨️ API Changes</h3>
 <h4 id="deprecations">Deprecations</h4>
 <ul>
+  <li>java
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html#visit(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>FieldDeclarationsShouldBeAtStartOfClassRule#visit</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html#"><code>FieldDeclarationsShouldBeAtStartOfClassRule</code></a>. It will be removed in a later release.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html#visitTypeDecl(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>CyclomaticComplexityRule#visitTypeDecl</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html#"><code>CyclomaticComplexityRule</code></a>. It will be removed in a later release.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html#visitSwitchLike(net.sourceforge.pmd.lang.java.ast.ASTSwitchLike,java.lang.Object)"><code>SwitchDensityRule#visitSwitchLike</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html#"><code>SwitchDensityRule</code></a>. It will be removed in a later release.</li>
+    </ul>
+  </li>
   <li>kotlin
     <ul>
       <li>The constructor <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.html#PmdKotlinParser()"><code>PmdKotlinParser#PmdKotlinParser</code></a> has been deprecated.
@@ -2287,7 +2297,9 @@ The attributes are also automatically exposed for XPath rules.</li>
   <li><a href="https://github.com/pmd/pmd/pull/6660">#6660</a>: [kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6661">#6661</a>: [java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6670">#6670</a>: [kotlin] Add AST improvements, KotlinAstUtil - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6671">#6671</a>: [java] Part of #4841: Deprecate unnecessary public methods in FieldDeclarationsShouldBeAtStartOfClassRule/CyclomaticComplexityRule/SwitchDensityRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6680">#6680</a>: [java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6712">#6712</a>: [java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>

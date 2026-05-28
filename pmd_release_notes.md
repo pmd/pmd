@@ -127,8 +127,10 @@ The old names still work but are deprecated.
   * [#6606](https://github.com/pmd/pmd/issues/6606): \[java] UnusedPrivateField: False positive on JUnit Jupiter `@FieldSource`
   * [#6681](https://github.com/pmd/pmd/issues/6681): \[java] UnitTestShouldIncludeAssert: False positive with JUnitSoftAssertions Rule (JUnit 4)
   * [#6710](https://github.com/pmd/pmd/issues/6710): \[java] UseStandardCharsets: False negative when using lowercase standard charset names
+  * [#6719](https://github.com/pmd/pmd/issues/6719): \[java] UseStandardCharsets: False negative with Java 22+ and UTF-32 charsets
 * java-codestyle
   * [#2801](https://github.com/pmd/pmd/issues/2801): \[java] OnlyOneReturn should have a property to allow early exits (guard clauses)
+  * [#4350](https://github.com/pmd/pmd/issues/4350): \[java] ClassNamingConventions: testClassPattern not applied to class that inherits all its @<!-- -->Test methods
   * [#6427](https://github.com/pmd/pmd/issues/6427): \[java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte
   * [#6602](https://github.com/pmd/pmd/issues/6602): \[java] LocalVariableCouldBeFinal: False negative when multiple variables are declared at once
   * [#6622](https://github.com/pmd/pmd/issues/6622): \[java] New rule: UnnecessaryBlock
@@ -141,6 +143,7 @@ The old names still work but are deprecated.
   * [#6163](https://github.com/pmd/pmd/issues/6163): \[java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class
   * [#6517](https://github.com/pmd/pmd/issues/6517): \[java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream
   * [#6652](https://github.com/pmd/pmd/issues/6652): \[java] AvoidInstanceofChecksInCatchClause: false negative when pattern-matching instanceof
+  * [#6712](https://github.com/pmd/pmd/issues/6712): \[java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions
 * java-multithreading
   * [#6520](https://github.com/pmd/pmd/issues/6520): \[java] DoNotUseThreads: False positive on legitimate java.lang.Thread.onSpinWait() call
   * [#6636](https://github.com/pmd/pmd/issues/6636): \[java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes
@@ -152,6 +155,10 @@ The old names still work but are deprecated.
 
 ### 🚨️ API Changes
 #### Deprecations
+* java
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html#visit(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>FieldDeclarationsShouldBeAtStartOfClassRule#visit</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html#"><code>FieldDeclarationsShouldBeAtStartOfClassRule</code></a>. It will be removed in a later release.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html#visitTypeDecl(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>CyclomaticComplexityRule#visitTypeDecl</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html#"><code>CyclomaticComplexityRule</code></a>. It will be removed in a later release.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html#visitSwitchLike(net.sourceforge.pmd.lang.java.ast.ASTSwitchLike,java.lang.Object)"><code>SwitchDensityRule#visitSwitchLike</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html#"><code>SwitchDensityRule</code></a>. It will be removed in a later release.
 * kotlin
   * The constructor <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.html#PmdKotlinParser()"><code>PmdKotlinParser#PmdKotlinParser</code></a> has been deprecated.
     Use <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#getInstance()"><code>KotlinLanguageModule#getInstance</code></a>,
@@ -219,7 +226,9 @@ The old names still work but are deprecated.
 * [#6660](https://github.com/pmd/pmd/pull/6660): \[kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6661](https://github.com/pmd/pmd/pull/6661): \[java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6670](https://github.com/pmd/pmd/pull/6670): \[kotlin] Add AST improvements, KotlinAstUtil - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#6671](https://github.com/pmd/pmd/pull/6671): \[java] Part of #4841: Deprecate unnecessary public methods in FieldDeclarationsShouldBeAtStartOfClassRule/CyclomaticComplexityRule/SwitchDensityRule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6712](https://github.com/pmd/pmd/pull/6712): \[java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
