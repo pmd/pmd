@@ -129,6 +129,7 @@ The old names still work but are deprecated.
   * [#6719](https://github.com/pmd/pmd/issues/6719): \[java] UseStandardCharsets: False negative with Java 22+ and UTF-32 charsets
 * java-codestyle
   * [#2801](https://github.com/pmd/pmd/issues/2801): \[java] OnlyOneReturn should have a property to allow early exits (guard clauses)
+  * [#4350](https://github.com/pmd/pmd/issues/4350): \[java] ClassNamingConventions: testClassPattern not applied to class that inherits all its @<!-- -->Test methods
   * [#6427](https://github.com/pmd/pmd/issues/6427): \[java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte
   * [#6602](https://github.com/pmd/pmd/issues/6602): \[java] LocalVariableCouldBeFinal: False negative when multiple variables are declared at once
   * [#6622](https://github.com/pmd/pmd/issues/6622): \[java] New rule: UnnecessaryBlock
