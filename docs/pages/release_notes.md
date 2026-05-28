@@ -142,6 +142,7 @@ The old names still work but are deprecated.
   * [#6163](https://github.com/pmd/pmd/issues/6163): \[java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class
   * [#6517](https://github.com/pmd/pmd/issues/6517): \[java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream
   * [#6652](https://github.com/pmd/pmd/issues/6652): \[java] AvoidInstanceofChecksInCatchClause: false negative when pattern-matching instanceof
+  * [#6712](https://github.com/pmd/pmd/issues/6712): \[java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions
 * java-multithreading
   * [#6520](https://github.com/pmd/pmd/issues/6520): \[java] DoNotUseThreads: False positive on legitimate java.lang.Thread.onSpinWait() call
   * [#6636](https://github.com/pmd/pmd/issues/6636): \[java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes
@@ -226,6 +227,7 @@ The old names still work but are deprecated.
 * [#6670](https://github.com/pmd/pmd/pull/6670): \[kotlin] Add AST improvements, KotlinAstUtil - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
 * [#6671](https://github.com/pmd/pmd/pull/6671): \[java] Part of #4841: Deprecate unnecessary public methods in FieldDeclarationsShouldBeAtStartOfClassRule/CyclomaticComplexityRule/SwitchDensityRule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6680](https://github.com/pmd/pmd/pull/6680): \[java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6712](https://github.com/pmd/pmd/pull/6712): \[java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
