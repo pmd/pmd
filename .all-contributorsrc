@@ -7977,7 +7977,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1417619?v=4",
       "profile": "https://github.com/slovdahl",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -8558,6 +8559,52 @@
       "profile": "https://github.com/praful-gupta",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "Emilyaxe",
+      "name": "Emilyaxe",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16079499?v=4",
+      "profile": "https://github.com/Emilyaxe",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "gilprime",
+      "name": "Gildas PRIME",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1274951?v=4",
+      "profile": "http://npgtools.projects.postgresql.org/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "leemeii",
+      "name": "leemeii",
+      "avatar_url": "https://avatars.githubusercontent.com/u/186836938?v=4",
+      "profile": "https://github.com/leemeii",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "mmnhgo",
+      "name": "mmnhgo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/272077978?v=4",
+      "profile": "https://github.com/mmnhgo",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "vip892766gma",
+      "name": "vip892766gma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/275402320?v=4",
+      "profile": "https://github.com/vip892766gma",
+      "contributions": [
+        "code"
       ]
     }
   ],
