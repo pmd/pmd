@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.25.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.26.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.25.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.26.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.25.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 29-May-2026</div>
+    <li class="sidebarTitle">PMD 7.26.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 29-June-2026</div>
     
     
     
@@ -2030,277 +2030,20 @@
     </details>
 
   
-<h2 id="29-may-2026---7250-snapshot">29-May-2026 - 7.25.0-SNAPSHOT</h2>
+<h2 id="29-june-2026---7260-snapshot">29-June-2026 - 7.26.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.25.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.26.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-<h4 id="updated-antlr-library-to-4132">Updated ANTLR library to 4.13.2</h4>
-<p>We have updated the ANTLR library (parser generator) from 4.9.3 to the latest version 4.13.2,
-in order to be able to use the latest version of Apex parser library.</p>
-
-<p>This is an incompatible update: In case you use custom language modules based on ANTLR, you
-need to make sure to regenerate all of your lexers and parsers with the new ANTLR version.</p>
-
-<p>For the ANTLR based language modules, that PMD ships (kotlin and swift and various CPD modules),
-this is already done.</p>
-
-<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier"><code class="language-plaintext highlighter-rouge">JUnitJupiterTestNoPrivateModifier</code></a> find JUnit test classes and
-methods that are private. Test classes, test methods, and lifecycle methods are not required to be public,
-but they must not be private. Otherwise, they won’t be found by the test framework.</li>
-  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#unnecessaryblock"><code class="language-plaintext highlighter-rouge">UnnecessaryBlock</code></a> reports blocks that are unnecessary as
-they don’t introduce a new scope. This rule helps simplify code structure by identifying and flagging
-redundant blocks that can make code harder to read and may be misleading.</li>
-  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#variabledeclarationusagedistance"><code class="language-plaintext highlighter-rouge">VariableDeclarationUsageDistance</code></a> flags local variables that are declared
-far from their usage, which can make code harder to read. The rule has a property <code class="language-plaintext highlighter-rouge">maxDistance</code> that allows to
-configure the maximum allowed distance between declaration and usage.</li>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#assertstatementintest"><code class="language-plaintext highlighter-rouge">AssertStatementInTest</code></a> detects usages of <code class="language-plaintext highlighter-rouge">assert</code> statement in tests.
-These should be replaced by framework assertion methods such as <code class="language-plaintext highlighter-rouge">assertEquals</code>.
-Such methods provide better error messages and make test behave correctly when running without <code class="language-plaintext highlighter-rouge">-ea</code>.</li>
-</ul>
-
-<h4 id="changed-rules">Changed Rules</h4>
-<ul>
-  <li>The rule <a href="pmd_rules_java_codestyle.html#onlyonereturn"><code class="language-plaintext highlighter-rouge">OnlyOneReturn</code></a> has a new property <code class="language-plaintext highlighter-rouge">allowGuardIfs</code>. When this property is
-true, then guard ifs at the beginning of a method are allowed their return statements don’t count.</li>
-  <li>The rules <a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a> and <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a> now use the
-same definition of what a utility class is. The most significant change is, that classes with <code class="language-plaintext highlighter-rouge">main()</code> methods are
-no longer considered utility classes by <code class="language-plaintext highlighter-rouge">UseUtilityClass</code>.</li>
-  <li>We are continuously working to improve the precision of violation reporting for various rules.
-The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
-For example, instead of flagging an entire class declaration (including its body), we now generally report only
-the class name. For more details, see <a href="https://github.com/pmd/pmd/issues/730">[java] Single Line Warnings #730</a>
-and <a href="https://github.com/pmd/pmd/issues/3769">[java] Review reported locations of rules #3769</a>. While this effort
-is still ongoing, the following Java rules have been updated in this release:
-    <ul>
-      <li><a href="pmd_rules_java_bestpractices.html#abstractclasswithoutabstractmethod"><code class="language-plaintext highlighter-rouge">AbstractClassWithoutAbstractMethod</code></a></li>
-      <li><a href="pmd_rules_java_design.html#abstractclasswithoutanymethod"><code class="language-plaintext highlighter-rouge">AbstractClassWithoutAnyMethod</code></a></li>
-      <li><a href="pmd_rules_java_codestyle.html#atleastoneconstructor"><code class="language-plaintext highlighter-rouge">AtLeastOneConstructor</code></a></li>
-      <li><a href="pmd_rules_java_codestyle.html#avoiddollarsigns"><code class="language-plaintext highlighter-rouge">AvoidDollarSigns</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#avoidcatchinggenericexception"><code class="language-plaintext highlighter-rouge">AvoidCatchingGenericException</code></a></li>
-      <li><a href="pmd_rules_java_multithreading.html#avoidsynchronizedstatement"><code class="language-plaintext highlighter-rouge">AvoidSynchronizedStatement</code></a> (now reports only on synchronized keyword and not the whole synchronized block)</li>
-      <li><a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="language-plaintext highlighter-rouge">ClassNamingConventions</code></a></li>
-      <li><a href="pmd_rules_java_design.html#classwithonlyprivateconstructorsshouldbefinal"><code class="language-plaintext highlighter-rouge">ClassWithOnlyPrivateConstructorsShouldBeFinal</code></a></li>
-      <li><a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="language-plaintext highlighter-rouge">CommentDefaultAccessModifier</code></a></li>
-      <li><a href="pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a></li>
-      <li><a href="pmd_rules_java_design.html#couplingbetweenobjects"><code class="language-plaintext highlighter-rouge">CouplingBetweenObjects</code></a> (now reports only on class identifier and not whole compilation unit anymore)</li>
-      <li><a href="pmd_rules_java_design.html#cyclomaticcomplexity"><code class="language-plaintext highlighter-rouge">CyclomaticComplexity</code></a></li>
-      <li><a href="pmd_rules_java_design.html#dataclass"><code class="language-plaintext highlighter-rouge">DataClass</code></a></li>
-      <li><a href="pmd_rules_java_design.html#excessiveimports"><code class="language-plaintext highlighter-rouge">ExcessiveImports</code></a> (now reports only on imports and not the whole compilation unit anymore)</li>
-      <li><a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a></li>
-      <li><a href="pmd_rules_java_design.html#excessivepubliccount"><code class="language-plaintext highlighter-rouge">ExcessivePublicCount</code></a></li>
-      <li><a href="pmd_rules_java_bestpractices.html#exhaustiveswitchhasdefault"><code class="language-plaintext highlighter-rouge">ExhaustiveSwitchHasDefault</code></a> (now reports only on switch keyword and not the whole switch block)</li>
-      <li><a href="pmd_rules_java_design.html#godclass"><code class="language-plaintext highlighter-rouge">GodClass</code></a></li>
-      <li><a href="pmd_rules_java_bestpractices.html#implicitfunctionalinterface"><code class="language-plaintext highlighter-rouge">ImplicitFunctionalInterface</code></a></li>
-      <li><a href="pmd_rules_java_bestpractices.html#junit5testshouldbepackageprivate"><code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code></a></li>
-      <li><a href="pmd_rules_java_codestyle.html#localhomenamingconvention"><code class="language-plaintext highlighter-rouge">LocalHomeNamingConvention</code></a></li>
-      <li><a href="pmd_rules_java_codestyle.html#localinterfacesessionnamingconvention"><code class="language-plaintext highlighter-rouge">LocalInterfaceSessionNamingConvention</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#missingserialversionuid"><code class="language-plaintext highlighter-rouge">MissingSerialVersionUID</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass"><code class="language-plaintext highlighter-rouge">MissingStaticMethodInNonInstantiatableClass</code></a></li>
-      <li><a href="pmd_rules_java_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a></li>
-      <li><a href="pmd_rules_java_bestpractices.html#nonexhaustiveswitch"><code class="language-plaintext highlighter-rouge">NonExhaustiveSwitch</code></a> (now reports only on switch keyword and not the whole switch block)</li>
-      <li><a href="pmd_rules_java_codestyle.html#nopackage"><code class="language-plaintext highlighter-rouge">NoPackage</code></a></li>
-      <li><a href="pmd_rules_java_design.html#publicmemberinnonpublictype"><code class="language-plaintext highlighter-rouge">PublicMemberInNonPublicType</code></a></li>
-      <li><a href="pmd_rules_java_codestyle.html#shortclassname"><code class="language-plaintext highlighter-rouge">ShortClassName</code></a></li>
-      <li><a href="pmd_rules_java_errorprone.html#singlemethodsingleton"><code class="language-plaintext highlighter-rouge">SingleMethodSingleton</code></a></li>
-      <li><a href="pmd_rules_java_design.html#switchdensity"><code class="language-plaintext highlighter-rouge">SwitchDensity</code></a> (now reports only on switch keyword and not the whole switch block)</li>
-      <li><a href="pmd_rules_java_errorprone.html#testclasswithouttestcases"><code class="language-plaintext highlighter-rouge">TestClassWithoutTestCases</code></a></li>
-      <li><a href="pmd_rules_java_performance.html#toofewbranchesforswitch"><code class="language-plaintext highlighter-rouge">TooFewBranchesForSwitch</code></a> (now reports only on switch keyword and not the whole switch block)</li>
-      <li><a href="pmd_rules_java_design.html#toomanyfields"><code class="language-plaintext highlighter-rouge">TooManyFields</code></a> (now reports only on class identifier and not the whole class body anymore)</li>
-      <li><a href="pmd_rules_java_design.html#toomanymethods"><code class="language-plaintext highlighter-rouge">TooManyMethods</code></a> (now reports only on class identifier and not the whole class body anymore)</li>
-      <li><a href="pmd_rules_java_codestyle.html#toomanystaticimports"><code class="language-plaintext highlighter-rouge">TooManyStaticImports</code></a> (now reports only on the first static import and not the whole compilation unit anymore)</li>
-      <li><a href="pmd_rules_java_codestyle.html#unnecessarymodifier"><code class="language-plaintext highlighter-rouge">UnnecessaryModifier</code></a></li>
-      <li><a href="pmd_rules_java_design.html#useutilityclass"><code class="language-plaintext highlighter-rouge">UseUtilityClass</code></a></li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="renamed-rules-and-properties">Renamed rules and properties</h4>
-
-<ul>
-  <li>One rule and one property have been renamed to reflect the fact that they work for both JUnit 5 and 6:
-    <ul>
-      <li>The rule <a href="pmd_rules_java_bestpractices.html#junitjupitertestshouldbepackageprivate"><code class="language-plaintext highlighter-rouge">JUnitJupiterTestShouldBePackagePrivate</code></a> (Java Best Practices) was renamed from <code class="language-plaintext highlighter-rouge">JUnit5TestShouldBePackagePrivate</code>.</li>
-      <li>The property <code class="language-plaintext highlighter-rouge">junitJupiterTestPattern</code> of rule <a href="pmd_rules_java_codestyle.html#methodnamingconventions"><code class="language-plaintext highlighter-rouge">MethodNamingConventions</code></a> (Java Code Style) was renamed from <code class="language-plaintext highlighter-rouge">junit5TestPattern</code>.</li>
-    </ul>
-  </li>
-</ul>
-
-<p>The old names still work but are deprecated.</p>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4972">#4972</a>: [core] Update ANTLR to 4.13.2</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6308">#6308</a>: [core] CPD Markdown format: Add syntax highlighting</li>
-    </ul>
-  </li>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6708">#6708</a>: [doc] Update minimal Java version for building PMD in documentation</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1102">#1102</a>: [java] Improve consistency of utility class detection across rules</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5721">#5721</a>: [java] StackOverflowError in 7.17.0 with nested wildcard generics</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5746">#5746</a>: [java] Separate test sources and resources</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6688">#6688</a>: [java] LocalVariableCouldBeFinalRule API changed</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6704">#6704</a>: [java] Rename rules and properties with JUnit5 in the name</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3212">#3212</a>: [java] Enhance UseStandardCharsets to flag some constructors of IO-related classes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3777">#3777</a>: [java] New rule: AssertStatementInTest</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5477">#5477</a>: [java] JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6606">#6606</a>: [java] UnusedPrivateField: False positive on JUnit Jupiter <code class="language-plaintext highlighter-rouge">@FieldSource</code></li>
-      <li><a href="https://github.com/pmd/pmd/issues/6681">#6681</a>: [java] UnitTestShouldIncludeAssert: False positive with JUnitSoftAssertions Rule (JUnit 4)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6710">#6710</a>: [java] UseStandardCharsets: False negative when using lowercase standard charset names</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6719">#6719</a>: [java] UseStandardCharsets: False negative with Java 22+ and UTF-32 charsets</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2801">#2801</a>: [java] OnlyOneReturn should have a property to allow early exits (guard clauses)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4350">#4350</a>: [java] ClassNamingConventions: testClassPattern not applied to class that inherits all its @<!-- -->Test methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6427">#6427</a>: [java] UnnecessaryCast: False positive for long cast before bit-shift operations on int/byte</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6602">#6602</a>: [java] LocalVariableCouldBeFinal: False negative when multiple variables are declared at once</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6622">#6622</a>: [java] New rule: UnnecessaryBlock</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6640">#6640</a>: [java] New rule: VariableDeclarationUsageDistance</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/559">#559</a>: [java] UseUtilityClass: False negative for constant only classes</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3288">#3288</a>: [java] New Rule: JUnit5TestNoPrivateModifier</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4288">#4288</a>: [java] Document that CallSuperFirst/CallSuperLast are Android specific</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6163">#6163</a>: [java] ConstructorCallsOverridableMethod: False positive when method is from enclosing class</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6517">#6517</a>: [java] UselessPureMethodCall: False negative for methods on IntStream/LongStream/DoubleStream</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6652">#6652</a>: [java] AvoidInstanceofChecksInCatchClause: false negative when pattern-matching instanceof</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6712">#6712</a>: [java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6520">#6520</a>: [java] DoNotUseThreads: False positive on legitimate java.lang.Thread.onSpinWait() call</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6636">#6636</a>: [java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes</li>
-    </ul>
-  </li>
-  <li>kotlin
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6608">#6608</a>: [kotlin] Lexer or parse errors are reported to stderr only without file context</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6648">#6648</a>: [kotlin] Multi-dollar interpolation parse error in annotations</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6659">#6659</a>: [kotlin] Parser hangs on complex files due to unbounded ATN prediction loop</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6669">#6669</a>: [kotlin] Add AST improvements, KotlinAstUtil</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>java
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html#visit(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>FieldDeclarationsShouldBeAtStartOfClassRule#visit</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/codestyle/FieldDeclarationsShouldBeAtStartOfClassRule.html#"><code>FieldDeclarationsShouldBeAtStartOfClassRule</code></a>. It will be removed in a later release.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html#visitTypeDecl(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,java.lang.Object)"><code>CyclomaticComplexityRule#visitTypeDecl</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/CyclomaticComplexityRule.html#"><code>CyclomaticComplexityRule</code></a>. It will be removed in a later release.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html#visitSwitchLike(net.sourceforge.pmd.lang.java.ast.ASTSwitchLike,java.lang.Object)"><code>SwitchDensityRule#visitSwitchLike</code></a> is an implementation detail of <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/SwitchDensityRule.html#"><code>SwitchDensityRule</code></a>. It will be removed in a later release.</li>
-    </ul>
-  </li>
-  <li>kotlin
-    <ul>
-      <li>The constructor <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.html#PmdKotlinParser()"><code>PmdKotlinParser#PmdKotlinParser</code></a> has been deprecated.
-Use <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#getInstance()"><code>KotlinLanguageModule#getInstance</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#createProcessor(net.sourceforge.pmd.lang.LanguagePropertyBundle)"><code>createProcessor</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProcessor.html#services()"><code>services</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinHandler.html#getParser()"><code>getParser</code></a> instead
-to retrieve a correctly configured parser instance.</li>
-      <li>The constructor <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinHandler.html#KotlinHandler()"><code>KotlinHandler#KotlinHandler</code></a> has been deprecated.
-Use <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#getInstance()"><code>getInstance</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageModule.html#createProcessor(net.sourceforge.pmd.lang.LanguagePropertyBundle)"><code>createProcessor</code></a> and
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProcessor.html#services()"><code>services</code></a> instead to access the LanguageVersionHandler
-for Kotlin.</li>
-      <li>The methods <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#getImage()"><code>KotlinInnerNode#getImage</code></a> and
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#hasImageEqualTo(java.lang.String)"><code>KotlinInnerNode#hasImageEqualTo</code></a> have been deprecated.
-They have not been used yet in Kotlin and the long-term plan is to remove these methods on each node.
-Concrete nodes (subclasses of KotlinInnerNode) should provide a more specific attribute like
-“getName” or “getIdentifier” instead and not rely on “getImage”.<br />
-The same deprecation has been done for <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinTerminalNode.html#"><code>KotlinTerminalNode</code></a>.<br />
-See <a href="https://github.com/pmd/pmd/issues/4787">#4787</a> for more information.</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="experimental-api">Experimental API</h4>
-<ul>
-  <li>kotlin
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProperties.html#PARSE_TIMEOUT_SECONDS"><code>KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/KotlinLanguageProperties.html#getParseTimeoutSeconds()"><code>KotlinLanguageProperties#getParseTimeoutSeconds</code></a></li>
-      <li>Multiple classes have been added that provide an experimental way to add custom attributes to nodes:
-        <ul>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/AttributeView.html#"><code>AttributeView</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtClassDeclarationAttributes.html#"><code>KtClassDeclarationAttributes</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtClassParameterAttributes.html#"><code>KtClassParameterAttributes</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtCompanionObjectAttributes.html#"><code>KtCompanionObjectAttributes</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtFunctionDeclarationAttributes.html#"><code>KtFunctionDeclarationAttributes</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtImportAliasAttributes.html#"><code>KtImportAliasAttributes</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtImportHeaderAttributes.html#"><code>KtImportHeaderAttributes</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtVariableDeclarationAttributes.html#"><code>KtVariableDeclarationAttributes</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasModifiers.html#"><code>HasModifiers</code></a></li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasSimpleIdentifier.html#"><code>HasSimpleIdentifier</code></a></li>
-        </ul>
-      </li>
-      <li>Attributes can be accessed on each node in Java-based rules via <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.25.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinInnerNode.html#attributes(java.lang.Class)"><code>KotlinInnerNode#attributes</code></a>.<br />
-The attributes are also automatically exposed for XPath rules.</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/6084">#6084</a>: [java] Shrink reported locations for some rules - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6522">#6522</a>: [java] Fix #6520: DoNotUseThreads: fix false positive on Thread.onSpinWait()  - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6524">#6524</a>: [java] Fix #6517: UselessPureMethodCall: fix false negative for primitive streams - <a href="https://github.com/leemeii">leemeii</a> (@leemeii)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6553">#6553</a>: [java] Fix StackOverflowError in TypeOps projection of cyclic captured type vars - <a href="https://github.com/slovdahl">Sebastian Lövdahl</a> (@slovdahl)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6557">#6557</a>: [java] New rule: AssertStatementInTest - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6561">#6561</a>: [java] Fix #6163: ConstructorCallsOverridableMethod: False positive with call to enclosing class - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6573">#6573</a>: [java] Fix #6427: Add bitwise and/or/xor to BINARY_PROMOTED_OPS - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6587">#6587</a>: [java] Fix #2801: Add a property to OnlyOneReturnRule to allow guard ifs - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6597">#6597</a>: [java] Fix #3212: Enhance UseStandardCharsets - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6601">#6601</a>: [java] Fix #4288: Document that CallSuperFirst and CallSuperLast are android only - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6603">#6603</a>: [java] Fix #6602: Fix false negative in LocalVariableCouldBeFinalRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6604">#6604</a>: [java] Fix #3288: New rule JUnit5TestNoPrivateModifierRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6605">#6605</a>: [java] Fix #6308: Add syntax highlighting to MarkdownRenderer - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6619">#6619</a>: [java] Fix #5746: Separate test sources and resources - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6621">#6621</a>: [core] Fix #4972: Update ANTLR from 4.9.3 to 4.13.2 - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6623">#6623</a>: [java] Cleanup: Remove TODO from ModifierOwner.getVisibility() - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6636">#6636</a>: [java] OverridingThreadRun: Fix false negatives with other methods and anonymous classes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6638">#6638</a>: [java] Fix #559: Improve UseUtilityClassRule to trigger also on static members - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6639">#6639</a>: [java] New rule: UnnecessaryBlock - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6640">#6640</a>: [java] New rule: VariableDeclarationUsageDistance - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6646">#6646</a>: [test] Split up AbstractRuleSetFactoryTest.testAllPMDBuiltInRulesMeetConventions() - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6650">#6650</a>: [kotlin] Fix #6608: Improve kotlin parser error handling - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6653">#6653</a>: [kotlin] Fix #6648: Multi-dollar interpolation for regular strings - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6654">#6654</a>: [swift] Fix invalid swift token OSXApplicationExtension - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6658">#6658</a>: [doc] Fix capitalization of ANTLR in release notes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6660">#6660</a>: [kotlin] Fix #6659: Prevent parser hang via InterruptibleParserATNSimulator and parse timeout - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6661">#6661</a>: [java] Fix #6652: Support new-style instanceof (with pattern matching) in AvoidInstanceofChecksInCatchClause - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6670">#6670</a>: [kotlin] Add AST improvements, KotlinAstUtil - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6671">#6671</a>: [java] Part of #4841: Deprecate unnecessary public methods in FieldDeclarationsShouldBeAtStartOfClassRule/CyclomaticComplexityRule/SwitchDensityRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6680">#6680</a>: [java] Fix #5477: JUnit5TestShouldBePackagePrivate is not applied when @Test method is only present in parent class - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6712">#6712</a>: [java] UnnecessaryBooleanAssertion: Use InvocationMatcher to find assertions - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-</ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2337,7 +2080,7 @@ The attributes are also automatically exposed for XPath rules.</li>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 28, 2026 <br />
+             Site last generated: May 29, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
