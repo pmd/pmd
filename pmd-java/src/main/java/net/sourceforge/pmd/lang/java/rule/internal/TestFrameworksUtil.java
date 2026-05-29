@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -217,8 +218,12 @@ public final class TestFrameworksUtil {
         JClassType typeMirror = node.getTypeMirror();
 
         return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
-                && typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
-                        .findAny().isPresent();
+                && (
+                        typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
+                                .findAny().isPresent()
+                        || typeMirror.streamClasses(TestFrameworksUtil::isJUnit5NestedClass)
+                                .findAny().isPresent()
+                );
     }
 
     public static boolean isTestNGClass(ASTClassDeclaration node) {
@@ -230,7 +235,14 @@ public final class TestFrameworksUtil {
     }
 
     public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {
-        return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
+        return isJUnit5NestedClass(innerClassDecl.getTypeMirror());
+    }
+
+    private static boolean isJUnit5NestedClass(JTypeMirror innerClassMirror) {
+        TypeSystem ts = innerClassMirror.getTypeSystem();
+
+        return innerClassMirror.getSymbol().getDeclaredAnnotations().stream().anyMatch(
+                it -> TypeTestUtil.isA(JUNIT5_NESTED, ts.typeOf(it.getAnnotationSymbol(), false)));
     }
 
     public static boolean isExpectExceptionCall(ASTMethodCall call) {

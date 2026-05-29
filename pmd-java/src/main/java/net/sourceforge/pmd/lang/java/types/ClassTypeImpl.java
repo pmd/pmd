@@ -333,6 +333,19 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
+    public Stream<JTypeMirror> streamClasses(Predicate<? super JTypeMirror> prefilter) {
+        return SuperTypesEnumerator.ALL_SUPERTYPES_INCLUDING_SELF.stream(this)
+                .flatMap(sup -> sup.streamDeclaredClasses(prefilter));
+    }
+
+    @Override
+    public Stream<JTypeMirror> streamDeclaredClasses(Predicate<? super JTypeMirror> prefilter) {
+        return getDeclaredClasses().stream()
+                .filter(prefilter)
+                .map(c -> getDeclaredClass(c.getSymbol().getSimpleName()));
+    }
+
+    @Override
     public @Nullable JClassType getDeclaredClass(String simpleName) {
         JClassSymbol declaredClass = symbol.getDeclaredClass(simpleName);
         if (declaredClass != null) {

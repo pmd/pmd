@@ -141,6 +141,10 @@ public final class JIntersectionType implements JTypeMirror {
         return getComponents().stream().flatMap(it -> it.streamMethods(prefilter));
     }
 
+    @Override
+    public Stream<JTypeMirror> streamClasses(Predicate<? super JTypeMirror> prefilter) {
+        return getComponents().stream().flatMap(it -> it.streamClasses(prefilter));
+    }
 
     @Override
     public JIntersectionType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
