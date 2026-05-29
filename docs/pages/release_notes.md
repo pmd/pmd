@@ -24,9 +24,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+* The new Java rule {% rule java/errorprone/WrongTestAnnotation %} detects when test annotations from the wrong
+  testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
+  skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don't execute
+  because the test runner doesn't recognize the annotation.
+
 ### 🐛️ Fixed Issues
 * java-bestpractices
   * [#6692](https://github.com/pmd/pmd/issues/6692): \[java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms
+* java-errorprone
+  * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
 
 ### 🚨️ API Changes
 
