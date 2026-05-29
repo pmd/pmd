@@ -1,9 +1,9 @@
 repository: pmd/pmd
 
 pmd:
-    version: 7.25.0
-    previous_version: 7.24.0
-    date: 2026-05-29
+    version: 7.26.0-SNAPSHOT
+    previous_version: 7.25.0
+    date: 2026-06-29
     # release types: major, minor, bugfix
     release_type: minor
     # minimal version to build PMD
