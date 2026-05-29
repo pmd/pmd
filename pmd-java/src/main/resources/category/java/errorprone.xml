@@ -3744,4 +3744,32 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="WrongTestAnnotation"
+          language="java"
+          since="7.26.0"
+          message="The annotation {0} is from {1}, your codebase is using {2}."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.WrongTestAnnotationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#wrongtestannotation">
+        <description>
+            When you use the @Test annotation from the wrong framework, your tests won't be executed.
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+// Example 1: GOOD if using JUnit Jupiter, BAD if using JUnit4/TestNG
+import org.junit.jupiter.api.Test;
+public class TestClass {
+    @Test
+    public void myTest() { }
+}
+
+// Example 2: GOOD if using TestNG, BAD if using JUnit
+import org.testng.annotations.Test;
+public class TestClass {
+    @Test
+    public void myTest() { }
+}
+]]>
+        </example>
+    </rule>
 </ruleset>
