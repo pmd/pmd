@@ -75,21 +75,21 @@ public final class KotlinIsWithinDirectFunction extends BaseKotlinXPathFunction 
             }
             String context = (String) arguments[0];
             switch (context) {
-                case "companion-object":
-                    return isDirectWithin(contextNode, "CompanionObject");
-                case "top-level":
-                    // top-level is inherently direct: no class/object/function ancestor at all
-                    return isTopLevelDirect(contextNode);
-                case "object-declaration":
-                    return isDirectWithin(contextNode, "ObjectDeclaration");
-                case "function-body":
-                    return isDirectInsideFunctionBody(contextNode);
-                case "lambda":
-                    return isDirectInsideLambda(contextNode);
-                default:
-                    throw new XPathFunctionException(
-                            "pmd-kotlin:isWithinDirect() — unknown context '" + context
-                            + "'. Supported: companion-object, top-level, object-declaration, function-body, lambda");
+            case "companion-object":
+                return isDirectWithin(contextNode, "CompanionObject");
+            case "top-level":
+                // top-level is inherently direct: no class/object/function ancestor at all
+                return isTopLevelDirect(contextNode);
+            case "object-declaration":
+                return isDirectWithin(contextNode, "ObjectDeclaration");
+            case "function-body":
+                return isDirectInsideFunctionBody(contextNode);
+            case "lambda":
+                return isDirectInsideLambda(contextNode);
+            default:
+                throw new XPathFunctionException(
+                        "pmd-kotlin:isWithinDirect() - unknown context '" + context
+                        + "'. Supported: companion-object, top-level, object-declaration, function-body, lambda");
             }
         }
 
