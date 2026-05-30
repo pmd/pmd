@@ -11,7 +11,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * @experimental See {@link AttributeView}.
  */
 @Experimental
-public class KtClassDeclarationAttributes extends AttributeView<KotlinParser.KtClassDeclaration> implements HasSimpleIdentifier, HasModifiers {
+public class KtClassDeclarationAttributes extends AttributeView<KotlinParser.KtClassDeclaration> implements HasSimpleIdentifier, HasModifiers, HasTypeName {
     public KtClassDeclarationAttributes(KotlinParser.KtClassDeclaration node) {
         super(node);
     }

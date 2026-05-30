@@ -17,7 +17,6 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
 import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
@@ -44,14 +43,6 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     @Override
     public String getXPathNodeName() {
         return KotlinParser.DICO.getXPathNameOfRule(getRuleIndex());
-    }
-
-    public @Nullable String getTypeName() {
-        return KotlinTypeMapper.getTypeName(this);
-    }
-
-    public @Nullable String getReturnTypeName() {
-        return KotlinTypeMapper.getReturnTypeName(this);
     }
 
     /**
