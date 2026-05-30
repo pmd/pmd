@@ -11,7 +11,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
@@ -21,8 +20,7 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  *
  * <p>DataKeys are private to this class. The kotlin-type-mapper library
  * uses the {@code set*} methods to populate values during its pre-analysis
- * pass; rule code and {@link AttributeView} subclasses use the {@code get*}
- * methods to read them.
+ * pass; rule code uses the {@code get*} methods to read them.
  *
  * @since 7.25.0
  * @experimental
