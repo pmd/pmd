@@ -45,13 +45,20 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         return KotlinParser.DICO.getXPathNameOfRule(getRuleIndex());
     }
 
+    public @Nullable String getTypeName() {
+        return KotlinTypeMapper.getTypeName(this);
+    }
+
+    public @Nullable String getReturnTypeName() {
+        return KotlinTypeMapper.getReturnTypeName(this);
+    }
+
     /**
      * Returns the explicit modifier keywords of this declaration node as a
      * space-separated string (e.g. {@code "override suspend"}), or {@code null}
      * if this node has no modifier keywords. Annotations inside the modifier list
      * are excluded. Exposed as XPath attribute {@code @Modifiers}.
      */
-    @Override
     public @Nullable String getModifiers() {
         KotlinParser.KtModifiers mods = findModifiersNode();
         if (mods == null) {
@@ -131,7 +138,6 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
      * Returns the text of the first {@code SimpleIdentifier} direct child,
      * or {@code null} if none is present.
      */
-    @Override
     public @Nullable String getIdentifier() {
         for (int i = 0; i < getNumChildren(); i++) {
             KotlinNode child = getChild(i);

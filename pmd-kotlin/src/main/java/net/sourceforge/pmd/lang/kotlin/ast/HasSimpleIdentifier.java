@@ -19,7 +19,6 @@ public interface HasSimpleIdentifier extends KotlinNode {
      * Returns the text of the first {@code SimpleIdentifier} direct child,
      * or {@code null} if none is present.
      */
-    @Override
     default String getIdentifier() {
         return KotlinAstUtil.textOf(getNode().firstChild(KotlinParser.KtSimpleIdentifier.class));
     }

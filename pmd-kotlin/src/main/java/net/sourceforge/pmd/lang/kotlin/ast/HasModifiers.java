@@ -22,7 +22,6 @@ public interface HasModifiers extends KotlinNode {
      * if this node has no modifier keywords. Annotations inside the modifier list
      * are excluded. Exposed as XPath attribute {@code @Modifiers}.
      */
-    @Override
     default String getModifiers() {
         KotlinParser.KtModifiers mods = getNode().firstChild(KotlinParser.KtModifiers.class);
         if (mods == null) {
