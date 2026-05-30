@@ -16,8 +16,6 @@ import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinHasAnnotationFu
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinHasUnresolvedReferenceFunction;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinInsideLoopFunction;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinIsNullableFunction;
-import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinIsWithinDirectFunction;
-import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinIsWithinFunction;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinMatchesSigFunction;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinModifiersFunction;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinNodeTextFunction;
@@ -40,8 +38,6 @@ public class KotlinHandler extends AbstractPmdLanguageVersionHandler {
                         KotlinHasUnresolvedReferenceFunction.INSTANCE,
                         KotlinInsideLoopFunction.INSTANCE,
                         KotlinIsNullableFunction.INSTANCE,
-                        KotlinIsWithinFunction.INSTANCE,
-                        KotlinIsWithinDirectFunction.INSTANCE,
                         KotlinModifiersFunction.INSTANCE,
                         KotlinNodeTextFunction.INSTANCE);
     }
