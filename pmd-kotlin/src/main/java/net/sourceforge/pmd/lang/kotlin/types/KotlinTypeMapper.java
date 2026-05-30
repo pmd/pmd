@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.ast;
+package net.sourceforge.pmd.lang.kotlin.types;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,6 +11,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -19,8 +20,7 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  *
  * <p>DataKeys are private to this class. The kotlin-type-mapper library
  * uses the {@code set*} methods to populate values during its pre-analysis
- * pass; rule code and {@link AttributeView} subclasses use the {@code get*}
- * methods to read them.
+ * pass; rule code uses the {@code get*} methods to read them.
  *
  * @since 7.25.0
  * @experimental
@@ -42,34 +42,34 @@ public final class KotlinTypeMapper {
     }
 
     /**
-     * Returns the resolved type name for a {@link KotlinParser.KtVariableDeclaration} node,
+     * Returns the resolved type name stored on this node,
      * or {@code null} when type analysis has not been run.
      */
-    public static @Nullable String getTypeName(KotlinParser.KtVariableDeclaration node) {
+    public static @Nullable String getTypeName(KotlinNode node) {
         return node.getUserMap().get(TYPE_NAME_KEY);
     }
 
     /**
-     * Stores the resolved type name on a {@link KotlinParser.KtVariableDeclaration} node.
+     * Stores the resolved type name on a node.
      * Called by the kotlin-type-mapper pre-analysis pass.
      */
-    public static void setTypeName(KotlinParser.KtVariableDeclaration node, String typeName) {
+    public static void setTypeName(KotlinNode node, String typeName) {
         node.getUserMap().set(TYPE_NAME_KEY, typeName);
     }
 
     /**
-     * Returns the resolved return type name for a {@link KotlinParser.KtFunctionDeclaration} node,
+     * Returns the resolved return type name for a function declaration node,
      * or {@code null} when type analysis has not been run.
      */
-    public static @Nullable String getReturnTypeName(KotlinParser.KtFunctionDeclaration node) {
+    public static @Nullable String getReturnTypeName(KotlinNode node) {
         return node.getUserMap().get(RETURN_TYPE_KEY);
     }
 
     /**
-     * Stores the resolved return type name on a {@link KotlinParser.KtFunctionDeclaration} node.
+     * Stores the resolved return type name on a function declaration node.
      * Called by the kotlin-type-mapper pre-analysis pass.
      */
-    public static void setReturnTypeName(KotlinParser.KtFunctionDeclaration node, String returnTypeName) {
+    public static void setReturnTypeName(KotlinNode node, String returnTypeName) {
         node.getUserMap().set(RETURN_TYPE_KEY, returnTypeName);
     }
 
