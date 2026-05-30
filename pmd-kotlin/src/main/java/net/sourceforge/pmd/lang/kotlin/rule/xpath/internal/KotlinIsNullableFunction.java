@@ -10,7 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
@@ -77,8 +77,8 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
 
             if (contextNode instanceof KotlinNode) {
                 KotlinNode kotlinNode = (KotlinNode) contextNode;
-                if (isNullableType(KotlinTypeMapper.getTypeName(kotlinNode))
-                        || isNullableType(KotlinTypeMapper.getReturnTypeName(kotlinNode))) {
+                if (isNullableType(KotlinNodeTypeData.getTypeName(kotlinNode))
+                        || isNullableType(KotlinNodeTypeData.getReturnTypeName(kotlinNode))) {
                     return true;
                 }
             }

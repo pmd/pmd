@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
 /**
  * XPath function {@code pmd-kotlin:typeIs(typeName)}.
@@ -69,11 +69,11 @@ public final class KotlinTypeIsFunction extends BaseKotlinXPathFunction {
     private static final class TypeIsFunctionCall extends AbstractKotlinTypeIsFunctionCall {
         @Override
         protected boolean matchesNodeAttribute(KotlinNode node, String typeName, KotlinTypeAnalysisContext ctx) {
-            String nodeType = KotlinTypeMapper.getTypeName(node);
+            String nodeType = KotlinNodeTypeData.getTypeName(node);
             if (nodeType != null) {
                 return ctx.isSubtypeOf(typeName, nodeType);
             }
-            String returnType = KotlinTypeMapper.getReturnTypeName(node);
+            String returnType = KotlinNodeTypeData.getReturnTypeName(node);
             return returnType != null && ctx.isSubtypeOf(typeName, returnType);
         }
 

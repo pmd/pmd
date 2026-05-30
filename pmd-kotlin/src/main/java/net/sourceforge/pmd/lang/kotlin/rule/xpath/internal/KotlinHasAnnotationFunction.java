@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 /**
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
  *   <li>If kotlin-type-mapper resolved the annotation FQN, the {@code @TypeName}
  *       attribute on child {@code UnescapedAnnotation} nodes is used for an exact
  *       FQN or simple-name match.</li>
- *   <li>Falls back to KotlinTypeMapper on the declaration node.</li>
+ *   <li>Falls back to KotlinNodeTypeData on the declaration node.</li>
  *   <li>Falls back to the annotation name <em>as written in source</em> (via text region),
  *       which always works for simple names regardless of whether type resolution ran.</li>
  * </ol>
@@ -93,7 +93,7 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
 
         private static boolean matchesAnnotationFqNames(
                 KotlinNode declNode, String className, String simpleName) {
-            for (String fqn : KotlinTypeMapper.getAnnotationFqNames(declNode)) {
+            for (String fqn : KotlinNodeTypeData.getAnnotationFqNames(declNode)) {
                 if (fqn.equals(className) || simpleNameOf(fqn).equals(simpleName)) {
                     return true;
                 }
@@ -126,7 +126,7 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
             return false;
         }
         if (UNESCAPED_ANNOTATION.equals(xpathName)) {
-            String typeName = KotlinTypeMapper.getTypeName(node);
+            String typeName = KotlinNodeTypeData.getTypeName(node);
             if (typeName != null) {
                 return typeName.equals(className) || simpleNameOf(typeName).equals(simpleName);
             }

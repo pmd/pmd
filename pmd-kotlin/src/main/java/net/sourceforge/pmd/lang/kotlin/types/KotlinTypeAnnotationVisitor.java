@@ -25,20 +25,20 @@ import nl.stokpop.typemapper.model.TypedAst;
  * pre-analyzed type data from kotlin-type-mapper:
  *
  * <ul>
- *   <li>KotlinTypeMapper on {@code PropertyDeclaration} nodes (property type)</li>
- *   <li>KotlinTypeMapper on {@code ClassParameter} nodes -- primary constructor
+ *   <li>type data on {@code PropertyDeclaration} nodes (property type)</li>
+ *   <li>type data on {@code ClassParameter} nodes -- primary constructor
  *       {@code val}/{@code var} params (e.g. {@code class Foo(val name: String)})</li>
- *   <li>KotlinTypeMapper on {@code FunctionDeclaration} nodes (return type)</li>
- *   <li>KotlinTypeMapper on {@code FunctionValueParameter} nodes (parameter type)
+ *   <li>type data on {@code FunctionDeclaration} nodes (return type)</li>
+ *   <li>type data on {@code FunctionValueParameter} nodes (parameter type)
  *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
- *   <li>KotlinTypeMapper on {@code CatchBlock} nodes (caught exception type)</li>
- *   <li>KotlinTypeMapper on {@code ForStatement} nodes (loop variable type)</li>
- *   <li>KotlinTypeMapper on {@code UnescapedAnnotation} <em>and</em>
+ *   <li>type data on {@code CatchBlock} nodes (caught exception type)</li>
+ *   <li>type data on {@code ForStatement} nodes (loop variable type)</li>
+ *   <li>type data on {@code UnescapedAnnotation} <em>and</em>
  *       {@code SingleAnnotation} nodes (annotation FQN)
  *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
- *   <li>KotlinTypeMapper on declaration nodes (comma-joined FQN list)
+ *   <li>type data on declaration nodes (comma-joined FQN list)
  *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
- *   <li>KotlinTypeMapper on {@code DelegationSpecifier} nodes (supertype FQN)
+ *   <li>type data on {@code DelegationSpecifier} nodes (supertype FQN)
  *       -- delegated to {@link DelegationSpecifierAnnotator}</li>
  * </ul>
  *
@@ -114,7 +114,7 @@ public final class KotlinTypeAnnotationVisitor {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getType() != null) {
-                    KotlinTypeMapper.setTypeName(node, decl.getType());
+                    KotlinNodeTypeData.setTypeName(node, decl.getType());
                     AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
                     break;
                 }
@@ -130,7 +130,7 @@ public final class KotlinTypeAnnotationVisitor {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.PROPERTY && decl.getType() != null) {
-                    KotlinTypeMapper.setTypeName(node, decl.getType());
+                    KotlinNodeTypeData.setTypeName(node, decl.getType());
                     AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
                     break;
                 }
@@ -143,7 +143,7 @@ public final class KotlinTypeAnnotationVisitor {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getReturnType() != null) {
-                    KotlinTypeMapper.setReturnTypeName(node, decl.getReturnType());
+                    KotlinNodeTypeData.setReturnTypeName(node, decl.getReturnType());
                     AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
                     AnnotationAttributeAnnotator.setFunctionParameterTypes(node, decl.getParameters());
                     break;
@@ -157,7 +157,7 @@ public final class KotlinTypeAnnotationVisitor {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.CATCH_VARIABLE && decl.getType() != null) {
-                    KotlinTypeMapper.setTypeName(node, decl.getType());
+                    KotlinNodeTypeData.setTypeName(node, decl.getType());
                     break;
                 }
             }
@@ -169,7 +169,7 @@ public final class KotlinTypeAnnotationVisitor {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && decl.getType() != null) {
-                    KotlinTypeMapper.setTypeName(node, decl.getType());
+                    KotlinNodeTypeData.setTypeName(node, decl.getType());
                     break;
                 }
             }
@@ -186,7 +186,7 @@ public final class KotlinTypeAnnotationVisitor {
                         || decl.getKind() == DeclarationKind.INTERFACE
                         || decl.getKind() == DeclarationKind.ENUM) {
                     // Set @TypeName to the class's own FQN (useful in Designer + XPath)
-                    KotlinTypeMapper.setTypeName(node, decl.getFqName());
+                    KotlinNodeTypeData.setTypeName(node, decl.getFqName());
                     AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
                     DelegationSpecifierAnnotator.setDelegationSpecifierTypes(node, decl.getSuperTypes());
                     break;

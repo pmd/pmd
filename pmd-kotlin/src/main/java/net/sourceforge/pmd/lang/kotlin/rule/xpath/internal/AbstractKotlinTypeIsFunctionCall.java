@@ -10,7 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
@@ -37,7 +37,7 @@ abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefiniti
             // that didn't match, trust the annotation and do not fall through to the call site
             // index. This prevents RHS constructor calls from matching when the declared type
             // on the same line is a different (e.g. interface) type.
-            if (KotlinTypeMapper.getTypeName(kn) != null || KotlinTypeMapper.getReturnTypeName(kn) != null) {
+            if (KotlinNodeTypeData.getTypeName(kn) != null || KotlinNodeTypeData.getReturnTypeName(kn) != null) {
                 return false;
             }
         }

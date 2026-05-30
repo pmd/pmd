@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
- * Contract class for type-mapper data stored on Kotlin AST nodes.
+ * Stores and retrieves type-mapper data on Kotlin AST nodes via {@link DataMap} keys.
  *
  * <p>DataKeys are private to this class. The kotlin-type-mapper library
  * uses the {@code set*} methods to populate values during its pre-analysis
@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * @experimental
  */
 @Experimental
-public final class KotlinTypeMapper {
+public final class KotlinNodeTypeData {
 
     private static final SimpleDataKey<String> TYPE_NAME_KEY =
             DataMap.simpleDataKey("kotlin.typeName");
@@ -37,7 +37,10 @@ public final class KotlinTypeMapper {
     private static final SimpleDataKey<String> ANNOTATION_NAMES_KEY =
             DataMap.simpleDataKey("kotlin.annotationNames");
 
-    private KotlinTypeMapper() {
+    private static final SimpleDataKey<Boolean> TYPE_INFO_AVAILABLE_KEY =
+            DataMap.simpleDataKey("kotlin.typeInfoAvailable");
+
+    private KotlinNodeTypeData() {
         // utility class
     }
 
@@ -97,5 +100,23 @@ public final class KotlinTypeMapper {
      */
     public static void setAnnotationFqNames(KotlinNode node, String annotationFqNames) {
         node.getUserMap().set(ANNOTATION_NAMES_KEY, annotationFqNames);
+    }
+
+    /**
+     * Returns {@code true} when the kotlin-type-mapper pre-analysis ran successfully
+     * for the file represented by this root node, {@code false} otherwise.
+     * Exposed as the {@code @TypeInfoAvailable} XPath attribute on {@code KotlinFile} nodes.
+     */
+    public static boolean isTypeInfoAvailable(KotlinNode rootNode) {
+        Boolean value = rootNode.getUserMap().get(TYPE_INFO_AVAILABLE_KEY);
+        return Boolean.TRUE.equals(value);
+    }
+
+    /**
+     * Marks a root node as having completed type analysis.
+     * Called by {@code KotlinLanguageProcessor} after the annotation visitor runs.
+     */
+    public static void setTypeInfoAvailable(KotlinNode rootNode) {
+        rootNode.getUserMap().set(TYPE_INFO_AVAILABLE_KEY, Boolean.TRUE);
     }
 }

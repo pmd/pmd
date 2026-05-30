@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContextHolder;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeAnnotationVisitor;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
@@ -136,9 +137,11 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
             visitor = runSingleFileAnalysis(effectiveName, sourceText);
             if (visitor != null) {
                 visitor.annotate(root, effectiveName);
+                KotlinNodeTypeData.setTypeInfoAvailable(root);
             }
         } else {
             visitor.annotate(root, absPath);
+            KotlinNodeTypeData.setTypeInfoAvailable(root);
         }
     }
 

@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.HasModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.HasSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
@@ -59,11 +59,11 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
                 }
             }
 
-            String typeName = KotlinTypeMapper.getTypeName(kotlinNode);
+            String typeName = KotlinNodeTypeData.getTypeName(kotlinNode);
             if (typeName != null) {
                 return new Attribute(node, "TypeName", typeName);
             }
-            String returnTypeName = KotlinTypeMapper.getReturnTypeName(kotlinNode);
+            String returnTypeName = KotlinNodeTypeData.getReturnTypeName(kotlinNode);
             if (returnTypeName != null) {
                 return new Attribute(node, "ReturnTypeName", returnTypeName);
             }
@@ -89,12 +89,12 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
             info.add(new AdditionalInfo("pmd-kotlin:modifiers(): " + formatted));
         }
 
-        String typeName = KotlinTypeMapper.getTypeName(kotlinNode);
+        String typeName = KotlinNodeTypeData.getTypeName(kotlinNode);
         if (typeName != null) {
             info.add(new AdditionalInfo("TypeName: " + typeName));
         }
 
-        String returnTypeName = KotlinTypeMapper.getReturnTypeName(kotlinNode);
+        String returnTypeName = KotlinNodeTypeData.getReturnTypeName(kotlinNode);
         if (returnTypeName != null) {
             info.add(new AdditionalInfo("ReturnTypeName: " + returnTypeName));
         }

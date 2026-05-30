@@ -22,12 +22,12 @@ import nl.stokpop.typemapper.model.ParameterAst;
  * Annotates declaration nodes with annotation FQNs and function parameter types.
  *
  * <p>Responsibility (1): {@link #setAnnotationAttributes} sets
- * KotlinTypeMapper on the declaration node itself and
- * KotlinTypeMapper on each {@code KtUnescapedAnnotation} /
+ * type data on the declaration node itself and
+ * type data on each {@code KtUnescapedAnnotation} /
  * {@code KtSingleAnnotation} child.
  *
  * <p>Responsibility (2): {@link #setFunctionParameterTypes} sets
- * KotlinTypeMapper on each {@code KtFunctionValueParameter}
+ * type data on each {@code KtFunctionValueParameter}
  * child by matching against the {@link nl.stokpop.typemapper.model.ParameterAst}
  * list from kotlin-type-mapper.
  */
@@ -39,8 +39,8 @@ final class AnnotationAttributeAnnotator {
     }
 
     /**
-     * Sets KotlinTypeMapper on the declaration node and
-     * KotlinTypeMapper on each of its {@code KtUnescapedAnnotation}
+     * Sets type data on the declaration node and
+     * type data on each of its {@code KtUnescapedAnnotation}
      * children, matching by simple (unqualified) name.
      */
     static void setAnnotationAttributes(KotlinNode declNode, List<AnnotationAst> annotations) {
@@ -62,7 +62,7 @@ final class AnnotationAttributeAnnotator {
             fqnList.append(fqn);
         }
         if (fqnList.length() > 0) {
-            KotlinTypeMapper.setAnnotationFqNames(declNode, fqnList.toString());
+            KotlinNodeTypeData.setAnnotationFqNames(declNode, fqnList.toString());
         }
 
         // Set @TypeName on each KtUnescapedAnnotation in the declaration's modifiers
@@ -78,19 +78,19 @@ final class AnnotationAttributeAnnotator {
                 fqn = simpleToFqn.get(writtenName); // handles fully-qualified written name
             }
             if (fqn != null) {
-                KotlinTypeMapper.setTypeName(annNode, fqn);
+                KotlinNodeTypeData.setTypeName(annNode, fqn);
                 // Also set on the parent SingleAnnotation so users can query
                 // //SingleAnnotation[@TypeName='org.example.Foo'] directly.
                 KotlinNode parent = annNode.getParent();
                 if (parent instanceof KotlinParser.KtSingleAnnotation) {
-                    KotlinTypeMapper.setTypeName(parent, fqn);
+                    KotlinNodeTypeData.setTypeName(parent, fqn);
                 }
             }
         }
     }
 
     /**
-     * Sets KotlinTypeMapper on each {@code KtFunctionValueParameter}
+     * Sets type data on each {@code KtFunctionValueParameter}
      * child of the given function declaration, matching by position against the
      * {@code parameters} list from the kotlin-type-mapper {@link nl.stokpop.typemapper.model.DeclarationAst}.
      */
@@ -124,7 +124,7 @@ final class AnnotationAttributeAnnotator {
             if (sub instanceof KotlinParser.KtFunctionValueParameter && paramIdx < parameters.size()) {
                 String type = parameters.get(paramIdx).getType();
                 if (type != null) {
-                    KotlinTypeMapper.setTypeName(sub, type);
+                    KotlinNodeTypeData.setTypeName(sub, type);
                 }
                 paramIdx++;
             }

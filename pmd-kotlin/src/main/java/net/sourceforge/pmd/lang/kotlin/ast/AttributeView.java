@@ -78,6 +78,8 @@ public abstract class AttributeView<T extends KotlinNode> implements Node {
             result = new KtSingleAnnotationAttributes((KotlinParser.KtSingleAnnotation) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtDelegationSpecifier) {
             result = new KtDelegationSpecifierAttributes((KotlinParser.KtDelegationSpecifier) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtKotlinFile) {
+            result = new KtKotlinFileAttributes((KotlinParser.KtKotlinFile) kotlinNode);
         } else {
             result = null;
         }

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.kotlin.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
 /**
  * @since 7.25.0
@@ -24,6 +24,6 @@ public class KtFunctionDeclarationAttributes extends AttributeView<KotlinParser.
      * or {@code null} when type analysis has not been run.
      */
     public @Nullable String getReturnTypeName() {
-        return KotlinTypeMapper.getReturnTypeName(node);
+        return KotlinNodeTypeData.getReturnTypeName(node);
     }
 }

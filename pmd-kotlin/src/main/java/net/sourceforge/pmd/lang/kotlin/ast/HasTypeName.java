@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.kotlin.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
 /**
  * Marks {@link AttributeView} subclasses that expose a {@code @TypeName} XPath attribute.
@@ -26,6 +26,6 @@ public interface HasTypeName extends KotlinNode {
      * the type could not be resolved.
      */
     default @Nullable String getTypeName() {
-        return KotlinTypeMapper.getTypeName(getNode());
+        return KotlinNodeTypeData.getTypeName(getNode());
     }
 }

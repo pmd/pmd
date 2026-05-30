@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
  * </ul>
  * The term comes directly from the Kotlin ANTLR grammar rule {@code delegationSpecifier}.
  *
- * <p>This annotator sets KotlinTypeMapper on each
+ * <p>This annotator sets type data on each
  * {@code KtDelegationSpecifier} node so that XPath rules can query the written
  * supertype by its fully-qualified name, e.g.
  * {@code //ClassDeclaration[DelegationSpecifier[@TypeName='java.io.Serializable']]}.
@@ -41,7 +41,7 @@ final class DelegationSpecifierAnnotator {
     }
 
     /**
-     * Sets KotlinTypeMapper on each {@code KtDelegationSpecifier}
+     * Sets type data on each {@code KtDelegationSpecifier}
      * node inside the class declaration, matching the written supertype name (e.g.
      * {@code Serializable}) against the FQNs in {@code superTypes}.
      */
@@ -93,7 +93,7 @@ final class DelegationSpecifierAnnotator {
     }
 
     /**
-     * Sets KotlinTypeMapper on a single {@code KtDelegationSpecifier}
+     * Sets type data on a single {@code KtDelegationSpecifier}
      * by extracting the written type name from its contained {@code KtUserType}.
      */
     private static void annotateDelegationSpecifier(KotlinParser.KtDelegationSpecifier spec,
@@ -112,7 +112,7 @@ final class DelegationSpecifierAnnotator {
             }
             String fqn = simpleToFqn.get(KotlinTypeAnnotationVisitor.simpleNameOf(written));
             if (fqn != null) {
-                KotlinTypeMapper.setTypeName(spec, fqn);
+                KotlinNodeTypeData.setTypeName(spec, fqn);
             }
         } catch (IndexOutOfBoundsException e) {
             LOG.debug("Could not read text region for delegation specifier in {}", spec, e);
