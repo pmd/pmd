@@ -608,7 +608,7 @@ For type resolution to work in a test case CDATA snippet:
 
    This means: adding the library as `<scope>test</scope>` in `pom.xml` is all that is
    needed.  The language processor picks it up from `java.class.path` and feeds it to
-   `KotlinTypeMapper`.  No code changes to tests are required.
+   `KotlinNodeTypeData`.  No code changes to tests are required.
 
    ```xml
    <!-- pmd-kotlin/pom.xml -->
@@ -624,7 +624,7 @@ For type resolution to work in a test case CDATA snippet:
    library's types will resolve correctly and `typeIs` / `typeIsExactly` / `matchesSig`
    will work as expected -- no extra Java test code is needed.
 
-   **Type alias expansion:** `KotlinTypeMapper` always expands `typealias` chains down
+   **Type alias expansion:** `KotlinNodeTypeData` (backed by the kotlin-type-mapper library) always expands `typealias` chains down
    to the final concrete JVM type.  This means the FQN you provide to `typeIsExactly()`
    must be the fully-expanded JVM type, NOT the alias name.  For example:
 
@@ -636,6 +636,7 @@ For type resolution to work in a test case CDATA snippet:
 
    Use the diagnostic pattern below to discover the actual FQN when in doubt:
    ```java
+   // nl.stokpop.typemapper.analyzer.KotlinTypeMapper (the external library, not KotlinNodeTypeData)
    TypedAst ast = new KotlinTypeMapper(tmpDir, classpathJars, false).analyze();
    ast.getFiles().forEach(f -> f.getDeclarations().forEach(d ->
        System.out.println(d.getKind() + " " + d.getName() + " type=" + d.getType())));
@@ -726,6 +727,68 @@ variable, use a `let` expression (supported by PMD's Saxon XPath engine):
 
 `let $var := expr return ...` is valid XPath 2.0 inside predicates.
 Existing Java PMD rules use this pattern (e.g. `LabeledStatement` in bestpractices).
+
+---
+
+## 9a. `KotlinNodeTypeData` and `AttributeView` Type Attributes
+
+### 9a.1 `KotlinNodeTypeData` -- PMD-side Type Data Accessor
+
+`KotlinNodeTypeData` (`net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData`) is the
+PMD-side utility class that stores and reads type annotation data on AST nodes via
+`DataMap` keys. It is distinct from `nl.stokpop.typemapper.analyzer.KotlinTypeMapper`
+(the external kotlin-type-mapper library class).
+
+- **`KotlinNodeTypeData`** -- lives in `pmd-kotlin`; stores/reads values on `DataMap` keys.
+- **`nl.stokpop.typemapper.analyzer.KotlinTypeMapper`** -- the external library; performs
+  the actual Kotlin type analysis and calls `KotlinNodeTypeData.set*()` via
+  `KotlinTypeAnnotationVisitor`.
+
+### 9a.2 Node types that expose `@TypeName`
+
+`@TypeName` is the XPath attribute holding the resolved fully-qualified type name.
+It is exposed on the following node types via `AttributeView` subclasses:
+
+| Node type | XPath attribute | What it represents |
+|---|---|---|
+| `PropertyDeclaration` | `@TypeName` | declared variable type |
+| `ClassParameter` | `@TypeName` | constructor parameter type |
+| `ClassDeclaration` | `@TypeName` | own FQN of the class |
+| `CatchBlock` | `@TypeName` | caught exception type |
+| `ForStatement` | `@TypeName` | loop variable type |
+| `DelegationSpecifier` | `@TypeName` | supertype FQN |
+| `FunctionValueParameter` | `@TypeName` | parameter type (annotation context) |
+| `UnescapedAnnotation` | `@TypeName` | annotation class FQN |
+| `SingleAnnotation` | `@TypeName` | annotation class FQN |
+
+`@ReturnTypeName` is exposed on `FunctionDeclaration` only.
+
+All of these are implemented as `AttributeView` subclasses that implement the `HasTypeName`
+interface (for `@TypeName` nodes) or add `getReturnTypeName()` directly
+(`KtFunctionDeclarationAttributes`).
+
+`KotlinInnerNode` no longer has `getTypeName()` or `getReturnTypeName()` methods -- they
+were moved to `AttributeView` subclasses to avoid polluting all AST node types.
+
+### 9a.3 `@TypeInfoAvailable` on `KotlinFile`
+
+The root `KotlinFile` node exposes a `@TypeInfoAvailable` attribute (via
+`KtKotlinFileAttributes`) that is `true` when the kotlin-type-mapper pre-analysis ran
+successfully for this file.
+
+- **When present and `true`:** type analysis ran; `typeIs`, `matchesSig`, `@TypeName` etc.
+  are populated.
+- **When absent:** type analysis did not run (no classpath, or analysis failed).
+
+XPath usage:
+```xpath
+//KotlinFile[@TypeInfoAvailable]              (: type analysis ran :)
+//KotlinFile[not(@TypeInfoAvailable)]         (: type analysis did not run :)
+```
+
+`@TypeInfoAvailable` complements the `UnresolvedType` rule:
+- `UnresolvedType` fires when type-mapper ran but a specific dependency's type is missing.
+- `not(@TypeInfoAvailable)` detects when type-mapper never ran at all.
 
 ---
 
