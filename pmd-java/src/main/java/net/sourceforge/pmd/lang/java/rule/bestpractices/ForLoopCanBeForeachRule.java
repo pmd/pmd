@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import static net.sourceforge.pmd.lang.ast.NodeStream.empty;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isLiteralInt;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isReferenceToVar;
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT;
 
 import java.util.Iterator;
@@ -167,8 +169,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
         }
         ASTExpression left = ((ASTInfixExpression) rhs).getLeftOperand();
         ASTExpression right = ((ASTInfixExpression) rhs).getRightOperand();
-        if (JavaAstUtils.isReferenceToVar(left, sym) && JavaAstUtils.isLiteralInt(right, 1)
-                || JavaAstUtils.isReferenceToVar(right, sym) && JavaAstUtils.isLiteralInt(left, 1)) {
+        if (isReferenceToVar(left, sym) && isLiteralInt(right, 1)
+                || isLiteralInt(left, 1) && isReferenceToVar(right, sym)) {
             return sym.tryGetNode();
         }
         return null;

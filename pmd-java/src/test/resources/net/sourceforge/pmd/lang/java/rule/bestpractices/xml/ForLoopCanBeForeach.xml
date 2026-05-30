@@ -480,4 +480,49 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>i = 1 + i update should be flagged like i++</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void bar(List<String> list) {
+        for (int i = 0; i < list.size(); i = 1 + i) {
+            System.out.println(list.get(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>i = 1 - 1 with non-unit stride should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void bar(List<String> list) {
+        for (int i = 0; i < list.size(); i = 1 - 1) {
+            System.out.println(list.get(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>i = somefunc(i) update should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    int somefunc(int i) { return i + 1; }
+    void bar(List<String> list) {
+        for (int i = 0; i < list.size(); i = somefunc(i)) {
+            System.out.println(list.get(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
