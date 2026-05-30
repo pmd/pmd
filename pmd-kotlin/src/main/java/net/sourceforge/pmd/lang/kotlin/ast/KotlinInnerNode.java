@@ -102,7 +102,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         Iterator<Attribute> base = super.getXPathAttributesIterator();
         AttributeView<?> attributeView = AttributeView.create(this);
         if (attributeView == null) {
-            return base;
+            return filterNullValues(base);
         }
         // Note: IteratorUtil.concat cannot be used here because it eagerly calls
         // bs.hasNext() at construction time, before base is consumed. The view
@@ -112,13 +112,26 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         Set<String> names = new HashSet<>();
         while (base.hasNext()) {
             Attribute attr = base.next();
-            result.add(attr);
-            names.add(attr.getName());
+            if (attr.getValue() != null) {
+                result.add(attr);
+                names.add(attr.getName());
+            }
         }
         Iterator<Attribute> viewIt = attributeView.getXPathAttributesIterator();
         while (viewIt.hasNext()) {
             Attribute attr = viewIt.next();
-            if (!names.contains(attr.getName())) {
+            if (!names.contains(attr.getName()) && attr.getValue() != null) {
+                result.add(attr);
+            }
+        }
+        return result.iterator();
+    }
+
+    private Iterator<Attribute> filterNullValues(Iterator<Attribute> it) {
+        List<Attribute> result = new ArrayList<>();
+        while (it.hasNext()) {
+            Attribute attr = it.next();
+            if (attr.getValue() != null) {
                 result.add(attr);
             }
         }
