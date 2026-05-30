@@ -235,6 +235,28 @@ class KotlinMatchesSigFunctionTest {
                 "Line 10 uses LocalDateTime.now() -- should not match Calendar.getInstance");
     }
 
+    @Test
+    void constructorCtorMatchesSimpleCall() {
+        File kotlinFile = getResource(MATCHES_SIG_RESOURCE_DIR + "/JodaDateTimeFormatterCtorUsage.kt");
+        Report report = runXPath(
+                "//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.Date#<init>(*)')]",
+                kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertEquals(1, report.getViolations().stream().filter(v -> v.getBeginLine() == 5).count(),
+                "Line 5 (simple ctor) should match java.util.Date#<init>(*)");
+    }
+
+    @Test
+    void constructorCtorMatchesFqnCall() {
+        File kotlinFile = getResource(MATCHES_SIG_RESOURCE_DIR + "/JodaDateTimeFormatterCtorUsage.kt");
+        Report report = runXPath(
+                "//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.Date#<init>(*)')]",
+                kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertEquals(1, report.getViolations().stream().filter(v -> v.getBeginLine() == 6).count(),
+                "Line 6 (FQN ctor java.util.Date()) should match java.util.Date#<init>(*)");
+    }
+
     private Report runXPath(String xpathExpr, File kotlinFile) {
         PMDConfiguration config = new PMDConfiguration();
         config.setIgnoreIncrementalAnalysis(true);
