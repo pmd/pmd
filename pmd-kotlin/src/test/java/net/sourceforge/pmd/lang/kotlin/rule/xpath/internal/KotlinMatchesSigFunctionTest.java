@@ -201,6 +201,30 @@ class KotlinMatchesSigFunctionTest {
     }
 
     @Test
+    void dateTimeFormatterOfPatternMatchesWildcard() {
+        File kotlinFile = getResource(MATCHES_SIG_RESOURCE_DIR + "/DateTimeFormatterUsage.kt");
+        Report report = runXPath(
+                "//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.time.format.DateTimeFormatter#ofPattern(*)')]",
+                kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertTrue(report.getViolations().stream().anyMatch(v -> v.getBeginLine() == 5),
+                "Expected violation at line 5 (DateTimeFormatter.ofPattern static call)");
+    }
+
+    @Test
+    void matchesSigNestedArgProducesExactlyOneViolation() {
+        File kotlinFile = getResource(MATCHES_SIG_RESOURCE_DIR + "/NestedArgUsage.kt");
+        Report report = runXPath(
+                "//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.time.format.DateTimeFormatter#ofPattern(*)')]",
+                kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertEquals(1, report.getViolations().size(),
+                "Expected exactly 1 violation — outer LocalDate.parse must not double-match");
+        assertTrue(report.getViolations().stream().anyMatch(v -> v.getBeginLine() == 7),
+                "Expected violation at line 7 (DateTimeFormatter.ofPattern nested in LocalDate.parse)");
+    }
+
+    @Test
     void calendarGetInstanceDoesNotMatchLocalDateTimeNow() {
         File kotlinFile = getResource(MATCHES_SIG_RESOURCE_DIR + "/CalendarDateUsage.kt");
         Report report = runXPath(

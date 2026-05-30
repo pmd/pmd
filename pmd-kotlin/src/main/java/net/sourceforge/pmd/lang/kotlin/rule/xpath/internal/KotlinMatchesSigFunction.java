@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,15 +131,29 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
                     }
                 }
                 if (suffixBeginLines.isEmpty()) {
-                    // No direct PostfixUnarySuffix children: this node is a block-like
-                    // expression (try, when, ...), not a direct method-call chain.
+                    // No direct PostfixUnarySuffix children: block-like expression (try, when, …)
                     return false;
                 }
             }
 
+            // For single-line nodes, build excluded column ranges from descendant
+            // PostfixUnaryExpression nodes.  A call site whose column falls inside a
+            // descendant's range belongs to that inner expression, not this one.
+            // Example: LocalDate.parse(raw, DateTimeFormatter.ofPattern("…"))
+            // — the outer parse-expression must not claim the inner ofPattern call site.
+            List<int[]> nestedRanges = null;
+            if (singleLine) {
+                nestedRanges = new ArrayList<>();
+                for (Node desc : contextNode.descendants().toList()) {
+                    if ("PostfixUnaryExpression".equals(desc.getXPathNodeName())) {
+                        nestedRanges.add(new int[]{desc.getBeginColumn(), desc.getEndColumn()});
+                    }
+                }
+            }
+
             for (CallSiteAst call : sites) {
-                boolean callSiteMatch = matchesCallSite(call, beginCol, endCol,
-                        singleLine, suffixBeginLines);
+                boolean callSiteMatch = matchesCallSite(call, beginCol, endCol, singleLine,
+                        suffixBeginLines, nestedRanges);
                 boolean sigMatch = callSiteMatch && SignatureMatcherKt.matchesSigPolymorphic(call, sig, ctx::isSubtypeOf);
                 if (sigMatch) {
                     return true;
@@ -150,15 +165,22 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
         private static boolean matchesCallSite(CallSiteAst call,
                                                int beginCol, int endCol,
                                                boolean singleLine,
-                                               @Nullable Set<Integer> suffixBeginLines) {
+                                               Set<Integer> suffixBeginLines,
+                                               List<int[]> nestedRanges) {
             if (singleLine) {
-                // Single-line: filter by column range to distinguish multiple calls on the same line
                 int col = call.getColumn();
-                return col >= beginCol && col <= endCol;
+                if (col < beginCol || col > endCol) {
+                    return false;
+                }
+                // Reject call sites that belong to a nested PostfixUnaryExpression.
+                for (int[] range : nestedRanges) {
+                    if (col >= range[0] && col <= range[1]) {
+                        return false;
+                    }
+                }
+                return true;
             }
-            // Multi-line: only accept call sites on lines where a direct PostfixUnarySuffix starts.
-            // This constrains matching to the chain links of this expression and avoids picking up
-            // call sites that are deeply nested inside lambda/block arguments.
+            // Multi-line: restrict to lines where a direct PostfixUnarySuffix starts.
             return suffixBeginLines != null && suffixBeginLines.contains(call.getLine());
         }
     }
