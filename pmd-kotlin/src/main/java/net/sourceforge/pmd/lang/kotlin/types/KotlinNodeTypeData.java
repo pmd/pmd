@@ -16,7 +16,7 @@ import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
 /**
- * Contract class for type-mapper data stored on Kotlin AST nodes.
+ * Stores and retrieves type-mapper data on Kotlin AST nodes via {@link DataMap} keys.
  *
  * <p>DataKeys are private to this class. The kotlin-type-mapper library
  * uses the {@code set*} methods to populate values during its pre-analysis
@@ -26,7 +26,7 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * @experimental
  */
 @Experimental
-public final class KotlinTypeMapper {
+public final class KotlinNodeTypeData {
 
     private static final SimpleDataKey<String> TYPE_NAME_KEY =
             DataMap.simpleDataKey("kotlin.typeName");
@@ -37,7 +37,7 @@ public final class KotlinTypeMapper {
     private static final SimpleDataKey<String> ANNOTATION_NAMES_KEY =
             DataMap.simpleDataKey("kotlin.annotationNames");
 
-    private KotlinTypeMapper() {
+    private KotlinNodeTypeData() {
         // utility class
     }
 
