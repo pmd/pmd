@@ -4,33 +4,49 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 
 /**
- * Language processor for Kotlin.
- *
- * <p>Wires the {@link JvmLanguagePropertyBundle} (which carries the {@code auxClasspath}
- * property) into the processing pipeline, so users can pass {@code --aux-classpath} on
- * the command line and it will be picked up by Kotlin analysis.
- *
- * <p>The constructor signature is intentionally compatible with the type-mapper extension
- * that will be added in a later PR.
+ * @since 7.25.0
  */
-class KotlinLanguageProcessor extends BatchLanguageProcessor<JvmLanguagePropertyBundle> {
+public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLanguageProperties> {
+    private static final Logger LOG = LoggerFactory.getLogger(KotlinLanguageProcessor.class);
 
-    private final KotlinHandler handler;
+    private final ExecutorService parseTimeoutExecutor =
+            Executors.newCachedThreadPool(r -> {
+                Thread t = new Thread(r, "kotlin-parse-timeout");
+                t.setDaemon(true);
+                return t;
+            });
 
-    KotlinLanguageProcessor(JvmLanguagePropertyBundle bundle, KotlinHandler handler) {
+    private final KotlinHandler kotlinHandler;
+
+    KotlinLanguageProcessor(KotlinLanguageProperties bundle) {
         super(bundle);
-        this.handler = handler;
+        kotlinHandler = new KotlinHandler(parseTimeoutExecutor);
     }
 
     @Override
     public @NonNull LanguageVersionHandler services() {
-        return handler;
+        return kotlinHandler;
+    }
+
+    @Override
+    public void close() throws Exception {
+        parseTimeoutExecutor.shutdown();
+        boolean result = parseTimeoutExecutor.awaitTermination(getProperties().getParseTimeoutSeconds() * 2L, TimeUnit.SECONDS);
+        if (!result) {
+            LOG.error("Couldn't properly shutdown parseTimeoutExecutor - threads might still be running!");
+        }
+        super.close();
     }
 }

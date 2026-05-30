@@ -125,7 +125,7 @@ Jekyll::Hooks.register :site, :after_init do |site|
         if not messages.empty?
             messages.each {|m| Jekyll.logger.error m}
             Jekyll.logger.abort_with "Please execute `./mvnw package -Pgenerate-rule-docs -pl pmd-doc` before"\
-              "generating pmd documentation or ignore by setting env variable #{ENV_VAR_NAME}"
+              " generating pmd documentation or ignore by setting env variable #{ENV_VAR_NAME}"
         end
     end
 end

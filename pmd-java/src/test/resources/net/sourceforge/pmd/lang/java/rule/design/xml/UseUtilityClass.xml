@@ -8,15 +8,13 @@
         <description>should be utility class since all static, public constructor</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>All methods are static. Consider adding a private no-args constructor to prevent instantiation.</message>
+            <message>All members are static. Consider adding a private no-args constructor to prevent instantiation.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
     public Foo() { }
     public static void doSomething() {}
-    public static void main(String args[]) {
-        doSomething();
-    }
+    public static void doSomethingElse(String args[]) {}
 }
         ]]></code>
     </test-code>
@@ -426,9 +424,141 @@ Foo // <--violation: line 2
 {
     public Foo() { }
     public static void doSomething() {}
-    public static void main(String args[]) {
-        doSomething();
+    public static void doSomethingElse(String args[]) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#559 only static fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>both static and non-static fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public final int instance_const = 1337;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of static fields and static member function</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class has state, but no public accessors</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final int x;
+
+    private Foo(int x) {
+        this.x = x;
     }
+
+    public static Foo fooFactory(int x) {
+        return new Foo(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>only static nested classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static class Bar {};
+
+    public static enum Baz { X };
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>both static and non-static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static class Bar {};
+
+    public class Baz {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of a static field, a static member function, and a static nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+
+    public static class Bar {};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-static initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static void privateStaticMemberFunction() {};
+    {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of a static field, a static member function, a static nested class, and a static initializer</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+
+    public static class Bar {};
+
+    static {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>with a main method, this isn't a utility class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String... args) {};
+
+    public static void staticMemberFunction() {};
 }
         ]]></code>
     </test-code>

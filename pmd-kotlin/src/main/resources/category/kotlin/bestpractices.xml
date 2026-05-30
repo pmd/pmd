@@ -34,4 +34,5 @@ fun calculateLayout() // no violation
 ]]>
         </example>
     </rule>
+
 </ruleset>

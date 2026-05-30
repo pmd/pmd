@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
+
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -30,7 +31,8 @@ import net.sourceforge.pmd.reporting.RuleContext;
 public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
 
     private static final InvocationMatcher CHARSET_FOR_NAME = InvocationMatcher.parse("java.nio.charset.Charset#forName(java.lang.String)");
-    private static final Set<String> STANDARD_CHARSET_EXISTS = new HashSet<>(Arrays.asList("US-ASCII", "ISO-8859-1", "UTF-8", "UTF-16BE", "UTF-16LE", "UTF-16"));
+    private static final Set<String> STANDARD_CHARSETS = immutableSetOf("US-ASCII", "ISO-8859-1", "UTF-8", "UTF-16BE", "UTF-16LE", "UTF-16");
+    private static final Set<String> STANDARD_CHARSETS_JAVA_22 = immutableSetOf("UTF-32BE", "UTF-32LE", "UTF-32");
     private static final String CHARSET = "java.nio.charset.Charset";
 
     public UseStandardCharsetsRule() {
@@ -41,10 +43,11 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
     public RuleContext visit(ASTMethodCall call, Object data) {
         RuleContext ctx = (RuleContext) data;
 
-        if (CHARSET_FOR_NAME.matchesCall(call)
-                && STANDARD_CHARSET_EXISTS.contains(call.getArguments().get(0).getConstValue())
-        ) {
-            ctx.addViolation(call);
+        if (CHARSET_FOR_NAME.matchesCall(call)) {
+            String callArgument = (String) call.getArguments().get(0).getConstValue();
+            if (callArgument != null && standardCharsetExists(call.getLanguageVersion(), callArgument)) {
+                ctx.addViolation(call);
+            }
         }
 
         for (int i = 0; i < call.getArguments().size(); i++) {
@@ -66,17 +69,20 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
     }
 
     private void checkIthArgument(RuleContext ctx, InvocationNode call, int index) {
-        ASTExpression ex = call.getArguments().get(index);
-        if (STANDARD_CHARSET_EXISTS.contains(ex.getConstValue())) {
-            JMethodSig callSignature = call.getMethodType();
-            Stream<JMethodSig> otherSignatures = streamMethodSignatures(call);
-            long count = otherSignatures
-                    .filter(sig -> Modifier.isPublic(sig.getModifiers()))
-                    .filter(sig -> isSameSignatureExcept(callSignature, sig, index))
-                    .filter(sig -> CHARSET.equals(sig.getFormalParameters().get(index).toString()))
-                    .count();
-            if (count > 0) {
-                ctx.addViolation(call);
+        Object callArgument = call.getArguments().get(index).getConstValue();
+        if (callArgument instanceof String) {
+            String stringArgument = (String) callArgument;
+            if (standardCharsetExists(call.getLanguageVersion(), stringArgument)) {
+                JMethodSig callSignature = call.getMethodType();
+                Stream<JMethodSig> otherSignatures = streamMethodSignatures(call);
+                long count = otherSignatures
+                        .filter(sig -> Modifier.isPublic(sig.getModifiers()))
+                        .filter(sig -> isSameSignatureExcept(callSignature, sig, index))
+                        .filter(sig -> CHARSET.equals(sig.getFormalParameters().get(index).toString()))
+                        .count();
+                if (count > 0) {
+                    ctx.addViolation(call);
+                }
             }
         }
     }
@@ -111,5 +117,11 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
             }
         }
         return true;
+    }
+
+    private boolean standardCharsetExists(LanguageVersion languageVersion, String charset) {
+        return STANDARD_CHARSETS.contains(charset.toUpperCase(Locale.ROOT))
+                || (languageVersion.compareToVersion("22") >= 0
+                        && STANDARD_CHARSETS_JAVA_22.contains(charset.toUpperCase(Locale.ROOT)));
     }
 }

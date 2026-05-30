@@ -11,7 +11,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -169,13 +172,25 @@ public final class TypeTestUtil {
 
     private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType, @Nullable UnresolvedClassStore unresolvedStore) {
         OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, thisType);
-        if (exactMatch != OptionalBool.NO) {
-            return exactMatch == OptionalBool.YES; // otherwise anon, and we return false
+        if (exactMatch == OptionalBool.YES) {
+            return true;
         }
+        // Look for canonicalName in supertypes.
+        // In case of anonymous classes start from direct supertype (class or interface)
+        // so that isA("Foo$1", anonymous) is false ("Foo$1" is not a canonical name).
+        JTypeMirror closestNamedSupertype = thisType;
+        if (exactMatch == OptionalBool.UNKNOWN && thisType instanceof JClassType) {
+            ASTTypeDeclaration typeDecl = ((JClassType) thisType).getSymbol().tryGetNode();
+            JavaNode anonNode = typeDecl == null ? null : typeDecl.getParent();
+            if (anonNode instanceof ASTConstructorCall) {
+                closestNamedSupertype = ((ASTConstructorCall) anonNode).getTypeMirror();
+            } else {
+                return false;
+            }
+        }
+        JTypeDeclSymbol closestNamedSuperclassSymbol = closestNamedSupertype.getSymbol();
 
-        JTypeDeclSymbol thisClass = thisType.getSymbol();
-
-        if (thisClass != null && thisClass.isUnresolved()) {
+        if (closestNamedSuperclassSymbol != null && closestNamedSuperclassSymbol.isUnresolved()) {
             // we can't get any useful info from this, isSubtypeOf would return true
             // do not test for equality, we already checked isExactlyA, which has its fallback
             return false;
@@ -184,7 +199,7 @@ public final class TypeTestUtil {
         TypeSystem ts = thisType.getTypeSystem();
         @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
 
-        return isA(otherType, thisType);
+        return isA(otherType, closestNamedSupertype);
     }
 
     /**
@@ -283,8 +298,8 @@ public final class TypeTestUtil {
         if (canonical == null) {
             return OptionalBool.UNKNOWN; // anonymous
         }
-        canonicalName = StringUtils.deleteWhitespace(canonicalName);
-        return OptionalBool.definitely(canonical.equals(canonicalName));
+        String cleanCanonicalName = StringUtils.deleteWhitespace(canonicalName);
+        return OptionalBool.definitely(canonical.equals(cleanCanonicalName));
     }
 
 

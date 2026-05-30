@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static net.sourceforge.pmd.lang.ast.NodeStream.asInstanceOf;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isMainMethod;
 import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.LONG;
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
@@ -11,9 +13,14 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -21,21 +28,26 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
@@ -62,7 +74,7 @@ public final class JavaRuleUtil {
         "_#hashCode()",
         "_#equals(java.lang.Object)",
         "java.lang.String#_(_*)",
-        // actually not all of them, probs only stream of some type
+        // actually not all of them, probably only stream of some type
         // arg which doesn't implement Closeable...
         "java.util.stream.Stream#_(_*)",
         "java.util.stream.IntStream#_(_*)",
@@ -100,6 +112,12 @@ public final class JavaRuleUtil {
         "lombok.EqualsAndHashCode",
         "lombok.experimental.Delegate"
     );
+
+    private static final InvocationMatcher.CompoundInvocationMatcher TIME_METHODS =
+        InvocationMatcher.parseAll(
+            "java.lang.System#nanoTime()",
+            "java.lang.System#currentTimeMillis()"
+        );
 
     private JavaRuleUtil() {
         // utility class
@@ -151,7 +169,7 @@ public final class JavaRuleUtil {
 
 
     /**
-     * Returns true if the expression is a stringbuilder (or stringbuffer)
+     * Returns true if the expression is a StringBuilder (or StringBuffer)
      * append call, or a constructor call for one of these classes.
      *
      * <p>If it is a constructor call, returns false if this is a call to
@@ -176,46 +194,67 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Returns true if the node is a utility class, according to this
-     * custom definition.
+     * Returns true if the node is a utility class, according to this custom definition. <br />
+     * A class is a utility class, if and only if it fulfills ALL the following criteria:
+     * <ul>
+     *     <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
+     *     <li>The class has at least one member function, member variable, or nested class that is not private.</li>
+     *     <li>The class is a concrete class (neither abstract nor an interface).</li>
+     *     <li>The class has no superclasses and implements no interfaces.</li>
+     *     <li>The class has no main method.</li>
+     * </ul>
      */
     public static boolean isUtilityClass(ASTTypeDeclaration node) {
-        if (!node.isRegularClass()) {
+        if (!(node instanceof ASTClassDeclaration)) {
             return false;
         }
 
         ASTClassDeclaration classNode = (ASTClassDeclaration) node;
 
+        // abstract classes and interfaces aren't utility classes.
+        if (classNode.isInterface() || classNode.isAbstract()) {
+            return false;
+        }
+
         // A class with a superclass or interfaces should not be considered
         if (classNode.getSuperClassTypeNode() != null
-            || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
+                || !classNode.getSuperInterfaceTypeNodes().isEmpty()
+        ) {
             return false;
         }
 
         // A class without declarations shouldn't be reported
-        boolean hasAny = false;
+        boolean hasNonPrivateMembers = false;
 
         for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
-            if (declNode instanceof ASTFieldDeclaration
-                || declNode instanceof ASTMethodDeclaration) {
+            if (isMainMethod(declNode)) {
+                return false;
+            }
 
-                hasAny = isNonPrivate(declNode) && !JavaAstUtils.isMainMethod(declNode);
-                if (!((ModifierOwner) declNode).hasModifiers(JModifier.STATIC)) {
+            if (declNode instanceof ASTFieldDeclaration
+                    || declNode instanceof ASTMethodDeclaration
+                    || declNode instanceof ASTClassDeclaration
+                    || declNode instanceof ASTRecordDeclaration
+                    || declNode instanceof ASTEnumDeclaration
+            ) {
+                ModifierOwner modifierOwner = (ModifierOwner) declNode;
+
+                if (modifierOwner.getVisibility() != Visibility.V_PRIVATE) {
+                    hasNonPrivateMembers = true;
+                }
+                if (!modifierOwner.hasModifiers(JModifier.STATIC)) {
                     return false;
                 }
-
             } else if (declNode instanceof ASTInitializer) {
-                if (!((ASTInitializer) declNode).isStatic()) {
+                ASTInitializer initializer = (ASTInitializer) declNode;
+
+                if (!initializer.isStatic()) {
                     return false;
                 }
             }
         }
 
-        return hasAny;
-    }
-
-    private static boolean isNonPrivate(ASTBodyDeclaration decl) {
-        return ((ModifierOwner) decl).getVisibility() != Visibility.V_PRIVATE;
+        return hasNonPrivateMembers;
     }
 
     /**
@@ -265,7 +304,7 @@ public final class JavaRuleUtil {
      * @throws AssertionError If the word is empty or not capitalized
      */
     public static boolean containsCamelCaseWord(String camelCaseString, String capitalizedWord) {
-        assert capitalizedWord.length() > 0 && Character.isUpperCase(capitalizedWord.charAt(0))
+        assert !capitalizedWord.isEmpty() && Character.isUpperCase(capitalizedWord.charAt(0))
             : "Not a capitalized string \"" + capitalizedWord + "\"";
 
         int index = camelCaseString.indexOf(capitalizedWord);
@@ -280,7 +319,7 @@ public final class JavaRuleUtil {
     }
 
     private static boolean isSetterCall(ASTMethodCall call) {
-        return call.getArguments().size() > 0 && startsWithCamelCaseWord(call.getMethodName(), "set");
+        return !call.getArguments().isEmpty() && startsWithCamelCaseWord(call.getMethodName(), "set");
     }
 
     public static boolean isGetterCall(ASTMethodCall call) {
@@ -361,11 +400,11 @@ public final class JavaRuleUtil {
 
     /**
      * Whether the node or one of its descendants is an expression with
-     * side effects. Conservatively, any method call is a potential side-effect,
+     * side effects. Conservatively, any method call is a potential side effect,
      * as well as assignments to fields or array elements. We could relax
      * this assumption with (much) more data-flow logic, including a memory model.
      *
-     * <p>By default assignments to locals are not counted as side-effects,
+     * <p>By default, assignments to locals are not counted as side effects,
      * unless the lhs is in the given set of symbols.
      *
      * @param node             A node
@@ -405,7 +444,7 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Whether the invocation has no side-effects. Very conservative.
+     * Whether the invocation has no side effects. Very conservative.
      */
     private static boolean isPure(ASTMethodCall call) {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
@@ -515,4 +554,57 @@ public final class JavaRuleUtil {
                 || onlyStatementInThenBranch instanceof ASTThrowStatement;
     }
 
+    /**
+     * Returns whether the variable is mentioned within the statement or not.
+     */
+    public static boolean hasReferencesIn(ASTStatement stmt, ASTVariableId var) {
+        return stmt.descendants(ASTVariableAccess.class)
+            .crossFindBoundaries()
+            .filterMatching(ASTNamedReferenceExpr::getReferencedSym, var.getSymbol())
+            .nonEmpty();
+    }
+
+    /**
+     * Time methods cannot be moved ever, even when there are no side effects.
+     * The side effect they depend on is the program being executed. Are they
+     * the only methods like that?
+     */
+    public static boolean cannotBeMoved(ASTExpression initializer) {
+        return TIME_METHODS.anyMatch(initializer);
+    }
+
+    /**
+     * Finds names of members potentially referenced by annotations: either by their string
+     * values or by given parameterless annotation. Prefers false negatives to false positives,
+     * so in file containing {@code SuppressWarnings("foo")} field {@code foo} is considered as
+     * referenced.
+     *
+     * @param unit compilation unit
+     * @param parameterless parameterless annotation that references members of the same name
+     *                      as the annotated member
+     * @return members potentially referenced by annotations
+     */
+    public static Set<String> getMembersUsedByAnnotations(ASTCompilationUnit unit, String parameterless) {
+        return unit.descendants(ASTAnnotation.class)
+            .crossFindBoundaries()
+            .toStream()
+            .flatMap(a -> extractMethodsFromAnnotation(a, parameterless))
+            .collect(Collectors.toSet());
+    }
+
+    private static Stream<String> extractMethodsFromAnnotation(ASTAnnotation a, String parameterless) {
+        return Stream.concat(
+            a.getFlatValues().toStream()
+                .map(ASTMemberValue::getConstValue)
+                .map(asInstanceOf(String.class))
+                .filter(StringUtils::isNotEmpty),
+            NodeStream.of(a)
+                .filter(it -> TypeTestUtil.isA(parameterless, it)
+                    && it.getFlatValue("value").isEmpty())
+                .ancestors(ASTMethodDeclaration.class)
+                .take(1)
+                .toStream()
+                .map(ASTMethodDeclaration::getName)
+        );
+    }
 }

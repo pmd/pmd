@@ -162,7 +162,7 @@ For a more exhaustive list, see [Pages - Frontmatter](http://idratherbewriting.c
 
 See [Alerts](http://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html).
 
-For example, a info-box can be created like this:
+For example, an info-box can be created like this:
 
     {%raw%}{% include note.html content="This is a note." %}{%endraw%}
 

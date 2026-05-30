@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.DEPRECATED_RULE_PROPERTY_MARKER;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -24,7 +26,8 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     private final PropertyDescriptor<Pattern> nativeRegex = defaultProp("native").build();
     private final PropertyDescriptor<Pattern> junit3Regex = defaultProp("JUnit 3 test").defaultValue("test[A-Z0-9][a-zA-Z0-9]*").build();
     private final PropertyDescriptor<Pattern> junit4Regex = defaultProp("JUnit 4 test").build();
-    private final PropertyDescriptor<Pattern> junit5Regex = defaultProp("JUnit 5 test").build();
+    private final PropertyDescriptor<Pattern> junit5Regex = defaultProp("JUnit 5 test").desc(DEPRECATED_RULE_PROPERTY_MARKER + "Use junitJupiterTestPattern instead").build();
+    private final PropertyDescriptor<Pattern> junitJupiterRegex = defaultProp("JUnit Jupiter test").build();
 
 
     public MethodNamingConventionsRule() {
@@ -35,6 +38,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         definePropertyDescriptor(junit3Regex);
         definePropertyDescriptor(junit4Regex);
         definePropertyDescriptor(junit5Regex);
+        definePropertyDescriptor(junitJupiterRegex);
     }
 
     @Override
@@ -49,7 +53,11 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
         } else if (node.isStatic()) {
             checkMatches(node, staticRegex, data);
         } else if (TestFrameworksUtil.isJUnit5Method(node)) {
-            checkMatches(node, junit5Regex, data);
+            PropertyDescriptor<Pattern> junitJupiterRegexToUse =
+                    (isPropertyOverridden(junitJupiterRegex) || !isPropertyOverridden(junit5Regex))
+                            ? junitJupiterRegex
+                            : junit5Regex;
+            checkMatches(node, junitJupiterRegexToUse, data);
         } else if (TestFrameworksUtil.isJUnit4Method(node)) {
             checkMatches(node, junit4Regex, data);
         } else if (TestFrameworksUtil.isJUnit3Method(node)) {

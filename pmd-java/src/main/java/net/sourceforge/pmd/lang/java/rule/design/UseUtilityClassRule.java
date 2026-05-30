@@ -4,30 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isUtilityClass;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
-
-import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
-    private static final Set<String> IGNORED_CLASS_ANNOT = setOf(
-        "lombok.experimental.UtilityClass",
-        "org.junit.runner.RunWith" // for suites and such
-    );
+    private static final String LOMBOK_UTILITY_CLASS = "lombok.experimental.UtilityClass";
+    private static final String LOMBOK_NO_ARGS_CONSTRUCTOR = "lombok.NoArgsConstructor";
 
     public UseUtilityClassRule() {
         super(ASTClassDeclaration.class);
@@ -35,58 +30,39 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration klass, Object data) {
-        if (JavaAstUtils.hasAnyAnnotation(klass, IGNORED_CLASS_ANNOT)
-            || TypeTestUtil.isA("junit.framework.TestSuite", klass) // suite method is ok
-            || klass.isInterface()
-            || klass.isAbstract()
-            || klass.getSuperClassTypeNode() != null
-            || klass.getSuperInterfaceTypeNodes().nonEmpty()
-        ) {
-            return data;
-        }
+        RuleContext ctx = (RuleContext) data;
 
-        boolean hasAnyMethods = false;
+        if (isUtilityClass(klass) && hasWrongKindOfConstructor(klass)) {
+            ctx.addViolation(klass);
+        }
+        return null;
+    }
+
+    private boolean hasWrongKindOfConstructor(ASTClassDeclaration klass) {
         boolean hasNonPrivateCtor = false;
         boolean hasAnyCtor = false;
-        for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
-            if (declaration instanceof ASTFieldDeclaration
-                && !((ASTFieldDeclaration) declaration).isStatic()) {
-                return null;
-            }
-            if (declaration instanceof ASTConstructorDeclaration) {
-                hasAnyCtor = true;
-                if (((ASTConstructorDeclaration) declaration).getVisibility() != Visibility.V_PRIVATE) {
-                    hasNonPrivateCtor = true;
-                }
-            }
 
-            if (declaration instanceof ASTMethodDeclaration) {
-                if (((ASTMethodDeclaration) declaration).getVisibility() != Visibility.V_PRIVATE) {
-                    hasAnyMethods = true;
-                }
-                if (!((ASTMethodDeclaration) declaration).isStatic()) {
-                    return null;
-                }
+        for (ASTConstructorDeclaration constructorDeclaration : klass.getDeclarations(ASTConstructorDeclaration.class)) {
+            hasAnyCtor = true;
+            if (constructorDeclaration.getVisibility() != V_PRIVATE) {
+                hasNonPrivateCtor = true;
             }
         }
 
         // account for default ctor
         hasNonPrivateCtor |= !hasAnyCtor
-            && klass.getVisibility() != Visibility.V_PRIVATE
-            && !hasLombokPrivateCtor(klass);
+                && klass.getVisibility() != V_PRIVATE
+                && !hasLombokPrivateCtor(klass)
+                && !JavaAstUtils.hasAnyAnnotation(klass, setOf(LOMBOK_UTILITY_CLASS));
 
-
-        if (hasAnyMethods && hasNonPrivateCtor) {
-            asCtx(data).addViolation(klass);
-        }
-        return null;
+        return hasNonPrivateCtor;
     }
 
     private boolean hasLombokPrivateCtor(ASTClassDeclaration parent) {
         // check if there's a lombok no arg private constructor, if so skip the rest of the rules
 
         return parent.getDeclaredAnnotations()
-                     .filter(t -> TypeTestUtil.isA("lombok.NoArgsConstructor", t))
+                     .filter(t -> TypeTestUtil.isA(LOMBOK_NO_ARGS_CONSTRUCTOR, t))
                      .flatMap(ASTAnnotation::getMembers)
                      // to set the access level of a constructor in lombok, you set the access property on the annotation
                      .filterMatching(ASTMemberValuePair::getName, "access")
