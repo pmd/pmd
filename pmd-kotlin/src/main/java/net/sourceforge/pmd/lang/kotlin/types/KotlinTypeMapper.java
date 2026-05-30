@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.ast;
+package net.sourceforge.pmd.lang.kotlin.types;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,6 +11,8 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 

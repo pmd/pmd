@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
 
 /**
  * XPath function {@code pmd-kotlin:typeIsExactly(typeName)}.

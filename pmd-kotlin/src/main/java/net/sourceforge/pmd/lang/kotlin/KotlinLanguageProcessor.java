@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinTypeAnnotationVisitor;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeAnnotationVisitor;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;

@@ -10,7 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 

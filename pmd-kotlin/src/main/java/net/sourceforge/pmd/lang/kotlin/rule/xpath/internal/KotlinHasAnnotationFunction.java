@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 /**

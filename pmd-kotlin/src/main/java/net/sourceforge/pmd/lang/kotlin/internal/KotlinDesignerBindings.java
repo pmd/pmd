@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.HasModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.HasSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinTypeMapper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeMapper;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 

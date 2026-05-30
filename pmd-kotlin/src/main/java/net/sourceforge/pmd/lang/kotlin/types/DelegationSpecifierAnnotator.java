@@ -2,11 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.ast;
+package net.sourceforge.pmd.lang.kotlin.types;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
