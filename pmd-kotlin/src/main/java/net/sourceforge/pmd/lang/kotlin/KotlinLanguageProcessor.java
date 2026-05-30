@@ -10,14 +10,15 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -25,11 +26,9 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTypeAnnotationVisitor;
-import net.sourceforge.pmd.lang.kotlin.internal.KotlinDesignerBindings;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
-import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
 import nl.stokpop.typemapper.model.TypedAst;
@@ -50,11 +49,18 @@ import nl.stokpop.typemapper.model.TypedAst;
  * <p>If type analysis fails (e.g. Kotlin compiler not on classpath), the processor
  * falls back gracefully: nodes have no type attributes and the custom XPath functions
  * return {@code false} for all nodes, so rule evaluation still completes.
+ *
+ * @since 7.25.0
  */
-public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguagePropertyBundle> {
-
+public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLanguageProperties> {
     private static final Logger LOG = LoggerFactory.getLogger(KotlinLanguageProcessor.class);
 
+    private final ExecutorService parseTimeoutExecutor =
+            Executors.newCachedThreadPool(r -> {
+                Thread t = new Thread(r, "kotlin-parse-timeout");
+                t.setDaemon(true);
+                return t;
+            });
 
     /** Populated in {@link #launchAnalysis} before any file is parsed. */
     private final AtomicReference<KotlinTypeAnnotationVisitor> annotationVisitor = new AtomicReference<>();
@@ -62,9 +68,9 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
     private final KotlinHandler baseHandler;
     private final KotlinAuxClasspathResolver classpathResolver;
 
-    KotlinLanguageProcessor(JvmLanguagePropertyBundle bundle, KotlinHandler handler) {
+    KotlinLanguageProcessor(KotlinLanguageProperties bundle) {
         super(bundle);
-        this.baseHandler = handler;
+        this.baseHandler = new KotlinHandler(parseTimeoutExecutor);
         this.classpathResolver = new KotlinAuxClasspathResolver(bundle);
     }
 
@@ -79,11 +85,12 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
         return super.launchAnalysis(task);
     }
 
+    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.
     private void runTypeAnalysis(List<TextFile> allFiles) {
         List<TextFile> ktFiles = new ArrayList<>();
-        for (int i = 0; i < allFiles.size(); i++) {
-            if (allFiles.get(i).getLanguageVersion().getLanguage().equals(getLanguage())) {
-                ktFiles.add(allFiles.get(i));
+        for (TextFile textFile : allFiles) {
+            if (textFile.getLanguageVersion().getLanguage().equals(getLanguage())) {
+                ktFiles.add(textFile);
             }
         }
         if (ktFiles.isEmpty()) {
@@ -99,6 +106,8 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
             annotationVisitor.set(new KotlinTypeAnnotationVisitor(ast));
             LOG.debug("kotlin-type-mapper analyzed {} file(s)", ktFiles.size());
         } catch (RuntimeException e) {
+            KotlinTypeAnalysisContextHolder.clearGlobal();
+            annotationVisitor.set(null);
             LOG.warn("kotlin-type-mapper analysis failed; typeIs/matchesSig will return false", e);
         }
     }
@@ -119,17 +128,17 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
     }
 
     void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
-        KotlinTypeAnnotationVisitor v = annotationVisitor.get();
-        if (v == null) {
+        KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
+        if (visitor == null) {
             // Designer / single-file mode: launchAnalysis() was never called, so run
             // kotlin-type-mapper inline on this one file.
             String effectiveName = sanitizeKtFilename(absPath);
-            v = runSingleFileAnalysis(effectiveName, sourceText);
-            if (v != null) {
-                v.annotate(root, effectiveName);
+            visitor = runSingleFileAnalysis(effectiveName, sourceText);
+            if (visitor != null) {
+                visitor.annotate(root, effectiveName);
             }
         } else {
-            v.annotate(root, absPath);
+            visitor.annotate(root, absPath);
         }
     }
 
@@ -158,6 +167,7 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
             LOG.debug("kotlin-type-mapper single-file analysis complete for {}", filename);
             return new KotlinTypeAnnotationVisitor(ast);
         } catch (RuntimeException e) {
+            KotlinTypeAnalysisContextHolder.clearGlobal();
             LOG.warn("kotlin-type-mapper single-file analysis failed for {}; typeIs/matchesSig will return false", filename, e);
             return null;
         }
@@ -175,11 +185,6 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
         }
 
         @Override
-        public DesignerBindings getDesignerBindings() {
-            return KotlinDesignerBindings.INSTANCE;
-        }
-
-        @Override
         public Parser getParser() {
             final Parser base = baseHandler.getParser();
             return task -> {
@@ -191,5 +196,16 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<LanguageProp
                 return root;
             };
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        parseTimeoutExecutor.shutdown();
+        boolean result = parseTimeoutExecutor.awaitTermination(getProperties().getParseTimeoutSeconds() * 2L, TimeUnit.SECONDS);
+        if (!result) {
+            LOG.error("Couldn't properly shutdown parseTimeoutExecutor - threads might still be running!");
+        }
+        KotlinTypeAnalysisContextHolder.clearGlobal();
+        super.close();
     }
 }

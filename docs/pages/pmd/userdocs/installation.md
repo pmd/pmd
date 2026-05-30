@@ -11,7 +11,7 @@ sidebar: pmd_sidebar
 
 ### Requirements
 
-*   Java 8 or above: [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
+*   Java {{ site.pmd.java_run_version }} or above: [Java JRE](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
     OpenJDK from [Azul](https://www.azul.com/downloads/zulu-community/)
     or [Adoptium](https://adoptium.net).
 

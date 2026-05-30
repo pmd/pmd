@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.kotlin.ast.AttributeView;
+import net.sourceforge.pmd.lang.kotlin.ast.HasModifiers;
+import net.sourceforge.pmd.lang.kotlin.ast.HasSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -18,8 +21,10 @@ import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesigne
 
 /**
  * Designer bindings for Kotlin. Populates the "Additional info" section
- * of the PMD Designer with resolved type names and modifiers -- mirroring
- * what {@code JavaDesignerBindings} does for Java nodes.
+ * of the PMD Designer with resolved type names and modifiers, while also showing
+ * a useful main attribute next to each node in the designer tree.
+ *
+ * @since 7.25.0
  */
 public final class KotlinDesignerBindings extends DefaultDesignerBindings {
 
@@ -28,17 +33,6 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
     private KotlinDesignerBindings() {
     }
 
-    /**
-     * Returns the "main" attribute shown inline next to the node name in the Designer tree.
-     * <ul>
-     *   <li>T- terminal nodes: {@code @Text} -- the token text.</li>
-     *   <li>Inner nodes with {@code @TypeName} set: shows the resolved type name.</li>
-     *   <li>Inner nodes with {@code @ReturnTypeName} set (e.g. {@code FunctionDeclaration}):
-     *       shows the return type name.</li>
-     *   <li>Inner nodes with {@code @Identifier} set: shows the identifier name.</li>
-     *   <li>Otherwise: falls back to the default (image-based) behaviour.</li>
-     * </ul>
-     */
     @Override
     public Attribute getMainAttribute(Node node) {
         if (node instanceof KotlinTerminalNode) {
@@ -47,19 +41,30 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
                 return new Attribute(node, "Text", text);
             }
         }
+
         if (node instanceof KotlinNode) {
-            KotlinNode kNode = (KotlinNode) node;
-            String typeName = kNode.getTypeName();
+            KotlinNode kotlinNode = (KotlinNode) node;
+            AttributeView<?> attributeView = AttributeView.create(kotlinNode);
+            if (attributeView instanceof HasSimpleIdentifier) {
+                String id = ((HasSimpleIdentifier) attributeView).getIdentifier();
+                if (id != null) {
+                    return new Attribute(node, "Identifier", id);
+                }
+            }
+            if (attributeView instanceof HasModifiers) {
+                String mods = ((HasModifiers) attributeView).getModifiers();
+                if (mods != null) {
+                    return new Attribute(node, "Modifiers", mods);
+                }
+            }
+
+            String typeName = kotlinNode.getTypeName();
             if (typeName != null) {
                 return new Attribute(node, "TypeName", typeName);
             }
-            String returnTypeName = kNode.getReturnTypeName();
+            String returnTypeName = kotlinNode.getReturnTypeName();
             if (returnTypeName != null) {
                 return new Attribute(node, "ReturnTypeName", returnTypeName);
-            }
-            String identifier = kNode.getIdentifier();
-            if (identifier != null) {
-                return new Attribute(node, "Identifier", identifier);
             }
         }
         return super.getMainAttribute(node);
@@ -71,24 +76,21 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
         if (!(node instanceof KotlinNode)) {
             return info;
         }
-        KotlinNode kNode = (KotlinNode) node;
+        KotlinNode kotlinNode = (KotlinNode) node;
 
-        // Modifiers -- shown as "pmd-kotlin:modifiers(): (override, suspend)"
-        String mods = kNode.getModifiers();
+        String mods = kotlinNode.getModifiers();
         if (mods != null) {
             String formatted = Arrays.stream(mods.split(" "))
                     .collect(Collectors.joining(", ", "(", ")"));
             info.add(new AdditionalInfo("pmd-kotlin:modifiers(): " + formatted));
         }
 
-        // TypeName -- shown as "TypeName: org.example.Service"
-        String typeName = kNode.getTypeName();
+        String typeName = kotlinNode.getTypeName();
         if (typeName != null) {
             info.add(new AdditionalInfo("TypeName: " + typeName));
         }
 
-        // ReturnTypeName -- shown as "ReturnTypeName: kotlin.String"
-        String returnTypeName = kNode.getReturnTypeName();
+        String returnTypeName = kotlinNode.getReturnTypeName();
         if (returnTypeName != null) {
             info.add(new AdditionalInfo("ReturnTypeName: " + returnTypeName));
         }

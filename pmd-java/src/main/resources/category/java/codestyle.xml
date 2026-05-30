@@ -261,14 +261,17 @@ public class Foo extends Bar{
             on those. E.g. setting the property `utilityClassPattern` to
             `[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)` reports any utility class, whose name
             does not end in "Util(s)", "Helper" or "Constants".
-            
-            For this rule, a utility class is defined as: a concrete class that does not
-            inherit from a super class or implement any interface and only has static fields
-            or methods.
+
+            A class is a utility class, if and only if it fulfills ALL the following criteria:
+            * ALL member functions, member variables, nested classes, and initializers are static.
+            * The class has at least one member function, member variable, or nested class that is not private.
+            * The class is a concrete class (neither abstract nor an interface).
+            * The class has no superclasses and implements no interfaces.
+            * The class has no main method.
 
             This rule detects test classes using the following convention: Test classes are top-level classes, that
             either inherit from JUnit 3 TestCase or have at least one method annotated with the Test annotations from
-            JUnit4/5 or TestNG.
+            JUnit4/Jupiter or TestNG.
         </description>
         <priority>1</priority>
         <example>
@@ -300,7 +303,7 @@ To avoid mistakes if we want that an Annotation, Class, Enum, Method, Constructo
 we must add a comment at the beginning of its declaration.
 By default, the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
 
-This rule ignores by default all cases that have a `@VisibleForTesting` annotation or any JUnit5/TestNG annotation. Use the
+This rule ignores by default all cases that have a `@VisibleForTesting` annotation or any JUnit Jupiter/TestNG annotation. Use the
 property "ignoredAnnotations" to customize the recognized annotations.
         </description>
         <priority>3</priority>

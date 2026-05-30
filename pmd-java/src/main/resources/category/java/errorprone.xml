@@ -554,7 +554,7 @@ Each caught exception type should be handled in its own catch clause.
 //CatchParameter
     /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
         /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
-            /following-sibling::TypeExpression/*
+            /following-sibling::*[self::TypeExpression or self::PatternExpression]//ClassType[1]
 ]]>
                 </value>
             </property>
@@ -2066,14 +2066,14 @@ public class JumbledIncrementerRule1 {
         </example>
     </rule>
 
-    <rule name="JUnit5TestNoPrivateModifier"
+    <rule name="JUnitJupiterTestNoPrivateModifier"
           language="java"
           since="7.25.0"
           message="JUnit tests cannot be private"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnit5TestNoPrivateModifierRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junit5testnoprivatemodifier">
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitJupiterTestNoPrivateModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier">
         <description><![CDATA[
-JUnit 5/6 tests cannot be private. Otherwise, they won't be found by the framework:
+JUnit Jupiter tests cannot be private. Otherwise, they won't be found by the framework:
 
 > Test classes, test methods, and lifecycle methods are not required to be `public`, but they must not be `private`.
 
@@ -3329,17 +3329,16 @@ an error, use the `fail()` method and provide an indication message of why it di
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration
-    [pmd-java:typeIs('junit.framework.TestCase')
-     or .//Annotation[pmd-java:typeIs('org.junit.Test')
-                   or pmd-java:typeIs('org.junit.jupiter.api.Test')
-                   or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-                   or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-                   or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-                   or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-     ]
-    ]
-    //MethodCall[@MethodName = ('assertTrue', 'assertFalse')]
+//MethodCall[pmd-java:matchesSig('junit.framework.TestCase#assertFalse(_*)')
+    or pmd-java:matchesSig('junit.framework.TestCase#assertTrue(_*)')
+    or pmd-java:matchesSig('org.junit.Assert#assertFalse(_*)')
+    or pmd-java:matchesSig('org.junit.Assert#assertTrue(_*)')
+    or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertFalse(_*)')
+    or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertTrue(_*)')
+    or pmd-java:matchesSig('org.testng.Assert#assertFalse(_*)')
+    or pmd-java:matchesSig('org.testng.Assert#assertTrue(_*)')
+    or pmd-java:matchesSig('org.springframework.test.util.AssertionErrors#assertFalse(_*)')
+    or pmd-java:matchesSig('org.springframework.test.util.AssertionErrors#assertTrue(_*)')]
         [ArgumentList
             [
                 BooleanLiteral or

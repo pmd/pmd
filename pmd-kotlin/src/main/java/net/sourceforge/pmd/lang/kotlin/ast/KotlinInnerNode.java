@@ -4,15 +4,21 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.List;
+import java.util.Set;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
+import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
 
@@ -28,7 +34,6 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         }
         return visitor.visitNode(this, data);
     }
-
 
     @Override // override to make visible in package
     protected PmdAsAntlrInnerNode<KotlinNode> asAntlrNode() {
@@ -90,8 +95,12 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
      *
      * <p>This is used by PMD's XPath rule engine as {@code {0}} in violation messages,
      * so that the unresolved type name appears in the message text.
+     *
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
      */
     @Override
+    @NoAttribute
+    @Deprecated
     public @Nullable String getImage() {
         if (getRuleIndex() == KotlinParser.RULE_importHeader) {
             return buildImportFqn();
@@ -103,27 +112,19 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         for (int i = 0; i < getNumChildren(); i++) {
             KotlinNode child = getChild(i);
             if (child instanceof KotlinParser.KtIdentifier) {
-                return buildFqnFromIdentifier(child);
+                return KotlinAstUtil.dottedTextOf(child);
             }
         }
         return null;
     }
 
-    private static @Nullable String buildFqnFromIdentifier(KotlinNode identifierNode) {
-        StringBuilder sb = new StringBuilder();
-        for (int j = 0; j < identifierNode.getNumChildren(); j++) {
-            KotlinNode part = identifierNode.getChild(j);
-            if (part instanceof KotlinParser.KtSimpleIdentifier && part.getNumChildren() > 0) {
-                KotlinNode token = part.getChild(0);
-                if (token instanceof KotlinTerminalNode) {
-                    if (sb.length() > 0) {
-                        sb.append('.');
-                    }
-                    sb.append(((KotlinTerminalNode) token).getText());
-                }
-            }
-        }
-        return sb.length() > 0 ? sb.toString() : null;
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
+     */
+    @Override
+    @Deprecated
+    public boolean hasImageEqualTo(String image) {
+        return super.hasImageEqualTo(image);
     }
 
     /**
@@ -135,7 +136,6 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         for (int i = 0; i < getNumChildren(); i++) {
             KotlinNode child = getChild(i);
             if (child instanceof KotlinParser.KtSimpleIdentifier) {
-                // KtSimpleIdentifier wraps a single terminal token
                 KotlinParser.KtSimpleIdentifier si = (KotlinParser.KtSimpleIdentifier) child;
                 if (si.getNumChildren() > 0) {
                     KotlinNode token = si.getChild(0);
@@ -162,50 +162,58 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     }
 
     /**
-     * This prevents optional attributes like {@code @TypeName} and
-     * {@code @ReturnTypeName} from appearing on every node in the PMD Designer
-     * when they have no meaningful value -- consistent with how {@code @Text}
-     * is only present on terminal (T-prefixed) nodes.
+     * Returns the corresponding attributes class for this node.
+     * The returned type is already cast to have the correct type.
+     *
+     * <p>Usage example:
+     * <pre>{@code
+     * String id = classDecl.attributes(KtClassDeclarationAttributes.class).getIdentifier();
+     * }</pre>
+     *
+     * @throws IllegalArgumentException if the given attribute view type doesn't match this node's type.
+     *
+     * @since 7.25.0
+     * @experimental See {@link AttributeView}.
+     */
+    @Experimental
+    public <A extends AttributeView<?>> @Nullable A attributes(Class<A> type) {
+        AttributeView<?> view = AttributeView.create(this);
+        if (view == null) {
+            return null;
+        }
+
+        if (!type.isInstance(view)) {
+            throw new IllegalArgumentException("Expected type " + view.getClass().getName() + " but got " + type.getName());
+        }
+        return type.cast(view);
+    }
+
+    /**
+     * Returns the attributes on the node and additionally the attributes of
+     * the corresponding attribute view, if there is one. Attributes with null
+     * values are filtered out and duplicate names are suppressed.
+     *
+     * @see #attributes(Class)
      */
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
-        return new NonNullAttributeIterator(super.getXPathAttributesIterator());
+        List<Attribute> result = new ArrayList<>();
+        Set<String> names = new HashSet<>();
+        addAttributes(super.getXPathAttributesIterator(), result, names);
+
+        AttributeView<?> attributeView = AttributeView.create(this);
+        if (attributeView != null) {
+            addAttributes(attributeView.getXPathAttributesIterator(), result, names);
+        }
+        return result.iterator();
     }
 
-    /** Filters out XPath attributes whose value is {@code null}. */
-    private static final class NonNullAttributeIterator implements Iterator<Attribute> {
-        private final Iterator<Attribute> base;
-        private Attribute pending;
-
-        NonNullAttributeIterator(Iterator<Attribute> base) {
-            this.base = base;
-            advance();
-        }
-
-        private void advance() {
-            pending = null;
-            while (base.hasNext()) {
-                Attribute attr = base.next();
-                if (attr.getValue() != null) {
-                    pending = attr;
-                    break;
-                }
+    private static void addAttributes(Iterator<Attribute> source, List<Attribute> result, Set<String> names) {
+        while (source.hasNext()) {
+            Attribute attr = source.next();
+            if (attr.getValue() != null && names.add(attr.getName())) {
+                result.add(attr);
             }
-        }
-
-        @Override
-        public boolean hasNext() {
-            return pending != null;
-        }
-
-        @Override
-        public Attribute next() {
-            if (pending == null) {
-                throw new NoSuchElementException();
-            }
-            Attribute result = pending;
-            advance();
-            return result;
         }
     }
 }

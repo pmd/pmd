@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.List;
 
 import org.antlr.v4.runtime.Token;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -13,14 +14,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrTerminalNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> implements KotlinNode {
-
 
     KotlinTerminalNode(Token token) {
         super(token);
     }
-
 
     @Override
     public @NonNull String getText() {
@@ -28,12 +28,29 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
         return constImage == null ? getFirstAntlrToken().getText() : constImage;
     }
 
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
+     */
+    @Override
+    @NoAttribute
+    @Deprecated
+    public String getImage() {
+        return null;
+    }
+
+    /**
+     * @deprecated Since 7.25.0. Don't use getImage() or hasImageEqualTo()! See #4787.
+     */
+    @Override
+    @Deprecated
+    public boolean hasImageEqualTo(String image) {
+        return super.hasImageEqualTo(image);
+    }
 
     @Override
     public String getXPathNodeName() {
         return KotlinParser.DICO.getXPathNameOfToken(getFirstAntlrToken().getType());
     }
-
 
     @Override
     public <P, R> R acceptVisitor(AstVisitor<? super P, ? extends R> visitor, P data) {
@@ -45,39 +62,14 @@ public final class KotlinTerminalNode extends BaseAntlrTerminalNode<KotlinNode> 
 
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
+        List<Attribute> attrs = new ArrayList<>();
         Iterator<Attribute> base = super.getXPathAttributesIterator();
-        return new Iterator<Attribute>() {
-            private Attribute pending;
-
-            {
-                advance();
+        while (base.hasNext()) {
+            Attribute attr = base.next();
+            if (attr.getValue() != null) {
+                attrs.add(attr);
             }
-
-            private void advance() {
-                pending = null;
-                while (base.hasNext()) {
-                    Attribute attr = base.next();
-                    if (attr.getValue() != null) {
-                        pending = attr;
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public boolean hasNext() {
-                return pending != null;
-            }
-
-            @Override
-            public Attribute next() {
-                if (pending == null) {
-                    throw new NoSuchElementException();
-                }
-                Attribute result = pending;
-                advance();
-                return result;
-            }
-        };
+        }
+        return attrs.iterator();
     }
 }

@@ -4,38 +4,63 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.ast.FileAnalysisException;
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.kotlin.KotlinHandler;
+import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
+import net.sourceforge.pmd.lang.kotlin.KotlinLanguageProcessor;
+import net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
  * Adapter for the KotlinParser.
  *
- * <p>Each parse gets its own fresh {@link InterruptibleParserATNSimulator} (new DFA array and
- * {@link PredictionContextCache}) to prevent cross-file ATN state accumulation.
- * The generated KotlinParser has static shared fields that accumulate LL prediction
- * state across all parse invocations; isolating them per file prevents exponential
- * ATN state explosion on large or complex Kotlin files.
+ * <p>Each parse injects a fresh {@link InterruptibleParserATNSimulator} with its own DFA arrays
+ * and {@link PredictionContextCache}. Using per-parse instances avoids lock contention when
+ * PMD parses files in parallel and prevents unbounded ATN state accumulation across files,
+ * which would otherwise cause severe slowdowns with the complexity of the Kotlin grammar.
  *
- * <p>A per-file parse timeout ({@code pmd.kotlin.parseTimeoutSeconds}, default
- * 30 s) acts as a safety net. Files exceeding the timeout are skipped with a
- * warning.
+ * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a processing
+ * error. The timeout is configured via {@link KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS} and can be
+ * overridden with the {@code pmd.kotlin.parseTimeoutSeconds} system property for backwards compatibility.
+ *
+ * <p>Error handling strategy:
+ * <ul>
+ *   <li><b>Lexer errors</b> (e.g. unrecognized tokens) and <b>Parser errors</b> (e.g. unexpected token structure)
+ *       are collected and lexing/parsing continues.</li>
+ *   <li>Further lexer/parser errors are collected as suppressed exceptions.</li>
+ *   <li>The first occurred lexer/parser exception is thrown at the end and no rules are executed.</li>
+ * </ul>
+ *
+ * <p>PMD reports the file as a {@code ProcessingError} and skips rule analysis for it.
+ * All other files continue to be processed. Exit code 5 is returned by the CLI if
+ * any processing errors occurred (suppressible with {@code --no-fail-on-error}).
  */
 public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinFile> {
 
@@ -45,68 +70,164 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
     private static final String TIMEOUT_PROP = "pmd.kotlin.parseTimeoutSeconds";
     private static final int DEFAULT_TIMEOUT_SECONDS = 30;
 
-    private static final ExecutorService PARSE_EXECUTOR =
-            Executors.newCachedThreadPool(r -> {
-                Thread t = new Thread(r, "kotlin-parser");
-                t.setDaemon(true);
-                return t;
-            });
+    private final ExecutorService timeoutExecutor;
+
+    /**
+     * @deprecated Since 7.25.0. Don't create a parser directly. Use {@link KotlinLanguageModule#getInstance()},
+     *             {@link KotlinLanguageModule#createProcessor(LanguagePropertyBundle)},
+     *             {@link KotlinLanguageProcessor#services()}, {@link KotlinHandler#getParser()} instead.
+     */
+    @Deprecated
+    public PmdKotlinParser() {
+        this.timeoutExecutor = null;
+    }
+
+    PmdKotlinParser(ExecutorService timeoutExecutor) {
+        this.timeoutExecutor = timeoutExecutor;
+    }
 
     @Override
     protected KtKotlinFile parse(final Lexer lexer, ParserTask task) {
+        AntlrErrorListener errorListener = new AntlrErrorListener(task);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener.lexerErrorListener());
+
+        KotlinParser parser = new KotlinParser(new CommonTokenStream(lexer));
+        parser.setInterpreter(freshSimulator(parser));
+        parser.removeErrorListeners();
+        parser.addErrorListener(errorListener.parserErrorListener());
+
+        FileId fileId = task.getFileId();
+        String fileName = fileId.getOriginalPath();
+        int timeoutSeconds = getTimeoutSeconds(task);
+
+        LOG.debug("Parsing Kotlin file {} (timeout: {}s)", fileName, timeoutSeconds);
+
+        Callable<KtKotlinFile> callable = () -> parser.kotlinFile().makeAstInfo(task);
+        final Future<KtKotlinFile> future;
+        if (timeoutExecutor != null) {
+            future = timeoutExecutor.submit(callable);
+        } else {
+            LOG.warn("Incorrect usage of PmdKotlinParser! Not using timeoutExecutor, not applying timeout!");
+            try {
+                future = CompletableFuture.completedFuture(callable.call());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        try {
+            KtKotlinFile ktKotlinFile = future.get(timeoutSeconds, TimeUnit.SECONDS);
+            if (errorListener.hasErrors()) {
+                throw errorListener.getException();
+            }
+            return ktKotlinFile;
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            LOG.warn("Kotlin parse timeout ({}s) exceeded for file: {}. Skipping.", timeoutSeconds, fileName);
+            ParseException parseException = new ParseException("Parse timeout (" + timeoutSeconds + "s) exceeded");
+            parseException.setFileId(fileId);
+            throw parseException;
+        } catch (ExecutionException e) {
+            return unwrapExecutionException(e, fileId);
+        } catch (InterruptedException | CancellationException e) {
+            Thread.currentThread().interrupt();
+            ParseException parseException = new ParseException("Parse interrupted");
+            parseException.setFileId(fileId);
+            throw parseException;
+        }
+    }
+
+    private static int getTimeoutSeconds(ParserTask task) {
         int timeoutSeconds = DEFAULT_TIMEOUT_SECONDS;
+        if (task.getLanguageProcessor() instanceof KotlinLanguageProcessor) {
+            timeoutSeconds = ((KotlinLanguageProcessor) task.getLanguageProcessor())
+                    .getProperties().getParseTimeoutSeconds();
+        }
+
         String timeoutProp = System.getProperty(TIMEOUT_PROP);
         if (timeoutProp != null) {
             try {
                 timeoutSeconds = Integer.parseInt(timeoutProp);
             } catch (NumberFormatException e) {
-                LOG.warn("Invalid value for {}: '{}', using default {}s", TIMEOUT_PROP, timeoutProp, DEFAULT_TIMEOUT_SECONDS);
+                LOG.warn("Invalid value for {}: '{}', using {}s", TIMEOUT_PROP, timeoutProp, timeoutSeconds);
             }
         }
+        return timeoutSeconds;
+    }
 
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        KotlinParser parser = new KotlinParser(tokens);
-
-        // Give each parse its own fresh DFA and prediction context cache.
-        // The generated KotlinParser uses static _decisionToDFA and _sharedContextCache
-        // which accumulate LL prediction state across all parse invocations. On large or
-        // complex files this causes exponential ATN state explosion. A fresh simulator
-        // per file isolates state and prevents cross-file accumulation.
-        int numDecisions = KotlinParser._ATN.getNumberOfDecisions();
-        DFA[] decisionToDfa = new DFA[numDecisions];
-        for (int i = 0; i < numDecisions; i++) {
+    // Note: Not using the static KotlinParser._decisionToDFA and KotlinParser._sharedContextCache
+    // as this turned out to introduce thread contention. Needed unshared DFA and contextCache per
+    // file/simulator to prevent this.
+    private static InterruptibleParserATNSimulator freshSimulator(KotlinParser parser) {
+        DFA[] decisionToDfa = new DFA[KotlinParser._ATN.getNumberOfDecisions()];
+        for (int i = 0; i < decisionToDfa.length; i++) {
             decisionToDfa[i] = new DFA(KotlinParser._ATN.getDecisionState(i), i);
         }
-        parser.setInterpreter(new InterruptibleParserATNSimulator(
-                parser,
-                KotlinParser._ATN,
-                decisionToDfa,
-                new PredictionContextCache()));
+        return new InterruptibleParserATNSimulator(
+                parser, KotlinParser._ATN, decisionToDfa, new PredictionContextCache());
+    }
 
-        final KotlinParser finalParser = parser;
-        String fileName = task.getTextDocument().getFileId().getFileName();
+    private static KtKotlinFile unwrapExecutionException(ExecutionException e, FileId fileId) {
+        Throwable cause = e.getCause();
+        if (cause instanceof ParseException) {
+            throw (ParseException) cause;
+        }
+        if (cause instanceof InterruptibleParserATNSimulator.ParseCancelledException) {
+            ParseException parseException = new ParseException("Parse cancelled (interrupted)");
+            parseException.setFileId(fileId);
+            throw parseException;
+        }
+        ParseException parseException = new ParseException(cause);
+        parseException.setFileId(fileId);
+        throw parseException;
+    }
 
-        Future<KtKotlinFile> future = PARSE_EXECUTOR.submit(
-                () -> finalParser.kotlinFile().makeAstInfo(task));
+    private static final class AntlrErrorListener {
+        private final ParserTask task;
+        private FileAnalysisException exception;
 
-        try {
-            return future.get(timeoutSeconds, TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            future.cancel(true);
-            LOG.warn("Kotlin parse timeout ({}s) exceeded for file: {}. Skipping.", timeoutSeconds, fileName);
-            throw new ParseException("Parse timeout (" + timeoutSeconds + "s) exceeded for " + fileName);
-        } catch (ExecutionException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof ParseException) {
-                throw (ParseException) cause;
+        private AntlrErrorListener(ParserTask task) {
+            this.task = task;
+        }
+
+        private void addException(FileAnalysisException exception) {
+            if (this.exception == null) {
+                this.exception = exception;
+            } else {
+                this.exception.addSuppressed(exception);
             }
-            if (cause instanceof InterruptibleParserATNSimulator.ParseCancelledException) {
-                throw new ParseException("Parse cancelled (interrupted) for " + fileName);
-            }
-            throw new ParseException(cause);
-        } catch (InterruptedException | CancellationException e) {
-            Thread.currentThread().interrupt();
-            throw new ParseException("Parse interrupted for " + fileName);
+        }
+
+        boolean hasErrors() {
+            return exception != null;
+        }
+
+        FileAnalysisException getException() {
+            return exception;
+        }
+
+        ANTLRErrorListener lexerErrorListener() {
+            return new BaseErrorListener() {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+                                        int line, int charPositionInLine,
+                                        String msg, RecognitionException e) {
+                    addException(new LexException(line, charPositionInLine, task.getFileId(), msg, null));
+                }
+            };
+        }
+
+        ANTLRErrorListener parserErrorListener() {
+            return new BaseErrorListener() {
+                @Override
+                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+                                        int line, int charPositionInLine,
+                                        String msg, RecognitionException e) {
+                    addException(new ParseException(msg)
+                            .withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine)));
+                }
+            };
         }
     }
 

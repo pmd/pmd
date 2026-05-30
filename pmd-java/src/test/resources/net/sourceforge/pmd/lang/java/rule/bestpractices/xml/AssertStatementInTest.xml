@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>assert in JUnit 3 class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import junit.framework.TestCase;
+
+public class FooTest extends TestCase {
+    public void testSomething() {
+        assert true;
+    }
+    public void skipSomething() {
+        assert true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assert in JUnit 4 class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,13</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+import org.junit.Before;
+
+public class FooTest {
+
+    @Test
+    public void assertSomething() {
+        assert true;
+    }
+
+    @Before
+    public void setup() {
+        assert true;
+    }
+
+    public void skipSomething() {
+        assert true;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>assert in JUnit 5 class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,13</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+public class FooTest {
+
+    @Test
+    public void assertSomething() {
+        assert true;
+    }
+
+    @BeforeEach
+    public void setup() {
+        assert true;
+    }
+
+    public void skipSomething() {
+        assert true;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>assert in TestNG class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,12</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+
+public class MyTestCase {
+    @AfterMethod
+    public void tearDown() {
+        assert true;
+    }
+
+    @Test
+    public void myTest() {
+        assert true;
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

@@ -3,7 +3,7 @@ title: Building PMD with VS Code
 tags: [devdocs]
 permalink: pmd_devdocs_building_vscode.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2025 (7.10.0)
+last_updated: May 2026 (7.25.0)
 ---
 
 {%include warning.html content="It is not recommend to use VS Code for developing. See Known Issues below."%}
@@ -25,8 +25,8 @@ This needs to be done only once.
 You'll get the notification "Build failed". You can try to ignore the error and continue, but you might end
 up with "Unresolved compilation problems". See below under "Known Issues" for more information.
 
-PMD currently is still built for Java 8 and the VS Code plugin chooses a Java 8 runtime. For building however,
-we use Java 11 and also the tests require some Java 11 features. You might need to override the java version
+PMD currently is still built for Java {{ site.pmd.java_run_version }} and the VS Code plugin chooses a Java {{ site.pmd.java_run_version }} runtime. For building however,
+we use Java {{ site.pmd.java_build_version }} and also the tests require some Java {{ site.pmd.java_build_version }} features. You might need to override the java version
 manually: Ctlr+Shift+P and enter "configure java runtime". There you can override the java version for
 each project/module.
 {%endcapture%}

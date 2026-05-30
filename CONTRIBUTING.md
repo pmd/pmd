@@ -6,7 +6,7 @@ Detailed contributor info can be found in our documentation on <https://docs.pmd
 
 **Pull Requests** are welcome. Create them against the `main` branch.
 
-**Building:** Make sure, you can build PMD locally. You need Java 11+, then run `./mvnw clean verify`.
+**Building:** Make sure, you can build PMD locally. You need Java 21+, then run `./mvnw clean verify`.
 Guides for using various IDEs are available at <https://docs.pmd-code.org/latest/pmd_devdocs_building_general.html>.
 
 **Code of Conduct:** <https://github.com/pmd/pmd/blob/main/code_of_conduct.md>

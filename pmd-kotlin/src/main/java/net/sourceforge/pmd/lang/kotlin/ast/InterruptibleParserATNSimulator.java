@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin.ast;
 
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.atn.ATN;
@@ -16,13 +17,13 @@ import org.antlr.v4.runtime.dfa.DFA;
 
 /**
  * A {@link ParserATNSimulator} that checks for thread interruption at each
- * recursive closure step. This allows {@link Future#cancel(true)} to actually
+ * recursive closure step. This allows {@link Future#cancel(boolean)} to actually
  * stop an ANTLR parse that has entered exponential ATN state explosion.
  *
  * <p>ANTLR's {@code closure_()} and {@code closureCheckingStopState()} are a
  * tight mutual recursion with no interruption points. Overriding
- * {@code closureCheckingStopState} to check {@link Thread#interrupted()} lets
- * the timeout mechanism in {@link PmdKotlinParser} terminate the parse thread
+ * {@code closureCheckingStopState} to check thread interruption lets the
+ * timeout mechanism in {@link PmdKotlinParser} terminate the parse thread
  * promptly rather than leaving it spinning until JVM exit.
  */
 final class InterruptibleParserATNSimulator extends ParserATNSimulator {
@@ -37,7 +38,7 @@ final class InterruptibleParserATNSimulator extends ParserATNSimulator {
                                             Set<ATNConfig> closureBusy,
                                             boolean collectPredicates, boolean fullCtx,
                                             int depth, boolean treatEofAsEpsilon) {
-        if (Thread.interrupted()) {
+        if (Thread.currentThread().isInterrupted()) {
             throw new ParseCancelledException();
         }
         super.closureCheckingStopState(config, configs, closureBusy,

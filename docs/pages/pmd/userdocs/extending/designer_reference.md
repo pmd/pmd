@@ -3,7 +3,7 @@ title: The rule designer
 short_title: Rule designer
 tags: [extending, userdocs]
 summary: "Learn about the usage and features of the rule designer."
-last_updated: January 2026 (7.21.0)
+last_updated: May 2026 (7.25.0)
 permalink: pmd_userdocs_extending_designer_reference.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -13,11 +13,12 @@ author: Clément Fournier <clement.fournier76@gmail.com>
 The designer is part of PMD's binary distributions. To **install a distribution**, see the
 [documentation page about installing PMD](pmd_userdocs_installation.html).
 
-The designer still works with Java 8 from Oracle, which includes JavaFX up until Java 8u441. It also works
-with Java 8+ from Azul (Zulu JDK FX) or Bellsoft (Liberica Full JDK) which also include JavaFX.
+Besides Java (version {{ site.pmd.java_run_version }} or later), the designer requires JavaFX to work. You can obtain JavaFX as part of 
+Java distribution from Azul (Zulu JDK FX) or Bellsoft (Liberica Full JDK).
+
 Note: The latest Java 8 from Oracle does _not_ include JavaFX anymore, see <https://www.oracle.com/javase/javafx/>.
 
-If you use a Java version, which includes JavaFX, then all is set.
+If you use a JavaFX from these distributions, then all is set.
 
 However, it is recommended to use OpenJDK along with OpenJFX. The recommended Java Runtime is
 Java 11 (or later) with OpenJFX 17 (or later).

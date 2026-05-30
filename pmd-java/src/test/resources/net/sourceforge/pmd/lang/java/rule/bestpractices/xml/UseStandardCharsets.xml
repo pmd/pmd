@@ -4,7 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-
     <test-code>
         <description>fail, US-ASCII</description>
         <expected-problems>1</expected-problems>
@@ -275,5 +274,187 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, String.getBytes(String) - UTF-8 mixed case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static void charset(String foo) {
+        foo.getBytes("Utf-8");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, Charset.forName(String) - UTF-8 mixed case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+        Charset.forName("Utf-8");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, Charset.forName(String) - charset name is passed as variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset(String foo) {
+        Charset.forName(foo);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, random call to a method with an int parameter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        bar(42);
+    }
+
+    public void bar(int x) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, random call involving a variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String x) {
+        bar(x);
+    }
+
+    public void bar(String x) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, Charset.forName(String), UTF-32BE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+        Charset.forName("UTF-32BE");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, Charset.forName(String), UTF-32LE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+        Charset.forName("UTF-32LE");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, Charset.forName(String), UTF-32</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+        Charset.forName("UTF-32");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, String.getBytes(String), UTF-32BE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static void charset(String foo) {
+        foo.getBytes("UTF-32BE");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, String.getBytes(String), UTF-32LE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static void charset(String foo) {
+        foo.getBytes("UTF-32LE");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>fail, String.getBytes(String), UTF-32</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static void charset(String foo) {
+        foo.getBytes("UTF-32");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, Charset.forName(String), UTF-32, Java &lt; 22</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.charset.Charset;
+
+public class Foo {
+    public static void charset() {
+        Charset.forName("UTF-32");
+    }
+}
+        ]]></code>
+        <source-type>java 21</source-type>
+    </test-code>
+
+    <test-code>
+        <description>ok, String.getBytes(String), UTF-32, Java &lt; 22</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void charset(String foo) {
+        foo.getBytes("UTF-32");
+    }
+}
+        ]]></code>
+        <source-type>java 21</source-type>
     </test-code>
 </test-data>

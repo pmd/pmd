@@ -39,9 +39,23 @@ class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
 
     @Test
     void testMatchSigUnresolved() {
+        Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('java.lang.String#foobar(int)')]");
+
+        assertFinds(rule, 0, "enum O {; { \"\".foobar(1); } }");
+    }
+
+    @Test
+    void testMatchSigUnresolvedNoArgs() {
         Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('java.lang.String#foobar()')]");
 
-        assertFinds(rule, 0, "enum O {; { \"\".foobar(); } }");
+        assertFinds(rule, 1, "enum O {; { \"\".foobar(); } }");
+    }
+
+    @Test
+    void testMatchSigUnresolvedAnyNumberOfArgs() {
+        Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('java.lang.String#foobar(_*)')]");
+
+        assertFinds(rule, 1, "enum O {; { \"\".foobar(); } }");
     }
 
     @Test
