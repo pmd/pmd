@@ -15,4 +15,12 @@ public class KtPropertyDeclarationAttributes extends AttributeView<KotlinParser.
     public KtPropertyDeclarationAttributes(KotlinParser.KtPropertyDeclaration node) {
         super(node);
     }
+
+    /**
+     * Returns {@code true} if this property is declared with {@code var} (mutable),
+     * {@code false} if declared with {@code val} (immutable).
+     */
+    public boolean isMutable() {
+        return node.VAR() != null;
+    }
 }
