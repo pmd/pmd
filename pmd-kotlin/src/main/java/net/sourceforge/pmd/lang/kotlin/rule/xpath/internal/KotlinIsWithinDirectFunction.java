@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
  * i.e. no function body or lambda literal lies between the node and the target context.
  *
  * <p>Supported context strings: {@code companion-object}, {@code top-level},
- * {@code object-declaration}, {@code function-body}, {@code lambda}.
+ * {@code object-declaration}, {@code function-body}, {@code lambda}, {@code use-block}.
  *
  * <p>Example: distinguish a member property of a companion object from a local
  * variable inside a function that happens to be declared in the companion object:
@@ -86,10 +86,12 @@ public final class KotlinIsWithinDirectFunction extends BaseKotlinXPathFunction 
                 return isDirectInsideFunctionBody(contextNode);
             case "lambda":
                 return isDirectInsideLambda(contextNode);
+            case "use-block":
+                return isDirectInsideUseBlock(contextNode);
             default:
                 throw new XPathFunctionException(
                         "pmd-kotlin:isWithinDirect() - unknown context '" + context
-                        + "'. Supported: companion-object, top-level, object-declaration, function-body, lambda");
+                        + "'. Supported: companion-object, top-level, object-declaration, function-body, lambda, use-block");
             }
         }
 
@@ -161,6 +163,24 @@ public final class KotlinIsWithinDirectFunction extends BaseKotlinXPathFunction 
                 String name = ancestor.getXPathNodeName();
                 if ("LambdaLiteral".equals(name)) {
                     return true;
+                }
+                if ("FunctionBody".equals(name)) {
+                    return false;
+                }
+                ancestor = ancestor.getParent();
+            }
+            return false;
+        }
+
+        /**
+         * True when the nearest LambdaLiteral ancestor (before any FunctionBody) is a {@code .use { }} call lambda.
+         */
+        private static boolean isDirectInsideUseBlock(Node node) {
+            Node ancestor = node.getParent();
+            while (ancestor != null) {
+                String name = ancestor.getXPathNodeName();
+                if ("LambdaLiteral".equals(name)) {
+                    return KotlinIsWithinFunction.isLambdaInUseCall(ancestor);
                 }
                 if ("FunctionBody".equals(name)) {
                     return false;

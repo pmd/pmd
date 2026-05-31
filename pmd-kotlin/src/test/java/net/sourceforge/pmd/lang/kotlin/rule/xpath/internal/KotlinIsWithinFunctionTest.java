@@ -128,6 +128,52 @@ class KotlinIsWithinFunctionTest {
         assertEquals(1, r.getViolations().size(), "property inside nested lambda should match");
     }
 
+    // ---- use-block ----
+
+    @Test
+    void useBlockBodyMatches() {
+        Report r = run("//PropertyDeclaration[pmd-kotlin:isWithin('use-block')]",
+                "fun f() { someStream.use { val x: Int = 0; x } }");
+        assertEquals(1, r.getViolations().size(), "property inside .use { } should match");
+    }
+
+    @Test
+    void regularLambdaDoesNotMatchUseBlock() {
+        Report r = run("//PropertyDeclaration[pmd-kotlin:isWithin('use-block')]",
+                "fun f() { listOf(1).forEach { val x = it } }");
+        assertTrue(r.getViolations().isEmpty(), "property inside non-use lambda should not match use-block");
+    }
+
+    @Test
+    void functionBodyDoesNotMatchUseBlock() {
+        Report r = run("//PropertyDeclaration[pmd-kotlin:isWithin('use-block')]",
+                "fun f() { val x: Int = 0 }");
+        assertTrue(r.getViolations().isEmpty(), "property in plain function body should not match use-block");
+    }
+
+    @Test
+    void useBlockDirectMatches() {
+        Report r = run("//PropertyDeclaration[pmd-kotlin:isWithinDirect('use-block')]",
+                "fun f() { someStream.use { val x: Int = 0; x } }");
+        assertEquals(1, r.getViolations().size(), "direct property inside .use { } should match isWithinDirect");
+    }
+
+    @Test
+    void nestedLambdaInsideUseBlockDoesNotMatchDirect() {
+        Report r = run("//PropertyDeclaration[pmd-kotlin:isWithinDirect('use-block')]",
+                "fun f() { someStream.use { listOf(1).forEach { val x = it } } }");
+        assertTrue(r.getViolations().isEmpty(),
+                "property inside nested lambda within .use { } should not match isWithinDirect('use-block')");
+    }
+
+    @Test
+    void nestedLambdaInsideUseBlockMatchesAnyDepth() {
+        Report r = run("//PropertyDeclaration[pmd-kotlin:isWithin('use-block')]",
+                "fun f() { someStream.use { listOf(1).forEach { val x = it } } }");
+        assertEquals(1, r.getViolations().size(),
+                "property inside nested lambda within .use { } should match isWithin('use-block')");
+    }
+
     // ---- combined (isWithin + not @Mutable, the primary use case) ----
 
     @Test
