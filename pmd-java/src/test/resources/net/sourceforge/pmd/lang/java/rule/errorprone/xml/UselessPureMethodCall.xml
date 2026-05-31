@@ -80,7 +80,7 @@ public class Foo {
     private String foo() {
         name.indexOf("F");
         name.getChars(0, 1, new char[1], 0);
-        name.getBytes(0, 1, new char[1], 0);
+        name.getBytes(0, 1, new byte[1], 0);
         name.getBytes();
         name.getBytes("UTF8");
         return name.substring(1);
