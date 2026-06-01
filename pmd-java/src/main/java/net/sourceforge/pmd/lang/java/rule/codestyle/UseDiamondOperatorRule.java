@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -80,6 +81,10 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             return null;
         }
 
+        if (isSuperTypeTokenPattern(ctorCall)) {
+            return null;
+        }
+
         if (inferenceSucceedsWithoutTypeArgs(ctorCall)) {
             // report it
             JavaNode reportNode = targs == null ? newTypeNode : targs;
@@ -94,6 +99,24 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         return ctorCall.getLanguageVersion().compareToVersion("9") >= 0;
     }
 
+    /**
+     * Heuristic to detect the
+     * <a href="https://gafter.blogspot.com/2006/12/super-type-tokens.html">Super Type Token</a>
+     * Pattern
+     */
+    // visible for testing
+    /* private */ static boolean isSuperTypeTokenPattern(ASTConstructorCall ctorCall) {
+        if (!ctorCall.isAnonymousClass()) {
+            return false;
+        }
+
+        ASTAnonymousClassDeclaration anonymousClassDeclaration = ctorCall.getAnonymousClassDeclaration();
+        ASTClassType superClass = anonymousClassDeclaration.getSuperClassTypeNode();
+
+        return superClass != null
+                && superClass.getTypeArguments() != null
+                && anonymousClassDeclaration.getBody().isEmpty();
+    }
 
     /** Redo inference as described in the javadoc of this class. */
     private static boolean inferenceSucceedsWithoutTypeArgs(ASTConstructorCall call) {
