@@ -215,6 +215,11 @@ public final class TextFileContent {
         if (cbuf[0] == IOUtil.UTF_BOM) {
             cbuf = ArrayUtils.remove(cbuf, 0);
             n--;
+            // BOM must be included in checksum
+            // otherwise, checksum calculation would be inconsistent across TextFileContent sources
+            if (updateChecksum) {
+                updateChecksum(checksum, CharBuffer.wrap(Character.toString(IOUtil.UTF_BOM)));
+            }
         }
 
         while (n != IOUtil.EOF) {
