@@ -167,7 +167,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         produceSameTypeWithDiamond(ctor.getTypeNode(), sb, true);
         ASTArgumentList arguments = ctor.getArguments();
         String argsString;
-        if (arguments.size() == 0) {
+        if (arguments.isEmpty()) {
             argsString = "()";
         } else {
             CharSequence text = arguments.getText();
