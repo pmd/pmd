@@ -523,11 +523,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean isNotNullInitialized(ASTVariableId var) {
-        return !hasNullInitializer(var);
-    }
-
-    private boolean hasNullInitializer(ASTVariableId var) {
-        return var.getInitializer() instanceof ASTNullLiteral;
+        return !(JavaAstUtils.peelCasts(var.getInitializer()) instanceof ASTNullLiteral);
     }
 
     private boolean areStatementsOfSameBlock(ASTStatement bs0, ASTStatement bs1) {
@@ -817,7 +813,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private ASTExpressionStatement getFirstReassigningStatementBeforeBeingClosed(ASTVariableId variable, ASTExecutableDeclaration methodOrConstructor) {
         List<ASTExpressionStatement> statements = methodOrConstructor.descendants(ASTExpressionStatement.class).toList();
         boolean variableClosed = false;
-        boolean isInitialized = !hasNullInitializer(variable);
+        boolean isInitialized = isNotNullInitialized(variable);
         ASTExpression initializingExpression = initializerExpressionOf(variable);
         for (ASTExpressionStatement statement : statements) {
             if (isClosingVariableStatement(statement, variable)) {
