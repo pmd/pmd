@@ -26,7 +26,7 @@ class UseDiamondOperatorTest extends PmdRuleTst {
         @Test
         @DisplayName("Creating an object of an anonymous class without a class body, where the parent class is generic - looks like the super type pattern")
         void testPositive() {
-            ASTCompilationUnit root = java.parse("class TypeReference<T> {} public class A { { new TypeReference<java.util.List<String>>() {}; } }");
+            ASTCompilationUnit root = java.parse("class TypeReference<T> { private java.lang.reflect.Type type; } public class A { { new TypeReference<java.util.List<String>>() {}; } }");
             ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
 
             assertTrue(isSuperTypeTokenPattern(ctorCall));
@@ -35,7 +35,7 @@ class UseDiamondOperatorTest extends PmdRuleTst {
         @Test
         @DisplayName("Needs to create an anonymous class")
         void testNoAnonymousClass() {
-            ASTCompilationUnit root = java.parse("class TypeReference<T> {} public class A { { new TypeReference<java.util.List<String>>(); } }");
+            ASTCompilationUnit root = java.parse("class TypeReference<T> { private java.lang.reflect.Type type; } public class A { { new TypeReference<java.util.List<String>>(); } }");
             ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
 
             assertFalse(isSuperTypeTokenPattern(ctorCall));
@@ -44,7 +44,7 @@ class UseDiamondOperatorTest extends PmdRuleTst {
         @Test
         @DisplayName("Anonymous class body needs to be empty")
         void testAnonymousClassBodyIsntEmpty() {
-            ASTCompilationUnit root = java.parse("class TypeReference<T> {} public class A { { new TypeReference<java.util.List<String>>() { void foo() {} }; } }");
+            ASTCompilationUnit root = java.parse("class TypeReference<T> { private java.lang.reflect.Type type; } public class A { { new TypeReference<java.util.List<String>>() { void foo() {} }; } }");
             ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
 
             assertFalse(isSuperTypeTokenPattern(ctorCall));
@@ -53,7 +53,7 @@ class UseDiamondOperatorTest extends PmdRuleTst {
         @Test
         @DisplayName("Superclass must be generic")
         void testSuperclassNotGeneric() {
-            ASTCompilationUnit root = java.parse("class TypeReference {} public class A { { new TypeReference() {}; } }");
+            ASTCompilationUnit root = java.parse("class TypeReference { private java.lang.reflect.Type type; } public class A { { new TypeReference() {}; } }");
             ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
 
             assertFalse(isSuperTypeTokenPattern(ctorCall));
@@ -62,7 +62,7 @@ class UseDiamondOperatorTest extends PmdRuleTst {
         @Test
         @DisplayName("Missing type arguments")
         void testMissingTypeArguments() {
-            ASTCompilationUnit root = java.parse("class TypeReference<T> {} public class A { { new TypeReference() {}; } }");
+            ASTCompilationUnit root = java.parse("class TypeReference<T> { private java.lang.reflect.Type type; } public class A { { new TypeReference() {}; } }");
             ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
 
             assertFalse(isSuperTypeTokenPattern(ctorCall));
@@ -75,6 +75,24 @@ class UseDiamondOperatorTest extends PmdRuleTst {
             ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
 
             assertFalse(isSuperTypeTokenPattern(ctorCall));
+        }
+
+        @Test
+        @DisplayName("Missing member of type java.lang.reflect.Type")
+        void testTypeMember() {
+            ASTCompilationUnit root = java.parse("class TypeReference<T> {} public class A { { new TypeReference<java.util.List<String>>() {}; } }");
+            ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
+
+            assertFalse(isSuperTypeTokenPattern(ctorCall));
+        }
+
+        @Test
+        @DisplayName("Type token has additional array member")
+        void testArrayMember() {
+            ASTCompilationUnit root = java.parse("class TypeReference<T> { private Object[] o; private java.lang.reflect.Type type; } public class A { { new TypeReference<java.util.List<String>>() {}; } }");
+            ASTConstructorCall ctorCall = root.descendants(ASTConstructorCall.class).first();
+
+            assertTrue(isSuperTypeTokenPattern(ctorCall));
         }
     }
 }

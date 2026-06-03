@@ -25,6 +25,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
@@ -115,7 +117,14 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
         return superClass != null
                 && superClass.getTypeArguments() != null
-                && anonymousClassDeclaration.getBody().isEmpty();
+                && anonymousClassDeclaration.getBody().isEmpty()
+                && ((JClassType) superClass.getTypeMirror()).getDeclaredFields().stream().anyMatch(UseDiamondOperatorRule::isTypeField);
+    }
+
+    private static boolean isTypeField(FieldSig fieldSig) {
+        JTypeMirror fieldType = fieldSig.getSymbol().getTypeMirror(Substitution.EMPTY);
+        return fieldType instanceof JClassType
+                && "java.lang.reflect.Type".equals(((JClassType) fieldType).getSymbol().getCanonicalName());
     }
 
     /** Redo inference as described in the javadoc of this class. */

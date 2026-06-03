@@ -579,6 +579,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.List;
+import java.lang.reflect.Type;
 
 public class A {
 
@@ -597,7 +598,9 @@ public class A {
 // org.apache.commons.lang3.reflect.TypeLiteral
 // com.fasterxml.jackson.core.type.TypeReference
 // etc.
-class TypeReference<T> {}
+class TypeReference<T> {
+    private Type type;
+}
         ]]></code>
     </test-code>
 </test-data>
