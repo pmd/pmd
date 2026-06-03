@@ -2038,11 +2038,25 @@
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
+<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#wrongtestannotation"><code class="language-plaintext highlighter-rouge">WrongTestAnnotation</code></a> detects when test annotations from the wrong
+testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
+skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don’t execute
+because the test runner doesn’t recognize the annotation.</li>
+</ul>
+
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6692">#6692</a>: [java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2846">#2846</a>: [java] New Rule: WrongTestAnnotation</li>
     </ul>
   </li>
 </ul>
@@ -2087,7 +2101,7 @@
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 1, 2026 <br />
+             Site last generated: Jun 3, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

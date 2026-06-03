@@ -3730,6 +3730,14 @@ let pmd_doc_search_index = [
   "url": "pmd_rules_java_errorprone.html#useproperclassloader",
   "summary": "In J2EE, the getClassLoader() method might not work as expected. Use\nThread.currentThread().getContextClassLoader() instead."
 },{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/errorprone.md",
+  "title": "WrongTestAnnotation (Java, Error Prone)",
+  "tags": "",
+  "keywords": "Wrong Test Annotation",
+  "url": "pmd_rules_java_errorprone.html#wrongtestannotation",
+  "summary": "When you use the @Test annotation from the wrong framework, your tests won't be executed...."
+},{
   "type": "ruledoc ruleset",
   "source": "pages/pmd/rules/java/multithreading.md",
   "title": "Multithreading (Java, Multithreading)",
