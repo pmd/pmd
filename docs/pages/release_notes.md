@@ -27,6 +27,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛️ Fixed Issues
 * java-bestpractices
   * [#6692](https://github.com/pmd/pmd/issues/6692): \[java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms
+* java-errorprone
+  * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null
 
 ### 🚨️ API Changes
 
