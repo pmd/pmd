@@ -30,6 +30,9 @@ This is a {{ site.pmd.release_type }} release.
   testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
   skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don't execute
   because the test runner doesn't recognize the annotation.
+* The new Kotlin rule {% rule kotlin/bestpractices/LocalVariableShadowsParameter %} detects local variable
+  declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
+  and may lead to confusion about which value is used.
 
 ### 🐛️ Fixed Issues
 * java-bestpractices
@@ -39,6 +42,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
   * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
   * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null
+* kotlin-bestpractices
+  * [#6732](https://github.com/pmd/pmd/issues/6732): \[kotlin] New Rule: LocalVariableShadowsParameter
 
 ### 🚨️ API Changes
 
