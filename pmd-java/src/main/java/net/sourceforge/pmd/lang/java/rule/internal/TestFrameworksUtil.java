@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import static net.sourceforge.pmd.util.CollectionUtil.union;
 
 import java.util.Set;
 
@@ -49,26 +50,42 @@ public final class TestFrameworksUtil {
                                                                "junit.framework.Assert",
                                                                "junit.framework.TestCase");
 
+    private static final Set<String> JUNIT5_CONFIGURATION_ANNOTATIONS =
+            setOf(
+                    "org.junit.jupiter.api.BeforeEach",
+                    "org.junit.jupiter.api.BeforeAll",
+                    "org.junit.jupiter.api.AfterEach",
+                    "org.junit.jupiter.api.AfterAll"
+            );
+
+    private static final Set<String> JUNIT4_CONFIGURATION_ANNOTATIONS =
+            setOf(
+                    "org.junit.Before",
+                    "org.junit.BeforeClass",
+                    "org.junit.After",
+                    "org.junit.AfterClass"
+            );
+
+    private static final Set<String> TEST_NG_CONFIGURATION_ANNOTATIONS =
+            setOf(
+                    "org.testng.annotations.AfterClass",
+                    "org.testng.annotations.AfterGroups",
+                    "org.testng.annotations.AfterMethod",
+                    "org.testng.annotations.AfterSuite",
+                    "org.testng.annotations.AfterTest",
+                    "org.testng.annotations.BeforeClass",
+                    "org.testng.annotations.BeforeGroups",
+                    "org.testng.annotations.BeforeMethod",
+                    "org.testng.annotations.BeforeSuite",
+                    "org.testng.annotations.BeforeTest"
+            );
+
     private static final Set<String> TEST_CONFIGURATION_ANNOTATIONS =
-        setOf("org.junit.Before",
-                "org.junit.BeforeClass",
-                "org.junit.After",
-                "org.junit.AfterClass",
-                "org.junit.jupiter.api.BeforeEach",
-                "org.junit.jupiter.api.BeforeAll",
-                "org.junit.jupiter.api.AfterEach",
-                "org.junit.jupiter.api.AfterAll",
-                "org.testng.annotations.AfterClass",
-                "org.testng.annotations.AfterGroups",
-                "org.testng.annotations.AfterMethod",
-                "org.testng.annotations.AfterSuite",
-                "org.testng.annotations.AfterTest",
-                "org.testng.annotations.BeforeClass",
-                "org.testng.annotations.BeforeGroups",
-                "org.testng.annotations.BeforeMethod",
-                "org.testng.annotations.BeforeSuite",
-                "org.testng.annotations.BeforeTest"
-        );
+            union(
+                    JUNIT5_CONFIGURATION_ANNOTATIONS,
+                    JUNIT4_CONFIGURATION_ANNOTATIONS,
+                    TEST_NG_CONFIGURATION_ANNOTATIONS
+            );
 
     private TestFrameworksUtil() {
         // utility class
@@ -142,6 +159,26 @@ public final class TestFrameworksUtil {
 
     public static boolean isJunit4TestAnnotation(ASTAnnotation annot) {
         return TypeTestUtil.isA(JUNIT4_TEST_ANNOT, annot);
+    }
+
+    public static boolean isJunit4ConfigAnnotation(ASTAnnotation annot) {
+        return JUNIT4_CONFIGURATION_ANNOTATIONS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
+    }
+
+    public static boolean isJunit5TestAnnotation(ASTAnnotation annot) {
+        return JUNIT5_ALL_TEST_ANNOTS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
+    }
+
+    public static boolean isJunit5ConfigAnnotation(ASTAnnotation annot) {
+        return JUNIT5_CONFIGURATION_ANNOTATIONS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
+    }
+
+    public static boolean isTestNGTestAnnotation(ASTAnnotation annot) {
+        return TypeTestUtil.isA(TEST_NG_TEST_ANNOT, annot);
+    }
+
+    public static boolean isTestNGConfigAnnotation(ASTAnnotation annot) {
+        return TEST_NG_CONFIGURATION_ANNOTATIONS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
     }
 
     /**
