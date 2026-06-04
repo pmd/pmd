@@ -31,7 +31,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * {@link KotlinAstUtil#isWithin}) is then compared against the combined set
  * of params from that function and all its enclosing functions.
  *
- * @since 7.25.0
+ * @since 7.26.0
  */
 public class LocalVariableShadowsParameterRule extends AbstractKotlinRule {
 

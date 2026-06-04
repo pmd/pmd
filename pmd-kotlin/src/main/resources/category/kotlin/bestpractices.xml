@@ -36,7 +36,7 @@ fun calculateLayout() // no violation
     </rule>
 
     <rule name="LocalVariableShadowsParameter"
-          since="7.25.0"
+          since="7.26.0"
           language="kotlin"
           message="Local variable ''{0}'' shadows a parameter of the enclosing function."
           class="net.sourceforge.pmd.lang.kotlin.rule.bestpractices.LocalVariableShadowsParameterRule"
