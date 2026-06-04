@@ -91,7 +91,7 @@ class DBMSMetadataTest {
              * Walk through the column names, writing out a header line
              */
             for (int columnNumber = 1; columnNumber <= columnCount; columnNumber++) {
-                System.out.format("%s%s", ((columnNumber > 1) ? "," : ""), metaData.getColumnName(columnNumber));
+                System.out.format("%s%s", (columnNumber > 1) ? "," : "", metaData.getColumnName(columnNumber));
             }
             System.out.format("\n");
 
@@ -101,7 +101,7 @@ class DBMSMetadataTest {
                  * Walk through the columns of this row, writing out a row line
                  */
                 for (int columnNumber = 1; columnNumber <= columnCount; columnNumber++) {
-                    System.out.format("%s%s", ((columnNumber > 0) ? "," : ""), resultSet.getString(columnNumber));
+                    System.out.format("%s%s", (columnNumber > 0) ? "," : "", resultSet.getString(columnNumber));
                 }
                 System.out.format("\n");
 
@@ -123,12 +123,12 @@ class DBMSMetadataTest {
         System.out.println("driverClass==" + driverClass);
         System.out.println("URL==" + dbURI.getURL());
         Class.forName(driverClass);
-        Object object = DriverManager.getDriver(dbURI.getURL());
+        // Object object = DriverManager.getDriver(dbURI.getURL());
         // Object object = DriverManager.getDriver(C_ORACLE_OCI_3) ;
         Properties properties = new Properties();
         properties.put("user", "system");
         properties.put("password", "oracle");
-        Connection expResult = DriverManager.getDriver(dbURI.getURL()).connect(dbURI.getURL(), properties);
+        // Connection expResult = DriverManager.getDriver(dbURI.getURL()).connect(dbURI.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(dbURI);
         Connection result = instance.getConnection();
         assertNotNull(result);
@@ -147,11 +147,11 @@ class DBMSMetadataTest {
         System.out.println("driverClass==" + driverClass);
         System.out.println("URL==" + dbURI5.getURL());
         Class.forName(driverClass);
-        Object object = DriverManager.getDriver(dbURI5.getURL());
+        // Object object = DriverManager.getDriver(dbURI5.getURL());
         // Object object = DriverManager.getDriver(C_ORACLE_OCI_3) ;
         Properties properties = new Properties();
         properties.putAll(dbURI5.getParameters());
-        Connection expResult = DriverManager.getDriver(dbURI5.getURL()).connect(dbURI5.getURL(), properties);
+        // Connection expResult = DriverManager.getDriver(dbURI5.getURL()).connect(dbURI5.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(dbURI5);
         Connection result = instance.getConnection();
         assertNotNull(result);
@@ -179,7 +179,7 @@ class DBMSMetadataTest {
         System.out.println("dbURI.getDBType.getProperties()=="
                 + dbURI.getDbType().getProperties().getProperty("getSourceCodeStatement"));
         DBMSMetadata instance = new DBMSMetadata(dbURI);
-        Reader expResult = null;
+        // Reader expResult = null;
         Reader result = instance.getSourceCode(objectType, name, schema);
 
         /*
@@ -214,12 +214,12 @@ class DBMSMetadataTest {
         System.out.println("driverClass==" + driverClass);
         System.out.println("URL==" + testURI.getURL());
         Class.forName(driverClass);
-        Object object = DriverManager.getDriver(testURI.getURL());
+        // Object object = DriverManager.getDriver(testURI.getURL());
         // Object object = DriverManager.getDriver(C_ORACLE_OCI_3) ;
         Properties properties = new Properties();
         properties.put("user", "system");
         properties.put("password", "oracle");
-        Connection expResult = DriverManager.getDriver(testURI.getURL()).connect(testURI.getURL(), properties);
+        // Connection expResult = DriverManager.getDriver(testURI.getURL()).connect(testURI.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(testURI);
         Connection result = instance.getConnection();
         assertNotNull(result);
@@ -262,12 +262,12 @@ class DBMSMetadataTest {
         System.out.println("driverClass==" + driverClass);
         System.out.println("URL==" + testURI.getURL());
         Class.forName(driverClass);
-        Object object = DriverManager.getDriver(testURI.getURL());
+        // Object object = DriverManager.getDriver(testURI.getURL());
         // Object object = DriverManager.getDriver(C_ORACLE_OCI_3) ;
         Properties properties = new Properties();
         properties.put("user", "system");
         properties.put("password", "oracle");
-        Connection expResult = DriverManager.getDriver(testURI.getURL()).connect(testURI.getURL(), properties);
+        // Connection expResult = DriverManager.getDriver(testURI.getURL()).connect(testURI.getURL(), properties);
         DBMSMetadata instance = new DBMSMetadata(testURI);
         Connection result = instance.getConnection();
         assertNotNull(result);

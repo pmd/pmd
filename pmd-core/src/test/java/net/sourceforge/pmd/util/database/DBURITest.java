@@ -140,9 +140,9 @@ class DBURITest {
     @Test
     void testGetDbType() throws URISyntaxException, Exception {
         System.out.println("getDbType");
-        DBURI instance = new DBURI(C_POSTGRES_1);
-        DBType expResult = new DBType("postgresql");
-        DBType result = instance.getDbType();
+        // DBURI instance = new DBURI(C_POSTGRES_1);
+        // DBType expResult = new DBType("postgresql");
+        // DBType result = instance.getDbType();
         // assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
@@ -155,9 +155,9 @@ class DBURITest {
     @Test
     void testGetDbType2() throws URISyntaxException, Exception {
         System.out.println("getDbType");
-        DBURI instance = new DBURI(C_ORACLE_OCI_1);
-        DBType expResult = new DBType("oci");
-        DBType result = instance.getDbType();
+        // DBURI instance = new DBURI(C_ORACLE_OCI_1);
+        // DBType expResult = new DBType("oci");
+        // DBType result = instance.getDbType();
         // assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
