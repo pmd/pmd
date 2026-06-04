@@ -99,6 +99,7 @@
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.9</saxon.version>
+        <byte.buddy.version>1.18.10</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -1044,13 +1045,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.18.10</version>
+                <version>${byte.buddy.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.18.10</version>
+                <version>${byte.buddy.version}</version>
                 <scope>test</scope>
             </dependency>
 
