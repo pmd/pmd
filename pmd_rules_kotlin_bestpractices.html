@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, FunctionNameTooShort">
+<meta name="keywords" content=" Best Practices, FunctionNameTooShort, LocalVariableShadowsParameter">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2053,6 +2053,34 @@
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/kotlin/bestpractices.xml/FunctionNameTooShort"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="localvariableshadowsparameter">LocalVariableShadowsParameter</h2>
+
+<p><strong>Since:</strong> PMD 7.26.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>A local variable declaration uses the same name as a parameter of the enclosing function.
+This shadows the parameter and may lead to confusion about which value is used.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/rule/bestpractices/LocalVariableShadowsParameterRule.java">net.sourceforge.pmd.lang.kotlin.rule.bestpractices.LocalVariableShadowsParameterRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fun</span> <span class="nf">compute</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="nc">Int</span><span class="p">):</span> <span class="nc">Int</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="mi">42</span>  <span class="c1">// violation - shadows parameter 'result'</span>
+    <span class="k">return</span> <span class="n">result</span>
+<span class="p">}</span>
+
+<span class="k">fun</span> <span class="nf">compute2</span><span class="p">(</span><span class="n">input</span><span class="p">:</span> <span class="nc">Int</span><span class="p">):</span> <span class="nc">Int</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="n">input</span> <span class="p">+</span> <span class="mi">1</span>  <span class="c1">// no violation - different name</span>
+    <span class="k">return</span> <span class="n">result</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/kotlin/bestpractices.xml/LocalVariableShadowsParameter"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 

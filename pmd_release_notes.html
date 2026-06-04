@@ -2045,6 +2045,9 @@
 testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
 skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don’t execute
 because the test runner doesn’t recognize the annotation.</li>
+  <li>The new Kotlin rule <a href="pmd_rules_kotlin_bestpractices.html#localvariableshadowsparameter"><code class="language-plaintext highlighter-rouge">LocalVariableShadowsParameter</code></a> detects local variable
+declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
+and may lead to confusion about which value is used.</li>
 </ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
@@ -2062,6 +2065,11 @@ because the test runner doesn’t recognize the annotation.</li>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2846">#2846</a>: [java] New Rule: WrongTestAnnotation</li>
+    </ul>
+  </li>
+  <li>kotlin-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6732">#6732</a>: [kotlin] New Rule: LocalVariableShadowsParameter</li>
     </ul>
   </li>
 </ul>

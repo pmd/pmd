@@ -4242,6 +4242,14 @@ let pmd_doc_search_index = [
   "url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
   "summary": "Function names should be easy to understand and describe the intention. Makes developers happy."
 },{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/kotlin/bestpractices.md",
+  "title": "LocalVariableShadowsParameter (Kotlin, Best Practices)",
+  "tags": "",
+  "keywords": "Local Variable Shadows Parameter",
+  "url": "pmd_rules_kotlin_bestpractices.html#localvariableshadowsparameter",
+  "summary": "A local variable declaration uses the same name as a parameter of the enclosing function...."
+},{
   "type": "ruledoc ruleset",
   "source": "pages/pmd/rules/kotlin/errorprone.md",
   "title": "Error Prone (Kotlin, Error Prone)",
