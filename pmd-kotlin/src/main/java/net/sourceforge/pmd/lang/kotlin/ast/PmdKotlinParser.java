@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrErrorListener;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrGeneratedParserBase;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.kotlin.KotlinHandler;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
@@ -42,17 +42,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a processing
  * error. The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
  *
- * <p>Error handling strategy:
- * <ul>
- *   <li><b>Lexer errors</b> (e.g. unrecognized tokens) and <b>Parser errors</b> (e.g. unexpected token structure)
- *       are collected and lexing/parsing continues.</li>
- *   <li>Further lexer/parser errors are collected as suppressed exceptions.</li>
- *   <li>The first occurred lexer/parser exception is thrown at the end and no rules are executed.</li>
- * </ul>
- *
- * <p>PMD reports the file as a {@code ProcessingError} and skips rule analysis for it.
- * All other files continue to be processed. Exit code 5 is returned by the CLI if
- * any processing errors occurred (suppressible with {@code --no-fail-on-error}).
+ * <p>Error handling strategy, see {@link AntlrBaseParser}</p>
  */
 public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinFile> {
 
@@ -75,25 +65,19 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
     }
 
     @Override
-    protected KtKotlinFile parse(final Lexer lexer, ParserTask task) {
-        AntlrErrorListener errorListener = new AntlrErrorListener(task);
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorListener.lexerErrorListener());
-
-        KotlinParser parser = new KotlinParser(new CommonTokenStream(lexer));
-        parser.setInterpreter(freshSimulator(parser));
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorListener.parserErrorListener());
+    protected KtKotlinFile parse(final AntlrGeneratedParserBase<KotlinNode> parser, ParserTask task) {
+        KotlinParser kotlinParser = (KotlinParser) parser;
+        kotlinParser.setInterpreter(freshSimulator(kotlinParser));
 
         FileId fileId = task.getFileId();
         String fileName = fileId.getOriginalPath();
-        // KotlinLanguageProcessor processor = (KotlinLanguageProcessor) task.getLanguageProcessor();
-        int timeoutSeconds = ((KotlinLanguageProcessor) task.getLanguageProcessor())
-                .getProperties().getParseTimeoutSeconds();
+        // Note: KotlinLanguageProcessor will be closed by LanguageProcessorRegistry as part of PmdAnalysis
+        KotlinLanguageProcessor processor = (KotlinLanguageProcessor) task.getLanguageProcessor(); //NOPMD: CloseResource
+        int timeoutSeconds = processor.getProperties().getParseTimeoutSeconds();
 
         LOG.debug("Parsing Kotlin file {} (timeout: {}s)", fileName, timeoutSeconds);
 
-        Callable<KtKotlinFile> callable = () -> parser.kotlinFile().makeAstInfo(task);
+        Callable<KtKotlinFile> callable = () -> kotlinParser.kotlinFile().makeAstInfo(task);
         final Future<KtKotlinFile> future;
         if (timeoutExecutor != null) {
             future = timeoutExecutor.submit(callable);
@@ -107,11 +91,7 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
         }
 
         try {
-            KtKotlinFile ktKotlinFile = future.get(timeoutSeconds, TimeUnit.SECONDS);
-            if (errorListener.hasErrors()) {
-                throw errorListener.getException();
-            }
-            return ktKotlinFile;
+            return future.get(timeoutSeconds, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
             LOG.warn("Kotlin parse timeout ({}s) exceeded for file: {}. Skipping.", timeoutSeconds, fileName);
@@ -158,5 +138,10 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
     @Override
     protected Lexer getLexer(final CharStream source) {
         return new KotlinLexer(source);
+    }
+
+    @Override
+    protected AntlrGeneratedParserBase<KotlinNode> getParser(Lexer lexer) {
+        return new KotlinParser(new CommonTokenStream(lexer));
     }
 }

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrErrorListener;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrGeneratedParserBase;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
 
 /**
@@ -21,16 +22,14 @@ public final class PmdSwiftParser extends AntlrBaseParser<SwiftNode, SwTopLevel>
     private static final Logger LOGGER = LoggerFactory.getLogger(PmdSwiftParser.class);
 
     @Override
-    protected SwTopLevel parse(final Lexer lexer, ParserTask task) {
+    protected SwTopLevel parse(AntlrGeneratedParserBase<SwiftNode> parser, ParserTask task) {
         AntlrErrorListener errorListener = new AntlrErrorListener(task);
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorListener.lexerErrorListener());
 
-        SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
+        SwiftParser swiftParser = (SwiftParser) parser;
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener.parserErrorListener());
 
-        SwTopLevel swTopLevel = parser.topLevel().makeAstInfo(task);
+        SwTopLevel swTopLevel = swiftParser.topLevel().makeAstInfo(task);
         if (errorListener.hasErrors()) {
             LOGGER.warn("Errors while parsing have been ignored", errorListener.getException());
             // TODO: eventually we should throw a parse exception
@@ -42,5 +41,10 @@ public final class PmdSwiftParser extends AntlrBaseParser<SwiftNode, SwTopLevel>
     @Override
     protected Lexer getLexer(final CharStream source) {
         return new SwiftLexer(source);
+    }
+
+    @Override
+    protected SwiftParser getParser(Lexer lexer) {
+        return new SwiftParser(new CommonTokenStream(lexer));
     }
 }

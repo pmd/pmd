@@ -149,27 +149,15 @@ definitely don't come for free. It is much effort and requires perseverance to i
 *   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
     implementation that you need to extend to create your own adapter. See
     [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java)
-    as the reference implementation.
-*   **Error handling**: ANTLR by default prints errors to stderr only and otherwise ignores them. You must register a custom
-    error listener. Use {% jdoc core::lang.ast.impl.antlr4.AntlrErrorListener %} on both the lexer and parser:
+    as the reference implementation:
     ```java
     @Override
-    protected SwTopLevel parse(final Lexer lexer, ParserTask task) {
-        AntlrErrorListener errorListener = new AntlrErrorListener(task);
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorListener.lexerErrorListener());
-
-        SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorListener.parserErrorListener());
-
-        SwTopLevel swTopLevel = parser.topLevel().makeAstInfo(task);
-        if (errorListener.hasErrors()) {
-            throw errorListener.getException();
-        }
-        return swTopLevel;
+    protected SwTopLevel parse(AntlrGeneratedParserBase<SwiftNode> parser, ParserTask task) {
+        SwiftParser swiftParser = (SwiftParser) parser;
+        return swiftParser.topLevel().makeAstInfo(task);
     }
     ```
+*   **Error handling**: PMD registers an ANTLR error listener automatically on both the lexer and parser.
     If there were errors, they are thrown either as {% jdoc core::lang.ast.LexException %} or as
     {% jdoc core::lang.ast.ParseException %}.  
     Both exception types extend `FileAnalysisException`, which automatically includes the
