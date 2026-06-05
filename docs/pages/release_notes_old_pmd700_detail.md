@@ -1477,7 +1477,7 @@ These were annotated with `@Experimental`, but can now be considered stable.
 
 **New Programmatic API for CPD**
 
-See [Detailed Release Notes for PMD 7](pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd)
+See [Detailed Release Notes for PMD 7](pmd_release_notes_old_pmd700_detail.html#new-programmatic-api-for-cpd)
 and [PR #4397](https://github.com/pmd/pmd/pull/4397) for details.
 
 **Removed classes and methods**
