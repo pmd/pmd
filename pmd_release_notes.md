@@ -31,6 +31,8 @@ This is a minor release.
   and may lead to confusion about which value is used.
 
 ### 🐛️ Fixed Issues
+* cpp
+  * [#6641](https://github.com/pmd/pmd/issues/6641): \[cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM
 * java-bestpractices
   * [#6692](https://github.com/pmd/pmd/issues/6692): \[java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms
 * java-codestyle
