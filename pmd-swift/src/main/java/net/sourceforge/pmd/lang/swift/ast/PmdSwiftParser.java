@@ -4,16 +4,14 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrErrorListener;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
 
 /**
@@ -24,18 +22,21 @@ public final class PmdSwiftParser extends AntlrBaseParser<SwiftNode, SwTopLevel>
 
     @Override
     protected SwTopLevel parse(final Lexer lexer, ParserTask task) {
+        AntlrErrorListener errorListener = new AntlrErrorListener(task);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener.lexerErrorListener());
+
         SwiftParser parser = new SwiftParser(new CommonTokenStream(lexer));
         parser.removeErrorListeners();
-        parser.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                LOGGER.warn("Syntax error at {}:{}:{}: {}", task.getFileId().getOriginalPath(),
-                        line, charPositionInLine, msg);
-                // TODO: eventually we should throw a parse exception
-                // throw new ParseException(msg).withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine));
-            }
-        });
-        return parser.topLevel().makeAstInfo(task);
+        parser.addErrorListener(errorListener.parserErrorListener());
+
+        SwTopLevel swTopLevel = parser.topLevel().makeAstInfo(task);
+        if (errorListener.hasErrors()) {
+            LOGGER.warn("Errors while parsing have been ignored", errorListener.getException());
+            // TODO: eventually we should throw a parse exception
+            //throw errorListener.getException();
+        }
+        return swTopLevel;
     }
 
     @Override

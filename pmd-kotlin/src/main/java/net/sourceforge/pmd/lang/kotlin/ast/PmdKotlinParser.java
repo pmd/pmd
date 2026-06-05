@@ -13,25 +13,19 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
-import net.sourceforge.pmd.lang.ast.FileAnalysisException;
-import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrErrorListener;
 import net.sourceforge.pmd.lang.document.FileId;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.kotlin.KotlinHandler;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageProcessor;
@@ -159,54 +153,6 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
         ParseException parseException = new ParseException(cause);
         parseException.setFileId(fileId);
         throw parseException;
-    }
-
-    private static final class AntlrErrorListener {
-        private final ParserTask task;
-        private FileAnalysisException exception;
-
-        private AntlrErrorListener(ParserTask task) {
-            this.task = task;
-        }
-
-        private void addException(FileAnalysisException exception) {
-            if (this.exception == null) {
-                this.exception = exception;
-            } else {
-                this.exception.addSuppressed(exception);
-            }
-        }
-
-        boolean hasErrors() {
-            return exception != null;
-        }
-
-        FileAnalysisException getException() {
-            return exception;
-        }
-
-        ANTLRErrorListener lexerErrorListener() {
-            return new BaseErrorListener() {
-                @Override
-                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
-                                        int line, int charPositionInLine,
-                                        String msg, RecognitionException e) {
-                    addException(new LexException(line, charPositionInLine, task.getFileId(), msg, null));
-                }
-            };
-        }
-
-        ANTLRErrorListener parserErrorListener() {
-            return new BaseErrorListener() {
-                @Override
-                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
-                                        int line, int charPositionInLine,
-                                        String msg, RecognitionException e) {
-                    addException(new ParseException(msg)
-                            .withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine)));
-                }
-            };
-        }
     }
 
     @Override
