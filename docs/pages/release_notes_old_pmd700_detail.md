@@ -1,7 +1,7 @@
 ---
 title: Detailed Release Notes for PMD 7
 summary: "These are the detailed release notes for PMD 7."
-permalink: pmd_release_notes_pmd7.html
+permalink: pmd_release_notes_old_pmd700_detail.html
 keywords: changelog, release notes
 ---
 

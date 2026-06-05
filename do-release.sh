@@ -244,13 +244,13 @@ echo
 echo "Press enter to continue..."
 read -r
 
-# update release_notes_old
-OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old.md)
-OLD_RELEASE_NOTES_HEADER=$(head -n 7 docs/pages/release_notes_old.md)
+# update release_notes_old_pmd7
+OLD_RELEASE_NOTES=$(tail -n +8 docs/pages/release_notes_old_pmd7.md)
+OLD_RELEASE_NOTES_HEADER=$(head -n 7 docs/pages/release_notes_old_pmd7.md)
 echo "${OLD_RELEASE_NOTES_HEADER}
 ${NEW_RELEASE_NOTES}
 
-${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old.md
+${OLD_RELEASE_NOTES}" > docs/pages/release_notes_old_pmd7.md
 
 # reset release notes template
 cat > docs/pages/release_notes.md <<EOF
