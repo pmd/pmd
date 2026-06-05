@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import org.junit.jupiter.api.Tag;
+
+import net.sourceforge.pmd.lang.java.rule.AllDataflowRuleTestSuite;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
+@Tag(AllDataflowRuleTestSuite.TAG)
 class UnusedAssignmentTest extends PmdRuleTst {
     // no additional unit tests
 }
