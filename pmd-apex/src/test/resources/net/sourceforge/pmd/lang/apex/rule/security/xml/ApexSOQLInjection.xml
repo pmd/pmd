@@ -705,4 +705,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[apex] #2955 ApexSOQLInjection: False positive when concatenating strings</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public without sharing class ExampleClass {
+    public List<Account> run() {
+        String query = 'SELECT Name FROM Account WHERE Active__c = true AND'
+                        + ' HasSupportPlan__c = true LIMIT 5';
+        return Database.query(query);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
