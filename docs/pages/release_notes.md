@@ -35,6 +35,8 @@ This is a {{ site.pmd.release_type }} release.
   and may lead to confusion about which value is used.
 
 ### 🐛️ Fixed Issues
+* apex-security
+  * [#2955](https://github.com/pmd/pmd/issues/2955): \[apex]: ApexSOQLInjection: False positive when concatenating strings
 * cpp
   * [#6641](https://github.com/pmd/pmd/issues/6641): \[cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM
 * java-bestpractices
