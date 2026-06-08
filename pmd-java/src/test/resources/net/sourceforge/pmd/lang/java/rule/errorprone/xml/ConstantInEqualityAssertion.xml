@@ -2,7 +2,7 @@
 <test-data
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>JUnit Jupiter</description>
@@ -19,6 +19,10 @@ public class SimpleTest {
         assertEquals("foo", "foo", "other reason"); // this should be removed
         assertEquals(next("foo"), "bar"); // wrong argument order
         assertEquals("bar", next("foo")); // good
+    }
+
+    private String next(String in) {
+        return "bar";
     }
 }
 ]]>
@@ -39,6 +43,59 @@ public class SimpleTest {
         assertEquals("foo", "foo", "other reason"); // this should be removed
         assertEquals(next("foo"), "bar"); // wrong argument order
         assertEquals("bar", next("foo")); // good
+    }
+
+    private String next(String in) {
+        return "bar";
+    }
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,7,8</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.testng.annotations.Test;
+import org.testng.Assert;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        Assert.assertEquals("foo", "bar", "reason"); // this could be just fail("reason")
+        Assert.assertEquals("foo", "foo", "other reason"); // this should be removed
+        Assert.assertEquals("bar", next("foo")); // wrong argument order
+        Assert.assertEquals(next("foo"), "bar"); // good
+    }
+
+    private String next(String in) {
+        return "bar";
+    }
+}
+]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>Non-literal constants</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+public class SimpleTest {
+    private static String CONST = "foo";
+    @Test
+    public void testX() {
+        assertEquals(CONST, "bar", "reason"); // wrong argument order
+        assertEquals("foo", CONST, "other reason"); // OK
+        assertEquals(next("foo"), "b" + "a" + "r"); // wrong argument order
+        assertEquals("b" + "a" + "r", next("foo")); // good
+    }
+    private String next(String in) {
+        return "bar";
     }
 }
 ]]>
