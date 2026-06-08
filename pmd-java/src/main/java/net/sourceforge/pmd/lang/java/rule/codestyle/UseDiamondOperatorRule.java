@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -24,6 +25,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
@@ -80,6 +83,10 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             return null;
         }
 
+        if (isSuperTypeTokenPattern(ctorCall)) {
+            return null;
+        }
+
         if (inferenceSucceedsWithoutTypeArgs(ctorCall)) {
             // report it
             JavaNode reportNode = targs == null ? newTypeNode : targs;
@@ -94,6 +101,31 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         return ctorCall.getLanguageVersion().compareToVersion("9") >= 0;
     }
 
+    /**
+     * Heuristic to detect the
+     * <a href="https://gafter.blogspot.com/2006/12/super-type-tokens.html">Super Type Token</a>
+     * Pattern
+     */
+    // visible for testing
+    /* private */ static boolean isSuperTypeTokenPattern(ASTConstructorCall ctorCall) {
+        if (!ctorCall.isAnonymousClass()) {
+            return false;
+        }
+
+        ASTAnonymousClassDeclaration anonymousClassDeclaration = ctorCall.getAnonymousClassDeclaration();
+        ASTClassType superClass = anonymousClassDeclaration.getSuperClassTypeNode();
+
+        return superClass != null
+                && superClass.getTypeArguments() != null
+                && anonymousClassDeclaration.getBody().isEmpty()
+                && ((JClassType) superClass.getTypeMirror()).getDeclaredFields().stream().anyMatch(UseDiamondOperatorRule::isTypeField);
+    }
+
+    private static boolean isTypeField(FieldSig fieldSig) {
+        JTypeMirror fieldType = fieldSig.getSymbol().getTypeMirror(Substitution.EMPTY);
+        return fieldType instanceof JClassType
+                && "java.lang.reflect.Type".equals(((JClassType) fieldType).getSymbol().getCanonicalName());
+    }
 
     /** Redo inference as described in the javadoc of this class. */
     private static boolean inferenceSucceedsWithoutTypeArgs(ASTConstructorCall call) {
@@ -144,7 +176,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         produceSameTypeWithDiamond(ctor.getTypeNode(), sb, true);
         ASTArgumentList arguments = ctor.getArguments();
         String argsString;
-        if (arguments.size() == 0) {
+        if (arguments.isEmpty()) {
             argsString = "()";
         } else {
             CharSequence text = arguments.getText();

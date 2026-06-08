@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
+
+    <code-fragment id="jupiter"><![CDATA[
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.*;
+import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.api.extension.*;
+
+import java.util.Collection;
+
+class SomeTest {
+    @BeforeAll
+    static void setupClass() {}
+
+    @BeforeEach
+    void setup() {}
+
+    @Test
+    void testFoo() {}
+
+    @RepeatedTest(10)
+    void testRepeated() {}
+
+    @TestFactory
+    Collection<DynamicTest> ruleTests() {}
+    
+    @TestTemplate
+    @ExtendWith(MyTestTemplateInvocationContextProvider.class)
+    void testTemplate(String param) {}
+    
+    @ParameterizedTest
+    @ValueSource(strings = { "abc", "def" })
+    void testParameterized(String param) {}
+
+    @AfterEach
+    void teardown() {}
+
+    @AfterAll
+    static void teardownClass() {}
+
+    private class MyTestTemplateInvocationContextProvider implements org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider {
+        @Override
+        public boolean supportsTestTemplate(ExtensionContext context) {
+            return true;
+        }
+
+        @Override
+        public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
+            return Stream.of();
+        }
+    }
+}
+    ]]></code-fragment>
+
+    <code-fragment id="junit4"><![CDATA[
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.AfterClass;
+
+public class SomeTest {
+    @BeforeClass
+    public static void setupClass() {}
+
+    @Before
+    public void setup() {}
+
+    @Test
+    public void testFoo() {}
+
+    @After
+    public void teardown() {}
+
+    @AfterClass
+    public void teardownClass() {}
+}
+    ]]></code-fragment>
+
+    <code-fragment id="testNg"><![CDATA[
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterSuite;
+
+public class TestNGCompleteTest {
+
+    @BeforeSuite
+    public void beforeSuite() {}
+
+    @BeforeTest
+    public void beforeTest() {}
+
+    @BeforeClass
+    public void beforeClass() {}
+
+    @BeforeGroups(groups = { "functional" })
+    public void beforeGroups() {}
+
+    @BeforeMethod
+    public void beforeMethod() {}
+
+    @Test
+    public void standardTest() {}
+
+    @AfterMethod
+    public void afterMethod() {}
+
+    @AfterGroups(groups = { "functional" })
+    public void afterGroups() {}
+
+    @AfterClass
+    public void afterClass() {}
+
+    @AfterTest
+    public void afterTest() {}
+
+    @AfterSuite
+    public void afterSuite() {}
+}
+    ]]></code-fragment>
+
+    <code-fragment id="simple"><![CDATA[
+import org.junit.Test;
+
+public class SomeTest {
+    @Test
+    public void testFoo() {}
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>When using JUnit Jupiter, using a JUnit Jupiter annotation is OK</description>
+        <rule-property name="testFrameworks">jUnitJupiter</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="jupiter" />
+    </test-code>
+
+    <test-code>
+        <description>When using JUnit4, using a JUnit Jupiter annotation is NOT OK</description>
+        <rule-property name="testFrameworks">jUnit4</rule-property>
+        <expected-problems>9</expected-problems>
+        <code-ref id="jupiter" />
+    </test-code>
+
+    <test-code>
+        <description>When using TestNG, using a TestNG annotation is NOT OK</description>
+        <rule-property name="testFrameworks">testNG</rule-property>
+        <expected-problems>9</expected-problems>
+        <code-ref id="jupiter" />
+    </test-code>
+
+    <test-code>
+        <description>When using Jupiter, using a JUnit4 annotation is NOT OK</description>
+        <rule-property name="testFrameworks">jUnitJupiter</rule-property>
+        <expected-problems>5</expected-problems>
+        <code-ref id="junit4" />
+    </test-code>
+
+    <test-code>
+        <description>When using JUnit4, using a JUnit4 annotation is OK</description>
+        <rule-property name="testFrameworks">jUnit4</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="junit4" />
+    </test-code>
+
+    <test-code>
+        <description>When using TestNG, using a JUnit4 annotation is NOT OK</description>
+        <rule-property name="testFrameworks">testNG</rule-property>
+        <expected-problems>5</expected-problems>
+        <code-ref id="junit4" />
+    </test-code>
+
+    <test-code>
+        <description>When using Jupiter, using a TestNG annotation is NOT OK</description>
+        <rule-property name="testFrameworks">jUnitJupiter</rule-property>
+        <expected-problems>11</expected-problems>
+        <code-ref id="testNg" />
+    </test-code>
+
+    <test-code>
+        <description>When using JUnit4, using a TestNG annotation is NOT OK</description>
+        <rule-property name="testFrameworks">jUnit4</rule-property>
+        <expected-problems>11</expected-problems>
+        <code-ref id="testNg" />
+    </test-code>
+
+    <test-code>
+        <description>When using TestNG, using a TestNG annotation is OK</description>
+        <rule-property name="testFrameworks">testNG</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="testNg" />
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="testFrameworks">jUnitJupiter</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-4</expected-linenumbers>
+        <code-ref id="simple" />
+    </test-code>
+
+    <test-code>
+        <description>Verify violation message</description>
+        <rule-property name="testFrameworks">jUnitJupiter</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The annotation org.junit.Test is from JUnit 4, your codebase is using JUnit Jupiter.</message>
+        </expected-messages>
+        <code-ref id="simple" />
+    </test-code>
+
+    <test-code>
+        <description>Verify violation message (multiple)</description>
+        <rule-property name="testFrameworks">jUnitJupiter,testNG</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The annotation org.junit.Test is from JUnit 4, your codebase is using JUnit Jupiter, TestNG.</message>
+        </expected-messages>
+        <code-ref id="simple" />
+    </test-code>
+</test-data>
