@@ -49,8 +49,8 @@ class CppCpdTest {
         configuration.setMinimumTileSize(1);
         configuration.setOnlyRecognizeLanguage(CppLanguageModule.getInstance());
         try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
-            cpd.files().addFile(testdir.resolve("issue-6641_1.cpp"));
-            cpd.files().addFile(testdir.resolve("issue-6641_2.cpp"));
+            cpd.files().addFile(testdir.resolve("utf8-bom_1.cpp"));
+            cpd.files().addFile(testdir.resolve("utf8-bom_2.cpp"));
 
             cpd.performAnalysis(matches -> {
                 assertEquals(1, matches.getMatches().size());
