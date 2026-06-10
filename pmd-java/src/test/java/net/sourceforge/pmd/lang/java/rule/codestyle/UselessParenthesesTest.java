@@ -61,10 +61,11 @@ class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
-    public void testAssignmentRHS() {
-        doTest("double value; value = (a / b);", 1);
+    void testAssignmentRHS() {
+        assertAll(
+            unnecessary("a = (b / c)")
+        );
     }
-
 
     @Test
     void testInnerLambda() {
