@@ -22,6 +22,6 @@ import org.junit.platform.suite.api.Suite;
     FunctionsTest.class,
     XmlDbTreeDumpTest.class
 })
-class AllPlsqlAstTreeDumpTest {
+class AllPlsqlAstTreeDumpTestSuite {
 
 }

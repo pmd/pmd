@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class OverridingThreadRunTest extends PmdRuleTst {
+class OverridingThreadRunTest extends PmdRuleTst {
     // no additional unit tests
 }
