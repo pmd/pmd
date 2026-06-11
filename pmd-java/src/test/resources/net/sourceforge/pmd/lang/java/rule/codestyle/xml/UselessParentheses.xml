@@ -764,4 +764,20 @@ public class Test {
         }
         ]]></code>
     </test-code>
+   <test-code>
+        <description>#6775 False negative when on the right-hand side of an assignment statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            public class After {
+                public static void main(String[] argv) {
+                    int a; a = Integer.parseInt(argv[0]);
+                    int b; b = Integer.parseInt(argv[1]);
+                    double value;
+                    value = (a / b); // line 6 - expected violation
+                    System.out.println(value);
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
