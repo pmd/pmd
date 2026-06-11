@@ -31,6 +31,8 @@ This is a minor release.
   and may lead to confusion about which value is used.
 
 ### 🐛️ Fixed Issues
+* apex-security
+  * [#3877](https://github.com/pmd/pmd/issues/3877): \[apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()
 * cpp
   * [#6641](https://github.com/pmd/pmd/issues/6641): \[cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM
 * java-bestpractices
