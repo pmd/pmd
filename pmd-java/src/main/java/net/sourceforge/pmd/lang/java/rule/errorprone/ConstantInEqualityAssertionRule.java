@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 
 /**
  * Looks for usages of assertEquals where the "actual" argument is a constant.
+ * @since 7.26.0
  */
 public class ConstantInEqualityAssertionRule extends AbstractJavaRulechainRule {
 
