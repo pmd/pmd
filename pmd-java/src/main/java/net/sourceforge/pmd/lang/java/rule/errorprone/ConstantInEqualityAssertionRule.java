@@ -32,14 +32,18 @@ public class ConstantInEqualityAssertionRule extends AbstractJavaRulechainRule {
     }
 
     private static final List<EqualMethod> EQUAL_METHODS = Arrays.asList(
+        // JUnit Jupiter: expected, actual, [message]
+        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_)", 1, 0),
+        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_,_)", 1, 0),
+        // JUnit 3 and 4, Spring: [message], expected, actual
         new EqualMethod("org.junit.Assert#assertEquals(_,_)", 1, 0),
         new EqualMethod("org.junit.Assert#assertEquals(_,_,_)", 2, 1),
         new EqualMethod("junit.framework.TestCase#assertEquals(_,_)", 1, 0),
         new EqualMethod("junit.framework.TestCase#assertEquals(_,_,_)", 2, 1),
-        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_)", 1, 0),
-        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_,_)", 1, 0),
-        new EqualMethod("org.testng.Assert#assertEquals(_*)", 0, 1),
         new EqualMethod("org.springframework.test.util.AssertionErrors#assertEquals(_,_,_)", 2, 1),
+        // TestNG: actual, expected, [message]
+        new EqualMethod("org.testng.Assert#assertEquals(_*)", 0, 1),
+        // JSONAssert: [message], expected, actual, compare mode
         new EqualMethod("org.skyscreamer.jsonassert.JSONAssert#assertEquals(_,_,_)", 1, 0),
         new EqualMethod("org.skyscreamer.jsonassert.JSONAssert#assertEquals(_,_,_,_)", 2, 1)
     );

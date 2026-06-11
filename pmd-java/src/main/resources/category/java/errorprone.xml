@@ -1323,6 +1323,8 @@ boolean x = (y == Double.NaN);
             indicates that the actual and expected values were swapped, leading to confusing
             error messages should the test fail.
 
+            This rule currently supports assertions from JUnit Jupiter, JUnit versions 4 and 3,
+            Spring assertions and the JSONAssert library.
         </description>
         <priority>3</priority>
         <example>

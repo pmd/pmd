@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class ConstantInEqualityAssertionTest extends PmdRuleTst {
+/**
+ * Tests for {@link ConstantInEqualityAssertionRule}.
+ */
+class ConstantInEqualityAssertionTest extends PmdRuleTst {
     // no additional tests
 }
