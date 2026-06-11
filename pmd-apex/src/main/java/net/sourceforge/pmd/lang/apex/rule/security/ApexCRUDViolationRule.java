@@ -82,6 +82,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final String ANY = "ANY";
     private static final String S_OBJECT_TYPE = "sObjectType";
     private static final String GET_DESCRIBE = "getDescribe";
+    private static final String GET_S_OBJECT_TYPE = "getSObjectType";
 
     private static final String ACCESS_LEVEL = "AccessLevel";
 
@@ -461,6 +462,31 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     String resolvedType = getType(nestedMethodCall);
                     if (!typeToDMLOperationMapping.get(resolvedType).contains(method)) {
                         typeToDMLOperationMapping.put(resolvedType, method);
+                    }
+                } else if (GET_DESCRIBE.equalsIgnoreCase(nestedMethodCall.getMethodName())) {
+                    // CustomObject__c.getSObjectType().getDescribe().isXxx() pattern
+                    // getDescribe()'s reference has no names (the receiver is
+                    // also a method call), and getSObjectType() is a child of
+                    // that reference, not of getDescribe() directly
+                    ASTReferenceExpression refOfGetDescribe = nestedMethodCall
+                            .firstChild(ASTReferenceExpression.class);
+                    if (refOfGetDescribe != null) {
+                        ASTMethodCallExpression getSObjectTypeCall = refOfGetDescribe
+                                .firstChild(ASTMethodCallExpression.class);
+                        if (getSObjectTypeCall != null
+                                && GET_S_OBJECT_TYPE.equalsIgnoreCase(getSObjectTypeCall.getMethodName())) {
+                            ASTReferenceExpression objectRef = getSObjectTypeCall
+                                    .firstChild(ASTReferenceExpression.class);
+                            if (objectRef != null && !objectRef.getNames().isEmpty()) {
+                                String objectType = objectRef.getNames().get(0);
+                                String resolvedType = new StringBuilder()
+                                        .append(getSObjectTypeCall.getDefiningType())
+                                        .append(":").append(objectType).toString();
+                                if (!typeToDMLOperationMapping.get(resolvedType).contains(method)) {
+                                    typeToDMLOperationMapping.put(resolvedType, method);
+                                }
+                            }
+                        }
                     }
                 }
             }
