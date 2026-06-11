@@ -696,7 +696,7 @@
                 <plugin>
                     <groupId>com.github.siom79.japicmp</groupId>
                     <artifactId>japicmp-maven-plugin</artifactId>
-                    <version>0.26.0</version>
+                    <version>0.26.1</version>
                     <configuration>
                         <parameter>
                             <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
@@ -1312,7 +1312,7 @@
                         <plugin>
                             <groupId>org.sonarsource.scanner.maven</groupId>
                             <artifactId>sonar-maven-plugin</artifactId>
-                            <version>5.6.0.6792</version>
+                            <version>5.7.0.6970</version>
                         </plugin>
                     </plugins>
                 </pluginManagement>
