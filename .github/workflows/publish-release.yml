@@ -632,7 +632,7 @@ jobs:
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f #v1.310.0
+        uses: ruby/setup-ruby@12fd324f1d0b43274fdc8130f6980590a667c455 #v1.312.0
         with:
           ruby-version: 4
       - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
