@@ -193,7 +193,7 @@ class RuleSetTest {
     @Test
     void testApply0Rules() throws Exception {
         RuleSet ruleset = createRuleSetBuilder("ruleset").build();
-        verifyRuleSet(ruleset, new HashSet<RuleViolation>());
+        verifyRuleSet(ruleset, new HashSet<>());
     }
 
     @Test
