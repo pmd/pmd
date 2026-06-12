@@ -38,7 +38,7 @@ public abstract class AntlrBaseParser2<
     N extends AntlrNode<N>,
     R extends BaseAntlrInnerNode<N> & RootNode,
     P extends AntlrGeneratedParserBase<N>
-    > implements Parser {
+    > extends AntlrBaseParser<N, R> implements Parser {
 
     @Override
     public R parse(ParserTask task) throws ParseException {
@@ -59,6 +59,12 @@ public abstract class AntlrBaseParser2<
         return parsed;
     }
 
+    @Override
+    protected final R parse(Lexer parser, ParserTask task) {
+        throw new IllegalStateException("This method shouldn't be called anymore.");
+    }
+
+    @Override
     protected abstract Lexer getLexer(CharStream source);
 
     protected abstract P getParser(Lexer lexer);
