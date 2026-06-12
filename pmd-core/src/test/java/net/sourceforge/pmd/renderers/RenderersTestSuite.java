@@ -30,5 +30,5 @@ import org.junit.platform.suite.api.Suite;
     XSLTRendererTest.class,
     YAHTMLRendererTest.class
 })
-class RenderersTests {
+class RenderersTestSuite {
 }

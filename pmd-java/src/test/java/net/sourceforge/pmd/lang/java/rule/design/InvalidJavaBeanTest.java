@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class InvalidJavaBeanTest extends PmdRuleTst {
+class InvalidJavaBeanTest extends PmdRuleTst {
     // no additional unit tests
 }

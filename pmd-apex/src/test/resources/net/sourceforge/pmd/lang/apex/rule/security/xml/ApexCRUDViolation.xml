@@ -1899,4 +1899,53 @@ public with sharing class Dummy {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3877 Proper CRUD check via getSObjectType().getDescribe() for single object DML</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static CustomObject__c updateCustomObject(CustomObject__c customObject) {
+        if (CustomObject__c.getSObjectType().getDescribe().isUpdateable() == false) {
+            throw new DmlException('No permissions to update.');
+        }
+        update customObject;
+        return customObject;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3877 Proper CRUD check via getSObjectType().getDescribe() for List DML</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static List<CustomObject__c> updateCustomObjects(List<CustomObject__c> customObjects) {
+        if (CustomObject__c.getSObjectType().getDescribe().isUpdateable() == false) {
+            throw new DmlException('No permissions to update.');
+        }
+        update customObjects;
+        return customObjects;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3877 Missing CRUD check via getSObjectType().getDescribe() for List DML - violation expected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static List<CustomObject__c> updateCustomObjects(List<CustomObject__c> customObjects) {
+        if (CustomObject__c.getSObjectType().getDescribe().isCreateable() == false) {
+            throw new DmlException('No permissions to create.');
+        }
+        update customObjects;
+        return customObjects;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

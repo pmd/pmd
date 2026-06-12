@@ -4,8 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import org.junit.jupiter.api.Tag;
+
+import net.sourceforge.pmd.lang.java.rule.AllDataflowRuleTestSuite;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class LocalVariableCouldBeFinalTest extends PmdRuleTst {
+@Tag(AllDataflowRuleTestSuite.TAG)
+class LocalVariableCouldBeFinalTest extends PmdRuleTst {
     // no additional unit tests
 }
