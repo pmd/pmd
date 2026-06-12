@@ -23,8 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrGeneratedParserBase;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser2;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.kotlin.KotlinHandler;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
@@ -42,9 +41,9 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a processing
  * error. The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
  *
- * <p>Error handling strategy, see {@link AntlrBaseParser}</p>
+ * <p>Error handling strategy, see {@link AntlrBaseParser2}</p>
  */
-public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinFile> {
+public final class PmdKotlinParser extends AntlrBaseParser2<KotlinNode, KtKotlinFile, KotlinParser> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PmdKotlinParser.class);
 
@@ -65,8 +64,7 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
     }
 
     @Override
-    protected KtKotlinFile parse(final AntlrGeneratedParserBase<KotlinNode> parser, ParserTask task) {
-        KotlinParser kotlinParser = (KotlinParser) parser;
+    protected KtKotlinFile parse(final KotlinParser kotlinParser, ParserTask task) {
         kotlinParser.setInterpreter(freshSimulator(kotlinParser));
 
         FileId fileId = task.getFileId();
@@ -141,7 +139,7 @@ public final class PmdKotlinParser extends AntlrBaseParser<KotlinNode, KtKotlinF
     }
 
     @Override
-    protected AntlrGeneratedParserBase<KotlinNode> getParser(Lexer lexer) {
+    protected KotlinParser getParser(Lexer lexer) {
         return new KotlinParser(new CommonTokenStream(lexer));
     }
 }

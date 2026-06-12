@@ -146,14 +146,13 @@ definitely don't come for free. It is much effort and requires perseverance to i
 
 ### 6.  Create a PMD parser "adapter"
 *   Create your own parser, that adapts the ANTLR interface to PMD's parser interface.
-*   We provide a [`AntlrBaseParser`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java)
+*   We provide a [`AntlrBaseParser2`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser2.java)
     implementation that you need to extend to create your own adapter. See
     [`PmdSwiftParser`](https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java)
     as the reference implementation:
     ```java
     @Override
-    protected SwTopLevel parse(AntlrGeneratedParserBase<SwiftNode> parser, ParserTask task) {
-        SwiftParser swiftParser = (SwiftParser) parser;
+    protected SwTopLevel parse(SwiftParser swiftParser, ParserTask task) {
         return swiftParser.topLevel().makeAstInfo(task);
     }
     ```

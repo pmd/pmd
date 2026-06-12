@@ -10,24 +10,23 @@ import org.antlr.v4.runtime.Lexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser2;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrErrorListener;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrGeneratedParserBase;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
 
 /**
  * Adapter for the SwiftParser.
  */
-public final class PmdSwiftParser extends AntlrBaseParser<SwiftNode, SwTopLevel> {
+public final class PmdSwiftParser extends AntlrBaseParser2<SwiftNode, SwTopLevel, SwiftParser> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PmdSwiftParser.class);
 
     @Override
-    protected SwTopLevel parse(AntlrGeneratedParserBase<SwiftNode> parser, ParserTask task) {
+    protected SwTopLevel parse(SwiftParser swiftParser, ParserTask task) {
+        // Note: replace the default error listener, so that we can avoid
+        // throwing a parse exception automatically for now
         AntlrErrorListener errorListener = new AntlrErrorListener(task);
-
-        SwiftParser swiftParser = (SwiftParser) parser;
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorListener.parserErrorListener());
+        swiftParser.removeErrorListeners();
+        swiftParser.addErrorListener(errorListener.parserErrorListener());
 
         SwTopLevel swTopLevel = swiftParser.topLevel().makeAstInfo(task);
         if (errorListener.hasErrors()) {
