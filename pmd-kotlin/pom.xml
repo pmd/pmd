@@ -87,7 +87,7 @@
         <dependency>
             <groupId>nl.stokpop.typemapper</groupId>
             <artifactId>kotlin-type-mapper-model</artifactId>
-            <version>0.5.0</version>
+            <version>0.5.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>nl.stokpop.typemapper</groupId>
             <artifactId>kotlin-type-mapper-analyzer</artifactId>
-            <version>0.5.0</version>
+            <version>0.5.1-SNAPSHOT</version>
         </dependency>
         <!-- Needed so KotlinLanguageProcessor resolves kotlinx.coroutines types in tests.
              Maven Surefire adds test-scope deps to java.class.path, which the language

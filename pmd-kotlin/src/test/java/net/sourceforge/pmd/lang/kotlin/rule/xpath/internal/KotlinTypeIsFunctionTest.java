@@ -335,6 +335,36 @@ class KotlinTypeIsFunctionTest {
     }
 
     @Test
+    void typeIsMatchesDelegationSpecifierViaSupertypeHierarchy() {
+        // typeIs('java.lang.Throwable') on a DelegationSpecifier must match when the supertype
+        // is RuntimeException (a transitive subtype of Throwable).
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/DelegationSpecifierSubtype.kt");
+        Report report = runXPath(
+                "//DelegationSpecifier[pmd-kotlin:typeIs('java.lang.Throwable')]", kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertEquals(2, report.getViolations().size(),
+                "Both DelegationSpecifier nodes (RuntimeException supertypes) should match typeIs('java.lang.Throwable')");
+    }
+
+    @Test
+    void typeIsMatchesDelegationSpecifierInlineCodeNoPackage() {
+        // Reproduces jPinpoint PmdRuleTst scenario: inline code, no package, constructor params.
+        // typeIs('java.lang.Throwable') must match DelegationSpecifier for RuntimeException/Exception.
+        KotlinTypeXPathTestHelper.forCode(
+                "class ServiceException(val errorCode: String, val detail: String) "
+                        + ": RuntimeException(\"$errorCode: $detail\")\n"
+                        + "class BusinessException(message: String, val code: String, val description: String) "
+                        + ": Exception(message)\n")
+                .injectContext();
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/DelegationSpecifierSubtype.kt");
+        Report report = runXPath(
+                "//DelegationSpecifier[pmd-kotlin:typeIs('java.lang.Throwable')]", kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertEquals(2, report.getViolations().size(),
+                "Both DelegationSpecifier nodes should match typeIs('java.lang.Throwable') even with inline no-package code");
+    }
+
+    @Test
     void typeIsExactlyMatchesConstructorCallOnPostfixUnaryExpression() {
         // typeIsExactly on a throw's PostfixUnaryExpression (constructor call) must fire
         File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/ConstructorCallTypeCheck.kt");
