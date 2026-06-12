@@ -706,7 +706,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>[apex] #2955 ApexSOQLInjection: False positive when concatenating strings</description>
+        <description>#2955 [apex] ApexSOQLInjection: False positive when passing local var with concatenating strings - single concat</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public without sharing class ExampleClass {
@@ -719,7 +719,7 @@ public without sharing class ExampleClass {
         ]]></code>
     </test-code>
     <test-code>
-        <description>[apex] #2955 ApexSOQLInjection: Multiple concatenations</description>
+        <description>#2955 [apex] ApexSOQLInjection: False positive when passing local var with concatenating strings - Multiple concatenations</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public without sharing class ExampleClass {
