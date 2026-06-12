@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.map;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -333,16 +334,14 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public Stream<JTypeMirror> streamClasses(Predicate<? super JTypeMirror> prefilter) {
+    public Stream<JTypeMirror> streamClasses() {
         return SuperTypesEnumerator.ALL_SUPERTYPES_INCLUDING_SELF.stream(this)
-                .flatMap(sup -> sup.streamDeclaredClasses(prefilter));
+                .flatMap(sup -> sup.streamDeclaredClasses());
     }
 
     @Override
-    public Stream<JTypeMirror> streamDeclaredClasses(Predicate<? super JTypeMirror> prefilter) {
-        return getDeclaredClasses().stream()
-                .filter(prefilter)
-                .map(c -> getDeclaredClass(c.getSymbol().getSimpleName()));
+    public Stream<JTypeMirror> streamDeclaredClasses() {
+        return getDeclaredClasses().stream().map(Function.identity());
     }
 
     @Override

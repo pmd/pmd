@@ -440,26 +440,19 @@ public interface JTypeMirror extends JTypeVisitable {
     }
 
     /**
-     * Returns a stream of nested classes declared in and inherited
-     * by this type.
-     *
-     * @param prefilter Filter selecting symbols for which a class
-     *                  should be created and yielded by the stream
+     * Returns a stream of nested classes declared in this type and its
+     * supertypes.
      */
-    default Stream<JTypeMirror> streamClasses(Predicate<? super JTypeMirror> prefilter) {
+    default Stream<JTypeMirror> streamClasses() {
         return Stream.empty();
     }
 
     /**
-     * Like {@link #streamClasses(Predicate) streamNestedClasses}, but does
+     * Like {@link #streamClasses() streamNestedClasses}, but does
      * not recurse into supertypes. Note that only class types
      * declare nested classes themselves.
-     *
-     * <p>See also note in {@link #streamClasses(Predicate)}.
-     *
-     * @see #streamMethods(Predicate)
      */
-    default Stream<JTypeMirror> streamDeclaredClasses(Predicate<? super JTypeMirror> prefilter) {
+    default Stream<JTypeMirror> streamDeclaredClasses() {
         return Stream.empty();
     }
 

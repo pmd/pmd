@@ -221,7 +221,8 @@ public final class TestFrameworksUtil {
                 && (
                         typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
                                 .findAny().isPresent()
-                        || typeMirror.streamClasses(TestFrameworksUtil::isJUnit5NestedClass)
+                        || typeMirror.streamClasses()
+                                .filter(c -> TestFrameworksUtil.isJUnit5NestedClass(c))
                                 .findAny().isPresent()
                 );
     }

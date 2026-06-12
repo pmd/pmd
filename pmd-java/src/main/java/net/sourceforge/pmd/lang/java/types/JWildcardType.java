@@ -75,8 +75,8 @@ public interface JWildcardType extends JTypeMirror {
     }
 
     @Override
-    default Stream<JTypeMirror> streamClasses(Predicate<? super JTypeMirror> prefilter) {
-        return asUpperBound().streamClasses(prefilter);
+    default Stream<JTypeMirror> streamClasses() {
+        return asUpperBound().streamClasses();
     }
 
     @Override

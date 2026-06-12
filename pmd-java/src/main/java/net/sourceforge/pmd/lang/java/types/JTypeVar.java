@@ -154,7 +154,7 @@ public interface JTypeVar extends SubstVar {
     }
 
     @Override
-    default Stream<JTypeMirror> streamClasses(Predicate<? super JTypeMirror> prefilter) {
-        return getUpperBound().streamClasses(prefilter);
+    default Stream<JTypeMirror> streamClasses() {
+        return getUpperBound().streamClasses();
     }
 }
