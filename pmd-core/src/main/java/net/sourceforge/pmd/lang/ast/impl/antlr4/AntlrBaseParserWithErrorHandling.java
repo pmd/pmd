@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  *
  * @since 7.26.0
  */
-public abstract class AntlrBaseParser2<
+public abstract class AntlrBaseParserWithErrorHandling<
     N extends AntlrNode<N>,
     R extends BaseAntlrInnerNode<N> & RootNode,
     P extends AntlrGeneratedParserBase<N>

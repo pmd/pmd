@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  * @param <N> Supertype of all nodes for the language, eg SwiftNode
  * @param <R> Type of the root node
  *
- * @deprecated Since 7.26.0. Use {@link AntlrBaseParser2} instead which includes error handling
+ * @deprecated Since 7.26.0. Use {@link AntlrBaseParserWithErrorHandling} instead which includes error handling
  *             of syntax errors.
  */
 @Deprecated

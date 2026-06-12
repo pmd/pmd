@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser2;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParserWithErrorHandling;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.kotlin.KotlinHandler;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
@@ -41,9 +41,9 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a processing
  * error. The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
  *
- * <p>Error handling strategy, see {@link AntlrBaseParser2}</p>
+ * <p>Error handling strategy, see {@link AntlrBaseParserWithErrorHandling}</p>
  */
-public final class PmdKotlinParser extends AntlrBaseParser2<KotlinNode, KtKotlinFile, KotlinParser> {
+public final class PmdKotlinParser extends AntlrBaseParserWithErrorHandling<KotlinNode, KtKotlinFile, KotlinParser> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PmdKotlinParser.class);
 
