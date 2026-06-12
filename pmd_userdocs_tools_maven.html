@@ -121,18 +121,6 @@
             
 
                 
-                <li><a href="pmd_release_notes_pmd7.html">Release notes (PMD 7)</a></li>
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
                 <li><a href="pmd_about_help.html">Getting help</a></li>
                 
 
@@ -1920,7 +1908,44 @@
             
 
                 
-                <li><a href="pmd_release_notes_old.html">Old release notes</a></li>
+                
+                <li class="subfolders">
+                    <a href="#">Old Release Notes</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd7.html">Release Notes PMD 7.x</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd700_detail.html">Detailed Release Notes PMD 7.0.0</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd6.html">Release Notes PMD 6.x</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd5.html">Release Notes PMD 5.x</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd4.html">Release Notes PMD 4.x and earlier</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
                 
 
             
@@ -2038,7 +2063,7 @@
 <p>When adding the maven-pmd-plugin to your pom.xml, you need to select a version. To figure out the
 latest available version, have a look at the official <a href="https://maven.apache.org/plugins/maven-pmd-plugin/">maven-pmd-plugin documentation</a>.</p>
 
-<p>As of July 2024 (7.4.0), the current plugin version is <strong>3.23.0</strong>.</p>
+<p>As of June 2026 (7.26.0), the current plugin version is <strong>3.23.0</strong>.</p>
 
 <p>The version of the plugin should be specified in <code class="language-plaintext highlighter-rouge">&lt;build&gt;&lt;pluginManagement/&gt;&lt;/build&gt;</code> and if using the project
 report additionally in <code class="language-plaintext highlighter-rouge">&lt;reporting&gt;&lt;plugins/&gt;&lt;/reporting&gt;</code> elements. Here’s an example for the pluginManagement
@@ -2262,7 +2287,7 @@ by default now PMD 7.0.0 and no extra configuration is required.</p>
 <p>Note: If you upgrade from Maven PMD Plugin before 3.22.0 you are most likely updating from PMD 6 to PMD 7.
 This upgrade is a major version change. If you use the default ruleset from Maven PMD Plugin, then everything should
 just work. But if you use a custom ruleset, you most likely need to review your ruleset and migrate it to PMD 7.
-Rules might have been renamed or replaced. See <a href="pmd_release_notes_pmd7.html">Detailed Release Notes for PMD 7</a>
+Rules might have been renamed or replaced. See <a href="pmd_release_notes_old_pmd700_detail.html">Detailed Release Notes for PMD 7</a>
 and <a href="pmd_userdocs_migrating_to_pmd7.html">Migration Guide for PMD 7</a>.</p>
 
 <p>As PMD 7 revamped the Java module, if you have custom rules, you need to migrate these rules.
@@ -2316,7 +2341,7 @@ Also, the bug tracker for this plugin is <a href="https://issues.apache.org/jira
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2024 (7.4.0)<br /> Site last generated: Jun 12, 2026 <br />
+            June 2026 (7.26.0)<br /> Site last generated: Jun 12, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

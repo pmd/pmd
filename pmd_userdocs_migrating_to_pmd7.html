@@ -121,18 +121,6 @@
             
 
                 
-                <li><a href="pmd_release_notes_pmd7.html">Release notes (PMD 7)</a></li>
-                
-
-            
-
-            
-            
-            
-
-            
-
-                
                 <li><a href="pmd_about_help.html">Getting help</a></li>
                 
 
@@ -1920,7 +1908,44 @@
             
 
                 
-                <li><a href="pmd_release_notes_old.html">Old release notes</a></li>
+                
+                <li class="subfolders">
+                    <a href="#">Old Release Notes</a>
+                    <ul>
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd7.html">Release Notes PMD 7.x</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd700_detail.html">Detailed Release Notes PMD 7.0.0</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd6.html">Release Notes PMD 6.x</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd5.html">Release Notes PMD 5.x</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_release_notes_old_pmd4.html">Release Notes PMD 4.x and earlier</a></li>
+                        
+                        
+                        
+                    </ul>
+                </li>
+                
                 
 
             
@@ -2101,15 +2126,15 @@ It is about time to create a <a href="pmd_userdocs_making_rulesets.html">custom 
 are marked with one of these annotations: <code class="language-plaintext highlighter-rouge">@Deprecated</code>, <code class="language-plaintext highlighter-rouge">@DeprecatedUtil700</code>, <code class="language-plaintext highlighter-rouge">@InternalApi</code>.
     <ul>
       <li>Some of these classes are available until 7.0.0-rc4 but are finally removed with 7.0.0.</li>
-      <li>See <a href="pmd_release_notes_pmd7.html#api-changes">API changes</a> for details.</li>
+      <li>See <a href="pmd_release_notes_old_pmd700_detail.html#api-changes">API changes</a> for details.</li>
     </ul>
   </li>
-  <li>Some rules have been removed, because they have been deprecated. See <a href="pmd_release_notes_pmd7.html#removed-rules">Removed Rules</a>.</li>
-  <li>Some rule properties have been removed or changed. See <a href="pmd_release_notes_pmd7.html#changed-rules">Changed Rules</a>.</li>
+  <li>Some rules have been removed, because they have been deprecated. See <a href="pmd_release_notes_old_pmd700_detail.html#removed-rules">Removed Rules</a>.</li>
+  <li>Some rule properties have been removed or changed. See <a href="pmd_release_notes_old_pmd700_detail.html#changed-rules">Changed Rules</a>.</li>
   <li>The filenames of the assets of a release (the “binary distribution zip file”) have changed,
 see <a href="#release-downloads">Release downloads</a>.</li>
   <li>Some CLI options have been removed, because they have been deprecated. See <a href="#cli-changes">CLI Changes</a> for details.</li>
-  <li>If you call CPD programmatically, the API has changed, see <a href="pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd">New Programmatic API for CPD</a>.</li>
+  <li>If you call CPD programmatically, the API has changed, see <a href="pmd_release_notes_old_pmd700_detail.html#new-programmatic-api-for-cpd">New Programmatic API for CPD</a>.</li>
   <li>If you use Visualforce, then you need to change “vf” to “visualforce”, e.g. <code class="language-plaintext highlighter-rouge">category/vf/security.xml</code> ➡️ <code class="language-plaintext highlighter-rouge">category/visualforce/security.xml</code></li>
   <li>If you use Velocity, then you need to change “vm” to “velocity”, e.g. <code class="language-plaintext highlighter-rouge">category/vm/...</code> ➡️ <code class="language-plaintext highlighter-rouge">category/velocity/...</code></li>
 </ul>
@@ -2121,13 +2146,13 @@ see <a href="#release-downloads">Release downloads</a>.</li>
 <h3 id="im-using-only-built-in-rules">I’m using only built-in rules</h3>
 
 <p>When you are using only built-in rules, then you should check, whether you use any deprecated rule. With PMD 7
-many deprecated rules are finally removed. You can see a complete list of the <a href="pmd_release_notes_pmd7.html#removed-rules">removed rules</a>
+many deprecated rules are finally removed. You can see a complete list of the <a href="pmd_release_notes_old_pmd700_detail.html#removed-rules">removed rules</a>
 in the release notes for PMD 7.
 The release notes also mention the replacement rule, that should be used instead. For some rules, there is no
 replacement.</p>
 
 <p>Then many rules have been changed or improved. New properties have been added to make them more versatile or
-properties have been removed, if they are not necessary anymore. See <a href="pmd_release_notes_pmd7.html#changed-rules">changed rules</a>
+properties have been removed, if they are not necessary anymore. See <a href="pmd_release_notes_old_pmd700_detail.html#changed-rules">changed rules</a>
 in the release notes for PMD 7.</p>
 
 <p>All properties which accept multiple values now use a comma (<code class="language-plaintext highlighter-rouge">,</code>) as a delimiter. The previous default was a
@@ -2148,7 +2173,7 @@ with a backslash. This affects the following rules:
 <a href="pmd_rules_java_errorprone.html#avoidbranchingstatementaslastinloop"><code class="language-plaintext highlighter-rouge">AvoidBranchingStatementAsLastInLoop</code></a>,
 <a href="pmd_rules_java_errorprone.html#closeresource"><code class="language-plaintext highlighter-rouge">CloseResource</code></a>.</p>
 
-<p>A handful of rules are new to PMD 7. You might want to check these out: <a href="pmd_release_notes_pmd7.html#new-rules">new rules</a>.</p>
+<p>A handful of rules are new to PMD 7. You might want to check these out: <a href="pmd_release_notes_old_pmd700_detail.html#new-rules">new rules</a>.</p>
 
 <p>Once you have reviewed your ruleset(s), you can switch to PMD 7.</p>
 
@@ -2257,7 +2282,7 @@ ZIP file the base directory <code class="language-plaintext highlighter-rouge">p
 <h3 id="cli-changes">CLI Changes</h3>
 
 <p>The CLI has been revamped completely
-(see <a href="pmd_release_notes_pmd7.html#revamped-command-line-interface">Release Notes: Revamped Command Line Interface</a>).</p>
+(see <a href="pmd_release_notes_old_pmd700_detail.html#revamped-command-line-interface">Release Notes: Revamped Command Line Interface</a>).</p>
 
 <p>Most notable changes:</p>
 
@@ -5527,7 +5552,7 @@ versions (using <code class="language-plaintext highlighter-rouge">minimumLangua
   <li>All languages have a default version. If no specific version on the CLI is given using <code class="language-plaintext highlighter-rouge">--use-version</code>, then
 this default version will be used. Usually the latest version is the default version.</li>
   <li>The available versions for each language can be seen in the help message of the CLI <code class="language-plaintext highlighter-rouge">pmd check --help</code>.</li>
-  <li>See also <a href="pmd_release_notes_pmd7.html#changed-language-versions">Changed: Language versions</a></li>
+  <li>See also <a href="pmd_release_notes_old_pmd700_detail.html#changed-language-versions">Changed: Language versions</a></li>
 </ul>
 
 <h3 id="migrating-custom-cpd-language-modules">Migrating custom CPD language modules</h3>
@@ -5644,7 +5669,7 @@ the ant task is in an own dependency with PMD 7:
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2024 (7.3.0)<br /> Site last generated: Jun 12, 2026 <br />
+            June 2026 (7.26.0)<br /> Site last generated: Jun 12, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

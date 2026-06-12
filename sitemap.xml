@@ -1187,8 +1187,10 @@
   
   
   
+  
+  
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_release_notes_old.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_release_notes_old_pmd4.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-06-12</lastmod>
@@ -1197,7 +1199,34 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/pmd_release_notes_pmd7.html</loc>
+    <loc>https://docs.pmd-code.org/latest/pmd_release_notes_old_pmd5.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-06-12</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_release_notes_old_pmd6.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-06-12</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_release_notes_old_pmd7.html</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-06-12</lastmod>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://docs.pmd-code.org/latest/pmd_release_notes_old_pmd700_detail.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2026-06-12</lastmod>

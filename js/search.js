@@ -5099,19 +5099,43 @@ let pmd_doc_search_index = [
   "summary": " "
 },{
   "type": "page",
-  "source": "pages/release_notes_old.md",
-  "title": "Old Release Notes",
+  "source": "pages/release_notes_old_pmd4.md",
+  "title": "Old Release Notes PMD 4.x and earlier",
   "tags": "",
   "keywords": "",
-  "url": "pmd_release_notes_old.html",
+  "url": "pmd_release_notes_old_pmd4.html",
   "summary": " "
 },{
   "type": "page",
-  "source": "pages/release_notes_pmd7.md",
+  "source": "pages/release_notes_old_pmd5.md",
+  "title": "Old Release Notes PMD 5.x",
+  "tags": "",
+  "keywords": "",
+  "url": "pmd_release_notes_old_pmd5.html",
+  "summary": " "
+},{
+  "type": "page",
+  "source": "pages/release_notes_old_pmd6.md",
+  "title": "Old Release Notes PMD 6.x",
+  "tags": "",
+  "keywords": "",
+  "url": "pmd_release_notes_old_pmd6.html",
+  "summary": " "
+},{
+  "type": "page",
+  "source": "pages/release_notes_old_pmd7.md",
+  "title": "Old Release Notes PMD 7.x",
+  "tags": "",
+  "keywords": "",
+  "url": "pmd_release_notes_old_pmd7.html",
+  "summary": " "
+},{
+  "type": "page",
+  "source": "pages/release_notes_old_pmd700_detail.md",
   "title": "Detailed Release Notes for PMD 7",
   "tags": "",
   "keywords": "changelog, release notes",
-  "url": "pmd_release_notes_pmd7.html",
+  "url": "pmd_release_notes_old_pmd700_detail.html",
   "summary": "These are the detailed release notes for PMD 7."
 }
 ];
