@@ -34,6 +34,10 @@ This is a {{ site.pmd.release_type }} release.
   declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
   and may lead to confusion about which value is used.
 
+#### Deprecated Rules
+* The rule {% rule java/design/UseObjectForClearerAPI %} was deprecated. Use {% rule java/design/ExcessiveParameterList %}
+  instead. The old rule name still works.
+
 ### 🐛️ Fixed Issues
 * apex-security
   * [#2955](https://github.com/pmd/pmd/issues/2955): \[apex] ApexSOQLInjection: False positive when passing local var with concatenating strings
