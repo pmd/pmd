@@ -694,7 +694,7 @@ public void sendEmail(String to, String subject, String body, String[] cc) {
     // With cc recipients
 }
 
-public void sendEmail(String to, String subject, String body, String[] cc, String[] bcc, String from, boolean html) {
+public void sendEmail(String to, String subject, String body, String[] cc, String[] bcc, String from, boolean html) {  //NOPMD
     // Full featured
 }
 
