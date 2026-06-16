@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +45,7 @@ class KotlinAuxClasspathResolverTest {
 
     @Test
     void filterEntriesDropsNonExistentPath() {
-        Path missing = Paths.get("/nonexistent/path/missing.jar");
+        Path missing = tempDir.resolve("nonexistent/missing.jar");
         List<Path> result = KotlinAuxClasspathResolver.filterEntries(
                 Collections.singletonList(missing));
         assertTrue(result.isEmpty());
@@ -64,7 +63,7 @@ class KotlinAuxClasspathResolverTest {
     void filterEntriesHandlesMixedEntries() throws IOException {
         Path dir = Files.createTempDirectory(tempDir, "classes");
         Path jar = Files.createTempFile(tempDir, "lib", ".jar");
-        Path missing = Paths.get("/nonexistent/missing.jar");
+        Path missing = tempDir.resolve("nonexistent/missing.jar");
 
         List<Path> result = KotlinAuxClasspathResolver.filterEntries(
                 Arrays.asList(dir, jar, missing));
@@ -94,7 +93,8 @@ class KotlinAuxClasspathResolverTest {
     @Test
     void resolveStringPropertyFiltersInvalidEntries() throws IOException {
         Path jar = Files.createTempFile(tempDir, "valid", ".jar");
-        String cp = jar.toAbsolutePath() + java.io.File.pathSeparator + "/nonexistent/missing.jar";
+        String cp = jar.toAbsolutePath() + java.io.File.pathSeparator
+                + tempDir.resolve("nonexistent/missing.jar").toAbsolutePath();
 
         KotlinLanguageProperties props = new KotlinLanguageProperties(KotlinLanguageModule.getInstance());
         props.setProperty(KotlinLanguageProperties.AUX_CLASSPATH, cp);

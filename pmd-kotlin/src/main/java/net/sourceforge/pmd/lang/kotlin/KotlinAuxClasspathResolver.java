@@ -39,6 +39,8 @@ final class KotlinAuxClasspathResolver {
     List<Path> resolve() {
         String raw = bundle.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
         if (raw == null || raw.isEmpty()) {
+            LOG.warn("No auxClasspath configured for Kotlin; type resolution will not work. "
+                    + "Configure via --aux-classpath or the auxClasspath language property.");
             return Collections.emptyList();
         }
         String sep = System.getProperty("path.separator", ":");
