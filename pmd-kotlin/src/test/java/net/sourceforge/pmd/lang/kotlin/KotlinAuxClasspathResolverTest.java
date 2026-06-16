@@ -8,12 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,33 +30,33 @@ class KotlinAuxClasspathResolverTest {
     @Test
     void filterEntriesKeepsExistingDirectory() throws IOException {
         Path dir = Files.createTempDirectory(tempDir, "classes");
-        List<File> result = KotlinAuxClasspathResolver.filterEntries(
-                Collections.singletonList(dir.toFile()), "test");
+        List<Path> result = KotlinAuxClasspathResolver.filterEntries(
+                Collections.singletonList(dir));
         assertEquals(1, result.size());
-        assertEquals(dir.toFile(), result.get(0));
+        assertEquals(dir, result.get(0));
     }
 
     @Test
     void filterEntriesKeepsExistingJar() throws IOException {
         Path jar = Files.createTempFile(tempDir, "lib", ".jar");
-        List<File> result = KotlinAuxClasspathResolver.filterEntries(
-                Collections.singletonList(jar.toFile()), "test");
+        List<Path> result = KotlinAuxClasspathResolver.filterEntries(
+                Collections.singletonList(jar));
         assertEquals(1, result.size());
     }
 
     @Test
     void filterEntriesDropsNonExistentPath() {
-        File missing = new File("/nonexistent/path/missing.jar");
-        List<File> result = KotlinAuxClasspathResolver.filterEntries(
-                Collections.singletonList(missing), "test");
+        Path missing = Paths.get("/nonexistent/path/missing.jar");
+        List<Path> result = KotlinAuxClasspathResolver.filterEntries(
+                Collections.singletonList(missing));
         assertTrue(result.isEmpty());
     }
 
     @Test
     void filterEntriesDropsExistingNonJarFile() throws IOException {
         Path txt = Files.createTempFile(tempDir, "readme", ".txt");
-        List<File> result = KotlinAuxClasspathResolver.filterEntries(
-                Collections.singletonList(txt.toFile()), "test");
+        List<Path> result = KotlinAuxClasspathResolver.filterEntries(
+                Collections.singletonList(txt));
         assertTrue(result.isEmpty());
     }
 
@@ -66,65 +64,50 @@ class KotlinAuxClasspathResolverTest {
     void filterEntriesHandlesMixedEntries() throws IOException {
         Path dir = Files.createTempDirectory(tempDir, "classes");
         Path jar = Files.createTempFile(tempDir, "lib", ".jar");
-        File missing = new File("/nonexistent/missing.jar");
+        Path missing = Paths.get("/nonexistent/missing.jar");
 
-        List<File> result = KotlinAuxClasspathResolver.filterEntries(
-                Arrays.asList(dir.toFile(), jar.toFile(), missing), "test");
+        List<Path> result = KotlinAuxClasspathResolver.filterEntries(
+                Arrays.asList(dir, jar, missing));
         assertEquals(2, result.size());
-        assertTrue(result.contains(dir.toFile()));
-        assertTrue(result.contains(jar.toFile()));
+        assertTrue(result.contains(dir));
+        assertTrue(result.contains(jar));
         assertFalse(result.contains(missing));
     }
 
-    // --- resolve() tier 1: string property ---
+    // --- resolve() ---
 
     @Test
     void resolveUsesAuxClasspathStringProperty() throws IOException {
         Path jar = Files.createTempFile(tempDir, "mylib", ".jar");
         Path dir = Files.createTempDirectory(tempDir, "classes");
 
-        String cp = jar.toAbsolutePath() + File.pathSeparator + dir.toAbsolutePath();
+        String cp = jar.toAbsolutePath() + java.io.File.pathSeparator + dir.toAbsolutePath();
         KotlinLanguageProperties props = new KotlinLanguageProperties(KotlinLanguageModule.getInstance());
         props.setProperty(KotlinLanguageProperties.AUX_CLASSPATH, cp);
 
-        List<File> result = new KotlinAuxClasspathResolver(props).resolve();
+        List<Path> result = new KotlinAuxClasspathResolver(props).resolve();
         assertEquals(2, result.size());
-        assertTrue(result.contains(jar.toFile()));
-        assertTrue(result.contains(dir.toFile()));
+        assertTrue(result.contains(jar));
+        assertTrue(result.contains(dir));
     }
 
     @Test
     void resolveStringPropertyFiltersInvalidEntries() throws IOException {
         Path jar = Files.createTempFile(tempDir, "valid", ".jar");
-        String cp = jar.toAbsolutePath() + File.pathSeparator + "/nonexistent/missing.jar";
+        String cp = jar.toAbsolutePath() + java.io.File.pathSeparator + "/nonexistent/missing.jar";
 
         KotlinLanguageProperties props = new KotlinLanguageProperties(KotlinLanguageModule.getInstance());
         props.setProperty(KotlinLanguageProperties.AUX_CLASSPATH, cp);
 
-        List<File> result = new KotlinAuxClasspathResolver(props).resolve();
+        List<Path> result = new KotlinAuxClasspathResolver(props).resolve();
         assertEquals(1, result.size());
-        assertEquals(jar.toFile(), result.get(0));
+        assertEquals(jar, result.get(0));
     }
 
-    // --- resolve() tier 2: URLClassLoader ---
-
     @Test
-    void resolveUsesUrlClassLoader() throws IOException {
-        Path jar = Files.createTempFile(tempDir, "urllib", ".jar");
-        URL[] urls = { jar.toUri().toURL() };
-        URLClassLoader ucl = new URLClassLoader(urls, null);
-
-        // Subclass to inject URLClassLoader as analysis classloader
-        KotlinLanguageProperties props = new KotlinLanguageProperties(KotlinLanguageModule.getInstance()) {
-            @Override
-            public ClassLoader getAnalysisClassLoader() {
-                return ucl;
-            }
-        };
-
-        List<File> result = new KotlinAuxClasspathResolver(props).resolve();
-        assertEquals(1, result.size());
-        assertEquals(jar.toFile(), result.get(0));
-        ucl.close();
+    void resolveReturnsEmptyWhenPropertyNotSet() {
+        KotlinLanguageProperties props = new KotlinLanguageProperties(KotlinLanguageModule.getInstance());
+        List<Path> result = new KotlinAuxClasspathResolver(props).resolve();
+        assertTrue(result.isEmpty());
     }
 }
