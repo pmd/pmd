@@ -84,6 +84,16 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nl.stokpop.typemapper</groupId>
+            <artifactId>kotlin-type-mapper-model</artifactId>
+            <version>0.5.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.stokpop.typemapper</groupId>
+            <artifactId>kotlin-type-mapper-analyzer</artifactId>
+            <version>0.5.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
