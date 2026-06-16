@@ -69,6 +69,10 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
     }
 
     private void checkIthArgument(RuleContext ctx, InvocationNode call, int index) {
+        if (index >= call.getMethodType().getArity()) {  // this can happen if we're looking at varargs!
+            return;
+        }
+
         Object callArgument = call.getArguments().get(index).getConstValue();
         if (callArgument instanceof String) {
             String stringArgument = (String) callArgument;
