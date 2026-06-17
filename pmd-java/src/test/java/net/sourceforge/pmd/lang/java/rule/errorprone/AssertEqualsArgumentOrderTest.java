@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
 /**
- * Tests for {@link ConstantInEqualityAssertionRule}.
+ * Tests for {@link AssertEqualsArgumentOrderRule}.
  */
-class ConstantInEqualityAssertionTest extends PmdRuleTst {
+class AssertEqualsArgumentOrderTest extends PmdRuleTst {
     // no additional tests
 }

@@ -30,9 +30,9 @@ This is a {{ site.pmd.release_type }} release.
   testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
   skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don't execute
   because the test runner doesn't recognize the annotation.
-* The new Java rule {% rule java/errorprone/ConstantInEqualityAssertion %} detects assertions
-  about constants in tests. This helps find assertions that are either always satisfied and can be removed,
-  or are producing a confusing error message when they fail.
+* The new Java rule {% rule java/errorprone/AssertEqualsArgumentOrder %} detects assertions
+  where the expected and actual arguments were swapped. This helps find assertions
+  that are producing a confusing error message when they fail.
 * The new Kotlin rule {% rule kotlin/bestpractices/LocalVariableShadowsParameter %} detects local variable
   declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
   and may lead to confusion about which value is used.
