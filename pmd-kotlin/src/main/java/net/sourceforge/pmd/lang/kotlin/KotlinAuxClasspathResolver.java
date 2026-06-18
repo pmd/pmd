@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,9 +44,8 @@ final class KotlinAuxClasspathResolver {
                     + "Configure via --aux-classpath or the auxClasspath language property.");
             return Collections.emptyList();
         }
-        String sep = System.getProperty("path.separator", ":");
         List<Path> entries = new ArrayList<>();
-        for (String entry : raw.split(sep, -1)) {
+        for (String entry : raw.split(File.pathSeparator, -1)) {
             String trimmed = entry.trim();
             if (!trimmed.isEmpty()) {
                 entries.add(Paths.get(trimmed));
