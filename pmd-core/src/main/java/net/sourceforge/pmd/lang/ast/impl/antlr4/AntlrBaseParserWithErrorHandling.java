@@ -59,7 +59,13 @@ public abstract class AntlrBaseParserWithErrorHandling<
         return parsed;
     }
 
+    /**
+     * @deprecated Since 7.26.0. This method should not be used at all. It is only there for
+     * compatibility with the deprecated {@link AntlrBaseParser}. The method can't be
+     * overridden (it is final here) and it should not be used by subclasses.
+     */
     @Override
+    @Deprecated
     protected final R parse(Lexer parser, ParserTask task) {
         throw new IllegalStateException("This method shouldn't be called anymore.");
     }
