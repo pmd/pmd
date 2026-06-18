@@ -457,4 +457,42 @@ public class Foo {
         ]]></code>
         <source-type>java 21</source-type>
     </test-code>
+
+    <test-code>
+        <description>varargs</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo() {
+        bar("UTF-8", "ISO-8859-1");
+    }
+
+    public void bar(String... x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIndexOutOfBoundsException in rule UseStandardCharsetsRule.java:81 #6782</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package edu.hm.hafner.util;
+
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.*;
+
+class ValidationUtilitiesTest {
+    @Test
+    void shouldContainDefaultCharsets() {
+        var allCharsets = getAllCharsets();
+        assertThat(allCharsets).isNotEmpty().contains("UTF-8", "ISO-8859-1");
+    }
+
+    private String getAllCharsets() {
+        return "UTF-8";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
