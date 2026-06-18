@@ -150,6 +150,14 @@ The Java language can be configured with the following properties:
 
 ## Kotlin language properties
 
+- `auxClasspath`: Classpath on which to find compiled classes for the analysed Kotlin sources,
+  including project classes and third-party library JARs.
+
+  This property can also be set via the CLI option `--aux-classpath`.
+
+  Since: 7.26.0  
+  Environment variable: `PMD_KOTLIN_AUX_CLASSPATH`
+
 - `xParseTimeoutSeconds`: Timeout in seconds after which the parsing of a single Kotlin source file
   is canceled. This avoids parser hangs for complex files.
 

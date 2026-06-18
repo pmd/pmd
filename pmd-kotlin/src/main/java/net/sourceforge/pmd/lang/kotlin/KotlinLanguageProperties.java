@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.kotlin;
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * Language properties for Kotlin.
  * @since 7.25.0
  */
-public class KotlinLanguageProperties extends LanguagePropertyBundle {
+public class KotlinLanguageProperties extends JvmLanguagePropertyBundle {
 
     /**
      * @since 7.25.0
