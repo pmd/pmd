@@ -7,7 +7,7 @@
     <test-code>
         <description>JUnit Jupiter</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code>
             <![CDATA[
 import org.junit.jupiter.api.Test;
@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SimpleTest {
     @Test
     public void testX() {
-        assertEquals("foo", "bar", "reason"); // not covered by this rule
-        assertEquals("foo", "foo", "other reason"); // not covered by this rule
         assertEquals(next("foo"), "bar"); // wrong argument order
         assertEquals("bar", next("foo")); // good
+        assertEquals("foo", "bar", "reason"); // not covered by this rule
+        assertEquals("foo", "foo", "other reason"); // not covered by this rule
     }
 
     private String next(String in) {
@@ -31,7 +31,7 @@ public class SimpleTest {
     <test-code>
         <description>JUnit 4</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code>
             <![CDATA[
 import org.junit.Test;
@@ -39,10 +39,10 @@ import static org.junit.Assert.assertEquals;
 public class SimpleTest {
     @Test
     public void testX() {
-        assertEquals("foo", "bar", "reason"); // not covered by this rule
-        assertEquals("foo", "foo", "other reason"); // not covered by this rule
         assertEquals(next("foo"), "bar"); // wrong argument order
         assertEquals("bar", next("foo")); // good
+        assertEquals("foo", "bar", "reason"); // not covered by this rule
+        assertEquals("foo", "foo", "other reason"); // not covered by this rule
     }
 
     private String next(String in) {
@@ -56,7 +56,7 @@ public class SimpleTest {
     <test-code>
         <description>TestNG</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code>
             <![CDATA[
 import org.testng.annotations.Test;
@@ -64,10 +64,10 @@ import org.testng.Assert;
 public class SimpleTest {
     @Test
     public void testX() {
-        Assert.assertEquals("foo", "bar", "reason"); // not covered by this rule
-        Assert.assertEquals("foo", "foo", "other reason"); // not covered by this rule
         Assert.assertEquals("bar", next("foo")); // wrong argument order
         Assert.assertEquals(next("foo"), "bar"); // good
+        Assert.assertEquals("foo", "bar", "reason"); // not covered by this rule
+        Assert.assertEquals("foo", "foo", "other reason"); // not covered by this rule
     }
 
     private String next(String in) {
@@ -93,6 +93,7 @@ public class SimpleTest {
         assertEquals("foo", CONST, "other reason"); // OK
         assertEquals(next("foo"), "b" + "a" + "r"); // wrong argument order
         assertEquals("b" + "a" + "r", next("foo")); // good
+        assertEquals("ab" + "c", "a" + "bc"); // good
     }
     private String next(String in) {
         return "bar";
