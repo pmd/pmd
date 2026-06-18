@@ -15,7 +15,6 @@ import java.util.concurrent.TimeoutException;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  *
  * <p>Error handling strategy, see {@link AntlrBaseParserWithErrorHandling}</p>
  */
-public final class PmdKotlinParser extends AntlrBaseParserWithErrorHandling<KotlinNode, KtKotlinFile, KotlinParser> {
+public final class PmdKotlinParser extends AntlrBaseParserWithErrorHandling<KotlinNode, KtKotlinFile, KotlinParser, KotlinLexer> {
 
     private static final Logger LOG = LoggerFactory.getLogger(PmdKotlinParser.class);
 
@@ -134,12 +133,12 @@ public final class PmdKotlinParser extends AntlrBaseParserWithErrorHandling<Kotl
     }
 
     @Override
-    protected Lexer getLexer(final CharStream source) {
+    protected KotlinLexer getLexer(final CharStream source) {
         return new KotlinLexer(source);
     }
 
     @Override
-    protected KotlinParser getParser(Lexer lexer) {
+    protected KotlinParser getParser(KotlinLexer lexer) {
         return new KotlinParser(new CommonTokenStream(lexer));
     }
 }

@@ -31,20 +31,22 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  * @param <N> Supertype of all nodes for the language, eg SwiftNode
  * @param <R> Type of the root node
  * @param <P> Type of the ANTLR generated parser class, eg SwiftParser
+ * @param <L> Type of the ANTLR generated lexer class, eg SwiftLexer
  *
  * @since 7.26.0
  */
 public abstract class AntlrBaseParserWithErrorHandling<
     N extends AntlrNode<N>,
     R extends BaseAntlrInnerNode<N> & RootNode,
-    P extends AntlrGeneratedParserBase<N>
+    P extends AntlrGeneratedParserBase<N>,
+    L extends Lexer
     > extends AntlrBaseParser<N, R> implements Parser {
 
     @Override
     public R parse(ParserTask task) throws ParseException {
         CharStream cs = CharStreams.fromString(task.getSourceText(), task.getTextDocument().getFileId().getAbsolutePath());
         AntlrErrorListener errorListener = new AntlrErrorListener(task);
-        Lexer lexer = getLexer(cs);
+        L lexer = getLexer(cs);
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener.lexerErrorListener());
 
@@ -71,9 +73,9 @@ public abstract class AntlrBaseParserWithErrorHandling<
     }
 
     @Override
-    protected abstract Lexer getLexer(CharStream source);
+    protected abstract L getLexer(CharStream source);
 
-    protected abstract P getParser(Lexer lexer);
+    protected abstract P getParser(L lexer);
 
     protected abstract R parse(P parser, ParserTask task);
 }
