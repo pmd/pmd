@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 /**
  * Error listener to be used during lexing and parsing with ANTLR.
  * It collects multiple errors as suppressed exceptions. After parsing
- * is done, the error state should be checked ({@link #hasErrors()}
- * and the exception should be thrown ({@link #getException()}.
+ * is done, the error state should be checked ({@link #hasErrors()})
+ * and the exception should be thrown ({@link #getException()}).
  *
  * <p>Use {@link #lexerErrorListener()} and {@link #parserErrorListener()}
  * for registering the error listeners with ANTLR.</p>
@@ -59,7 +59,7 @@ public class AntlrErrorListener {
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                     int line, int charPositionInLine,
                                     String msg, RecognitionException e) {
-                addException(new LexException(line, charPositionInLine, task.getFileId(), msg, null));
+                addException(new LexException(line, charPositionInLine, task.getFileId(), msg, e));
             }
         };
     }
@@ -73,8 +73,12 @@ public class AntlrErrorListener {
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                     int line, int charPositionInLine,
                                     String msg, RecognitionException e) {
-                addException(new ParseException(msg)
-                        .withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine)));
+                ParseException parseException = new ParseException(msg)
+                        .withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine));
+                if (e != null) {
+                    parseException.initCause(e);
+                }
+                addException(parseException);
             }
         };
     }
