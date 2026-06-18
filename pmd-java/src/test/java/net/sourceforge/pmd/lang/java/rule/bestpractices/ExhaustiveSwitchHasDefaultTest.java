@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
+class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
     // no additional unit tests
 }

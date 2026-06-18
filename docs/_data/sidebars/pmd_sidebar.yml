@@ -23,9 +23,6 @@ entries:
     - title: Release notes
       url: /pmd_release_notes.html
       output: web, pdf
-    - title: Release notes (PMD 7)
-      url: /pmd_release_notes_pmd7.html
-      output: web, pdf
     - title: Getting help
       url: /pmd_about_help.html
       output: web, pdf
@@ -652,9 +649,27 @@ entries:
     - title: Credits
       url: /pmd_projectdocs_credits.html
       output: web, pdf
-    - title: Old release notes
-      url: /pmd_release_notes_old.html
+    - title: null
       output: web, pdf
+      subfolders:
+      - title: Old Release Notes
+        output: web, pdf
+        subfolderitems:
+        - title: Release Notes PMD 7.x
+          url: /pmd_release_notes_old_pmd7.html
+          output: web, pdf
+        - title: Detailed Release Notes PMD 7.0.0
+          url: /pmd_release_notes_old_pmd700_detail.html
+          output: web, pdf
+        - title: Release Notes PMD 6.x
+          url: /pmd_release_notes_old_pmd6.html
+          output: web, pdf
+        - title: Release Notes PMD 5.x
+          url: /pmd_release_notes_old_pmd5.html
+          output: web, pdf
+        - title: Release Notes PMD 4.x and earlier
+          url: /pmd_release_notes_old_pmd4.html
+          output: web, pdf
     - title: Decisions
       url: /pmd_projectdocs_decisions.html
       output: web, pdf

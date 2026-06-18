@@ -705,4 +705,30 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#2955 [apex] ApexSOQLInjection: False positive when passing local var with concatenating strings - single concat</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public without sharing class ExampleClass {
+    public List<Account> run() {
+        String query = 'SELECT Name FROM Account WHERE Active__c = true AND'
+                        + ' HasSupportPlan__c = true LIMIT 5';
+        return Database.query(query);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#2955 [apex] ApexSOQLInjection: False positive when passing local var with concatenating strings - Multiple concatenations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public without sharing class ExampleClass {
+    public List<Account> run() {
+        String query = 'SELECT Name FROM Account WHERE Active__c =' + ' true AND'
+                        + ' HasSupportPlan__c = true' + ' LIMIT 5';
+        return Database.query(query);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

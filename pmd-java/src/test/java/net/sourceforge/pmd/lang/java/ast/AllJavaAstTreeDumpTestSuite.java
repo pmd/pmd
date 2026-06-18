@@ -25,6 +25,6 @@ import org.junit.platform.suite.api.Suite;
     Java26TreeDumpTest.class,
     Java26PreviewTreeDumpTest.class
 })
-class AllJavaAstTreeDumpTest {
+class AllJavaAstTreeDumpTestSuite {
 
 }
