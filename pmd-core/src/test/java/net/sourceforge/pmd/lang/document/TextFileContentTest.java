@@ -60,6 +60,11 @@ class TextFileContentTest {
         // and not create a new string.
         assertTrue(normalizedText.isFullString(), "should be full string");
         assertSame(normalizedText.toString(), normalizedText.toString());
+
+        // offsets in normalized text (which doesn't contain BOM)
+        assertEquals(0, content.getPositioner().offsetFromLineColumn(1, 1));
+        assertEquals(3, content.getPositioner().offsetOfEndOfLine(1));
+        assertEquals(244122512L, content.getCheckSum()); // checksum of original with BOM
     }
 
     @ParameterizedTest
@@ -130,6 +135,59 @@ class TextFileContentTest {
         TextFileContent content = TextFileContent.normalizingRead(reader, 2, LINESEP_SENTINEL);
         assertEquals(Chars.wrap("a\n\n"), content.getNormalizedText());
         assertEquals("\r", content.getLineTerminator());
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    void testBomEliminationWithNewline(TextContentOrigin origin) throws IOException {
+        TextFileContent content = origin.normalize("\ufeffabc\n");
+        Chars normalizedText = content.getNormalizedText();
+        assertEquals(Chars.wrap("abc\n"), normalizedText);
+        // This means the string underlying the Chars does not start with the bom marker.
+        // It's useful for performance to have `textDocument.getText().toString()` be O(1),
+        // and not create a new string.
+        assertTrue(normalizedText.isFullString(), "should be full string");
+        assertSame(normalizedText.toString(), normalizedText.toString());
+        // offsets in normalized text (which doesn't contain BOM)
+        assertEquals(0, content.getPositioner().offsetFromLineColumn(1, 1));
+        assertEquals(4, content.getPositioner().offsetOfEndOfLine(1));
+        assertEquals(4, content.getPositioner().offsetFromLineColumn(2, 1));
+        assertEquals(4, content.getPositioner().offsetOfEndOfLine(2));
+        assertEquals(304546714L, content.getCheckSum()); // checksum of original with BOM
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    void testNormalizationWindows(TextContentOrigin origin) throws IOException {
+        TextFileContent content = origin.normalize("line1\r\nline2\r\nline3");
+        Chars normalizedText = content.getNormalizedText();
+        assertEquals(Chars.wrap("line1\nline2\nline3"), normalizedText);
+        assertTrue(normalizedText.isFullString(), "should be full string");
+        assertSame(normalizedText.toString(), normalizedText.toString(), "toString() should not create a new string instance");
+        assertEquals(0, content.getPositioner().offsetFromLineColumn(1, 1));
+        assertEquals(6, content.getPositioner().offsetOfEndOfLine(1));
+        assertEquals(6, content.getPositioner().offsetFromLineColumn(2, 1));
+        assertEquals(12, content.getPositioner().offsetOfEndOfLine(2));
+        assertEquals(12, content.getPositioner().offsetFromLineColumn(3, 1));
+        assertEquals(17, content.getPositioner().offsetOfEndOfLine(3));
+        assertEquals(986187197L, content.getCheckSum());
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    void testNormalizationUnix(TextContentOrigin origin) throws IOException {
+        TextFileContent content = origin.normalize("line1\nline2\nline3");
+        Chars normalizedText = content.getNormalizedText();
+        assertEquals(Chars.wrap("line1\nline2\nline3"), normalizedText);
+        assertTrue(normalizedText.isFullString(), "should be full string");
+        assertSame(normalizedText.toString(), normalizedText.toString(), "toString() should not create a new string instance");
+        assertEquals(0, content.getPositioner().offsetFromLineColumn(1, 1));
+        assertEquals(6, content.getPositioner().offsetOfEndOfLine(1));
+        assertEquals(6, content.getPositioner().offsetFromLineColumn(2, 1));
+        assertEquals(12, content.getPositioner().offsetOfEndOfLine(2));
+        assertEquals(12, content.getPositioner().offsetFromLineColumn(3, 1));
+        assertEquals(17, content.getPositioner().offsetOfEndOfLine(3));
+        assertEquals(874448291L, content.getCheckSum());
     }
 
     enum TextContentOrigin {

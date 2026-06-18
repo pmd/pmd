@@ -168,7 +168,7 @@ class JavaQualifiedNameTest {
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
-        assertEquals(("Bzaz$1"), classes.get(0).getBinaryName());
+        assertEquals("Bzaz$1", classes.get(0).getBinaryName());
         assertFalse(classes.get(0).isLocal());
         assertTrue(classes.get(0).isAnonymous());
         assertEquals("", classes.get(0).getSimpleName());

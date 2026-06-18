@@ -2,10 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.design;
+package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class InvalidJavaBeanTest extends PmdRuleTst {
-    // no additional unit tests
+class WrongTestAnnotationTest extends PmdRuleTst {
 }

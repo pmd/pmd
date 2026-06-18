@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
+import net.sourceforge.pmd.lang.apex.ast.BinaryOperator;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
@@ -186,6 +187,11 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             if (Helper.isMethodName(methodCall, STRING, ESCAPE_SINGLE_QUOTES)) {
                 isSafeVariable = true;
             }
+        }
+
+        // if the var is just a concatenation of literals, it's also safe
+        if (node.getOp() == BinaryOperator.ADDITION && node.descendants().all(ASTLiteralExpression.class::isInstance)) {
+            isSafeVariable = true;
         }
 
         final ASTLiteralExpression literal = node.firstChild(ASTLiteralExpression.class);

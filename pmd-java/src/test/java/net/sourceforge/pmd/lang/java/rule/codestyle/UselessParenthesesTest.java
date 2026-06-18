@@ -61,6 +61,13 @@ class UselessParenthesesTest extends PmdRuleTst {
     }
 
     @Test
+    void testAssignmentRHS() {
+        assertAll(
+            unnecessary("a = (b / c)")
+        );
+    }
+
+    @Test
     void testInnerLambda() {
         assertAll(
             necessary("(() -> 1) + 2"),

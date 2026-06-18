@@ -86,10 +86,14 @@ public interface TextDocument extends Closeable {
 
 
     /**
-     * Returns the current text of this document. Note that this doesn't take
+     * Returns the current text of this document in its normalized representation. Note that this doesn't take
      * external modifications to the {@link TextFile} into account.
      *
-     * <p>Line endings are normalized to {@link TextFileContent#NORMALIZED_LINE_TERM}.
+     * <p>The following normalizations are applied:
+     * <ul>
+     *     <li>Line endings are normalized to {@link TextFileContent#NORMALIZED_LINE_TERM}.</li>
+     *     <li>UTF-BOM headers are removed.</li>
+     * </ul>
      *
      * @see TextFileContent#getNormalizedText()
      */

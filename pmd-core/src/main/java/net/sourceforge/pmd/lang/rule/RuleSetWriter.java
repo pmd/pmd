@@ -56,6 +56,7 @@ public class RuleSetWriter {
     private Document document;
     private Set<String> ruleSetFileNames;
 
+
     public RuleSetWriter(OutputStream outputStream) {
         this.outputStream = outputStream;
     }
@@ -65,7 +66,18 @@ public class RuleSetWriter {
     }
 
     public void write(RuleSet ruleSet) {
+        write(ruleSet, 3);
+    }
+
+    void write(RuleSet ruleSet, int indentation) {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
+            // Set the context classloader to be the platform classloader, so that we don't
+            // find the TransformerFactory from Saxon (which is on the classpath), but fallback
+            // to Java's built-in one. That one supports the "indent-number" attribute, Saxon does not.
+            // TODO: PMD 8: Use ClassLoader.getPlatformClassLoader()
+            Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader().getParent());
+
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilderFactory.setNamespaceAware(true);
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -77,7 +89,7 @@ public class RuleSetWriter {
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             try {
-                transformerFactory.setAttribute("indent-number", 3);
+                transformerFactory.setAttribute("indent-number", indentation);
             } catch (IllegalArgumentException iae) {
                 // ignore it, specific to one parser
                 LOG.debug("Couldn't set indentation", iae);
@@ -91,6 +103,8 @@ public class RuleSetWriter {
             transformer.transform(new DOMSource(document), new StreamResult(outputStream));
         } catch (DOMException | FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
             throw new RuntimeException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
     }
 
