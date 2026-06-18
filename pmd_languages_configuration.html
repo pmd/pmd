@@ -2234,6 +2234,15 @@ that is conditionally compiled out. Set this property to empty to disable this.<
 
 <ul>
   <li>
+    <p><code class="language-plaintext highlighter-rouge">auxClasspath</code>: Classpath on which to find compiled classes for the analysed Kotlin sources,
+including project classes and third-party library JARs.</p>
+
+    <p>This property can also be set via the CLI option <code class="language-plaintext highlighter-rouge">--aux-classpath</code>.</p>
+
+    <p>Since: 7.26.0<br />
+Environment variable: <code class="language-plaintext highlighter-rouge">PMD_KOTLIN_AUX_CLASSPATH</code></p>
+  </li>
+  <li>
     <p><code class="language-plaintext highlighter-rouge">xParseTimeoutSeconds</code>: Timeout in seconds after which the parsing of a single Kotlin source file
 is canceled. This avoids parser hangs for complex files.</p>
 

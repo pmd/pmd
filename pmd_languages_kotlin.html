@@ -2089,6 +2089,16 @@ Selecting a different Kotlin language version does not currently change the pars
 <p>Other Kotlin 2.0.0 / 2.1.0 / 2.2.0 / 2.3.0 language features are not supported at this time.
 PRs to improve Kotlin parser coverage are welcome.</p>
 
+<h2 id="providing-the-auxiliary-classpath">Providing the auxiliary classpath</h2>
+
+<p>The auxiliary classpath (or short “auxClasspath”) is configured via the
+<a href="pmd_languages_configuration.html#kotlin-language-properties">Language Property “auxClasspath”</a>.
+It is a string containing multiple paths separated by either a colon (<code class="language-plaintext highlighter-rouge">:</code>) under Linux/MacOS
+or a semicolon (<code class="language-plaintext highlighter-rouge">;</code>) under Windows. This property can be provided on the CLI with parameter
+<a href="pmd_userdocs_cli_reference.html#-aux-classpath"><code class="language-plaintext highlighter-rouge">--aux-classpath</code></a>.</p>
+
+<p>Not providing the correct auxClasspath might result in false positives or negatives for some rules, that depend on resolved types.</p>
+
 <h2 id="language-properties">Language Properties</h2>
 
 <p>See <a href="pmd_languages_configuration.html#kotlin-language-properties">Kotlin language properties</a></p>
@@ -2138,7 +2148,7 @@ PRs to improve Kotlin parser coverage are welcome.</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            May 2026 (7.25.0)<br /> Site last generated: Jun 18, 2026 <br />
+            June 2026 (7.26.0)<br /> Site last generated: Jun 18, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
