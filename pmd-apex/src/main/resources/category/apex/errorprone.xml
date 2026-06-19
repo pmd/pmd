@@ -539,7 +539,36 @@ public class Foo {
 ]]>
     </example>
   </rule>
-  
+
+    <rule name="InvocableClassNoArgConstructor"
+          language="apex"
+          since="7.26.0"
+          message="Class ''{0}'' defines @InvocableVariable fields but has no accessible no-argument constructor."
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.InvocableClassNoArgConstructorRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#invocableclassnoargconstructor">
+        <description>
+            Apex classes containing @InvocableVariable properties used for flow parameters must expose a visible, zero-argument constructor
+            to prevent runtime instantiation errors under modern Salesforce API versions.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+// BAD: Explicit constructor eliminates default constructor, leaving no zero-arg constructor
+public class FlowInput {
+    @InvocableVariable public String recordId;
+    public FlowInput(String recordId) { this.recordId = recordId; }
+}
+
+// GOOD: Explicit zero-arg constructor alongside customized signature
+public class FlowInput {
+    @InvocableVariable public String recordId;
+    public FlowInput() {}
+    public FlowInput(String recordId) { this.recordId = recordId; }
+}
+]]>
+        </example>
+    </rule>
+
   <rule name="MethodWithSameNameAsEnclosingClass"
         language="apex"
         since="5.5.0"
@@ -693,35 +722,6 @@ public class Database {
     public static String query() {
         return 'Hello World';
     }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="InvocableClassNoArgConstructor"
-          language="apex"
-          since="7.26.0"
-          message="Class ''{0}'' defines @InvocableVariable fields but has no accessible no-argument constructor."
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.InvocableClassNoArgConstructorRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#invocableclassnoargconstructor">
-        <description>
-            Apex classes containing @InvocableVariable properties used for flow parameters must expose a visible, zero-argument constructor
-            to prevent runtime instantiation errors under modern Salesforce API versions.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-// BAD: Explicit constructor eliminates default constructor, leaving no zero-arg constructor
-public class FlowInput {
-    @InvocableVariable public String recordId;
-    public FlowInput(String recordId) { this.recordId = recordId; }
-}
-
-// GOOD: Explicit zero-arg constructor alongside customized signature
-public class FlowInput {
-    @InvocableVariable public String recordId;
-    public FlowInput() {}
-    public FlowInput(String recordId) { this.recordId = recordId; }
 }
 ]]>
         </example>
