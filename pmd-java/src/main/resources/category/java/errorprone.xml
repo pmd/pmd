@@ -12,7 +12,7 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     <rule name="AssertEqualsArgumentOrder"
           language="java"
           since="7.26.0"
-          message="assertEquals() arguments"
+          message="This assertEquals() call has mixed up expected and actual arguments"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AssertEqualsArgumentOrderRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assertequalsargumentorder">
         <description>
