@@ -27,6 +27,7 @@ class KotlinTypeAnalysisContextTest {
     @AfterEach
     void tearDown() {
         KotlinTypeAnalysisContextHolder.clearGlobal();
+        KotlinTypeAnalysisContextHolder.clear();
     }
 
     @Test

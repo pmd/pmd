@@ -58,7 +58,7 @@ final class KotlinAuxClasspathResolver {
     static List<Path> filterEntries(List<Path> entries) {
         List<Path> filtered = new ArrayList<>(entries.size());
         for (Path entry : entries) {
-            if (Files.exists(entry) && (Files.isDirectory(entry) || entry.getFileName().toString().endsWith(".jar"))) {
+            if (Files.exists(entry) && (Files.isDirectory(entry) || (entry.getFileName() != null && entry.getFileName().toString().endsWith(".jar")))) {
                 filtered.add(entry);
             } else {
                 LOG.warn("Skipping invalid Kotlin aux classpath entry: {}", entry);

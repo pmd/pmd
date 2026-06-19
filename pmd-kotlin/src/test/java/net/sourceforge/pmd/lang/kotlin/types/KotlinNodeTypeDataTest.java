@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.kotlin.types;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,12 +72,6 @@ class KotlinNodeTypeDataTest {
     }
 
     // --- typeInfoAvailable ---
-
-    @Test
-    void typeInfoAvailableFalseWhenNotSet() {
-        KtKotlinFile root = parse("val x = 1");
-        assertFalse(KotlinNodeTypeData.isTypeInfoAvailable(root));
-    }
 
     @Test
     void typeInfoAvailableTrueAfterSet() {

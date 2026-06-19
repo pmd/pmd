@@ -12,11 +12,12 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtForStatement;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
@@ -107,6 +108,24 @@ class KotlinTypeAnnotationVisitorTest {
         KtClassDeclaration clazz = root.descendants(KtClassDeclaration.class).first();
         assertNotNull(clazz);
         assertEquals("com.example.MyService", KotlinNodeTypeData.getTypeName(clazz));
+    }
+
+    // --- DelegationSpecifier (extends / implements) ---
+
+    @Test
+    void delegationSpecifierTypeNameSetForSuperclass() {
+        KtKotlinFile root = PARSER.parse("class Foo : Exception(\"msg\")");
+        KtDelegationSpecifier spec = root.descendants(KtDelegationSpecifier.class).first();
+        assertNotNull(spec);
+        assertEquals("java.lang.Exception", KotlinNodeTypeData.getTypeName(spec));
+    }
+
+    @Test
+    void delegationSpecifierTypeNameSetForInterface() {
+        KtKotlinFile root = PARSER.parse("class Foo : java.io.Serializable");
+        KtDelegationSpecifier spec = root.descendants(KtDelegationSpecifier.class).first();
+        assertNotNull(spec);
+        assertEquals("java.io.Serializable", KotlinNodeTypeData.getTypeName(spec));
     }
 
     // --- Annotation FQN ---
