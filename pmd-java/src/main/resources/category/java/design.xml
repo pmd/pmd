@@ -1552,7 +1552,7 @@ point to pass extra data, you'll be able to do so by simply modifying or extendi
 your API.
 
 **Deprecated:** This rule is deprecated since PMD 7.26.0 and will be removed with PMD 8.0.0.
-Use ExcessiveParameterList instead.
+Use {% rule ExcessiveParameterList %} instead.
         </description>
         <priority>3</priority>
         <properties>
