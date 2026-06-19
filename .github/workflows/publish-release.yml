@@ -692,7 +692,7 @@ jobs:
               --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
               --threads "$(nproc)" \
               --error-recovery
-          pushd target/reports || { echo "Directory 'target/reports' doesn't exist"; exit 1; }
+          test -d target/reports || { echo "Directory 'target/reports' doesn't exist"; exit 1; }
       - name: Prepare zip file
         id: zipfile
         env:
