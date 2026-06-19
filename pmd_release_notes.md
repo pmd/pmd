@@ -26,6 +26,9 @@ This is a minor release.
   testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
   skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don't execute
   because the test runner doesn't recognize the annotation.
+* The new Java rule [`AssertEqualsArgumentOrder`](https://docs.pmd-code.org/pmd-doc-7.26.0-SNAPSHOT/pmd_rules_java_errorprone.html#assertequalsargumentorder) detects assertions
+  where the expected and actual arguments were swapped. This helps find assertions
+  that are producing a confusing error message when they fail.
 * The new Kotlin rule [`LocalVariableShadowsParameter`](https://docs.pmd-code.org/pmd-doc-7.26.0-SNAPSHOT/pmd_rules_kotlin_bestpractices.html#localvariableshadowsparameter) detects local variable
   declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
   and may lead to confusion about which value is used.

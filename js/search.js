@@ -2964,6 +2964,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",
+  "title": "AssertEqualsArgumentOrder (Java, Error Prone)",
+  "tags": "",
+  "keywords": "Assert Equals Argument Order",
+  "url": "pmd_rules_java_errorprone.html#assertequalsargumentorder",
+  "summary": "Unit testing frameworks provide the `assertEquals` method that takes expected and actual value of an..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/errorprone.md",
   "title": "AssignmentInOperand (Java, Error Prone)",
   "tags": "",
   "keywords": "Assignment In Operand",

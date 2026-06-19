@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, IdenticalConditionalBranches, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitJupiterTestNoPrivateModifier, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitch, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnsupportedJdkApiUsage, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader, WrongTestAnnotation">
+<meta name="keywords" content=" Error Prone, AssertEqualsArgumentOrder, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, IdenticalConditionalBranches, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitJupiterTestNoPrivateModifier, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitch, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnsupportedJdkApiUsage, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader, WrongTestAnnotation">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -2057,6 +2057,41 @@
     </details>
 
   <!-- DO NOT EDIT THIS FILE. This file is generated from file ../pmd-java/src/main/resources/category/java/errorprone.xml. -->
+<h2 id="assertequalsargumentorder">AssertEqualsArgumentOrder</h2>
+
+<p><strong>Since:</strong> PMD 7.26.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Unit testing frameworks provide the <code class="language-plaintext highlighter-rouge">assertEquals</code> method that takes expected and actual
+value of an object as arguments.</p>
+
+<p>Passing a constant as the actual value and a computed value as the expected value
+indicates that the actual and expected values were swapped, leading to confusing
+error messages should the test fail.</p>
+
+<p>This rule currently supports assertions from JUnit Jupiter, JUnit versions 4 and 3,
+TestNG, Spring assertions and the JSONAssert library.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AssertEqualsArgumentOrderRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.AssertEqualsArgumentOrderRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.junit.jupiter.api.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">jupiter</span><span class="o">.</span><span class="na">api</span><span class="o">.</span><span class="na">Assertions</span><span class="o">.*;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testX</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="n">next</span><span class="o">(</span><span class="s">"foo"</span><span class="o">),</span> <span class="s">"bar"</span><span class="o">);</span> <span class="c1">// wrong argument order</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="s">"bar"</span><span class="o">,</span> <span class="n">next</span><span class="o">(</span><span class="s">"foo"</span><span class="o">));</span> <span class="c1">// good</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/AssertEqualsArgumentOrder"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="assignmentinoperand">AssignmentInOperand</h2>
 
 <p><strong>Since:</strong> PMD 1.03</p>
@@ -6159,7 +6194,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 18, 2026 <br />
+             Site last generated: Jun 19, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
