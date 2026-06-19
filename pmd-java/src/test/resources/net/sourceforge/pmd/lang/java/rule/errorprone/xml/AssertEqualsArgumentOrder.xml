@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
+
+    <test-code>
+        <description>JUnit Jupiter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        assertEquals(next("foo"), "bar"); // wrong argument order
+        assertEquals("bar", next("foo")); // good
+        assertEquals("foo", "bar", "reason"); // not covered by this rule
+        assertEquals("foo", "foo", "other reason"); // not covered by this rule
+    }
+
+    private String next(String in) {
+        return "bar";
+    }
+}
+]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>JUnit 4</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        assertEquals(next("foo"), "bar"); // wrong argument order
+        assertEquals("bar", next("foo")); // good
+        assertEquals("foo", "bar", "reason"); // not covered by this rule
+        assertEquals("foo", "foo", "other reason"); // not covered by this rule
+    }
+
+    private String next(String in) {
+        return "bar";
+    }
+}
+]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>TestNG</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.testng.annotations.Test;
+import org.testng.Assert;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        Assert.assertEquals("bar", next("foo")); // wrong argument order
+        Assert.assertEquals(next("foo"), "bar"); // good
+        Assert.assertEquals("foo", "bar", "reason"); // not covered by this rule
+        Assert.assertEquals("foo", "foo", "other reason"); // not covered by this rule
+    }
+
+    private String next(String in) {
+        return "bar";
+    }
+}
+]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>Non-literal constants</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+public class SimpleTest {
+    private static final String CONST = "foo";
+    @Test
+    public void testX() {
+        assertEquals(CONST, "bar", "reason"); // wrong argument order
+        assertEquals("foo", CONST, "other reason"); // OK
+        assertEquals(next("foo"), "b" + "a" + "r"); // wrong argument order
+        assertEquals("b" + "a" + "r", next("foo")); // good
+        assertEquals("ab" + "c", "a" + "bc"); // good
+    }
+    private String next(String in) {
+        return "bar";
+    }
+}
+]]>
+        </code>
+    </test-code>
+</test-data>
