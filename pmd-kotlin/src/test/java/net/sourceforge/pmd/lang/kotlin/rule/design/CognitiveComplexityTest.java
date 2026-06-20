@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.kotlin.rule.design;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class CognitiveComplexityTest extends PmdRuleTst {
+class CognitiveComplexityTest extends PmdRuleTst {
     // test data in xml/CognitiveComplexity.xml
 }

@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.kotlin.rule.design;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class ExcessiveParameterListTest extends PmdRuleTst {
+class ExcessiveParameterListTest extends PmdRuleTst {
     // test data in xml/ExcessiveParameterList.xml
 }

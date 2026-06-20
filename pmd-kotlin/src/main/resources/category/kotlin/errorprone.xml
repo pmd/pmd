@@ -370,7 +370,7 @@ A catch block that does nothing but rethrow the caught exception is pointless. R
                 <value><![CDATA[
 //CatchBlock[
     count(Block/Statements/Statement) = 1
-    and not(pmd-kotlin:typeIsExactly('java.util.concurrent.CancellationException'))
+    and not(pmd-kotlin:typeIs('java.util.concurrent.CancellationException'))
     and Block//JumpExpression[
         T-THROW
         and .//PrimaryExpression[

@@ -88,7 +88,7 @@ fun risky() {}
         <description>catch CancellationException and rethrow is not a violation (coroutines convention)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import kotlinx.coroutines.CancellationException
+import java.util.concurrent.CancellationException
 
 fun check() {
     try {

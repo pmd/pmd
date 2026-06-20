@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.kotlin.rule.design;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class CyclomaticComplexityTest extends PmdRuleTst {
+class CyclomaticComplexityTest extends PmdRuleTst {
     // test data in xml/CyclomaticComplexity.xml
 }

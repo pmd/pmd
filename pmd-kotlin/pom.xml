@@ -110,14 +110,7 @@
             <artifactId>pmd-lang-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>nl.stokpop.typemapper</groupId>
-            <artifactId>kotlin-type-mapper-analyzer</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
-        </dependency>
-        <!-- Needed so KotlinLanguageProcessor resolves kotlinx.coroutines types in tests.
-             Maven Surefire adds test-scope deps to java.class.path, which the language
-             processor uses as its aux-classpath fallback. -->
+        <!-- Provides kotlinx.coroutines types for integration tests that configure auxClasspath. -->
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core-jvm</artifactId>
