@@ -68,6 +68,7 @@
                     <parameter>
                         <excludes combine.children="append">
                             <exclude>net.sourceforge.pmd.lang.kotlin.rule.xpath.internal</exclude>
+                            <exclude>net.sourceforge.pmd.lang.kotlin.rule.internal</exclude>
                         </excludes>
                     </parameter>
                 </configuration>

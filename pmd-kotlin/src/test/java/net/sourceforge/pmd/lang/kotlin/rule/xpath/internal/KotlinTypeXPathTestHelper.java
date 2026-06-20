@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
+
 import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
 import nl.stokpop.typemapper.model.TypedAst;
 

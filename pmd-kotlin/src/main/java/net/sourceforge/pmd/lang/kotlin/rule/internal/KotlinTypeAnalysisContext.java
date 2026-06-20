@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
+package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
@@ -26,7 +28,10 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
 /**
  * Holds pre-analyzed Kotlin type information from kotlin-type-mapper, indexed by
  * (absolute file path, line number) for fast lookup during XPath function evaluation.
+ *
+ * @since 7.27.0
  */
+@Experimental
 public final class KotlinTypeAnalysisContext {
 
     private static final String KT_EXTENSION = ".kt";

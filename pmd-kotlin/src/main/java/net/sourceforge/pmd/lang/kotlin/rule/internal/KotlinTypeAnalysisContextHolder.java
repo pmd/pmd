@@ -2,12 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
+package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
- * Holds the active {@link KotlinTypeAnalysisContext} for XPath function evaluation.
+ * Holds the active {@link KotlinTypeAnalysisContext} for rule evaluation.
  *
  * <p>Thread-local storage takes precedence over the global slot, allowing per-test
  * injection without interfering with other threads.
@@ -16,7 +18,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * (e.g., after loading a pre-computed JSON analysis file).
  * In tests, call {@link #set(KotlinTypeAnalysisContext)} before the test and
  * {@link #clear()} in an {@code @AfterEach} to avoid leaking state.
+ *
+ * @since 7.27.0
  */
+@Experimental
 public final class KotlinTypeAnalysisContextHolder {
 
     private static final AtomicReference<KotlinTypeAnalysisContext> GLOBAL_CONTEXT =

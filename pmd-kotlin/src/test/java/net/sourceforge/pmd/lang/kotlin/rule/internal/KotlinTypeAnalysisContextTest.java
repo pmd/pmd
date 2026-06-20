@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
+package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeXPathTestHelper;
 
 class KotlinTypeAnalysisContextTest {
 
