@@ -95,16 +95,22 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
 
         Map<String, String> sources = buildSourceMap(ktFiles);
 
+        KotlinTypeAnnotationVisitor visitor = analyzeAndBuildVisitor(sources);
+        annotationVisitor.set(visitor);
+        if (visitor != null) {
+            LOG.debug("kotlin-type-mapper analyzed {} file(s)", ktFiles.size());
+        }
+    }
+
+    private KotlinTypeAnnotationVisitor analyzeAndBuildVisitor(Map<String, String> sources) {
         try {
             TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
-            KotlinTypeAnalysisContext context = KotlinTypeAnalysisContext.from(ast);
-            KotlinTypeAnalysisContextHolder.setGlobal(context);
-            annotationVisitor.set(new KotlinTypeAnnotationVisitor(ast));
-            LOG.debug("kotlin-type-mapper analyzed {} file(s)", ktFiles.size());
+            KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
+            return new KotlinTypeAnnotationVisitor(ast);
         } catch (RuntimeException e) {
             KotlinTypeAnalysisContextHolder.clearGlobal();
-            annotationVisitor.set(null);
             LOG.warn("kotlin-type-mapper analysis failed; type attributes will not be set", e);
+            return null;
         }
     }
 
@@ -156,19 +162,11 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
     }
 
     private KotlinTypeAnnotationVisitor runSingleFileAnalysis(String filename, String sourceText) {
-        try {
-            TypedAst ast = KotlinTypeMapper.fromSources(
-                    Collections.singletonMap(filename, sourceText),
-                    toFiles(classpathResolver.resolve()));
-            KotlinTypeAnalysisContext context = KotlinTypeAnalysisContext.from(ast);
-            KotlinTypeAnalysisContextHolder.setGlobal(context);
+        KotlinTypeAnnotationVisitor visitor = analyzeAndBuildVisitor(Collections.singletonMap(filename, sourceText));
+        if (visitor != null) {
             LOG.debug("kotlin-type-mapper single-file analysis complete for {}", filename);
-            return new KotlinTypeAnnotationVisitor(ast);
-        } catch (RuntimeException e) {
-            KotlinTypeAnalysisContextHolder.clearGlobal();
-            LOG.warn("kotlin-type-mapper single-file analysis failed for {}", filename, e);
-            return null;
         }
+        return visitor;
     }
 
     private static List<File> toFiles(List<Path> paths) {
