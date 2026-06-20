@@ -19,10 +19,11 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * Stores and retrieves type-mapper data on Kotlin AST nodes via {@link DataMap} keys.
  *
  * <p>DataKeys are private to this class. The kotlin-type-mapper library
- * uses the {@code set*} methods to populate values during its pre-analysis
- * pass; rule code uses the {@code get*} methods to read them.
+ * uses the {@code set*} methods (via {@link InternalApiBridge}) to populate
+ * values during its pre-analysis pass; rule code uses the {@code get*} methods
+ * to read them.
  *
- * @since 7.25.0
+ * @since 7.26.0
  * @experimental
  */
 @Experimental
@@ -40,13 +41,11 @@ public final class KotlinNodeTypeData {
     private static final SimpleDataKey<Boolean> TYPE_INFO_AVAILABLE_KEY =
             DataMap.simpleDataKey("kotlin.typeInfoAvailable");
 
-    private KotlinNodeTypeData() {
-        // utility class
-    }
+    private KotlinNodeTypeData() {}
 
     /**
      * Returns the resolved type name stored on this node,
-     * or {@code null} when type analysis has not been run.
+     * or {@code null} when type analysis has not been run or the node has no type.
      * Used on variable declarations, function parameters, annotation nodes,
      * catch blocks, delegation specifiers, and for-loop variables.
      */
@@ -56,9 +55,9 @@ public final class KotlinNodeTypeData {
 
     /**
      * Stores the resolved type name on a node.
-     * Called by the kotlin-type-mapper pre-analysis pass.
+     * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
      */
-    public static void setTypeName(KotlinNode node, String typeName) {
+    static void setTypeName(KotlinNode node, String typeName) {
         node.getUserMap().set(TYPE_NAME_KEY, typeName);
     }
 
@@ -72,9 +71,9 @@ public final class KotlinNodeTypeData {
 
     /**
      * Stores the resolved return type name on a function declaration node.
-     * Called by the kotlin-type-mapper pre-analysis pass.
+     * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
      */
-    public static void setReturnTypeName(KotlinNode node, String returnTypeName) {
+    static void setReturnTypeName(KotlinNode node, String returnTypeName) {
         node.getUserMap().set(RETURN_TYPE_KEY, returnTypeName);
     }
 
@@ -82,7 +81,6 @@ public final class KotlinNodeTypeData {
      * Returns an unmodifiable list of fully-qualified annotation class names
      * for a declaration node, or an empty list if none are present or type
      * analysis has not been run.
-     * Used by {@code pmd-kotlin:hasAnnotation()}.
      */
     public static List<String> getAnnotationFqNames(KotlinNode node) {
         String stored = node.getUserMap().get(ANNOTATION_NAMES_KEY);
@@ -94,18 +92,17 @@ public final class KotlinNodeTypeData {
 
     /**
      * Stores the fully-qualified annotation class names on a declaration node.
-     * Called by the kotlin-type-mapper pre-analysis pass.
+     * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
      *
      * @param annotationFqNames comma-separated FQN annotation class names
      */
-    public static void setAnnotationFqNames(KotlinNode node, String annotationFqNames) {
+    static void setAnnotationFqNames(KotlinNode node, String annotationFqNames) {
         node.getUserMap().set(ANNOTATION_NAMES_KEY, annotationFqNames);
     }
 
     /**
      * Returns {@code true} when the kotlin-type-mapper pre-analysis ran successfully
      * for the file represented by this root node, {@code false} otherwise.
-     * Exposed as the {@code @TypeInfoAvailable} XPath attribute on {@code KotlinFile} nodes.
      */
     public static boolean isTypeInfoAvailable(KotlinNode rootNode) {
         Boolean value = rootNode.getUserMap().get(TYPE_INFO_AVAILABLE_KEY);
@@ -114,9 +111,9 @@ public final class KotlinNodeTypeData {
 
     /**
      * Marks a root node as having completed type analysis.
-     * Called by {@code KotlinLanguageProcessor} after the annotation visitor runs.
+     * Called via {@link InternalApiBridge}.
      */
-    public static void setTypeInfoAvailable(KotlinNode rootNode) {
+    static void setTypeInfoAvailable(KotlinNode rootNode) {
         rootNode.getUserMap().set(TYPE_INFO_AVAILABLE_KEY, Boolean.TRUE);
     }
 }

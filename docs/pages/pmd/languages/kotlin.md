@@ -1,7 +1,7 @@
 ---
 title: Kotlin Support
 permalink: pmd_languages_kotlin.html
-last_updated: May 2026 (7.25.0)
+last_updated: June 2026 (7.26.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Kotlin-specific features and guidance"
 ---
@@ -25,6 +25,19 @@ Selecting a different Kotlin language version does not currently change the pars
 
 Other Kotlin 2.0.0 / 2.1.0 / 2.2.0 / 2.3.0 language features are not supported at this time.
 PRs to improve Kotlin parser coverage are welcome.
+
+## Providing the auxiliary classpath
+
+The auxiliary classpath (or short "auxClasspath") is configured via the
+[Language Property "auxClasspath"](pmd_languages_configuration.html#kotlin-language-properties).
+It is a string containing multiple paths separated by either a colon (`:`) under Linux/MacOS
+or a semicolon (`;`) under Windows. This property can be provided on the CLI with parameter
+[`--aux-classpath`](pmd_userdocs_cli_reference.html#-aux-classpath).
+
+Not providing the correct auxClasspath might result in false positives or negatives for some rules, that depend on resolved types.
+
+Type resolution for Kotlin is powered by [kotlin-type-mapper](https://github.com/stokpop/kotlin-type-mapper),
+which is bundled with PMD.
 
 ## Language Properties
 

@@ -103,7 +103,6 @@ class KotlinAstUtilTest {
     void collectClassVarFieldNamesReturnsOnlyVarFields() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
                 "class Foo { val id: Int = 0; var name: String = \"\" }");
-        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
         // use any node inside the class to look up class fields
         KtSimpleIdentifier si = file.descendants(KtSimpleIdentifier.class).first();
         Set<String> fields = KotlinAstUtil.collectClassVarFieldNames(si);

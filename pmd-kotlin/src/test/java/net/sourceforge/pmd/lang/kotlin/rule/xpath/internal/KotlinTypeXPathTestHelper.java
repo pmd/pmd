@@ -21,22 +21,6 @@ import nl.stokpop.typemapper.model.TypedAst;
  * Test utility that runs kotlin-type-mapper analysis on Kotlin source files (or inline
  * code strings) and injects the resulting {@link KotlinTypeAnalysisContext} into
  * {@link KotlinTypeAnalysisContextHolder} so XPath functions have type data available.
- *
- * <p>Analysis is done entirely in memory — no temporary files are written to disk.
- *
- * <p>Usage in tests:
- * <pre>{@code
- * @BeforeEach
- * void setUp() {
- *     helper = KotlinTypeXPathTestHelper.forDirectory(testResourceDir);
- *     helper.injectContext();
- * }
- *
- * @AfterEach
- * void tearDown() {
- *     KotlinTypeAnalysisContextHolder.clearGlobal();
- * }
- * }</pre>
  */
 public class KotlinTypeXPathTestHelper {
 
@@ -46,10 +30,7 @@ public class KotlinTypeXPathTestHelper {
         this.sources = sources;
     }
 
-    /**
-     * Creates a helper that will analyze all .kt files in the given directory.
-     * Files are read into memory and LF-normalized; no temp directory is created.
-     */
+    /** Creates a helper that analyzes all .kt files in the given directory. */
     public static KotlinTypeXPathTestHelper forDirectory(File dir) {
         try {
             File[] ktFiles = dir.listFiles((d, name) -> name.endsWith(".kt"));
@@ -67,21 +48,17 @@ public class KotlinTypeXPathTestHelper {
         }
     }
 
-    /**
-     * Creates a helper that will analyze a single Kotlin source code string.
-     * The code is analyzed as a virtual file named {@code snippet.kt}; no disk I/O occurs.
-     */
+    /** Creates a helper that analyzes a single Kotlin source code string as {@code snippet.kt}. */
     public static KotlinTypeXPathTestHelper forCode(String kotlinCode) {
         return new KotlinTypeXPathTestHelper(Collections.singletonMap("snippet.kt", normalizeLf(kotlinCode)));
     }
 
     /**
-     * Runs kotlin-type-mapper analysis entirely in memory and injects the context into the
-     * global holder so PMD's worker threads can access it during analysis.
-     * Call this in {@code @BeforeEach}.
+     * Runs kotlin-type-mapper analysis in memory and injects the context into
+     * the global holder. Call in {@code @BeforeEach}.
      */
     public void injectContext() {
-        TypedAst ast = KotlinTypeMapper.fromSources(sources, Collections.<java.io.File>emptyList());
+        TypedAst ast = KotlinTypeMapper.fromSources(sources, Collections.<File>emptyList());
         KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
     }
 

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeAnalysisContextHolder;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeAnnotationVisitor;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
@@ -38,20 +39,14 @@ import nl.stokpop.typemapper.model.TypedAst;
  * Language processor for Kotlin. Extends the default batch processor with a
  * pre-analysis step: before any file is parsed, all Kotlin source files are
  * analyzed by kotlin-type-mapper to resolve types. The resulting type data is
- * then:
- * <ol>
- *   <li>Set as node attributes ({@code @TypeName}, {@code @ReturnTypeName}) on each
- *       {@code PropertyDeclaration} / {@code FunctionDeclaration} node during parsing,
- *       making them available in the PMD Designer and via XPath {@code @} syntax.</li>
- *   <li>Stored in {@link KotlinTypeAnalysisContextHolder} for use by the
- *       {@code pmd-kotlin:typeIs()} and {@code pmd-kotlin:matchesSig()} XPath functions.</li>
- * </ol>
+ * then set as node attributes ({@code @TypeName}, {@code @ReturnTypeName}) on
+ * declaration nodes, making them available in the PMD Designer and via XPath.
  *
  * <p>If type analysis fails (e.g. Kotlin compiler not on classpath), the processor
- * falls back gracefully: nodes have no type attributes and the custom XPath functions
- * return {@code false} for all nodes, so rule evaluation still completes.
+ * falls back gracefully: nodes have no type attributes and rule evaluation still
+ * completes.
  *
- * @since 7.25.0
+ * @since 7.26.0
  */
 public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLanguageProperties> {
     private static final Logger LOG = LoggerFactory.getLogger(KotlinLanguageProcessor.class);
@@ -101,7 +96,7 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
         Map<String, String> sources = buildSourceMap(ktFiles);
 
         try {
-            TypedAst ast = KotlinTypeMapper.fromSources(sources, classpathResolver.resolve());
+            TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
             KotlinTypeAnalysisContext context = KotlinTypeAnalysisContext.from(ast);
             KotlinTypeAnalysisContextHolder.setGlobal(context);
             annotationVisitor.set(new KotlinTypeAnnotationVisitor(ast));
@@ -109,11 +104,11 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
         } catch (RuntimeException e) {
             KotlinTypeAnalysisContextHolder.clearGlobal();
             annotationVisitor.set(null);
-            LOG.warn("kotlin-type-mapper analysis failed; typeIs/matchesSig will return false", e);
+            LOG.warn("kotlin-type-mapper analysis failed; type attributes will not be set", e);
         }
     }
 
-    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework (closed by PMDRunnable); same pattern used in MonoThreadProcessor
+    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.
     private static Map<String, String> buildSourceMap(List<TextFile> ktFiles) {
         Map<String, String> sources = new LinkedHashMap<>();
         for (TextFile ktFile : ktFiles) {
@@ -131,17 +126,16 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
     void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
         KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
         if (visitor == null) {
-            // Designer / single-file mode: launchAnalysis() was never called, so run
-            // kotlin-type-mapper inline on this one file.
+            // Designer / single-file mode: launchAnalysis() was never called.
             String effectiveName = sanitizeKtFilename(absPath);
             visitor = runSingleFileAnalysis(effectiveName, sourceText);
             if (visitor != null) {
                 visitor.annotate(root, effectiveName);
-                KotlinNodeTypeData.setTypeInfoAvailable(root);
+                InternalApiBridge.setTypeInfoAvailable(root);
             }
         } else {
             visitor.annotate(root, absPath);
-            KotlinNodeTypeData.setTypeInfoAvailable(root);
+            InternalApiBridge.setTypeInfoAvailable(root);
         }
     }
 
@@ -164,16 +158,25 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
     private KotlinTypeAnnotationVisitor runSingleFileAnalysis(String filename, String sourceText) {
         try {
             TypedAst ast = KotlinTypeMapper.fromSources(
-                    Collections.singletonMap(filename, sourceText), classpathResolver.resolve());
+                    Collections.singletonMap(filename, sourceText),
+                    toFiles(classpathResolver.resolve()));
             KotlinTypeAnalysisContext context = KotlinTypeAnalysisContext.from(ast);
             KotlinTypeAnalysisContextHolder.setGlobal(context);
             LOG.debug("kotlin-type-mapper single-file analysis complete for {}", filename);
             return new KotlinTypeAnnotationVisitor(ast);
         } catch (RuntimeException e) {
             KotlinTypeAnalysisContextHolder.clearGlobal();
-            LOG.warn("kotlin-type-mapper single-file analysis failed for {}; typeIs/matchesSig will return false", filename, e);
+            LOG.warn("kotlin-type-mapper single-file analysis failed for {}", filename, e);
             return null;
         }
+    }
+
+    private static List<File> toFiles(List<Path> paths) {
+        List<File> files = new ArrayList<>(paths.size());
+        for (Path p : paths) {
+            files.add(p.toFile());
+        }
+        return files;
     }
 
     /**

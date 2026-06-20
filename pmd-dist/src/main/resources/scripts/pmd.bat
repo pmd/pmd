@@ -154,7 +154,7 @@ IF [%APPNAME%] == [designer] (
       EXIT /B 2
     )
 
-    SET "PMD_OPENJFX_MODULE_PATH=--module-path %JAVAFX_HOME%/lib --add-modules javafx.controls,javafx.fxml"
+    SET "PMD_OPENJFX_MODULE_PATH=--module-path "%JAVAFX_HOME%/lib" --add-modules javafx.controls,javafx.fxml"
   )
 )
 EXIT /B

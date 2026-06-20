@@ -87,7 +87,12 @@
         <dependency>
             <groupId>nl.stokpop.typemapper</groupId>
             <artifactId>kotlin-type-mapper-model</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
+            <version>0.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.stokpop.typemapper</groupId>
+            <artifactId>kotlin-type-mapper-analyzer</artifactId>
+            <version>0.5.1</version>
         </dependency>
 
         <dependency>

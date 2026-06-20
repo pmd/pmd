@@ -24,7 +24,7 @@ class ResourceLoaderTest {
         System.out.println("getResourceStream");
         String path = "";
         ResourceLoader instance = new ResourceLoader();
-        InputStream expResult = null;
+        // InputStream expResult = null;
         InputStream result = instance.getResourceStream(path);
         assertNotNull(result);
         // assertEquals(expResult, result);
