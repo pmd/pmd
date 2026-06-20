@@ -487,8 +487,8 @@ Maven's Surefire and `URLClassLoader` hierarchies can include `.pom` entries.
 
 **Fix location:** `KotlinAuxClasspathResolver.filterEntries()` -- retains
 only entries that are existing directories or `.jar` files; logs `WARN` for anything
-skipped. Applied at all three classpath-source points (string property, URLClassLoader,
-`java.class.path`).
+skipped. Applied to entries from the `JvmLanguagePropertyBundle.AUX_CLASSPATH` string
+property (the single resolver strategy in the standalone design).
 
 ---
 
@@ -599,30 +599,14 @@ For type resolution to work in a test case CDATA snippet:
    type not available on the Kotlin compiler's default classpath (e.g. `kotlinx.coroutines`,
    Spring, OkHttp, etc.).
 
-   `KotlinAuxClasspathResolver.resolve()` has three fallback sources it checks
-   in order:
-   1. The `--aux-classpath` CLI property (used in production)
-   2. A `URLClassLoader` hierarchy (used by PMD Designer)
-   3. **`java.class.path` system property** -- Maven Surefire puts all test-scoped
-      dependencies here automatically
+   `KotlinAuxClasspathResolver.resolve()` has a single strategy: it reads the
+   `JvmLanguagePropertyBundle.AUX_CLASSPATH` string property set on the language.
+   In production this is provided via the `--aux-classpath` CLI flag.
 
-   This means: adding the library as `<scope>test</scope>` in `pom.xml` is all that is
-   needed.  The language processor picks it up from `java.class.path` and feeds it to
-   `KotlinNodeTypeData`.  No code changes to tests are required.
-
-   ```xml
-   <!-- pmd-kotlin/pom.xml -->
-   <dependency>
-       <groupId>org.jetbrains.kotlinx</groupId>
-       <artifactId>kotlinx-coroutines-core-jvm</artifactId>
-       <version>1.8.0</version>
-       <scope>test</scope>
-   </dependency>
-   ```
-
-   After adding the dependency, any XML test case `<code>` snippet that imports the
-   library's types will resolve correctly and `typeIs` / `typeIsExactly` / `matchesSig`
-   will work as expected -- no extra Java test code is needed.
+   **`PmdRuleTst`-based XML tests cannot configure language properties** -- the
+   test framework offers no hook for this.  So adding a library as
+   `<scope>test</scope>` in `pom.xml` is necessary but not sufficient: the test
+   itself must locate the JAR and pass it explicitly.  See §8.2 for the pattern.
 
    **Type alias expansion:** `KotlinNodeTypeData` (backed by the kotlin-type-mapper library) always expands `typealias` chains down
    to the final concrete JVM type.  This means the FQN you provide to `typeIsExactly()`
@@ -662,6 +646,71 @@ For type resolution to work in a test case CDATA snippet:
 
    This also applies to other methods whose Kotlin-mapped name differs from the Java name.
 
+---
+
+### 8.2 Programmatic Java tests for rules that need external JARs
+
+When a rule must recognise a type from a third-party library (e.g.
+`kotlinx.coroutines.CancellationException`), the XML `<code>` snippet alone cannot
+trigger type resolution -- `PmdRuleTst` has no way to set language properties such
+as `AUX_CLASSPATH`.  Write a programmatic Java test instead.
+
+**Pattern:**
+
+1. Add the library as a Maven test dependency:
+
+   ```xml
+   <!-- pmd-kotlin/pom.xml -->
+   <dependency>
+       <groupId>org.jetbrains.kotlinx</groupId>
+       <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+       <version>1.8.0</version>
+       <scope>test</scope>
+   </dependency>
+   ```
+
+2. Maven Surefire puts all test-scoped JARs into the `java.class.path` system property.
+   Locate the JAR at runtime by scanning that property:
+
+   ```java
+   String jarPath = Arrays.stream(System.getProperty("java.class.path").split(File.pathSeparator))
+           .filter(e -> e.contains("kotlinx-coroutines-core-jvm"))
+           .findFirst()
+           .orElseThrow(() -> new IllegalStateException(
+                   "kotlinx-coroutines-core-jvm not found on test classpath"));
+   ```
+
+3. Pass the path as the `AUX_CLASSPATH` language property via `PMDConfiguration`:
+
+   ```java
+   Language kotlin = LanguageRegistry.PMD.getLanguageById("kotlin");
+   PMDConfiguration config = new PMDConfiguration();
+   config.setIgnoreIncrementalAnalysis(true);
+   config.setDefaultLanguageVersion(kotlin.getDefaultVersion());
+   config.getLanguageProperties(kotlin).setProperty(
+           JvmLanguagePropertyBundle.AUX_CLASSPATH, jarPath);
+   ```
+
+4. Run analysis with `PmdAnalysis`:
+
+   ```java
+   try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+       pmd.addRuleSet(RuleSet.forSingleRule(rule));
+       pmd.files().addSourceFile(FileId.fromPathLikeString("snippet.kt"), code);
+       Report report = pmd.performAnalysisAndCollectReport();
+       // assert on violations
+   }
+   ```
+
+`KotlinAuxClasspathResolver.resolve()` reads the string property and passes the JAR
+to `KotlinTypeMapper`, which runs the K1 compiler with the external classpath.
+
+**Why not scan `java.class.path` in the resolver itself?**  The standalone design
+intentionally keeps `KotlinAuxClasspathResolver` to a single strategy (explicit string
+property) so production and test behaviour are identical.  The test is responsible for
+bridging the gap by finding the JAR and passing it explicitly.
+
+**Canonical example:** `AvoidRethrowingExceptionTest.kotlinxCancellationExceptionRethrowIsNotAViolation()`
 
 ---
 
