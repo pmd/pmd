@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static java.lang.reflect.Modifier.isPublic;
 import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PUBLIC;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
@@ -116,11 +117,13 @@ public class PublicMemberInNonPublicTypeRule extends AbstractJavaRulechainRule {
 
     private boolean isViolation(ASTMethodDeclaration node) {
         return isViolation((ModifierOwner) node)
-                && !node.isOverridden();
+                // special case: if a method is overriding another method we only report
+                // if we're allowed to reduce the visibility.
+                && (!node.isOverridden() || !isPublic(node.getOverriddenMethod().getModifiers()));
     }
 
     private boolean isViolation(ModifierOwner node) {
         return node.getEffectiveVisibility() != V_PUBLIC && node.getVisibility() == V_PUBLIC
-                && !(node.ancestors(ASTTypeDeclaration.class).first().isInterface());
+                && !node.ancestors(ASTTypeDeclaration.class).first().isInterface();
     }
 }
