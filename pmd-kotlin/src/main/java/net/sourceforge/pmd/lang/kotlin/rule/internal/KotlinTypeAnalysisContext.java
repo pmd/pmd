@@ -17,15 +17,22 @@ import net.sourceforge.pmd.annotation.Experimental;
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
+import nl.stokpop.typemapper.model.TypedAst;
 import nl.stokpop.typemapper.model.TypedAstAccessorsKt;
+import nl.stokpop.typemapper.model.TypedAstCallQueriesKt;
 import nl.stokpop.typemapper.model.TypedAstHierarchyQueriesKt;
 import nl.stokpop.typemapper.model.TypeNameUtilsKt;
-import nl.stokpop.typemapper.model.TypedAst;
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
 
 /**
  * Holds pre-analyzed Kotlin type information from kotlin-type-mapper, indexed by
  * (absolute file path, line number) for fast lookup during XPath function evaluation.
+ *
+ * <p>Note: kotlin-type-mapper records the <em>concrete expanded type</em> in all call-site
+ * fields -- type alias names are not preserved. Pass the concrete type to
+ * {@link #callsOnReceiver(String)} / {@link #callsReturning(String)}.
+ * Type alias query support (resolveTypeAlias, ...ExpandingAlias variants) is planned for a
+ * future release.
  *
  * @since 7.27.0
  */
@@ -244,6 +251,46 @@ public final class KotlinTypeAnalysisContext {
             return TypeNameUtilsKt.typeNamesEquivalent(expectedType, actualType);
         }
         return TypedAstHierarchyQueriesKt.isSubtypeOf(typedAst, expectedType, actualType);
+    }
+
+    /**
+     * Returns all call sites in the analyzed AST where the dispatch or extension receiver type
+     * matches {@code fqn} (exact, after Java/Kotlin name mapping and generic stripping).
+     * Delegates to {@link TypedAstCallQueriesKt#callsOnReceiver(TypedAst, String)}.
+     * Returns an empty list for the empty context.
+     */
+    public List<CallSiteAst> callsOnReceiver(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsOnReceiver(typedAst, fqn);
+    }
+
+    /**
+     * Returns all call sites where the dispatch or extension receiver type is {@code fqn}
+     * or a subtype of it (using the type hierarchy from the aux classpath).
+     * Delegates to {@link TypedAstCallQueriesKt#callsOnReceiverSubtype(TypedAst, String)}.
+     */
+    public List<CallSiteAst> callsOnReceiverSubtype(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsOnReceiverSubtype(typedAst, fqn);
+    }
+
+    /**
+     * Returns all call sites whose return type matches {@code fqn}
+     * (after Java/Kotlin name mapping and generic stripping).
+     * Delegates to {@link TypedAstCallQueriesKt#callsReturning(TypedAst, String)}.
+     */
+    public List<CallSiteAst> callsReturning(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsReturning(typedAst, fqn);
+    }
+
+    /**
+     * Returns all call sites whose return type is {@code fqn} or a subtype of it.
+     * Delegates to {@link TypedAstCallQueriesKt#callsReturningSubtype(TypedAst, String)}.
+     */
+    public List<CallSiteAst> callsReturningSubtype(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsReturningSubtype(typedAst, fqn);
     }
 
     private static String canonicalize(String path) {
