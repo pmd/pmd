@@ -270,6 +270,26 @@ public final class KotlinTypeAnalysisContext {
     }
 
     /**
+     * Returns all call sites where the dispatch or extension receiver type matches {@code fqn}.
+     * Delegates to {@code TypedAstCallQueriesKt.callsOnReceiver} from kotlin-type-mapper.
+     * Returns empty list for the empty context.
+     */
+    public List<CallSiteAst> callsOnReceiver(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsOnReceiver(typedAst, fqn);
+    }
+
+    /**
+     * Returns all call sites where the return type matches {@code fqn}.
+     * Delegates to {@code TypedAstCallQueriesKt.callsReturning} from kotlin-type-mapper.
+     * Returns empty list for the empty context.
+     */
+    public List<CallSiteAst> callsReturning(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsReturning(typedAst, fqn);
+    }
+
+    /**
      * Like {@link #callsOnReceiver(String)}, but if {@code fqn} is a known typealias it is
      * first expanded to its concrete type, then the call search uses that concrete type.
      * Falls back to the raw {@code fqn} if the alias is not found (library aliases, empty context).

@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeXPathTestHelper;
 
+import java.util.List;
+
 import nl.stokpop.typemapper.model.CallSiteAst;
 
 class KotlinTypeAnalysisContextTest {
