@@ -21,6 +21,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
+import nl.stokpop.typemapper.model.TypedAstAccessorsKt;
 import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.TypedAst;
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
@@ -78,9 +79,14 @@ public final class KotlinTypeAnalysisContext {
         Map<String, Map<Integer, List<DeclarationAst>>> declIdx = new HashMap<>();
         Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIdx = new HashMap<>();
 
-        String sourceRoot = ast.getSourceRoot();
+        boolean diskBased = TypedAstAccessorsKt.hasSourceRoot(ast);
         for (FileAst file : ast.getFiles()) {
-            String absPath = canonicalize(sourceRoot + File.separator + file.getRelativePath());
+            // For disk-based analysis, index by canonical abs path for precise lookup.
+            // For in-memory analysis (fromSources, sourceRoot is ""), basename-only indexing
+            // is correct and intentional — no real path exists on disk.
+            String absPath = diskBased
+                    ? canonicalize(TypedAstAccessorsKt.resolveAbsolutePath(ast, file))
+                    : null;
             // Also index by basename alone as a fallback for when PMD paths differ
             // from the paths kotlin-type-mapper was run on (e.g. temp dir analysis).
             String basename = new File(file.getRelativePath()).getName();
@@ -100,9 +106,16 @@ public final class KotlinTypeAnalysisContext {
 
     private static <T> void addToIndex(Map<String, Map<Integer, List<T>>> idx,
             String absPath, String basename, int line, T item) {
-        idx.computeIfAbsent(absPath, k -> new HashMap<>())
-                .computeIfAbsent(line, k -> new ArrayList<>())
-                .add(item);
+        // Index by both absPath (precise lookup) and basename (fallback when PMD paths differ
+        // from ktm paths, e.g. in-memory analysis or temp-dir analysis). absPath is null for
+        // in-memory analysis; skip absPath indexing in that case.
+        // Note: the basename index is inherently ambiguous when multiple source files share the
+        // same filename across packages; it is used only as a last-resort fallback.
+        if (absPath != null) {
+            idx.computeIfAbsent(absPath, k -> new HashMap<>())
+                    .computeIfAbsent(line, k -> new ArrayList<>())
+                    .add(item);
+        }
         idx.computeIfAbsent(basename, k -> new HashMap<>())
                 .computeIfAbsent(line, k -> new ArrayList<>())
                 .add(item);
