@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -25,5 +27,10 @@ public class KtFunctionDeclarationAttributes extends AttributeView<KotlinParser.
      */
     public @Nullable String getReturnTypeName() {
         return KotlinNodeTypeData.getReturnTypeName(node);
+    }
+
+    public @Nullable List<String> getAnnotationFqNames() {
+        List<String> names = KotlinNodeTypeData.getAnnotationFqNames(node);
+        return names.isEmpty() ? null : names;
     }
 }

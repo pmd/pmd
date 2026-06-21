@@ -432,6 +432,28 @@ class KotlinTypeIsFunctionTest {
                 "Expected UnescapedAnnotation[@TypeName='kotlin.Deprecated'] to match");
     }
 
+    // --- AnnotationFqNames attribute on FunctionDeclaration and ClassDeclaration ---
+
+    @Test
+    void functionDeclarationAnnotationFqNamesAttributeMatchesDeprecated() {
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
+        Report report = runXPath(
+                "//FunctionDeclaration[@AnnotationFqNames = 'kotlin.Deprecated']", kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertTrue(!report.getViolations().isEmpty(),
+                "Expected FunctionDeclaration[@AnnotationFqNames='kotlin.Deprecated'] to match");
+    }
+
+    @Test
+    void classDeclarationAnnotationFqNamesAttributeMatchesDeprecated() {
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
+        Report report = runXPath(
+                "//ClassDeclaration[@AnnotationFqNames = 'kotlin.Deprecated']", kotlinFile);
+        assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
+        assertTrue(!report.getViolations().isEmpty(),
+                "Expected ClassDeclaration[@AnnotationFqNames='kotlin.Deprecated'] to match");
+    }
+
     private Report runXPath(String xpathExpr, File kotlinFile) {
         PMDConfiguration config = new PMDConfiguration();
         config.setIgnoreIncrementalAnalysis(true);
