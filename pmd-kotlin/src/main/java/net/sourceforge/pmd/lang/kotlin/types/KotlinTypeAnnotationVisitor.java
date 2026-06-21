@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
@@ -49,7 +50,11 @@ import nl.stokpop.typemapper.model.TypedAst;
  * <p>File matching uses the <em>base filename</em> (e.g. {@code "Foo.kt"}) rather
  * than the full path, so it works regardless of whether the files were written to
  * a temporary directory or analyzed from their original location.
+ *
+ * @since 7.26.0
+ * @experimental
  */
+@Experimental
 public final class KotlinTypeAnnotationVisitor {
 
     /** Map from base filename (e.g. "Foo.kt") -> per-line declarations index. */
