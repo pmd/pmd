@@ -13,7 +13,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.*;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
@@ -93,8 +93,8 @@ public final class KotlinTypeAnnotationVisitor {
         if (resolved == null) {
             return;
         }
-        final Map<Integer, List<DeclarationAst>> byLine = resolved;
 
+        final Map<Integer, List<DeclarationAst>> byLine = resolved;
         root.acceptVisitor(new AnnotatingVisitor(byLine), null);
     }
 
@@ -115,7 +115,7 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         @Override
-        public Void visitPropertyDeclaration(KotlinParser.KtPropertyDeclaration node, Void data) {
+        public Void visitPropertyDeclaration(KtPropertyDeclaration node, Void data) {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getType() != null) {
@@ -131,7 +131,7 @@ public final class KotlinTypeAnnotationVisitor {
         // are KtClassParameter nodes in the AST, not KtPropertyDeclaration.
         // kotlin-type-mapper emits them as kind="property" with a type field.
         @Override
-        public Void visitClassParameter(KotlinParser.KtClassParameter node, Void data) {
+        public Void visitClassParameter(KtClassParameter node, Void data) {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.PROPERTY && decl.getType() != null) {
@@ -144,7 +144,7 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         @Override
-        public Void visitFunctionDeclaration(KotlinParser.KtFunctionDeclaration node, Void data) {
+        public Void visitFunctionDeclaration(KtFunctionDeclaration node, Void data) {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getReturnType() != null) {
@@ -158,7 +158,7 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         @Override
-        public Void visitCatchBlock(KotlinParser.KtCatchBlock node, Void data) {
+        public Void visitCatchBlock(KtCatchBlock node, Void data) {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.CATCH_VARIABLE && decl.getType() != null) {
@@ -170,7 +170,7 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         @Override
-        public Void visitForStatement(KotlinParser.KtForStatement node, Void data) {
+        public Void visitForStatement(KtForStatement node, Void data) {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && decl.getType() != null) {
@@ -182,7 +182,7 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         @Override
-        public Void visitClassDeclaration(KotlinParser.KtClassDeclaration node, Void data) {
+        public Void visitClassDeclaration(KtClassDeclaration node, Void data) {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.CLASS
@@ -207,30 +207,34 @@ public final class KotlinTypeAnnotationVisitor {
         return dot >= 0 ? name.substring(dot + 1) : name;
     }
 
+    /** Returns the raw type name by removing generic arguments, e.g. {@code List<String> -> List}. */
+    static String rawTypeNameOf(String name) {
+        int angle = name.indexOf('<');
+        return angle >= 0 ? name.substring(0, angle).trim() : name;
+    }
+
     /**
      * Finds the first {@code KtUserType} directly inside a {@code KtConstructorInvocation}.
      * Shared helper used by both {@link DelegationSpecifierAnnotator} and
      * {@link AnnotationAttributeAnnotator}.
      */
-    static KotlinParser.KtUserType findUserTypeInConstructorInvocation(
-            KotlinParser.KtConstructorInvocation ctorInvocation) {
+    static KtUserType findUserTypeInConstructorInvocation(KtConstructorInvocation ctorInvocation) {
         for (int j = 0; j < ctorInvocation.getNumChildren(); j++) {
-            if (ctorInvocation.getChild(j) instanceof KotlinParser.KtUserType) {
-                return (KotlinParser.KtUserType) ctorInvocation.getChild(j);
+            if (ctorInvocation.getChild(j) instanceof KtUserType) {
+                return (KtUserType) ctorInvocation.getChild(j);
             }
         }
         return null;
     }
 
-    static List<DeclarationAst> lookupWithFallback(
-            Map<Integer, List<DeclarationAst>> byLine, int line) {
+    static List<DeclarationAst> lookupWithFallback(Map<Integer, List<DeclarationAst>> byLine, int line) {
         List<DeclarationAst> exact = byLine.get(line);
         if (exact != null && !exact.isEmpty()) {
             return exact;
         }
         // +/-1 fallback: when annotations are on a separate line from the 'fun'/'val' keyword,
         // ktm reports the annotation line but PMD's ANTLR parser may report the keyword line,
-        // causing a 1-line difference. See DESIGN.md section 9 on declarationsAt line tolerance.
+        // causing a 1-line difference.
         List<DeclarationAst> result = new ArrayList<>();
         List<DeclarationAst> prev = byLine.get(line - 1);
         List<DeclarationAst> next = byLine.get(line + 1);

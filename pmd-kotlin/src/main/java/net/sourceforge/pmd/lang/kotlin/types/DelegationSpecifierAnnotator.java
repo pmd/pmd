@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +46,7 @@ final class DelegationSpecifierAnnotator {
      * node inside the class declaration, matching the written supertype name (e.g.
      * {@code Serializable}) against the FQNs in {@code superTypes}.
      */
-    static void setDelegationSpecifierTypes(KotlinParser.KtClassDeclaration classNode,
-            List<String> superTypes) {
+    static void setDelegationSpecifierTypes(KtClassDeclaration classNode, List<String> superTypes) {
         if (superTypes.isEmpty()) {
             return;
         }
@@ -54,40 +54,39 @@ final class DelegationSpecifierAnnotator {
         for (String fqn : superTypes) {
             simpleToFqn.put(KotlinTypeAnnotationVisitor.simpleNameOf(fqn), fqn);
         }
-        KotlinParser.KtDelegationSpecifiers specsNode = findDelegationSpecifiersNode(classNode);
+        KtDelegationSpecifiers specsNode = findDelegationSpecifiersNode(classNode);
         if (specsNode != null) {
             annotateDelegationSpecifiersNode(specsNode, simpleToFqn);
         }
     }
 
-    private static KotlinParser.KtDelegationSpecifiers findDelegationSpecifiersNode(
-            KotlinParser.KtClassDeclaration classNode) {
+    private static KtDelegationSpecifiers findDelegationSpecifiersNode(KtClassDeclaration classNode) {
         for (int i = 0; i < classNode.getNumChildren(); i++) {
             KotlinNode child = classNode.getChild(i);
-            if (child instanceof KotlinParser.KtDelegationSpecifiers) {
-                return (KotlinParser.KtDelegationSpecifiers) child;
+            if (child instanceof KtDelegationSpecifiers) {
+                return (KtDelegationSpecifiers) child;
             }
         }
         return null;
     }
 
-    private static void annotateDelegationSpecifiersNode(KotlinParser.KtDelegationSpecifiers specsNode,
-            Map<String, String> simpleToFqn) {
+    private static void annotateDelegationSpecifiersNode(
+            KtDelegationSpecifiers specsNode, Map<String, String> simpleToFqn) {
         for (int j = 0; j < specsNode.getNumChildren(); j++) {
             KotlinNode spec = specsNode.getChild(j);
-            if (spec instanceof KotlinParser.KtAnnotatedDelegationSpecifier) {
+            if (spec instanceof KtAnnotatedDelegationSpecifier) {
                 annotateAnnotatedDelegationSpecifier(
-                        (KotlinParser.KtAnnotatedDelegationSpecifier) spec, simpleToFqn);
+                        (KtAnnotatedDelegationSpecifier) spec, simpleToFqn);
             }
         }
     }
 
     private static void annotateAnnotatedDelegationSpecifier(
-            KotlinParser.KtAnnotatedDelegationSpecifier annotated, Map<String, String> simpleToFqn) {
+            KtAnnotatedDelegationSpecifier annotated, Map<String, String> simpleToFqn) {
         for (int k = 0; k < annotated.getNumChildren(); k++) {
             KotlinNode inner = annotated.getChild(k);
-            if (inner instanceof KotlinParser.KtDelegationSpecifier) {
-                annotateDelegationSpecifier((KotlinParser.KtDelegationSpecifier) inner, simpleToFqn);
+            if (inner instanceof KtDelegationSpecifier) {
+                annotateDelegationSpecifier((KtDelegationSpecifier) inner, simpleToFqn);
             }
         }
     }
@@ -96,9 +95,9 @@ final class DelegationSpecifierAnnotator {
      * Sets type data on a single {@code KtDelegationSpecifier}
      * by extracting the written type name from its contained {@code KtUserType}.
      */
-    private static void annotateDelegationSpecifier(KotlinParser.KtDelegationSpecifier spec,
-            Map<String, String> simpleToFqn) {
-        KotlinParser.KtUserType userType = findUserTypeInDelegationSpecifier(spec);
+    private static void annotateDelegationSpecifier(
+            KtDelegationSpecifier spec, Map<String, String> simpleToFqn) {
+        KtUserType userType = findUserTypeInDelegationSpecifier(spec);
         if (userType == null) {
             return;
         }
@@ -106,10 +105,7 @@ final class DelegationSpecifierAnnotator {
             String written = userType.getTextDocument()
                     .sliceOriginalText(userType.getTextRegion())
                     .toString();
-            int angle = written.indexOf('<');
-            if (angle >= 0) {
-                written = written.substring(0, angle).trim();
-            }
+            written = KotlinTypeAnnotationVisitor.rawTypeNameOf(written);
             String fqn = simpleToFqn.get(KotlinTypeAnnotationVisitor.simpleNameOf(written));
             if (fqn != null) {
                 KotlinNodeTypeData.setTypeName(spec, fqn);
@@ -124,12 +120,11 @@ final class DelegationSpecifierAnnotator {
      * Handles both direct {@code userType()} cases and {@code constructorInvocation()}
      * (superclass with constructor call).
      */
-    private static KotlinParser.KtUserType findUserTypeInDelegationSpecifier(
-            KotlinParser.KtDelegationSpecifier spec) {
+    private static KtUserType findUserTypeInDelegationSpecifier(KtDelegationSpecifier spec) {
         for (int i = 0; i < spec.getNumChildren(); i++) {
             KotlinNode child = spec.getChild(i);
-            if (child instanceof KotlinParser.KtUserType) {
-                return (KotlinParser.KtUserType) child;
+            if (child instanceof KtUserType) {
+                return (KtUserType) child;
             }
             if (child instanceof KotlinParser.KtConstructorInvocation) {
                 return KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation(

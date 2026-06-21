@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,14 +124,14 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
                 String filename = sanitizeKtFilename(ktFile.getFileId().getFileName());
                 String text = ktFile.readContents().getNormalizedText().toString();
                 sources.put(filename, text);
-            } catch (java.io.IOException e) {
-                throw new java.io.UncheckedIOException(e);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
         }
         return sources;
     }
 
-    void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
+    private void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
         KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
         if (visitor == null) {
             // Designer / single-file mode: launchAnalysis() was never called.
@@ -179,6 +181,10 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
 
     private final class AnnotatingKotlinHandler extends KotlinHandler {
 
+        private AnnotatingKotlinHandler() {
+            super(parseTimeoutExecutor);
+        }
+
         @Override
         public XPathHandler getXPathHandler() {
             return baseHandler.getXPathHandler();
@@ -189,10 +195,15 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
             final Parser base = baseHandler.getParser();
             return task -> {
                 RootNode root = base.parse(task);
-                annotateIfPossible(
-                        (KotlinNode) root,
-                        task.getTextDocument().getFileId().getAbsolutePath(),
-                        task.getTextDocument().getText().toString());
+                if (root instanceof KotlinNode) {
+                    annotateIfPossible(
+                            (KotlinNode) root,
+                            task.getTextDocument().getFileId().getAbsolutePath(),
+                            task.getTextDocument().getText().toString());
+                } else {
+                    LOG.debug("Skipping Kotlin type annotation: unexpected root node type {}",
+                            root.getClass().getName());
+                }
                 return root;
             };
         }
