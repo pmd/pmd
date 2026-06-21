@@ -5,18 +5,9 @@
 package net.sourceforge.pmd.lang.kotlin;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
@@ -25,17 +16,9 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
-import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeAnnotationVisitor;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
-
-import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
-import nl.stokpop.typemapper.model.TypedAst;
 
 /**
  * Language processor for Kotlin. Extends the default batch processor with a
@@ -60,16 +43,13 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
                 return t;
             });
 
-    /** Populated in {@link #launchAnalysis} before any file is parsed. */
-    private final AtomicReference<KotlinTypeAnnotationVisitor> annotationVisitor = new AtomicReference<>();
-
     private final KotlinHandler baseHandler;
-    private final KotlinAuxClasspathResolver classpathResolver;
+    private final KotlinTypeAwarenessSupport typeAwareness;
 
     KotlinLanguageProcessor(KotlinLanguageProperties bundle) {
         super(bundle);
         this.baseHandler = new KotlinHandler(parseTimeoutExecutor);
-        this.classpathResolver = new KotlinAuxClasspathResolver(bundle);
+        this.typeAwareness = new KotlinTypeAwarenessSupport(new KotlinAuxClasspathResolver(bundle));
     }
 
     @Override
@@ -79,72 +59,8 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
 
     @Override
     public @NonNull AutoCloseable launchAnalysis(@NonNull AnalysisTask task) {
-        runTypeAnalysis(task.getFiles());
+        typeAwareness.prepare(task.getFiles(), getLanguage());
         return super.launchAnalysis(task);
-    }
-
-    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.
-    private void runTypeAnalysis(List<TextFile> allFiles) {
-        List<TextFile> ktFiles = new ArrayList<>();
-        for (TextFile textFile : allFiles) {
-            if (textFile.getLanguageVersion().getLanguage().equals(getLanguage())) {
-                ktFiles.add(textFile);
-            }
-        }
-        if (ktFiles.isEmpty()) {
-            return;
-        }
-
-        Map<String, String> sources = buildSourceMap(ktFiles);
-
-        KotlinTypeAnnotationVisitor visitor = analyzeAndBuildVisitor(sources);
-        annotationVisitor.set(visitor);
-        if (visitor != null) {
-            LOG.debug("kotlin-type-mapper analyzed {} file(s)", ktFiles.size());
-        }
-    }
-
-    private KotlinTypeAnnotationVisitor analyzeAndBuildVisitor(Map<String, String> sources) {
-        try {
-            TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
-            KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
-            return new KotlinTypeAnnotationVisitor(ast);
-        } catch (RuntimeException e) {
-            KotlinTypeAnalysisContextHolder.clearGlobal();
-            LOG.warn("kotlin-type-mapper analysis failed; type attributes will not be set", e);
-            return null;
-        }
-    }
-
-    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.
-    private static Map<String, String> buildSourceMap(List<TextFile> ktFiles) {
-        Map<String, String> sources = new LinkedHashMap<>();
-        for (TextFile ktFile : ktFiles) {
-            try {
-                String filename = sanitizeKtFilename(ktFile.getFileId().getFileName());
-                String text = ktFile.readContents().getNormalizedText().toString();
-                sources.put(filename, text);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
-        return sources;
-    }
-
-    private void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
-        KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
-        if (visitor == null) {
-            // Designer / single-file mode: launchAnalysis() was never called.
-            String effectiveName = sanitizeKtFilename(absPath);
-            visitor = runSingleFileAnalysis(effectiveName, sourceText);
-            if (visitor != null) {
-                visitor.annotate(root, effectiveName);
-                InternalApiBridge.setTypeInfoAvailable(root);
-            }
-        } else {
-            visitor.annotate(root, absPath);
-            InternalApiBridge.setTypeInfoAvailable(root);
-        }
     }
 
     /**
@@ -161,22 +77,6 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
             return "snippet.kt";
         }
         return name + ".kt";
-    }
-
-    private KotlinTypeAnnotationVisitor runSingleFileAnalysis(String filename, String sourceText) {
-        KotlinTypeAnnotationVisitor visitor = analyzeAndBuildVisitor(Collections.singletonMap(filename, sourceText));
-        if (visitor != null) {
-            LOG.debug("kotlin-type-mapper single-file analysis complete for {}", filename);
-        }
-        return visitor;
-    }
-
-    private static List<File> toFiles(List<Path> paths) {
-        List<File> files = new ArrayList<>(paths.size());
-        for (Path p : paths) {
-            files.add(p.toFile());
-        }
-        return files;
     }
 
     private final class AnnotatingKotlinHandler extends KotlinHandler {
@@ -196,7 +96,7 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
             return task -> {
                 RootNode root = base.parse(task);
                 if (root instanceof KotlinNode) {
-                    annotateIfPossible(
+                    typeAwareness.annotateIfPossible(
                             (KotlinNode) root,
                             task.getTextDocument().getFileId().getAbsolutePath(),
                             task.getTextDocument().getText().toString());
@@ -216,7 +116,7 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
         if (!result) {
             LOG.error("Couldn't properly shutdown parseTimeoutExecutor - threads might still be running!");
         }
-        KotlinTypeAnalysisContextHolder.clearGlobal();
+        typeAwareness.clear();
         super.close();
     }
 }

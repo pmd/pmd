@@ -13,7 +13,14 @@ import java.util.Map;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.*;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtForStatement;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 
 import nl.stokpop.typemapper.model.DeclarationAst;

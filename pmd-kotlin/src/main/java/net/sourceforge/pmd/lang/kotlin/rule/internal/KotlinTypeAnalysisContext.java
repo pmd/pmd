@@ -17,9 +17,9 @@ import net.sourceforge.pmd.annotation.Experimental;
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
+import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.TypedAst;
 import nl.stokpop.typemapper.model.TypedAstHierarchyQueriesKt;
-import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
 
 /**

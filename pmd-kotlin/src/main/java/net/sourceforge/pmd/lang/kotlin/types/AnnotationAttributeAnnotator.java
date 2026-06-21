@@ -9,12 +9,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameters;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
 import nl.stokpop.typemapper.model.ParameterAst;

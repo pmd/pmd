@@ -8,12 +8,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotatedDelegationSpecifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifiers;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 
 /**
  * Annotates {@code KtDelegationSpecifier} nodes in a class declaration with resolved
