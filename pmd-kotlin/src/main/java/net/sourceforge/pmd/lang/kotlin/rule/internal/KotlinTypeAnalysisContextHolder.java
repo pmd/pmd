@@ -20,6 +20,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * {@link #clear()} in an {@code @AfterEach} to avoid leaking state.
  *
  * @since 7.27.0
+ * @experimental
  */
 @Experimental
 public final class KotlinTypeAnalysisContextHolder {

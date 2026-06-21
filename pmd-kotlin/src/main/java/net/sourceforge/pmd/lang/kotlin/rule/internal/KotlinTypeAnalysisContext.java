@@ -17,12 +17,12 @@ import net.sourceforge.pmd.annotation.Experimental;
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
+import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.TypedAst;
 import nl.stokpop.typemapper.model.TypedAstAccessorsKt;
 import nl.stokpop.typemapper.model.TypedAstCallQueriesKt;
 import nl.stokpop.typemapper.model.TypedAstHierarchyQueriesKt;
 import nl.stokpop.typemapper.model.TypedAstTypeAliasQueriesKt;
-import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
 
 /**
@@ -35,6 +35,7 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  * {@link #callsOnReceiver(String)} and {@link #callsReturning(String)}.
  *
  * @since 7.27.0
+ * @experimental
  */
 @Experimental
 public final class KotlinTypeAnalysisContext {
@@ -82,13 +83,13 @@ public final class KotlinTypeAnalysisContext {
         Map<String, Map<Integer, List<DeclarationAst>>> declIdx = new HashMap<>();
         Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIdx = new HashMap<>();
 
-        boolean diskBased = TypedAstAccessorsKt.hasSourceRoot(ast);
+        boolean diskBased = ast.hasSourceRoot();
         for (FileAst file : ast.getFiles()) {
             // For disk-based analysis, index by canonical abs path for precise lookup.
             // For in-memory analysis (fromSources, sourceRoot is ""), basename-only indexing
             // is correct and intentional — no real path exists on disk.
             String absPath = diskBased
-                    ? canonicalize(TypedAstAccessorsKt.resolveAbsolutePath(ast, file))
+                    ? canonicalize(ast.resolveAbsolutePath(file))
                     : null;
             // Also index by basename alone as a fallback for when PMD paths differ
             // from the paths kotlin-type-mapper was run on (e.g. temp dir analysis).
@@ -241,8 +242,10 @@ public final class KotlinTypeAnalysisContext {
 
     /**
      * Returns true if {@code actualType} is the same as, or a (transitive) subtype of,
-     * {@code expectedType}. Delegates to {@code TypedAst.isSubtypeOf} from kotlin-type-mapper,
-     * which handles Java<->Kotlin name equivalence and BFS over the type hierarchy.
+     * {@code expectedType}. Delegates to {@code TypedAst.isSubtypeOfUpward} from
+     * kotlin-type-mapper (ktm 0.6.0+), which walks supertypes of {@code actualType} upward
+     * through the type hierarchy -- O(ancestors) vs the downward BFS O(all subtypes).
+     * Also short-circuits immediately for {@code java.lang.Object} / {@code kotlin.Any}.
      *
      * <p>Falls back to name-equivalence only when this is the empty context (no {@link TypedAst}).
      */
@@ -250,47 +253,7 @@ public final class KotlinTypeAnalysisContext {
         if (typedAst == null) {
             return TypeNameUtilsKt.typeNamesEquivalent(expectedType, actualType);
         }
-        return TypedAstHierarchyQueriesKt.isSubtypeOf(typedAst, expectedType, actualType);
-    }
-
-    /**
-     * Returns all call sites in the analyzed AST where the dispatch or extension receiver type
-     * matches {@code fqn} (exact, after Java/Kotlin name mapping and generic stripping).
-     * Delegates to {@link TypedAstCallQueriesKt#callsOnReceiver(TypedAst, String)}.
-     * Returns an empty list for the empty context.
-     */
-    public List<CallSiteAst> callsOnReceiver(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
-        return TypedAstCallQueriesKt.callsOnReceiver(typedAst, fqn);
-    }
-
-    /**
-     * Returns all call sites where the dispatch or extension receiver type is {@code fqn}
-     * or a subtype of it (using the type hierarchy from the aux classpath).
-     * Delegates to {@link TypedAstCallQueriesKt#callsOnReceiverSubtype(TypedAst, String)}.
-     */
-    public List<CallSiteAst> callsOnReceiverSubtype(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
-        return TypedAstCallQueriesKt.callsOnReceiverSubtype(typedAst, fqn);
-    }
-
-    /**
-     * Returns all call sites whose return type matches {@code fqn}
-     * (after Java/Kotlin name mapping and generic stripping).
-     * Delegates to {@link TypedAstCallQueriesKt#callsReturning(TypedAst, String)}.
-     */
-    public List<CallSiteAst> callsReturning(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
-        return TypedAstCallQueriesKt.callsReturning(typedAst, fqn);
-    }
-
-    /**
-     * Returns all call sites whose return type is {@code fqn} or a subtype of it.
-     * Delegates to {@link TypedAstCallQueriesKt#callsReturningSubtype(TypedAst, String)}.
-     */
-    public List<CallSiteAst> callsReturningSubtype(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
-        return TypedAstCallQueriesKt.callsReturningSubtype(typedAst, fqn);
+        return TypedAstHierarchyQueriesKt.isSubtypeOfUpward(typedAst, expectedType, actualType);
     }
 
     /**
