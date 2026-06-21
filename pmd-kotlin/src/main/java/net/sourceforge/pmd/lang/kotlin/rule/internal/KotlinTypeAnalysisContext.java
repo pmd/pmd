@@ -241,8 +241,10 @@ public final class KotlinTypeAnalysisContext {
 
     /**
      * Returns true if {@code actualType} is the same as, or a (transitive) subtype of,
-     * {@code expectedType}. Delegates to {@code TypedAst.isSubtypeOf} from kotlin-type-mapper,
-     * which handles Java<->Kotlin name equivalence and BFS over the type hierarchy.
+     * {@code expectedType}. Delegates to {@code TypedAst.isSubtypeOfUpward} from
+     * kotlin-type-mapper (ktm 0.6.0+), which walks supertypes of {@code actualType} upward
+     * through the type hierarchy -- O(ancestors) vs the downward BFS O(all subtypes).
+     * Also short-circuits immediately for {@code java.lang.Object} / {@code kotlin.Any}.
      *
      * <p>Falls back to name-equivalence only when this is the empty context (no {@link TypedAst}).
      */
@@ -250,7 +252,7 @@ public final class KotlinTypeAnalysisContext {
         if (typedAst == null) {
             return TypeNameUtilsKt.typeNamesEquivalent(expectedType, actualType);
         }
-        return TypedAstHierarchyQueriesKt.isSubtypeOf(typedAst, expectedType, actualType);
+        return TypedAstHierarchyQueriesKt.isSubtypeOfUpward(typedAst, expectedType, actualType);
     }
 
     /**
