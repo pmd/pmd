@@ -223,6 +223,9 @@ public final class KotlinTypeAnnotationVisitor {
         if (exact != null && !exact.isEmpty()) {
             return exact;
         }
+        // +/-1 fallback: when annotations are on a separate line from the 'fun'/'val' keyword,
+        // ktm reports the annotation line but PMD's ANTLR parser may report the keyword line,
+        // causing a 1-line difference. See DESIGN.md section 9 on declarationsAt line tolerance.
         List<DeclarationAst> result = new ArrayList<>();
         List<DeclarationAst> prev = byLine.get(line - 1);
         List<DeclarationAst> next = byLine.get(line + 1);

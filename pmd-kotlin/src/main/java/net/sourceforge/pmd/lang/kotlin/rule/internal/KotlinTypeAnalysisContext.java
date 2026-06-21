@@ -121,6 +121,10 @@ public final class KotlinTypeAnalysisContext {
      * Returns call sites recorded at the given file and line.
      * If the exact line has no entries, also checks line +/- 1 to tolerate minor
      * line-number differences between PMD's ANTLR parser and kotlin-type-mapper's PSI.
+     *
+     * <p>As of ktm 0.6.0, {@link CallSiteAst#getLine()} points to the callee name token
+     * (e.g. {@code bar} in {@code foo.bar()}), not the receiver. {@link CallSiteAst#getEndLine()}
+     * is also available (0 for single-line calls or ASTs from older JSON).
      */
     public List<CallSiteAst> callSitesAt(String absFilePath, int line) {
         return lookupByLine(callIndex, absFilePath, line);
@@ -131,6 +135,10 @@ public final class KotlinTypeAnalysisContext {
      * Uses the same basename/extension fallback as {@link #callSitesAt}.
      * Used for multi-line expressions where the method call may be on a different line
      * than the start of the expression (e.g. chained calls split across lines).
+     *
+     * <p>As of ktm 0.6.0, {@link CallSiteAst#getEndLine()} carries the closing-token line
+     * and could be used for overlap checks; the current range-iteration strategy already covers
+     * all practical cases without it.
      */
     public List<CallSiteAst> callSitesInRange(String absFilePath, int beginLine, int endLine) {
         if (beginLine == endLine) {
@@ -177,6 +185,10 @@ public final class KotlinTypeAnalysisContext {
         if (exact != null && !exact.isEmpty()) {
             return exact;
         }
+        // +/-1 fallback: tolerates minor line-number differences between PMD's ANTLR parser
+        // and ktm's PSI (e.g. annotations on a separate line from the declaration keyword).
+        // ktm 0.6.0 improved line semantics so this fallback may become unnecessary once
+        // test coverage across all Kotlin call and declaration patterns is broader.
         List<T> result = new ArrayList<>();
         List<T> prev = byLine.get(line - 1);
         List<T> next = byLine.get(line + 1);

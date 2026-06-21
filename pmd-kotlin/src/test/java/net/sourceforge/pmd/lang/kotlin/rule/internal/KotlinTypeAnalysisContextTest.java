@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeXPathTestHelper;
 
+import nl.stokpop.typemapper.model.CallSiteAst;
+
 class KotlinTypeAnalysisContextTest {
 
     private static final String SNIPPET = ""
@@ -112,5 +114,16 @@ class KotlinTypeAnalysisContextTest {
                 ctx.declarationsAt("snippet.kt", 2),
                 ctx.declarationsAt("/any/path/snippet.kt", 2)
         );
+    }
+
+    @Test
+    void callSiteEndLineFieldIsReadable() {
+        // Compilation check: CallSiteAst.endLine is available in ktm 0.6.0 (issue #9).
+        // endLine defaults to 0 when the call spans a single line or for ASTs from older JSON.
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        for (CallSiteAst call : ctx.callSitesAt("snippet.kt", 2)) {
+            assertTrue(call.getEndLine() >= 0);
+            assertTrue(call.getEndColumn() >= 0);
+        }
     }
 }

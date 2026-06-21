@@ -139,4 +139,83 @@ class KotlinTypeAnnotationVisitorTest {
         assertNotNull(annotations);
         assertEquals("kotlin.Deprecated", String.join(",", annotations));
     }
+
+    // --- Multiline and complex constructs: line-number assertions prove ktm and PMD agree ---
+
+    @Test
+    void multipleAnnotationsOnSeparateLinesSetOnFunction() {
+        // @Deprecated on line 1, @Suppress on line 2, fun on line 3.
+        // ktm docs: "for annotated declarations, line = annotation line" → line 1.
+        // PMD: KtFunctionDeclaration begins at the first token → line 1.
+        // Type must be set without needing the +/-1 fallback.
+        KtKotlinFile root = PARSER.parse(
+                "@Deprecated(\"use bar\")\n"
+                + "@Suppress(\"unused\")\n"
+                + "fun foo(): String = \"x\"");
+        KtFunctionDeclaration fn = root.descendants(KtFunctionDeclaration.class).first();
+        assertNotNull(fn);
+        assertEquals(1, fn.getBeginLine(), "PMD node must start on annotation line 1");
+        assertEquals("kotlin.String", KotlinNodeTypeData.getReturnTypeName(fn));
+        List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(fn);
+        assertNotNull(annotations);
+        assertEquals(2, annotations.size());
+    }
+
+    @Test
+    void multilineFunctionDeclarationReturnTypeSet() {
+        // fun keyword on line 1; params on lines 2-3; return type on line 4.
+        // Both PMD and ktm should report line 1 for the declaration.
+        KtKotlinFile root = PARSER.parse(
+                "fun longName(\n"
+                + "    param1: String,\n"
+                + "    param2: Int\n"
+                + "): List<String> = listOf(param1)");
+        KtFunctionDeclaration fn = root.descendants(KtFunctionDeclaration.class).first();
+        assertNotNull(fn);
+        assertEquals(1, fn.getBeginLine(), "PMD node must start on line 1 (fun keyword)");
+        assertEquals("kotlin.collections.List<kotlin.String>", KotlinNodeTypeData.getReturnTypeName(fn));
+    }
+
+    @Test
+    void propertyWithLeadingBlankLinesTypeSet() {
+        // val on line 3 (after 2 blank lines); both PMD and ktm must agree on line 3.
+        KtKotlinFile root = PARSER.parse(
+                "\n"
+                + "\n"
+                + "val x: Int = 42");
+        KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
+        assertNotNull(prop);
+        assertEquals(3, prop.getBeginLine(), "PMD node must start on line 3");
+        assertEquals("kotlin.Int", KotlinNodeTypeData.getTypeName(prop));
+    }
+
+    @Test
+    void lambdaParameterTypeSetInForEach() {
+        // Function parameter on line 1; lambda body on lines 2-4.
+        // KtFunctionValueParameter for 'items' is on line 1 in both PMD and ktm.
+        KtKotlinFile root = PARSER.parse(
+                "fun f(items: List<String>) {\n"
+                + "    items.forEach { item ->\n"
+                + "        println(item)\n"
+                + "    }\n"
+                + "}");
+        KtFunctionValueParameter param = root.descendants(KtFunctionValueParameter.class).first();
+        assertNotNull(param);
+        assertEquals(1, param.getBeginLine(), "PMD node must start on line 1");
+        assertEquals("kotlin.collections.List<kotlin.String>", KotlinNodeTypeData.getTypeName(param));
+    }
+
+    @Test
+    void chainedCallPropertyTypeSet() {
+        // val on line 1; chained .filter on line 2; .first() on line 3.
+        // KtPropertyDeclaration starts on line 1 in both PMD and ktm.
+        KtKotlinFile root = PARSER.parse(
+                "val result: String = listOf(\"a\", \"b\")\n"
+                + "    .filter { it.isNotEmpty() }\n"
+                + "    .first()");
+        KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
+        assertNotNull(prop);
+        assertEquals(1, prop.getBeginLine(), "PMD node must start on line 1");
+        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(prop));
+    }
 }
