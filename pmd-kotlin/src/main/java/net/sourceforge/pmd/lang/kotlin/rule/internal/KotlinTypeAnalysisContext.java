@@ -21,6 +21,7 @@ import nl.stokpop.typemapper.model.TypedAst;
 import nl.stokpop.typemapper.model.TypedAstAccessorsKt;
 import nl.stokpop.typemapper.model.TypedAstCallQueriesKt;
 import nl.stokpop.typemapper.model.TypedAstHierarchyQueriesKt;
+import nl.stokpop.typemapper.model.TypedAstTypeAliasQueriesKt;
 import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
 
@@ -29,10 +30,9 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  * (absolute file path, line number) for fast lookup during XPath function evaluation.
  *
  * <p>Note: kotlin-type-mapper records the <em>concrete expanded type</em> in all call-site
- * fields -- type alias names are not preserved. Pass the concrete type to
- * {@link #callsOnReceiver(String)} / {@link #callsReturning(String)}.
- * Type alias query support (resolveTypeAlias, ...ExpandingAlias variants) is planned for a
- * future release.
+ * fields -- type alias names are not preserved. Use {@link #resolveTypeAlias(String)} to
+ * expand an alias to its concrete type, or use the {@code ...ExpandingAlias} variants of
+ * {@link #callsOnReceiver(String)} and {@link #callsReturning(String)}.
  *
  * @since 7.27.0
  */
@@ -291,6 +291,41 @@ public final class KotlinTypeAnalysisContext {
     public List<CallSiteAst> callsReturningSubtype(String fqn) {
         if (typedAst == null) return Collections.emptyList();
         return TypedAstCallQueriesKt.callsReturningSubtype(typedAst, fqn);
+    }
+
+    /**
+     * Resolves a typealias FQN to its concrete expanded type string, or {@code null}
+     * if {@code fqn} is not a known typealias in the analyzed AST.
+     * Delegates to {@link TypedAstTypeAliasQueriesKt#resolveTypeAlias(TypedAst, String)}.
+     *
+     * <p>Only finds aliases defined in the analyzed source files; library aliases resolve to
+     * {@code null}. Returns {@code null} for the empty context.
+     */
+    public String resolveTypeAlias(String fqn) {
+        if (typedAst == null) return null;
+        return TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
+    }
+
+    /**
+     * Like {@link #callsOnReceiver(String)}, but if {@code fqn} is a known typealias it is
+     * first expanded to its concrete type, then the call search uses that concrete type.
+     * Falls back to the raw {@code fqn} if the alias is not found (library aliases, empty context).
+     */
+    public List<CallSiteAst> callsOnReceiverExpandingAlias(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        String resolved = TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
+        return TypedAstCallQueriesKt.callsOnReceiver(typedAst, resolved != null ? resolved : fqn);
+    }
+
+    /**
+     * Like {@link #callsReturning(String)}, but if {@code fqn} is a known typealias it is
+     * first expanded to its concrete type, then the call search uses that concrete type.
+     * Falls back to the raw {@code fqn} if the alias is not found (library aliases, empty context).
+     */
+    public List<CallSiteAst> callsReturningExpandingAlias(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        String resolved = TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
+        return TypedAstCallQueriesKt.callsReturning(typedAst, resolved != null ? resolved : fqn);
     }
 
     private static String canonicalize(String path) {

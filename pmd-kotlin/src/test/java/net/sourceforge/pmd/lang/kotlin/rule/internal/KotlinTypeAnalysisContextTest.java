@@ -173,4 +173,45 @@ class KotlinTypeAnalysisContextTest {
         assertFalse(calls.isEmpty(), "Expected calls returning kotlin.String");
     }
 
+    // --- type alias query delegation ---
+
+    @Test
+    void resolveTypeAliasReturnsConcreteType() {
+        String code = "typealias MyStr = String\n"
+                + "fun give(): MyStr = \"x\"\n";
+        KotlinTypeXPathTestHelper.forCode(code).injectContext();
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        assertEquals("kotlin.String", ctx.resolveTypeAlias("MyStr"));
+    }
+
+    @Test
+    void callsReturningExpandingAliasFindsCallsThroughAlias() {
+        // callsReturning("MyStr") returns empty because ktm records the expanded type.
+        // callsReturningExpandingAlias("MyStr") expands first and finds the call.
+        String code = "typealias MyStr = String\n"
+                + "fun give(): MyStr = \"x\"\n"
+                + "val x = give()\n";
+        KotlinTypeXPathTestHelper.forCode(code).injectContext();
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        assertTrue(ctx.callsReturning("MyStr").isEmpty(),
+                "callsReturning by alias name must return empty (ktm stores expanded type)");
+        assertFalse(ctx.callsReturningExpandingAlias("MyStr").isEmpty(),
+                "callsReturningExpandingAlias must find calls by expanding the alias");
+    }
+
+    @Test
+    void callsOnReceiverExpandingAliasFindsCallsThroughAlias() {
+        // callsOnReceiver("MyList") returns empty; callsOnReceiverExpandingAlias expands first.
+        String code = "typealias MyList = java.util.ArrayList<String>\n"
+                + "fun f() {\n"
+                + "    val list = java.util.ArrayList<String>()\n"
+                + "    list.add(\"hello\")\n"
+                + "}\n";
+        KotlinTypeXPathTestHelper.forCode(code).injectContext();
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        assertTrue(ctx.callsOnReceiver("MyList").isEmpty(),
+                "callsOnReceiver by alias name must return empty (ktm stores expanded type)");
+        assertFalse(ctx.callsOnReceiverExpandingAlias("MyList").isEmpty(),
+                "callsOnReceiverExpandingAlias must find calls by expanding the alias");
+    }
 }

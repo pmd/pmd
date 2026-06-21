@@ -177,6 +177,20 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         @Override
+        public Void visitTypeAlias(KotlinParser.KtTypeAlias node, Void data) {
+            List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
+            for (DeclarationAst decl : decls) {
+                if (decl.getKind() == DeclarationKind.TYPEALIAS
+                        && !decl.getTypeAliasChain().isEmpty()) {
+                    List<String> chain = decl.getTypeAliasChain();
+                    KotlinNodeTypeData.setTypeName(node, chain.get(chain.size() - 1));
+                    break;
+                }
+            }
+            return visitChildren(node, data);
+        }
+
+        @Override
         public Void visitClassDeclaration(KotlinParser.KtClassDeclaration node, Void data) {
             List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
             for (DeclarationAst decl : decls) {
