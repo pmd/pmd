@@ -6,15 +6,11 @@ package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -22,6 +18,7 @@ import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
 import nl.stokpop.typemapper.model.TypedAstAccessorsKt;
+import nl.stokpop.typemapper.model.TypedAstHierarchyQueriesKt;
 import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.TypedAst;
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
@@ -38,8 +35,8 @@ public final class KotlinTypeAnalysisContext {
     private static final String KT_EXTENSION = ".kt";
 
     private static final KotlinTypeAnalysisContext EMPTY = new KotlinTypeAnalysisContext(
-            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(),
-            Collections.emptyMap());
+            null,
+            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
 
     /** Map from absolute file path -> line -> list of call sites on that line. */
     private final Map<String, Map<Integer, List<CallSiteAst>>> callIndex;
@@ -47,24 +44,23 @@ public final class KotlinTypeAnalysisContext {
     /** Map from absolute file path -> line -> list of declarations starting on that line. */
     private final Map<String, Map<Integer, List<DeclarationAst>>> declIndex;
 
-    /**
-     * Direct supertypes per Kotlin FQN (generics stripped), from {@link TypedAst#getTypeHierarchy()}.
-     * Key: raw type FQN. Value: list of direct supertype FQNs.
-     * Used by {@link #isSubtypeOf(String, String)} for hierarchy traversal.
-     */
-    private final Map<String, List<String>> typeHierarchy;
-
     /** Map from absolute file path -> line -> list of unresolved references on that line. */
     private final Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex;
 
+    /**
+     * The full kotlin-type-mapper AST. Null only for {@link #empty()}.
+     * Used to delegate hierarchy queries ({@link #isSubtypeOf}) to ktm's built-in logic.
+     */
+    private final TypedAst typedAst;
+
     private KotlinTypeAnalysisContext(
+            TypedAst typedAst,
             Map<String, Map<Integer, List<CallSiteAst>>> callIndex,
             Map<String, Map<Integer, List<DeclarationAst>>> declIndex,
-            Map<String, List<String>> typeHierarchy,
             Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex) {
+        this.typedAst = typedAst;
         this.callIndex = callIndex;
         this.declIndex = declIndex;
-        this.typeHierarchy = typeHierarchy;
         this.unresolvedIndex = unresolvedIndex;
     }
 
@@ -101,7 +97,7 @@ public final class KotlinTypeAnalysisContext {
                 addToIndex(unresolvedIdx, absPath, basename, unresolved.getLine(), unresolved);
             }
         }
-        return new KotlinTypeAnalysisContext(callIdx, declIdx, ast.getTypeHierarchy(), unresolvedIdx);
+        return new KotlinTypeAnalysisContext(ast, callIdx, declIdx, unresolvedIdx);
     }
 
     private static <T> void addToIndex(Map<String, Map<Integer, List<T>>> idx,
@@ -210,10 +206,10 @@ public final class KotlinTypeAnalysisContext {
 
     /**
      * Returns the type hierarchy map (Kotlin FQN -> direct supertype FQNs).
-     * Primarily for testing; empty when no aux classpath was provided.
+     * Primarily for testing; empty when no aux classpath was provided or for the empty context.
      */
     public Map<String, List<String>> getTypeHierarchy() {
-        return typeHierarchy;
+        return typedAst != null ? typedAst.getTypeHierarchy() : Collections.emptyMap();
     }
 
     /**
@@ -226,52 +222,16 @@ public final class KotlinTypeAnalysisContext {
 
     /**
      * Returns true if {@code actualType} is the same as, or a (transitive) subtype of,
-     * {@code expectedType}. Uses the type hierarchy built by kotlin-type-mapper via reflection.
+     * {@code expectedType}. Delegates to {@code TypedAst.isSubtypeOf} from kotlin-type-mapper,
+     * which handles Java<->Kotlin name equivalence and BFS over the type hierarchy.
      *
-     * <p>Both Java FQCNs and Kotlin FQNs are accepted for {@code expectedType}. Java<->Kotlin
-     * name equivalence is applied when comparing each type against {@code expectedType}.
-     *
-     * <p>Falls back to {@link #isTypeEquivalent} when no hierarchy data is available
-     * (i.e. the aux classpath was not set or the type could not be loaded).
+     * <p>Falls back to name-equivalence only when this is the empty context (no {@link TypedAst}).
      */
     public boolean isSubtypeOf(String expectedType, String actualType) {
-        // First: exact/mapped equivalence check.
-        if (isTypeEquivalent(expectedType, actualType)) {
-            return true;
+        if (typedAst == null) {
+            return TypeNameUtilsKt.typeNamesEquivalent(expectedType, actualType);
         }
-        if (typeHierarchy.isEmpty()) {
-            return false;
-        }
-        // BFS over transitive supertypes of actualType.
-        String rawActual = substringBeforeAngle(actualType);
-        Set<String> visited = new HashSet<>();
-        Deque<String> queue = new ArrayDeque<>();
-        queue.add(rawActual);
-        while (!queue.isEmpty()) {
-            String current = queue.poll();
-            if (!visited.add(current)) {
-                continue;
-            }
-            List<String> supers = typeHierarchy.get(current);
-            if (supers == null) {
-                continue;
-            }
-            for (String superType : supers) {
-                if (isTypeEquivalent(expectedType, superType)) {
-                    return true;
-                }
-                queue.add(substringBeforeAngle(superType));
-            }
-        }
-        return false;
-    }
-
-    private static String substringBeforeAngle(String s) {
-        // Strip trailing '?' (nullable marker) before extracting the raw type name,
-        // so that bare nullable types like "java.util.List?" are handled correctly.
-        String stripped = s.endsWith("?") ? s.substring(0, s.length() - 1) : s;
-        int idx = stripped.indexOf('<');
-        return idx >= 0 ? stripped.substring(0, idx) : stripped;
+        return TypedAstHierarchyQueriesKt.isSubtypeOf(typedAst, expectedType, actualType);
     }
 
     private static String canonicalize(String path) {

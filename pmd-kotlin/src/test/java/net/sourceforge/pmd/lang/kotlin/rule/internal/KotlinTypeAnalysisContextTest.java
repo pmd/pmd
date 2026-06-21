@@ -81,6 +81,20 @@ class KotlinTypeAnalysisContextTest {
     }
 
     @Test
+    void emptyContextIsSubtypeOfEquivalentNamesReturnsTrue() {
+        // Empty context (null typedAst) must still resolve Java<->Kotlin name equivalence.
+        assertTrue(KotlinTypeAnalysisContext.empty().isSubtypeOf("java.lang.String", "kotlin.String"));
+    }
+
+    @Test
+    void activeContextIsSubtypeOfEquivalentNamesReturnsTrue() {
+        // Non-empty context (real typedAst) must also resolve Java<->Kotlin equivalence
+        // via ktm delegation.
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        assertTrue(ctx.isSubtypeOf("java.lang.String", "kotlin.String"));
+    }
+
+    @Test
     void inMemoryAnalysisIndexesByBasename() {
         KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
         // In-memory analysis (fromSources) has no real source root;
