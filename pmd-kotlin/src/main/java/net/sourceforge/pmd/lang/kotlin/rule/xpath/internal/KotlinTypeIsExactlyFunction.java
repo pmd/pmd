@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
 /**

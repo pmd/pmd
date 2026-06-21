@@ -14,6 +14,14 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameters;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
 import nl.stokpop.typemapper.model.ParameterAst;
@@ -52,7 +60,7 @@ final class AnnotationAttributeAnnotator {
         StringBuilder fqnList = new StringBuilder();
         for (AnnotationAst ann : annotations) {
             String fqn = ann.getFqName();
-            if (fqn == null || fqn.isEmpty()) {
+            if (fqn.isEmpty()) {
                 continue;
             }
             simpleToFqn.put(KotlinTypeAnnotationVisitor.simpleNameOf(fqn), fqn);
@@ -66,8 +74,8 @@ final class AnnotationAttributeAnnotator {
         }
 
         // Set @TypeName on each KtUnescapedAnnotation in the declaration's modifiers
-        List<KotlinParser.KtUnescapedAnnotation> annNodes = collectAnnotationNodes(declNode);
-        for (KotlinParser.KtUnescapedAnnotation annNode : annNodes) {
+        List<KtUnescapedAnnotation> annNodes = collectAnnotationNodes(declNode);
+        for (KtUnescapedAnnotation annNode : annNodes) {
             String writtenName = getAnnotationWrittenName(annNode);
             if (writtenName == null) {
                 continue;
@@ -82,7 +90,7 @@ final class AnnotationAttributeAnnotator {
                 // Also set on the parent SingleAnnotation so users can query
                 // //SingleAnnotation[@TypeName='org.example.Foo'] directly.
                 KotlinNode parent = annNode.getParent();
-                if (parent instanceof KotlinParser.KtSingleAnnotation) {
+                if (parent instanceof KtSingleAnnotation) {
                     KotlinNodeTypeData.setTypeName(parent, fqn);
                 }
             }
@@ -94,30 +102,27 @@ final class AnnotationAttributeAnnotator {
      * child of the given function declaration, matching by position against the
      * {@code parameters} list from the kotlin-type-mapper {@link nl.stokpop.typemapper.model.DeclarationAst}.
      */
-    static void setFunctionParameterTypes(KotlinParser.KtFunctionDeclaration funcNode,
-            List<ParameterAst> parameters) {
+    static void setFunctionParameterTypes(KtFunctionDeclaration funcNode, List<ParameterAst> parameters) {
         if (parameters.isEmpty()) {
             return;
         }
-        KotlinParser.KtFunctionValueParameters paramsNode = findFunctionValueParametersNode(funcNode);
+        KtFunctionValueParameters paramsNode = findFunctionValueParametersNode(funcNode);
         if (paramsNode != null) {
             annotateParameterNodes(paramsNode, parameters);
         }
     }
 
-    private static KotlinParser.KtFunctionValueParameters findFunctionValueParametersNode(
-            KotlinParser.KtFunctionDeclaration funcNode) {
+    private static KtFunctionValueParameters findFunctionValueParametersNode(KtFunctionDeclaration funcNode) {
         for (int i = 0; i < funcNode.getNumChildren(); i++) {
             KotlinNode child = funcNode.getChild(i);
-            if (child instanceof KotlinParser.KtFunctionValueParameters) {
-                return (KotlinParser.KtFunctionValueParameters) child;
+            if (child instanceof KtFunctionValueParameters) {
+                return (KtFunctionValueParameters) child;
             }
         }
         return null;
     }
 
-    private static void annotateParameterNodes(KotlinParser.KtFunctionValueParameters paramsNode,
-            List<ParameterAst> parameters) {
+    private static void annotateParameterNodes(KtFunctionValueParameters paramsNode, List<ParameterAst> parameters) {
         int paramIdx = 0;
         for (int j = 0; j < paramsNode.getNumChildren(); j++) {
             KotlinNode sub = paramsNode.getChild(j);
@@ -135,8 +140,8 @@ final class AnnotationAttributeAnnotator {
      * Collects all {@code KtUnescapedAnnotation} nodes from the direct modifiers
      * of a declaration node (does not recurse into function/class bodies).
      */
-    private static List<KotlinParser.KtUnescapedAnnotation> collectAnnotationNodes(KotlinNode declNode) {
-        List<KotlinParser.KtUnescapedAnnotation> result = new ArrayList<>();
+    private static List<KtUnescapedAnnotation> collectAnnotationNodes(KotlinNode declNode) {
+        List<KtUnescapedAnnotation> result = new ArrayList<>();
         for (int i = 0; i < declNode.getNumChildren(); i++) {
             KotlinNode child = declNode.getChild(i);
             if (child instanceof KotlinParser.KtModifiers) {
@@ -147,45 +152,41 @@ final class AnnotationAttributeAnnotator {
         return result;
     }
 
-    private static void collectFromModifiers(KotlinParser.KtModifiers mods,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
+    private static void collectFromModifiers(KotlinParser.KtModifiers mods, List<KtUnescapedAnnotation> result) {
         for (int i = 0; i < mods.getNumChildren(); i++) {
             KotlinNode child = mods.getChild(i);
-            if (child instanceof KotlinParser.KtAnnotation) {
-                collectFromAnnotationRule((KotlinParser.KtAnnotation) child, result);
+            if (child instanceof KtAnnotation) {
+                collectFromAnnotationRule((KtAnnotation) child, result);
             }
         }
     }
 
-    private static void collectFromAnnotationRule(KotlinParser.KtAnnotation ann,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
+    private static void collectFromAnnotationRule(KtAnnotation ann, List<KtUnescapedAnnotation> result) {
         for (int i = 0; i < ann.getNumChildren(); i++) {
             KotlinNode child = ann.getChild(i);
-            if (child instanceof KotlinParser.KtSingleAnnotation) {
-                collectFromSingleAnnotation((KotlinParser.KtSingleAnnotation) child, result);
-            } else if (child instanceof KotlinParser.KtMultiAnnotation) {
-                collectFromMultiAnnotation((KotlinParser.KtMultiAnnotation) child, result);
+            if (child instanceof KtSingleAnnotation) {
+                collectFromSingleAnnotation((KtSingleAnnotation) child, result);
+            } else if (child instanceof KtMultiAnnotation) {
+                collectFromMultiAnnotation((KtMultiAnnotation) child, result);
             }
         }
     }
 
-    private static void collectFromSingleAnnotation(KotlinParser.KtSingleAnnotation singleAnn,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
+    private static void collectFromSingleAnnotation(KtSingleAnnotation singleAnn, List<KtUnescapedAnnotation> result) {
         for (int j = 0; j < singleAnn.getNumChildren(); j++) {
             KotlinNode sub = singleAnn.getChild(j);
-            if (sub instanceof KotlinParser.KtUnescapedAnnotation) {
-                result.add((KotlinParser.KtUnescapedAnnotation) sub);
+            if (sub instanceof KtUnescapedAnnotation) {
+                result.add((KtUnescapedAnnotation) sub);
                 break;
             }
         }
     }
 
-    private static void collectFromMultiAnnotation(KotlinParser.KtMultiAnnotation multiAnn,
-            List<KotlinParser.KtUnescapedAnnotation> result) {
+    private static void collectFromMultiAnnotation(KtMultiAnnotation multiAnn, List<KtUnescapedAnnotation> result) {
         for (int j = 0; j < multiAnn.getNumChildren(); j++) {
             KotlinNode sub = multiAnn.getChild(j);
-            if (sub instanceof KotlinParser.KtUnescapedAnnotation) {
-                result.add((KotlinParser.KtUnescapedAnnotation) sub);
+            if (sub instanceof KtUnescapedAnnotation) {
+                result.add((KtUnescapedAnnotation) sub);
             }
         }
     }
@@ -196,8 +197,8 @@ final class AnnotationAttributeAnnotator {
      * {@code KtUserType} node. Returns e.g. {@code "Column"} or
      * {@code "javax.persistence.Column"}, or {@code null} on failure.
      */
-    private static String getAnnotationWrittenName(KotlinParser.KtUnescapedAnnotation annNode) {
-        KotlinParser.KtUserType userType = findUserType(annNode);
+    private static String getAnnotationWrittenName(KtUnescapedAnnotation annNode) {
+        KtUserType userType = findUserType(annNode);
         if (userType == null) {
             return null;
         }
@@ -212,15 +213,14 @@ final class AnnotationAttributeAnnotator {
     }
 
     /** Finds the {@code KtUserType} directly inside a {@code KtUnescapedAnnotation}. */
-    private static KotlinParser.KtUserType findUserType(KotlinParser.KtUnescapedAnnotation annNode) {
+    private static KtUserType findUserType(KtUnescapedAnnotation annNode) {
         for (int i = 0; i < annNode.getNumChildren(); i++) {
             KotlinNode child = annNode.getChild(i);
-            if (child instanceof KotlinParser.KtUserType) {
-                return (KotlinParser.KtUserType) child;
+            if (child instanceof KtUserType) {
+                return (KtUserType) child;
             }
-            if (child instanceof KotlinParser.KtConstructorInvocation) {
-                return KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation(
-                        (KotlinParser.KtConstructorInvocation) child);
+            if (child instanceof KtConstructorInvocation) {
+                return KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation((KtConstructorInvocation) child);
             }
         }
         return null;

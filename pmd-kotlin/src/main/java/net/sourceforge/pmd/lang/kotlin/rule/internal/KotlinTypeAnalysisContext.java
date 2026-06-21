@@ -2,38 +2,49 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
+package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import net.sourceforge.pmd.annotation.Experimental;
 
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
 import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.TypedAst;
+import nl.stokpop.typemapper.model.TypedAstAccessorsKt;
+import nl.stokpop.typemapper.model.TypedAstCallQueriesKt;
+import nl.stokpop.typemapper.model.TypedAstHierarchyQueriesKt;
+import nl.stokpop.typemapper.model.TypedAstTypeAliasQueriesKt;
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
 
 /**
  * Holds pre-analyzed Kotlin type information from kotlin-type-mapper, indexed by
  * (absolute file path, line number) for fast lookup during XPath function evaluation.
+ *
+ * <p>Note: kotlin-type-mapper records the <em>concrete expanded type</em> in all call-site
+ * fields -- type alias names are not preserved. Use {@link #resolveTypeAlias(String)} to
+ * expand an alias to its concrete type, or use the {@code ...ExpandingAlias} variants of
+ * {@link #callsOnReceiver(String)} and {@link #callsReturning(String)}.
+ *
+ * @since 7.27.0
+ * @experimental
  */
+@Experimental
 public final class KotlinTypeAnalysisContext {
 
     private static final String KT_EXTENSION = ".kt";
 
     private static final KotlinTypeAnalysisContext EMPTY = new KotlinTypeAnalysisContext(
-            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(),
-            Collections.emptyMap());
+            null,
+            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
 
     /** Map from absolute file path -> line -> list of call sites on that line. */
     private final Map<String, Map<Integer, List<CallSiteAst>>> callIndex;
@@ -41,24 +52,23 @@ public final class KotlinTypeAnalysisContext {
     /** Map from absolute file path -> line -> list of declarations starting on that line. */
     private final Map<String, Map<Integer, List<DeclarationAst>>> declIndex;
 
-    /**
-     * Direct supertypes per Kotlin FQN (generics stripped), from {@link TypedAst#getTypeHierarchy()}.
-     * Key: raw type FQN. Value: list of direct supertype FQNs.
-     * Used by {@link #isSubtypeOf(String, String)} for hierarchy traversal.
-     */
-    private final Map<String, List<String>> typeHierarchy;
-
     /** Map from absolute file path -> line -> list of unresolved references on that line. */
     private final Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex;
 
+    /**
+     * The full kotlin-type-mapper AST. Null only for {@link #empty()}.
+     * Used to delegate hierarchy queries ({@link #isSubtypeOf}) to ktm's built-in logic.
+     */
+    private final TypedAst typedAst;
+
     private KotlinTypeAnalysisContext(
+            TypedAst typedAst,
             Map<String, Map<Integer, List<CallSiteAst>>> callIndex,
             Map<String, Map<Integer, List<DeclarationAst>>> declIndex,
-            Map<String, List<String>> typeHierarchy,
             Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex) {
+        this.typedAst = typedAst;
         this.callIndex = callIndex;
         this.declIndex = declIndex;
-        this.typeHierarchy = typeHierarchy;
         this.unresolvedIndex = unresolvedIndex;
     }
 
@@ -73,9 +83,14 @@ public final class KotlinTypeAnalysisContext {
         Map<String, Map<Integer, List<DeclarationAst>>> declIdx = new HashMap<>();
         Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIdx = new HashMap<>();
 
-        String sourceRoot = ast.getSourceRoot();
+        boolean diskBased = ast.hasSourceRoot();
         for (FileAst file : ast.getFiles()) {
-            String absPath = canonicalize(sourceRoot + File.separator + file.getRelativePath());
+            // For disk-based analysis, index by canonical abs path for precise lookup.
+            // For in-memory analysis (fromSources, sourceRoot is ""), basename-only indexing
+            // is correct and intentional — no real path exists on disk.
+            String absPath = diskBased
+                    ? canonicalize(ast.resolveAbsolutePath(file))
+                    : null;
             // Also index by basename alone as a fallback for when PMD paths differ
             // from the paths kotlin-type-mapper was run on (e.g. temp dir analysis).
             String basename = new File(file.getRelativePath()).getName();
@@ -90,14 +105,21 @@ public final class KotlinTypeAnalysisContext {
                 addToIndex(unresolvedIdx, absPath, basename, unresolved.getLine(), unresolved);
             }
         }
-        return new KotlinTypeAnalysisContext(callIdx, declIdx, ast.getTypeHierarchy(), unresolvedIdx);
+        return new KotlinTypeAnalysisContext(ast, callIdx, declIdx, unresolvedIdx);
     }
 
     private static <T> void addToIndex(Map<String, Map<Integer, List<T>>> idx,
             String absPath, String basename, int line, T item) {
-        idx.computeIfAbsent(absPath, k -> new HashMap<>())
-                .computeIfAbsent(line, k -> new ArrayList<>())
-                .add(item);
+        // Index by both absPath (precise lookup) and basename (fallback when PMD paths differ
+        // from ktm paths, e.g. in-memory analysis or temp-dir analysis). absPath is null for
+        // in-memory analysis; skip absPath indexing in that case.
+        // Note: the basename index is inherently ambiguous when multiple source files share the
+        // same filename across packages; it is used only as a last-resort fallback.
+        if (absPath != null) {
+            idx.computeIfAbsent(absPath, k -> new HashMap<>())
+                    .computeIfAbsent(line, k -> new ArrayList<>())
+                    .add(item);
+        }
         idx.computeIfAbsent(basename, k -> new HashMap<>())
                 .computeIfAbsent(line, k -> new ArrayList<>())
                 .add(item);
@@ -107,6 +129,10 @@ public final class KotlinTypeAnalysisContext {
      * Returns call sites recorded at the given file and line.
      * If the exact line has no entries, also checks line +/- 1 to tolerate minor
      * line-number differences between PMD's ANTLR parser and kotlin-type-mapper's PSI.
+     *
+     * <p>As of ktm 0.6.0, {@link CallSiteAst#getLine()} points to the callee name token
+     * (e.g. {@code bar} in {@code foo.bar()}), not the receiver. {@link CallSiteAst#getEndLine()}
+     * is also available (0 for single-line calls or ASTs from older JSON).
      */
     public List<CallSiteAst> callSitesAt(String absFilePath, int line) {
         return lookupByLine(callIndex, absFilePath, line);
@@ -117,6 +143,10 @@ public final class KotlinTypeAnalysisContext {
      * Uses the same basename/extension fallback as {@link #callSitesAt}.
      * Used for multi-line expressions where the method call may be on a different line
      * than the start of the expression (e.g. chained calls split across lines).
+     *
+     * <p>As of ktm 0.6.0, {@link CallSiteAst#getEndLine()} carries the closing-token line
+     * and could be used for overlap checks; the current range-iteration strategy already covers
+     * all practical cases without it.
      */
     public List<CallSiteAst> callSitesInRange(String absFilePath, int beginLine, int endLine) {
         if (beginLine == endLine) {
@@ -163,6 +193,10 @@ public final class KotlinTypeAnalysisContext {
         if (exact != null && !exact.isEmpty()) {
             return exact;
         }
+        // +/-1 fallback: tolerates minor line-number differences between PMD's ANTLR parser
+        // and ktm's PSI (e.g. annotations on a separate line from the declaration keyword).
+        // ktm 0.6.0 improved line semantics so this fallback may become unnecessary once
+        // test coverage across all Kotlin call and declaration patterns is broader.
         List<T> result = new ArrayList<>();
         List<T> prev = byLine.get(line - 1);
         List<T> next = byLine.get(line + 1);
@@ -192,10 +226,10 @@ public final class KotlinTypeAnalysisContext {
 
     /**
      * Returns the type hierarchy map (Kotlin FQN -> direct supertype FQNs).
-     * Primarily for testing; empty when no aux classpath was provided.
+     * Primarily for testing; empty when no aux classpath was provided or for the empty context.
      */
     public Map<String, List<String>> getTypeHierarchy() {
-        return typeHierarchy;
+        return typedAst != null ? typedAst.getTypeHierarchy() : Collections.emptyMap();
     }
 
     /**
@@ -208,52 +242,73 @@ public final class KotlinTypeAnalysisContext {
 
     /**
      * Returns true if {@code actualType} is the same as, or a (transitive) subtype of,
-     * {@code expectedType}. Uses the type hierarchy built by kotlin-type-mapper via reflection.
+     * {@code expectedType}. Delegates to {@code TypedAst.isSubtypeOfUpward} from
+     * kotlin-type-mapper (ktm 0.6.0+), which walks supertypes of {@code actualType} upward
+     * through the type hierarchy -- O(ancestors) vs the downward BFS O(all subtypes).
+     * Also short-circuits immediately for {@code java.lang.Object} / {@code kotlin.Any}.
      *
-     * <p>Both Java FQCNs and Kotlin FQNs are accepted for {@code expectedType}. Java<->Kotlin
-     * name equivalence is applied when comparing each type against {@code expectedType}.
-     *
-     * <p>Falls back to {@link #isTypeEquivalent} when no hierarchy data is available
-     * (i.e. the aux classpath was not set or the type could not be loaded).
+     * <p>Falls back to name-equivalence only when this is the empty context (no {@link TypedAst}).
      */
     public boolean isSubtypeOf(String expectedType, String actualType) {
-        // First: exact/mapped equivalence check.
-        if (isTypeEquivalent(expectedType, actualType)) {
-            return true;
+        if (typedAst == null) {
+            return TypeNameUtilsKt.typeNamesEquivalent(expectedType, actualType);
         }
-        if (typeHierarchy.isEmpty()) {
-            return false;
-        }
-        // BFS over transitive supertypes of actualType.
-        String rawActual = substringBeforeAngle(actualType);
-        Set<String> visited = new HashSet<>();
-        Deque<String> queue = new ArrayDeque<>();
-        queue.add(rawActual);
-        while (!queue.isEmpty()) {
-            String current = queue.poll();
-            if (!visited.add(current)) {
-                continue;
-            }
-            List<String> supers = typeHierarchy.get(current);
-            if (supers == null) {
-                continue;
-            }
-            for (String superType : supers) {
-                if (isTypeEquivalent(expectedType, superType)) {
-                    return true;
-                }
-                queue.add(substringBeforeAngle(superType));
-            }
-        }
-        return false;
+        return TypedAstHierarchyQueriesKt.isSubtypeOfUpward(typedAst, expectedType, actualType);
     }
 
-    private static String substringBeforeAngle(String s) {
-        // Strip trailing '?' (nullable marker) before extracting the raw type name,
-        // so that bare nullable types like "java.util.List?" are handled correctly.
-        String stripped = s.endsWith("?") ? s.substring(0, s.length() - 1) : s;
-        int idx = stripped.indexOf('<');
-        return idx >= 0 ? stripped.substring(0, idx) : stripped;
+    /**
+     * Resolves a typealias FQN to its concrete expanded type string, or {@code null}
+     * if {@code fqn} is not a known typealias in the analyzed AST.
+     * Delegates to {@link TypedAstTypeAliasQueriesKt#resolveTypeAlias(TypedAst, String)}.
+     *
+     * <p>Only finds aliases defined in the analyzed source files; library aliases resolve to
+     * {@code null}. Returns {@code null} for the empty context.
+     */
+    public String resolveTypeAlias(String fqn) {
+        if (typedAst == null) return null;
+        return TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
+    }
+
+    /**
+     * Returns all call sites where the dispatch or extension receiver type matches {@code fqn}.
+     * Delegates to {@code TypedAstCallQueriesKt.callsOnReceiver} from kotlin-type-mapper.
+     * Returns empty list for the empty context.
+     */
+    public List<CallSiteAst> callsOnReceiver(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsOnReceiver(typedAst, fqn);
+    }
+
+    /**
+     * Returns all call sites where the return type matches {@code fqn}.
+     * Delegates to {@code TypedAstCallQueriesKt.callsReturning} from kotlin-type-mapper.
+     * Returns empty list for the empty context.
+     */
+    public List<CallSiteAst> callsReturning(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        return TypedAstCallQueriesKt.callsReturning(typedAst, fqn);
+    }
+
+    /**
+     * Like {@link #callsOnReceiver(String)}, but if {@code fqn} is a known typealias it is
+     * first expanded to its concrete type, then the call search uses that concrete type.
+     * Falls back to the raw {@code fqn} if the alias is not found (library aliases, empty context).
+     */
+    public List<CallSiteAst> callsOnReceiverExpandingAlias(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        String resolved = TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
+        return TypedAstCallQueriesKt.callsOnReceiver(typedAst, resolved != null ? resolved : fqn);
+    }
+
+    /**
+     * Like {@link #callsReturning(String)}, but if {@code fqn} is a known typealias it is
+     * first expanded to its concrete type, then the call search uses that concrete type.
+     * Falls back to the raw {@code fqn} if the alias is not found (library aliases, empty context).
+     */
+    public List<CallSiteAst> callsReturningExpandingAlias(String fqn) {
+        if (typedAst == null) return Collections.emptyList();
+        String resolved = TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
+        return TypedAstCallQueriesKt.callsReturning(typedAst, resolved != null ? resolved : fqn);
     }
 
     private static String canonicalize(String path) {

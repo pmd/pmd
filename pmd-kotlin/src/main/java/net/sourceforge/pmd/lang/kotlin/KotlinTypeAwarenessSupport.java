@@ -1,0 +1,133 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.kotlin;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.document.TextFile;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
+import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeAnnotationVisitor;
+
+import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
+import nl.stokpop.typemapper.model.TypedAst;
+
+/**
+ * Encapsulates kotlin-type-mapper analysis and per-file annotation behavior.
+ */
+final class KotlinTypeAwarenessSupport {
+
+    private static final Logger LOG = LoggerFactory.getLogger(KotlinTypeAwarenessSupport.class);
+
+    /** Populated in {@link #prepare} before any file is parsed. */
+    private final AtomicReference<KotlinTypeAnnotationVisitor> annotationVisitor = new AtomicReference<>();
+
+    private final KotlinAuxClasspathResolver classpathResolver;
+
+    KotlinTypeAwarenessSupport(KotlinAuxClasspathResolver classpathResolver) {
+        this.classpathResolver = classpathResolver;
+    }
+
+    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.
+    void prepare(List<TextFile> allFiles, Language language) {
+        List<TextFile> ktFiles = new ArrayList<>();
+        for (TextFile textFile : allFiles) {
+            if (textFile.getLanguageVersion().getLanguage().equals(language)) {
+                ktFiles.add(textFile);
+            }
+        }
+        if (ktFiles.isEmpty()) {
+            return;
+        }
+
+        Map<String, String> sources = buildSourceMap(ktFiles);
+
+        KotlinTypeAnnotationVisitor visitor = analyzeAndBuildVisitor(sources);
+        annotationVisitor.set(visitor);
+        if (visitor != null) {
+            LOG.debug("kotlin-type-mapper analyzed {} file(s)", ktFiles.size());
+        }
+    }
+
+    void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
+        KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
+        if (visitor == null) {
+            // Designer / single-file mode: launchAnalysis() was never called.
+            String effectiveName = KotlinLanguageProcessor.sanitizeKtFilename(absPath);
+            visitor = runSingleFileAnalysis(effectiveName, sourceText);
+            if (visitor != null) {
+                visitor.annotate(root, effectiveName);
+                InternalApiBridge.setTypeInfoAvailable(root);
+            }
+        } else {
+            visitor.annotate(root, absPath);
+            InternalApiBridge.setTypeInfoAvailable(root);
+        }
+    }
+
+    void clear() {
+        annotationVisitor.set(null);
+        KotlinTypeAnalysisContextHolder.clearGlobal();
+    }
+
+    private KotlinTypeAnnotationVisitor analyzeAndBuildVisitor(Map<String, String> sources) {
+        try {
+            TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
+            KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
+            return new KotlinTypeAnnotationVisitor(ast);
+        } catch (RuntimeException e) {
+            KotlinTypeAnalysisContextHolder.clearGlobal();
+            LOG.warn("kotlin-type-mapper analysis failed; type attributes will not be set", e);
+            return null;
+        }
+    }
+
+    @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.
+    private static Map<String, String> buildSourceMap(List<TextFile> ktFiles) {
+        Map<String, String> sources = new LinkedHashMap<>();
+        for (TextFile ktFile : ktFiles) {
+            try {
+                String filename = KotlinLanguageProcessor.sanitizeKtFilename(ktFile.getFileId().getFileName());
+                String text = ktFile.readContents().getNormalizedText().toString();
+                sources.put(filename, text);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+        return sources;
+    }
+
+    private KotlinTypeAnnotationVisitor runSingleFileAnalysis(String filename, String sourceText) {
+        KotlinTypeAnnotationVisitor visitor = analyzeAndBuildVisitor(Collections.singletonMap(filename, sourceText));
+        if (visitor != null) {
+            LOG.debug("kotlin-type-mapper single-file analysis complete for {}", filename);
+        }
+        return visitor;
+    }
+
+    private static List<File> toFiles(List<Path> paths) {
+        List<File> files = new ArrayList<>(paths.size());
+        for (Path p : paths) {
+            files.add(p.toFile());
+        }
+        return files;
+    }
+}
+
