@@ -189,7 +189,7 @@ platformVersion: VersionLiteral | DecimalLiteral | FloatingPointLiteral ; // TOD
 
 genericParameterClause : '<' genericParameterList '>'  ;
 genericParameterList : genericParameter (',' genericParameter)*  ;
-genericParameter : typeName | typeName ':' typeIdentifier | typeName ':' protocolCompositionType  ;
+genericParameter : 'each'? ( typeName | typeName ':' typeIdentifier | typeName ':' protocolCompositionType ) ;
 genericWhereClause : 'where' requirementList  ;
 requirementList : requirement (',' requirement)*  ;
 requirement : conformanceRequirement | sameTypeRequirement  ;
@@ -849,6 +849,8 @@ sType
  | 'some' sType // opaque-type
  | sType '.' 'Type' | sType '.' 'Protocol' // metatype
  | 'Any' | 'Self'
+ | 'repeat'? 'each' sType
+ | '(' sType ')'
  ;
 
 functionType: attributes? functionTypeArgumentClause ('throws' | 'rethrows')? '->' sType ;
@@ -868,7 +870,7 @@ implicitlyUnwrappedOptionalType: sType '!' ;
 
 // GRAMMAR OF A TYPE ANNOTATION
 
-typeAnnotation : ':' attributes? 'inout'? sType  ;
+typeAnnotation : ':' 'repeat'? attributes? 'inout'? sType  ;
 
 // GRAMMAR OF A TYPE IDENTIFIER
 
@@ -882,7 +884,7 @@ typeName : identifier ;
 // GRAMMAR OF A TUPLE TYPE
 
 tupleType : '('  tupleTypeElementList? ')'  ;
-tupleTypeElementList : tupleTypeElement (',' tupleTypeElement)*  ;
+tupleTypeElementList : tupleTypeElement (',' tupleTypeElement)+  ;
 tupleTypeElement : elementName typeAnnotation | sType ;
 elementName : identifier  ;
 
