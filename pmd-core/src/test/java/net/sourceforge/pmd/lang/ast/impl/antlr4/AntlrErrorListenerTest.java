@@ -43,12 +43,12 @@ class AntlrErrorListenerTest {
         FileAnalysisException exception = listener.getException();
         assertInstanceOf(LexException.class, exception);
         assertEquals(0, exception.getSuppressed().length);
-        assertEquals("Lexical error in file 'file.txt' at line 1, column 2: test lex error", exception.getMessage());
+        assertEquals("Lexical error in file 'file.txt' at line 1, column 3: test lex error", exception.getMessage());
         assertSame(originalException, exception.getCause());
         assertSame(parserTask.getFileId(), exception.getFileId());
         LexException lexException = (LexException) exception;
         assertEquals(1, lexException.getLine());
-        assertEquals(2, lexException.getColumn());
+        assertEquals(3, lexException.getColumn());
     }
 
     @Test
@@ -64,7 +64,7 @@ class AntlrErrorListenerTest {
         FileAnalysisException exception = listener.getException();
         assertInstanceOf(ParseException.class, exception);
         assertEquals(0, exception.getSuppressed().length);
-        assertEquals("Parse exception in file 'file.txt' at line 1, column 2: test parser error", exception.getMessage());
+        assertEquals("Parse exception in file 'file.txt' at line 1, column 3: test parser error", exception.getMessage());
         assertSame(originalException, exception.getCause());
         assertSame(parserTask.getFileId(), exception.getFileId());
     }
@@ -82,8 +82,8 @@ class AntlrErrorListenerTest {
 
         FileAnalysisException exception = listener.getException();
         assertInstanceOf(ParseException.class, exception);
-        assertEquals("Parse exception in file 'file.txt' at line 1, column 2: first test parser error", exception.getMessage());
+        assertEquals("Parse exception in file 'file.txt' at line 1, column 3: first test parser error", exception.getMessage());
         assertEquals(1, exception.getSuppressed().length);
-        assertEquals("Parse exception in file 'file.txt' at line 2, column 2: second test parser error", exception.getSuppressed()[0].getMessage());
+        assertEquals("Parse exception in file 'file.txt' at line 2, column 3: second test parser error", exception.getSuppressed()[0].getMessage());
     }
 }
