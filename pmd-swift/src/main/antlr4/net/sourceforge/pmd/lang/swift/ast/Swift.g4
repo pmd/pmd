@@ -220,6 +220,7 @@ declaration
  | deinitializerDeclaration ';'?
  | extensionDeclaration ';'?
  | subscriptDeclaration ';'?
+ | macroDeclaration ';'?
  | operatorDeclaration ';'?
  // compiler-control-statement not in Swift Language Reference
  | compilerControlStatement ';'?
@@ -422,6 +423,14 @@ subscriptDeclaration : subscriptHead subscriptResult getterSetterBlock
  ;
 subscriptHead : attributes? declarationModifiers? 'subscript' parameterClause  ;
 subscriptResult : '->' attributes? sType  ;
+
+// GRAMMAR OF A MACRO DECLARATION
+
+macroDeclaration : macroHead identifier genericParameterClause? macroSignature macroDefinition? genericWhereClause? ;
+macroHead : attributes? declarationModifiers? 'macro' ;
+macroSignature : parameterClause macroFunctionSignatureResult? ;
+macroFunctionSignatureResult : '->' sType ;
+macroDefinition : '=' expression ;
 
 // GRAMMAR OF AN OPERATOR DECLARATION
 
