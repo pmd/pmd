@@ -1088,6 +1088,7 @@ can inadvertently change the subtype's public API.
   [@EffectiveVisibility != 'public']
   [@Visibility = 'public']
   [@Overridden = false() or not(@Overridden)]
+  [@MainMethod = false() or not(@MainMethod)]
   [not(ancestor::ClassDeclaration[@Interface = true()] or ancestor::AnnotationTypeDeclaration)]
 (: Make sure, we return nodes that implement getName() for {0} in the rule message :)
 !(if (self::FieldDeclaration) then VariableDeclarator else .)

@@ -167,4 +167,16 @@ class Wrong {
 }
         </code>
     </test-code>
+
+    <test-code>
+        <description>Special case main() (#6459)</description>
+        <expected-problems>0</expected-problems>
+        <code>
+class MyTest {
+    public static void main(final String... args)  {
+        // main method that is invoked in IntelliJ
+    }
+}
+        </code>
+    </test-code>
 </test-data>
