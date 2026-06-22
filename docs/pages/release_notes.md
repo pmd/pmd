@@ -23,6 +23,12 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Swift Changes
+The Swift parser now forwards syntax errors as usual processing errors. Before it just logged any errors and
+tried to move on, resulting in an incomplete AST. As part of this change, the grammar has been slightly improved
+around macro declarations, generic parameters and parameter packs.  
+This means that PMD might fail now on Swift files with processing errors, when it previously ran without
+obvious problems. The Swift module in PMD now behaves like other modules in regard to error handling.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
