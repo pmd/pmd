@@ -2,7 +2,7 @@
 <test-data
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
 
     <test-code>
         <description>Rule example</description>
@@ -166,5 +166,19 @@ class Wrong {
     }
 }
         </code>
+    </test-code>
+
+    <test-code>
+        <description>Verify that we can suppress on the method (#6461)</description>
+        <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="3">@SuppressWarnings</suppressor>
+        </expected-suppressions>
+        <code><![CDATA[
+class Wrong {
+    @SuppressWarnings("PMD.PublicMemberInNonPublicType")
+    public void method() {} // violation
+}
+]]></code>
     </test-code>
 </test-data>
