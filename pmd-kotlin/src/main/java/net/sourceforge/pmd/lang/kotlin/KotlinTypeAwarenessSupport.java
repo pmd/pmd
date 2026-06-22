@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.TextFile;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
@@ -66,7 +66,7 @@ final class KotlinTypeAwarenessSupport {
         }
     }
 
-    void annotateIfPossible(KotlinNode root, String absPath, String sourceText) {
+    void annotateIfPossible(KtKotlinFile root, String absPath, String sourceText) {
         KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
         if (visitor == null) {
             // Designer / single-file mode: launchAnalysis() was never called.
@@ -88,15 +88,9 @@ final class KotlinTypeAwarenessSupport {
     }
 
     private KotlinTypeAnnotationVisitor analyzeAndBuildVisitor(Map<String, String> sources) {
-        try {
-            TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
-            KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
-            return new KotlinTypeAnnotationVisitor(ast);
-        } catch (RuntimeException e) {
-            KotlinTypeAnalysisContextHolder.clearGlobal();
-            LOG.warn("kotlin-type-mapper analysis failed; type attributes will not be set", e);
-            return null;
-        }
+        TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
+        KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
+        return new KotlinTypeAnnotationVisitor(ast);
     }
 
     @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.

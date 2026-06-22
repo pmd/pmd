@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
@@ -22,6 +19,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
 import nl.stokpop.typemapper.model.ParameterAst;
@@ -40,8 +38,6 @@ import nl.stokpop.typemapper.model.ParameterAst;
  * list from kotlin-type-mapper.
  */
 final class AnnotationAttributeAnnotator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AnnotationAttributeAnnotator.class);
 
     private AnnotationAttributeAnnotator() {
     }
@@ -106,33 +102,30 @@ final class AnnotationAttributeAnnotator {
         if (parameters.isEmpty()) {
             return;
         }
-        KtFunctionValueParameters paramsNode = findFunctionValueParametersNode(funcNode);
+        KtFunctionValueParameters paramsNode = funcNode.children(KtFunctionValueParameters.class).first();
         if (paramsNode != null) {
             annotateParameterNodes(paramsNode, parameters);
         }
-    }
-
-    private static KtFunctionValueParameters findFunctionValueParametersNode(KtFunctionDeclaration funcNode) {
-        for (int i = 0; i < funcNode.getNumChildren(); i++) {
-            KotlinNode child = funcNode.getChild(i);
-            if (child instanceof KtFunctionValueParameters) {
-                return (KtFunctionValueParameters) child;
-            }
-        }
-        return null;
     }
 
     private static void annotateParameterNodes(KtFunctionValueParameters paramsNode, List<ParameterAst> parameters) {
         int paramIdx = 0;
         for (int j = 0; j < paramsNode.getNumChildren(); j++) {
             KotlinNode sub = paramsNode.getChild(j);
-            if (sub instanceof KotlinParser.KtFunctionValueParameter && paramIdx < parameters.size()) {
-                String type = parameters.get(paramIdx).getType();
-                if (type != null) {
-                    KotlinNodeTypeData.setTypeName(sub, type);
+            if (sub instanceof KotlinParser.KtFunctionValueParameter) {
+                if (paramIdx < parameters.size()) {
+                    String type = parameters.get(paramIdx).getType();
+                    if (type != null) {
+                        KotlinNodeTypeData.setTypeName(sub, type);
+                    }
                 }
                 paramIdx++;
             }
+        }
+        if (paramIdx != parameters.size()) {
+            throw new IllegalStateException(
+                    "Parameter count mismatch in " + paramsNode
+                    + ": PMD saw " + paramIdx + ", ktm reported " + parameters.size());
         }
     }
 
@@ -207,8 +200,7 @@ final class AnnotationAttributeAnnotator {
                     .sliceOriginalText(userType.getTextRegion())
                     .toString();
         } catch (IndexOutOfBoundsException e) {
-            LOG.debug("Could not read text region for annotation in {}", annNode, e);
-            return null;
+            throw AssertionUtil.contexted(e).addContextValue("annotation node", annNode);
         }
     }
 

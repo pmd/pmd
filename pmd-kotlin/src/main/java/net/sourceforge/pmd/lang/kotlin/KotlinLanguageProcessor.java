@@ -15,9 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
 /**
@@ -31,7 +30,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
  * falls back gracefully: nodes have no type attributes and rule evaluation still
  * completes.
  *
- * @since 7.26.0
+ * @since 7.25.0
  */
 public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLanguageProperties> {
     private static final Logger LOG = LoggerFactory.getLogger(KotlinLanguageProcessor.class);
@@ -94,16 +93,11 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
         public Parser getParser() {
             final Parser base = baseHandler.getParser();
             return task -> {
-                RootNode root = base.parse(task);
-                if (root instanceof KotlinNode) {
-                    typeAwareness.annotateIfPossible(
-                            (KotlinNode) root,
-                            task.getTextDocument().getFileId().getAbsolutePath(),
-                            task.getTextDocument().getText().toString());
-                } else {
-                    LOG.debug("Skipping Kotlin type annotation: unexpected root node type {}",
-                            root.getClass().getName());
-                }
+                KtKotlinFile root = (KtKotlinFile) base.parse(task);
+                typeAwareness.annotateIfPossible(
+                        root,
+                        task.getTextDocument().getFileId().getAbsolutePath(),
+                        task.getTextDocument().getText().toString());
                 return root;
             };
         }

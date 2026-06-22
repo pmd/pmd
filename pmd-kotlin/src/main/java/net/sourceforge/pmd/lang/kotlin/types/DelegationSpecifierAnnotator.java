@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotatedDelegationSpecifier;
@@ -18,6 +15,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Annotates {@code KtDelegationSpecifier} nodes in a class declaration with resolved
@@ -39,8 +37,6 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
  * {@code //ClassDeclaration[DelegationSpecifier[@TypeName='java.io.Serializable']]}.
  */
 final class DelegationSpecifierAnnotator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DelegationSpecifierAnnotator.class);
 
     private DelegationSpecifierAnnotator() {
     }
@@ -115,7 +111,7 @@ final class DelegationSpecifierAnnotator {
                 KotlinNodeTypeData.setTypeName(spec, fqn);
             }
         } catch (IndexOutOfBoundsException e) {
-            LOG.debug("Could not read text region for delegation specifier in {}", spec, e);
+            throw AssertionUtil.contexted(e).addContextValue("delegation specifier", spec);
         }
     }
 

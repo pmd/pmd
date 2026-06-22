@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtForStatement;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
@@ -89,7 +89,7 @@ public final class KotlinTypeAnnotationVisitor {
      * @param root     the root node of the parsed Kotlin file
      * @param absPath  the absolute path of the file (used to extract the base filename)
      */
-    public void annotate(KotlinNode root, String absPath) {
+    public void annotate(KtKotlinFile root, String absPath) {
         String filename = new File(absPath).getName();
         Map<Integer, List<DeclarationAst>> resolved = byFilename.get(filename);
         if (resolved == null && !filename.endsWith(".kt")) {

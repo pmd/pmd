@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.types;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
  * Internal API bridge exposing package-private setters of {@link KotlinNodeTypeData}
@@ -36,8 +37,8 @@ public final class InternalApiBridge {
         KotlinNodeTypeData.setAnnotationFqNames(node, annotationFqNames);
     }
 
-    /** @see KotlinNodeTypeData#setTypeInfoAvailable(KotlinNode) */
-    public static void setTypeInfoAvailable(KotlinNode rootNode) {
+    /** @see KotlinNodeTypeData#setTypeInfoAvailable(KtKotlinFile) */
+    public static void setTypeInfoAvailable(KtKotlinFile rootNode) {
         KotlinNodeTypeData.setTypeInfoAvailable(rootNode);
     }
 }

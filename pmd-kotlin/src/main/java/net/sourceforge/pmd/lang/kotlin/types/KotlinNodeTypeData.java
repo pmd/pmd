@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -104,7 +105,7 @@ public final class KotlinNodeTypeData {
      * Returns {@code true} when the kotlin-type-mapper pre-analysis ran successfully
      * for the file represented by this root node, {@code false} otherwise.
      */
-    public static boolean isTypeInfoAvailable(KotlinNode rootNode) {
+    public static boolean isTypeInfoAvailable(KtKotlinFile rootNode) {
         Boolean value = rootNode.getUserMap().get(TYPE_INFO_AVAILABLE_KEY);
         return Boolean.TRUE.equals(value);
     }
@@ -113,7 +114,7 @@ public final class KotlinNodeTypeData {
      * Marks a root node as having completed type analysis.
      * Called via {@link InternalApiBridge}.
      */
-    static void setTypeInfoAvailable(KotlinNode rootNode) {
+    static void setTypeInfoAvailable(KtKotlinFile rootNode) {
         rootNode.getUserMap().set(TYPE_INFO_AVAILABLE_KEY, Boolean.TRUE);
     }
 }
