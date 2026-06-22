@@ -45,6 +45,7 @@
                         <includeOnlyProperty>^git.commit.id$</includeOnlyProperty>
                         <includeOnlyProperty>^git.commit.time$</includeOnlyProperty>
                     </includeOnlyProperties>
+                    <useNativeGit>true</useNativeGit>  <!-- for worktree support. See https://github.com/git-commit-id/git-commit-id-maven-plugin/issues/215 -->
                 </configuration>
             </plugin>
             <plugin>
