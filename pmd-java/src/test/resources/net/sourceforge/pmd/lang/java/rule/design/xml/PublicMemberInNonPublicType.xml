@@ -189,7 +189,7 @@ class Child extends Parent {
     </test-code>
 
     <test-code>
-        <description>Methods in interfaces are implicitely public, so methods implementing an interface need to be public, too</description>
+        <description>Methods in interfaces are implicitly public, so methods implementing an interface need to be public, too</description>
         <expected-problems>0</expected-problems>
         <code>
 public interface I {
