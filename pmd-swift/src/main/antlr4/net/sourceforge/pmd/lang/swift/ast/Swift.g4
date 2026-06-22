@@ -937,12 +937,15 @@ platformCondition
  | 'compiler' '(' '>=' swiftVersion ')'
  | 'compiler' '(' '<' swiftVersion ')'
  | 'canImport' '(' importPath ')'
+ | 'canImport' '(' moduleName ')' // not used anymore, kept here for compatibility TODO: PMD 8: Remove this, see also #6655
  | 'targetEnvironment' '(' environment ')'
  ;
 
 operatingSystem:  'macOS' | 'iOS' | 'watchOS' | 'tvOS' | 'visionOS' | 'Linux' | 'Windows';
 architecture: 'arm' | 'arm64' | 'i386' | 'wasm32' | 'x86_64';
 swiftVersion: FloatingPointLiteral ;
+// not used anymore, but kept here for compatibility. TODO: PMD 8: Remove this, see also #6655
+moduleName: IdentifierCharacters ;
 environment: 'simulator' | 'macCatalyst';
 
 lineControlStatement: '#sourceLocation' '(' 'file' ':' fileName ',' 'line' ':' lineNumber ')'
