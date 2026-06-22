@@ -67,6 +67,8 @@ obvious problems. The Swift module in PMD now behaves like other modules in rega
   * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add auxClasspath language property
 * kotlin-bestpractices
   * [#6732](https://github.com/pmd/pmd/issues/6732): \[kotlin] New Rule: LocalVariableShadowsParameter
+* swift
+  * [#6801](https://github.com/pmd/pmd/issues/6801): \[swift] Report syntax errors as processing errors
 
 ### 🚨️ API Changes
 * core
