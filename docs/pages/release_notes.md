@@ -41,6 +41,8 @@ This is a {{ site.pmd.release_type }} release.
 * apex-security
   * [#2955](https://github.com/pmd/pmd/issues/2955): \[apex] ApexSOQLInjection: False positive when passing local var with concatenating strings
   * [#3877](https://github.com/pmd/pmd/issues/3877): \[apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()
+* core
+  * [#6764](https://github.com/pmd/pmd/issues/6764): \[core] ANTLR: Report syntax errors as processing errors
 * cpp
   * [#6641](https://github.com/pmd/pmd/issues/6641): \[cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM
 * cli
@@ -61,6 +63,10 @@ This is a {{ site.pmd.release_type }} release.
   * [#6732](https://github.com/pmd/pmd/issues/6732): \[kotlin] New Rule: LocalVariableShadowsParameter
 
 ### 🚨️ API Changes
+* core
+  * {% jdoc core::lang.ast.impl.antlr4.AntlrBaseParser %} has been deprecated in favor of
+    {% jdoc core::lang.ast.impl.antlr4.AntlrBaseParserWithErrorHandling %}, which converts ANTLR's parsing
+    errors into PMD's processing errors by default.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
