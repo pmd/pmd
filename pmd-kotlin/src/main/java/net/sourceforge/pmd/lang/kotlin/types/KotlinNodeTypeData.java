@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -41,6 +42,9 @@ public final class KotlinNodeTypeData {
 
     private static final SimpleDataKey<Boolean> TYPE_INFO_AVAILABLE_KEY =
             DataMap.simpleDataKey("kotlin.typeInfoAvailable");
+
+    private static final SimpleDataKey<KotlinTypeAnalysisContext> ANALYSIS_CONTEXT_KEY =
+            DataMap.simpleDataKey("kotlin.analysisContext");
 
     private KotlinNodeTypeData() {}
 
@@ -116,5 +120,23 @@ public final class KotlinNodeTypeData {
      */
     static void setTypeInfoAvailable(KtKotlinFile rootNode) {
         rootNode.getUserMap().set(TYPE_INFO_AVAILABLE_KEY, Boolean.TRUE);
+    }
+
+    /**
+     * Returns the {@link KotlinTypeAnalysisContext} stored on this root node,
+     * or {@link KotlinTypeAnalysisContext#empty()} when not set.
+     * XPath functions use this to retrieve per-run type data from the context node's root.
+     */
+    public static KotlinTypeAnalysisContext getAnalysisContext(KtKotlinFile rootNode) {
+        KotlinTypeAnalysisContext ctx = rootNode.getUserMap().get(ANALYSIS_CONTEXT_KEY);
+        return ctx != null ? ctx : KotlinTypeAnalysisContext.empty();
+    }
+
+    /**
+     * Stores the analysis context on a root node.
+     * Called via {@link InternalApiBridge} after type analysis completes for a file.
+     */
+    static void setAnalysisContext(KtKotlinFile rootNode, KotlinTypeAnalysisContext ctx) {
+        rootNode.getUserMap().set(ANALYSIS_CONTEXT_KEY, ctx);
     }
 }

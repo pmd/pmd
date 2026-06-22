@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeAnnotationVisitor;
 
@@ -38,6 +37,8 @@ final class KotlinTypeAwarenessSupport {
 
     /** Populated in {@link #prepare} before any file is parsed. */
     private final AtomicReference<KotlinTypeAnnotationVisitor> annotationVisitor = new AtomicReference<>();
+    private final AtomicReference<KotlinTypeAnalysisContext> analysisContext =
+            new AtomicReference<>(KotlinTypeAnalysisContext.empty());
 
     private final KotlinAuxClasspathResolver classpathResolver;
 
@@ -74,22 +75,24 @@ final class KotlinTypeAwarenessSupport {
             visitor = runSingleFileAnalysis(effectiveName, sourceText);
             if (visitor != null) {
                 visitor.annotate(root, effectiveName);
+                InternalApiBridge.setAnalysisContext(root, analysisContext.get());
                 InternalApiBridge.setTypeInfoAvailable(root);
             }
         } else {
             visitor.annotate(root, absPath);
+            InternalApiBridge.setAnalysisContext(root, analysisContext.get());
             InternalApiBridge.setTypeInfoAvailable(root);
         }
     }
 
     void clear() {
         annotationVisitor.set(null);
-        KotlinTypeAnalysisContextHolder.clearGlobal();
+        analysisContext.set(KotlinTypeAnalysisContext.empty());
     }
 
     private KotlinTypeAnnotationVisitor analyzeAndBuildVisitor(Map<String, String> sources) {
         TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
-        KotlinTypeAnalysisContextHolder.setGlobal(KotlinTypeAnalysisContext.from(ast));
+        analysisContext.set(KotlinTypeAnalysisContext.from(ast));
         return new KotlinTypeAnnotationVisitor(ast);
     }
 
