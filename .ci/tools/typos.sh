@@ -6,7 +6,8 @@ TYPOS_GH_ANNOTATE=${TYPOS_GH_ANNOTATE:=""}
 # whether to check for a new version of typos
 TYPOS_CHECK_UPDATE=${TYPOS_CHECK_UPDATE:=""}
 
-TYPOS_VERSION="v1.45.1"
+REPO_ROOT="$(git rev-parse --path-format=relative --show-toplevel)"
+TYPOS_VERSION="$(grep crate-ci/typos "${REPO_ROOT}/.github/workflows/build.yml" | sed 's/^.\+#\(v.\+\)$/\1/')"
 if [ -n "$TYPOS_CHECK_UPDATE" ]; then
   echo "Checking for latest typos version..."
   LATEST_TYPO_VERSION=$(curl -s -L \
@@ -20,7 +21,6 @@ if [ -n "$TYPOS_CHECK_UPDATE" ]; then
     echo "You are using the latest version of typos: ${TYPOS_VERSION}"
   fi
 fi
-REPO_ROOT="$(git rev-parse --path-format=relative --show-toplevel)"
 TYPOS_INSTALL_DIR="${REPO_ROOT}.ci/tools/typos"
 TYPOS_EXECUTABLE="${TYPOS_INSTALL_DIR}/typos-${TYPOS_VERSION}"
 TYPOS_CONFIG="${REPO_ROOT}/.ci/files/typos.toml"
