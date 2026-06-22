@@ -81,7 +81,7 @@ class Wrong {
 
     public int
     field // <--violation: line 7
-    ;
+    = 0;
 
     public int
     iField1, // <--violation: line 11
