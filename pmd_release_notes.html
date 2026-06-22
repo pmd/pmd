@@ -2086,6 +2086,11 @@ and may lead to confusion about which value is used.</li>
       <li><a href="https://github.com/pmd/pmd/issues/3877">#3877</a>: [apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()</li>
     </ul>
   </li>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6764">#6764</a>: [core] ANTLR: Report syntax errors as processing errors</li>
+    </ul>
+  </li>
   <li>cpp
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6641">#6641</a>: [cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM</li>
@@ -2112,6 +2117,7 @@ and may lead to confusion about which value is used.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2846">#2846</a>: [java] New Rule: WrongTestAnnotation</li>
       <li><a href="https://github.com/pmd/pmd/issues/6743">#6743</a>: [java] CloseResource: False positive for closeable initialized with (T) null</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6781">#6781</a>: [java] UselessPureMethodCall: False positive for Stream.forEach</li>
     </ul>
   </li>
   <li>kotlin
@@ -2127,6 +2133,15 @@ and may lead to confusion about which value is used.</li>
 </ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
+<ul>
+  <li>core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.html#"><code>AntlrBaseParser</code></a> has been deprecated in favor of
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParserWithErrorHandling.html#"><code>AntlrBaseParserWithErrorHandling</code></a>, which converts ANTLR’s parsing
+errors into PMD’s processing errors by default.</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2166,7 +2181,7 @@ and may lead to confusion about which value is used.</li>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 19, 2026 <br />
+             Site last generated: Jun 22, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

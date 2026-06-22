@@ -2211,27 +2211,36 @@ and return your custom filter. See the CpdLexer for C# as an example:
 <h3 id="6--create-a-pmd-parser-adapter">6.  Create a PMD parser “adapter”</h3>
 <ul>
   <li>Create your own parser, that adapts the ANTLR interface to PMD’s parser interface.</li>
-  <li>We provide a <a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.java"><code class="language-plaintext highlighter-rouge">AntlrBaseParser</code></a>
+  <li>We provide a <a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParserWithErrorHandling.java"><code class="language-plaintext highlighter-rouge">AntlrBaseParserWithErrorHandling</code></a>
 implementation that you need to extend to create your own adapter. See
-<a href="https://github.com/pmd/pmd/blob/main/pmd-kotlin/src/main/java/net/sourceforge/pmd/lang/kotlin/ast/PmdKotlinParser.java"><code class="language-plaintext highlighter-rouge">PmdKotlinParser</code></a>
-as the reference implementation.</li>
-  <li><strong>Error handling</strong>: ANTLR by default prints errors to stderr only and otherwise ignores them. You must register custom
-<code class="language-plaintext highlighter-rouge">BaseErrorListener</code>s on both the lexer and the parser to surface errors properly:
-    <ul>
-      <li><strong>Lexer errors</strong> (unrecognized tokens) should throw a
-<a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/LexException.java"><code class="language-plaintext highlighter-rouge">LexException</code></a>
-with the file id and position from the <code class="language-plaintext highlighter-rouge">ParserTask</code>.</li>
-      <li><strong>Parser errors</strong> (unexpected token structure): should throw a
-<a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/ParseException.java"><code class="language-plaintext highlighter-rouge">ParseException</code></a>
-with <code class="language-plaintext highlighter-rouge">.withLocation(FileLocation.caret(...))</code>.</li>
-      <li>Both exception types extend <code class="language-plaintext highlighter-rouge">FileAnalysisException</code>, which automatically includes the
-file name and location in <code class="language-plaintext highlighter-rouge">getMessage()</code>, so you only need to pass the ANTLR error
-message itself as the exception message.</li>
-      <li>PMD catches these exceptions, reports the file as a <code class="language-plaintext highlighter-rouge">ProcessingError</code>, and continues
-processing all other files. The CLI returns exit code 5 if any processing errors occurred
-(suppressible with <code class="language-plaintext highlighter-rouge">--no-fail-on-error</code>).</li>
-    </ul>
+<a href="https://github.com/pmd/pmd/blob/main/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/ast/PmdSwiftParser.java"><code class="language-plaintext highlighter-rouge">PmdSwiftParser</code></a>
+as the reference implementation:
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="nc">SwTopLevel</span> <span class="nf">parse</span><span class="o">(</span><span class="nc">SwiftParser</span> <span class="n">swiftParser</span><span class="o">,</span> <span class="nc">ParserTask</span> <span class="n">task</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">swiftParser</span><span class="o">.</span><span class="na">topLevel</span><span class="o">().</span><span class="na">makeAstInfo</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="nc">SwiftLexer</span> <span class="nf">getLexer</span><span class="o">(</span><span class="kd">final</span> <span class="nc">CharStream</span> <span class="n">source</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">SwiftLexer</span><span class="o">(</span><span class="n">source</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="nc">SwiftParser</span> <span class="nf">getParser</span><span class="o">(</span><span class="nc">SwiftLexer</span> <span class="n">lexer</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">SwiftParser</span><span class="o">(</span><span class="k">new</span> <span class="nc">CommonTokenStream</span><span class="o">(</span><span class="n">lexer</span><span class="o">));</span>
+<span class="o">}</span>
+</code></pre></div>    </div>
+    <p>Note that <code class="language-plaintext highlighter-rouge">PmdSwiftParser</code> currently overwrites <code class="language-plaintext highlighter-rouge">parse(ParserTask task)</code> to avoid the default
+error handling (see next point) and just log any parsing errors.</p>
   </li>
+  <li><strong>Error handling</strong>: PMD registers an ANTLR error listener automatically on both the lexer and parser.
+If there were errors, they are thrown either as <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/LexException.html#"><code>LexException</code></a> or as
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/ParseException.html#"><code>ParseException</code></a>.<br />
+Both exception types extend <code class="language-plaintext highlighter-rouge">FileAnalysisException</code>, which automatically includes the
+file name and location in <code class="language-plaintext highlighter-rouge">getMessage()</code>.<br />
+PMD catches these exceptions, reports the file as a <code class="language-plaintext highlighter-rouge">ProcessingError</code>,
+and continues processing all other files. The CLI returns exit code 5 if any processing errors occurred
+(suppressible with <code class="language-plaintext highlighter-rouge">--no-fail-on-error</code>).</li>
 </ul>
 
 <h3 id="7--create-a-language-version-handler">7.  Create a language version handler</h3>
@@ -2424,7 +2433,7 @@ syntax tree) is not suitable to add methods such as <code class="language-plaint
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            May 2026 (7.25.0)<br /> Site last generated: Jun 19, 2026 <br />
+            June 2026 (7.26.0)<br /> Site last generated: Jun 22, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
