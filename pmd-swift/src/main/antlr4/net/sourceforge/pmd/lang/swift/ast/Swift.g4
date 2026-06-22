@@ -391,11 +391,11 @@ protocolInitializerDeclaration : initializerHead genericParameterClause? paramet
 
 // GRAMMAR OF A PROTOCOL SUBSCRIPT DECLARATION
 
-protocolSubscriptDeclaration : subscriptHead subscriptResult getterSetterKeywordBlock  ;
+protocolSubscriptDeclaration : subscriptHead subscriptResult genericWhereClause? getterSetterKeywordBlock  ;
 
 // GRAMMAR OF A PROTOCOL ASSOCIATED TYPE DECLARATION
 
-protocolAssociatedTypeDeclaration : attributes? accessLevelModifier? 'associatedtype' typealiasName typeInheritanceClause? typealiasAssignment?;
+protocolAssociatedTypeDeclaration : attributes? accessLevelModifier? 'associatedtype' typealiasName typeInheritanceClause? typealiasAssignment? genericWhereClause?;
 
 // GRAMMAR OF AN INITIALIZER DECLARATION
 
@@ -416,12 +416,13 @@ extensionMember: declaration | compilerControlStatement ;
 
 // GRAMMAR OF A SUBSCRIPT DECLARATION
 
-subscriptDeclaration : subscriptHead subscriptResult getterSetterBlock
- | subscriptHead subscriptResult getterSetterKeywordBlock
+subscriptDeclaration
+ : subscriptHead subscriptResult genericWhereClause? getterSetterBlock
+ | subscriptHead subscriptResult genericWhereClause? getterSetterKeywordBlock
  // most general form of subscript declaration; should be kept at the bottom.
- | subscriptHead subscriptResult codeBlock
+ | subscriptHead subscriptResult genericWhereClause? codeBlock
  ;
-subscriptHead : attributes? declarationModifiers? 'subscript' parameterClause  ;
+subscriptHead : attributes? declarationModifiers? 'subscript' genericParameterClause? parameterClause  ;
 subscriptResult : '->' attributes? sType  ;
 
 // GRAMMAR OF A MACRO DECLARATION
