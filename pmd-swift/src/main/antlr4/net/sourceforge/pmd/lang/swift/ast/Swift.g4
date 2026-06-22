@@ -1111,7 +1111,7 @@ VersionLiteral: DecimalLiteral DecimalFraction DecimalFraction ;
 
 TRIPLEDQUOTES : '"""' ;
 
-MultiStringLiteral : TRIPLEDQUOTES '\n' .*? '\n' TRIPLEDQUOTES ;
+MultiStringLiteral : TRIPLEDQUOTES '\n' .*? '\n' [ \t]* TRIPLEDQUOTES ;
 fragment MultiQuotedText : MultiQuotedTextItem+ ;
 fragment MultiQuotedTextItem : MultiInterpolatedString | ~[\\\u000A\u000D] ;
 fragment MultiInterpolatedString: '\\(' (MultiQuotedTextItem | SingleStringLiteral)* ')';
