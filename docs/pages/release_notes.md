@@ -54,6 +54,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
   * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
   * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null
+  * [#6781](https://github.com/pmd/pmd/issues/6781): \[java] UselessPureMethodCall: False positive for Stream.forEach
 * kotlin
   * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add auxClasspath language property
 * kotlin-bestpractices
