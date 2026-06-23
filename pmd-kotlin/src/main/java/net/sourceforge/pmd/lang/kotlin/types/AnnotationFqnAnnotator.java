@@ -24,15 +24,15 @@ import nl.stokpop.typemapper.model.AnnotationAst;
 /**
  * Annotates declaration nodes with annotation FQNs.
  *
- * <p>{@link #setAnnotationAttributes} sets type data on the declaration node itself
+ * <p>{@link #setAnnotationFqns} sets type data on the declaration node itself
  * and type data on each {@code KtUnescapedAnnotation} / {@code KtSingleAnnotation}
  * child, matching by simple (unqualified) name.
  *
  * <p>For function parameter type annotation, see {@link FunctionParameterAnnotator}.
  */
-final class AnnotationAttributeAnnotator {
+final class AnnotationFqnAnnotator {
 
-    private AnnotationAttributeAnnotator() {
+    private AnnotationFqnAnnotator() {
     }
 
     /**
@@ -40,7 +40,7 @@ final class AnnotationAttributeAnnotator {
      * type data on each of its {@code KtUnescapedAnnotation}
      * children, matching by simple (unqualified) name.
      */
-    static void setAnnotationAttributes(KotlinNode declNode, List<AnnotationAst> annotations) {
+    static void setAnnotationFqns(KotlinNode declNode, List<AnnotationAst> annotations) {
         if (annotations.isEmpty()) {
             return;
         }

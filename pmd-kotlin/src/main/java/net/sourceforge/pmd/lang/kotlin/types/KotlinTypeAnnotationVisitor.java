@@ -43,9 +43,9 @@ import nl.stokpop.typemapper.model.TypedAst;
  *   <li>type data on {@code ForStatement} nodes (loop variable type)</li>
  *   <li>type data on {@code UnescapedAnnotation} <em>and</em>
  *       {@code SingleAnnotation} nodes (annotation FQN)
- *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
+ *       -- delegated to {@link AnnotationFqnAnnotator}</li>
  *   <li>type data on declaration nodes (comma-joined FQN list)
- *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
+ *       -- delegated to {@link AnnotationFqnAnnotator}</li>
  *   <li>type data on {@code DelegationSpecifier} nodes (supertype FQN)
  *       -- delegated to {@link DelegationSpecifierAnnotator}</li>
  * </ul>
@@ -110,7 +110,7 @@ public final class KotlinTypeAnnotationVisitor {
      * the kotlin-type-mapper data indexed by line number.
      *
      * <p>Delegation-specifier, annotation-attribute, and parameter-type logic is delegated to
-     * {@link DelegationSpecifierAnnotator}, {@link AnnotationAttributeAnnotator},
+     * {@link DelegationSpecifierAnnotator}, {@link AnnotationFqnAnnotator},
      * and {@link FunctionParameterAnnotator} respectively.
      */
     private static final class AnnotatingVisitor extends KotlinVisitorBase<Void, Void> {
@@ -127,7 +127,7 @@ public final class KotlinTypeAnnotationVisitor {
             for (DeclarationAst decl : decls) {
                 if (decl.getType() != null) {
                     KotlinNodeTypeData.setTypeName(node, decl.getType());
-                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
+                    AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     break;
                 }
             }
@@ -143,7 +143,7 @@ public final class KotlinTypeAnnotationVisitor {
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.PROPERTY && decl.getType() != null) {
                     KotlinNodeTypeData.setTypeName(node, decl.getType());
-                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
+                    AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     break;
                 }
             }
@@ -156,7 +156,7 @@ public final class KotlinTypeAnnotationVisitor {
             for (DeclarationAst decl : decls) {
                 if (decl.getReturnType() != null) {
                     KotlinNodeTypeData.setReturnTypeName(node, decl.getReturnType());
-                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
+                    AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     FunctionParameterAnnotator.setFunctionParameterTypes(node, decl.getParameters());
                     break;
                 }
@@ -199,7 +199,7 @@ public final class KotlinTypeAnnotationVisitor {
                         || decl.getKind() == DeclarationKind.ENUM) {
                     // Set @TypeName to the class's own FQN (useful in Designer + XPath)
                     KotlinNodeTypeData.setTypeName(node, decl.getFqName());
-                    AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
+                    AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     DelegationSpecifierAnnotator.setDelegationSpecifierTypes(node, decl.getSuperTypes());
                     break;
                 }
@@ -223,7 +223,7 @@ public final class KotlinTypeAnnotationVisitor {
     /**
      * Finds the first {@code KtUserType} directly inside a {@code KtConstructorInvocation}.
      * Shared helper used by both {@link DelegationSpecifierAnnotator} and
-     * {@link AnnotationAttributeAnnotator}.
+     * {@link AnnotationFqnAnnotator}.
      */
     static KtUserType findUserTypeInConstructorInvocation(KtConstructorInvocation ctorInvocation) {
         for (int j = 0; j < ctorInvocation.getNumChildren(); j++) {
