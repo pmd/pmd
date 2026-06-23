@@ -49,7 +49,10 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
         depth--;
         ASTStatement elseBranch = node.getElseBranch();
         if (elseBranch != null) {
+            int elseIncrement = elseBranch instanceof ASTIfStatement ? 0 : 1;
+            depth += elseIncrement;
             elseBranch.acceptVisitor(this, data);
+            depth -= elseIncrement;
         }
         return data;
     }
