@@ -169,7 +169,18 @@ class Wrong {
     </test-code>
 
     <test-code>
-<<<<<<< HEAD
+        <description>Special case main() (#6459)</description>
+        <expected-problems>0</expected-problems>
+        <code>
+class MyTest {
+    public static void main(final String... args)  {
+        // main method that is invoked in IntelliJ
+    }
+}
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Overriding a method from another class should only prevent a violation if the method from the parent class is public #6460</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>11-11</expected-linenumbers>
