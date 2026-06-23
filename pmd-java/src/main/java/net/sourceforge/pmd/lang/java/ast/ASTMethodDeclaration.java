@@ -57,10 +57,18 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
-     * Returns true if this method is overridden.
+     * Returns true if this method overrides a method in a supertype.
      */
-    public boolean isOverridden() {
+    public boolean isOverride() {
         return overriddenMethod != null;
+    }
+
+    /**
+     * @deprecated since 7.26.0
+     */
+    @Deprecated
+    public boolean isOverridden() {
+        return isOverride();
     }
 
     /**

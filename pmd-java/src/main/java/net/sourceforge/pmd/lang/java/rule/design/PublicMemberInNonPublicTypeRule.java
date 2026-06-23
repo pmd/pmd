@@ -119,7 +119,7 @@ public class PublicMemberInNonPublicTypeRule extends AbstractJavaRulechainRule {
         return isViolation((ModifierOwner) node)
                 // special case: if a method is overriding another method we only report
                 // if we're allowed to reduce the visibility.
-                && (!node.isOverridden() || !isPublic(node.getOverriddenMethod().getModifiers()))
+                && (!node.isOverride() || !isPublic(node.getOverriddenMethod().getModifiers()))
                 // special case: always exclude main methods, they are allowed to be public
                 && !node.isMainMethod();
     }
