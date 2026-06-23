@@ -2,7 +2,7 @@
 <test-data
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
 
     <test-code>
         <description>Rule example</description>
@@ -81,7 +81,7 @@ class Wrong {
 
     public int
     field // <--violation: line 7
-    ;
+    = 0;
 
     public int
     iField1, // <--violation: line 11
@@ -178,5 +178,58 @@ class MyTest {
     }
 }
         </code>
+    </test-code>
+
+    <test-code>
+        <description>Overriding a method from another class should only prevent a violation if the method from the parent class is public #6460</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11-11</expected-linenumbers>
+        <code>
+public class Parent {
+    public void foo() { }
+    void bar() { }
+}
+
+class Child extends Parent {
+    @Override
+    public void foo() { }  // this has to be public, because an overriding method has to be at least as visible as the overridden one
+
+    @Override
+    public void bar() { }  // violation, because this can be default visibility
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Methods in interfaces are implicitly public, so methods implementing an interface need to be public, too</description>
+        <expected-problems>0</expected-problems>
+        <code>
+public interface I {
+    public void foo() { }
+    void bar() { }
+}
+
+class Child extends Parent {
+    @Override
+    public void foo() { }  // this has to be public
+
+    @Override
+    public void bar() { }  // this has to be public, too
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Verify that we can suppress on the method (#6461)</description>
+        <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="3">@SuppressWarnings</suppressor>
+        </expected-suppressions>
+        <code><![CDATA[
+class Wrong {
+    @SuppressWarnings("PMD.PublicMemberInNonPublicType")
+    public void method() {} // violation
+}
+]]></code>
     </test-code>
 </test-data>

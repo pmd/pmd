@@ -36,8 +36,17 @@ This is a {{ site.pmd.release_type }} release.
 * The new Kotlin rule {% rule kotlin/bestpractices/LocalVariableShadowsParameter %} detects local variable
   declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
   and may lead to confusion about which value is used.
+* The new Apex rule {% rule apex/errorprone/InvocableClassNoArgConstructor %} detects classes that use
+  `@InvocableVariable` properties, but that don't provide a no-arg constructor. Without such a constructor,
+  runtime exception occur when Salesforce Flow tries to instantiate such classes.
+
+#### Deprecated Rules
+* The rule {% rule java/design/UseObjectForClearerAPI %} was deprecated. Use {% rule java/design/ExcessiveParameterList %}
+  instead. The old rule name still works.
 
 ### 🐛️ Fixed Issues
+* apex-errorprone
+  * [#6793](https://github.com/pmd/pmd/issues/6793): \[apex] New Rule: Invocable Classes require a no argument constructor
 * apex-security
   * [#2955](https://github.com/pmd/pmd/issues/2955): \[apex] ApexSOQLInjection: False positive when passing local var with concatenating strings
   * [#3877](https://github.com/pmd/pmd/issues/3877): \[apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()
@@ -54,7 +63,9 @@ This is a {{ site.pmd.release_type }} release.
   * [#6239](https://github.com/pmd/pmd/issues/6239): \[java] UseDiamondOperator: False positive with Guice TypeLiteral
   * [#6775](https://github.com/pmd/pmd/issues/6775): \[java] UselessParentheses: False negative when on the right-hand side of an assignment statement
 * java-design
+  * [#3741](https://github.com/pmd/pmd/issues/3741): \[java] Deprecate UseObjectForClearerAPI
   * [#6459](https://github.com/pmd/pmd/issues/6459): \[java] PublicMemberInNonPublicType: False positive for main(...) methods
+  * [#6460](https://github.com/pmd/pmd/issues/6460): \[java] PublicMemberInNonPublicType: False negative for overridden methods
 * java-errorprone
   * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
   * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null

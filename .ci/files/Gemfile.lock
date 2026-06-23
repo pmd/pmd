@@ -15,7 +15,7 @@ GEM
     logger (1.7.0)
     logger-colors (1.1.0)
       logger
-    nokogiri (1.19.3-x86_64-linux-gnu)
+    nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
     pmdtester (1.7.0)
