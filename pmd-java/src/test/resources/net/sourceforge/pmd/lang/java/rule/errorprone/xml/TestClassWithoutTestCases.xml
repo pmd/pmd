@@ -19,6 +19,17 @@ public class FooTest extends TestCase {
     </test-code>
 
     <test-code>
+        <description>JUnit3: valid case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+    public void testX(){}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>JUnit3: test method should be public</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -197,7 +208,7 @@ final class SampleTest extends Object {
         Assertions.assertTrue(num > 0);
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -211,7 +222,7 @@ final class SampleTest {
     void doesTest() {
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -220,7 +231,7 @@ final class SampleTest {
         <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 class SampleTest { }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -231,7 +242,7 @@ class SampleTest { }
         <code><![CDATA[
 package my.pkg;
 class MyEmptyCase { }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -249,7 +260,7 @@ class MyEmptyCase {
     class MyNestedCase { }
     class OtherNestedClass { }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -259,7 +270,7 @@ class MyEmptyCase {
         <code><![CDATA[
 package my.other.pkg;
 class MyEmptyCase { }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -270,7 +281,7 @@ public class SampleTest {
     @org.testng.annotations.Test
     public void runAssertions() {}
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -282,7 +293,7 @@ public class SampleTest {
     @Test
     public void runAssertions() {}
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -302,7 +313,7 @@ class DemoNestedTests {
         }
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -324,7 +335,7 @@ class DemoNestedTests {
         // missing tests
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -341,7 +352,7 @@ class SampleTest {
 
     private static class Other {}
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -360,7 +371,7 @@ public final class TestInputConfiguration {
     public static final class InnerTest {
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -374,7 +385,7 @@ public class MyTests {
 
     static class Config {}
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -388,7 +399,7 @@ public class MyTests {
 
     static class Config {}
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -399,7 +410,7 @@ public class MyTests {
 class
 FooTest // <--violation: line 2
 {}
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -415,7 +426,7 @@ class FooTest extends net.sourceforge.pmd.lang.java.rule.errorprone.rulesfortest
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class FooTest extends net.sourceforge.pmd.lang.java.rule.errorprone.rulesfortests.JUnit4ParentWithTest {}
-]]></code>
+        ]]></code>
     </test-code>
     
     <test-code>
@@ -437,7 +448,7 @@ class TimeProfilerTests {
         void testFoo() {}
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
