@@ -40,6 +40,10 @@ This is a {{ site.pmd.release_type }} release.
   `@InvocableVariable` properties, but that don't provide a no-arg constructor. Without such a constructor,
   runtime exception occur when Salesforce Flow tries to instantiate such classes.
 
+#### Deprecated Rules
+* The rule {% rule java/design/UseObjectForClearerAPI %} was deprecated. Use {% rule java/design/ExcessiveParameterList %}
+  instead. The old rule name still works.
+
 ### 🐛️ Fixed Issues
 * apex-errorprone
   * [#6793](https://github.com/pmd/pmd/issues/6793): \[apex] New Rule: Invocable Classes require a no argument constructor
@@ -58,6 +62,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-codestyle
   * [#6239](https://github.com/pmd/pmd/issues/6239): \[java] UseDiamondOperator: False positive with Guice TypeLiteral
   * [#6775](https://github.com/pmd/pmd/issues/6775): \[java] UselessParentheses: False negative when on the right-hand side of an assignment statement
+* java-design
+  * [#3741](https://github.com/pmd/pmd/issues/3741): \[java] Deprecate UseObjectForClearerAPI
 * java-errorprone
   * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
   * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null
