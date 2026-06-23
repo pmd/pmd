@@ -23,6 +23,9 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Updated PMD Designer
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pmd-designer/releases/tag/7.19.3).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
