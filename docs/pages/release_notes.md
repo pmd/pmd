@@ -33,8 +33,13 @@ This is a {{ site.pmd.release_type }} release.
 * The new Kotlin rule {% rule kotlin/bestpractices/LocalVariableShadowsParameter %} detects local variable
   declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
   and may lead to confusion about which value is used.
+* The new Apex rule {% rule apex/errorprone/InvocableClassNoArgConstructor %} detects classes that use
+  `@InvocableVariable` properties, but that don't provide a no-arg constructor. Without such a constructor,
+  runtime exception occur when Salesforce Flow tries to instantiate such classes.
 
 ### 🐛️ Fixed Issues
+* apex-errorprone
+  * [#6793](https://github.com/pmd/pmd/issues/6793): \[apex] New Rule: Invocable Classes require a no argument constructor
 * apex-security
   * [#2955](https://github.com/pmd/pmd/issues/2955): \[apex] ApexSOQLInjection: False positive when passing local var with concatenating strings
   * [#3877](https://github.com/pmd/pmd/issues/3877): \[apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()
