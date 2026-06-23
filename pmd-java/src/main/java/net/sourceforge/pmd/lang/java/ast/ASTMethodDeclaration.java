@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A method declaration, in a class or interface declaration. Since 7.0,
@@ -67,6 +68,7 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
      * @deprecated since 7.26.0
      */
     @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Override")
     public boolean isOverridden() {
         return isOverride();
     }
