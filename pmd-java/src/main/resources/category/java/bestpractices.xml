@@ -2261,7 +2261,7 @@ Byte arrays in any method and String arrays in `public static void main(String[]
             <property name="xpath">
                 <value>
 <![CDATA[
-//FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
+//FormalParameters[not(parent::MethodDeclaration[@Override=true() or @MainMethod=true()])]
   /FormalParameter[position()=last()]
    [@Varargs=false()]
    [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassType[pmd-java:typeIs('java.lang.Byte')])]
