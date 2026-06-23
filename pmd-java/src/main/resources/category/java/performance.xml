@@ -505,7 +505,7 @@ is faster, but returns only an array of type `Object[]`.
                 <value>
 <![CDATA[
 //MethodCall[pmd-java:matchesSig("java.util.Collection#toArray(_)")]
-    [ArgumentList/ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr[not(NumericLiteral[@Image="0"])]]
+    [ArgumentList/ArrayAllocation/ArrayType/ArrayDimensions/ArrayDimExpr[not(NumericLiteral[@ValueAsInt=0])]]
 ]]>
                 </value>
             </property>
