@@ -92,8 +92,9 @@ final class KotlinTypeAwarenessSupport {
 
     private KotlinTypeAnnotationVisitor analyzeAndBuildVisitor(Map<String, String> sources) {
         TypedAst ast = KotlinTypeMapper.fromSources(sources, toFiles(classpathResolver.resolve()));
-        analysisContext.set(KotlinTypeAnalysisContext.from(ast));
-        return new KotlinTypeAnnotationVisitor(ast);
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
+        analysisContext.set(ctx);
+        return new KotlinTypeAnnotationVisitor(ctx);
     }
 
     @SuppressWarnings("PMD.CloseResource") // TextFile lifecycle is managed by PMD framework.

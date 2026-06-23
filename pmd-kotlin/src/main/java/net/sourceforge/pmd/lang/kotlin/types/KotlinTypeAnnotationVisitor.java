@@ -4,12 +4,7 @@
 
 package net.sourceforge.pmd.lang.kotlin.types;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
@@ -22,11 +17,10 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.DeclarationKind;
-import nl.stokpop.typemapper.model.FileAst;
-import nl.stokpop.typemapper.model.TypedAst;
 
 /**
  * Walks a parsed Kotlin AST and sets type/annotation attributes on nodes using
@@ -50,13 +44,10 @@ import nl.stokpop.typemapper.model.TypedAst;
  *       -- delegated to {@link DelegationSpecifierAnnotator}</li>
  * </ul>
  *
- * <p>The visitor is constructed once per analysis run (from the {@link TypedAst}
- * produced by kotlin-type-mapper) and applied to each file's root node during
- * the post-parse step inside {@code KotlinLanguageProcessor}.
- *
- * <p>File matching uses the <em>base filename</em> (e.g. {@code "Foo.kt"}) rather
- * than the full path, so it works regardless of whether the files were written to
- * a temporary directory or analyzed from their original location.
+ * <p>The visitor is constructed once per analysis run (from the
+ * {@link KotlinTypeAnalysisContext} produced by kotlin-type-mapper) and applied
+ * to each file's root node during the post-parse step inside
+ * {@code KotlinLanguageProcessor}.
  *
  * @since 7.26.0
  * @experimental
@@ -64,20 +55,10 @@ import nl.stokpop.typemapper.model.TypedAst;
 @Experimental
 public final class KotlinTypeAnnotationVisitor {
 
-    /** Map from base filename (e.g. "Foo.kt") -> per-line declarations index. */
-    private final Map<String, Map<Integer, List<DeclarationAst>>> byFilename;
+    private final KotlinTypeAnalysisContext ctx;
 
-    public KotlinTypeAnnotationVisitor(TypedAst typedAst) {
-        Map<String, Map<Integer, List<DeclarationAst>>> index = new HashMap<>();
-        for (FileAst fileAst : typedAst.getFiles()) {
-            String name = new File(fileAst.getRelativePath()).getName();
-            Map<Integer, List<DeclarationAst>> byLine =
-                    index.computeIfAbsent(name, k -> new HashMap<>());
-            for (DeclarationAst decl : fileAst.getDeclarations()) {
-                byLine.computeIfAbsent(decl.getLine(), k -> new ArrayList<>()).add(decl);
-            }
-        }
-        this.byFilename = index;
+    public KotlinTypeAnnotationVisitor(KotlinTypeAnalysisContext ctx) {
+        this.ctx = ctx;
     }
 
     /**
@@ -87,27 +68,15 @@ public final class KotlinTypeAnnotationVisitor {
      * as well as on {@code FunctionValueParameter} children of function declarations.
      *
      * @param root     the root node of the parsed Kotlin file
-     * @param absPath  the absolute path of the file (used to extract the base filename)
+     * @param absPath  the absolute path of the file (used to look up declarations by file)
      */
     public void annotate(KtKotlinFile root, String absPath) {
-        String filename = new File(absPath).getName();
-        Map<Integer, List<DeclarationAst>> resolved = byFilename.get(filename);
-        if (resolved == null && !filename.endsWith(".kt")) {
-            // Fallback: PmdRuleTst uses synthetic file ids without .kt extension (e.g. "file").
-            // The temp file written to disk has .kt appended, so try that name.
-            resolved = byFilename.get(filename + ".kt");
-        }
-        if (resolved == null) {
-            return;
-        }
-
-        final Map<Integer, List<DeclarationAst>> byLine = resolved;
-        root.acceptVisitor(new AnnotatingVisitor(byLine), null);
+        root.acceptVisitor(new AnnotatingVisitor(ctx, absPath), null);
     }
 
     /**
      * Visitor that annotates PMD AST nodes with type/annotation attributes from
-     * the kotlin-type-mapper data indexed by line number.
+     * the kotlin-type-mapper data indexed by file path and line number.
      *
      * <p>Delegation-specifier, annotation-attribute, and parameter-type logic is delegated to
      * {@link DelegationSpecifierAnnotator}, {@link AnnotationFqnAnnotator},
@@ -115,15 +84,17 @@ public final class KotlinTypeAnnotationVisitor {
      */
     private static final class AnnotatingVisitor extends KotlinVisitorBase<Void, Void> {
 
-        private final Map<Integer, List<DeclarationAst>> byLine;
+        private final KotlinTypeAnalysisContext ctx;
+        private final String absPath;
 
-        AnnotatingVisitor(Map<Integer, List<DeclarationAst>> byLine) {
-            this.byLine = byLine;
+        AnnotatingVisitor(KotlinTypeAnalysisContext ctx, String absPath) {
+            this.ctx = ctx;
+            this.absPath = absPath;
         }
 
         @Override
         public Void visitPropertyDeclaration(KtPropertyDeclaration node, Void data) {
-            List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getType() != null) {
                     KotlinNodeTypeData.setTypeName(node, decl.getType());
@@ -139,7 +110,7 @@ public final class KotlinTypeAnnotationVisitor {
         // kotlin-type-mapper emits them as kind="property" with a type field.
         @Override
         public Void visitClassParameter(KtClassParameter node, Void data) {
-            List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.PROPERTY && decl.getType() != null) {
                     KotlinNodeTypeData.setTypeName(node, decl.getType());
@@ -152,7 +123,7 @@ public final class KotlinTypeAnnotationVisitor {
 
         @Override
         public Void visitFunctionDeclaration(KtFunctionDeclaration node, Void data) {
-            List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getReturnType() != null) {
                     KotlinNodeTypeData.setReturnTypeName(node, decl.getReturnType());
@@ -166,7 +137,7 @@ public final class KotlinTypeAnnotationVisitor {
 
         @Override
         public Void visitCatchBlock(KtCatchBlock node, Void data) {
-            List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.CATCH_VARIABLE && decl.getType() != null) {
                     KotlinNodeTypeData.setTypeName(node, decl.getType());
@@ -178,7 +149,7 @@ public final class KotlinTypeAnnotationVisitor {
 
         @Override
         public Void visitForStatement(KtForStatement node, Void data) {
-            List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && decl.getType() != null) {
                     KotlinNodeTypeData.setTypeName(node, decl.getType());
@@ -190,7 +161,7 @@ public final class KotlinTypeAnnotationVisitor {
 
         @Override
         public Void visitClassDeclaration(KtClassDeclaration node, Void data) {
-            List<DeclarationAst> decls = lookupWithFallback(byLine, node.getBeginLine());
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.CLASS
                         || decl.getKind() == DeclarationKind.DATA_CLASS
@@ -232,25 +203,5 @@ public final class KotlinTypeAnnotationVisitor {
             }
         }
         return null;
-    }
-
-    static List<DeclarationAst> lookupWithFallback(Map<Integer, List<DeclarationAst>> byLine, int line) {
-        List<DeclarationAst> exact = byLine.get(line);
-        if (exact != null && !exact.isEmpty()) {
-            return exact;
-        }
-        // +/-1 fallback: when annotations are on a separate line from the 'fun'/'val' keyword,
-        // ktm reports the annotation line but PMD's ANTLR parser may report the keyword line,
-        // causing a 1-line difference.
-        List<DeclarationAst> result = new ArrayList<>();
-        List<DeclarationAst> prev = byLine.get(line - 1);
-        List<DeclarationAst> next = byLine.get(line + 1);
-        if (prev != null) {
-            result.addAll(prev);
-        }
-        if (next != null) {
-            result.addAll(next);
-        }
-        return result.isEmpty() ? Collections.emptyList() : result;
     }
 }
