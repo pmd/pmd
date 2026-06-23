@@ -38,7 +38,7 @@ import nl.stokpop.typemapper.model.TypedAst;
  *       {@code val}/{@code var} params (e.g. {@code class Foo(val name: String)})</li>
  *   <li>type data on {@code FunctionDeclaration} nodes (return type)</li>
  *   <li>type data on {@code FunctionValueParameter} nodes (parameter type)
- *       -- delegated to {@link AnnotationAttributeAnnotator}</li>
+ *       -- delegated to {@link FunctionParameterAnnotator}</li>
  *   <li>type data on {@code CatchBlock} nodes (caught exception type)</li>
  *   <li>type data on {@code ForStatement} nodes (loop variable type)</li>
  *   <li>type data on {@code UnescapedAnnotation} <em>and</em>
@@ -109,9 +109,9 @@ public final class KotlinTypeAnnotationVisitor {
      * Visitor that annotates PMD AST nodes with type/annotation attributes from
      * the kotlin-type-mapper data indexed by line number.
      *
-     * <p>Delegation-specifier and annotation-attribute logic is delegated to
-     * {@link DelegationSpecifierAnnotator} and {@link AnnotationAttributeAnnotator}
-     * respectively.
+     * <p>Delegation-specifier, annotation-attribute, and parameter-type logic is delegated to
+     * {@link DelegationSpecifierAnnotator}, {@link AnnotationAttributeAnnotator},
+     * and {@link FunctionParameterAnnotator} respectively.
      */
     private static final class AnnotatingVisitor extends KotlinVisitorBase<Void, Void> {
 
@@ -157,7 +157,7 @@ public final class KotlinTypeAnnotationVisitor {
                 if (decl.getReturnType() != null) {
                     KotlinNodeTypeData.setReturnTypeName(node, decl.getReturnType());
                     AnnotationAttributeAnnotator.setAnnotationAttributes(node, decl.getAnnotations());
-                    AnnotationAttributeAnnotator.setFunctionParameterTypes(node, decl.getParameters());
+                    FunctionParameterAnnotator.setFunctionParameterTypes(node, decl.getParameters());
                     break;
                 }
             }

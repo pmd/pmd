@@ -13,8 +13,6 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameters;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
@@ -22,20 +20,15 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
-import nl.stokpop.typemapper.model.ParameterAst;
 
 /**
- * Annotates declaration nodes with annotation FQNs and function parameter types.
+ * Annotates declaration nodes with annotation FQNs.
  *
- * <p>Responsibility (1): {@link #setAnnotationAttributes} sets
- * type data on the declaration node itself and
- * type data on each {@code KtUnescapedAnnotation} /
- * {@code KtSingleAnnotation} child.
+ * <p>{@link #setAnnotationAttributes} sets type data on the declaration node itself
+ * and type data on each {@code KtUnescapedAnnotation} / {@code KtSingleAnnotation}
+ * child, matching by simple (unqualified) name.
  *
- * <p>Responsibility (2): {@link #setFunctionParameterTypes} sets
- * type data on each {@code KtFunctionValueParameter}
- * child by matching against the {@link nl.stokpop.typemapper.model.ParameterAst}
- * list from kotlin-type-mapper.
+ * <p>For function parameter type annotation, see {@link FunctionParameterAnnotator}.
  */
 final class AnnotationAttributeAnnotator {
 
@@ -90,42 +83,6 @@ final class AnnotationAttributeAnnotator {
                     KotlinNodeTypeData.setTypeName(parent, fqn);
                 }
             }
-        }
-    }
-
-    /**
-     * Sets type data on each {@code KtFunctionValueParameter}
-     * child of the given function declaration, matching by position against the
-     * {@code parameters} list from the kotlin-type-mapper {@link nl.stokpop.typemapper.model.DeclarationAst}.
-     */
-    static void setFunctionParameterTypes(KtFunctionDeclaration funcNode, List<ParameterAst> parameters) {
-        if (parameters.isEmpty()) {
-            return;
-        }
-        KtFunctionValueParameters paramsNode = funcNode.children(KtFunctionValueParameters.class).first();
-        if (paramsNode != null) {
-            annotateParameterNodes(paramsNode, parameters);
-        }
-    }
-
-    private static void annotateParameterNodes(KtFunctionValueParameters paramsNode, List<ParameterAst> parameters) {
-        int paramIdx = 0;
-        for (int j = 0; j < paramsNode.getNumChildren(); j++) {
-            KotlinNode sub = paramsNode.getChild(j);
-            if (sub instanceof KotlinParser.KtFunctionValueParameter) {
-                if (paramIdx < parameters.size()) {
-                    String type = parameters.get(paramIdx).getType();
-                    if (type != null) {
-                        KotlinNodeTypeData.setTypeName(sub, type);
-                    }
-                }
-                paramIdx++;
-            }
-        }
-        if (paramIdx != parameters.size()) {
-            throw new IllegalStateException(
-                    "Parameter count mismatch in " + paramsNode
-                    + ": PMD saw " + paramIdx + ", ktm reported " + parameters.size());
         }
     }
 
