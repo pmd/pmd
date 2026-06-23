@@ -1154,7 +1154,7 @@ public class Foo {
           language="java"
           since="7.21.0"
           message="Public member ''{0}'' declared in a non-public type"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.PublicMemberInNonPublicTypeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#publicmemberinnonpublictype">
         <description>
 A non-public type should not declare its own members as public, as their visibility is effectively limited
@@ -1171,21 +1171,6 @@ methods of the supertype. Converting these methods to private removes them from 
 can inadvertently change the subtype's public API.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-//(MethodDeclaration|ConstructorDeclaration|CompactConstructorDeclaration|
-   FieldDeclaration|
-   ClassDeclaration|EnumDeclaration|AnnotationTypeDeclaration)
-  [@EffectiveVisibility != 'public']
-  [@Visibility = 'public']
-  [@Overridden = false() or not(@Overridden)]
-  [not(ancestor::ClassDeclaration[@Interface = true()] or ancestor::AnnotationTypeDeclaration)]
-(: Make sure, we return nodes that implement getName() for {0} in the rule message :)
-!(if (self::FieldDeclaration) then VariableDeclarator else .)
-]]></value>
-            </property>
-        </properties>
         <example><![CDATA[
 class Wrong {
     public void method() {} // violation

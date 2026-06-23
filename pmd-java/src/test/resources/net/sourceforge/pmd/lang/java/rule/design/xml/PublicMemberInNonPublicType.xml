@@ -81,7 +81,7 @@ class Wrong {
 
     public int
     field // <--violation: line 7
-    ;
+    = 0;
 
     public int
     iField1, // <--violation: line 11
@@ -164,6 +164,45 @@ class Wrong {
     /*package*/ @interface Annot {
         String value();
     }
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Overriding a method from another class should only prevent a violation if the method from the parent class is public #6460</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11-11</expected-linenumbers>
+        <code>
+public class Parent {
+    public void foo() { }
+    void bar() { }
+}
+
+class Child extends Parent {
+    @Override
+    public void foo() { }  // this has to be public, because an overriding method has to be at least as visible as the overridden one
+
+    @Override
+    public void bar() { }  // violation, because this can be default visibility
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Methods in interfaces are implicitly public, so methods implementing an interface need to be public, too</description>
+        <expected-problems>0</expected-problems>
+        <code>
+public interface I {
+    public void foo() { }
+    void bar() { }
+}
+
+class Child extends Parent {
+    @Override
+    public void foo() { }  // this has to be public
+
+    @Override
+    public void bar() { }  // this has to be public, too
 }
         </code>
     </test-code>
