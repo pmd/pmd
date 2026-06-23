@@ -81,6 +81,9 @@ This is a {{ site.pmd.release_type }} release.
   * {% jdoc core::lang.ast.impl.antlr4.AntlrBaseParser %} has been deprecated in favor of
     {% jdoc core::lang.ast.impl.antlr4.AntlrBaseParserWithErrorHandling %}, which converts ANTLR's parsing
     errors into PMD's processing errors by default.
+* java
+  * {% jdoc !!java::lang.java.ast.ASTMethodDeclaration#isOverridden() %} has been renamed to {% jdoc java::lang.java.ast.ASTMethodDeclaration#isOverride() %}.
+    The old name has been deprecated and will remain available until PMD 8.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
