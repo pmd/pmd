@@ -61,6 +61,10 @@ public final class KotlinTypeAnnotationVisitor {
         this.ctx = ctx;
     }
 
+    public KotlinTypeAnalysisContext getContext() {
+        return ctx;
+    }
+
     /**
      * Annotates all {@code PropertyDeclaration}, {@code FunctionDeclaration},
      * {@code ClassDeclaration}, {@code CatchBlock}, and {@code ForStatement} nodes in

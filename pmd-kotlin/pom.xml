@@ -13,7 +13,7 @@
 
     <properties>
         <antlr4.visitor>true</antlr4.visitor>
-        <kotlin.type.mapper.version>0.6.0</kotlin.type.mapper.version>
+        <kotlin.type.mapper.version>0.6.1-SNAPSHOT</kotlin.type.mapper.version>
     </properties>
 
     <build>
