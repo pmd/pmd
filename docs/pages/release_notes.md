@@ -38,6 +38,8 @@ This is a {{ site.pmd.release_type }} release.
   and may lead to confusion about which value is used.
 
 ### 🐛️ Fixed Issues
+* apex
+  * [#6806](https://github.com/pmd/pmd/issues/6806): \[apex] ANTLR runtime mismatch 4.9.1 used for code generation does not match the current runtime version 4.13.2
 * apex-security
   * [#2955](https://github.com/pmd/pmd/issues/2955): \[apex] ApexSOQLInjection: False positive when passing local var with concatenating strings
   * [#3877](https://github.com/pmd/pmd/issues/3877): \[apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()
