@@ -4,18 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasJUnit3Tests;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasJUnit4Tests;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasJUnit5Tests;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasTestNGTests;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit3Class;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit5NestedClass;
 
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
 
@@ -32,17 +34,22 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
-        if (isJUnit3Class(node) || isJUnit5NestedClass(node) || isTestClassByPattern(node)) {
-            boolean hasTests =
-                node.getDeclarations(ASTMethodDeclaration.class)
-                    .any(TestFrameworksUtil::isTestMethod);
-            boolean hasNestedTestClasses = node.getDeclarations(ASTTypeDeclaration.class)
-                    .any(TestFrameworksUtil::isJUnit5NestedClass);
+        RuleContext ctx = (RuleContext) data;
 
-            if (!hasTests && !hasNestedTestClasses) {
-                asCtx(data).addViolation(node, node.getSimpleName());
+        if (isJUnit3Class(node)) {
+            if (!hasJUnit3Tests(node)) {
+                ctx.addViolation(node, node.getSimpleName());
+            }
+        } else if (isJUnit5NestedClass(node)) {
+            if (!hasJUnit5Tests(node)) {
+                ctx.addViolation(node, node.getSimpleName());
+            }
+        } else if (isTestClassByPattern(node)) {
+            if (!(hasJUnit4Tests(node) || hasJUnit5Tests(node) || hasTestNGTests(node))) {
+                ctx.addViolation(node, node.getSimpleName());
             }
         }
+
         return null;
     }
 

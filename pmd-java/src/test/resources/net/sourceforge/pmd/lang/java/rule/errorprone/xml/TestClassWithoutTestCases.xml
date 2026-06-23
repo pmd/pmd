@@ -401,4 +401,52 @@ FooTest // <--violation: line 2
 {}
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>JUnit5: Tests are in superclass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class FooTest extends net.sourceforge.pmd.lang.java.rule.errorprone.rulesfortests.Junit5ParentWithTest {}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit4: Tests are in superclass</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest extends net.sourceforge.pmd.lang.java.rule.errorprone.rulesfortests.JUnit4ParentWithTest {}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#5011: FP in nested classes (superclass has tests)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.*;
+
+public class SpeedProfilerTests extends TimeProfilerTests {
+	@Nested
+	class operations extends TimeProfilerTests.operations {}
+}
+
+class TimeProfilerTests {
+    @Test
+    void testBar() {}
+    class operations {
+        @Test
+        void testFoo() {}
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Just because a methods name starts with "test", doesn't mean it is a test (in all frameworks but JUnit 3)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+    public void testX(){}
+}
+        ]]></code>
+    </test-code>
 </test-data>
