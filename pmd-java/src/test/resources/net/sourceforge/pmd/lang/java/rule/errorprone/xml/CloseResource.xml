@@ -2331,6 +2331,31 @@ public class CastNullAfter {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: False positive with resource being closed in method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    void closeConnection(Connection c) {
+        c.close();
+    }
+
+    void bar(Pool pool) {
+        Connection c = pool.getConnection();
+        try {
+        } catch (Exception e) {
+        } finally {
+            // a lambda has the same effect
+            closeConnection(c);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 
 
 
