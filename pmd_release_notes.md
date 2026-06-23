@@ -42,6 +42,8 @@ This is a minor release.
   instead. The old rule name still works.
 
 ### 🐛️ Fixed Issues
+* apex
+  * [#6806](https://github.com/pmd/pmd/issues/6806): \[apex] ANTLR runtime mismatch 4.9.1 used for code generation does not match the current runtime version 4.13.2
 * apex-errorprone
   * [#6793](https://github.com/pmd/pmd/issues/6793): \[apex] New Rule: Invocable Classes require a no argument constructor
 * apex-security
