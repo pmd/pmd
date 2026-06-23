@@ -160,7 +160,7 @@ public class Child extends Junit5ParentWithTest {}
     </test-code>
 
     <test-code>
-        <description>test class should have default visibility, even if the test methods are in a nested class inside a parent class</description>
+        <description>test class should have default visibility, even if the test methods are in a nested class inside a parent class #6736</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3-3</expected-linenumbers>
         <code><![CDATA[
