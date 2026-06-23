@@ -26,6 +26,8 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * one, so Flow cannot create an instance and throws a runtime error. Global classes additionally
  * require the no-arg constructor to be {@code global} so that it is accessible from managed
  * packages.
+ *
+ * @since 7.26.0
  */
 public class InvocableClassNoArgConstructorRule extends AbstractApexRule {
 
@@ -48,30 +50,28 @@ public class InvocableClassNoArgConstructorRule extends AbstractApexRule {
             return data;
         }
 
-        List<ASTMethod> methods = node.descendants(ASTMethod.class).toList();
-        boolean hasCustomConstructors = false;
+        List<ASTMethod> ctors = node.descendants(ASTMethod.class)
+                .filter(ASTMethod::isConstructor)
+                .toList();
+        boolean hasCustomConstructors = !ctors.isEmpty();
         boolean hasValidNoArgConstructor = false;
 
         boolean isClassGlobal = isGlobal(node.firstChild(ASTModifierNode.class));
 
-        for (ASTMethod method : methods) {
-            if (method.isConstructor()) {
-                hasCustomConstructors = true;
+        for (ASTMethod constructor : ctors) {
+            if (constructor.getArity() == 0) {
+                ASTModifierNode constructorModifiers = constructor.firstChild(ASTModifierNode.class);
 
-                if (method.getArity() == 0) {
-                    ASTModifierNode constructorModifiers = method.firstChild(ASTModifierNode.class);
-
-                    if (isClassGlobal) {
-                        // Global classes require a global no-arg constructor for cross-package Flows
-                        if (isGlobal(constructorModifiers)) {
-                            hasValidNoArgConstructor = true;
-                            break;
-                        }
-                    } else {
-                        if (!isPrivate(constructorModifiers)) {
-                            hasValidNoArgConstructor = true;
-                            break;
-                        }
+                if (isClassGlobal) {
+                    // Global classes require a global no-arg constructor for cross-package Flows
+                    if (isGlobal(constructorModifiers)) {
+                        hasValidNoArgConstructor = true;
+                        break;
+                    }
+                } else {
+                    if (!isPrivate(constructorModifiers)) {
+                        hasValidNoArgConstructor = true;
+                        break;
                     }
                 }
             }
@@ -85,13 +85,13 @@ public class InvocableClassNoArgConstructorRule extends AbstractApexRule {
     }
 
     private boolean hasInvocableVariable(ASTUserClass classNode) {
-        for (ASTField field : classNode.descendants(ASTField.class).toList()) {
+        for (ASTField field : classNode.descendants(ASTField.class)) {
             if (hasInvocableAnnotation(field.getModifiers())) {
                 return true;
             }
         }
 
-        for (ASTProperty property : classNode.descendants(ASTProperty.class).toList()) {
+        for (ASTProperty property : classNode.descendants(ASTProperty.class)) {
             if (hasInvocableAnnotation(property.getModifiers())) {
                 return true;
             }
