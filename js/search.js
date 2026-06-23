@@ -1076,6 +1076,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/apex/errorprone.md",
+  "title": "InvocableClassNoArgConstructor (Apex, Error Prone)",
+  "tags": "",
+  "keywords": "Invocable Class No Arg Constructor",
+  "url": "pmd_rules_apex_errorprone.html#invocableclassnoargconstructor",
+  "summary": "Apex classes containing @InvocableVariable properties used for flow parameters must expose a visible, zero-argument constructor..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/apex/errorprone.md",
   "title": "MethodWithSameNameAsEnclosingClass (Apex, Error Prone)",
   "tags": "",
   "keywords": "Method With Same Name As Enclosing Class",
@@ -2704,7 +2712,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Excessive Parameter List",
   "url": "pmd_rules_java_design.html#excessiveparameterlist",
-  "summary": "Methods with numerous parameters are a challenge to maintain, especially if most of them share..."
+  "summary": "Methods with numerous parameters are a challenge to maintain and increase the risk of bugs...."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/design.md",

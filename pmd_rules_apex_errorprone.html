@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidInterfaceAsMapKey, AvoidNonExistentAnnotations, AvoidStatefulDatabaseResult, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses, TypeShadowsBuiltInNamespace">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidInterfaceAsMapKey, AvoidNonExistentAnnotations, AvoidStatefulDatabaseResult, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, InvocableClassNoArgConstructor, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses, TypeShadowsBuiltInNamespace">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -2629,6 +2629,37 @@ and Lightning Web Components.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/InaccessibleAuraEnabledGetter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="invocableclassnoargconstructor">InvocableClassNoArgConstructor</h2>
+
+<p><strong>Since:</strong> PMD 7.26.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Apex classes containing @InvocableVariable properties used for flow parameters must expose a visible, zero-argument constructor
+to prevent runtime instantiation errors under modern Salesforce API versions.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/InvocableClassNoArgConstructorRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.InvocableClassNoArgConstructorRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// BAD: Explicit constructor eliminates default constructor, leaving no zero-arg constructor</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FlowInput</span> <span class="o">{</span>
+    <span class="nd">@InvocableVariable</span> <span class="kd">public</span> <span class="nc">String</span> <span class="n">recordId</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">FlowInput</span><span class="o">(</span><span class="nc">String</span> <span class="n">recordId</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">recordId</span> <span class="o">=</span> <span class="n">recordId</span><span class="o">;</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// GOOD: Explicit zero-arg constructor alongside customized signature</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FlowInput</span> <span class="o">{</span>
+    <span class="nd">@InvocableVariable</span> <span class="kd">public</span> <span class="nc">String</span> <span class="n">recordId</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">FlowInput</span><span class="o">()</span> <span class="o">{}</span>
+    <span class="kd">public</span> <span class="nf">FlowInput</span><span class="o">(</span><span class="nc">String</span> <span class="n">recordId</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">recordId</span> <span class="o">=</span> <span class="n">recordId</span><span class="o">;</span> <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/InvocableClassNoArgConstructor"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="methodwithsamenameasenclosingclass">MethodWithSameNameAsEnclosingClass</h2>

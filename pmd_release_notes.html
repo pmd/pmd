@@ -2076,10 +2076,24 @@ that are producing a confusing error message when they fail.</li>
   <li>The new Kotlin rule <a href="pmd_rules_kotlin_bestpractices.html#localvariableshadowsparameter"><code class="language-plaintext highlighter-rouge">LocalVariableShadowsParameter</code></a> detects local variable
 declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
 and may lead to confusion about which value is used.</li>
+  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#invocableclassnoargconstructor"><code class="language-plaintext highlighter-rouge">InvocableClassNoArgConstructor</code></a> detects classes that use
+<code class="language-plaintext highlighter-rouge">@InvocableVariable</code> properties, but that don’t provide a no-arg constructor. Without such a constructor,
+runtime exception occur when Salesforce Flow tries to instantiate such classes.</li>
+</ul>
+
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+<ul>
+  <li>The rule <a href="pmd_rules_java_design.html#useobjectforclearerapi"><code class="language-plaintext highlighter-rouge">UseObjectForClearerAPI</code></a> was deprecated. Use <a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>
+instead. The old rule name still works.</li>
 </ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
+  <li>apex-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6793">#6793</a>: [apex] New Rule: Invocable Classes require a no argument constructor</li>
+    </ul>
+  </li>
   <li>apex-security
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2955">#2955</a>: [apex] ApexSOQLInjection: False positive when passing local var with concatenating strings</li>
@@ -2111,6 +2125,13 @@ and may lead to confusion about which value is used.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6239">#6239</a>: [java] UseDiamondOperator: False positive with Guice TypeLiteral</li>
       <li><a href="https://github.com/pmd/pmd/issues/6775">#6775</a>: [java] UselessParentheses: False negative when on the right-hand side of an assignment statement</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3741">#3741</a>: [java] Deprecate UseObjectForClearerAPI</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6459">#6459</a>: [java] PublicMemberInNonPublicType: False positive for main(…) methods</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6460">#6460</a>: [java] PublicMemberInNonPublicType: False negative for overridden methods</li>
     </ul>
   </li>
   <li>java-errorprone

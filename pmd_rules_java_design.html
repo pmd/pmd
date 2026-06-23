@@ -2895,24 +2895,116 @@ user-specified threshold.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Methods with numerous parameters are a challenge to maintain, especially if most of them share the
-same datatype. These situations usually denote the need for new objects to wrap the numerous parameters.</p>
+<p>Methods with numerous parameters are a challenge to maintain and increase the risk of bugs.
+When parameters share similar datatypes, they become prone to mix-ups during refactoring or
+when calling the method with positional arguments. Additionally, long parameter lists violate
+the Single Responsibility Principle — they suggest the method is trying to do too much or that
+conceptually related data hasn’t been properly grouped. As methods evolve, maintaining consistent
+parameter ordering across overloads and similar methods becomes increasingly difficult.</p>
+
+<p>Long parameter lists also make code harder to read and understand. Callers must carefully match
+arguments to parameters, and the parameter list itself becomes a visual barrier. This complexity
+increases the cognitive load for maintainers and leads to higher defect rates. The more parameters
+a method has, the less intuitive it becomes and the harder it is to test comprehensively,
+since the number of possible input combinations grows exponentially.</p>
+
+<p>There are several well-established alternatives to long parameter lists, each suited to different scenarios:
+the Builder Pattern (constructing objects fluently with named parameters),
+Multiple Parameter Objects (grouping related parameters into dedicated classes),
+Method Overloading (providing convenient signatures for common use cases),
+and Method Decomposition (splitting a single method into multiple, more focused methods that each take fewer parameters).</p>
+
+<p>Builder Pattern — Use when you want to replace a method call with many positional arguments
+with a fluent, named-parameter style. Each parameter is named at the call site, eliminating confusion
+about argument order and making the code self-documenting.</p>
+
+<p>Multiple Parameter Objects — Use when parameters naturally group into distinct semantic units.
+This is lighter than a full builder and works well when the parameter objects are stable
+and reused across multiple methods.</p>
+
+<p>Method Overloading — Use to provide convenient signatures for common cases without forcing callers
+to provide all possible parameters. Effective for APIs where there are genuinely frequent
+"common use case" patterns. Be cautious of overloading too many variants.</p>
+
+<p>Method Decomposition — Use when a single method is trying to do too much. Split it into focused methods,
+each with a clear responsibility and fewer parameters. Often combined with builder-style fluent APIs
+for controlled sequencing and initialization.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ExcessiveParameterListRule.java">net.sourceforge.pmd.lang.java.rule.design.ExcessiveParameterListRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span>      <span class="c1">// too many arguments liable to be mixed up</span>
-    <span class="kt">int</span> <span class="n">birthYear</span><span class="o">,</span> <span class="kt">int</span> <span class="n">birthMonth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">birthDate</span><span class="o">,</span> <span class="kt">int</span> <span class="n">height</span><span class="o">,</span> <span class="kt">int</span> <span class="n">weight</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ============ PROBLEM ============</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">createDatabaseConnection</span><span class="o">(</span><span class="nc">String</span> <span class="n">host</span><span class="o">,</span> <span class="kt">int</span> <span class="n">port</span><span class="o">,</span> <span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">String</span> <span class="n">password</span><span class="o">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">ssl</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
 
-    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="c1">// Usage - hard to understand what each argument means</span>
+<span class="n">createDatabaseConnection</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">,</span> <span class="mi">5432</span><span class="o">,</span> <span class="s">"admin"</span><span class="o">,</span> <span class="s">"secret"</span><span class="o">,</span> <span class="mi">30</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+
+
+<span class="c1">// ============ SOLUTION 1: Builder Pattern ============</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConnectionBuilder</span> <span class="o">{</span> <span class="o">[...]</span> <span class="o">}</span>
+
+<span class="c1">// Usage - clear and self-documenting</span>
+<span class="n">createDatabaseConnection</span><span class="o">(</span><span class="k">new</span> <span class="nc">ConnectionBuilder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">withHost</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">withPort</span><span class="o">(</span><span class="mi">5432</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">withCredentials</span><span class="o">(</span><span class="s">"admin"</span><span class="o">,</span> <span class="s">"secret"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">withTimeout</span><span class="o">(</span><span class="mi">30</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">withSSL</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+
+
+<span class="c1">// ============ SOLUTION 2: Multiple Parameter Objects ============</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ServerAddress</span> <span class="o">{</span> <span class="o">[...]</span> <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DatabaseCredentials</span> <span class="o">{</span> <span class="o">[...]</span> <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConnectionOptions</span> <span class="o">{</span> <span class="o">[...]</span> <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">createDatabaseConnection</span><span class="o">(</span><span class="nc">ServerAddress</span> <span class="n">address</span><span class="o">,</span> <span class="nc">DatabaseCredentials</span> <span class="n">credentials</span><span class="o">,</span> <span class="nc">ConnectionOptions</span> <span class="n">options</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
+
+<span class="c1">// Usage - semantic grouping makes intent clear</span>
+<span class="n">createDatabaseConnection</span><span class="o">(</span>
+    <span class="k">new</span> <span class="nf">ServerAddress</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">,</span> <span class="mi">5432</span><span class="o">),</span>
+    <span class="k">new</span> <span class="nf">DatabaseCredentials</span><span class="o">(</span><span class="s">"admin"</span><span class="o">,</span> <span class="s">"secret"</span><span class="o">),</span>
+    <span class="k">new</span> <span class="nf">ConnectionOptions</span><span class="o">(</span><span class="mi">30</span><span class="o">,</span> <span class="kc">true</span><span class="o">)</span>
+<span class="o">);</span>
+
+
+<span class="c1">// ============ example for Method Overloading ============</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">sendEmail</span><span class="o">(</span><span class="nc">String</span> <span class="n">to</span><span class="o">,</span> <span class="nc">String</span> <span class="n">subject</span><span class="o">,</span> <span class="nc">String</span> <span class="n">body</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// Basic email with defaults</span>
 <span class="o">}</span>
 
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addPerson</span><span class="o">(</span>      <span class="c1">// preferred approach</span>
-    <span class="nc">Date</span> <span class="n">birthdate</span><span class="o">,</span> <span class="nc">BodyMeasurements</span> <span class="n">measurements</span><span class="o">,</span> <span class="kt">int</span> <span class="n">ssn</span><span class="o">)</span> <span class="o">{</span>
-
-    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">sendEmail</span><span class="o">(</span><span class="nc">String</span> <span class="n">to</span><span class="o">,</span> <span class="nc">String</span> <span class="n">subject</span><span class="o">,</span> <span class="nc">String</span> <span class="n">body</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">cc</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// With cc recipients</span>
 <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">sendEmail</span><span class="o">(</span><span class="nc">String</span> <span class="n">to</span><span class="o">,</span> <span class="nc">String</span> <span class="n">subject</span><span class="o">,</span> <span class="nc">String</span> <span class="n">body</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">cc</span><span class="o">,</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">bcc</span><span class="o">,</span> <span class="nc">String</span> <span class="n">from</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">html</span><span class="o">)</span> <span class="o">{</span>  <span class="c1">//NOPMD</span>
+    <span class="c1">// Full featured</span>
+<span class="o">}</span>
+
+<span class="c1">// Usage - call with only needed parameters</span>
+<span class="n">sendEmail</span><span class="o">(</span><span class="s">"user@example.com"</span><span class="o">,</span> <span class="s">"Welcome"</span><span class="o">,</span> <span class="s">"Hello there"</span><span class="o">);</span>
+<span class="n">sendEmail</span><span class="o">(</span><span class="s">"user@example.com"</span><span class="o">,</span> <span class="s">"Welcome"</span><span class="o">,</span> <span class="s">"Hello there"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"manager@example.com"</span><span class="o">});</span>
+<span class="n">sendEmail</span><span class="o">(</span><span class="s">"user@example.com"</span><span class="o">,</span> <span class="s">"Welcome"</span><span class="o">,</span> <span class="s">"&lt;b&gt;Hello&lt;/b&gt;"</span><span class="o">,</span>
+          <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"manager@example.com"</span><span class="o">},</span>
+          <span class="k">new</span> <span class="nc">String</span><span class="o">[]{</span><span class="s">"admin@example.com"</span><span class="o">},</span>
+          <span class="s">"noreply@company.com"</span><span class="o">,</span>
+          <span class="kc">true</span><span class="o">);</span>
+
+
+<span class="c1">// ============ Example for Method Decomposition ============</span>
+<span class="c1">// Problem: ReportGenerator is called like this:</span>
+<span class="nc">Report</span> <span class="n">report</span> <span class="o">=</span> <span class="nc">ReportGenerator</span><span class="o">.</span><span class="na">generate</span><span class="o">(</span><span class="s">"Sales Report"</span><span class="o">,</span> <span class="s">"PDF"</span><span class="o">,</span> <span class="s">"Company Report"</span><span class="o">,</span> <span class="mi">16</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="s">"Page {n} of {total}"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="s">"center"</span><span class="o">,</span> <span class="s">"John Smith"</span><span class="o">,</span> <span class="nc">LocalDate</span><span class="o">.</span><span class="na">now</span><span class="o">(),</span> <span class="s">"1.0"</span>
+
+<span class="c1">// Solution: Allow your code to be called like this:</span>
+<span class="nc">ReportGenerator</span> <span class="n">generator</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ReportGenerator</span><span class="o">();</span>
+<span class="n">generator</span><span class="o">.</span><span class="na">startReport</span><span class="o">(</span><span class="s">"Sales Report"</span><span class="o">,</span> <span class="s">"PDF"</span><span class="o">);</span>
+<span class="n">generator</span><span class="o">.</span><span class="na">addHeader</span><span class="o">(</span><span class="s">"Company Report"</span><span class="o">,</span> <span class="mi">16</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+<span class="n">generator</span><span class="o">.</span><span class="na">addFooter</span><span class="o">(</span><span class="s">"Page {n} of {total}"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="s">"center"</span><span class="o">);</span>
+<span class="n">generator</span><span class="o">.</span><span class="na">addMetadata</span><span class="o">(</span><span class="s">"John Smith"</span><span class="o">,</span> <span class="nc">LocalDate</span><span class="o">.</span><span class="na">now</span><span class="o">(),</span> <span class="s">"1.0"</span><span class="o">);</span>
+<span class="nc">Report</span> <span class="n">report</span> <span class="o">=</span> <span class="n">generator</span><span class="o">.</span><span class="na">generate</span><span class="o">();</span>
 </code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
@@ -3596,17 +3688,7 @@ of a public subtype. Specifically, a public subtype of a package-private superty
 methods of the supertype. Converting these methods to private removes them from the subtype as well, which
 can inadvertently change the subtype’s public API.</p>
 
-<p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">MethodDeclaration</span><span class="p">|</span><span class="nt">ConstructorDeclaration</span><span class="p">|</span><span class="nt">CompactConstructorDeclaration</span><span class="p">|</span><span class="w">
-   </span><span class="nt">FieldDeclaration</span><span class="p">|</span><span class="w">
-   </span><span class="nt">ClassDeclaration</span><span class="p">|</span><span class="nt">EnumDeclaration</span><span class="p">|</span><span class="nt">AnnotationTypeDeclaration</span><span class="p">)</span><span class="w">
-  </span><span class="p">[</span><span class="na">@EffectiveVisibility</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'public'</span><span class="p">]</span><span class="w">
-  </span><span class="p">[</span><span class="na">@Visibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'public'</span><span class="p">]</span><span class="w">
-  </span><span class="p">[</span><span class="na">@Overridden</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="na">@Overridden</span><span class="p">)]</span><span class="w">
-  </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">AnnotationTypeDeclaration</span><span class="p">)]</span><span class="w">
-</span><span class="c">(: Make sure, we return nodes that implement getName() for {0} in the rule message :)</span><span class="w">
-</span><span class="p">!(</span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="kn">self::</span><span class="nt">FieldDeclaration</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="nt">VariableDeclarator</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="p">.)</span><span class="w">
-</span></code></pre></div></div>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/PublicMemberInNonPublicTypeRule.java">net.sourceforge.pmd.lang.java.rule.design.PublicMemberInNonPublicTypeRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -4117,6 +4199,8 @@ complexity and find a way to have more fine grained objects.</p>
 
 <h2 id="useobjectforclearerapi">UseObjectForClearerAPI</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.2.6</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -4127,6 +4211,9 @@ as a simple series of Strings, you may think of using an Object to represent all
 API (such as doWork(Workload workload), rather than a tedious series of Strings) and more importantly, if you need at some
 point to pass extra data, you’ll be able to do so by simply modifying or extending Workload without any modification to
 your API.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.26.0 and will be removed with PMD 8.0.0.
+Use <a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'public'</span><span class="p">]</span><span class="w">
