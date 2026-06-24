@@ -28,7 +28,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
+      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -99,7 +99,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
+      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -154,7 +154,7 @@ jobs:
       # Note: this works under Windows only if pom.xml files use LF, so that hashFiles('**/pom.xml')
       # gives the same result (line endings...).
       # see .gitattributes for pom.xml - it should always be using lf.
-      - uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
+      - uses: actions/cache/restore@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -199,7 +199,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
+      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -285,7 +285,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
+      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -346,7 +346,7 @@ jobs:
         uses: ruby/setup-ruby@89f90524b88a01fe6e0b732220432cc6142926af #v1.313.0
         with:
           ruby-version: 4
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
+      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
         with:
           path: |
             ~/.m2/repository
