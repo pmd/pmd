@@ -2799,4 +2799,18 @@ class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#6627 Ignore methods with javax.annotation.PostConstruct/PreDestroy</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+public class Foo {
+    @PostConstruct
+    private void bar() {}
+    @PreDestroy
+    private void baz() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

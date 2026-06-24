@@ -42,6 +42,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             "java.lang.Deprecated",
             "jakarta.annotation.PostConstruct",
             "jakarta.annotation.PreDestroy",
+            "javax.annotation.PostConstruct",
+            "javax.annotation.PreDestroy",
             "lombok.EqualsAndHashCode.Include"
         );
     }
@@ -82,7 +84,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     private static void handleUnresolvedCall(MethodUsage ref, OverloadSelectionResult selectionInfo, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
-        // If the type is may be an instance of this class, then the method may be
+        // If the type may be an instance of this class, then the method may be
         // a call to a private method here. In that case we whitelist all methods
         // with that name.
         JTypeMirror receive = selectionInfo.getTypeToSearch();
