@@ -46,20 +46,17 @@ final class AnnotationFqnAnnotator {
         }
         // Build a simple-name -> FQN lookup (last match wins; duplicates are rare)
         Map<String, String> simpleToFqn = new HashMap<>();
-        StringBuilder fqnList = new StringBuilder();
+        List<String> fqnList = new ArrayList<>();
         for (AnnotationAst ann : annotations) {
             String fqn = ann.getFqName();
             if (fqn.isEmpty()) {
                 continue;
             }
             simpleToFqn.put(KotlinTypeAnnotationVisitor.simpleNameOf(fqn), fqn);
-            if (fqnList.length() > 0) {
-                fqnList.append(',');
-            }
-            fqnList.append(fqn);
+            fqnList.add(fqn);
         }
-        if (fqnList.length() > 0) {
-            KotlinNodeTypeData.setAnnotationFqNames(declNode, fqnList.toString());
+        if (!fqnList.isEmpty()) {
+            KotlinNodeTypeData.setAnnotationFqNames(declNode, fqnList);
         }
 
         // Set @TypeName on each KtUnescapedAnnotation in the declaration's modifiers

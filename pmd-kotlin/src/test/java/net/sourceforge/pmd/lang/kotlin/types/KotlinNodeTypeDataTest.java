@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -64,7 +65,7 @@ class KotlinNodeTypeDataTest {
     @Test
     void annotationFqNamesRoundtrip() {
         KtKotlinFile root = parse("val x = 1");
-        KotlinNodeTypeData.setAnnotationFqNames(root, "org.springframework.stereotype.Service,kotlin.Deprecated");
+        KotlinNodeTypeData.setAnnotationFqNames(root, Arrays.asList("org.springframework.stereotype.Service", "kotlin.Deprecated"));
         List<String> names = KotlinNodeTypeData.getAnnotationFqNames(root);
         assertEquals(2, names.size());
         assertTrue(names.contains("org.springframework.stereotype.Service"));

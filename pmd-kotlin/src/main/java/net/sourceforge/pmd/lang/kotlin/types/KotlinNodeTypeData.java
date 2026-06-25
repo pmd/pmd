@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.kotlin.types;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public final class KotlinNodeTypeData {
     private static final SimpleDataKey<String> RETURN_TYPE_KEY =
             DataMap.simpleDataKey("kotlin.returnTypeName");
 
-    private static final SimpleDataKey<String> ANNOTATION_NAMES_KEY =
+    private static final SimpleDataKey<List<String>> ANNOTATION_NAMES_KEY =
             DataMap.simpleDataKey("kotlin.annotationNames");
 
     private static final SimpleDataKey<Boolean> TYPE_INFO_AVAILABLE_KEY =
@@ -88,20 +87,15 @@ public final class KotlinNodeTypeData {
      * analysis has not been run.
      */
     public static List<String> getAnnotationFqNames(KotlinNode node) {
-        String stored = node.getUserMap().get(ANNOTATION_NAMES_KEY);
-        if (stored == null || stored.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(Arrays.asList(stored.split(",")));
+        List<String> stored = node.getUserMap().get(ANNOTATION_NAMES_KEY);
+        return stored != null ? stored : Collections.emptyList();
     }
 
     /**
      * Stores the fully-qualified annotation class names on a declaration node.
      * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
-     *
-     * @param annotationFqNames comma-separated FQN annotation class names
      */
-    static void setAnnotationFqNames(KotlinNode node, String annotationFqNames) {
+    static void setAnnotationFqNames(KotlinNode node, List<String> annotationFqNames) {
         node.getUserMap().set(ANNOTATION_NAMES_KEY, annotationFqNames);
     }
 
