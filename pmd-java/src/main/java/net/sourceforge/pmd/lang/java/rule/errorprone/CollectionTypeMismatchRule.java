@@ -4,18 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import java.util.Collection;
+import java.util.Map;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import net.sourceforge.pmd.lang.java.types.JWildcardType;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.reporting.RuleContext;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Detects method calls on collections where the passed object cannot possibly be in the collection
@@ -94,206 +101,119 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
     }
     
     private void checkCollectionElementCompatibility(ASTMethodCall node, RuleContext ctx) {
-        JTypeMirror qualifierType = getQualifierType(node);
-        if (!(qualifierType instanceof JClassType)) {
-            return;
-        }
-        
-        JTypeMirror elementType = getCollectionElementType((JClassType) qualifierType);
-        if (elementType == null) {
-            return;
-        }
-        
+        JTypeMirror elementType = getCollectionElementType(node.getQualifier());
         ASTExpression firstArg = getFirstArgument(node);
         JTypeMirror argType = firstArg.getTypeMirror();
-        if (!isCompatibleType(argType, elementType)) {
-            ctx.addViolation(node, argType.toString(), elementType.toString());
-        }
+        checkCompatible(node, ctx, firstArg, argType, elementType);
     }
-    
+
     private void checkCollectionToCollectionCompatibility(ASTMethodCall node, RuleContext ctx) {
-        JTypeMirror qualifierType = getQualifierType(node);
-        if (!(qualifierType instanceof JClassType)) {
-            return;
-        }
-        
-        JTypeMirror elementType = getCollectionElementType((JClassType) qualifierType);
-        if (elementType == null) {
-            return;
-        }
-        
+        JTypeMirror elementType = getCollectionElementType(node.getQualifier());
         ASTExpression firstArg = getFirstArgument(node);
-        JTypeMirror argType = firstArg.getTypeMirror();
-        if (argType instanceof JClassType && isCollectionType((JClassType) argType)) {
-            JTypeMirror argElementType = getCollectionElementType((JClassType) argType);
-            if (argElementType != null && !isCompatibleType(argElementType, elementType)) {
-                ctx.addViolation(node, argElementType.toString(), elementType.toString());
-            }
-        }
+        JTypeMirror argElementType = getCollectionElementType(firstArg);
+        checkCompatible(node, ctx, firstArg, argElementType, elementType);
     }
-    
+
+
     private void checkMapKeyCompatibility(ASTMethodCall node, RuleContext ctx) {
-        JTypeMirror qualifierType = getQualifierType(node);
-        if (!(qualifierType instanceof JClassType)) {
-            return;
-        }
-        
-        JTypeMirror keyType = getMapKeyType((JClassType) qualifierType);
-        if (keyType == null) {
-            return;
-        }
-        
+
+        JTypeMirror keyType = getMapKeyType(getQualifierType(node));
         ASTExpression firstArg = getFirstArgument(node);
         JTypeMirror argType = firstArg.getTypeMirror();
-        if (!isCompatibleType(argType, keyType)) {
-            ctx.addViolation(node, argType.toString(), keyType.toString());
-        }
+        checkCompatible(node, ctx, firstArg, argType, keyType);
     }
     
     private void checkMapValueCompatibility(ASTMethodCall node, RuleContext ctx) {
-        JTypeMirror qualifierType = getQualifierType(node);
-        if (!(qualifierType instanceof JClassType)) {
-            return;
-        }
-        
-        JTypeMirror valueType = getMapValueType((JClassType) qualifierType);
-        if (valueType == null) {
-            return;
-        }
-        
+
+        JTypeMirror valueType = getMapValueType(getQualifierType(node));
         ASTExpression firstArg = getFirstArgument(node);
         JTypeMirror argType = firstArg.getTypeMirror();
-        if (!isCompatibleType(argType, valueType)) {
-            ctx.addViolation(node, argType.toString(), valueType.toString());
-        }
+        checkCompatible(node, ctx, firstArg, argType, valueType);
     }
     
     private void checkMapKeyValueCompatibility(ASTMethodCall node, RuleContext ctx) {
         JTypeMirror qualifierType = getQualifierType(node);
-        if (!(qualifierType instanceof JClassType)) {
-            return;
-        }
-        
-        JTypeMirror keyType = getMapKeyType((JClassType) qualifierType);
-        JTypeMirror valueType = getMapValueType((JClassType) qualifierType);
-        if (keyType == null || valueType == null) {
-            return;
-        }
-        
-        ASTExpression keyArg = getFirstArgument(node);
-        ASTExpression valueArg = getSecondArgument(node);
-        
-        JTypeMirror keyArgType = keyArg.getTypeMirror();
-        JTypeMirror valueArgType = valueArg.getTypeMirror();
-        
-        if (!isCompatibleType(keyArgType, keyType)) {
-            ctx.addViolation(node, keyArgType.toString(), keyType.toString());
-        } else if (!isCompatibleType(valueArgType, valueType)) {
-            ctx.addViolation(node, valueArgType.toString(), valueType.toString());
+
+        JTypeMirror keyType = getMapKeyType(qualifierType);
+        ASTExpression firstArg = getFirstArgument(node);
+        JTypeMirror keyArgType = firstArg.getTypeMirror();
+
+        if (checkCompatible(node, ctx, firstArg, keyArgType, keyType)) {
+            ASTExpression secondArg = getSecondArgument(node);
+            JTypeMirror valueArgType = secondArg.getTypeMirror();
+            JTypeMirror valueType = getMapValueType(qualifierType);
+            checkCompatible(node, ctx, secondArg, valueArgType, valueType);
         }
     }
-    
-    private boolean isCollectionType(JClassType type) {
-        return TypeTestUtil.isA(java.util.Collection.class, type);
+
+    private boolean checkCompatible(ASTMethodCall node, RuleContext ctx, ASTExpression argExpr, @Nullable JTypeMirror argType, @Nullable JTypeMirror expectedTy) {
+        if (argType != null && expectedTy != null && !isCompatibleType(node, argExpr, argType, expectedTy)) {
+            ctx.addViolation(node, argType.toString(), expectedTy.toString());
+            return false;
+        }
+        return true;
     }
-    
-    private JTypeMirror getCollectionElementType(JClassType collectionType) {
-        JClassType asSuperCollection = collectionType.getAsSuper(collectionType.getTypeSystem().getClassSymbol(java.util.Collection.class));
-        if (asSuperCollection.getTypeArgs().isEmpty()) {
-            // Raw collection type without generics
+
+    private JTypeMirror getCollectionElementType(ASTExpression node) {
+        if (node == null) {
             return null;
         }
-        JTypeMirror elementType = asSuperCollection.getTypeArgs().get(0);
-        return resolveWildcardBound(elementType);
+        return getCollectionElementType(node.getTypeMirror());
     }
-    
-    private JTypeMirror getMapKeyType(JClassType mapType) {
-        JClassType asSuperMap = mapType.getAsSuper(mapType.getTypeSystem().getClassSymbol(java.util.Map.class));
-        if (asSuperMap.getTypeArgs().isEmpty()) {
+
+    private @Nullable JTypeMirror getCollectionElementType(JTypeMirror collectionType) {
+        return getTypeArg(collectionType, Collection.class, 0);
+    }
+
+    private @Nullable JTypeMirror getMapKeyType(JTypeMirror mapType) {
+        return getTypeArg(mapType, Map.class, 0);
+    }
+
+    private @Nullable JTypeMirror getMapValueType(JTypeMirror mapType) {
+        return getTypeArg(mapType, Map.class, 1);
+    }
+
+    private @Nullable JTypeMirror getTypeArg(JTypeMirror type, Class<?> asType, int index) {
+        if (!(type instanceof JClassType)) {
+            return null;
+        }
+        JClassType classTy = (JClassType) type;
+        JClassSymbol symbol = classTy.getTypeSystem().getClassSymbol(asType);
+        if (symbol == null) {
+            return null;
+        }
+        JClassType asSuper = classTy.getAsSuper(symbol);
+        if (asSuper == null || asSuper.getTypeArgs().isEmpty()) {
             // Raw map type without generics
             return null;
         }
-        JTypeMirror keyType = asSuperMap.getTypeArgs().get(0);
-        return resolveWildcardBound(keyType);
-    }
-    
-    private JTypeMirror getMapValueType(JClassType mapType) {
-        JClassType asSuperMap = mapType.getAsSuper(mapType.getTypeSystem().getClassSymbol(java.util.Map.class));
-        if (asSuperMap.getTypeArgs().isEmpty()) {
-            // Raw map type without generics
-            return null;
-        }
-        JTypeMirror valueType = asSuperMap.getTypeArgs().get(1);
-        return resolveWildcardBound(valueType);
+        JTypeMirror valueType = asSuper.getTypeArgs().get(index);
+        return TypeOps.wildUpperBound(valueType);
     }
 
-    private JTypeMirror resolveWildcardBound(JTypeMirror type) {
-        // Handle captured type variables from wildcards
-        if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            JWildcardType wildcard = ((JTypeVar) type).getCapturedOrigin();
-            if (wildcard != null) {
-                return resolveWildcard(wildcard, type.getTypeSystem());
-            }
-        }
-        
-        // Handle direct wildcard types
-        if (type instanceof JWildcardType) {
-            return resolveWildcard((JWildcardType) type, type.getTypeSystem());
-        }
-        
-        return type;
-    }
-    
-    private JTypeMirror resolveWildcard(JWildcardType wildcard, TypeSystem typeSystem) {
-        return wildcard.isUpperBound() 
-            ? wildcard.asUpperBound() 
-            : typeSystem.OBJECT;
-    }
-
-    private boolean isCompatibleType(JTypeMirror argType, JTypeMirror expectedType) {
+    private boolean isCompatibleType(ASTMethodCall node, ASTExpression argExpr, JTypeMirror argType, JTypeMirror expectedType) {
         // If argType is unresolved, be conservative and assume compatibility
         // This prevents false positives when external dependencies can't be resolved
         if (TypeOps.isUnresolved(argType)) {
             return true;
-        }
-        
-        // Handle wildcards and captured type variables - they should be compatible with any type
-        // since they represent unknown types that could potentially be the expected type
-        if (argType instanceof JWildcardType
-                || (argType instanceof JTypeVar && ((JTypeVar) argType).isCaptured())
-        ) {
+        } else if (argType.equals(expectedType)) {
+            // prune an easy case before going into inference.
             return true;
-        }
-        
-        // Check basic convertibility using raw types (ignore generics)
-        // This will cause some false-negaties, but doing this right would lead to much more complicated code
-        JTypeMirror rawArgType = getRawType(argType);
-        JTypeMirror rawExpectedType = getRawType(expectedType);
-        
-        if (TypeOps.isConvertible(rawArgType, rawExpectedType).somehow()
-                || TypeOps.isConvertible(rawExpectedType, rawArgType).somehow()
-        ) {
-            return true;
-        }
-        
-        // Check primitive/wrapper compatibility (autoboxing/unboxing)
-        if (argType.isPrimitive()) {
-            // Check if autoboxed primitive is compatible with expected type
-            JTypeMirror boxedArgType = argType.box();
-            return TypeOps.isConvertible(boxedArgType, expectedType).somehow();
+        } else if (argExpr instanceof InvocationNode) {
+            OverloadSelectionResult info = ((InvocationNode) argExpr).getOverloadSelectionInfo();
+            if (info.isFailed() || TypeOps.isPurelyContextDependent(info.getMethodType().getSymbol())) {
+                // If it is context dependent then the Object target type may
+                // make the argument type be inferred to some random type.
+
+                return true;
+            }
         }
 
-        return false;
+        Infer infer = InternalApiBridge.getInferenceEntryPoint(node);
+
+        return infer.areTypesMaybeRelated(argType.box(), expectedType.box()) != OptionalBool.NO;
     }
-    
-    private JTypeMirror getRawType(JTypeMirror type) {
-        if (type instanceof JClassType) {
-            JClassType classType = (JClassType) type;
-            return classType.getErasure();
-        }
-        return type;
-    }
-    
+
 
     private JTypeMirror getQualifierType(ASTMethodCall node) {
         return node.getQualifier() != null ? node.getQualifier().getTypeMirror() : null;
