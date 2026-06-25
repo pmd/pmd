@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cache.internal;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -37,6 +36,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -115,7 +115,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclasspath, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -124,19 +124,11 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
                 cacheIsValid = false;
             }
 
-            final long currentAuxClassPathChecksum;
-            if (auxclassPathClassLoader instanceof URLClassLoader) {
-                // not using try-with-resources as we don't want to close our aux classpath loader - we still need it...
-                final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
-                currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(urlClassLoader.getURLs());
-
-                if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
-                    // TODO some rules don't need that (in fact, some languages)
-                    LOG.debug("Analysis cache invalidated, auxclasspath changed.");
-                    cacheIsValid = false;
-                }
-            } else {
-                currentAuxClassPathChecksum = 0;
+            final long currentAuxClassPathChecksum = auxclasspath.fingerprint(FINGERPRINTER);
+            if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
+                // TODO some rules don't need that (in fact, some languages)
+                LOG.debug("Analysis cache invalidated, auxclasspath changed.");
+                cacheIsValid = false;
             }
 
             final long currentExecutionClassPathChecksum = FINGERPRINTER.fingerprint(getClassPathEntries());
@@ -162,7 +154,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
         return entry.endsWith("/*") || entry.endsWith("\\*");
     }
 
-    private URL[] getClassPathEntries() {
+    private List<URL> getClassPathEntries() {
         final String classpath = System.getProperty("java.class.path");
         final String[] classpathEntries = classpath.split(File.pathSeparator);
         final List<URL> entries = new ArrayList<>();
@@ -207,7 +199,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
             throw new RuntimeException(e);
         }
 
-        return entries.toArray(new URL[0]);
+        return entries;
     }
 
     @Override

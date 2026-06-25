@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -21,7 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
@@ -30,36 +30,39 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import kotlin.Pair;
+import kotlin.Unit;
 
 public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTCompilationUnit> {
+
+    // The default classpath. This is never closed.
+    private static final PmdClasspathConfig.OpenClasspath TEST_CLASSPATH =
+        new PMDConfiguration().getAnalysisClasspath().open();
 
     /**
      * Note: this is the default type system for everything parsed with
      * default options of JavaParsingHelper. This allows constants like
      * the null type to be compared.
      */
-    public static final TypeSystem TEST_TYPE_SYSTEM;
+    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClasspath(Classpath.forOpenClasspath(TEST_CLASSPATH));
 
-    static {
-        try {
-            TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(new ClasspathClassLoader("", JavaParsingHelper.class.getClassLoader()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /** This runs all processing stages when parsing. */
     public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(
-        Params.getDefault(),
+        Params.getDefault().withLanguagePropertyConfig(bundle -> {
+            bundle.setProperty(JvmLanguagePropertyBundle.ENABLE_CLASSPATH_DIAGNOSTICS, false);
+            return Unit.INSTANCE;
+        }),
         SemanticErrorReporter.noop(), // todo change this to unforgiving logger, need to update a lot of tests
         TEST_TYPE_SYSTEM,
         TypeInferenceLogger.noop()
