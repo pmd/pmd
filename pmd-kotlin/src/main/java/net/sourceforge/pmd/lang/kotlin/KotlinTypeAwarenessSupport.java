@@ -87,13 +87,13 @@ final class KotlinTypeAwarenessSupport {
     }
 
     void annotateIfPossible(KtKotlinFile root, String absPath, String sourceText) {
+        validateKotlinPath(absPath);
         KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
         if (visitor == null) {
             // Designer / single-file mode: prepare() was never called.
-            String effectiveName = KotlinLanguageProcessor.sanitizeKtFilename(absPath);
-            visitor = runSingleFileAnalysis(effectiveName, sourceText);
+            visitor = runSingleFileAnalysis(absPath, sourceText);
             if (visitor != null) {
-                visitor.annotate(root, effectiveName);
+                visitor.annotate(root, absPath);
                 // Use the ctx the visitor was built with — avoids an AtomicRef re-read that
                 // could return a different ctx if a concurrent single-file analysis raced here.
                 InternalApiBridge.setAnalysisContext(root, visitor.getContext());
@@ -130,7 +130,7 @@ final class KotlinTypeAwarenessSupport {
         Map<String, String> sources = new LinkedHashMap<>();
         for (TextFile ktFile : ktFiles) {
             try {
-                String filename = KotlinLanguageProcessor.sanitizeKtFilename(ktFile.getFileId().getFileName());
+                String filename = ktFile.getFileId().getAbsolutePath();
                 String text = ktFile.readContents().getNormalizedText().toString();
                 sources.put(filename, text);
             } catch (IOException e) {
@@ -146,6 +146,12 @@ final class KotlinTypeAwarenessSupport {
             LOG.debug("kotlin-type-mapper single-file analysis complete for {}", filename);
         }
         return visitor;
+    }
+
+    static void validateKotlinPath(String absPath) {
+        if (absPath == null || absPath.isEmpty()) {
+            throw new IllegalStateException("kotlin type analysis: file has no absPath — this is a PMD bug");
+        }
     }
 
     private static List<File> toFiles(List<Path> paths) {
