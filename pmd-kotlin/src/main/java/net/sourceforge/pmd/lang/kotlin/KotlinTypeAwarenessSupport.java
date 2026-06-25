@@ -60,8 +60,10 @@ final class KotlinTypeAwarenessSupport {
             return;
         }
 
-        // Prefer fromPaths when all files are on disk: KTM reads files itself, so source
+        // Use fromPaths when all files are on disk: KTM reads files itself, so source
         // strings are not duplicated between PMD's TextFile and the analyser.
+        // The in-memory fallback (fromSources) is needed for the PMD rule test framework,
+        // which supplies Kotlin snippets as virtual in-memory files (not on disk).
         List<Path> sourcePaths = new ArrayList<>(ktFiles.size());
         boolean allOnDisk = true;
         for (TextFile ktFile : ktFiles) {
@@ -90,7 +92,7 @@ final class KotlinTypeAwarenessSupport {
         validateKotlinPath(absPath);
         KotlinTypeAnnotationVisitor visitor = annotationVisitor.get();
         if (visitor == null) {
-            // Designer / single-file mode: prepare() was never called.
+            // Single-file mode: prepare() was never called (e.g. unit tests parsing one file directly).
             visitor = runSingleFileAnalysis(absPath, sourceText);
             if (visitor != null) {
                 visitor.annotate(root, absPath);
