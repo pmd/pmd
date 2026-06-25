@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.kotlin.rule.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -76,21 +75,16 @@ class KotlinTypeAnalysisContextTest {
     }
 
     @Test
-    void inMemoryAnalysisIndexesByBasename() {
-        // In-memory analysis (fromSources) has no real source root;
-        // declarations must be findable by basename alone.
-        // Exactly 1 declaration at line 2 (val list) -- confirms no duplication.
+    void inMemoryAnalysisIndexesByRelativePath() {
+        // In-memory analysis (fromSources) indexes by the relativePath key passed to fromSources.
+        // Exactly 1 declaration at line 2 (val list) — confirms no duplication.
         assertEquals(1, ctx.declarationsAt("snippet.kt", 2).size());
     }
 
     @Test
-    void unknownAbsPathFallsBackToBasenameList() {
-        // An unknown abs path (not in index) falls back to the basename list;
-        // both must return the same List object -- no duplication.
-        assertSame(
-                ctx.declarationsAt("snippet.kt", 2),
-                ctx.declarationsAt("/any/path/snippet.kt", 2)
-        );
+    void unknownAbsPathReturnsEmpty() {
+        // A path not present in the index returns empty — no silent wrong-file hit.
+        assertEquals(0, ctx.declarationsAt("/any/path/snippet.kt", 2).size());
     }
 
     @Test
