@@ -13,7 +13,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
+import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
@@ -71,6 +75,23 @@ class KotlinAuxClasspathIntegrationTest {
         List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(fn);
         assertTrue(annotations.contains("org.junit.jupiter.api.Test"),
                 "Expected @Test to resolve with auxClasspath=" + jarPath + ", but got: " + annotations);
+    }
+
+    @Test
+    void auxClasspathStringPropertyBridgedFromPrependAuxClasspath() throws Exception {
+        File junitJar = new File(
+                Test.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+
+        PMDConfiguration config = new PMDConfiguration();
+        config.prependAuxClasspath(junitJar.getAbsolutePath());
+
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            LanguagePropertyBundle props = pmd.getLanguageProperties(KotlinLanguageModule.getInstance());
+            String auxCp = props.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
+            assertNotNull(auxCp, "AUX_CLASSPATH property must be set when prependAuxClasspath was called");
+            assertTrue(auxCp.contains(junitJar.getAbsolutePath()),
+                    "AUX_CLASSPATH must contain the jar path, got: " + auxCp);
+        }
     }
 
     private static KtFunctionDeclaration firstFunctionNamed(KtKotlinFile root, String name) {

@@ -98,6 +98,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
+    private String auxClasspath;
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -208,12 +209,21 @@ public class PMDConfiguration extends AbstractConfiguration {
             }
             if (classpath != null) {
                 classLoader = new ClasspathClassLoader(classpath, classLoader);
+                this.auxClasspath = classpath;
             }
         } catch (IOException e) {
             // Note: IOExceptions shouldn't appear anymore, they should already be converted
             // to IllegalArgumentException in ClasspathClassLoader.
             throw new IllegalArgumentException(e);
         }
+    }
+
+    /**
+     * Returns the raw aux-classpath string passed to {@link #prependAuxClasspath}, or {@code null}
+     * if it was never called.
+     */
+    public String getAuxClasspath() {
+        return auxClasspath;
     }
 
     /**
