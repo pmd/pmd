@@ -59,6 +59,30 @@ public final class KotlinAstUtil {
     }
 
     /**
+     * Returns the dotted text of an identifier made of {@code SimpleIdentifier} children,
+     * e.g. {@code com.example.Foo}. Returns {@code null} if no identifier parts are found.
+     */
+    public static String dottedTextOf(KotlinNode identifierNode) {
+        if (identifierNode == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < identifierNode.getNumChildren(); i++) {
+            KotlinNode part = identifierNode.getChild(i);
+            if (part instanceof KtSimpleIdentifier) {
+                String partText = textOf((KtSimpleIdentifier) part);
+                if (partText != null) {
+                    if (sb.length() > 0) {
+                        sb.append('.');
+                    }
+                    sb.append(partText);
+                }
+            }
+        }
+        return sb.length() > 0 ? sb.toString() : null;
+    }
+
+    /**
      * Returns {@code true} if the nearest enclosing ancestor of type {@code T}
      * for {@code node} is exactly {@code ancestor}. Used to scope descendant searches
      * to a single enclosing node without crossing into nested scopes of the same type.

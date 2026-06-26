@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>BigDecimal with double literal is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[import java.math.BigDecimal
+
+class Bad {
+    fun calc() { val bd = BigDecimal(0.1) }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>two BigDecimal with double literals in one function are each a violation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <code><![CDATA[import java.math.BigDecimal
+
+class Bad {
+    fun calc() {
+        val a = BigDecimal(0.1)
+        val b = BigDecimal(1.0)
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigDecimal with String literal is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.math.BigDecimal
+
+fun good(): BigDecimal {
+    return BigDecimal("0.1")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Kotlin toBigDecimal() extension on String is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(): java.math.BigDecimal {
+    return "0.1".toBigDecimal()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigDecimal.valueOf(double) is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.math.BigDecimal
+
+fun good(): BigDecimal {
+    return BigDecimal.valueOf(0.1)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Double variable passed to BigDecimal constructor is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[import java.math.BigDecimal
+
+fun bad() {
+    val d: Double = 0.1
+    val bd = BigDecimal(d) // violation
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Double parameter passed to BigDecimal constructor is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[import java.math.BigDecimal
+
+fun bad(d: Double): BigDecimal = BigDecimal(d) // violation
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Double expression as BigDecimal constructor argument is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[import java.math.BigDecimal
+
+fun bad(d: Double) {
+    val bd = BigDecimal(6.0 * d) // violation
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Int literal passed to BigDecimal constructor is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.math.BigDecimal
+
+fun good(): BigDecimal = BigDecimal(10)
+        ]]></code>
+    </test-code>
+
+</test-data>

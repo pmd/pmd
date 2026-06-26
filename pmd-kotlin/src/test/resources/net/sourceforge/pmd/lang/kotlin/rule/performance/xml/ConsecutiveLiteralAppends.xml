@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Two consecutive string literal appends can be merged</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("hello").append(" world")
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Three consecutive string literal appends can be merged</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("a").append("b").append("c")
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Single append is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("hello world")
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>append with variable argument is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun build(name: String): String {
+        val sb = StringBuilder()
+        sb.append("hello ").append(name)
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

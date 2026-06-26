@@ -45,12 +45,12 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase implements Pm
     }
 
     @Override
-    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
-        return new KotlinCpdLexer();
+    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
+        return new KotlinLanguageProcessor((KotlinLanguageProperties) bundle);
     }
 
     @Override
-    public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        return new KotlinLanguageProcessor((KotlinLanguageProperties) bundle);
+    public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
+        return new KotlinCpdLexer();
     }
 }

@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Performance"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag suboptimal code.
+    </description>
+
+    <rule name="AddEmptyString"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid using empty string concatenation to convert to String; use a string template instead"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#addemptystring">
+        <description>
+Avoid concatenating an empty string `""` to convert a non-String value to a String.
+This creates an unnecessary intermediate `String` object.
+In Kotlin, prefer string templates (`"$value"`) or `value.toString()` for explicit conversions.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//AdditiveExpression[starts-with(pmd-kotlin:nodeText(), '"" +')]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun convert(i: Int): String {
+        return "" + i  // violation: use string template instead
+    }
+}
+
+class Good {
+    fun convert(i: Int): String {
+        return "$i"       // ok: idiomatic Kotlin string template
+    }
+
+    fun convert2(i: Int): String {
+        return i.toString()  // ok: explicit conversion
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AppendCharacterWithChar"
+          language="kotlin"
+          since="7.25.0"
+          message="Use a Char literal instead of a single-character String when calling StringBuilder.append()."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#appendcharacterwithchar">
+        <description>
+Passing a single-character string literal to `StringBuilder.append(String)` forces the
+JVM to perform a string comparison and then extract the character internally.
+Using the `Char` overload -- `append('x')` -- is more direct and avoids allocating a
+temporary `String` object.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/AppendCharacterWithChar
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/AppendCharacterWithChar"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    (
+        pmd-kotlin:matchesSig('java.lang.StringBuilder#append(java.lang.String)')
+        or pmd-kotlin:matchesSig('java.lang.StringBuffer#append(java.lang.String)')
+    )
+    and PostfixUnarySuffix/CallSuffix/ValueArguments/ValueArgument[
+        string-length(pmd-kotlin:nodeText()) = 3
+        and starts-with(pmd-kotlin:nodeText(), '"')
+        and ends-with(pmd-kotlin:nodeText(), '"')
+    ]
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun bad(): String {
+        val sb = StringBuilder()
+        sb.append("x")    // violation: use append('x')
+        sb.append(",")    // violation: use append(',')
+        return sb.toString()
+    }
+}
+
+class Good {
+    fun good(): String {
+        val sb = StringBuilder()
+        sb.append('x')      // ok: Char literal
+        sb.append(',')      // ok: Char literal
+        sb.append("hello")  // ok: multi-character string
+        return sb.toString()
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AvoidArrayLoops"
+          language="kotlin"
+          since="7.25.0"
+          message="Use copyInto() or copyOf() instead of manually copying array elements in a loop."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidarrayloops">
+        <description>
+Manually copying array elements one by one in a loop is less efficient and less clear
+than using the built-in `copyInto()` or `copyOf()` functions. The built-in functions
+are implemented natively and avoid the overhead of interpreted looping.
+
+Prefer:
+- `src.copyInto(dst)` for a full copy into an existing array
+- `src.copyOf()` or `src.copyOf(n)` to produce a new copy
+- `src.copyOfRange(from, to)` for a partial copy
+
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidArrayLoops
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/AvoidArrayLoops"/>
+            <property name="xpath">
+                <value><![CDATA[
+//ForStatement[
+    not(.//ForStatement)
+    and not(.//WhileStatement)
+    and not(.//DoWhileStatement)
+    and count(.//Assignment) = 1
+]//Assignment[
+    DirectlyAssignableExpression/AssignableSuffix/IndexingSuffix
+    and Expression[count(.//PostfixUnaryExpression[PostfixUnarySuffix/IndexingSuffix]) = 1]//PostfixUnarySuffix/IndexingSuffix
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun copy(src: IntArray, dst: IntArray) {
+        for (i in src.indices) {
+            dst[i] = src[i]   // violation: use src.copyInto(dst)
+        }
+    }
+}
+
+class Good {
+    fun copy(src: IntArray, dst: IntArray) {
+        src.copyInto(dst)     // ok: built-in efficient copy
+    }
+    fun copyPartial(src: IntArray): IntArray {
+        return src.copyOf()   // ok: returns a new copy
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AvoidCalendarDateCreation"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid creating Calendar instances; use the java.time API (LocalDateTime, ZonedDateTime) instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidcalendardatecreation">
+        <description>
+`java.util.Calendar` is a heavyweight, mutable object. Creating a `Calendar` instance just
+to obtain the current date or time is expensive and unnecessarily verbose.
+
+Prefer the modern `java.time` API introduced in Java 8:
+- `java.time.LocalDateTime.now()` / `ZonedDateTime.now()` for date-time values
+- `java.time.Instant.now()` for a machine timestamp
+- `java.time.LocalDate.today()` for date-only values
+
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCalendarDateCreation
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/AvoidCalendarDateCreation"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    pmd-kotlin:matchesSig('java.util.Calendar#getInstance(*)')
+    or pmd-kotlin:matchesSig('java.util.GregorianCalendar#<init>(*)')
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import java.util.Calendar
+import java.time.LocalDateTime
+
+class Bad {
+    fun currentMillis(): Long {
+        return Calendar.getInstance().timeInMillis  // violation
+    }
+}
+
+class Good {
+    fun currentMillis(): Long {
+        return System.currentTimeMillis()  // ok: no Calendar created
+    }
+
+    fun now(): LocalDateTime {
+        return LocalDateTime.now()  // ok: java.time API
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AvoidCallingGcExplicitly"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid explicit garbage-collection calls; the JVM manages memory automatically."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidcallinggcexplicitly">
+        <description>
+Calling `System.gc()` or `Runtime.getRuntime().gc()` requests a GC cycle but does not
+guarantee one will run. In practice it introduces unpredictable pauses and can degrade
+throughput. The JVM's garbage collector is designed to manage memory automatically;
+manual invocations are almost never correct.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidCallingGcExplicitly
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/AvoidCallingGcExplicitly"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    pmd-kotlin:matchesSig('java.lang.System#gc()')
+    or pmd-kotlin:matchesSig('java.lang.Runtime#gc()')
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun afterBulkLoad() {
+        System.gc()                     // violation: unpredictable, may degrade throughput
+        Runtime.getRuntime().gc()       // violation: same issue
+    }
+}
+
+class Good {
+    fun afterBulkLoad() {
+        // ok: trust the JVM garbage collector; add metrics/monitoring instead
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AvoidFileStream"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid FileInputStream/FileOutputStream/FileReader/FileWriter; use File.inputStream() or Files.newInputStream()."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidfilestream">
+        <description>
+`FileInputStream`/`OutputStream`/`Reader`/`Writer` contain a finalizer that can cause GC
+pressure. In Kotlin prefer:
+- `File.inputStream()` / `File.outputStream()` for byte streams
+- `File.bufferedReader()` / `File.bufferedWriter()` for character streams
+- `File.readBytes()` / `File.readText()` / `File.writeText()` for one-shot reads/writes
+- `Files.newInputStream(path)` / `Files.newOutputStream(path)` for the NIO2 approach
+All of these avoid the finalizer and work naturally with `use {}`.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidFileStream
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/AvoidFileStream"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    pmd-kotlin:matchesSig('java.io.FileInputStream#<init>(*)')
+    or pmd-kotlin:matchesSig('java.io.FileOutputStream#<init>(*)')
+    or pmd-kotlin:matchesSig('java.io.FileReader#<init>(*)')
+    or pmd-kotlin:matchesSig('java.io.FileWriter#<init>(*)')
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import java.io.File
+import java.io.FileInputStream
+import java.nio.file.Files
+
+class Bad {
+    fun read(file: File): ByteArray {
+        return FileInputStream(file).readBytes() // violation: use finalizer-free alternative
+    }
+}
+
+class Good {
+    fun read(file: File): ByteArray {
+        return file.inputStream().use { it.readBytes() } // ok: extension function, no finalizer
+    }
+
+    fun readNio(file: File): ByteArray {
+        return Files.newInputStream(file.toPath()).use { it.readBytes() } // ok: NIO approach
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AvoidInstantiatingObjectsInLoops"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid creating new objects inside loops -- consider moving the instantiation outside the loop."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#avoidinstantiatingobjectsinloops">
+        <description>
+Creating objects inside a loop may cause unnecessary garbage collection pressure when
+the same instance could be constructed once outside the loop and reused. If the object
+can be safely shared or reset across iterations, move its construction before the loop.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/AvoidInstantiatingObjectsInLoops
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/AvoidInstantiatingObjectsInLoops"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PropertyDeclaration[
+    pmd-kotlin:insideLoop()
+    and Expression//PostfixUnaryExpression[
+        pmd-kotlin:matchesSig('_#<init>(*)')
+        and not(ancestor::FunctionDeclaration[ancestor::PropertyDeclaration])
+        and (
+            let $loopVars    := (
+                    ancestor::ForStatement/VariableDeclaration
+                    | ancestor::ForStatement/MultiVariableDeclaration/VariableDeclaration
+                )/@Identifier,
+                $derivedVars := ancestor::ForStatement//PropertyDeclaration[
+                    not(ancestor::FunctionDeclaration[ancestor::PropertyDeclaration])
+                    and Expression//PrimaryExpression[@Identifier = $loopVars]
+                ]/VariableDeclaration/@Identifier
+            return (
+                empty($loopVars)
+                or not(.//ValueArguments//PrimaryExpression[@Identifier = ($loopVars, $derivedVars)])
+            )
+        )
+    ]
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun process(items: List<String>): List<String> {
+        val result = mutableListOf<String>()
+        for (item in items) {
+            val sb = StringBuilder()   // violation: new StringBuilder per iteration
+            sb.append(item)
+            result.add(sb.toString())
+        }
+        return result
+    }
+}
+
+class Good {
+    fun process(items: List<String>): List<String> {
+        val result = mutableListOf<String>()
+        val sb = StringBuilder()       // ok: single instance, cleared per iteration
+        for (item in items) {
+            sb.setLength(0)
+            sb.append(item)
+            result.add(sb.toString())
+        }
+        return result
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="BigIntegerInstantiation"
+          language="kotlin"
+          since="7.25.0"
+          message="Use BigInteger.ZERO, BigInteger.ONE, or BigInteger.TEN instead of BigInteger.valueOf(0/1/10)."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#bigintegerinstantiation">
+        <description>
+`BigInteger.valueOf(0)`, `BigInteger.valueOf(1)`, and `BigInteger.valueOf(10)` allocate
+unnecessarily; the JDK already provides `BigInteger.ZERO`, `BigInteger.ONE`, and
+`BigInteger.TEN` as cached constants.
+
+Kotlin idiomatic alternatives also include the extension functions:
+- `0.toBigInteger()`, `1.toBigInteger()`, `10.toBigInteger()`
+However, the named constants are more readable and allocation-free.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/BigIntegerInstantiation
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/BigIntegerInstantiation"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    pmd-kotlin:matchesSig('java.math.BigInteger#valueOf(*)')
+    and PostfixUnarySuffix/CallSuffix/ValueArguments/ValueArgument[
+        pmd-kotlin:nodeText() = '0'
+        or pmd-kotlin:nodeText() = '1'
+        or pmd-kotlin:nodeText() = '10'
+        or pmd-kotlin:nodeText() = '0L'
+        or pmd-kotlin:nodeText() = '1L'
+        or pmd-kotlin:nodeText() = '10L'
+    ]
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import java.math.BigInteger
+
+class Bad {
+    fun calc(): BigInteger {
+        val zero = BigInteger.valueOf(0)   // violation: use BigInteger.ZERO
+        val one  = BigInteger.valueOf(1L)  // violation: use BigInteger.ONE
+        val ten  = BigInteger.valueOf(10)  // violation: use BigInteger.TEN
+        return zero.add(one).add(ten)
+    }
+}
+
+class Good {
+    fun calc(): BigInteger {
+        val zero = BigInteger.ZERO          // ok: cached constant
+        val one  = BigInteger.ONE           // ok: cached constant
+        val ten  = BigInteger.TEN           // ok: cached constant
+        val two  = BigInteger.valueOf(2)    // ok: 2 has no named constant
+        val twoAlt = 2.toBigInteger()       // ok: idiomatic Kotlin extension
+        return zero.add(one).add(ten).add(two)
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="ConsecutiveLiteralAppends"
+          language="kotlin"
+          since="7.25.0"
+          message="Consecutive calls to append() with string literals should be combined into a single call"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#consecutiveliteralappends">
+        <description>
+Consecutive calls to `StringBuilder.append()` or `StringBuffer.append()` with string literals can
+be combined into a single `append()` call, reducing method call overhead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    (
+        pmd-kotlin:matchesSig('java.lang.StringBuilder#append(java.lang.String)')
+        or pmd-kotlin:matchesSig('java.lang.StringBuffer#append(java.lang.String)')
+    )
+    and count(PostfixUnarySuffix[
+        NavigationSuffix[@Identifier='append']
+        and following-sibling::PostfixUnarySuffix[1]/CallSuffix/ValueArguments/ValueArgument[
+            starts-with(pmd-kotlin:nodeText(), '"')
+        ]
+    ]) >= 2
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("hello").append(" world")  // violation: can be combined
+        return sb.toString()
+    }
+}
+
+class Good {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("hello world")  // ok: single append
+        return sb.toString()
+    }
+
+    fun buildTemplate(): String {
+        return "hello world"  // better: use a string directly or string template
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="InefficientEmptyStringCheck"
+          language="kotlin"
+          since="7.25.0"
+          message="String.trim().length / String.trim().isEmpty() is an inefficient way to check for a blank string; use isBlank() instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#inefficientemptystringcheck">
+        <description>
+Calling `str.trim()` (or `str.strip()`) before checking `.length` or `.isEmpty()` creates an
+unnecessary temporary `String` object just to discard it.
+
+Kotlin idiomatic alternatives:
+- `str.isBlank()` -- equivalent to `str.trim().isEmpty()`, checks Unicode whitespace
+- `str.isEmpty()` -- checks only for zero length, no trimming needed
+
+Kotlin equivalent of Java rule: category/java/performance.xml/InefficientEmptyStringCheck
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/InefficientEmptyStringCheck"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    (
+        pmd-kotlin:matchesSig('java.lang.String#trim()')
+        or pmd-kotlin:matchesSig('java.lang.String#strip()')
+    )
+    and (
+        PostfixUnarySuffix/NavigationSuffix[@Identifier = 'length']
+        or PostfixUnarySuffix/NavigationSuffix[@Identifier = ('isEmpty', 'isNullOrEmpty')]
+    )
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun isBlankStr(s: String): Boolean {
+        return s.trim().length == 0      // violation: allocates trimmed String
+    }
+
+    fun isBlankStr2(s: String): Boolean {
+        return s.strip().isEmpty()       // violation: allocates stripped String
+    }
+}
+
+class Good {
+    fun isBlankStr(s: String): Boolean {
+        return s.isBlank()               // ok: no allocation
+    }
+
+    fun isEmptyStr(s: String): Boolean {
+        return s.isEmpty()               // ok: no trimming needed for pure empty check
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="InefficientStringBuffering"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid concatenating non-literals in a StringBuilder.append() call; use chained append() calls instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#inefficientstringbuffering">
+        <description>
+Passing a `+` concatenation expression to `StringBuilder.append()` or `StringBuffer.append()`
+creates an intermediate `String` object unnecessarily. Use chained `append()` calls or
+Kotlin's `buildString { }` builder instead.
+
+Kotlin idiomatic alternatives:
+- Chain: `sb.append("prefix").append(variable)`
+- Builder: `buildString { append("prefix"); append(variable) }`
+
+Kotlin equivalent of Java rule: category/java/performance.xml/InefficientStringBuffering
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/InefficientStringBuffering"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    (pmd-kotlin:matchesSig('java.lang.StringBuilder#append(*)')
+     or pmd-kotlin:matchesSig('java.lang.StringBuffer#append(*)'))
+    and PostfixUnarySuffix/CallSuffix/ValueArguments/ValueArgument[
+        .//AdditiveExpression[AdditiveOperator[T-ADD]]
+    ]
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun buildMessage(prefix: String, value: Int): String {
+        val sb = StringBuilder()
+        sb.append(prefix + ": " + value)  // violation: intermediate String created
+        return sb.toString()
+    }
+}
+
+class GoodChain {
+    fun buildMessage(prefix: String, value: Int): String {
+        val sb = StringBuilder()
+        sb.append(prefix).append(": ").append(value)  // ok: chained appends
+        return sb.toString()
+    }
+}
+
+class GoodBuildString {
+    fun buildMessage(prefix: String, value: Int): String =
+        buildString {                          // ok: Kotlin idiomatic builder
+            append(prefix)
+            append(": ")
+            append(value)
+        }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="StringInstantiation"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid creating String objects unnecessarily; use a String literal instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#stringinstantiation">
+        <description>
+Strings are immutable in Kotlin/JVM. Creating `String(someString)` just copies the
+reference to a new object; use the string literal or variable directly.
+
+Note: Unlike Java's `new String(str)`, Kotlin's `kotlin.String` does not expose a
+`String(String)` copy constructor, so this rule primarily catches Java-interop patterns
+where the Java constructor is invoked explicitly (e.g. via reflection or a helper
+that calls `java.lang.String(String)`).
+
+Kotlin equivalent of Java rule: category/java/performance.xml/StringInstantiation
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/StringInstantiation"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.String#<init>(java.lang.String)')]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun bad(): String {
+        return String("hello") // violation: unnecessary String constructor call
+    }
+}
+
+class Good {
+    fun good(): String {
+        return "hello" // ok: use the string literal directly
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="StringToString"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid calling toString() on a String; it returns the same object."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#stringtostring">
+        <description>
+Calling `toString()` on a `String` is a no-op; the same `String` instance is returned.
+Remove the unnecessary call.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/StringToString
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/StringToString"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.String#toString()')]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun bad(name: String): String {
+        return name.toString() // violation: toString() on a String is a no-op
+    }
+}
+
+class Good {
+    fun good(name: String): String {
+        return name // ok: use the String variable directly
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="TooFewBranchesForWhenExpression"
+          language="kotlin"
+          since="7.25.0"
+          message="A when expression with too few branches can be replaced with a simpler if/else."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#toofewbranchesforwhenexpression">
+        <description>
+A condition-only `when` expression (no subject) with very few branches carries more syntax
+overhead than a plain `if`/`if-else`. Use `if` when only one or two conditions are needed.
+
+Note: `when` expressions with a typed subject (e.g., `when (sealedValue)`) are always
+allowed regardless of branch count. They serve as exhaustive pattern matching on enums and
+sealed classes, which is idiomatic Kotlin even with only two outcomes.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/TooFewBranchesForASwitchStatement
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/TooFewBranchesForASwitchStatement"/>
+            <property name="minimumNumberCaseForAWhen" type="Integer"
+                      description="Minimum number of when-branches to justify using a when without a subject instead of if/else"
+                      value="3" min="2"/>
+            <property name="xpath">
+                <value><![CDATA[
+//WhenExpression[
+    not(WhenSubject)
+    and count(WhenEntry) < $minimumNumberCaseForAWhen
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+// violation: condition-only when with 2 branches -- use if/else instead
+fun describeSmall(x: Int): String {
+    return when {
+        x == 0 -> "zero"
+        else   -> "non-zero"
+    }
+}
+
+// ok: condition-only when with 3 branches justifies using when
+fun describeSign(x: Int): String {
+    return when {
+        x < 0  -> "negative"
+        x == 0 -> "zero"
+        else   -> "positive"
+    }
+}
+
+// ok: typed subject -- idiomatic exhaustive matching on sealed/enum, always allowed
+fun describe(type: AppType): String {
+    return when (type) {
+        AppType.GAME -> "game"
+        else         -> "other"
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UseIndexOfChar"
+          language="kotlin"
+          since="7.25.0"
+          message="Use indexOf(Char) instead of indexOf(String) when searching for a single character."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#useindexofchar">
+        <description>
+`String.indexOf(String)` and `String.lastIndexOf(String)` perform full substring search
+when given a single-character argument. The `Char` overloads -- `indexOf(Char)` and
+`lastIndexOf(Char)` -- use a simpler linear scan without the overhead of multi-char
+matching.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/UseIndexOfChar
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/UseIndexOfChar"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    (
+        pmd-kotlin:matchesSig('java.lang.String#indexOf(java.lang.String)')
+        or pmd-kotlin:matchesSig('java.lang.String#lastIndexOf(java.lang.String)')
+    )
+    and PostfixUnarySuffix/CallSuffix/ValueArguments/ValueArgument[
+        string-length(pmd-kotlin:nodeText()) = 3
+        and starts-with(pmd-kotlin:nodeText(), '"')
+        and ends-with(pmd-kotlin:nodeText(), '"')
+    ]
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun parseHeader(line: String): Int {
+        return line.indexOf(":")    // violation: use indexOf(':')
+    }
+
+    fun findLast(path: String): Int {
+        return path.lastIndexOf("/")  // violation: use lastIndexOf('/')
+    }
+}
+
+class Good {
+    fun parseHeader(line: String): Int {
+        return line.indexOf(':')    // ok: Char overload, faster
+    }
+
+    fun findLast(path: String): Int {
+        return path.lastIndexOf('/')  // ok: Char overload, faster
+    }
+
+    fun multiChar(s: String): Int {
+        return s.indexOf("ab")  // ok: multi-character search, no Char alternative
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UselessStringValueOf"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid using String.valueOf(); use a string template or toString() instead"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#uselessstringvalueof">
+        <description>
+There is no need to call `String.valueOf()` to convert a value to a String in Kotlin.
+Use a string template (`"$value"`) or `value.toString()` instead, which is more idiomatic and avoids
+unnecessary overhead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    pmd-kotlin:matchesSig('java.lang.String#valueOf(*)')
+    and PostfixUnarySuffix/NavigationSuffix[@Identifier='valueOf']
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun convert(i: Int): String {
+        return String.valueOf(i)  // violation
+    }
+}
+
+class Good {
+    fun convert(i: Int): String {
+        return "$i"        // ok: idiomatic Kotlin string template
+    }
+
+    fun convert2(i: Int): String {
+        return i.toString()  // ok: explicit toString()
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UseStringBuilderForStringAppends"
+          language="kotlin"
+          since="7.25.0"
+          message="Use a StringBuilder instead of concatenating strings with += inside a loop."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#usestringbuilderforstringappends">
+        <description>
+Each use of `+=` to concatenate a `String` inside a loop creates a hidden temporary
+`StringBuilder`, a backing `char[]` array, and a new `String` object per iteration. These
+temporaries must all be garbage collected. Using an explicit `StringBuilder` outside
+the loop and calling `append()` avoids these repeated allocations.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBufferForStringAppends
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/UseStringBufferForStringAppends"/>
+            <property name="xpath">
+                <value><![CDATA[
+//Assignment[
+    AssignmentAndOperator/T-ADD_ASSIGNMENT
+    and pmd-kotlin:insideLoop()
+    and (
+        let $lhsName := AssignableExpression//PrimaryExpression/@Identifier
+        return ancestor::FunctionBody//PropertyDeclaration[
+            pmd-kotlin:typeIs('java.lang.String')
+            and VariableDeclaration/@Identifier = $lhsName
+        ]
+    )
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun join(items: List<String>): String {
+        var result = ""
+        for (item in items) {
+            result += item       // violation: creates a new StringBuilder per iteration
+        }
+        return result
+    }
+}
+
+class Good {
+    fun join(items: List<String>): String {
+        val sb = StringBuilder()
+        for (item in items) {
+            sb.append(item)      // ok: single StringBuilder, append per iteration
+        }
+        return sb.toString()
+    }
+
+    fun joinKotlin(items: List<String>): String {
+        return items.joinToString("")  // ok: idiomatic Kotlin
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UseStringBuilderLength"
+          language="kotlin"
+          since="7.25.0"
+          message="Use StringBuilder.length instead of StringBuilder.toString().length to avoid creating a temporary String."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_performance.html#usestringbuilderlength">
+        <description>
+Calling `toString()` on a `StringBuilder` or `StringBuffer` just to read its length
+allocates a temporary `String` object unnecessarily. `StringBuilder` and `StringBuffer`
+already expose a `length` property that returns the current character count directly.
+
+Kotlin equivalent of Java rule: category/java/performance.xml/UseStringBuilderLength
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/performance.xml/UseStringBuilderLength"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    (
+        pmd-kotlin:matchesSig('java.lang.StringBuilder#toString()')
+        or pmd-kotlin:matchesSig('java.lang.StringBuffer#toString()')
+    )
+    and PostfixUnarySuffix/NavigationSuffix[@Identifier = 'length']
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun isLong(sb: StringBuilder): Boolean {
+        return sb.toString().length > 100  // violation: allocates temporary String
+    }
+}
+
+class Good {
+    fun isLong(sb: StringBuilder): Boolean {
+        return sb.length > 100  // ok: direct length property, no allocation
+    }
+}
+        ]]></example>
+    </rule>
+
+</ruleset>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>printStackTrace() on an exception is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun process() {
+        try {
+            throw RuntimeException("oops")
+        } catch (e: Exception) { e.printStackTrace() }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>printStackTrace() in catch with no-arg is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun process() {
+        try {
+            doSomething()
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>printStackTrace() chained on a throwable expression is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun dump(t: Throwable) {
+        t.printStackTrace()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using a logger instead of printStackTrace() is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import mu.KotlinLogging
+
+class Good {
+    private val log = KotlinLogging.logger {}
+    fun process() {
+        try {
+            doSomething()
+        } catch (e: Exception) {
+            log.error("error", e)
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>runCatching{} with onFailure logging is idiomatic Kotlin - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import mu.KotlinLogging
+
+class Good {
+    private val log = KotlinLogging.logger {}
+    fun process() {
+        runCatching { doSomething() }
+            .onFailure { log.error("failed", it) }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

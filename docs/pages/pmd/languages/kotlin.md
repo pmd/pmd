@@ -36,6 +36,9 @@ or a semicolon (`;`) under Windows. This property can be provided on the CLI wit
 
 Not providing the correct auxClasspath might result in false positives or negatives for some rules, that depend on resolved types.
 
+Type resolution for Kotlin is powered by [kotlin-type-mapper](https://github.com/stokpop/kotlin-type-mapper),
+which is bundled with PMD.
+
 ## Language Properties
 
 See [Kotlin language properties](pmd_languages_configuration.html#kotlin-language-properties)

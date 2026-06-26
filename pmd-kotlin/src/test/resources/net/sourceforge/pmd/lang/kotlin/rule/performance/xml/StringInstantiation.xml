@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Using a string literal directly is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(): String {
+    return "hello"
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using an existing String variable directly is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(existing: String): String {
+    return existing
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String(CharArray) constructor - not the copy-constructor anti-pattern - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun fromChars(): String {
+    return String(charArrayOf('h', 'e', 'l', 'l', 'o'))
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

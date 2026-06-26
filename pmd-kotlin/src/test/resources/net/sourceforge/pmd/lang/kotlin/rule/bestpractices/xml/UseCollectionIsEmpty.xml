@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>size == 0 should use isEmpty()</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun check(list: List<Int>) {
+        if (list.size == 0) println("empty")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>size != 0 should use isNotEmpty()</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun check(list: List<Int>) {
+        if (list.size != 0) println("not empty")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>count() > 0 should use isNotEmpty()</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun check(list: List<Int>) {
+        if (list.count() > 0) println("has items")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>isEmpty() is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun check(list: List<Int>) {
+        if (list.isEmpty()) println("empty")
+        if (list.isNotEmpty()) println("not empty")
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

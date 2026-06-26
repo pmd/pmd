@@ -9,6 +9,171 @@
 Rules which enforce generally accepted best practices.
     </description>
 
+    <rule name="AvoidMessageDigestField"
+          language="kotlin"
+          since="7.25.0"
+          message="MessageDigest fields are not thread-safe; declare a local instance instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidmessagedigestfield">
+        <description>
+`java.security.MessageDigest` is not thread-safe. Declaring it as a class field exposes
+it to concurrent access without explicit synchronisation, producing incorrect digests.
+Create a new instance per method call, or protect shared access with a mutex.
+
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidMessageDigestField
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/bestpractices.xml/AvoidMessageDigestField"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PropertyDeclaration[
+    not(ancestor::FunctionBody)
+    and pmd-kotlin:typeIs('java.security.MessageDigest')
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import java.security.MessageDigest
+
+class Bad {
+    private val md: MessageDigest = MessageDigest.getInstance("SHA-256") // violation
+
+    fun hash(data: ByteArray): ByteArray {
+        md.reset()
+        return md.digest(data) // race condition if called from multiple threads
+    }
+}
+
+class Good {
+    fun hash(data: ByteArray): ByteArray {
+        val md = MessageDigest.getInstance("SHA-256") // ok: new instance per call
+        return md.digest(data)
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AvoidPrintStackTrace"
+          language="kotlin"
+          since="7.25.0"
+          message="Avoid printStackTrace(); use kotlin-logging or a SLF4J logger instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidprintstacktrace">
+        <description>
+Avoid calling `Throwable.printStackTrace()`; use a proper logger instead.
+Stack traces printed to standard output can be lost in production and carry no log level,
+making them hard to control or suppress.
+
+Kotlin idiomatic alternative: use kotlin-logging (`io.github.microutils:kotlin-logging`):
+- `private val log = KotlinLogging.logger {}`
+- `log.error(e) { "operation failed" }`
+
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidPrintStackTrace
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/bestpractices.xml/AvoidPrintStackTrace"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.Throwable#printStackTrace(*)')]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun handle() {
+        try {
+            riskyOperation()
+        } catch (e: Exception) {
+            e.printStackTrace() // violation: use logger instead
+        }
+    }
+}
+
+class GoodSlf4j {
+    private val log = org.slf4j.LoggerFactory.getLogger(GoodSlf4j::class.java)
+
+    fun handle() {
+        try {
+            riskyOperation()
+        } catch (e: Exception) {
+            log.error("riskyOperation failed", e) // ok: SLF4J
+        }
+    }
+}
+
+class GoodKotlinLogging {
+    private val log = io.github.microutils.kotlinlogging.KotlinLogging.logger {}
+
+    fun handle() {
+        try {
+            riskyOperation()
+        } catch (e: Exception) {
+            log.error(e) { "riskyOperation failed" } // ok: kotlin-logging (idiomatic)
+        }
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="AvoidStringBufferField"
+          language="kotlin"
+          since="7.25.0"
+          message="StringBuffer/StringBuilder fields can grow large; prefer buildString'{'...'}'or a local instance."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#avoidstringbufferfield">
+        <description>
+`StringBuffer` and `StringBuilder` instances can grow considerably and, if held as class
+fields across long-lived objects, may cause memory leaks.
+
+Kotlin idiomatic alternatives:
+- Use `buildString { append(...) }` for one-shot construction (returns a `String` directly).
+- Create a local `StringBuilder` inside the function that needs it.
+- Prefer string templates (`"$var"`) which the Kotlin compiler optimises automatically.
+
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/AvoidStringBufferField
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/bestpractices.xml/AvoidStringBufferField"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PropertyDeclaration[
+    not(ancestor::FunctionBody)
+    and (pmd-kotlin:typeIs('java.lang.StringBuffer')
+      or pmd-kotlin:typeIs('java.lang.StringBuilder'))
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    private val sb: StringBuffer = StringBuffer()   // violation: potential memory leak
+
+    fun append(s: String) = sb.append(s)
+}
+
+class Good {
+    fun buildMessage(parts: List<String>): String =
+        buildString { parts.forEach { append(it) } }  // ok: Kotlin idiomatic buildString{}
+
+    fun buildMessageAlt(parts: List<String>): String {
+        val sb = StringBuilder()                       // ok: local variable
+        parts.forEach { sb.append(it) }
+        return sb.toString()
+    }
+}
+        ]]></example>
+    </rule>
+
     <rule name="FunctionNameTooShort"
           since="7.0.0"
           language="kotlin"
@@ -16,21 +181,35 @@ Rules which enforce generally accepted best practices.
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#functionnametooshort">
         <description>
-            Function names should be easy to understand and describe the intention. Makes developers happy.
+Function names should be easy to understand and describe the intention. Makes developers happy.
+Short names that are conventional in Kotlin or platform idioms (e.g. event listener `on`,
+Android density-pixel helper `dp`) can be excluded via the `allowedNames` property.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="allowedNames" type="List[String]"
+                      description="Short function names that are conventional and should not be flagged."
+                      value="on,dp"/>
             <property name="xpath">
                 <value><![CDATA[
-                    //FunctionDeclaration/SimpleIdentifier/T-Identifier[string-length(@Text) < 3]
+                    //FunctionDeclaration[
+                        not(Modifiers/Modifier/MemberModifier/T-OVERRIDE)
+                        and not(some $name in $allowedNames satisfies @Identifier = $name)
+                    ]/SimpleIdentifier/T-Identifier[string-length(@Text) < 3]
                 ]]></value>
             </property>
         </properties>
         <example>
             <![CDATA[
-fun cl() {} // violation, no unavailable attribute added to the function declaration
+fun cl() {} // violation
 
-fun calculateLayout() // no violation
+fun calculateLayout() {} // no violation
+
+fun on(listener: () -> Unit) {} // no violation -- 'on' is in allowedNames by default
+
+override fun on(event: String) {} // no violation -- overrides are always excluded
+
+fun dp(value: Int): Int = (value * 2.5f).toInt() // no violation -- 'dp' is in allowedNames by default (Android convention)
 ]]>
         </example>
     </rule>
@@ -60,5 +239,282 @@ fun compute2(input: Int): Int {
 ]]>
         </example>
     </rule>
+
+    <rule name="LooseCoupling"
+          language="kotlin"
+          since="7.25.0"
+          message="Use the interface type (List/Set/Map) instead of a concrete implementation type as the declared type."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#loosecoupling">
+        <description>
+Declaring fields or properties with a concrete collection type (`ArrayList`, `HashSet`,
+`HashMap`, etc.) tightly couples callers to an implementation detail. Declare the type as
+the appropriate interface (`List`, `Set`, `Map`, `MutableList`, `MutableSet`, `MutableMap`) so the
+implementation can be swapped without breaking API consumers.
+
+In Kotlin, prefer the idiomatic factory functions:
+- `listOf()` / `mutableListOf()` -> returns `MutableList`
+- `setOf()` / `mutableSetOf()` -> returns `MutableSet`
+- `mapOf()` / `mutableMapOf()` -> returns `MutableMap`
+
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/LooseCoupling
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/bestpractices.xml/LooseCoupling"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PropertyDeclaration[
+    not(ancestor::FunctionBody)
+    and (
+        pmd-kotlin:typeIsExactly('java.util.ArrayList')
+        or pmd-kotlin:typeIsExactly('java.util.LinkedList')
+        or pmd-kotlin:typeIsExactly('java.util.HashSet')
+        or pmd-kotlin:typeIsExactly('java.util.LinkedHashSet')
+        or pmd-kotlin:typeIsExactly('java.util.TreeSet')
+        or pmd-kotlin:typeIsExactly('java.util.HashMap')
+        or pmd-kotlin:typeIsExactly('java.util.LinkedHashMap')
+        or pmd-kotlin:typeIsExactly('java.util.TreeMap')
+    )
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import java.util.ArrayList
+import java.util.HashMap
+
+class Bad {
+    private val items: ArrayList<String> = ArrayList()    // violation: use MutableList
+    private val cache: HashMap<String, Int> = HashMap()  // violation: use MutableMap
+}
+
+class Good {
+    private val items: MutableList<String> = mutableListOf()  // ok: interface type
+    private val cache: MutableMap<String, Int> = mutableMapOf()  // ok: interface type
+
+    fun local() {
+        val local: ArrayList<String> = ArrayList()  // ok: local variable
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="PreserveStackTrace"
+          language="kotlin"
+          since="7.25.0"
+          message="The original exception should be passed as the cause when throwing a new exception from a catch block."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#preservestacktrace">
+        <description>
+When catching an exception and throwing a new one from within a catch block, the original
+exception should be passed as the `cause` argument so that the original stack trace is preserved.
+Without it, the root cause of the problem is lost. Exception: catch variables named with the
+`ignored` prefix or underscore are intentionally discarded and are not flagged.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//JumpExpression[
+    T-THROW
+    and not(ancestor::LambdaLiteral or ancestor::AnonymousFunction)
+    and ancestor::CatchBlock[1][
+        not(starts-with(@Identifier, 'ignored'))
+        and not(@Identifier = '_')
+    ]
+    and not(
+        .//ValueArguments//PostfixUnaryExpression[
+            PrimaryExpression[@Identifier = ancestor::CatchBlock[1]/@Identifier]
+            and not(PostfixUnarySuffix)
+        ]
+    )
+    and not(
+        .//PostfixUnaryExpression[
+            PrimaryExpression[@Identifier = ancestor::CatchBlock[1]/@Identifier]
+            and not(PostfixUnarySuffix)
+            and not(ancestor::ValueArguments)
+        ]
+    )
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+// violation: original exception e is lost
+fun bad() {
+    try {
+        doSomething()
+    } catch (e: Exception) {
+        throw RuntimeException("msg")  // e not passed
+    }
+}
+
+// ok: original exception passed as cause
+fun good() {
+    try {
+        doSomething()
+    } catch (e: Exception) {
+        throw RuntimeException("msg", e)
+    }
+}
+
+// ok: intentionally ignored
+fun expected() {
+    try {
+        doSomething()
+    } catch (ignoredException: Exception) {
+        throw RuntimeException("known failure")
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="SystemPrintln"
+          language="kotlin"
+          since="7.25.0"
+          message="Usage of System.out/err; use kotlin-logging or another logging framework."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#systemprintln">
+        <description>
+Calls to `System.out.print*`, `System.err.print*`, or `System.out.printf` are typically
+left-over debug statements. Use a structured logging framework so output can be
+controlled by log level and configuration without redeploying.
+
+Kotlin idiomatic alternative: kotlin-logging (`io.github.microutils:kotlin-logging`):
+- `private val log = KotlinLogging.logger {}`
+- `log.info { "message" }`
+
+Note: Kotlin's built-in top-level `println()` also maps to `System.out` and should be
+replaced in production code. This rule detects the explicit `System.out/err` variants;
+treat `println()` / `print()` calls as violations in code review.
+
+Kotlin equivalent of Java rule: category/java/bestpractices.xml/SystemPrintln
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/bestpractices.xml/SystemPrintln"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    pmd-kotlin:matchesSig('java.io.PrintStream#println(*)')
+    or pmd-kotlin:matchesSig('java.io.PrintStream#print(*)')
+    or pmd-kotlin:matchesSig('java.io.PrintStream#printf(*)')
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun report(msg: String) {
+        System.out.println(msg)       // violation
+        System.err.println("error!")  // violation
+    }
+}
+
+class Good {
+    private val log = org.slf4j.LoggerFactory.getLogger(Good::class.java)
+
+    fun report(msg: String) {
+        log.info(msg)  // ok
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UseCollectionIsEmpty"
+          language="kotlin"
+          since="7.25.0"
+          message="Use isEmpty() or isNotEmpty() instead of comparing size to 0"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#usecollectionisempty">
+        <description>
+Prefer `isEmpty()` or `isNotEmpty()` over comparing `size` (or `count()`) to zero.
+Using the dedicated methods is more idiomatic Kotlin and more readable.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+(
+    //Equality[
+        EqualityOperator
+        and Comparison[.//NavigationSuffix[@Identifier='size' or @Identifier='count']]
+        and Comparison[pmd-kotlin:nodeText() = '0' or pmd-kotlin:nodeText() = '1']
+    ]
+    |
+    //Comparison[
+        ComparisonOperator
+        and .//NavigationSuffix[@Identifier='size' or @Identifier='count']
+        and *[pmd-kotlin:nodeText() = '0' or pmd-kotlin:nodeText() = '1']
+    ]
+)
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun check(list: List<Int>) {
+        if (list.size == 0) println("empty")      // violation
+        if (list.size != 0) println("not empty")  // violation
+        if (list.count() > 0) println("has items")// violation
+    }
+}
+
+class Good {
+    fun check(list: List<Int>) {
+        if (list.isEmpty()) println("empty")      // ok
+        if (list.isNotEmpty()) println("not empty")// ok
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UseStandardCharsets"
+          language="kotlin"
+          since="7.25.0"
+          message="Use a StandardCharsets constant instead of Charset.forName(String)"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#usestandardcharsets">
+        <description>
+Use the constants from `java.nio.charset.StandardCharsets` instead of calling `Charset.forName(String)`.
+The constants avoid the need to handle `UnsupportedEncodingException` and provide a small performance advantage
+because no lookup through the charset cache is needed.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[
+    pmd-kotlin:matchesSig('java.nio.charset.Charset#forName(java.lang.String)')
+    and PostfixUnarySuffix/CallSuffix/ValueArguments/ValueArgument[
+        pmd-kotlin:nodeText() = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')
+    ]
+]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+
+class Bad {
+    fun encode(s: String): ByteArray {
+        return s.toByteArray(Charset.forName("UTF-8"))  // violation
+    }
+}
+
+class Good {
+    fun encode(s: String): ByteArray {
+        return s.toByteArray(StandardCharsets.UTF_8)  // ok
+    }
+}
+        ]]></example>
+    </rule>
+
 
 </ruleset>

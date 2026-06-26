@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>throw without caught exception is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun bad() {
+        try {
+            doSomething()
+        } catch (e: Exception) {
+            throw RuntimeException("msg")
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw with only e.message is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun bad() {
+        try {
+            doSomething()
+        } catch (e: Exception) {
+            throw RuntimeException(e.message)
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw with caught exception as sole argument is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good() {
+        try {
+            doSomething()
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>throw with caught exception as cause argument is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good() {
+        try {
+            doSomething()
+        } catch (e: Exception) {
+            throw RuntimeException("msg", e)
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch variable starting with ignored is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good() {
+        try {
+            doSomething()
+        } catch (ignoredException: Exception) {
+            throw RuntimeException("expected failure")
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch variable underscore is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good() {
+        try {
+            doSomething()
+        } catch (_: Exception) {
+            throw RuntimeException("expected failure")
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>direct rethrow of caught exception is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good() {
+        try {
+            doSomething()
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>direct rethrow of CancellationException is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good() {
+        try {
+            doSomething()
+        } catch (e: IllegalStateException) {
+            throw e
+        } catch (e: Exception) {
+            throw RuntimeException("wrapped", e)
+        }
+    }
+    private fun doSomething() {}
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
