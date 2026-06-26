@@ -98,6 +98,67 @@ class ASTSwitchLikeTest extends BaseParserTest {
                 () -> assertSwitch(switchStatements.get("notExhaustiveEnum"), true, false, false),
                 () -> assertSwitch(switchStatements.get("notExhaustiveEnumWithDefault"), true, false, true)
         );
+
+        assertAll(
+                () -> assertDefaultCase(switchStatements.get("exhaustiveSealedWithDefault"), "unnecessary default"),
+                () -> assertDefaultCase(switchStatements.get("notExhaustiveSealedWithDefault"), "anything else"),
+                () -> assertDefaultCase(switchStatements.get("exhaustiveEnumWithDefault"), "unnecessary default"),
+                () -> assertDefaultCase(switchStatements.get("notExhaustiveEnumWithDefault"), "unnecessary default")
+        );
+    }
+
+    @Test
+    void exhaustiveClassicalSwitchSealedClassesAST() {
+        Map<String, ASTSwitchLike> switchStatements =
+                java.parse(
+                                "import net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavedefault.SimpleEnum;\n"
+                                        + "public sealed class Foo {\n"
+                                        + "    void exhaustiveEnum(SimpleEnum x) {\n"
+                                        + "        switch (x) {\n"
+                                        + "            case FOO: System.out.println(\"x is foo\"); break;\n"
+                                        + "            case BAR: System.out.println(\"x is bar\"); break;\n"
+                                        + "            case BZAZ: System.out.println(\" x is bzaz\"); break;\n"
+                                        + "        }\n"
+                                        + "    }\n"
+                                        + "    void exhaustiveEnumWithDefault(SimpleEnum x) {\n"
+                                        + "        switch (x) {\n"
+                                        + "            case FOO: System.out.println(\"x is foo\"); break;\n"
+                                        + "            case BAR: System.out.println(\"x is bar\"); break;\n"
+                                        + "            case BZAZ: System.out.println(\" x is bzaz\"); break;\n"
+                                        + "            default: System.out.println(\"unnecessary default\"); break;\n"
+                                        + "        }\n"
+                                        + "    }\n"
+                                        + "    void notExhaustiveEnum(SimpleEnum x) {\n"
+                                        + "        switch (x) {\n"
+                                        + "            case FOO: System.out.println(\"x is foo\"); break;\n"
+                                        + "            // missing: case BAR: System.out.println(\"x is bar\"); break;\n"
+                                        + "            case BZAZ: System.out.println(\" x is bzaz\"); break;\n"
+                                        + "        }\n"
+                                        + "    }\n"
+                                        + "    void notExhaustiveEnumWithDefault(SimpleEnum x) {\n"
+                                        + "        switch (x) {\n"
+                                        + "            case FOO: System.out.println(\"x is foo\"); break;\n"
+                                        + "            //missing: case BAR: System.out.println(\"x is bar\"); break;\n"
+                                        + "            case BZAZ: System.out.println(\" x is bzaz\"); break;\n"
+                                        + "            default: System.out.println(\"unnecessary default\"); break;\n"
+                                        + "        }\n"
+                                        + "    }\n"
+                                        + "}")
+                        .descendants(ASTSwitchLike.class)
+                        .collect(Collectors.toMap(s -> s.ancestors(ASTMethodDeclaration.class).firstOrThrow().getName(),
+                                Function.identity()));
+
+        assertAll(
+                () -> assertSwitch(switchStatements.get("exhaustiveEnum"), true, true, false),
+                () -> assertSwitch(switchStatements.get("exhaustiveEnumWithDefault"), true, true, true),
+                () -> assertSwitch(switchStatements.get("notExhaustiveEnum"), true, false, false),
+                () -> assertSwitch(switchStatements.get("notExhaustiveEnumWithDefault"), true, false, true)
+        );
+
+        assertAll(
+                () -> assertDefaultCase(switchStatements.get("exhaustiveEnumWithDefault"), "unnecessary default"),
+                () -> assertDefaultCase(switchStatements.get("notExhaustiveEnumWithDefault"), "unnecessary default")
+        );
     }
 
     @Test
@@ -136,6 +197,11 @@ class ASTSwitchLikeTest extends BaseParserTest {
                 () -> assertSwitch(switchExpressions.get("exhaustiveSealed"), false, true, false),
                 () -> assertSwitch(switchExpressions.get("exhaustiveSealedWithDefault"), false, true, true),
                 () -> assertSwitch(switchExpressions.get("notExhaustiveSealedWithDefault"), false, false, true)
+        );
+
+        assertAll(
+                () -> assertDefaultCase(switchExpressions.get("exhaustiveSealedWithDefault"), "unnecessary default"),
+                () -> assertDefaultCase(switchExpressions.get("notExhaustiveSealedWithDefault"), "anything else")
         );
     }
 
@@ -181,5 +247,10 @@ class ASTSwitchLikeTest extends BaseParserTest {
         assertEquals(isEnum & isExhaustive, switchLike.isExhaustiveEnumSwitch(), "wrong isExhaustiveEnumSwitch");
         assertEquals(isExhaustive, switchLike.isExhaustive(), "wrong isExhaustive");
         assertEquals(hasDefault, switchLike.hasDefaultCase(), "wrong hasDefaultCase");
+        assertEquals(hasDefault, switchLike.getDefaultCase() != null);
+    }
+
+    private static void assertDefaultCase(ASTSwitchLike switchLike, String expected) {
+        assertEquals(expected, switchLike.getDefaultCase().descendants(ASTStringLiteral.class).first().getConstValue());
     }
 }
