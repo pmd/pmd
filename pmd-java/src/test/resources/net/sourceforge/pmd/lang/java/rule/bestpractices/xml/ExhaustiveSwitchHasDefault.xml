@@ -25,6 +25,9 @@ class Foo {
         <description>Exhaustive Enum Switch - with default: nok</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The switch block is exhaustive even without the default case</message>
+        </expected-messages>
         <code><![CDATA[
 class Foo {
     enum MyEnum { A, B };
@@ -134,6 +137,41 @@ public class Test {
         // The blank final field out may not have been initialized.
         // Note that a problem regarding missing 'default:' on 'switch' has been suppressed,
         // which is perhaps related to this problem
+        throw new IllegalStateException();
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>But when the default is doing too much, we still get a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <expected-messages>
+            <message>The switch block is exhaustive. The default case should only throw, nothing else.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.PrintStream;
+
+public class Test {
+  private final PrintStream out;
+
+  public enum ProcessStream {
+    STDOUT,
+    STDERR
+  }
+
+  public Test(ProcessStream stream) {
+    switch (stream) {
+      case STDOUT:
+        this.out = System.out;
+        break;
+      case STDERR:
+        this.out = System.err;
+        break;
+      default:
+        this.out = null;
         throw new IllegalStateException();
     }
   }

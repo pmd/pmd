@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -38,8 +40,10 @@ public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
 
     private void visitSwitchLike(ASTSwitchLike node, RuleContext ctx) {
         if (node.isExhaustive() && node.hasDefaultCase()) {
-            if (!defaultBranchJustThrows(node.getDefaultCase())) {
+            if (!defaultBranchIsNecessary(node)) {
                 ctx.addViolation(node);
+            } else if (!defaultBranchJustThrows(node.getDefaultCase())) {
+                ctx.addViolationWithMessage(node, "The switch block is exhaustive. The default case should only throw, nothing else.");
             }
         }
     }
@@ -60,5 +64,13 @@ public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
             return block.size() == 1 && block.get(0) instanceof ASTThrowStatement;
         }
         return false;
+    }
+
+    // visible for testing
+    /* private */ static boolean defaultBranchIsNecessary(ASTSwitchLike switchLike) {
+        return switchLike.descendants(ASTAssignableExpr.ASTNamedReferenceExpr.class)
+                .filter(expr -> expr.getReferencedSym() != null)
+                .filter(expr -> expr.getReferencedSym().isFinal())
+                .any(JavaAstUtils::isVarAccessStrictlyWrite);
     }
 }
