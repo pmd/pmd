@@ -22,6 +22,22 @@ class Foo {
     </test-code>
 
     <test-code>
+        <description>Non-exhaustive Enum Switch - no default: ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    enum MyEnum { A, B };
+
+    void doSomething(MyEnum e) {
+        switch(e) {
+            case A -> System.out.println("a");
+        };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>Exhaustive Enum Switch - with default: nok</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
