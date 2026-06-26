@@ -9,14 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.net.URL;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
@@ -28,23 +24,6 @@ class KotlinHasUnresolvedReferenceFunctionTest {
 
     private static final String RESOURCE_DIR =
             "net/sourceforge/pmd/lang/kotlin/rule/xpath/hasUnresolvedReference";
-
-    private KotlinTypeXPathTestHelper helper;
-
-    @BeforeEach
-    void setUp() {
-        URL resource = getClass().getClassLoader().getResource(RESOURCE_DIR);
-        if (resource == null) {
-            throw new IllegalStateException("Cannot find test resources at: " + RESOURCE_DIR);
-        }
-        helper = KotlinTypeXPathTestHelper.forDirectory(new File(resource.getFile()));
-        helper.injectContext();
-    }
-
-    @AfterEach
-    void tearDown() {
-        KotlinTypeAnalysisContextHolder.clearGlobal();
-    }
 
     @Test
     void unresolvedImportFiresOnMissingPackage() {

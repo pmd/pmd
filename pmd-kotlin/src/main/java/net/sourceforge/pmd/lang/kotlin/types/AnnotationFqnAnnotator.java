@@ -9,41 +9,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameters;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
-import nl.stokpop.typemapper.model.ParameterAst;
 
 /**
- * Annotates declaration nodes with annotation FQNs and function parameter types.
+ * Annotates declaration nodes with annotation FQNs.
  *
- * <p>Responsibility (1): {@link #setAnnotationAttributes} sets
- * type data on the declaration node itself and
- * type data on each {@code KtUnescapedAnnotation} /
- * {@code KtSingleAnnotation} child.
+ * <p>{@link #setAnnotationFqns} sets type data on the declaration node itself
+ * and type data on each {@code KtUnescapedAnnotation} / {@code KtSingleAnnotation}
+ * child, matching by simple (unqualified) name.
  *
- * <p>Responsibility (2): {@link #setFunctionParameterTypes} sets
- * type data on each {@code KtFunctionValueParameter}
- * child by matching against the {@link nl.stokpop.typemapper.model.ParameterAst}
- * list from kotlin-type-mapper.
+ * <p>For function parameter type annotation, see {@link FunctionParameterAnnotator}.
  */
-final class AnnotationAttributeAnnotator {
+final class AnnotationFqnAnnotator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AnnotationAttributeAnnotator.class);
-
-    private AnnotationAttributeAnnotator() {
+    private AnnotationFqnAnnotator() {
     }
 
     /**
@@ -51,26 +40,23 @@ final class AnnotationAttributeAnnotator {
      * type data on each of its {@code KtUnescapedAnnotation}
      * children, matching by simple (unqualified) name.
      */
-    static void setAnnotationAttributes(KotlinNode declNode, List<AnnotationAst> annotations) {
+    static void setAnnotationFqns(KotlinNode declNode, List<AnnotationAst> annotations) {
         if (annotations.isEmpty()) {
             return;
         }
         // Build a simple-name -> FQN lookup (last match wins; duplicates are rare)
         Map<String, String> simpleToFqn = new HashMap<>();
-        StringBuilder fqnList = new StringBuilder();
+        List<String> fqnList = new ArrayList<>();
         for (AnnotationAst ann : annotations) {
             String fqn = ann.getFqName();
             if (fqn.isEmpty()) {
                 continue;
             }
             simpleToFqn.put(KotlinTypeAnnotationVisitor.simpleNameOf(fqn), fqn);
-            if (fqnList.length() > 0) {
-                fqnList.append(',');
-            }
-            fqnList.append(fqn);
+            fqnList.add(fqn);
         }
-        if (fqnList.length() > 0) {
-            KotlinNodeTypeData.setAnnotationFqNames(declNode, fqnList.toString());
+        if (!fqnList.isEmpty()) {
+            KotlinNodeTypeData.setAnnotationFqNames(declNode, fqnList);
         }
 
         // Set @TypeName on each KtUnescapedAnnotation in the declaration's modifiers
@@ -93,45 +79,6 @@ final class AnnotationAttributeAnnotator {
                 if (parent instanceof KtSingleAnnotation) {
                     KotlinNodeTypeData.setTypeName(parent, fqn);
                 }
-            }
-        }
-    }
-
-    /**
-     * Sets type data on each {@code KtFunctionValueParameter}
-     * child of the given function declaration, matching by position against the
-     * {@code parameters} list from the kotlin-type-mapper {@link nl.stokpop.typemapper.model.DeclarationAst}.
-     */
-    static void setFunctionParameterTypes(KtFunctionDeclaration funcNode, List<ParameterAst> parameters) {
-        if (parameters.isEmpty()) {
-            return;
-        }
-        KtFunctionValueParameters paramsNode = findFunctionValueParametersNode(funcNode);
-        if (paramsNode != null) {
-            annotateParameterNodes(paramsNode, parameters);
-        }
-    }
-
-    private static KtFunctionValueParameters findFunctionValueParametersNode(KtFunctionDeclaration funcNode) {
-        for (int i = 0; i < funcNode.getNumChildren(); i++) {
-            KotlinNode child = funcNode.getChild(i);
-            if (child instanceof KtFunctionValueParameters) {
-                return (KtFunctionValueParameters) child;
-            }
-        }
-        return null;
-    }
-
-    private static void annotateParameterNodes(KtFunctionValueParameters paramsNode, List<ParameterAst> parameters) {
-        int paramIdx = 0;
-        for (int j = 0; j < paramsNode.getNumChildren(); j++) {
-            KotlinNode sub = paramsNode.getChild(j);
-            if (sub instanceof KotlinParser.KtFunctionValueParameter && paramIdx < parameters.size()) {
-                String type = parameters.get(paramIdx).getType();
-                if (type != null) {
-                    KotlinNodeTypeData.setTypeName(sub, type);
-                }
-                paramIdx++;
             }
         }
     }
@@ -207,8 +154,7 @@ final class AnnotationAttributeAnnotator {
                     .sliceOriginalText(userType.getTextRegion())
                     .toString();
         } catch (IndexOutOfBoundsException e) {
-            LOG.debug("Could not read text region for annotation in {}", annNode, e);
-            return null;
+            throw AssertionUtil.contexted(e).addContextValue("annotation node", annNode);
         }
     }
 

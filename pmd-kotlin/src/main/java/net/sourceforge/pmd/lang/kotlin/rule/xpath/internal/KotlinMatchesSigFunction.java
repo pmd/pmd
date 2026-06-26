@@ -12,8 +12,9 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 import nl.stokpop.typemapper.model.CallSiteAst;
@@ -117,7 +118,8 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             int endCol = contextNode.getEndColumn();
             boolean singleLine = endLine == beginLine;
 
-            KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+            KtKotlinFile root = (KtKotlinFile) contextNode.getRoot();
+            KotlinTypeAnalysisContext ctx = KotlinNodeTypeData.getAnalysisContext(root);
             List<CallSiteAst> sites = ctx.callSitesInRange(absPath, beginLine, endLine);
 
             // For multi-line nodes, restrict to call sites on lines where direct

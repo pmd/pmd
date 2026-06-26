@@ -13,6 +13,7 @@
 
     <properties>
         <antlr4.visitor>true</antlr4.visitor>
+        <kotlin.type.mapper.version>0.6.1</kotlin.type.mapper.version>
     </properties>
 
     <build>
@@ -88,12 +89,12 @@
         <dependency>
             <groupId>nl.stokpop.typemapper</groupId>
             <artifactId>kotlin-type-mapper-model</artifactId>
-            <version>0.6.0</version>
+            <version>${kotlin.type.mapper.version}</version>
         </dependency>
         <dependency>
             <groupId>nl.stokpop.typemapper</groupId>
             <artifactId>kotlin-type-mapper-analyzer</artifactId>
-            <version>0.6.0</version>
+            <version>${kotlin.type.mapper.version}</version>
         </dependency>
 
         <dependency>

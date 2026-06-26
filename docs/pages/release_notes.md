@@ -29,9 +29,7 @@ This is a {{ site.pmd.release_type }} release.
 Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
 Resolved type names, return types, and annotation FQNs are available through `KotlinNodeTypeData` for use in Java-based rules.
 
-Note: type data is not yet accessible in XPath rules or the PMD Rule Designer — that requires adding
-`getTypeName()` / `getReturnTypeName()` methods to the `AttributeView` subclasses, which is deferred to a follow-up.
-The designer also depends on pmd-designer [PR #319](https://github.com/pmd/pmd-designer/pull/319) for proper auxClasspath class loading.
+Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
 ### 🌟️ New and Changed Rules
 #### New Rules

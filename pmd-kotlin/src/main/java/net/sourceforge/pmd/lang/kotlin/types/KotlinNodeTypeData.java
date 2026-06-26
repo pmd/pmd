@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.kotlin.types;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +11,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 
@@ -35,11 +36,14 @@ public final class KotlinNodeTypeData {
     private static final SimpleDataKey<String> RETURN_TYPE_KEY =
             DataMap.simpleDataKey("kotlin.returnTypeName");
 
-    private static final SimpleDataKey<String> ANNOTATION_NAMES_KEY =
+    private static final SimpleDataKey<List<String>> ANNOTATION_NAMES_KEY =
             DataMap.simpleDataKey("kotlin.annotationNames");
 
     private static final SimpleDataKey<Boolean> TYPE_INFO_AVAILABLE_KEY =
             DataMap.simpleDataKey("kotlin.typeInfoAvailable");
+
+    private static final SimpleDataKey<KotlinTypeAnalysisContext> ANALYSIS_CONTEXT_KEY =
+            DataMap.simpleDataKey("kotlin.analysisContext");
 
     private KotlinNodeTypeData() {}
 
@@ -83,20 +87,15 @@ public final class KotlinNodeTypeData {
      * analysis has not been run.
      */
     public static List<String> getAnnotationFqNames(KotlinNode node) {
-        String stored = node.getUserMap().get(ANNOTATION_NAMES_KEY);
-        if (stored == null || stored.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(Arrays.asList(stored.split(",")));
+        List<String> stored = node.getUserMap().get(ANNOTATION_NAMES_KEY);
+        return stored != null ? stored : Collections.emptyList();
     }
 
     /**
      * Stores the fully-qualified annotation class names on a declaration node.
      * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
-     *
-     * @param annotationFqNames comma-separated FQN annotation class names
      */
-    static void setAnnotationFqNames(KotlinNode node, String annotationFqNames) {
+    static void setAnnotationFqNames(KotlinNode node, List<String> annotationFqNames) {
         node.getUserMap().set(ANNOTATION_NAMES_KEY, annotationFqNames);
     }
 
@@ -104,7 +103,7 @@ public final class KotlinNodeTypeData {
      * Returns {@code true} when the kotlin-type-mapper pre-analysis ran successfully
      * for the file represented by this root node, {@code false} otherwise.
      */
-    public static boolean isTypeInfoAvailable(KotlinNode rootNode) {
+    public static boolean isTypeInfoAvailable(KtKotlinFile rootNode) {
         Boolean value = rootNode.getUserMap().get(TYPE_INFO_AVAILABLE_KEY);
         return Boolean.TRUE.equals(value);
     }
@@ -113,7 +112,25 @@ public final class KotlinNodeTypeData {
      * Marks a root node as having completed type analysis.
      * Called via {@link InternalApiBridge}.
      */
-    static void setTypeInfoAvailable(KotlinNode rootNode) {
+    static void setTypeInfoAvailable(KtKotlinFile rootNode) {
         rootNode.getUserMap().set(TYPE_INFO_AVAILABLE_KEY, Boolean.TRUE);
+    }
+
+    /**
+     * Returns the {@link KotlinTypeAnalysisContext} stored on this root node,
+     * or {@link KotlinTypeAnalysisContext#empty()} when not set.
+     * XPath functions use this to retrieve per-run type data from the context node's root.
+     */
+    public static KotlinTypeAnalysisContext getAnalysisContext(KtKotlinFile rootNode) {
+        KotlinTypeAnalysisContext ctx = rootNode.getUserMap().get(ANALYSIS_CONTEXT_KEY);
+        return ctx != null ? ctx : KotlinTypeAnalysisContext.empty();
+    }
+
+    /**
+     * Stores the analysis context on a root node.
+     * Called via {@link InternalApiBridge} after type analysis completes for a file.
+     */
+    static void setAnalysisContext(KtKotlinFile rootNode, KotlinTypeAnalysisContext ctx) {
+        rootNode.getUserMap().set(ANALYSIS_CONTEXT_KEY, ctx);
     }
 }

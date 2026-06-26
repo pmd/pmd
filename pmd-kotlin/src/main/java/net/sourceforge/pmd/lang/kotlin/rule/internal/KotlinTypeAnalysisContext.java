@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -19,7 +21,6 @@ import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.FileAst;
 import nl.stokpop.typemapper.model.TypeNameUtilsKt;
 import nl.stokpop.typemapper.model.TypedAst;
-import nl.stokpop.typemapper.model.TypedAstAccessorsKt;
 import nl.stokpop.typemapper.model.TypedAstCallQueriesKt;
 import nl.stokpop.typemapper.model.TypedAstHierarchyQueriesKt;
 import nl.stokpop.typemapper.model.TypedAstTypeAliasQueriesKt;
@@ -39,8 +40,6 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  */
 @Experimental
 public final class KotlinTypeAnalysisContext {
-
-    private static final String KT_EXTENSION = ".kt";
 
     private static final KotlinTypeAnalysisContext EMPTY = new KotlinTypeAnalysisContext(
             null,
@@ -84,43 +83,36 @@ public final class KotlinTypeAnalysisContext {
         Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIdx = new HashMap<>();
 
         boolean diskBased = ast.hasSourceRoot();
+        // Fail fast on key clashes — two files must never map to the same index key.
+        Set<String> seenKeys = new HashSet<>();
         for (FileAst file : ast.getFiles()) {
-            // For disk-based analysis, index by canonical abs path for precise lookup.
-            // For in-memory analysis (fromSources, sourceRoot is ""), basename-only indexing
-            // is correct and intentional — no real path exists on disk.
-            String absPath = diskBased
+            // Disk: canonical abs path (PMD passes the same paths it gets from the FS).
+            // In-memory (fromSources, single-file, tests): relativePath == the key the caller
+            // used in the sources map, which is also the key PMD looks up with.
+            String key = diskBased
                     ? canonicalize(ast.resolveAbsolutePath(file))
-                    : null;
-            // Also index by basename alone as a fallback for when PMD paths differ
-            // from the paths kotlin-type-mapper was run on (e.g. temp dir analysis).
-            String basename = new File(file.getRelativePath()).getName();
-
+                    : file.getRelativePath();
+            if (!seenKeys.add(key)) {
+                throw new IllegalStateException(
+                        "kotlin-type-mapper index clash: two files resolve to the same key \""
+                        + key + "\". This is a bug in the analysis setup.");
+            }
             for (CallSiteAst call : file.getCalls()) {
-                addToIndex(callIdx, absPath, basename, call.getLine(), call);
+                addToIndex(callIdx, key, call.getLine(), call);
             }
             for (DeclarationAst decl : file.getDeclarations()) {
-                addToIndex(declIdx, absPath, basename, decl.getLine(), decl);
+                addToIndex(declIdx, key, decl.getLine(), decl);
             }
             for (UnresolvedReferenceAst unresolved : file.getUnresolvedReferences()) {
-                addToIndex(unresolvedIdx, absPath, basename, unresolved.getLine(), unresolved);
+                addToIndex(unresolvedIdx, key, unresolved.getLine(), unresolved);
             }
         }
         return new KotlinTypeAnalysisContext(ast, callIdx, declIdx, unresolvedIdx);
     }
 
     private static <T> void addToIndex(Map<String, Map<Integer, List<T>>> idx,
-            String absPath, String basename, int line, T item) {
-        // Index by both absPath (precise lookup) and basename (fallback when PMD paths differ
-        // from ktm paths, e.g. in-memory analysis or temp-dir analysis). absPath is null for
-        // in-memory analysis; skip absPath indexing in that case.
-        // Note: the basename index is inherently ambiguous when multiple source files share the
-        // same filename across packages; it is used only as a last-resort fallback.
-        if (absPath != null) {
-            idx.computeIfAbsent(absPath, k -> new HashMap<>())
-                    .computeIfAbsent(line, k -> new ArrayList<>())
-                    .add(item);
-        }
-        idx.computeIfAbsent(basename, k -> new HashMap<>())
+            String key, int line, T item) {
+        idx.computeIfAbsent(key, k -> new HashMap<>())
                 .computeIfAbsent(line, k -> new ArrayList<>())
                 .add(item);
     }
@@ -140,7 +132,6 @@ public final class KotlinTypeAnalysisContext {
 
     /**
      * Returns all call sites on any line in [{@code beginLine}, {@code endLine}] for the given file.
-     * Uses the same basename/extension fallback as {@link #callSitesAt}.
      * Used for multi-line expressions where the method call may be on a different line
      * than the start of the expression (e.g. chained calls split across lines).
      *
@@ -211,17 +202,7 @@ public final class KotlinTypeAnalysisContext {
 
     private static <T> Map<Integer, List<T>> resolveByLineMap(
             Map<String, Map<Integer, List<T>>> index, String absFilePath) {
-        Map<Integer, List<T>> byLine = index.get(absFilePath);
-        if (byLine != null) {
-            return byLine;
-        }
-        String basename = new File(absFilePath).getName();
-        byLine = index.get(basename);
-        if (byLine == null && !basename.endsWith(KT_EXTENSION)) {
-            // PmdRuleTst uses synthetic ids without .kt; temp files are written with .kt appended
-            byLine = index.get(basename + KT_EXTENSION);
-        }
-        return byLine;
+        return index.get(absFilePath);
     }
 
     /**
@@ -265,7 +246,9 @@ public final class KotlinTypeAnalysisContext {
      * {@code null}. Returns {@code null} for the empty context.
      */
     public String resolveTypeAlias(String fqn) {
-        if (typedAst == null) return null;
+        if (typedAst == null) {
+            return null;
+        }
         return TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
     }
 
@@ -275,7 +258,9 @@ public final class KotlinTypeAnalysisContext {
      * Returns empty list for the empty context.
      */
     public List<CallSiteAst> callsOnReceiver(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
+        if (typedAst == null) {
+            return Collections.emptyList();
+        }
         return TypedAstCallQueriesKt.callsOnReceiver(typedAst, fqn);
     }
 
@@ -285,7 +270,9 @@ public final class KotlinTypeAnalysisContext {
      * Returns empty list for the empty context.
      */
     public List<CallSiteAst> callsReturning(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
+        if (typedAst == null) {
+            return Collections.emptyList();
+        }
         return TypedAstCallQueriesKt.callsReturning(typedAst, fqn);
     }
 
@@ -295,7 +282,9 @@ public final class KotlinTypeAnalysisContext {
      * Falls back to the raw {@code fqn} if the alias is not found (library aliases, empty context).
      */
     public List<CallSiteAst> callsOnReceiverExpandingAlias(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
+        if (typedAst == null) {
+            return Collections.emptyList();
+        }
         String resolved = TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
         return TypedAstCallQueriesKt.callsOnReceiver(typedAst, resolved != null ? resolved : fqn);
     }
@@ -306,7 +295,9 @@ public final class KotlinTypeAnalysisContext {
      * Falls back to the raw {@code fqn} if the alias is not found (library aliases, empty context).
      */
     public List<CallSiteAst> callsReturningExpandingAlias(String fqn) {
-        if (typedAst == null) return Collections.emptyList();
+        if (typedAst == null) {
+            return Collections.emptyList();
+        }
         String resolved = TypedAstTypeAliasQueriesKt.resolveTypeAlias(typedAst, fqn);
         return TypedAstCallQueriesKt.callsReturning(typedAst, resolved != null ? resolved : fqn);
     }

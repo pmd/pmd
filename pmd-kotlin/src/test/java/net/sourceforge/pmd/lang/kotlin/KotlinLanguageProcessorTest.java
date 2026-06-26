@@ -4,46 +4,35 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 class KotlinLanguageProcessorTest {
 
-    // --- sanitizeKtFilename ---
+    // --- validateKotlinPath ---
 
     @Test
-    void sanitizeKtFilenameKeepsKtExtension() {
-        assertEquals("Foo.kt", KotlinLanguageProcessor.sanitizeKtFilename("/path/to/Foo.kt"));
+    void validateKotlinPathAcceptsKtPath() {
+        assertDoesNotThrow(() -> KotlinTypeAwarenessSupport.validateKotlinPath("/path/to/Foo.kt"));
     }
 
     @Test
-    void sanitizeKtFilenameAppendsKtToExtensionlessName() {
-        assertEquals("Foo.kt", KotlinLanguageProcessor.sanitizeKtFilename("/path/to/Foo"));
+    void validateKotlinPathAcceptsSyntheticUnknownPath() {
+        // PMD test framework uses "(unknown)" as absPath for synthetic files — must not throw.
+        assertDoesNotThrow(() -> KotlinTypeAwarenessSupport.validateKotlinPath("(unknown)"));
     }
 
     @Test
-    void sanitizeKtFilenameAppendsKtToOtherExtension() {
-        assertEquals("Foo.java.kt", KotlinLanguageProcessor.sanitizeKtFilename("/path/to/Foo.java"));
+    void validateKotlinPathThrowsOnEmpty() {
+        assertThrows(IllegalStateException.class,
+                () -> KotlinTypeAwarenessSupport.validateKotlinPath(""));
     }
 
     @Test
-    void sanitizeKtFilenameHandlesEmptyPath() {
-        assertEquals("snippet.kt", KotlinLanguageProcessor.sanitizeKtFilename(""));
-    }
-
-    @Test
-    void sanitizeKtFilenameHandlesRootPath() {
-        assertEquals("snippet.kt", KotlinLanguageProcessor.sanitizeKtFilename("/"));
-    }
-
-    @Test
-    void sanitizeKtFilenameHandlesJustFilename() {
-        assertEquals("MyFile.kt", KotlinLanguageProcessor.sanitizeKtFilename("MyFile"));
-    }
-
-    @Test
-    void sanitizeKtFilenameHandlesJustFilenameWithKt() {
-        assertEquals("MyFile.kt", KotlinLanguageProcessor.sanitizeKtFilename("MyFile.kt"));
+    void validateKotlinPathThrowsOnNull() {
+        assertThrows(IllegalStateException.class,
+                () -> KotlinTypeAwarenessSupport.validateKotlinPath(null));
     }
 }

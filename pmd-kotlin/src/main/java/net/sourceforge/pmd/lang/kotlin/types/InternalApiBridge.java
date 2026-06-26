@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.kotlin.types;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 
 /**
  * Internal API bridge exposing package-private setters of {@link KotlinNodeTypeData}
@@ -31,13 +33,13 @@ public final class InternalApiBridge {
         KotlinNodeTypeData.setReturnTypeName(node, returnTypeName);
     }
 
-    /** @see KotlinNodeTypeData#setAnnotationFqNames(KotlinNode, String) */
-    public static void setAnnotationFqNames(KotlinNode node, String annotationFqNames) {
-        KotlinNodeTypeData.setAnnotationFqNames(node, annotationFqNames);
+    /** @see KotlinNodeTypeData#setTypeInfoAvailable(KtKotlinFile) */
+    public static void setTypeInfoAvailable(KtKotlinFile rootNode) {
+        KotlinNodeTypeData.setTypeInfoAvailable(rootNode);
     }
 
-    /** @see KotlinNodeTypeData#setTypeInfoAvailable(KotlinNode) */
-    public static void setTypeInfoAvailable(KotlinNode rootNode) {
-        KotlinNodeTypeData.setTypeInfoAvailable(rootNode);
+    /** @see KotlinNodeTypeData#setAnalysisContext(KtKotlinFile, KotlinTypeAnalysisContext) */
+    public static void setAnalysisContext(KtKotlinFile rootNode, KotlinTypeAnalysisContext ctx) {
+        KotlinNodeTypeData.setAnalysisContext(rootNode, ctx);
     }
 }

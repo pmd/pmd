@@ -9,43 +9,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collections;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.reporting.Report;
 
+import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
+import nl.stokpop.typemapper.model.TypedAst;
+
 class KotlinTypeIsFunctionTest {
 
     private static final String TYPE_IS_RESOURCE_DIR =
             "net/sourceforge/pmd/lang/kotlin/rule/xpath/typeIs";
-
-    private KotlinTypeXPathTestHelper helper;
-
-    @BeforeEach
-    void setUp() {
-        URL resource = getClass().getClassLoader().getResource(TYPE_IS_RESOURCE_DIR);
-        if (resource == null) {
-            throw new IllegalStateException("Cannot find test resources at: " + TYPE_IS_RESOURCE_DIR);
-        }
-        helper = KotlinTypeXPathTestHelper.forDirectory(new File(resource.getFile()));
-        helper.injectContext();
-    }
-
-    @AfterEach
-    void tearDown() {
-        KotlinTypeAnalysisContextHolder.clearGlobal();
-    }
 
     @Test
     void typeIsCalendarMatchesMeetingProperty() {
@@ -121,9 +105,13 @@ class KotlinTypeIsFunctionTest {
         // Note: this requires the compiled classes on auxClasspath to resolve the hierarchy;
         // without classpath the type hierarchy is empty and the test is skipped gracefully.
         File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/SerializableSubtype.kt");
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
-        // Skip if the user-defined type SerializableSubtype wasn't compiled and isn't in the hierarchy.
+        // Build a quick context from the file to check the hierarchy before running the full analysis.
+        // Skip if the user-defined type wasn't compiled and isn't in the hierarchy.
         // (JDK types may still populate the hierarchy map even without a full aux classpath.)
+        TypedAst ast = KotlinTypeMapper.fromPaths(
+                Collections.singletonList(kotlinFile.toPath()),
+                Collections.emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         if (!ctx.getTypeHierarchy().containsKey("nl.stokpop.kotlin.SerializableSubtype")) {
             return;
         }
@@ -349,21 +337,15 @@ class KotlinTypeIsFunctionTest {
     }
 
     @Test
-    void typeIsMatchesDelegationSpecifierInlineCodeNoPackage() {
-        // Reproduces jPinpoint PmdRuleTst scenario: inline code, no package, constructor params.
-        // typeIs('java.lang.Throwable') must match DelegationSpecifier for RuntimeException/Exception.
-        KotlinTypeXPathTestHelper.forCode(
-                "class ServiceException(val errorCode: String, val detail: String) "
-                        + ": RuntimeException(\"$errorCode: $detail\")\n"
-                        + "class BusinessException(message: String, val code: String, val description: String) "
-                        + ": Exception(message)\n")
-                .injectContext();
+    void typeIsMatchesDelegationSpecifierViaOwnFileContext() {
+        // typeIs('java.lang.Throwable') on DelegationSpecifier must match using per-file context
+        // (context is now stored on the root node by KotlinLanguageProcessor, not a static holder).
         File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/DelegationSpecifierSubtype.kt");
         Report report = runXPath(
                 "//DelegationSpecifier[pmd-kotlin:typeIs('java.lang.Throwable')]", kotlinFile);
         assertTrue(report.getProcessingErrors().isEmpty(), "No processing errors expected");
         assertEquals(2, report.getViolations().size(),
-                "Both DelegationSpecifier nodes should match typeIs('java.lang.Throwable') even with inline no-package code");
+                "Both DelegationSpecifier nodes should match typeIs('java.lang.Throwable')");
     }
 
     @Test

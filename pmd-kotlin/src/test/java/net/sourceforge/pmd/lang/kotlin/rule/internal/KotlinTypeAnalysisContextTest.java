@@ -7,18 +7,18 @@ package net.sourceforge.pmd.lang.kotlin.rule.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterEach;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.kotlin.rule.xpath.internal.KotlinTypeXPathTestHelper;
-
-import java.util.List;
-
+import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
 import nl.stokpop.typemapper.model.CallSiteAst;
+import nl.stokpop.typemapper.model.TypedAst;
 
 class KotlinTypeAnalysisContextTest {
 
@@ -26,15 +26,14 @@ class KotlinTypeAnalysisContextTest {
             + "import java.util.ArrayList\n"
             + "val list: ArrayList<String> = ArrayList()\n";
 
+    private KotlinTypeAnalysisContext ctx;
+
     @BeforeEach
     void setUp() {
-        KotlinTypeXPathTestHelper.forCode(SNIPPET).injectContext();
-    }
-
-    @AfterEach
-    void tearDown() {
-        KotlinTypeAnalysisContextHolder.clearGlobal();
-        KotlinTypeAnalysisContextHolder.clear();
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", SNIPPET),
+                Collections.<File>emptyList());
+        ctx = KotlinTypeAnalysisContext.from(ast);
     }
 
     @Test
@@ -43,38 +42,17 @@ class KotlinTypeAnalysisContextTest {
     }
 
     @Test
-    void holderReturnsInjectedContext() {
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
-        assertNotNull(ctx);
-        assertFalse(ctx == KotlinTypeAnalysisContext.empty());
-    }
-
-    @Test
-    void holderThreadLocalOverridesGlobal() {
-        KotlinTypeAnalysisContext local = KotlinTypeAnalysisContext.empty();
-        KotlinTypeAnalysisContextHolder.set(local);
-        try {
-            assertSame(local, KotlinTypeAnalysisContextHolder.get());
-        } finally {
-            KotlinTypeAnalysisContextHolder.clear();
-        }
-    }
-
-    @Test
     void isSubtypeOfSameType() {
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
         assertTrue(ctx.isSubtypeOf("java.util.ArrayList", "java.util.ArrayList"));
     }
 
     @Test
     void isSubtypeOfUnrelatedTypes() {
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
         assertFalse(ctx.isSubtypeOf("java.util.HashMap", "java.util.ArrayList"));
     }
 
     @Test
     void isTypeEquivalentJavaKotlinString() {
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
         assertTrue(ctx.isTypeEquivalent("java.lang.String", "kotlin.String"));
     }
 
@@ -94,35 +72,26 @@ class KotlinTypeAnalysisContextTest {
     void activeContextIsSubtypeOfEquivalentNamesReturnsTrue() {
         // Non-empty context (real typedAst) must also resolve Java<->Kotlin equivalence
         // via ktm delegation.
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
         assertTrue(ctx.isSubtypeOf("java.lang.String", "kotlin.String"));
     }
 
     @Test
-    void inMemoryAnalysisIndexesByBasename() {
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
-        // In-memory analysis (fromSources) has no real source root;
-        // declarations must be findable by basename alone.
+    void inMemoryAnalysisIndexesByRelativePath() {
+        // In-memory analysis (fromSources) indexes by the relativePath key passed to fromSources.
         // Exactly 1 declaration at line 2 (val list) — confirms no duplication.
         assertEquals(1, ctx.declarationsAt("snippet.kt", 2).size());
     }
 
     @Test
-    void unknownAbsPathFallsBackToBasenameList() {
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
-        // An unknown abs path (not in index) falls back to the basename list;
-        // both must return the same List object — no duplication.
-        assertSame(
-                ctx.declarationsAt("snippet.kt", 2),
-                ctx.declarationsAt("/any/path/snippet.kt", 2)
-        );
+    void unknownAbsPathReturnsEmpty() {
+        // A path not present in the index returns empty — no silent wrong-file hit.
+        assertEquals(0, ctx.declarationsAt("/any/path/snippet.kt", 2).size());
     }
 
     @Test
     void callSiteEndLineFieldIsReadable() {
         // Compilation check: CallSiteAst.endLine is available in ktm 0.6.0 (issue #9).
         // endLine defaults to 0 when the call spans a single line or for ASTs from older JSON.
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
         for (CallSiteAst call : ctx.callSitesAt("snippet.kt", 2)) {
             assertTrue(call.getEndLine() >= 0);
             assertTrue(call.getEndColumn() >= 0);
@@ -139,8 +108,9 @@ class KotlinTypeAnalysisContextTest {
                 + "    val list = ArrayList<String>()\n"
                 + "    list.add(\"hello\")\n"
                 + "}\n";
-        KotlinTypeXPathTestHelper.forCode(code).injectContext();
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         List<CallSiteAst> calls = ctx.callSitesAt("snippet.kt", 4);
         assertFalse(calls.isEmpty(), "Expected call site for list.add at line 4");
         String recv = calls.get(0).getDispatchReceiverType();
@@ -156,8 +126,9 @@ class KotlinTypeAnalysisContextTest {
                 + "    val list = ArrayList<String>()\n"
                 + "    list.add(\"hello\")\n"
                 + "}\n";
-        KotlinTypeXPathTestHelper.forCode(code).injectContext();
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         List<CallSiteAst> calls = ctx.callsOnReceiver("java.util.ArrayList");
         assertFalse(calls.isEmpty(), "Expected calls on java.util.ArrayList receiver");
     }
@@ -167,8 +138,9 @@ class KotlinTypeAnalysisContextTest {
         // Verifies KotlinTypeAnalysisContext.callsReturning() delegation (issue #10).
         String code = "fun give(): String = \"x\"\n"
                 + "val x: String = give()\n";
-        KotlinTypeXPathTestHelper.forCode(code).injectContext();
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         List<CallSiteAst> calls = ctx.callsReturning("kotlin.String");
         assertFalse(calls.isEmpty(), "Expected calls returning kotlin.String");
     }
@@ -179,8 +151,9 @@ class KotlinTypeAnalysisContextTest {
     void resolveTypeAliasReturnsConcreteType() {
         String code = "typealias MyStr = String\n"
                 + "fun give(): MyStr = \"x\"\n";
-        KotlinTypeXPathTestHelper.forCode(code).injectContext();
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         assertEquals("kotlin.String", ctx.resolveTypeAlias("MyStr"));
     }
 
@@ -191,8 +164,9 @@ class KotlinTypeAnalysisContextTest {
         String code = "typealias MyStr = String\n"
                 + "fun give(): MyStr = \"x\"\n"
                 + "val x = give()\n";
-        KotlinTypeXPathTestHelper.forCode(code).injectContext();
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         assertTrue(ctx.callsReturning("MyStr").isEmpty(),
                 "callsReturning by alias name must return empty (ktm stores expanded type)");
         assertFalse(ctx.callsReturningExpandingAlias("MyStr").isEmpty(),
@@ -207,8 +181,9 @@ class KotlinTypeAnalysisContextTest {
                 + "    val list = java.util.ArrayList<String>()\n"
                 + "    list.add(\"hello\")\n"
                 + "}\n";
-        KotlinTypeXPathTestHelper.forCode(code).injectContext();
-        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         assertTrue(ctx.callsOnReceiver("MyList").isEmpty(),
                 "callsOnReceiver by alias name must return empty (ktm stores expanded type)");
         assertFalse(ctx.callsOnReceiverExpandingAlias("MyList").isEmpty(),

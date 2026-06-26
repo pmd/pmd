@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.kotlin;
 
-import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -15,9 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 
 /**
@@ -31,7 +29,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
  * falls back gracefully: nodes have no type attributes and rule evaluation still
  * completes.
  *
- * @since 7.26.0
+ * @since 7.25.0
  */
 public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLanguageProperties> {
     private static final Logger LOG = LoggerFactory.getLogger(KotlinLanguageProcessor.class);
@@ -63,22 +61,6 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
         return super.launchAnalysis(task);
     }
 
-    /**
-     * Returns a valid {@code .kt} filename derived from {@code absPath}.
-     * Appends {@code .kt} when the name lacks it; falls back to {@code "snippet.kt"}
-     * for empty or path-separator-containing names (e.g. Designer's synthetic paths).
-     */
-    static String sanitizeKtFilename(String absPath) {
-        String name = new File(absPath).getName();
-        if (name.endsWith(".kt")) {
-            return name;
-        }
-        if (name.isEmpty() || name.contains(File.separator)) {
-            return "snippet.kt";
-        }
-        return name + ".kt";
-    }
-
     private final class AnnotatingKotlinHandler extends KotlinHandler {
 
         private AnnotatingKotlinHandler() {
@@ -94,16 +76,11 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
         public Parser getParser() {
             final Parser base = baseHandler.getParser();
             return task -> {
-                RootNode root = base.parse(task);
-                if (root instanceof KotlinNode) {
-                    typeAwareness.annotateIfPossible(
-                            (KotlinNode) root,
-                            task.getTextDocument().getFileId().getAbsolutePath(),
-                            task.getTextDocument().getText().toString());
-                } else {
-                    LOG.debug("Skipping Kotlin type annotation: unexpected root node type {}",
-                            root.getClass().getName());
-                }
+                KtKotlinFile root = (KtKotlinFile) base.parse(task);
+                typeAwareness.annotateIfPossible(
+                        root,
+                        task.getTextDocument().getFileId().getAbsolutePath(),
+                        task.getTextDocument().getText().toString());
                 return root;
             };
         }

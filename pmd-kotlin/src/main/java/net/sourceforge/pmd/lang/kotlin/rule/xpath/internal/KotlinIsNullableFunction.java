@@ -10,8 +10,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
@@ -85,7 +85,8 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
                 }
             }
 
-            KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+            KtKotlinFile root = (KtKotlinFile) contextNode.getRoot();
+            KotlinTypeAnalysisContext ctx = KotlinNodeTypeData.getAnalysisContext(root);
             String absPath = contextNode.getTextDocument().getFileId().getAbsolutePath();
             int line = contextNode.getBeginLine();
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, line);

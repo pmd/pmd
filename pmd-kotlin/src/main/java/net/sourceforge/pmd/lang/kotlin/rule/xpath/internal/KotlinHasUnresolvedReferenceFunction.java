@@ -9,8 +9,9 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
-import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContextHolder;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
@@ -75,7 +76,8 @@ public final class KotlinHasUnresolvedReferenceFunction extends BaseKotlinXPathF
             if (contextNode == null) {
                 return false;
             }
-            KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContextHolder.get();
+            KtKotlinFile root = (KtKotlinFile) contextNode.getRoot();
+            KotlinTypeAnalysisContext ctx = KotlinNodeTypeData.getAnalysisContext(root);
             String absPath = contextNode.getTextDocument().getFileId().getAbsolutePath();
             int line = contextNode.getBeginLine();
             List<UnresolvedReferenceAst> refs = ctx.unresolvedReferencesAt(absPath, line);
