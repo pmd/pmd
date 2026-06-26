@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
+
+    <test-code>
+        <description>Failure: Class with @InvocableVariable and only a parameterized constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class FlowInput {
+            @InvocableVariable
+            public String recordId;
+
+            public FlowInput(String recordId) {
+                this.recordId = recordId;
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pass: Class with @InvocableVariable using implicit default constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class FlowInput {
+            @InvocableVariable
+            public String recordId;
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pass: Class with @InvocableVariable and explicit no-arg constructor alongside parameterized constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class FlowInput {
+            @InvocableVariable
+            public String recordId;
+
+            public FlowInput() {}
+
+            public FlowInput(String recordId) {
+                this.recordId = recordId;
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Failure: Class with global @InvocableVariable but private no-arg constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        global class FlowInput {
+            @InvocableVariable
+            global String recordId;
+
+            private FlowInput() {}
+
+            public FlowInput(String recordId) {
+                this.recordId = recordId;
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pass: Normal class with a parameterized constructor but no @InvocableVariable annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class RegularClass {
+            public String name;
+            public RegularClass(String name) {
+                this.name = name;
+            }
+        }
+        ]]></code>
+    </test-code>
+</test-data>
