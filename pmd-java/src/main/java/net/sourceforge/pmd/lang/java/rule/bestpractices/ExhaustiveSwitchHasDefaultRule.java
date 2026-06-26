@@ -4,10 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -33,7 +38,27 @@ public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
 
     private void visitSwitchLike(ASTSwitchLike node, RuleContext ctx) {
         if (node.isExhaustive() && node.hasDefaultCase()) {
-            ctx.addViolation(node);
+            if (!defaultBranchJustThrows(node.getDefaultCase())) {
+                ctx.addViolation(node);
+            }
         }
+    }
+
+    // visible for testing
+    /* private */ static boolean defaultBranchJustThrows(ASTSwitchBranch branch) {
+        if (branch instanceof ASTSwitchFallthroughBranch) {
+            ASTSwitchFallthroughBranch fallthroughBranch = (ASTSwitchFallthroughBranch) branch;
+            return fallthroughBranch.getStatements().count() == 1
+                    && fallthroughBranch.getStatements().first() instanceof ASTThrowStatement;
+        }
+        ASTSwitchArrowBranch arrowBranch = (ASTSwitchArrowBranch) branch;
+        if (arrowBranch.getRightHandSide() instanceof ASTThrowStatement) {
+            return true;
+        }
+        if (arrowBranch.getRightHandSide() instanceof ASTBlock) {
+            ASTBlock block = (ASTBlock) arrowBranch.getRightHandSide();
+            return block.size() == 1 && block.get(0) instanceof ASTThrowStatement;
+        }
+        return false;
     }
 }
