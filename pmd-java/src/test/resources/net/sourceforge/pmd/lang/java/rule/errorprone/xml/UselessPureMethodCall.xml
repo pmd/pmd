@@ -482,4 +482,22 @@ public class a {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UselessPureMethodCall false negative for unresolved type #6781</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Tester {
+    void triggersUselessPureMethodCall(List<Object> source) {
+        var varResult = source.stream()
+            .collect(Collectors.toCollection(ArrayList::new));
+        source.stream().forEach(varResult::add);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
