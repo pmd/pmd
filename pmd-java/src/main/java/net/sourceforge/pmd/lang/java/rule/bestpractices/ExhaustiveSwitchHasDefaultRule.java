@@ -42,14 +42,17 @@ public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
         if (node.isExhaustive() && node.hasDefaultCase()) {
             if (!defaultBranchIsNecessary(node)) {
                 ctx.addViolation(node);
-            } else if (!defaultBranchJustThrows(node.getDefaultCase())) {
+            } else if (!branchJustThrows(node.getDefaultCase())) {
                 ctx.addViolationWithMessage(node, "The switch block is exhaustive. The default case should only throw, nothing else.");
             }
         }
     }
 
+    /**
+     * returns true iff the only thing this branch does is throw an exception
+     */
     // visible for testing
-    /* private */ static boolean defaultBranchJustThrows(ASTSwitchBranch branch) {
+    /* private */ static boolean branchJustThrows(ASTSwitchBranch branch) {
         if (branch instanceof ASTSwitchFallthroughBranch) {
             ASTSwitchFallthroughBranch fallthroughBranch = (ASTSwitchFallthroughBranch) branch;
             return fallthroughBranch.getStatements().count() == 1
@@ -66,6 +69,10 @@ public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
         return false;
     }
 
+    /**
+     * returns true iff the default branch of this switch is necessary to make the code compile.
+     * This happens, if you initialize a final variable in your other branches.
+     */
     // visible for testing
     /* private */ static boolean defaultBranchIsNecessary(ASTSwitchLike switchLike) {
         return switchLike.descendants(ASTAssignableExpr.ASTNamedReferenceExpr.class)

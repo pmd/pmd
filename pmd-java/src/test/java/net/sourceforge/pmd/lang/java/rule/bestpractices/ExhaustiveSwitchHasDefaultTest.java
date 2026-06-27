@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.branchJustThrows;
 import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.defaultBranchIsNecessary;
-import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.defaultBranchJustThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,14 +25,14 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withResourceContext(getClass());
 
     @Nested
-    class DefaultBranchJustThrows {
+    class BranchJustThrows {
         @Test
         @DisplayName("Classical switch with default that just throws => true")
         void testClassicalSwitchDefaultJustThrows() {
             ASTCompilationUnit root = java.parse("public class Foo { public void foo(int i) { switch(i) { default: throw new IllegalStateException(); } } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertTrue(defaultBranchJustThrows(defaultBranch));
+            assertTrue(branchJustThrows(defaultBranch));
         }
 
         @Test
@@ -41,7 +41,7 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTCompilationUnit root = java.parse("public class Foo { public void foo(int i) { switch(i) { default: i++; throw new IllegalStateException(); } } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertFalse(defaultBranchJustThrows(defaultBranch));
+            assertFalse(branchJustThrows(defaultBranch));
         }
 
         @Test
@@ -50,7 +50,7 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTCompilationUnit root = java.parse("public class Foo { public void foo(int i) { switch(i) { default: break; } } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertFalse(defaultBranchJustThrows(defaultBranch));
+            assertFalse(branchJustThrows(defaultBranch));
         }
 
         @Test
@@ -59,7 +59,7 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTCompilationUnit root = java.parse("public class Foo { public void foo(int i) { switch (i) { default -> throw new IllegalStateException(); } } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertTrue(defaultBranchJustThrows(defaultBranch));
+            assertTrue(branchJustThrows(defaultBranch));
         }
 
         @Test
@@ -68,7 +68,7 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTCompilationUnit root = java.parse("public class Foo { public void foo(int i) { switch (i) { default -> { throw new IllegalStateException(); } } } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertTrue(defaultBranchJustThrows(defaultBranch));
+            assertTrue(branchJustThrows(defaultBranch));
         }
 
         @Test
@@ -77,7 +77,7 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTCompilationUnit root = java.parse("public class Foo { public void foo(int i) { switch (i) { default -> { i++; throw new IllegalStateException(); } } } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertFalse(defaultBranchJustThrows(defaultBranch));
+            assertFalse(branchJustThrows(defaultBranch));
         }
 
         @Test
@@ -86,7 +86,7 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTCompilationUnit root = java.parse("public class Foo { public void foo(int i) { switch (i) { default -> { i++; } } } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertFalse(defaultBranchJustThrows(defaultBranch));
+            assertFalse(branchJustThrows(defaultBranch));
         }
 
         @Test
@@ -95,7 +95,7 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTCompilationUnit root = java.parse("public class Foo { public int foo(int i) { return switch (i) { default -> 42; }; } }");
             ASTSwitchBranch defaultBranch = root.descendants(ASTSwitchBranch.class).first();
 
-            assertFalse(defaultBranchJustThrows(defaultBranch));
+            assertFalse(branchJustThrows(defaultBranch));
         }
     }
 
