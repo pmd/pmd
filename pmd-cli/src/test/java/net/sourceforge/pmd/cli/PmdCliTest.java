@@ -133,6 +133,47 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
+    void reportsSummaryWithReportFileAndNoViolations() throws Exception {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+
+        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS, "--report-file", reportFile.toString())
+                .verify(result -> {
+                    result.checkStdErr(containsString("Found no violations."));
+                    result.checkStdOut(emptyString());
+                });
+    }
+
+    @Test
+    void reportsSummaryWithReportFileAndViolations() throws Exception {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+
+        runCli(VIOLATIONS_FOUND, "--dir", srcDir.toString(), "--rulesets", RULESET_WITH_VIOLATION, "--report-file", reportFile.toString())
+                .verify(result -> {
+                    result.checkStdErr(containsString("Found 1 violation."));
+                    result.checkStdOut(emptyString());
+                });
+        assertThat(readString(reportFile), containsString("Violation from ReportAllRootNodes"));
+        assertThat(readString(reportFile), not(containsString("Found 1 violation.")));
+    }
+
+    @Test
+    void reportsSummaryAfterProgressBarWithReportFile() throws Exception {
+        Path reportFile = tempRoot().resolve("out/reportFile.txt");
+
+        runCliWithMergedOutput(VIOLATIONS_FOUND, listOf("check", "--no-cache"),
+                "--dir", srcDir.toString(), "--rulesets", RULESET_WITH_VIOLATION, "--report-file", reportFile.toString())
+                .verify(result -> {
+                    String output = result.getOut();
+                    assertThat(output, containsString("Processing files"));
+                    assertThat(output, containsString("Found 1 violation."));
+                    assertTrue(output.lastIndexOf("Found 1 violation.") > output.lastIndexOf("Processing files"),
+                               "Summary should be logged after the progressbar has finished");
+                });
+        assertThat(readString(reportFile), containsString("Violation from ReportAllRootNodes"));
+        assertThat(readString(reportFile), not(containsString("Found 1 violation.")));
+    }
+
+    @Test
     void testFileCollectionWithUnknownFiles() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
         Files.createFile(srcDir.resolve("foo.not_analysable"));
@@ -318,23 +359,38 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void exitStatusWithViolationsAndWithoutFailOnViolations() throws Exception {
         runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--no-fail-on-violation")
-            .verify(r -> r.checkStdOut(
-                containsString("Violation from ReportAllRootNodes")
-            ));
+            .verify(r -> {
+                r.checkStdOut(containsString("Violation from ReportAllRootNodes"));
+                r.checkStdErr(containsString("Found 1 violation."));
+            });
     }
 
     @Test
     void exitStatusWithNoViolations() throws Exception {
         runCli(OK, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_NO_VIOLATIONS)
-            .verify(r -> r.checkStdOut(equalTo("")));
+            .verify(r -> {
+                r.checkStdOut(equalTo(""));
+                r.checkStdErr(containsString("Found no violations."));
+            });
+    }
+
+    @Test
+    void reportsSummaryWithoutPollutingStdoutReport() throws Exception {
+        runCli(OK, "-d", srcDir.toString(), "-f", "xml", "-R", RULESET_NO_VIOLATIONS)
+            .verify(r -> {
+                r.checkStdOut(startsWith("<?xml"));
+                r.checkStdOut(not(containsString("Found no violations.")));
+                r.checkStdErr(containsString("Found no violations."));
+            });
     }
 
     @Test
     void exitStatusWithViolations() throws Exception {
         runCli(VIOLATIONS_FOUND, "-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION)
-            .verify(r -> r.checkStdOut(
-                containsString("Violation from ReportAllRootNodes")
-            ));
+            .verify(r -> {
+                r.checkStdOut(containsString("Violation from ReportAllRootNodes"));
+                r.checkStdErr(containsString("Found 1 violation."));
+            });
     }
 
     @Test
@@ -344,6 +400,7 @@ class PmdCliTest extends BaseCliTest {
             .verify(r -> {
                 r.checkStdOut(containsString("someSource.dummy\t-\tParseException: Parse exception: ohio"));
                 r.checkStdErr(containsString("An error occurred while executing PMD."));
+                r.checkStdErr(containsString("Found no violations. There was 1 processing error."));
             });
     }
 
@@ -355,6 +412,7 @@ class PmdCliTest extends BaseCliTest {
             .verify(r -> {
                 r.checkStdOut(containsString("someSource.dummy\t-\tParseException: Parse exception: ohio"));
                 r.checkStdErr(containsString("An error occurred while executing PMD."));
+                r.checkStdErr(containsString("Found no violations. There was 1 processing error."));
             });
     }
 

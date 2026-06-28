@@ -46,12 +46,27 @@ abstract class BaseCliTest {
     }
 
     protected CliExecutionResult runCli(CliExitCode expectedExitCode, String... args) throws Exception {
+        return runCliWithStandardArgs(expectedExitCode, cliStandardArgs(), args);
+    }
+
+    protected CliExecutionResult runCliWithStandardArgs(CliExitCode expectedExitCode, List<String> standardArgs,
+                                                        String... args) throws Exception {
+        return runCli(expectedExitCode, standardArgs, false, args);
+    }
+
+    protected CliExecutionResult runCliWithMergedOutput(CliExitCode expectedExitCode, List<String> standardArgs,
+                                                        String... args) throws Exception {
+        return runCli(expectedExitCode, standardArgs, true, args);
+    }
+
+    private CliExecutionResult runCli(CliExitCode expectedExitCode, List<String> standardArgs, boolean mergeOutput,
+                                      String... args) throws Exception {
         final List<String> argList = new ArrayList<>();
-        argList.addAll(cliStandardArgs());
+        argList.addAll(standardArgs);
         argList.addAll(Arrays.asList(args));
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        ByteArrayOutputStream err = mergeOutput ? out : new ByteArrayOutputStream();
 
         final PrintStream formerOut = System.out;
         final PrintStream formerErr = System.err;
