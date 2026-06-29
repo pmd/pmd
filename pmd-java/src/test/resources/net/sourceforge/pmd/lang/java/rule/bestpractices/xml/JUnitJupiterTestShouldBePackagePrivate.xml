@@ -158,4 +158,15 @@ import net.sourceforge.pmd.lang.java.rule.errorprone.rulesfortests.Junit5ParentW
 public class Child extends Junit5ParentWithTest {}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>test class should have default visibility, even if the test methods are in a nested class inside a parent class #6736</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.rulesfortests.JUnit5ParentWithNestedTestClass;
+
+public class FooTest extends JUnit5ParentWithNestedTestClass {}
+        ]]></code>
+    </test-code>
 </test-data>
