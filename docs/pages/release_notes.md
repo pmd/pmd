@@ -34,6 +34,13 @@ obvious problems. The Swift module in PMD now behaves like other modules in rega
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pmd-designer/releases/tag/7.19.3).
 
+#### Kotlin type-aware analysis
+
+Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
+Resolved type names, return types, and annotation FQNs are available through `KotlinNodeTypeData` for use in Java-based rules.
+
+Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
+
 ### 🌟️ New and Changed Rules
 #### New Rules
 * The new Java rule {% rule java/errorprone/WrongTestAnnotation %} detects when test annotations from the wrong
