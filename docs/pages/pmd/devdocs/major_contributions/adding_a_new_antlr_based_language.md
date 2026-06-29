@@ -166,8 +166,6 @@ definitely don't come for free. It is much effort and requires perseverance to i
         return new SwiftParser(new CommonTokenStream(lexer));
     }
     ```
-    Note that `PmdSwiftParser` currently overwrites `parse(ParserTask task)` to avoid the default
-    error handling (see next point) and just log any parsing errors.
 *   **Error handling**: PMD registers an ANTLR error listener automatically on both the lexer and parser.
     If there were errors, they are thrown either as {% jdoc core::lang.ast.LexException %} or as
     {% jdoc core::lang.ast.ParseException %}.  
