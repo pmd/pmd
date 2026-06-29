@@ -27,7 +27,7 @@ END;
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The line is too long. Only 30 characters are allowed.</message>
+            <message>The line is too long (32 characters). Only 30 characters are allowed.</message>
         </expected-messages>
         <code><![CDATA[
 BEGIN
@@ -49,7 +49,7 @@ END;
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
-            <message>The line is too long. Only 30 characters are allowed.</message>
+            <message>The line is too long (46 characters). Only 30 characters are allowed.</message>
         </expected-messages>
         <code><![CDATA[
 BEGIN
@@ -84,4 +84,38 @@ END;
 /
         ]]></code>
     </test-code>
+    <test-code>
+    <description>Report on correct line</description>
+    <rule-property name="maxLineLength">80</rule-property>
+    <expected-problems>1</expected-problems>
+    <expected-linenumbers>23</expected-linenumbers>
+    <code><![CDATA[
+/* This is a multi line comment
+ * The next comment line has no text
+
+ * The next comment line starts with a space.
+ *  x, y, z...
+ */
+
+-- This is a single line comment containing single (') and double quotes (").
+INSERT INTO users(first_name, last_name) VALUES('Juergen', 'Hoeller');
+-- This is also a comment.
+/*-------------------------------------------
+-- A fancy multi-line comment that puts
+-- single line comments inside of a multi-line
+-- comment block.
+Moreover, the block comment end delimiter
+appears on a line that can potentially also
+be a single-line comment if we weren't
+already inside a multi-line comment run.
+
+And here's a line containing single and double quotes (").
+-------------------------------------------*/
+ INSERT INTO
+users(first_name, last_name)    -- This is a single line comment containing the block-end-comment sequence here */ but it's still a single-line comment
+VALUES( 'Sam'     -- first_name
+      , 'Brannen' -- last_name
+);--
+        ]]></code>
+</test-code>
 </test-data>
