@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.26.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.27.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.26.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.27.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.26.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 29-June-2026</div>
+    <li class="sidebarTitle">PMD 7.27.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 2026-??-??</div>
     
     
     
@@ -2055,155 +2055,17 @@
     </details>
 
   
-<h2 id="29-june-2026---7260-snapshot">29-June-2026 - 7.26.0-SNAPSHOT</h2>
+<h2 id="2026-----7270-snapshot">2026-??-?? - 7.27.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.26.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.27.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-<h4 id="swift-changes">Swift Changes</h4>
-<p>The Swift parser now forwards syntax errors as usual processing errors. Before it just logged any errors and
-tried to move on, resulting in an incomplete AST with error nodes. As part of this change, the grammar has been
-slightly improved around macro declarations, generic parameters and parameter packs.<br />
-This means that PMD might fail now on Swift files with processing errors, when it previously ran without
-obvious problems. The Swift module in PMD now behaves like other modules in regard to error handling.</p>
-
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.19.3">PMD Designer Changelog (7.19.3)</a>.</p>
-
-<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#wrongtestannotation"><code class="language-plaintext highlighter-rouge">WrongTestAnnotation</code></a> detects when test annotations from the wrong
-testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
-skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don’t execute
-because the test runner doesn’t recognize the annotation.</li>
-  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#assertequalsargumentorder"><code class="language-plaintext highlighter-rouge">AssertEqualsArgumentOrder</code></a> detects assertions
-where the expected and actual arguments were swapped. This helps find assertions
-that are producing a confusing error message when they fail.</li>
-  <li>The new Kotlin rule <a href="pmd_rules_kotlin_bestpractices.html#localvariableshadowsparameter"><code class="language-plaintext highlighter-rouge">LocalVariableShadowsParameter</code></a> detects local variable
-declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
-and may lead to confusion about which value is used.</li>
-  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#invocableclassnoargconstructor"><code class="language-plaintext highlighter-rouge">InvocableClassNoArgConstructor</code></a> detects classes that use
-<code class="language-plaintext highlighter-rouge">@InvocableVariable</code> properties, but that don’t provide a no-arg constructor. Without such a constructor,
-runtime exception occur when Salesforce Flow tries to instantiate such classes.</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-<ul>
-  <li>The rule <a href="pmd_rules_java_design.html#useobjectforclearerapi"><code class="language-plaintext highlighter-rouge">UseObjectForClearerAPI</code></a> was deprecated. Use <a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="language-plaintext highlighter-rouge">ExcessiveParameterList</code></a>
-instead. The old rule name still works.</li>
-</ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6806">#6806</a>: [apex] ANTLR runtime mismatch 4.9.1 used for code generation does not match the current runtime version 4.13.2</li>
-    </ul>
-  </li>
-  <li>apex-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6793">#6793</a>: [apex] New Rule: Invocable Classes require a no argument constructor</li>
-    </ul>
-  </li>
-  <li>apex-security
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2955">#2955</a>: [apex] ApexSOQLInjection: False positive when passing local var with concatenating strings</li>
-      <li><a href="https://github.com/pmd/pmd/issues/3877">#3877</a>: [apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6764">#6764</a>: [core] ANTLR: Report syntax errors as processing errors</li>
-    </ul>
-  </li>
-  <li>cpp
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6641">#6641</a>: [cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM</li>
-    </ul>
-  </li>
-  <li>cli
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6741">#6741</a>: [cli] Designer: Fix quotes in PMD_OPENJFX_MODULE_PATH setting</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6812">#6812</a>: [java] Rename ASTMethodDeclaration#isOverridden() to isOverride()</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6627">#6627</a>: [java] UnusedPrivateMethod: could not handle javax.annotation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6692">#6692</a>: [java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6736">#6736</a>: [java] JUnitJupiterTestShouldBePackagePrivate: False negative when the only tests are in a @<!-- -->Nested class</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6782">#6782</a>: [java] UseStandardCharsets: ArrayIndexOutOfBoundsException in line 81</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6239">#6239</a>: [java] UseDiamondOperator: False positive with Guice TypeLiteral</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6775">#6775</a>: [java] UselessParentheses: False negative when on the right-hand side of an assignment statement</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3741">#3741</a>: [java] Deprecate UseObjectForClearerAPI</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6459">#6459</a>: [java] PublicMemberInNonPublicType: False positive for main(…) methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6460">#6460</a>: [java] PublicMemberInNonPublicType: False negative for overridden methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6814">#6814</a>: [java] AvoidDeepNestedIfStmts: count ifs properly in else branch</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2846">#2846</a>: [java] New Rule: WrongTestAnnotation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5011">#5011</a>: [java] TestClassWithoutTestCases: False positive for test classes extending a class with tests (in nested classes)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6743">#6743</a>: [java] CloseResource: False positive for closeable initialized with (T) null</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6781">#6781</a>: [java] UselessPureMethodCall: False positive for Stream.forEach</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6740">#6740</a>: [java] OptimizableToArrayCall: False positive when new T[0x0] is used instead of new T[0]</li>
-    </ul>
-  </li>
-  <li>kotlin
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6677">#6677</a>: [kotlin] Add auxClasspath language property</li>
-    </ul>
-  </li>
-  <li>kotlin-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6732">#6732</a>: [kotlin] New Rule: LocalVariableShadowsParameter</li>
-    </ul>
-  </li>
-  <li>swift
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6801">#6801</a>: [swift] Report syntax errors as processing errors</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.html#"><code>AntlrBaseParser</code></a> has been deprecated in favor of
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParserWithErrorHandling.html#"><code>AntlrBaseParserWithErrorHandling</code></a>, which converts ANTLR’s parsing
-errors into PMD’s processing errors by default.</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#isOverridden()"><code>ASTMethodDeclaration#isOverridden</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#isOverride()"><code>isOverride</code></a>.
-The old name has been deprecated and will remain available until PMD 8.<br />
-The corresponding XPath attribute <code class="language-plaintext highlighter-rouge">@Overridden</code> is deprecated as well. Use <code class="language-plaintext highlighter-rouge">@Override</code> instead.</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
