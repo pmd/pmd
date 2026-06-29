@@ -23,6 +23,13 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Swift Changes
+The Swift parser now forwards syntax errors as usual processing errors. Before it just logged any errors and
+tried to move on, resulting in an incomplete AST with error nodes. As part of this change, the grammar has been
+slightly improved around macro declarations, generic parameters and parameter packs.  
+This means that PMD might fail now on Swift files with processing errors, when it previously ran without
+obvious problems. The Swift module in PMD now behaves like other modules in regard to error handling.
+
 #### Updated PMD Designer
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pmd-designer/releases/tag/7.19.3).
@@ -80,6 +87,8 @@ For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pm
   * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add auxClasspath language property
 * kotlin-bestpractices
   * [#6732](https://github.com/pmd/pmd/issues/6732): \[kotlin] New Rule: LocalVariableShadowsParameter
+* swift
+  * [#6801](https://github.com/pmd/pmd/issues/6801): \[swift] Report syntax errors as processing errors
 
 ### 🚨️ API Changes
 * core
