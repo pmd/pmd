@@ -42,7 +42,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
             // return early so that if-else chains are only reported once
             return data;
         }
-        // deep ifs if in condition are highly unlikely, but possible via lambdas
+        // deep ifs in if condition are highly unlikely, but possible via lambdas
         node.getCondition().acceptVisitor(this, data);
         depth++;
         node.getThenBranch().acceptVisitor(this, data);
