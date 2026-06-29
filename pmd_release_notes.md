@@ -10,6 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Swift Changes](#swift-changes)
     * [Updated PMD Designer](#updated-pmd-designer)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
@@ -21,6 +22,13 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+#### Swift Changes
+The Swift parser now forwards syntax errors as usual processing errors. Before it just logged any errors and
+tried to move on, resulting in an incomplete AST with error nodes. As part of this change, the grammar has been
+slightly improved around macro declarations, generic parameters and parameter packs.  
+This means that PMD might fail now on Swift files with processing errors, when it previously ran without
+obvious problems. The Swift module in PMD now behaves like other modules in regard to error handling.
+
 #### Updated PMD Designer
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pmd-designer/releases/tag/7.19.3).
@@ -59,6 +67,8 @@ For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pm
   * [#6641](https://github.com/pmd/pmd/issues/6641): \[cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM
 * cli
   * [#6741](https://github.com/pmd/pmd/issues/6741): \[cli] Designer: Fix quotes in PMD_OPENJFX_MODULE_PATH setting
+* java
+  * [#6812](https://github.com/pmd/pmd/issues/6812): \[java] Rename ASTMethodDeclaration#isOverridden() to isOverride()
 * java-bestpractices
   * [#6692](https://github.com/pmd/pmd/issues/6692): \[java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms
   * [#6736](https://github.com/pmd/pmd/issues/6736): \[java] JUnitJupiterTestShouldBePackagePrivate: False negative when the only tests are in a @<!-- -->Nested class
@@ -72,18 +82,27 @@ For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pm
   * [#6460](https://github.com/pmd/pmd/issues/6460): \[java] PublicMemberInNonPublicType: False negative for overridden methods
 * java-errorprone
   * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
+  * [#5011](https://github.com/pmd/pmd/issues/5011): \[java] TestClassWithoutTestCases: False positive for test classes extending a class with tests (in nested classes)
   * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null
   * [#6781](https://github.com/pmd/pmd/issues/6781): \[java] UselessPureMethodCall: False positive for Stream.forEach
+* java-performance
+  * [#6740](https://github.com/pmd/pmd/issues/6740): \[java] OptimizableToArrayCall: False positive when new T\[0x0] is used instead of new T\[0]
 * kotlin
   * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add auxClasspath language property
 * kotlin-bestpractices
   * [#6732](https://github.com/pmd/pmd/issues/6732): \[kotlin] New Rule: LocalVariableShadowsParameter
+* swift
+  * [#6801](https://github.com/pmd/pmd/issues/6801): \[swift] Report syntax errors as processing errors
 
 ### 🚨️ API Changes
 * core
   * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParser.html#"><code>AntlrBaseParser</code></a> has been deprecated in favor of
     <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/antlr4/AntlrBaseParserWithErrorHandling.html#"><code>AntlrBaseParserWithErrorHandling</code></a>, which converts ANTLR's parsing
     errors into PMD's processing errors by default.
+* java
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#isOverridden()"><code>ASTMethodDeclaration#isOverridden</code></a> has been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#isOverride()"><code>isOverride</code></a>.
+    The old name has been deprecated and will remain available until PMD 8.  
+    The corresponding XPath attribute `@Overridden` is deprecated as well. Use `@Override` instead.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

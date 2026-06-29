@@ -2230,8 +2230,6 @@ as the reference implementation:
     <span class="k">return</span> <span class="k">new</span> <span class="nf">SwiftParser</span><span class="o">(</span><span class="k">new</span> <span class="nc">CommonTokenStream</span><span class="o">(</span><span class="n">lexer</span><span class="o">));</span>
 <span class="o">}</span>
 </code></pre></div>    </div>
-    <p>Note that <code class="language-plaintext highlighter-rouge">PmdSwiftParser</code> currently overwrites <code class="language-plaintext highlighter-rouge">parse(ParserTask task)</code> to avoid the default
-error handling (see next point) and just log any parsing errors.</p>
   </li>
   <li><strong>Error handling</strong>: PMD registers an ANTLR error listener automatically on both the lexer and parser.
 If there were errors, they are thrown either as <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.26.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/LexException.html#"><code>LexException</code></a> or as
@@ -2433,7 +2431,7 @@ syntax tree) is not suitable to add methods such as <code class="language-plaint
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2026 (7.26.0)<br /> Site last generated: Jun 24, 2026 <br />
+            June 2026 (7.26.0)<br /> Site last generated: Jun 29, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
