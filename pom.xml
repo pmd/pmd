@@ -91,7 +91,7 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.6</surefire.version>
-        <checkstyle.version>13.5.0</checkstyle.version>
+        <checkstyle.version>13.6.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.17</ant.version>
@@ -99,6 +99,7 @@
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.9</saxon.version>
+        <byte.buddy.version>1.18.10</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -109,7 +110,7 @@
 
         <pmd.build-tools.version>39</pmd.build-tools.version>
 
-        <pmd-designer.version>7.19.2</pmd-designer.version>
+        <pmd-designer.version>7.19.3</pmd-designer.version>
 
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -655,7 +656,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.10.0</version>
+                    <version>0.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -665,7 +666,7 @@
                 <plugin>
                     <groupId>org.cyclonedx</groupId>
                     <artifactId>cyclonedx-maven-plugin</artifactId>
-                    <version>2.9.1</version>
+                    <version>2.9.2</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -1048,13 +1049,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.18.10</version>
+                <version>${byte.buddy.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.18.10</version>
+                <version>${byte.buddy.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1144,7 +1145,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.35.0</version>
+                <version>4.35.1</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit6 needs.

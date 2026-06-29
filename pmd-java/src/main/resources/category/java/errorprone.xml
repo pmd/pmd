@@ -9,6 +9,39 @@
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
     </description>
 
+    <rule name="AssertEqualsArgumentOrder"
+          language="java"
+          since="7.26.0"
+          message="This assertEquals() call has mixed up expected and actual arguments"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AssertEqualsArgumentOrderRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assertequalsargumentorder">
+        <description>
+            Unit testing frameworks provide the `assertEquals` method that takes expected and actual
+            value of an object as arguments.
+
+            Passing a constant as the actual value and a computed value as the expected value
+            indicates that the actual and expected values were swapped, leading to confusing
+            error messages should the test fail.
+
+            This rule currently supports assertions from JUnit Jupiter, JUnit versions 4 and 3,
+            TestNG, Spring assertions and the JSONAssert library.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        assertEquals(next("foo"), "bar"); // wrong argument order
+        assertEquals("bar", next("foo")); // good
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AssignmentInOperand"
           language="java"
           since="1.03"

@@ -31,10 +31,10 @@ jobs:
     outputs:
       PMD_VERSION: ${{ steps.version.outputs.PMD_VERSION }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 #v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 #v5.2.0
+      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 #v5.3.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -84,11 +84,13 @@ jobs:
     defaults:
       run:
         shell: bash
+    outputs:
+      PMD_VERSION: ${{ steps.version.outputs.PMD_VERSION }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 #v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 #v5.2.0
+      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 #v5.3.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -117,9 +119,15 @@ jobs:
             -Dmaven.javadoc.skip=false \
             -Ddokka.skip=false \
             -Dmaven.source.skip=false
+      - name: Re-export PMD_VERSION from check-version
+        id: version
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+        run: |
+          echo "PMD_VERSION=$PMD_VERSION" >> "$GITHUB_OUTPUT"
 
   deploy-to-sourceforge-files:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [deploy-to-maven-central]
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS and PMD_SF_APIKEY
     environment:
@@ -173,14 +181,14 @@ jobs:
 
       - name: Create docs zip
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
         run: |
           mv docs "pmd-doc-${PMD_VERSION}"
           zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
 
       - name: Sign files
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
         run: |
           cd dist
@@ -194,7 +202,7 @@ jobs:
       - name: Upload to sourceforge
         id: upload
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
         run: |
           # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
           basePath="pmd/${PMD_VERSION}"
@@ -216,7 +224,7 @@ jobs:
 
       - name: Select latest release as default on sourceforge
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           PMD_SF_APIKEY: ${{ secrets.PMD_SF_APIKEY }}
         run: |
           #
@@ -238,7 +246,7 @@ jobs:
           rm -rf "${HOME}/.gpg"
 
   deploy-to-sourceforge-io:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [deploy-to-maven-central]
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
     environment:
@@ -275,7 +283,7 @@ jobs:
       - name: Upload to sourceforge
         id: upload
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
         run: |
           rsync -ah --stats --delete "docs/" "adangel@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${PMD_VERSION}/"
           echo "url_output=https://pmd.sourceforge.io/pmd-${PMD_VERSION}/" >> "$GITHUB_OUTPUT"
@@ -286,7 +294,7 @@ jobs:
           rm -rf "${HOME}/.ssh"
 
   deploy-to-pmd-code-doc:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [deploy-to-maven-central]
     # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
     # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
@@ -322,7 +330,7 @@ jobs:
 
       - name: Create docs zip
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
         run: |
           mv docs "pmd-doc-${PMD_VERSION}"
           zip -qr "pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
@@ -330,7 +338,7 @@ jobs:
       - name: Upload to pmd-code.org
         id: upload
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           PMD_CODE_SSH_USER: pmd
           PMD_CODE_DOCS_PATH: /docs.pmd-code.org/
         run: |
@@ -366,7 +374,7 @@ jobs:
           rm -rf "${HOME}/.ssh"
 
   deploy-to-pmd-code-javadoc:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [deploy-to-maven-central]
     # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
     # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
@@ -401,7 +409,7 @@ jobs:
 
       - name: Upload javadocs to pmd-code.org
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           PMD_CODE_SSH_USER: pmd
           PMD_CODE_DOCS_PATH: /docs.pmd-code.org/
         run: |
@@ -451,7 +459,7 @@ jobs:
           rm -rf "${HOME}/.ssh"
 
   github-release:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [deploy-to-maven-central]
     environment:
       name: github
       url: ${{ steps.release.outputs.release_url }}
@@ -460,6 +468,8 @@ jobs:
     defaults:
       run:
         shell: bash
+    outputs:
+      PMD_VERSION: ${{ steps.version.outputs.PMD_VERSION }}
     steps:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
@@ -487,14 +497,14 @@ jobs:
           gpg --list-secret-keys --fingerprint --keyid-format=long
       - name: Create docs zip
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
         run: |
           mv docs "pmd-doc-${PMD_VERSION}"
           zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
 
       - name: Sign files
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
         run: |
           cd dist
@@ -514,7 +524,7 @@ jobs:
           permission-contents: write # create a release
       - name: Delete old GitHub Pre-Release
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
         run: |
           tagName="pmd_releases/${PMD_VERSION}-SNAPSHOT"
@@ -532,7 +542,7 @@ jobs:
       - name: Create GitHub Release
         id: release
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
         run: |
           release_name="PMD ${PMD_VERSION} ($(date -u +%d-%B-%Y))"
@@ -550,13 +560,19 @@ jobs:
               "dist/pmd-${PMD_VERSION}-cyclonedx.xml" \
               "dist/pmd-${PMD_VERSION}-cyclonedx.json"
           echo "release_url=https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${PMD_VERSION}" >> "$GITHUB_OUTPUT"
+      - name: Re-export PMD_VERSION from deploy-to-maven-central
+        id: version
+        env:
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
+        run: |
+          echo "PMD_VERSION=$PMD_VERSION" >> "$GITHUB_OUTPUT"
       - name: Cleanup gpg
         if: ${{ always() }}
         run: |
           rm -rf "${HOME}/.gpg"
 
   create-sourceforge-blog-post:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [deploy-to-maven-central]
     # use environment sourceforge, where secrets/vars are configured for PMD_SF_BEARER_TOKEN
     environment:
       name: sourceforge
@@ -577,7 +593,7 @@ jobs:
       - name: Create blog post
         id: upload
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
           PMD_SF_BEARER_TOKEN: ${{ secrets.PMD_SF_BEARER_TOKEN }}
         run: |
           rendered_release_notes="$(cat docs/pmd_release_notes.md)"
@@ -610,7 +626,7 @@ jobs:
           echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
 
   create-regression-tester-baseline:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [deploy-to-maven-central]
     # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
     # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
@@ -621,21 +637,23 @@ jobs:
     defaults:
       run:
         shell: bash
+    outputs:
+      filename: ${{ steps.zipfile.outputs.filename }}
     steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 #v6.0.3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 #v5.2.0
+      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 #v5.3.0
         with:
           distribution: 'temurin'
           java-version: |
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@12fd324f1d0b43274fdc8130f6980590a667c455 #v1.312.0
+        uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74 #v1.314.0
         with:
           ruby-version: 4
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
+      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
         with:
           path: |
             ~/.m2/repository
@@ -660,7 +678,7 @@ jobs:
           ln -sfn "${JAVA_HOME_11_X64}" "${HOME}/openjdk11"
       - name: Run pmdtester
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
         run: |
           cd ..
           rm -f .bundle/config
@@ -674,7 +692,18 @@ jobs:
               --list-of-project ./pmd/.ci/files/project-list.xml --html-flag \
               --threads "$(nproc)" \
               --error-recovery
-          pushd target/reports || { echo "Directory 'target/reports' doesn't exist"; exit 1; }
+          test -d target/reports || { echo "Directory 'target/reports' doesn't exist"; exit 1; }
+      - name: Prepare zip file
+        id: zipfile
+        env:
+          PMD_VERSION: ${{ needs.deploy-to-maven-central.outputs.PMD_VERSION }}
+        run: |
+          cd ../target/reports
+          baseline_name="pmd_releases_${PMD_VERSION}"
+          zip -q -r "${baseline_name}-baseline.zip" "${baseline_name}/"
+          cd ../../pmd
+          mv ../target/reports/"${baseline_name}-baseline.zip" .
+          echo "filename=${baseline_name}-baseline.zip" >> "$GITHUB_OUTPUT"
       - name: Setup ssh key for pmd-code
         env:
           PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
@@ -691,25 +720,20 @@ jobs:
           echo "${PMD_CODE_ORG_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
       - name: Upload baseline
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          FILENAME: ${{ steps.zipfile.outputs.filename }}
         run: |
-          cd ../target/reports
-          baseline_name="pmd_releases_${PMD_VERSION}"
-          zip -q -r "${baseline_name}-baseline.zip" "${baseline_name}/"
-          cd ../../pmd
-          mv ../target/reports/"${baseline_name}-baseline.zip" .
-          scp "${baseline_name}-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
+          scp "${FILENAME}" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
           name: regression-tester-baseline
-          path: ${{ format('pmd_releases_{0}-baseline.zip', needs.check-version.outputs.PMD_VERSION) }}
+          path: ${{ steps.zipfile.outputs.filename }}
       - name: Cleanup ssh
         if: ${{ always() }}
         run: |
           rm -rf "${HOME}/.ssh"
 
   upload-regression-tester-baseline-sourceforge:
-    needs: [check-version, create-regression-tester-baseline]
+    needs: [create-regression-tester-baseline]
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS and PMD_SF_APIKEY
     environment:
@@ -740,17 +764,17 @@ jobs:
           name: regression-tester-baseline
       - name: Upload to sourceforge
         env:
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          FILENAME: ${{ needs.create-regression-tester-baseline.outputs.filename }}
         run: |
           uploadUrl="adangel@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
-          rsync -avh "pmd_releases_${PMD_VERSION}-baseline.zip" "${uploadUrl}"
+          rsync -avh "${FILENAME}" "${uploadUrl}"
       - name: Cleanup ssh
         if: ${{ always() }}
         run: |
           rm -rf "${HOME}/.ssh"
 
   create-docker:
-    needs: [check-version, github-release]
+    needs: [github-release]
     environment:
       name: github
       url: https://github.com/pmd/docker/actions
@@ -771,7 +795,7 @@ jobs:
       - name: Trigger docker build
         env:
           GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
-          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_VERSION: ${{ needs.github-release.outputs.PMD_VERSION }}
         run: |
           # split semantic version by dot
           IFS="." read -ra VERSION_ARRAY <<< "${PMD_VERSION}"

@@ -20,14 +20,16 @@ extend-exclude = [
     "*.svg",
     "sample.txt",
     "sample.for",
-    "release_notes_old.md",
+    "release_notes_old*.md",
     "big_sample.txt",
     "templateStrings.txt",
     "Swift4.2.txt",
     "Issue628.txt",
     "sample-matlab.txt",
     "sample_python.txt",
-    "btrfs.txt"
+    "btrfs.txt",
+    # this file was never intended to be generated or even committed...
+    "pmd-julia/src/main/java/net/sourceforge/pmd/lang/julia/ast/JuliaParser.java"
 ]
 
 [default.extend-words]
@@ -81,4 +83,4 @@ Hendler="Hendler"
 Ure="Ure"
 
 [default]
-extend-ignore-re = ["pn\\\\3\\\\2", "thr\\(ough", "org.testng" ]
+extend-ignore-re = [ "thr\\(ough", "org.testng" ]

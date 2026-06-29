@@ -47,7 +47,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (!node.isOverridden()
+        if (!node.isOverride()
             || node.getBody() == null
             // Can skip methods which are final or have new behavior (synchronized, native)
             || node.getModifiers().hasAny(FINAL, NATIVE, SYNCHRONIZED)

@@ -61,6 +61,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -458,7 +459,11 @@ public final class JavaRuleUtil {
     public static boolean isKnownPure(ASTMethodCall call) {
         return isGetterCall(call)
                     && isPureGetter(call)
-            || KNOWN_PURE_METHODS.anyMatch(call) && !call.getMethodType().getReturnType().isVoid();
+            || KNOWN_PURE_METHODS.anyMatch(call) && isNotVoid(call.getMethodType().getReturnType());
+    }
+
+    private static boolean isNotVoid(JTypeMirror returnType) {
+        return !returnType.isVoid() && returnType != returnType.getTypeSystem().UNKNOWN;
     }
 
     private static boolean isPureGetter(ASTMethodCall call) {

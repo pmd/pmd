@@ -162,6 +162,26 @@ class TestFrameworksUtilTest {
         }
 
         @Test
+        void aClassWithANestedTestClassIsAJUnit5Class() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.junit.jupiter.api.Nested; class A { @Nested class B {}; }"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertTrue(isJUnit5Class(classDecl));
+        }
+
+        @Test
+        void aClassWithANestedTestClassIsAJUnit5ClassEvenIfTheTestIsInAParentClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import net.sourceforge.pmd.lang.java.rule.errorprone.rulesfortests.JUnit5ParentWithNestedTestClass; class A extends JUnit5ParentWithNestedTestClass {}"
+            );
+            ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
+
+            assertTrue(isJUnit5Class(classDecl));
+        }
+
+        @Test
         void anInterfaceWithATestIsANotJUnit5Class() {
             ASTCompilationUnit root = java.parse(
                     "import org.junit.jupiter.api.Test; interface A { @Test default void foo() {} }"

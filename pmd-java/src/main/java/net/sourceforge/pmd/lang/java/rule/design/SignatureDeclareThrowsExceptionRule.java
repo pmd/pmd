@@ -58,7 +58,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRulechainRu
             return TestFrameworksUtil.isTestMethod(m)
                 || TestFrameworksUtil.isTestConfigurationMethod(m)
                 // Ignore overridden methods, the issue should be marked on the method definition
-                || m.isOverridden();
+                || m.isOverride();
         }
         return false;
     }

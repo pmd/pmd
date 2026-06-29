@@ -44,7 +44,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        if (node.isOverridden()) {
+        if (node.isOverride()) {
             return data;
         }
 

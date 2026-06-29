@@ -69,21 +69,28 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
     }
 
     private void checkIthArgument(RuleContext ctx, InvocationNode call, int index) {
+        JMethodSig callSignature = call.getMethodType();
+        if (index >= callSignature.getArity()) {  // this can happen if we're looking at varargs!
+            return;
+        }
+
         Object callArgument = call.getArguments().get(index).getConstValue();
-        if (callArgument instanceof String) {
-            String stringArgument = (String) callArgument;
-            if (standardCharsetExists(call.getLanguageVersion(), stringArgument)) {
-                JMethodSig callSignature = call.getMethodType();
-                Stream<JMethodSig> otherSignatures = streamMethodSignatures(call);
-                long count = otherSignatures
-                        .filter(sig -> Modifier.isPublic(sig.getModifiers()))
-                        .filter(sig -> isSameSignatureExcept(callSignature, sig, index))
-                        .filter(sig -> CHARSET.equals(sig.getFormalParameters().get(index).toString()))
-                        .count();
-                if (count > 0) {
-                    ctx.addViolation(call);
-                }
-            }
+        if (!(callArgument instanceof String)) {
+            return;
+        }
+        String stringArgument = (String) callArgument;
+        if (!standardCharsetExists(call.getLanguageVersion(), stringArgument)) {
+            return;
+        }
+
+        Stream<JMethodSig> otherSignatures = streamMethodSignatures(call);
+        long count = otherSignatures
+                .filter(sig -> Modifier.isPublic(sig.getModifiers()))
+                .filter(sig -> isSameSignatureExcept(callSignature, sig, index))
+                .filter(sig -> CHARSET.equals(sig.getFormalParameters().get(index).toString()))
+                .count();
+        if (count > 0) {
+            ctx.addViolation(call);
         }
     }
 
