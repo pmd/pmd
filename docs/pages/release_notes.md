@@ -81,6 +81,7 @@ For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pm
   * [#3741](https://github.com/pmd/pmd/issues/3741): \[java] Deprecate UseObjectForClearerAPI
   * [#6459](https://github.com/pmd/pmd/issues/6459): \[java] PublicMemberInNonPublicType: False positive for main(...) methods
   * [#6460](https://github.com/pmd/pmd/issues/6460): \[java] PublicMemberInNonPublicType: False negative for overridden methods
+  * [#6814](https://github.com/pmd/pmd/issues/6814): \[java] AvoidDeepNestedIfStmts: count ifs properly in else branch
 * java-errorprone
   * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
   * [#5011](https://github.com/pmd/pmd/issues/5011): \[java] TestClassWithoutTestCases: False positive for test classes extending a class with tests (in nested classes)
