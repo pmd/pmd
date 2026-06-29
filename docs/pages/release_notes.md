@@ -71,6 +71,7 @@ For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pm
 * java
   * [#6812](https://github.com/pmd/pmd/issues/6812): \[java] Rename ASTMethodDeclaration#isOverridden() to isOverride()
 * java-bestpractices
+  * [#6627](https://github.com/pmd/pmd/issues/6627): \[java] UnusedPrivateMethod: could not handle javax.annotation 
   * [#6692](https://github.com/pmd/pmd/issues/6692): \[java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms
   * [#6736](https://github.com/pmd/pmd/issues/6736): \[java] JUnitJupiterTestShouldBePackagePrivate: False negative when the only tests are in a @<!-- -->Nested class
   * [#6782](https://github.com/pmd/pmd/issues/6782): \[java] UseStandardCharsets: ArrayIndexOutOfBoundsException in line 81
