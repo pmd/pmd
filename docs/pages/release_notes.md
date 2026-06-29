@@ -43,6 +43,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#6692](https://github.com/pmd/pmd/issues/6692): \[java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms
 * java-codestyle
   * [#6239](https://github.com/pmd/pmd/issues/6239): \[java] UseDiamondOperator: False positive with Guice TypeLiteral
+* java-design
+  * [#6814](https://github.com/pmd/pmd/issues/6814): \[java] AvoidDeepNestedIfStmts: count ifs properly in else branch
 * java-errorprone
   * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
   * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null
