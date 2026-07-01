@@ -44,6 +44,13 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
         return getBranches().any(it -> it.getLabel().isDefault());
     }
 
+    /**
+     * Returns the default branch if this switch has a {@code default} case, {@code null} if not.
+     */
+    default ASTSwitchBranch getDefaultCase() {
+        return getBranches().first(it -> it.getLabel().isDefault());
+    }
+
 
     /**
      * Returns a stream of all branches of this switch.
