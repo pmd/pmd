@@ -710,8 +710,22 @@ public class CloseResourceRule extends AbstractJavaRule {
             if (isMethodCallClosingResourceVariable(call, variableToClose)) {
                 return true;
             }
+
+            if (variableIsPassedToMethod(variableToClose, call)) {
+                ASTBlock methodBody = call.getRoot().descendants(ASTMethodDeclaration.class)
+                        .filter(m -> m.getSymbol().equals(call.getMethodType().getSymbol()))
+                        .map(ASTMethodDeclaration::getBody)
+                        .first();
+                if (methodBody != null && methodBodyContainsClosingCall(methodBody)) {
+                    return true;
+                }
+            }
         }
         return false;
+    }
+
+    private boolean methodBodyContainsClosingCall(ASTBlock methodBody) {
+        return methodBody.descendants(ASTMethodCall.class).any(this::isCloseTargetMethodCall);
     }
 
     private boolean isMethodCallClosingResourceVariable(ASTExpression expr, ASTVariableId variableToClose) {
