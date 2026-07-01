@@ -4,13 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasJUnit4Tests;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasJUnit5Tests;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasTestNGTests;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit4Class;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit5Class;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isTestClass;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isTestNGClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +36,7 @@ class TestFrameworksUtilTest {
     }
 
     @Nested
+    @DisplayName("Tests for isJUnit4Class(), isTestClass() and hasJUnit4Tests()")
     class IsJUnit4Class {
         @Test
         void aBasicClassIsNotAJUnit4Class() {
@@ -38,6 +44,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isJUnit4Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertFalse(hasJUnit4Tests(classDecl));
         }
 
         @Test
@@ -48,6 +56,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit4Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit4Tests(classDecl));
         }
 
         @Test
@@ -58,6 +68,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit4Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit4Tests(classDecl));
         }
 
         @Test
@@ -68,6 +80,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isJUnit4Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasJUnit4Tests(classDecl));
         }
 
         @Test
@@ -78,6 +92,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isJUnit4Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasJUnit4Tests(classDecl));
         }
 
         @Test
@@ -88,10 +104,13 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
 
             assertFalse(isJUnit4Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasJUnit4Tests(classDecl));
         }
     }
 
     @Nested
+    @DisplayName("Tests for isJUnit5Class(), isTestClass() and hasJUnit5Tests()")
     class IsJUnit5Class {
         @Test
         void aBasicClassIsNotAJUnit5Class() {
@@ -99,6 +118,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isJUnit5Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertFalse(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -109,6 +130,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -119,6 +142,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -129,6 +154,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -139,6 +166,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -149,6 +178,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -159,6 +190,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -169,6 +202,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -179,6 +214,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isJUnit5Class(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -189,6 +226,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isJUnit5Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -199,6 +238,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isJUnit5Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
 
         @Test
@@ -209,10 +250,13 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
 
             assertFalse(isJUnit5Class(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasJUnit5Tests(classDecl));
         }
     }
 
     @Nested
+    @DisplayName("Tests for isTestNGClass(), isTestClass() and hasTestNGTests()")
     class IsTestNGClass {
         @Test
         void aBasicClassIsNotATestNGClass() {
@@ -220,6 +264,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isTestNGClass(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertFalse(hasTestNGTests(classDecl));
         }
 
         @Test
@@ -230,6 +276,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertTrue(isTestNGClass(classDecl));
+            assertTrue(isTestClass(classDecl));
+            assertTrue(hasTestNGTests(classDecl));
         }
 
         @Test
@@ -240,6 +288,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isTestNGClass(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasTestNGTests(classDecl));
         }
 
         @Test
@@ -250,6 +300,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.firstChild(ASTClassDeclaration.class);
 
             assertFalse(isTestNGClass(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasTestNGTests(classDecl));
         }
 
         @Test
@@ -260,6 +312,8 @@ class TestFrameworksUtilTest {
             ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
 
             assertFalse(isTestNGClass(classDecl));
+            assertFalse(isTestClass(classDecl));
+            assertTrue(hasTestNGTests(classDecl));
         }
     }
 
