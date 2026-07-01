@@ -69,93 +69,79 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 
 ## Example 2: Merging PR #124 into a maintenance branch
 
-We ask, to create every pull request against main, to make it easier to contribute.
-But if a pull request is intended to fix a bug in an older version of PMD, then we need to backport this pull request.
+Every change should go into main first.
+But in the rare case a fix needs to be made in an older version as well, we need to backport it.
 
 ### Creating a maintenance branch
 
-For older versions, we use maintenance branches, like `pmd/5.8.x`. If there is no maintenance branch for
+For older versions, we use maintenance branches, like `pmd/7.26.x`. If there is no maintenance branch for
 the specific version, then we'll have to create it first. Let's say, we want a maintenance branch for
-PMD version 5.8.0, so that we can create a bugfix release 5.8.1.
+PMD version 7.26.0, so that we can create a bugfix release 7.26.1.
 
-1.  We'll simply create a new branch off of the release tag:
-
-    ```
-    git branch pmd/5.8.x pmd_releases/5.8.0 && git checkout pmd/5.8.x
-    ```
-
-2.  Now we'll need to adjust the version, since it's currently the same as the release version.
-    We'll change the version to the next patch version: "5.8.1-SNAPSHOT".
+1.  Make sure your checkout is in a clean state, that is, the output of
 
     ```
-    ./mvnw versions:set -DnewVersion=5.8.1-SNAPSHOT
+    git status
+    ```
+   
+    ends with `nothing to commit, working tree clean`.
+
+2.  Create a new branch off of the release tag:
+
+    ```
+    git branch pmd/7.26.x pmd_releases/7.26.0 && git checkout pmd/7.26.x
+    ```
+
+3.  Now we'll need to adjust the version, since it's currently the same as the release version.
+    We'll change the version to the next patch version: "7.26.1-SNAPSHOT".
+
+    ```
+    ./mvnw versions:set -DnewVersion=7.26.1-SNAPSHOT
     git add pom.xml \*/pom.xml pmd-scala-modules/\*/pom.xml
-    git commit -m "Prepare next version 5.8.1-SNAPSHOT"
+    git commit -m "Prepare next version 7.26.1-SNAPSHOT"
+    git push
     ```
 
-### Merging the PR
+### Backporting the changes from the PR
 
-1.  As above: Review the PR
+1.  Switch to the branch we created above, fetch recent changes:
+
+    ```
+    git checkout pmd/7.26.x
+    git pull
+    ```
 
 2.  Fetch the PR and rebase it onto the maintenance branch:
 
     ```
-    git fetch origin pull/124/head:pr-124 && git checkout pr-124     # creates a new temporary branch
-    git rebase main --onto pmd/5.8.x
-    ./mvnw clean verify                                # make sure, everything works after the rebase
+    git checkout backport-pr-124-to-7.26.x             # creates a new temporary branch
+    git cherrypick commit-hash-you-want-to-packport
     ```
 
-    {%include note.html content="You might need to fix conflicts / backport the commits for the older
-    PMD version." %}
+    {%include note.html content="At this point, that you will need to fix conflicts / backport the changes for the older
+    PMD version. At least in the release notes (see above for details), maybe also in the code." %}
 
-3.  Update the release notes. See above for details.
-
-4.  Now merge the pull request into the maintenance branch:
+3.  Run the complete build, then push:
 
     ```
-    git checkout pmd/5.8.x
-    git merge --no-ff pr-124 -m "Merge pull request #124 from xyz:branch
-    
-    Full-title-of-the-pr #124" --log
+    ./mvnw clean verify -Pgenerate-rule-docs
+    git push
     ```
 
-5.  Just to be sure, run the complete build again: `./mvnw clean verify -Pgenerate-rule-docs`.
+4.  Create a PR on GitHub:
 
-6.  If the build was successful, you are ready to push:
+    * Make sure that you merge *from* backport-pr-124-to-7.26.x *to* pmd/7.26.x.
+    * Make sure that you mention #124 in the description.
 
-    ```
-    git push origin pmd/5.8.x
-    ```
+5.  Merge the PR (ideally by a second person)
 
-7.  Since we have rebased the pull request, it won't appear as merged on github.
-    You need to manually close the pull request. Leave a comment, that it has been
-    rebased onto the maintenance branch.
+    Press the big green button if everything looks as expected.
 
-### Merging into main
-
-Now the PR has been merged into the maintenance branch, but it is missing in any later version of PMD.
-Therefore, we merge first into the next minor version maintenance branch (if existing):
-
-    git checkout pmd/5.9.x
-    git merge pmd/5.8.x
-
-After that, we merge the changes into the main branch:
-
-    git checkout main
-    git merge pmd/5.9.x
-
-{%include note.html content="This ensures, that every change on the maintenance branch eventually ends
-up in the main branch and therefore in any future version of PMD.<br>
-The downside is however, that there are inevitable merge conflicts for the maven `pom.xml` files, since
-every branch changed the version number differently.<br>
-We could avoid this by merging only the temporary branch \"pr-124\" into each maintenance branch and
-eventually into main, with the risk of missing single commits in a maintenance branch, that have been
-done outside the temporary branch." %}
+6.  Repeat for every version the fix needs to be backported to.
 
 ### Merging vs. Cherry-Picking
 
-We are not using cherry-picking, so that each fix is represented by a single commit.
-Cherry-picking would duplicate the commit and you can't see in the log, on which branches the fix has been
-integrated (e.g. gitk and github show the branches, from which the specific commit is reachable).
-
-The downside is a more complex history - the maintenance branches and main branch are "connected" and not separate.
+Since we are squashing, we are also using cherry-picking. This means that if the same fix is applied to multiple versions,
+it appears as several, seemingly unrelated commits. This is fine, since the commit message of the backported fix will
+reference the original PR.
+This leads to a linear history for each branch - the maintenance branches and main branch are separate and not "connected".
