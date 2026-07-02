@@ -2412,7 +2412,7 @@ upload a new docker image to Docker Hub and GitHub Packages.
     <ul>
       <li>Environment: github</li>
       <li>Uses PMD Actions Helper app to call a workflow in the other repository</li>
-      <li>Secrets: PMD_ACTIONS_HELPER_ID, PMD_ACTIONS_HELPER_PRIVATE_KEY</li>
+      <li>Secrets: PMD_ACTIONS_HELPER_CLIENT_ID, PMD_ACTIONS_HELPER_PRIVATE_KEY</li>
     </ul>
   </li>
 </ul>
@@ -2438,11 +2438,11 @@ repository level).</p>
 
 <ul>
   <li>
-    <p><code class="language-plaintext highlighter-rouge">PMD_ACTIONS_HELPER_ID</code> and <code class="language-plaintext highlighter-rouge">PMD_ACTIONS_HELPER_PRIVATE_KEY</code>: These are the app id and private key for our
+    <p><code class="language-plaintext highlighter-rouge">PMD_ACTIONS_HELPER_CLIENT_ID</code> and <code class="language-plaintext highlighter-rouge">PMD_ACTIONS_HELPER_PRIVATE_KEY</code>: These are the app’s client id and private key for our
 custom GitHub App <a href="https://github.com/organizations/pmd/settings/apps/pmd-actions-helper">PMD Actions Helper</a>.
 This is a private app defined at our organization and can only be installed within our organization. With these two
 secrets and the action <a href="https://github.com/actions/create-github-app-token">create-github-app-token</a> we can
-create a temporary github token, that has more permissions to access other repositories.
+create a temporary GitHub token, that has more permissions to access other repositories.
 This is used to trigger the workflow in pmd/docker from pmd/pmd to create and upload a new docker image and
 also in “publish-snapshot” to push to repository pmd/pmd-eclipse-plugin-p2-site during the build
 of pmd/pmd-eclipse-plugin.<br />
@@ -2841,7 +2841,7 @@ curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87E
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2026 (7.22.0)<br /> Site last generated: Jul 1, 2026 <br />
+            July 2026 (7.27.0)<br /> Site last generated: Jul 2, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
