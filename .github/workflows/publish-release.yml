@@ -517,7 +517,7 @@ jobs:
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 #v3.2.0
         id: pmd-actions-helper-app-token
         with:
-          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          client-id: ${{ secrets.PMD_ACTIONS_HELPER_CLIENT_ID }}
           private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
           owner: pmd
           repositories: pmd
@@ -787,7 +787,7 @@ jobs:
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 #v3.2.0
         id: pmd-actions-helper-app-token
         with:
-          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          client-id: ${{ secrets.PMD_ACTIONS_HELPER_CLIENT_ID }}
           private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
           owner: pmd
           repositories: docker
