@@ -313,7 +313,7 @@ public final class TypeSystem {
     private JClassSymbol getBootStrapSymbol(Class<?> clazz) {
         AssertionUtil.requireParamNotNull("clazz", clazz);
         JClassSymbol sym = resolver.resolveClassFromBinaryName(clazz.getName());
-        return Objects.requireNonNull(sym, "sym");
+        return Objects.requireNonNull(sym, "symbol for " + clazz + " was null");
     }
 
     private @NonNull JPrimitiveType createPrimitive(PrimitiveTypeKind kind, Class<?> box) {

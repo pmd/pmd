@@ -441,4 +441,16 @@ public class PMDConfiguration extends AbstractConfiguration {
                 + "You may be able to use it with CPD though.");
         }
     }
+
+    // TODO replace with full solution from #6845
+    private String auxClasspath = null;
+
+    public String getAuxClasspath() {
+        return auxClasspath;
+    }
+
+    public void setAuxClasspath(String auxClasspath) {
+        this.auxClasspath = auxClasspath;
+    }
+
 }

@@ -36,6 +36,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨️ API Changes
 
+#### Deprecations
+*   core
+  * {%jdoc !!core::lang.JvmLanguagePropertyBundle.setClassLoader(ClassLoader) %} and
+    {%jdoc !!core::lang.JvmLanguagePropertyBundle.getAnalysisClassLoader() %} are deprecated. Use the language property
+    {%jdoc !!core::lang.JvmLanguagePropertyBundle#AUX_CLASSPATH %} instead via `getProperty()` and `setProperty()`. This language property
+    is now set correctly when providing the auxClasspath via CLI parameter `--aux-classpath`.
+
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
