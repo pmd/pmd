@@ -7,21 +7,20 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -30,14 +29,16 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.CpdOnlyDummyLanguage;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 class PmdConfigurationTest {
+    @TempDir
+    private Path tempDir;
 
     @Test
     void testSuppressMarker() {
@@ -56,64 +57,104 @@ class PmdConfigurationTest {
     }
 
     @Test
-    void testClassLoader() {
+    void testClassLoader() throws IOException {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
-        configuration.prependAuxClasspath("some.jar");
-        assertEquals(ClasspathClassLoader.class, configuration.getClassLoader().getClass(),
-                "Prepended ClassLoader class");
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(1, urls.length, "urls length");
-        assertTrue(urls[0].toString().endsWith("/some.jar"), "url[0]");
-        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader().getParent(),
-                "parent classLoader");
+        assertSame(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
+        assertNull(configuration.getAuxClasspath(), "Default AuxClasspath should be null");
+
+        String someJar = Files.createFile(tempDir.resolve("some.jar")).toString();
+        configuration.prependAuxClasspath(someJar);
+        assertEquals(someJar, configuration.getAuxClasspath(), "auxClasspath is missing some.jar");
+        // new since 7.27.0 - no classloader is created eagerly anymore
+        assertNull(configuration.getClassLoader(), "ClassLoader should be null - not used");
+
+        // reset auxClasspath
+        configuration.setAuxClasspath(null);
+        assertSame(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Revert to default ClassLoader");
+        assertNull(configuration.getAuxClasspath(), "Default AuxClasspath should be null");
+
+        // reset classLoader
         configuration.setClassLoader(null);
-        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(),
-                "Revert to default ClassLoader");
+        assertSame(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Revert to default ClassLoader");
+    }
+
+    /**
+     * @deprecated Since 7.27.0. Only tests a deprecated API
+     */
+    @Test
+    @Deprecated
+    void testExternallySetClassLoader() {
+        PMDConfiguration configuration = new PMDConfiguration();
+        assertSame(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
+        assertNull(configuration.getAuxClasspath(), "Default AuxClasspath should be null");
+
+        configuration.setClassLoader(PmdConfigurationTest.class.getClassLoader());
+        assertSame(PmdConfigurationTest.class.getClassLoader(), configuration.getClassLoader(), "Not anymore the default ClassLoader");
+
+        // reset
+        configuration.setClassLoader(null);
+        assertSame(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Revert to default ClassLoader");
     }
 
     @Test
     void auxClasspathWithRelativeFileEmpty() {
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(0, urls.length);
+        String auxClasspath = "file:" + relativeFilePath;
+        configuration.prependAuxClasspath(auxClasspath);
+        assertEquals(auxClasspath, configuration.getAuxClasspath());
+
+        // new since 7.27.0 - no classloader is created eagerly anymore
+        assertNull(configuration.getClassLoader(), "ClassLoader should be null - not used");
     }
 
     @Test
     void auxClasspathWithRelativeFileEmpty2() {
         String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(0, urls.length);
+        String auxClasspath = "file:" + relativeFilePath;
+        configuration.prependAuxClasspath(auxClasspath);
+        assertEquals(auxClasspath, configuration.getAuxClasspath());
+
+        // new since 7.27.0 - no classloader is created eagerly anymore
+        assertNull(configuration.getClassLoader(), "ClassLoader should be null - not used");
     }
 
     @Test
-    void auxClasspathWithRelativeFile() throws URISyntaxException {
-        final String FILE_SCHEME = "file";
+    void auxClasspathWithRelativeFile() throws IOException {
+        // Prepare auxclasspath.cp file and jar files
+        Path currentWorkdirDir = Paths.get(".").toAbsolutePath();
+        Path lib1Jar = Files.createFile(tempDir.resolve("lib1.jar")).toAbsolutePath();
+        Path lib2Jar = Files.createFile(Files.createDirectories(tempDir.resolve("other/directory")).resolve("lib2.jar")).toAbsolutePath();
+        Path lib3Jar = Files.createFile(tempDir.resolve("lib3.jar")).toAbsolutePath();
+        Path classes = Files.createDirectory(tempDir.resolve("classes")).toAbsolutePath();
+        Path classes2 = Files.createDirectory(tempDir.resolve("classes2")).toAbsolutePath();
+        Path classes3 = Files.createDirectory(tempDir.resolve("classes3")).toAbsolutePath();
+        Path dirWithSpaces = Files.createDirectories(tempDir.resolve("relative source dir/bar")).toAbsolutePath();
+        Path auxClasspathFile = tempDir.resolve("auxclasspath.cp");
+        Files.write(auxClasspathFile, CollectionUtil.listOf(
+                "# relative paths here should be resolved relative to the current working directory - not relative to this file",
+                currentWorkdirDir.relativize(lib1Jar).toString(),
+                currentWorkdirDir.relativize(lib2Jar).toString(),
+                "# absolute paths work as well",
+                lib3Jar.toString(),
+                "# also directories are possible",
+                currentWorkdirDir.relativize(classes).toString(),
+                currentWorkdirDir.relativize(classes2) + File.separator,
+                classes3.toString(),
+                "# relative current directory",
+                ".",
+                "# a test with a space in the uri",
+                currentWorkdirDir.relativize(dirWithSpaces).toString()
+        ));
 
-        String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
-        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath.cp";
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        URI[] uris = new URI[urls.length];
-        for (int i = 0; i < urls.length; i++) {
-            uris[i] = urls[i].toURI();
-        }
-        URI[] expectedUris = new URI[] {
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "lib1.jar", null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "other/directory/lib2.jar", null),
-            new URI(FILE_SCHEME, null, new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(), null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes", null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes2", null),
-            new URI(FILE_SCHEME, null, new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(), null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
-        };
-        assertArrayEquals(expectedUris, uris);
+        String auxClasspath = "file:" + currentWorkdirDir.relativize(auxClasspathFile);
+        configuration.prependAuxClasspath(auxClasspath);
+        assertEquals(auxClasspath, configuration.getAuxClasspath());
+
+        // new since 7.27.0 - no classloader is created eagerly anymore
+        assertNull(configuration.getClassLoader(), "ClassLoader should be null - not used");
     }
 
     @Test

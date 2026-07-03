@@ -7,12 +7,18 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.LoggerFactory;
@@ -20,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -97,7 +102,12 @@ public class PMDConfiguration extends AbstractConfiguration {
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
-    private ClassLoader classLoader = getClass().getClassLoader();
+    /**
+     * @deprecated Since 7.27.0. This field is only used for fallback behavior.
+     */
+    @Deprecated
+    private ClassLoader classLoader = null;
+    private String auxClasspath = null;
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -160,34 +170,54 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Get the ClassLoader being used by PMD when processing Rules.
+     * Get the ClassLoader being used by PMD when analyzing code, e.g. Java.
+     *
+     * <p>Since 7.27.0, this method will only return the classloader, that has been
+     * set explicitly via {@link #setClassLoader(ClassLoader)}. Instead of setting a classloader,
+     * the auxClasspath should be configured via {@link #setAuxClasspath(String)} or {@link #prependAuxClasspath(String)}.</p>
      *
      * @return The ClassLoader being used
+     * @deprecated Since 7.27.0. Use {@link #getAuxClasspath()} instead.
      */
+    @Deprecated
     public ClassLoader getClassLoader() {
+        if (classLoader == null && auxClasspath == null) {
+            // preserve old behavior for default classloader
+            return PMDConfiguration.class.getClassLoader();
+        }
         return classLoader;
     }
 
     /**
-     * Set the ClassLoader being used by PMD when processing Rules. Setting a
+     * Set the ClassLoader being used by PMD when analyzing code, e.g. Java. Setting a
      * value of <code>null</code> will cause the default ClassLoader to be used.
+     *
+     * <p>Since 7.27.0, a classloader should not be set anymore. Instead, the auxClasspath should be configured
+     * via {@link #setAuxClasspath(String)} or {@link #prependAuxClasspath(String)}. For
+     * backwards compatibility, if setting a classloader here, it will still be used, and it will be
+     * closed, when PMD is called via {@link PmdAnalysis}.</p>
      *
      * @param classLoader
      *            The ClassLoader to use
+     * @deprecated Since 7.27.0. Use {@link #prependAuxClasspath(String)} or {@link #setAuxClasspath(String)} instead.
      */
+    @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
-            this.classLoader = getClass().getClassLoader();
-        } else {
-            this.classLoader = classLoader;
+        if (auxClasspath != null) {
+            throw new IllegalStateException("Can't mix setClassLoader with setAuxClasspath or prependAuxClasspath!");
         }
+        this.classLoader = classLoader;
     }
 
     /**
-     * Prepend the specified classpath like string to the current ClassLoader of
-     * the configuration. If no ClassLoader is currently configured, the
-     * ClassLoader used to load the {@link PMDConfiguration} class will be used
-     * as the parent ClassLoader of the created ClassLoader.
+     * Prepend the specified classpath like string to the currently set auxClasspath of
+     * the configuration.
+     *
+     * <p>Use {@link #setAuxClasspath(String)} if you don't want any fallbacks (neither to PMD's runtime
+     * classpath nor to the current JVM runtime) and only access classes on the given auxClasspath.</p>
+     *
+     * <p>Specify the JVM's platform classpath yourself explicitly (e.g. adding {@code jrt-fs.jar})
+     * in order to not fall back to the current JVM runtime.</p>
      *
      * <p>If the classpath String looks like a URL to a file (i.e. starts with
      * <code>file://</code>) the file will be read with each line representing
@@ -196,24 +226,121 @@ public class PMDConfiguration extends AbstractConfiguration {
      * <p>You can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
      * See {@link File#pathSeparator}.
      *
-     * @param classpath The prepended classpath.
+     * @param classpath The additional classpath entries to be prepended.
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
-     * @see PMDConfiguration#setClassLoader(ClassLoader)
+     * @see PMDConfiguration#setAuxClasspath(String)
      */
     public void prependAuxClasspath(String classpath) {
-        try {
-            if (classLoader == null) {
-                classLoader = PMDConfiguration.class.getClassLoader();
-            }
-            if (classpath != null) {
-                classLoader = new ClasspathClassLoader(classpath, classLoader);
-            }
-        } catch (IOException e) {
-            // Note: IOExceptions shouldn't appear anymore, they should already be converted
-            // to IllegalArgumentException in ClasspathClassLoader.
-            throw new IllegalArgumentException(e);
+        if (classpath == null) {
+            return;
         }
+        if (classLoader != null) {
+            throw new IllegalStateException("Can't mix setClasspath with prependAuxClasspath!");
+        }
+        verifyAuxClasspath(classpath); // throws IllegalArgumentException...
+
+        if (auxClasspath == null) {
+            auxClasspath = classpath;
+        } else {
+            auxClasspath = classpath + File.pathSeparator + auxClasspath;
+        }
+    }
+
+    /**
+     * Checks whether any referenced file on the classpath exists.
+     *
+     * <p>Valid classpath formats (under Unix):
+     * <ul>
+     *     <li>/absolute/file.jar:relative/file.jar</li>
+     *     <li>file:relative/classpath.txt</li>
+     *     <li>file:/absolute/classpath.txt</li>
+     * </ul>
+     * </p>
+     *
+     * @param classpath
+     * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist).
+     */
+    private void verifyAuxClasspath(String classpath) {
+        if (classpath == null) {
+            return;
+        }
+
+        List<Path> notExistingFiles = new ArrayList<>();
+        if (classpath.startsWith("file:")) {
+            try {
+                URI uri = new URI(classpath);
+                String uriPath = uri.getPath();
+                if (uriPath == null) {
+                    // to support relative paths, only the scheme specific part is available
+                    uriPath = uri.getSchemeSpecificPart();
+                }
+                Path path = Paths.get(uriPath);
+
+                try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
+                    notExistingFiles.addAll(lines
+                            .map(String::trim)
+                            .filter(s -> !s.startsWith("#"))
+                            .map(Paths::get)
+                            .filter(p -> !Files.exists(p))
+                            .collect(Collectors.toList()));
+                }
+            } catch (IOException | URISyntaxException e) {
+                throw new IllegalArgumentException(e);
+            }
+        } else {
+            StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
+            while (toker.hasMoreTokens()) {
+                String token = toker.nextToken();
+                Path path = Paths.get(token);
+                if (!Files.exists(path)) {
+                    notExistingFiles.add(path);
+                }
+            }
+        }
+        if (!notExistingFiles.isEmpty()) {
+            throw new IllegalArgumentException("Invalid classpath - not existing files: " + notExistingFiles);
+        }
+    }
+
+    /**
+     * Uses the specified classpath like string as the auxClasspath of
+     * the configuration.
+     *
+     * <p>If the classpath String looks like a URL to a file (i.e. starts with
+     * <code>file://</code>) the file will be read with each line representing
+     * an entry on the classpath.</p>
+     *
+     * <p>You can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
+     * See {@link File#pathSeparator}.
+     *
+     * @param classpath The classpath entries to be used.
+     *
+     * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
+     * @see PMDConfiguration#prependAuxClasspath(String)
+     * @since 7.27.0
+     */
+    public void setAuxClasspath(String classpath) {
+        if (classLoader != null) {
+            throw new IllegalStateException("Can't mix setClasspath with setAuxClasspath!");
+        }
+        verifyAuxClasspath(classpath);
+        auxClasspath = classpath;
+    }
+
+    /**
+     * Gets the currently set auxClasspath.
+     *
+     * @return the configured auxClasspath. Might be {@code null}.
+     * @see #setAuxClasspath(String)
+     * @see #prependAuxClasspath(String)
+     * @since 7.27.0
+     */
+    public String getAuxClasspath() {
+        if (classLoader != null) {
+            throw new IllegalStateException("Can't mix setClasspath with getAuxClasspath!");
+        }
+        return auxClasspath;
     }
 
     /**
