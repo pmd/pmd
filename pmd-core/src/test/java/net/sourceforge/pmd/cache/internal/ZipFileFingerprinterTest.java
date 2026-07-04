@@ -7,11 +7,10 @@ package net.sourceforge.pmd.cache.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 import java.util.zip.ZipEntry;
@@ -24,12 +23,12 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
 
     @Test
     void zipEntryMetadataDoesNotAffectFingerprint() throws IOException {
-        final File file = createValidNonEmptyFile();
+        final Path file = createValidNonEmptyFile();
         final long baselineFingerprint = getBaseLineFingerprint(file);
-        final long originalFileSize = file.length();
+        final long originalFileSize = Files.size(file);
 
         // Change zip entry's metadata
-        try (ZipFile zip = new ZipFile(file)) {
+        try (ZipFile zip = new ZipFile(file.toFile())) {
             final ZipEntry zipEntry = zip.entries().nextElement();
             zipEntry.setComment("some comment");
             zipEntry.setTime(System.currentTimeMillis() + 1000);
@@ -38,12 +37,12 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
         }
 
         assertEquals(baselineFingerprint, updateFingerprint(file));
-        assertNotEquals(originalFileSize, file.length());
+        assertNotEquals(originalFileSize, Files.size(file));
     }
     
     @Test
     void zipEntryOrderDoesNotAffectFingerprint() throws IOException {
-        final File zipFile = tempDir.resolve("foo.jar").toFile();
+        final Path zipFile = tempDir.resolve("foo.jar");
         final ZipEntry fooEntry = new ZipEntry("lib/Foo.class");
         final ZipEntry barEntry = new ZipEntry("lib/Bar.class");
         overwriteZipFileContents(zipFile, fooEntry, barEntry);
@@ -56,7 +55,7 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
     
     @Test
     void nonClassZipEntryDoesNotAffectFingerprint() throws IOException {
-        final File zipFile = tempDir.resolve("foo.jar").toFile();
+        final Path zipFile = tempDir.resolve("foo.jar");
         final ZipEntry fooEntry = new ZipEntry("lib/Foo.class");
         final ZipEntry barEntry = new ZipEntry("bar.properties");
         overwriteZipFileContents(zipFile, fooEntry);
@@ -83,14 +82,14 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
     }
 
     @Override
-    protected File createValidNonEmptyFile() throws IOException {
-        final File zipFile = tempDir.resolve("foo.jar").toFile();
+    protected Path createValidNonEmptyFile() throws IOException {
+        final Path zipFile = tempDir.resolve("foo.jar");
         overwriteZipFileContents(zipFile, new ZipEntry("lib/Foo.class"));
         return zipFile;
     }
 
-    private void overwriteZipFileContents(final File zipFile, final ZipEntry... zipEntries) throws IOException {
-        try (ZipOutputStream zipOS = new ZipOutputStream(Files.newOutputStream(zipFile.toPath()))) {
+    private void overwriteZipFileContents(final Path zipFile, final ZipEntry... zipEntries) throws IOException {
+        try (ZipOutputStream zipOS = new ZipOutputStream(Files.newOutputStream(zipFile))) {
             for (final ZipEntry zipEntry : zipEntries) {
                 zipOS.putNextEntry(zipEntry);
                 zipOS.write("content of zip entry".getBytes(StandardCharsets.UTF_8));
@@ -99,9 +98,9 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
         }
     }
 
-    private long getBaseLineFingerprint(final File file) throws MalformedURLException, IOException {
+    private long getBaseLineFingerprint(final Path file) throws IOException {
         final Checksum checksum = new Adler32();
-        fingerprinter.fingerprint(file.toURI().toURL(), checksum);
+        fingerprinter.fingerprint(file, checksum);
         return checksum.getValue();
     }
 }
