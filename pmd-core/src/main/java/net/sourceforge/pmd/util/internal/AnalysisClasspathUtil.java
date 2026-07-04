@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -130,13 +129,8 @@ public final class AnalysisClasspathUtil {
 
         if (classpath.startsWith("file:")) {
             try {
-                URI uri = new URI(classpath);
-                String uriPath = uri.getPath();
-                if (uriPath == null) {
-                    // to support relative paths, only the scheme specific part is available
-                    uriPath = uri.getSchemeSpecificPart();
-                }
-                Path path = Paths.get(uriPath);
+                URL url = new URL(classpath);
+                Path path = Paths.get(url.getPath());
 
                 try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
                     entries.addAll(lines
@@ -145,7 +139,7 @@ public final class AnalysisClasspathUtil {
                             .filter(s -> !s.startsWith("#"))
                             .collect(Collectors.toList()));
                 }
-            } catch (IOException | URISyntaxException e) {
+            } catch (IOException e) {
                 throw new IllegalArgumentException(e);
             }
         } else {
