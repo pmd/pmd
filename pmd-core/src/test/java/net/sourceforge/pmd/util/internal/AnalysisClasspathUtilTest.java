@@ -81,7 +81,7 @@ class AnalysisClasspathUtilTest {
                 Paths.get("/usr/lib"),
                 wildcardDirectory.resolve("file1.jar"),
                 wildcardDirectory.resolve("file2.JAR")
-        ), AnalysisClasspathUtil.expandAnalysisClasspath("file:" + classpathFile));
+        ), AnalysisClasspathUtil.expandAnalysisClasspath(classpathFile.toUri().toString()));
     }
 
     @Test
@@ -93,7 +93,7 @@ class AnalysisClasspathUtilTest {
                 ""
         ), Charset.defaultCharset());
 
-        assertEquals(Collections.emptyList(), AnalysisClasspathUtil.expandAnalysisClasspath("file:" + classpathFile));
+        assertEquals(Collections.emptyList(), AnalysisClasspathUtil.expandAnalysisClasspath(classpathFile.toUri().toString()));
     }
 
     @Test
