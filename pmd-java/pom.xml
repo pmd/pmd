@@ -345,5 +345,11 @@
             <version>6.1.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.46</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
