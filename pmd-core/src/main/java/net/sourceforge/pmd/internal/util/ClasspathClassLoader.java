@@ -4,17 +4,14 @@
 
 package net.sourceforge.pmd.internal.util;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -28,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,7 +37,7 @@ import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.internal.AnalysisClasspathUtil;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -75,64 +71,26 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
         super(new URL[0], parent);
-        for (URL url : fileToURL(files)) {
+        List<Path> paths = files.stream().map(File::toPath).collect(Collectors.toList());
+        for (URL url : pathToUrl(paths)) {
             addURL(url);
         }
     }
 
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(new URL[0], parent);
-        for (URL url : initURLs(classpath)) {
+        List<Path> paths = AnalysisClasspathUtil.expandAnalysisClasspath(classpath);
+        for (URL url : pathToUrl(paths)) {
             addURL(url);
         }
     }
 
-    private List<URL> fileToURL(List<File> files) throws IOException {
+    private List<URL> pathToUrl(List<Path> files) throws IOException {
         List<URL> urlList = new ArrayList<>();
-        for (File f : files) {
-            urlList.add(createURLFromPath(f.getAbsolutePath()));
+        for (Path f : files) {
+            urlList.add(createURLFromPath(f.toAbsolutePath().toString()));
         }
         return urlList;
-    }
-
-    private List<URL> initURLs(String classpath) {
-        AssertionUtil.requireParamNotNull("classpath", classpath);
-        final List<URL> urls = new ArrayList<>();
-        try {
-            if (classpath.startsWith("file:")) {
-                // Treat as file URL
-                addFileURLs(urls, new URL(classpath));
-            } else {
-                // Treat as classpath
-                addClasspathURLs(urls, classpath);
-            }
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot prepend classpath " + classpath + "\n" + e.getMessage(), e);
-        }
-        return urls;
-    }
-
-    private void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {
-        StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
-        while (toker.hasMoreTokens()) {
-            String token = toker.nextToken();
-            LOG.debug("Adding classpath entry: <{}>", token);
-            urls.add(createURLFromPath(token));
-        }
-    }
-
-    private void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(fileURL.openStream(), Charset.defaultCharset()))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                LOG.debug("Read classpath entry line: <{}>", line);
-                line = line.trim();
-                if (line.length() > 0 && line.charAt(0) != '#') {
-                    LOG.debug("Adding classpath entry: <{}>", line);
-                    urls.add(createURLFromPath(line));
-                }
-            }
-        }
     }
 
     private URL createURLFromPath(String path) throws MalformedURLException {
