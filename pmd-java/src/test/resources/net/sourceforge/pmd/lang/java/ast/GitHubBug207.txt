@@ -2,7 +2,7 @@
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "GitHubBug207", @CanonicalName = "GitHubBug207", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "GitHubBug207", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]
       +- ClassBody[@Empty = false, @Size = 1]
-         +- MethodDeclaration[@Abstract = false, @Arity = 1, @EffectiveVisibility = Visibility.V_PRIVATE, @Final = false, @Name = "resourceHttpMessageWriter", @Overridden = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PRIVATE, @Void = false]
+         +- MethodDeclaration[@Abstract = false, @Arity = 1, @EffectiveVisibility = Visibility.V_PRIVATE, @Final = false, @Name = "resourceHttpMessageWriter", @Override = false, @Static = true, @Varargs = false, @Visibility = Visibility.V_PRIVATE, @Void = false]
             +- ModifierList[@EffectiveModifiers = (JModifier.PRIVATE, JModifier.STATIC), @ExplicitModifiers = (JModifier.PRIVATE, JModifier.STATIC)]
             +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "HttpMessageWriter"]
             |  +- TypeArguments[@Diamond = false, @Empty = false, @Size = 1]
