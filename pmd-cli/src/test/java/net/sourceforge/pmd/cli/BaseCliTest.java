@@ -42,31 +42,18 @@ abstract class BaseCliTest {
     }
 
     protected CliExecutionResult runCliSuccessfully(String... args) throws Exception {
-        return runCli(CliExitCode.OK, args);
+        return runCli(new RunCliArgumentBuilder().args(args));
     }
 
     protected CliExecutionResult runCli(CliExitCode expectedExitCode, String... args) throws Exception {
-        return runCliWithStandardArgs(expectedExitCode, cliStandardArgs(), args);
+        return runCli(new RunCliArgumentBuilder().args(args).expectedExitCode(expectedExitCode));
     }
 
-    protected CliExecutionResult runCliWithStandardArgs(CliExitCode expectedExitCode, List<String> standardArgs,
-                                                        String... args) throws Exception {
-        return runCli(expectedExitCode, standardArgs, false, args);
-    }
+    protected CliExecutionResult runCli(RunCliArgumentBuilder args) throws Exception {
+        final List<String> argList = args.args;
 
-    protected CliExecutionResult runCliWithMergedOutput(CliExitCode expectedExitCode, List<String> standardArgs,
-                                                        String... args) throws Exception {
-        return runCli(expectedExitCode, standardArgs, true, args);
-    }
-
-    private CliExecutionResult runCli(CliExitCode expectedExitCode, List<String> standardArgs, boolean mergeOutput,
-                                      String... args) throws Exception {
-        final List<String> argList = new ArrayList<>();
-        argList.addAll(standardArgs);
-        argList.addAll(Arrays.asList(args));
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = mergeOutput ? out : new ByteArrayOutputStream();
+        ByteArrayOutputStream out = args.out;
+        ByteArrayOutputStream err = args.err;
 
         final PrintStream formerOut = System.out;
         final PrintStream formerErr = System.err;
@@ -90,7 +77,7 @@ abstract class BaseCliTest {
 
         return new CliExecutionResult(
             out, err, exitCode.get()
-        ).verify(e -> assertEquals(expectedExitCode, e.exitCode));
+        ).verify(e -> assertEquals(args.expectedExitCode, e.exitCode));
     }
 
     protected abstract List<String> cliStandardArgs();
@@ -126,6 +113,34 @@ abstract class BaseCliTest {
                     && StringUtils.countMatches((String) o, substring) == times;
             }
         };
+    }
+
+
+    class RunCliArgumentBuilder {
+        private CliExitCode expectedExitCode = CliExitCode.OK;
+        private List<String> args = new ArrayList<>(cliStandardArgs());
+        private ByteArrayOutputStream out = new ByteArrayOutputStream();
+        private ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+        RunCliArgumentBuilder expectedExitCode(CliExitCode expectedExitCode) {
+            this.expectedExitCode = expectedExitCode;
+            return this;
+        }
+
+        RunCliArgumentBuilder args(String... args) {
+            this.args.addAll(Arrays.asList(args));
+            return this;
+        }
+
+        RunCliArgumentBuilder resetArgs() {
+            this.args.clear();
+            return this;
+        }
+
+        RunCliArgumentBuilder mergeStreams() {
+            this.err = this.out;
+            return this;
+        }
     }
 
 

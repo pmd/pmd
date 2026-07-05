@@ -160,8 +160,11 @@ class PmdCliTest extends BaseCliTest {
     void reportsSummaryAfterProgressBarWithReportFile() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
 
-        runCliWithMergedOutput(VIOLATIONS_FOUND, listOf("check", "--no-cache"),
-                "--dir", srcDir.toString(), "--rulesets", RULESET_WITH_VIOLATION, "--report-file", reportFile.toString())
+        runCli(new RunCliArgumentBuilder()
+                        .expectedExitCode(VIOLATIONS_FOUND)
+                        .resetArgs()
+                        .args("check", "--no-cache", "--dir", srcDir.toString(), "--rulesets", RULESET_WITH_VIOLATION, "--report-file", reportFile.toString())
+                        .mergeStreams())
                 .verify(result -> {
                     String output = result.getOut();
                     assertThat(output, containsString("Processing files"));
