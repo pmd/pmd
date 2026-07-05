@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
+import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.hasAnyAnnotation;
 import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isUtilityClass;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -14,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -53,7 +53,7 @@ public class InstantiableUtilityClassRule extends AbstractJavaRulechainRule {
         hasNonPrivateCtor |= !hasAnyCtor
                 && klass.getVisibility() != V_PRIVATE
                 && !hasLombokPrivateCtor(klass)
-                && !JavaAstUtils.hasAnyAnnotation(klass, setOf(LOMBOK_UTILITY_CLASS));
+                && !hasAnyAnnotation(klass, setOf(LOMBOK_UTILITY_CLASS));
 
         return hasNonPrivateCtor;
     }
