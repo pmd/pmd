@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 #v5.3.0
+      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 #v5.3.0
+      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -517,7 +517,7 @@ jobs:
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 #v3.2.0
         id: pmd-actions-helper-app-token
         with:
-          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          client-id: ${{ secrets.PMD_ACTIONS_HELPER_CLIENT_ID }}
           private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
           owner: pmd
           repositories: pmd
@@ -643,17 +643,17 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 #v5.3.0
+      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
         with:
           distribution: 'temurin'
           java-version: |
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@9eb537ca036ebaed86729dcb9309076e4c5c3b74 #v1.314.0
+        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 #v1.315.0
         with:
           ruby-version: 4
-      - uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 #v6.0.0
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
         with:
           path: |
             ~/.m2/repository
@@ -787,7 +787,7 @@ jobs:
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 #v3.2.0
         id: pmd-actions-helper-app-token
         with:
-          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          client-id: ${{ secrets.PMD_ACTIONS_HELPER_CLIENT_ID }}
           private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
           owner: pmd
           repositories: docker
