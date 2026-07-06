@@ -295,6 +295,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
         try {
             PmdAnalysis pmd = null;
+            final ReportStats stats;
             try {
                 try {
                     pmd = PmdAnalysis.create(configuration);
@@ -315,21 +316,23 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                     }
                 }
 
-                final ReportStats stats = pmd.runAndReturnStats();
-                if (pmdReporter.numErrors() > 0) {
-                    // processing errors are ignored
-                    return CliExitCode.ERROR;
-                } else if (stats.getNumErrors() > 0 && configuration.isFailOnError()) {
-                    return CliExitCode.RECOVERED_ERRORS_OR_VIOLATIONS;
-                } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
-                    return CliExitCode.VIOLATIONS_FOUND;
-                } else {
-                    return CliExitCode.OK;
-                }
+                stats = pmd.runAndReturnStats();
             } finally {
                 if (pmd != null) {
                     pmd.close();
                 }
+            }
+
+            printSummary(pmdReporter, stats);
+            if (pmdReporter.numErrors() > 0) {
+                // processing errors are ignored
+                return CliExitCode.ERROR;
+            } else if (stats.getNumErrors() > 0 && configuration.isFailOnError()) {
+                return CliExitCode.RECOVERED_ERRORS_OR_VIOLATIONS;
+            } else if (stats.getNumViolations() > 0 && configuration.isFailOnViolation()) {
+                return CliExitCode.VIOLATIONS_FOUND;
+            } else {
+                return CliExitCode.OK;
             }
 
         } catch (final Exception e) {
@@ -339,6 +342,28 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         } finally {
             finishBenchmarker(pmdReporter);
         }
+    }
+
+    private void printSummary(PmdReporter reporter, ReportStats stats) {
+        final int violations = stats.getNumViolations();
+        final int errors = stats.getNumErrors();
+        final StringBuilder message = new StringBuilder();
+
+        if (violations == 0) {
+            message.append("Found no violations.");
+        } else {
+            message.append("Found ").append(violations)
+                   .append(violations == 1 ? " violation." : " violations.");
+        }
+
+        if (errors > 0) {
+            message.append(' ')
+                   .append(errors == 1
+                           ? "There was 1 processing error."
+                           : "There were " + errors + " processing errors.");
+        }
+
+        reporter.info(StringUtil.quoteMessageFormat(message.toString()));
     }
 
     private void printErrorDetected(PmdReporter reporter, int errors) {
