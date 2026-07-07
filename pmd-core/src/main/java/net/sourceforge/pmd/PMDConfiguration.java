@@ -277,6 +277,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist).
      */
     private void verifyAuxClasspath(String classpath) {
+        // TODO: Once #6841 is merged, use AnalysisClasspathUtil#expandAnalysisClasspath + check each entry for existence
         if (classpath == null) {
             return;
         }
@@ -295,6 +296,7 @@ public class PMDConfiguration extends AbstractConfiguration {
                 try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
                     notExistingFiles.addAll(lines
                             .map(String::trim)
+                            .filter(s -> !s.isEmpty())
                             .filter(s -> !s.startsWith("#"))
                             .map(Paths::get)
                             .filter(p -> !Files.exists(p))
