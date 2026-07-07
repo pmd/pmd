@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -176,6 +177,8 @@ public class PMDConfiguration extends AbstractConfiguration {
      * set explicitly via {@link #setClassLoader(ClassLoader)}. Instead of setting a classloader,
      * the auxClasspath should be configured via {@link #setAuxClasspath(String)} or {@link #prependAuxClasspath(String)}.</p>
      *
+     * <p>See also the notes on {@link #setClassLoader(ClassLoader)} regarding closing and supported types.</p>
+     *
      * @return The ClassLoader being used
      * @deprecated Since 7.27.0. Use {@link #getAuxClasspath()} instead.
      */
@@ -194,8 +197,16 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * <p>Since 7.27.0, a classloader should not be set anymore. Instead, the auxClasspath should be configured
      * via {@link #setAuxClasspath(String)} or {@link #prependAuxClasspath(String)}. For
-     * backwards compatibility, if setting a classloader here, it will still be used, and it will be
-     * closed, when PMD is called via {@link PmdAnalysis}.</p>
+     * backwards compatibility, if setting a classloader here, it will still be used.</p>
+     *
+     * <p>Note 1: The classloader might keep open file references to jar files if it is not closed.
+     * A {@link java.net.URLClassLoader} is closeable and any given classloader that is {@link java.io.Closeable}
+     * will be closed, when PMD is called via {@link PmdAnalysis}. In other cases, e.g. not using PmdAnalysis,
+     * you need to close the classloader yourself.</p>
+     *
+     * <p>Note 2: Only subtypes of {@link java.net.URLClassLoader} are compatible with PMD, as for the
+     * <a href="https://docs.pmd-code.org/latest/pmd_userdocs_incremental_analysis.html">incremental analysis</a>
+     * we need to figure out the actual URLs of the classpath to check the validity of our cache.</p>
      *
      * @param classLoader
      *            The ClassLoader to use
@@ -205,6 +216,10 @@ public class PMDConfiguration extends AbstractConfiguration {
     public void setClassLoader(ClassLoader classLoader) {
         if (auxClasspath != null) {
             throw new IllegalStateException("Can't mix setClassLoader with setAuxClasspath or prependAuxClasspath!");
+        }
+        if (classLoader != null && !(classLoader instanceof URLClassLoader)) {
+            getReporter().warn("Unsupported classloader for auxClasspath detected: " + classLoader.getClass() + ". "
+                    + "Only " + URLClassLoader.class.getName() + " is supported.");
         }
         this.classLoader = classLoader;
     }
