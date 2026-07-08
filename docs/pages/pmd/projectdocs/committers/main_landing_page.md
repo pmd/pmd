@@ -1,7 +1,7 @@
 ---
 title: Main Landing Page
 permalink: pmd_projectdocs_committers_main_landing_page.html
-last_updated: March 2020
+last_updated: September 2024 (7.6.0)
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
 ---
 

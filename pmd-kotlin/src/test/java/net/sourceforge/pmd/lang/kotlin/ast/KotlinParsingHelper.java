@@ -10,12 +10,11 @@ import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 /**
- *
+ *  Parsing helper for Kotlin tests.
  */
 public class KotlinParsingHelper extends BaseParsingHelper<KotlinParsingHelper, KotlinParser.KtKotlinFile> {
 
     public static final KotlinParsingHelper DEFAULT = new KotlinParsingHelper(Params.getDefault());
-
 
     public KotlinParsingHelper(@NotNull Params params) {
         super(KotlinLanguageModule.getInstance(), KotlinParser.KtKotlinFile.class, params);

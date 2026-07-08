@@ -19,7 +19,7 @@
  */
 global with sharing class SFDCEncoder {
 
-	/* TODO Yoel - all these functions should be converted into a white list aproach - I am using blacklist to be consistent with the VISUALFORCE functions */
+	/* TODO Yoel - all these functions should be converted into a white list approach - I am using blacklist to be consistent with the VISUALFORCE functions */
 	/* TODO Yoel - Do we need to encode ASCII/Unicode white-space/new-line characters? These used to cause some security issues in some browsers not sure if this is still the case */
 
 	/* Note - the order of these encoding strings is very important so we don't end up with double encoding.

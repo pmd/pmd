@@ -78,7 +78,7 @@ public final class Attribute {
      * Note that the type must be supported by {@link net.sourceforge.pmd.lang.rule.xpath.internal.DomainConversion}
      * if you want this attribute to be used from XPath.
      *
-     * @apiNote Internal API
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      * @since 7.20.0
      */
     @InternalApi // used for tests
@@ -120,7 +120,7 @@ public final class Attribute {
      * Returns null for "not deprecated", empty string for "deprecated without replacement",
      * otherwise name of replacement attribute.
      *
-     * @apiNote Internal API
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     String replacementIfDeprecated() {
         if (method == null) {

@@ -4,7 +4,7 @@ tags: [pmd, userdocs]
 summary: "Migrating to PMD 7 from PMD 6.x"
 permalink: pmd_userdocs_migrating_to_pmd7.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: June 2024 (7.3.0)
+last_updated: June 2026 (7.26.0)
 ---
 
 {% include important.html content="
@@ -68,13 +68,13 @@ You might encounter additionally the following types of problems:
 * If you use any programmatic API of PMD, first avoid any usage of deprecated or internal classes/methods. These
   are marked with one of these annotations: `@Deprecated`, `@DeprecatedUtil700`, `@InternalApi`.
   * Some of these classes are available until 7.0.0-rc4 but are finally removed with 7.0.0.
-  * See [API changes](pmd_release_notes_pmd7.html#api-changes) for details.
-* Some rules have been removed, because they have been deprecated. See [Removed Rules](pmd_release_notes_pmd7.html#removed-rules).
-* Some rule properties have been removed or changed. See [Changed Rules](pmd_release_notes_pmd7.html#changed-rules).
+  * See [API changes](pmd_release_notes_old_pmd700_detail.html#api-changes) for details.
+* Some rules have been removed, because they have been deprecated. See [Removed Rules](pmd_release_notes_old_pmd700_detail.html#removed-rules).
+* Some rule properties have been removed or changed. See [Changed Rules](pmd_release_notes_old_pmd700_detail.html#changed-rules).
 * The filenames of the assets of a release (the "binary distribution zip file") have changed,
   see [Release downloads](#release-downloads).
 * Some CLI options have been removed, because they have been deprecated. See [CLI Changes](#cli-changes) for details.
-* If you call CPD programmatically, the API has changed, see [New Programmatic API for CPD](pmd_release_notes_pmd7.html#new-programmatic-api-for-cpd).
+* If you call CPD programmatically, the API has changed, see [New Programmatic API for CPD](pmd_release_notes_old_pmd700_detail.html#new-programmatic-api-for-cpd).
 * If you use Visualforce, then you need to change "vf" to "visualforce", e.g. `category/vf/security.xml` ➡️ `category/visualforce/security.xml`
 * If you use Velocity, then you need to change "vm" to "velocity", e.g. `category/vm/...` ➡️ `category/velocity/...`
 
@@ -85,13 +85,13 @@ The following topics describe well known migration challenges in more detail.
 ### I'm using only built-in rules
 
 When you are using only built-in rules, then you should check, whether you use any deprecated rule. With PMD 7
-many deprecated rules are finally removed. You can see a complete list of the [removed rules](pmd_release_notes_pmd7.html#removed-rules)
+many deprecated rules are finally removed. You can see a complete list of the [removed rules](pmd_release_notes_old_pmd700_detail.html#removed-rules)
 in the release notes for PMD 7.
 The release notes also mention the replacement rule, that should be used instead. For some rules, there is no
 replacement.
 
 Then many rules have been changed or improved. New properties have been added to make them more versatile or
-properties have been removed, if they are not necessary anymore. See [changed rules](pmd_release_notes_pmd7.html#changed-rules)
+properties have been removed, if they are not necessary anymore. See [changed rules](pmd_release_notes_old_pmd700_detail.html#changed-rules)
 in the release notes for PMD 7.
 
 All properties which accept multiple values now use a comma (`,`) as a delimiter. The previous default was a
@@ -112,7 +112,7 @@ with a backslash. This affects the following rules:
 {% rule  java/errorprone/AvoidBranchingStatementAsLastInLoop %},
 {% rule  java/errorprone/CloseResource %}.
 
-A handful of rules are new to PMD 7. You might want to check these out: [new rules](pmd_release_notes_pmd7.html#new-rules).
+A handful of rules are new to PMD 7. You might want to check these out: [new rules](pmd_release_notes_old_pmd700_detail.html#new-rules).
 
 Once you have reviewed your ruleset(s), you can switch to PMD 7.
 
@@ -214,7 +214,7 @@ using, we are probably missing documentation. Please reach out to us by opening 
 ### CLI Changes
 
 The CLI has been revamped completely
-(see [Release Notes: Revamped Command Line Interface](pmd_release_notes_pmd7.html#revamped-command-line-interface)).
+(see [Release Notes: Revamped Command Line Interface](pmd_release_notes_old_pmd700_detail.html#revamped-command-line-interface)).
 
 Most notable changes:
 
@@ -2997,7 +2997,7 @@ super.method();
 
 └─ ExpressionStatement
    └─ AssignmentExpression "="
-      ├─ FieldAccess[ @AcessType = "WRITE" ] "field"
+      ├─ FieldAccess[ @AccessType = "WRITE" ] "field"
       │  └─ SuperExpression
       └─ NumericLiteral "1"
 
@@ -3328,7 +3328,7 @@ The produced AST is mostly compatible, there are some unavoidable changes howeve
 * All languages have a default version. If no specific version on the CLI is given using `--use-version`, then
   this default version will be used. Usually the latest version is the default version.
 * The available versions for each language can be seen in the help message of the CLI `pmd check --help`.
-* See also [Changed: Language versions](pmd_release_notes_pmd7.html#changed-language-versions)
+* See also [Changed: Language versions](pmd_release_notes_old_pmd700_detail.html#changed-language-versions)
 
 ### Migrating custom CPD language modules
 

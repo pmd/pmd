@@ -85,7 +85,7 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
     private static boolean isInOverriddenMethodSignature(JavaNode node) {
         JavaNode ancestor = node.ancestors().map(NodeStream.asInstanceOf(ASTMethodDeclaration.class, ASTBlock.class)).first();
         // when it's in a signature and not the body
-        return ancestor instanceof ASTMethodDeclaration && ((ASTMethodDeclaration) ancestor).isOverridden();
+        return ancestor instanceof ASTMethodDeclaration && ((ASTMethodDeclaration) ancestor).isOverride();
     }
 
     private boolean isTypeParameter(ASTClassType node) {

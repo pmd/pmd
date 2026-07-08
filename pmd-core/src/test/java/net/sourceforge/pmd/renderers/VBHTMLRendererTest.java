@@ -4,14 +4,27 @@
 
 package net.sourceforge.pmd.renderers;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 class VBHTMLRendererTest extends AbstractRendererTest {
 
     @Override
     Renderer getRenderer() {
         return new VBHTMLRenderer();
+    }
+
+    private String getEscapedRuleMessage() {
+        return "This should be escaped: &quot;&lt;script&gt;alert('test')&lt;/script&gt;&quot;.";
+    }
+
+    @Override
+    protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
+        FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
+        return newRuleViolation(rule, loc, "This should be escaped: \"<script>alert('test')</script>\".");
     }
 
     @Override
@@ -27,7 +40,7 @@ class VBHTMLRendererTest extends AbstractRendererTest {
                 + EOL
                 + "--></style><body><center><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;" + getSourceCodeFilename() + "</font></tr>"
                 + EOL
-                + "<tr id=RowColor2><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>blah</font></td></tr>"
+                + "<tr id=RowColor2><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>" + getEscapedRuleMessage() + "</font></td></tr>"
                 + EOL + "</table><br></center></body></html>" + EOL;
     }
 
@@ -46,6 +59,7 @@ class VBHTMLRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpectedMultiple() {
+        String ruleDescription = getEscapedRuleMessage();
         return "<html><head><title>PMD</title></head><style type=\"text/css\"><!--" + EOL
                 + "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }"
                 + EOL
@@ -57,9 +71,9 @@ class VBHTMLRendererTest extends AbstractRendererTest {
                 + EOL
                 + "--></style><body><center><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;" + getSourceCodeFilename() + "</font></tr>"
                 + EOL
-                + "<tr id=RowColor2><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>blah</font></td></tr>"
+                + "<tr id=RowColor2><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>" + ruleDescription + "</font></td></tr>"
                 + EOL
-                + "<tr id=RowColor1><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>blah</font></td></tr>"
+                + "<tr id=RowColor1><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>" + ruleDescription + "</font></td></tr>"
                 + EOL + "</table><br></center></body></html>" + EOL;
     }
 

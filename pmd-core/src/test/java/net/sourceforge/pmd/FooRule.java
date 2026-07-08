@@ -23,6 +23,7 @@ public class FooRule extends AbstractRule {
         setName("Foo");
         setDescription("Description with Unicode Character U+2013: \u2013 .");
         setLanguage(DummyLanguageModule.getInstance());
+        setExternalInfoUrl("https://example.org/rules/foo");
     }
 
     @Override

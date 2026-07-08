@@ -303,11 +303,22 @@ public final class JavaAstUtils {
     public static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
         JavaNode last = expr.ancestorsOrSelf()
                             .takeWhile(it ->
-                                    it instanceof ASTExpression && !(it instanceof ASTLambdaExpression)
+                                it instanceof ASTExpression && !(it instanceof ASTLambdaExpression)
                                         || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression
                             )
                             .last();
         return (ASTExpression) Objects.requireNonNull(last);
+    }
+
+    /**
+     * Given a statement inside a method, returns the ancestor statement that is directly below the method body.
+     */
+    public static @NonNull ASTStatement getMethodLevelStatement(ASTStatement expr) {
+        JavaNode last = expr
+                .ancestorsOrSelf()
+                .takeWhile(node -> !(node.getParent() instanceof ASTMethodDeclaration))
+                .last();
+        return (ASTStatement) Objects.requireNonNull(last);
     }
 
     /**
@@ -898,4 +909,5 @@ public final class JavaAstUtils {
         }
         return switchLike.isExhaustive();
     }
+
 }

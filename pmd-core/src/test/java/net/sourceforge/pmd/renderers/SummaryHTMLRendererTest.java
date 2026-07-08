@@ -48,7 +48,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
                 + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"center\">1</td>" + EOL
                 + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
-                + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\">blah</td>" + EOL + "</tr>"
+                + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\"><a href=\"https://example.org/rules/foo\">blah</a></td>" + EOL + "</tr>"
                 + EOL + "</table></tr></table></body></html>" + EOL;
 
     }
@@ -78,10 +78,10 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
                 + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"center\">1</td>" + EOL
                 + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
-                + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\">blah</td>" + EOL + "</tr>"
+                + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\"><a href=\"https://example.org/rules/foo\">blah</a></td>" + EOL + "</tr>"
                 + EOL + "<tr> " + EOL + "<td align=\"center\">2</td>" + EOL
                 + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
-                + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\">blah</td>" + EOL + "</tr>"
+                + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\"><a href=\"https://example.org/rules/boo\">blah</a></td>" + EOL + "</tr>"
                 + EOL + "</table></tr></table></body></html>" + EOL;
     }
 
@@ -111,7 +111,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
                 + "</table><hr/><center><h3>Configuration errors</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL + "<th>Rule</th><th>Problem</th></tr>" + EOL + "<tr bgcolor=\"lightgrey\"> " + EOL
-                + "<td>Foo</td>" + EOL + "<td>a configuration error</td>" + EOL + "</tr>" + EOL
+                + "<td><a href=\"https://example.org/rules/foo\">Foo</a></td>" + EOL + "<td>a configuration error</td>" + EOL + "</tr>" + EOL
                 + "</table></tr></table></body></html>" + EOL;
     }
 
@@ -130,7 +130,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + "</table><hr/><center><h3>Suppressed warnings</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>"
                          + EOL + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"left\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
-                + "<td align=\"center\">1</td>" + EOL + "<td align=\"center\">Foo</td>" + EOL
+                + "<td align=\"center\">1</td>" + EOL + "<td align=\"center\"><a href=\"https://example.org/rules/foo\">Foo</a></td>" + EOL
                          + "<td align=\"center\">//NOPMD</td>" + EOL + "<td align=\"center\">test</td>" + EOL
                          + "</tr>"
                 + EOL + "</table></tr></table></body></html>" + EOL, actual);

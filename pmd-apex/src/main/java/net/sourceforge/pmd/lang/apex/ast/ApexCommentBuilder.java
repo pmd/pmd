@@ -19,7 +19,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -30,7 +29,6 @@ import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapp
 import io.github.apexdevtools.apexparser.ApexLexer;
 import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 
-@InternalApi
 final class ApexCommentBuilder {
     private final TextDocument sourceCode;
     private final CommentInformation commentInfo;
@@ -116,7 +114,7 @@ final class ApexCommentBuilder {
         lexer.addErrorListener(new BaseErrorListener() {
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                throw new LexException(line, charPositionInLine, sourceCode.getFileId(), msg, e);
+                throw new LexException(line, charPositionInLine + 1, sourceCode.getFileId(), msg, e);
             }
         });
 

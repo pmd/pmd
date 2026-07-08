@@ -59,7 +59,7 @@ public final class TypePrettyPrint {
         private boolean qualifyAnnotations = false;
 
         /** Create a new pretty printer with the default configuration. */
-        public TypePrettyPrinter() { // NOPMD UnnecessaryConstructor #6311 / #6284
+        public TypePrettyPrinter() {
             // default
         }
 

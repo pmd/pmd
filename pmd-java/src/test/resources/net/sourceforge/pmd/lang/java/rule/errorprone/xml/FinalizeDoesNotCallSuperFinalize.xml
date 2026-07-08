@@ -60,4 +60,37 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation (TODO)</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5-5,15-16,21-21</expected-linenumbers>
+        <code><![CDATA[
+public class Outer {
+    class Inner1 {
+        public void finalize() {
+            int
+            x // <--violation: line 5 (should be line 4)
+            =
+            2
+            ;
+        }
+    }
+    class Inner2 {
+        public void finalize()
+        {
+            int x;
+            return // <--violation: line 15
+            ;
+        }
+    }
+    class Inner3 {
+        public void finalize() {
+            synchronized // <--violation: line 21
+            (this) {}
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

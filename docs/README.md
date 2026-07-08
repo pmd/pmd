@@ -17,7 +17,7 @@ A Jekyll-based theme designed for documentation and help systems. See the link f
     bash build-docs.sh
 
 This will run bundler to fetch and potentially update the ruby gems.
-And then it will execute jekyll and build a offline site.
+And then it will execute jekyll and build an offline site.
 Open the file `_site/index.html` with your browser to see the site.
 
 ## Building using Bundler

@@ -12,14 +12,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -27,11 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -48,6 +42,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             "java.lang.Deprecated",
             "jakarta.annotation.PostConstruct",
             "jakarta.annotation.PreDestroy",
+            "javax.annotation.PostConstruct",
+            "javax.annotation.PreDestroy",
             "lombok.EqualsAndHashCode.Include"
         );
     }
@@ -58,7 +54,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         // - one to find annotations that potentially reference a method
         // - one to collect candidates, that is, potentially unused methods
         // - one to walk through all possible usages of methods, and delete used methods from the set
-        Set<String> methodsUsedByAnnotations = methodsUsedByAnnotations(file);
+        Set<String> methodsUsedByAnnotations = JavaRuleUtil.getMembersUsedByAnnotations(file,
+            "org.junit.jupiter.params.provider.MethodSource");
         Map<JExecutableSymbol, ASTMethodDeclaration> candidates = findCandidates(file, methodsUsedByAnnotations);
 
         file.descendants()
@@ -87,7 +84,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     private static void handleUnresolvedCall(MethodUsage ref, OverloadSelectionResult selectionInfo, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
-        // If the type is may be an instance of this class, then the method may be
+        // If the type may be an instance of this class, then the method may be
         // a call to a private method here. In that case we whitelist all methods
         // with that name.
         JTypeMirror receive = selectionInfo.getTypeToSearch();
@@ -121,29 +118,9 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                    ));
     }
 
-    private static Set<String> methodsUsedByAnnotations(ASTCompilationUnit file) {
-        return file.descendants(ASTAnnotation.class)
-            .crossFindBoundaries()
-            .toStream()
-            .flatMap(UnusedPrivateMethodRule::extractMethodsFromAnnotation)
-            .collect(Collectors.toSet());
-    }
 
-    private static Stream<String> extractMethodsFromAnnotation(ASTAnnotation a) {
-        return Stream.concat(
-            a.getFlatValues().toStream()
-                .map(ASTMemberValue::getConstValue)
-                .map(asInstanceOf(String.class))
-                .filter(StringUtils::isNotEmpty),
-            NodeStream.of(a)
-                .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
-                    && it.getFlatValue("value").isEmpty())
-                .ancestors(ASTMethodDeclaration.class)
-                .take(1)
-                .toStream()
-                .map(ASTMethodDeclaration::getName)
-        );
-    }
+
+
 
     private boolean hasExcludedName(ASTMethodDeclaration node) {
         return SERIALIZATION_METHODS.contains(node.getName());

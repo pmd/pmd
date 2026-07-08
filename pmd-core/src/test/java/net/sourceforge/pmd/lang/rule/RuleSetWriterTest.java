@@ -8,15 +8,19 @@ import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
@@ -70,6 +74,28 @@ class RuleSetWriterTest extends RulesetFactoryTestBase {
 
         String written = out.toString(StandardCharsets.UTF_8.name());
         assertTrue(written.contains("<exclude name=\"MockRule2\""));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"  ", "   ", "     "})
+    void indentationTests(String indentationSpaces) throws Exception {
+        RuleSet braces = new RuleSetLoader().loadFromResource("net/sourceforge/pmd/lang/rule/TestRuleset1.xml");
+        RuleSet ruleSet = new RuleSetBuilder(new Random().nextLong())
+                .withName("ruleset")
+                .withDescription("ruleset description")
+                .addRuleSetByReference(braces, true, "MockRule2")
+                .build();
+
+        writer.write(ruleSet, indentationSpaces.length());
+        String written = out.toString(StandardCharsets.UTF_8.name());
+        String descriptionTag = "<description>";
+        String lineWithDescription = Arrays.stream(written.split("\\R"))
+                .filter(s -> s.contains(descriptionTag))
+                .findFirst().orElse(null);
+        assertNotNull(lineWithDescription, "No line with " + descriptionTag + " found!");
+        String prefix = indentationSpaces + descriptionTag;
+        assertTrue(lineWithDescription.startsWith(prefix),
+                "Wrong indentation. Expected '" + prefix + "...', but got: '" + lineWithDescription + "'");
     }
 
     /**

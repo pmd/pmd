@@ -3,6 +3,6 @@
     "all-contributors-cli": "^6.26.1"
   },
   "overrides": {
-    "tmp": "^0.2.4"
+    "tmp": "^0.2.7"
   }
 }

@@ -75,6 +75,11 @@ public interface JWildcardType extends JTypeMirror {
     }
 
     @Override
+    default Stream<JTypeMirror> streamClasses() {
+        return asUpperBound().streamClasses();
+    }
+
+    @Override
     JWildcardType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
 
     @Override

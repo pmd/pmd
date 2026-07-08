@@ -9,6 +9,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/AccessorClassGeneration" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/AccessorMethodGeneration" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/AssertStatementInTest" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidPrintStackTrace" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningCatchVariables" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables" /> -->
@@ -27,7 +28,7 @@
     <rule ref="category/java/bestpractices.xml/GuardLogStatement"/>
     <!-- <rule ref="category/java/bestpractices.xml/ImplicitFunctionalInterface"/> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" /> -->
-    <!-- <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/JUnitJupiterTestShouldBePackagePrivate" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitUseExpected" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/LabeledStatement" /> -->
     <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons" />
@@ -114,17 +115,20 @@
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBlock"/> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBoxing" /> -->
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryCast" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryConstructor"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryFullyQualifiedName"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryImport" />
+    <!-- <rule ref="category/java/codestyle.xml/UnnecessaryInterfaceDeclaration"/> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryModifier"/>
     <rule ref="category/java/codestyle.xml/UnnecessaryReturn"/>
     <!-- <rule ref="category/java/codestyle.xml/UseDiamondOperator" /> -->
     <rule ref="category/java/codestyle.xml/UselessParentheses"/>
     <rule ref="category/java/codestyle.xml/UselessQualifiedThis"/>
     <rule ref="category/java/codestyle.xml/VariableCanBeInlined"/>
+    <!-- <rule ref="category/java/codestyle.xml/VariableDeclarationUsageDistance" /> -->
 
 
     <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod"/>
@@ -164,6 +168,7 @@
     <!-- <rule ref="category/java/design.xml/MutableStaticState" /> -->
     <!-- <rule ref="category/java/design.xml/NcssCount" /> -->
     <!-- <rule ref="category/java/design.xml/NPathComplexity" /> -->
+    <!-- <rule ref="category/java/design.xml/PublicMemberInNonPublicType" /> -->
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException" /> -->
     <rule ref="category/java/design.xml/SimplifiedTernary"/>
     <!-- <rule ref="category/java/design.xml/SimplifyBooleanExpressions" /> -->
@@ -174,7 +179,6 @@
     <!-- <rule ref="category/java/design.xml/TooManyFields" /> -->
     <!-- <rule ref="category/java/design.xml/TooManyMethods" /> -->
     <rule ref="category/java/design.xml/UselessOverridingMethod"/>
-    <!-- <rule ref="category/java/design.xml/UseObjectForClearerAPI" /> -->
     <rule ref="category/java/design.xml/UseUtilityClass"/>
 
 
@@ -187,6 +191,7 @@
 
 
 
+    <!-- <rule ref="category/java/errorprone.xml/AssertEqualsArgumentOrder" /> -->
     <rule ref="category/java/errorprone.xml/AssignmentInOperand">
         <properties>
             <property name="allowWhile" value="true"/>
@@ -252,6 +257,7 @@
     <rule ref="category/java/errorprone.xml/InstantiationToGetClass"/>
     <!-- <rule ref="category/java/errorprone.xml/InvalidLogMessageFormat" /> -->
     <rule ref="category/java/errorprone.xml/JumbledIncrementer"/>
+    <!-- <rule ref="category/java/errorprone.xml/JUnitJupiterTestNoPrivateModifier" /> -->
     <!-- <rule ref="category/java/errorprone.xml/JUnitSpelling" /> -->
     <!-- <rule ref="category/java/errorprone.xml/JUnitStaticSuite" /> -->
     <!-- <rule ref="category/java/errorprone.xml/LoggerIsNotStaticFinal" /> -->
@@ -285,11 +291,13 @@
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange" /> -->
     <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/>
     <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/>
+    <!-- <rule ref="category/java/errorprone.xml/UnsupportedJdkApiUsage" /> -->
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" /> -->
     <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
     <rule ref="category/java/errorprone.xml/UselessPureMethodCall"/>
     <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader" /> -->
+    <!-- <rule ref="category/java/errorprone.xml/WrongTestAnnotation" /> -->
 
     <!-- Empty rules -->
     <rule ref="category/java/codestyle.xml/EmptyControlStatement"/>
@@ -306,6 +314,7 @@
     <rule ref="category/java/multithreading.xml/DontCallThreadRun"/>
     <rule ref="category/java/multithreading.xml/DoubleCheckedLocking"/>
     <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton"/>
+    <!-- <rule ref="category/java/multithreading.xml/OverridingThreadRun" /> -->
     <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter"/>
     <!-- <rule ref="category/java/multithreading.xml/UseConcurrentHashMap" /> -->
     <rule ref="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify"/>

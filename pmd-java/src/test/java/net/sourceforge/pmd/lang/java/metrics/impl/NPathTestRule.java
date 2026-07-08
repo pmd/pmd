@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.test.AbstractMetricTestRule;
 /**
  * @author Clément Fournier
  */
-public class NPathTestRule extends AbstractMetricTestRule<Long> {
+public class NPathTestRule extends AbstractMetricTestRule<Long, AbstractMetricTestRule.NoOptions> {
 
     public NPathTestRule() {
         super(JavaMetrics.NPATH_COMP);

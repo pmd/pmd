@@ -212,6 +212,10 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
                     return CLARIFYING;
                 }
 
+                if (outer instanceof ASTAssignmentExpression) {
+                    return NEVER;
+                }
+
                 return necessaryIf(isUnary(outer) || outer instanceof ASTPrimaryExpression);
             }
         }

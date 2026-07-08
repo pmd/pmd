@@ -42,6 +42,9 @@ public final class XmlErrorMessages {
     public static final String ERR__UNSUPPORTED_PROPERTY_TYPE = "Unsupported property type ''{0}''";
     public static final String WARN__DELIMITER_DEPRECATED = "Delimiter attribute is not supported anymore, values are always comma-separated.";
 
+    public static final String WARN__DEPRECATED_PROPERTY = "The property ''{0}'' on rule {1} is deprecated.";
+    public static final String WARN__DEPRECATED_ENUM_VALUE = "The value ''{0}'' for property ''{1}'' is deprecated. Use ''{2}'' instead.";
+
     private XmlErrorMessages() {
         // utility class
     }

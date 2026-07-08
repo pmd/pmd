@@ -43,7 +43,7 @@ class Java25TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep513FlexibleConstructorBodiesBeforeJava25() {
         ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep513_FlexibleConstructorBodies.java"));
-        assertThat(thrown.getMessage(), containsString("Flexible constructor bodies was only standardized in Java 25, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Flexible constructor bodies are a feature of Java 25, you should select your language version accordingly"));
     }
 
     @Test
@@ -54,7 +54,7 @@ class Java25TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep511ModuleImportDeclarationsBeforeJava25() {
         ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep511_ModuleImportDeclarations.java"));
-        assertThat(thrown.getMessage(), containsString("Module import declarations was only standardized in Java 25, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Module import declarations are a feature of Java 25, you should select your language version accordingly"));
     }
 
     @Test
@@ -99,7 +99,7 @@ class Java25TreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep512CompactSourceFilesAndInstanceMainMethodsBeforeJava24Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep512_CompactSourceFilesAndInstanceMainMethodsAfterJava23.java"));
-        assertThat(thrown.getMessage(), containsString("Compact source files and instance main methods was only standardized in Java 25, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Compact source files and instance main methods are a feature of Java 25, you should select your language version accordingly"));
     }
 
 }

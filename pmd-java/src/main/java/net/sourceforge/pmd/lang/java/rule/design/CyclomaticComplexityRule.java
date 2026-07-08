@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -23,6 +21,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -43,16 +42,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
                          .desc("Cyclomatic complexity reporting threshold")
                          .require(positive()).defaultValue(10).build();
 
-    private static final Map<String, CycloOption> OPTION_MAP;
-
-    static {
-        OPTION_MAP = new HashMap<>();
-        OPTION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
-        OPTION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
-    }
-
     private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR
-            = PropertyFactory.enumListProperty("cycloOptions", OPTION_MAP)
+            = PropertyFactory.conventionalEnumListProperty("cycloOptions", CycloOption.class)
                              .desc("Choose options for the computation of Cyclo")
                              .emptyDefaultValue()
                              .build();
@@ -69,13 +60,28 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
     @Override
     public Object visitJavaNode(JavaNode node, Object param) {
         if (node instanceof ASTTypeDeclaration) {
-            visitTypeDecl((ASTTypeDeclaration) node, param);
+            ASTTypeDeclaration typeDeclaration = (ASTTypeDeclaration) node;
+            RuleContext ctx = (RuleContext) param;
+
+            visitTypeDecl(typeDeclaration, ctx);
         }
         return null;
     }
 
+    /**
+     * @deprecated since 7.25.0. This method should have never been public.
+     */
+    @Deprecated
     public Object visitTypeDecl(ASTTypeDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
 
+        visitTypeDecl(node, ctx);
+
+        return null;
+
+    }
+
+    private void visitTypeDecl(ASTTypeDeclaration node, RuleContext ctx) {
         MetricOptions cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
 
         if (JavaMetrics.WEIGHED_METHOD_COUNT.supports(node)) {
@@ -89,26 +95,31 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
                                           " total",
                                           classWmc + " (highest " + classHighest + ")", };
 
-                asCtx(data).addViolation(node, (Object[]) messageParams);
+                ctx.addViolation(node, (Object[]) messageParams);
             }
         }
-        return data;
     }
 
 
     @Override
     public final Object visit(ASTMethodDeclaration node, Object data) {
-        visitMethodLike(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        visitMethodLike(node, ctx);
+
+        return null;
     }
 
     @Override
     public final Object visit(ASTConstructorDeclaration node, Object data) {
-        visitMethodLike(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        visitMethodLike(node, ctx);
+
+        return null;
     }
 
-    private void visitMethodLike(ASTExecutableDeclaration node, Object data) {
+    private void visitMethodLike(ASTExecutableDeclaration node, RuleContext ctx) {
         MetricOptions cycloOptions = MetricOptions.ofOptions(getProperty(CYCLO_OPTIONS_DESCRIPTOR));
 
         if (JavaMetrics.CYCLO.supports(node)) {
@@ -120,7 +131,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
 
                 String kindname = node instanceof ASTConstructorDeclaration ? "constructor" : "method";
 
-                asCtx(data).addViolation(node, kindname, opname, "", "" + cyclo);
+                ctx.addViolation(node, kindname, opname, "", "" + cyclo);
             }
         }
     }

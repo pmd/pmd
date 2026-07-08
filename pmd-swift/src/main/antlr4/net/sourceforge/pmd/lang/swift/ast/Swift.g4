@@ -189,7 +189,7 @@ platformVersion: VersionLiteral | DecimalLiteral | FloatingPointLiteral ; // TOD
 
 genericParameterClause : '<' genericParameterList '>'  ;
 genericParameterList : genericParameter (',' genericParameter)*  ;
-genericParameter : typeName | typeName ':' typeIdentifier | typeName ':' protocolCompositionType  ;
+genericParameter : 'each'? ( typeName | typeName ':' typeIdentifier | typeName ':' protocolCompositionType ) ;
 genericWhereClause : 'where' requirementList  ;
 requirementList : requirement (',' requirement)*  ;
 requirement : conformanceRequirement | sameTypeRequirement  ;
@@ -220,6 +220,7 @@ declaration
  | deinitializerDeclaration ';'?
  | extensionDeclaration ';'?
  | subscriptDeclaration ';'?
+ | macroDeclaration ';'?
  | operatorDeclaration ';'?
  // compiler-control-statement not in Swift Language Reference
  | compilerControlStatement ';'?
@@ -390,11 +391,11 @@ protocolInitializerDeclaration : initializerHead genericParameterClause? paramet
 
 // GRAMMAR OF A PROTOCOL SUBSCRIPT DECLARATION
 
-protocolSubscriptDeclaration : subscriptHead subscriptResult getterSetterKeywordBlock  ;
+protocolSubscriptDeclaration : subscriptHead subscriptResult genericWhereClause? getterSetterKeywordBlock  ;
 
 // GRAMMAR OF A PROTOCOL ASSOCIATED TYPE DECLARATION
 
-protocolAssociatedTypeDeclaration : attributes? accessLevelModifier? 'associatedtype' typealiasName typeInheritanceClause? typealiasAssignment?;
+protocolAssociatedTypeDeclaration : attributes? accessLevelModifier? 'associatedtype' typealiasName typeInheritanceClause? typealiasAssignment? genericWhereClause?;
 
 // GRAMMAR OF AN INITIALIZER DECLARATION
 
@@ -415,13 +416,22 @@ extensionMember: declaration | compilerControlStatement ;
 
 // GRAMMAR OF A SUBSCRIPT DECLARATION
 
-subscriptDeclaration : subscriptHead subscriptResult getterSetterBlock
- | subscriptHead subscriptResult getterSetterKeywordBlock
+subscriptDeclaration
+ : subscriptHead subscriptResult genericWhereClause? getterSetterBlock
+ | subscriptHead subscriptResult genericWhereClause? getterSetterKeywordBlock
  // most general form of subscript declaration; should be kept at the bottom.
- | subscriptHead subscriptResult codeBlock
+ | subscriptHead subscriptResult genericWhereClause? codeBlock
  ;
-subscriptHead : attributes? declarationModifiers? 'subscript' parameterClause  ;
+subscriptHead : attributes? declarationModifiers? 'subscript' genericParameterClause? parameterClause  ;
 subscriptResult : '->' attributes? sType  ;
+
+// GRAMMAR OF A MACRO DECLARATION
+
+macroDeclaration : macroHead identifier genericParameterClause? macroSignature macroDefinition? genericWhereClause? ;
+macroHead : attributes? declarationModifiers? 'macro' ;
+macroSignature : parameterClause macroFunctionSignatureResult? ;
+macroFunctionSignatureResult : '->' sType ;
+macroDefinition : '=' expression ;
 
 // GRAMMAR OF AN OPERATOR DECLARATION
 
@@ -840,6 +850,8 @@ sType
  | 'some' sType // opaque-type
  | sType '.' 'Type' | sType '.' 'Protocol' // metatype
  | 'Any' | 'Self'
+ | 'repeat'? 'each' sType
+ | '(' sType ')'
  ;
 
 functionType: attributes? functionTypeArgumentClause ('throws' | 'rethrows')? '->' sType ;
@@ -859,7 +871,7 @@ implicitlyUnwrappedOptionalType: sType '!' ;
 
 // GRAMMAR OF A TYPE ANNOTATION
 
-typeAnnotation : ':' attributes? 'inout'? sType  ;
+typeAnnotation : ':' 'repeat'? attributes? 'inout'? sType  ;
 
 // GRAMMAR OF A TYPE IDENTIFIER
 
@@ -873,7 +885,7 @@ typeName : identifier ;
 // GRAMMAR OF A TUPLE TYPE
 
 tupleType : '('  tupleTypeElementList? ')'  ;
-tupleTypeElementList : tupleTypeElement (',' tupleTypeElement)*  ;
+tupleTypeElementList : tupleTypeElement (',' tupleTypeElement)+  ;
 tupleTypeElement : elementName typeAnnotation | sType ;
 elementName : identifier  ;
 
@@ -921,14 +933,20 @@ platformCondition
  : 'os' '(' operatingSystem ')'
  | 'arch' '(' architecture ')'
  | 'swift' '(' '>=' swiftVersion ')'
- | 'canImport' '(' moduleName ')'
- | 'targetEnvironment' '(' 'simulator' ')'
+ | 'swift' '(' '<' swiftVersion ')'
+ | 'compiler' '(' '>=' swiftVersion ')'
+ | 'compiler' '(' '<' swiftVersion ')'
+ | 'canImport' '(' importPath ')'
+ | 'canImport' '(' moduleName ')' // not used anymore, kept here for compatibility TODO: PMD 8: Remove this, see also #6655
+ | 'targetEnvironment' '(' environment ')'
  ;
 
-operatingSystem: 'OSX' | 'iOS' | 'watchOS' | 'tvOS' ;
-architecture: 'i386' | 'x86_64' | 'arm' | 'arm64' ;
+operatingSystem:  'macOS' | 'iOS' | 'watchOS' | 'tvOS' | 'visionOS' | 'Linux' | 'Windows';
+architecture: 'arm' | 'arm64' | 'i386' | 'wasm32' | 'x86_64';
 swiftVersion: FloatingPointLiteral ;
+// not used anymore, but kept here for compatibility. TODO: PMD 8: Remove this, see also #6655
 moduleName: IdentifierCharacters ;
+environment: 'simulator' | 'macCatalyst';
 
 lineControlStatement: '#sourceLocation' '(' 'file' ':' fileName ',' 'line' ':' lineNumber ')'
  | '#sourceLocation' '(' ')' ;
@@ -969,7 +987,7 @@ contextSensitiveKeyword :
  'associativity' | 'convenience' | 'dynamic' | 'didSet' | 'final' | 'get' | 'infix' | 'indirect' |
  'lazy' | 'left' | 'mutating' | 'none' | 'nonmutating' | 'optional' | 'operator' | 'override' | 'postfix' | 'precedence' |
  'prefix' | 'Protocol' | 'required' | 'right' | 'set' | 'Type' | 'unowned' | 'weak' | 'willSet' |
- 'iOS' | 'iOSApplicationExtension' | 'OSX' | 'OSXApplicationExtension­' | 'watchOS' | 'x86_64' |
+ 'iOS' | 'iOSApplicationExtension' | 'OSX' | 'OSXApplicationExtension-' | 'watchOS' | 'x86_64' |
  'arm' | 'arm64' | 'i386' | 'os' | 'arch' | 'safe' | 'tvOS' | 'file' | 'line' | 'default' | 'Self' | 'var' |
  'some'
  ;
@@ -996,12 +1014,12 @@ OperatorHead
 
 OperatorCharacter
   : OperatorHead
-  | [\u0300–\u036F]
-  | [\u1DC0–\u1DFF]
-  | [\u20D0–\u20FF]
-  | [\uFE00–\uFE0F]
-  | [\uFE20–\uFE2F]
-  //| [\uE0100–\uE01EF]  ANTLR can't do >16bit char
+  | [\u0300-\u036F]
+  | [\u1DC0-\u1DFF]
+  | [\u20D0-\u20FF]
+  | [\uFE00-\uFE0F]
+  | [\uFE20-\uFE2F]
+  //| [\uE0100-\uE01EF]  ANTLR can't do >16bit char
   ;
 
 DotOperatorHead
@@ -1027,10 +1045,10 @@ fragment IdentifierHead : [a-zA-Z] | '_'
  | [\uF900-\uFD3D] | [\uFD40-\uFDCF] | [\uFDF0-\uFE1F] | [\uFE30-\uFE44]
  | [\uFE47-\uFFFD]
 /*
- | U+10000–U+1FFFD | U+20000–U+2FFFD | U+30000–U+3FFFD | U+40000–U+4FFFD
- | U+50000–U+5FFFD | U+60000–U+6FFFD | U+70000–U+7FFFD | U+80000–U+8FFFD
- | U+90000–U+9FFFD | U+A0000–U+AFFFD | U+B0000–U+BFFFD | U+C0000–U+CFFFD
- | U+D0000–U+DFFFD or U+E0000–U+EFFFD
+ | U+10000-U+1FFFD | U+20000-U+2FFFD | U+30000-U+3FFFD | U+40000-U+4FFFD
+ | U+50000-U+5FFFD | U+60000-U+6FFFD | U+70000-U+7FFFD | U+80000-U+8FFFD
+ | U+90000-U+9FFFD | U+A0000-U+AFFFD | U+B0000-U+BFFFD | U+C0000-U+CFFFD
+ | U+D0000-U+DFFFD or U+E0000-U+EFFFD
 */
  ;
 
@@ -1099,7 +1117,7 @@ VersionLiteral: DecimalLiteral DecimalFraction DecimalFraction ;
 
 TRIPLEDQUOTES : '"""' ;
 
-MultiStringLiteral : TRIPLEDQUOTES '\n' .*? '\n' TRIPLEDQUOTES ;
+MultiStringLiteral : TRIPLEDQUOTES '\n' .*? '\n' [ \t]* TRIPLEDQUOTES ;
 fragment MultiQuotedText : MultiQuotedTextItem+ ;
 fragment MultiQuotedTextItem : MultiInterpolatedString | ~[\\\u000A\u000D] ;
 fragment MultiInterpolatedString: '\\(' (MultiQuotedTextItem | SingleStringLiteral)* ')';

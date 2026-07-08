@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,39 +24,70 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulechainRule {
 
+    /**
+     * @deprecated Since 7.21.0. Should have never been public.
+     */
+    @Deprecated
     public static final String CHECK_FOR = "for";
+
+    /**
+     * @deprecated Since 7.21.0. Should have never been public.
+     */
+    @Deprecated
     public static final String CHECK_DO = "do";
+
+    /**
+     * @deprecated Since 7.21.0. Should have never been public.
+     */
+    @Deprecated
     public static final String CHECK_WHILE = "while";
 
-    private static final Map<String, String> LOOP_TYPES_MAPPINGS;
-    private static final List<String> DEFAULTS = Arrays.asList(CHECK_FOR, CHECK_DO, CHECK_WHILE);
+    private static final List<LoopTypes> DEFAULTS = Arrays.asList(LoopTypes.FOR, LoopTypes.DO, LoopTypes.WHILE);
 
-    static {
-        Map<String, String> mappings = new HashMap<>();
-        mappings.put(CHECK_FOR, CHECK_FOR);
-        mappings.put(CHECK_DO, CHECK_DO);
-        mappings.put(CHECK_WHILE, CHECK_WHILE);
-        LOOP_TYPES_MAPPINGS = Collections.unmodifiableMap(mappings);
+    private enum LoopTypes {
+        FOR, DO, WHILE;
     }
 
     // TODO I don't think we need this configurability.
     // I think we should tone that down to just be able to ignore some type of statement,
     // but I can't see a use case to e.g. report only breaks in 'for' loops but not in 'while'.
 
-    public static final PropertyDescriptor<List<String>> CHECK_BREAK_LOOP_TYPES = propertyFor("break");
-    public static final PropertyDescriptor<List<String>> CHECK_CONTINUE_LOOP_TYPES = propertyFor("continue");
-    public static final PropertyDescriptor<List<String>> CHECK_RETURN_LOOP_TYPES = propertyFor("return");
+    /**
+     * @deprecated Since 7.21.0. Should have been private. This property descriptor is not used anymore.
+     * Use {@link #getPropertyDescriptor(String)} instead.
+     */
+    @Deprecated
+    public static final PropertyDescriptor<List<String>> CHECK_BREAK_LOOP_TYPES = propertyForDeprecated("break");
+
+    /**
+     * @deprecated Since 7.21.0. Should have been private. This property descriptor is not used anymore.
+     * Use {@link #getPropertyDescriptor(String)} instead.
+     */
+    @Deprecated
+    public static final PropertyDescriptor<List<String>> CHECK_CONTINUE_LOOP_TYPES = propertyForDeprecated("continue");
+
+    /**
+     * @deprecated Since 7.21.0. Should have been private. This property descriptor is not used anymore.
+     * Use {@link #getPropertyDescriptor(String)} instead.
+     */
+    @Deprecated
+    public static final PropertyDescriptor<List<String>> CHECK_RETURN_LOOP_TYPES = propertyForDeprecated("return");
+
+    private static final PropertyDescriptor<List<LoopTypes>> CHECK_BREAK_LOOP_TYPES_PROPERTY = propertyFor("break");
+    private static final PropertyDescriptor<List<LoopTypes>> CHECK_CONTINUE_LOOP_TYPES_PROPERTY = propertyFor("continue");
+    private static final PropertyDescriptor<List<LoopTypes>> CHECK_RETURN_LOOP_TYPES_PROPERTY = propertyFor("return");
 
 
 
     public AvoidBranchingStatementAsLastInLoopRule() {
         super(ASTBreakStatement.class, ASTContinueStatement.class, ASTReturnStatement.class);
-        definePropertyDescriptor(CHECK_BREAK_LOOP_TYPES);
-        definePropertyDescriptor(CHECK_CONTINUE_LOOP_TYPES);
-        definePropertyDescriptor(CHECK_RETURN_LOOP_TYPES);
+        definePropertyDescriptor(CHECK_BREAK_LOOP_TYPES_PROPERTY);
+        definePropertyDescriptor(CHECK_CONTINUE_LOOP_TYPES_PROPERTY);
+        definePropertyDescriptor(CHECK_RETURN_LOOP_TYPES_PROPERTY);
     }
 
 
@@ -68,11 +97,19 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
         if (node.ancestors().get(1) instanceof ASTSwitchStatement) {
             return data;
         }
-        return check(CHECK_BREAK_LOOP_TYPES, node, data);
+        return check(CHECK_BREAK_LOOP_TYPES_PROPERTY, node, data);
     }
 
 
-    protected Object check(PropertyDescriptor<List<String>> property, Node node, Object data) {
+    /**
+     * @deprecated Since 7.21.0. Should have been private.
+     */
+    @Deprecated
+    protected Object check(PropertyDescriptor<List<LoopTypes>> property, Node node, Object data) {
+        return checkInternal(property, node, data);
+    }
+
+    private Object checkInternal(PropertyDescriptor<List<LoopTypes>> property, Node node, Object data) {
         Node parent = node.getParent();
         if (parent instanceof ASTBlock) {
             parent = parent.getParent();
@@ -83,15 +120,15 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
             }
         }
         if (parent instanceof ASTForStatement || parent instanceof ASTForeachStatement) {
-            if (hasPropertyValue(property, CHECK_FOR)) {
+            if (hasPropertyValue(property, LoopTypes.FOR)) {
                 asCtx(data).addViolation(node);
             }
         } else if (parent instanceof ASTWhileStatement) {
-            if (hasPropertyValue(property, CHECK_WHILE)) {
+            if (hasPropertyValue(property, LoopTypes.WHILE)) {
                 asCtx(data).addViolation(node);
             }
         } else if (parent instanceof ASTDoStatement) {
-            if (hasPropertyValue(property, CHECK_DO)) {
+            if (hasPropertyValue(property, LoopTypes.DO)) {
                 asCtx(data).addViolation(node);
             }
         }
@@ -99,20 +136,28 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     }
 
 
+    /**
+     * @deprecated Since 7.21.0. Should have been private.
+     */
+    @Deprecated
     protected boolean hasPropertyValue(PropertyDescriptor<List<String>> property, String value) {
+        return getProperty(property).contains(value);
+    }
+
+    private boolean hasPropertyValue(PropertyDescriptor<List<LoopTypes>> property, LoopTypes value) {
         return getProperty(property).contains(value);
     }
 
 
     @Override
     public Object visit(ASTContinueStatement node, Object data) {
-        return check(CHECK_CONTINUE_LOOP_TYPES, node, data);
+        return check(CHECK_CONTINUE_LOOP_TYPES_PROPERTY, node, data);
     }
 
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
-        return check(CHECK_RETURN_LOOP_TYPES, node, data);
+        return check(CHECK_RETURN_LOOP_TYPES_PROPERTY, node, data);
     }
 
 
@@ -121,16 +166,37 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
         return checksNothing() ? "All loop types are ignored" : null;
     }
 
-    private static PropertyDescriptor<List<String>> propertyFor(String stmtName) {
-        return PropertyFactory.enumListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LOOP_TYPES_MAPPINGS)
+    /**
+     * @deprecated Since 7.21.0. Only used for backwards compatible property values.
+     */
+    @Deprecated
+    private static PropertyDescriptor<List<String>> propertyForDeprecated(String stmtName) {
+        return PropertyFactory.stringListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes")
+                .desc("List of loop types in which " + stmtName + " statements will be checked")
+                .defaultValue(DEFAULTS.stream()
+                        .map(v -> StringUtil.CaseConvention.SCREAMING_SNAKE_CASE.convertTo(StringUtil.CaseConvention.CAMEL_CASE, v.name()))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private static PropertyDescriptor<List<LoopTypes>> propertyFor(String stmtName) {
+        return PropertyFactory.conventionalEnumListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LoopTypes.class)
                 .desc("List of loop types in which " + stmtName + " statements will be checked")
                 .defaultValue(DEFAULTS)
                 .build();
     }
 
+    /**
+     * @deprecated Since 7.21.0. Should have been private.
+     */
+    @Deprecated
     public boolean checksNothing() {
+        return checksNothingInternal();
+    }
 
-        return getProperty(CHECK_BREAK_LOOP_TYPES).isEmpty() && getProperty(CHECK_CONTINUE_LOOP_TYPES).isEmpty()
-            && getProperty(CHECK_RETURN_LOOP_TYPES).isEmpty();
+    private boolean checksNothingInternal() {
+        return getProperty(CHECK_BREAK_LOOP_TYPES_PROPERTY).isEmpty()
+                && getProperty(CHECK_CONTINUE_LOOP_TYPES_PROPERTY).isEmpty()
+            && getProperty(CHECK_RETURN_LOOP_TYPES_PROPERTY).isEmpty();
     }
 }

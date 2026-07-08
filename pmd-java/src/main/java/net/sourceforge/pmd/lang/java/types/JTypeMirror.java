@@ -439,6 +439,23 @@ public interface JTypeMirror extends JTypeVisitable {
         return Stream.empty();
     }
 
+    /**
+     * Returns a stream of nested classes declared in this type and its
+     * supertypes.
+     */
+    default Stream<JTypeMirror> streamClasses() {
+        return Stream.empty();
+    }
+
+    /**
+     * Like {@link #streamClasses() streamNestedClasses}, but does
+     * not recurse into supertypes. Note that only class types
+     * declare nested classes themselves.
+     */
+    default Stream<JTypeMirror> streamDeclaredClasses() {
+        return Stream.empty();
+    }
+
 
     /**
      * Returns a list of all the declared constructors for this type.

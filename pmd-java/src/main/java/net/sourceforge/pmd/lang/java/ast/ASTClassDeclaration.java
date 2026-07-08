@@ -60,7 +60,7 @@ public final class ASTClassDeclaration extends AbstractTypeDeclaration {
 
 
     /**
-     * @deprecated Use {@link #getPermitsClause()} or {@link JClassSymbol#getPermittedSubtypes()}
+     * @deprecated Since 7.8.0. Use {@link #getPermitsClause()} or {@link JClassSymbol#getPermittedSubtypes()}
      */
     @Deprecated
     public List<ASTClassType> getPermittedSubclasses() {

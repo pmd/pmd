@@ -27,16 +27,19 @@ import net.sourceforge.pmd.reporting.RuleContext;
  *
  * @param <N> Result type of the metric. The nested subclasses provide
  *            defaults for common result types
+ * @param <O> The enum type of the {@link MetricOption}. If the metric doesn't
+ *            support options, then {@link NoOptions} can be used as
+ *            a placeholder.
  *
  * @author Clément Fournier
  */
-public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> extends AbstractRule {
+public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>, O extends Enum<O> & MetricOption> extends AbstractRule {
 
-    private final PropertyDescriptor<List<MetricOption>> optionsDescriptor =
-        PropertyFactory.enumListProperty("metricOptions", optionMappings())
-                       .desc("Choose a variant of the metric or the standard")
-                       .emptyDefaultValue()
-                       .build();
+    public enum NoOptions implements MetricOption {
+        VOID
+    }
+
+    private final PropertyDescriptor<List<O>> optionsDescriptor;
 
     private final PropertyDescriptor<String> reportLevelDescriptor =
         PropertyFactory.stringProperty("reportLevel")
@@ -47,10 +50,23 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
     private final Metric<?, N> metric;
 
     public AbstractMetricTestRule(Metric<?, N> metric) {
+        this(metric, null);
+    }
+
+    public AbstractMetricTestRule(Metric<?, N> metric, Class<O> metricOptionsEnum) {
         this.metric = metric;
+        if (metricOptionsEnum != null) {
+            this.optionsDescriptor =
+                    PropertyFactory.conventionalEnumListProperty("metricOptions", metricOptionsEnum)
+                            .desc("Choose a variant of the metric or the standard")
+                            .emptyDefaultValue()
+                            .build();
+            definePropertyDescriptor(optionsDescriptor);
+        } else {
+            this.optionsDescriptor = null;
+        }
 
         definePropertyDescriptor(reportLevelDescriptor);
-        definePropertyDescriptor(optionsDescriptor);
     }
 
     protected abstract N parseReportLevel(String value);
@@ -63,11 +79,14 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
      * Mappings of labels to options for use in the options property.
      *
      * @return A map of labels to options
+     * @deprecated Since 7.21.0. No extra mapping is required anymore. The {@link MetricOption} enum
+     * values are used. See {@link #AbstractMetricTestRule(Metric, Class)} to provide the
+     * enum at construction time.
      */
+    @Deprecated
     protected Map<String, MetricOption> optionMappings() {
         return new HashMap<>();
     }
-
 
     /**
      * Default report level, which is 0.
@@ -83,7 +102,10 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
     @Override
     public void apply(Node target, RuleContext ctx) {
         if (reportOn(target)) {
-            MetricOptions options = MetricOptions.ofOptions(getProperty(optionsDescriptor));
+            MetricOptions options = MetricOptions.emptyOptions();
+            if (optionsDescriptor != null) {
+                options = MetricOptions.ofOptions(getProperty(optionsDescriptor));
+            }
             N reportLevel = parseReportLevel(getProperty(reportLevelDescriptor));
             N result = Metric.compute(metric, target, options);
 
@@ -99,10 +121,15 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
     }
 
 
-    public abstract static class OfInt extends AbstractMetricTestRule<Integer> {
-
+    public abstract static class OfInt extends OfIntWithOptions<NoOptions> {
         protected OfInt(Metric<?, Integer> metric) {
-            super(metric);
+            super(metric, null);
+        }
+    }
+
+    public abstract static class OfIntWithOptions<O extends Enum<O> & MetricOption> extends AbstractMetricTestRule<Integer, O> {
+        protected OfIntWithOptions(Metric<?, Integer> metric, Class<O> metricOptionsEnum) {
+            super(metric, metricOptionsEnum);
         }
 
         @Override
@@ -116,7 +143,7 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
         }
     }
 
-    public abstract static class OfDouble extends AbstractMetricTestRule<Double> {
+    public abstract static class OfDouble extends AbstractMetricTestRule<Double, NoOptions> {
 
         protected OfDouble(Metric<?, Double> metric) {
             super(metric);

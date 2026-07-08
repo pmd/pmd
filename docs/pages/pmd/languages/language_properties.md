@@ -2,7 +2,7 @@
 title: Language configuration
 permalink: pmd_languages_configuration.html
 author: Clément Fournier
-last_updated: March 2025 (7.12.0)
+last_updated: May 2026 (7.25.0)
 tags: [languages]
 keywords: [pmd, cpd, options, command, auxclasspath, language, properties]
 summary: "Summary of language configuration options and properties"
@@ -119,10 +119,10 @@ The Java language can be configured with the following properties:
 ## Apex language properties
 
 - `rootDirectory`: With this property the root directory of the Salesforce metadata, where `sfdx-project.json`
-  resides, is specified. [ApexLink](https://github.com/nawforce/ApexLink) can then load all the classes
-  in the project and figure out, whether a method is used or not.
+  resides, is specified. [Apex Language Server](https://github.com/apex-dev-tools/apex-ls) can then load all the classes
+  in the project and figure out, whether a method is used or not, and retrieve the type hierarchy.
 
-  This property is needed for {% rule apex/design/UnusedMethod %}.
+  This property is needed for {% rule apex/design/UnusedMethod %} and {% rule apex/errorprone/AvoidInterfaceAsMapKey %}.
 
   Environment variable: `PMD_APEX_ROOT_DIRECTORY`
 
@@ -147,3 +147,20 @@ The Java language can be configured with the following properties:
   that is conditionally compiled out. Set this property to empty to disable this.
 
   This property can also be set via the CLI option `--skip-blocks-pattern`.
+
+## Kotlin language properties
+
+- `auxClasspath`: Classpath on which to find compiled classes for the analysed Kotlin sources,
+  including project classes and third-party library JARs.
+
+  This property can also be set via the CLI option `--aux-classpath`.
+
+  Since: 7.26.0  
+  Environment variable: `PMD_KOTLIN_AUX_CLASSPATH`
+
+- `xParseTimeoutSeconds`: Timeout in seconds after which the parsing of a single Kotlin source file
+  is canceled. This avoids parser hangs for complex files.
+
+  Since: 7.25.0  
+  Environment variable: `PMD_KOTLIN_X_PARSE_TIMEOUT_SECONDS`  
+  Default: "30"

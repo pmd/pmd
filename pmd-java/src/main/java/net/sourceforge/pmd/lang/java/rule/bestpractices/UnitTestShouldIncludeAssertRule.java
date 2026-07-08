@@ -8,9 +8,12 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -36,10 +39,13 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
-        boolean usesSoftAssertExtension = usesSoftAssertExtension(method.getEnclosingType());
+        ASTTypeDeclaration enclosingType = method.getEnclosingType();
+        // marks the usage of a SoftAssertionExtension (JUnit 5+) or SoftAssertionRule (JUnit 4)
+        // effects are the same -> no explicit call to .assertAll() necessary
+        boolean usesSoftAssertionEnvironment = usesSoftAssertExtension(enclosingType) || usesSoftAssertRule(enclosingType);
         Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
         Predicate<ASTMethodCall> isAssertCall = TestFrameworksUtil::isProbableAssertCall;
-        if (usesSoftAssertExtension) {
+        if (usesSoftAssertionEnvironment) {
             isAssertCall = isAssertCall.or(TestFrameworksUtil::isSoftAssert);
         }
 
@@ -47,7 +53,7 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
         if (body != null
             && TestFrameworksUtil.isTestMethod(method)
             && !TestFrameworksUtil.isExpectAnnotated(method)
-            && body.descendants(ASTMethodCall.class)
+            && getAllMethodCallsFrom(body)
                 .none(isAssertCall
                         .or(call -> extraAsserts.contains(call.getMethodName())))) {
             asCtx(data).addViolation(method);
@@ -55,11 +61,28 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
         return data;
     }
 
+    private static NodeStream<ASTMethodCall> getAllMethodCallsFrom(ASTBlock body) {
+        return NodeStream.union(body.descendants(ASTMethodCall.class), body.descendants(ASTLambdaExpression.class).descendants(ASTMethodCall.class));
+    }
+
     private boolean usesSoftAssertExtension(ASTTypeDeclaration typeDeclaration) {
+        return hasSoftAssertExtensionOn(typeDeclaration)
+                || (TestFrameworksUtil.isJUnit5NestedClass(typeDeclaration)
+                && usesSoftAssertExtension(typeDeclaration.getEnclosingType()));
+    }
+
+    private boolean hasSoftAssertExtensionOn(ASTTypeDeclaration typeDeclaration) {
         ASTAnnotation extendWith = typeDeclaration.getAnnotation("org.junit.jupiter.api.extension.ExtendWith");
         return extendWith != null && extendWith.getFlatValue("value")
                 .filterIs(ASTClassLiteral.class)
                 .map(ASTClassLiteral::getTypeNode)
                 .any(c -> TypeTestUtil.isA("org.assertj.core.api.junit.jupiter.SoftAssertionsExtension", c));
+    }
+
+    private boolean usesSoftAssertRule(ASTTypeDeclaration typeDeclaration) {
+        return typeDeclaration.getDeclarations(ASTFieldDeclaration.class)
+                .filter(x -> x.isAnnotationPresent("org.junit.Rule"))
+                .map(ASTFieldDeclaration::getTypeNode)
+                .any(type -> TypeTestUtil.isA("org.assertj.core.api.JUnitSoftAssertions", type));
     }
 }

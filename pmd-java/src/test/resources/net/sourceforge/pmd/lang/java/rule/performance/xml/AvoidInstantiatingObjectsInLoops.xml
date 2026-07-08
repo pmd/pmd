@@ -420,7 +420,7 @@ public class AvoidInstantiatingArraysInLoops {
 import java.util.ArrayList;
 import java.util.List;
 
-public class AvoidInsantiatingArraysInLoops {
+public class AvoidInstantiatingArraysInLoops {
     public void test() {
         List<String> data = new ArrayList<>();
 

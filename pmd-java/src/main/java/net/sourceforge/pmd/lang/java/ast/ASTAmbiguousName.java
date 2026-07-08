@@ -90,6 +90,10 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         return wasProcessed;
     }
 
+    void allowReprocessing() {
+        this.wasProcessed = false;
+    }
+
     void setProcessed() {
         this.wasProcessed = true;
     }

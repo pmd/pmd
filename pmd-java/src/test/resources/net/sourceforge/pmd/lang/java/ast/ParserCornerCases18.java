@@ -135,7 +135,7 @@ public class ParserCornerCases18 {
 
     // https://sourceforge.net/p/pmd/bugs/1205/
     public static class X {
-        public void lambaWithIf() {
+        public void lambdaWithIf() {
             Stream.of(1, 2, 3)
             .sorted((a, b) -> {
                 int x = a.hashCode() - b.hashCode();
@@ -145,7 +145,7 @@ public class ParserCornerCases18 {
             })
             .count();
         }
-        public void lambaWithIf2() {
+        public void lambdaWithIf2() {
             Stream.of(1, 2, 3)
             .sorted((Integer a, Integer b) -> {
                 int x = a.hashCode() - b.hashCode();

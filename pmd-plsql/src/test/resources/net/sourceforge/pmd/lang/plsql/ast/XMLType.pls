@@ -6,7 +6,7 @@ DECLARE
    l_xml1 XMLTYPE := XMLTYPE('<Catalog>
    <Book>
       <Author>Steven Feuerstein</Author>
-      <Title>Oracle PLSQL Languaje Pocket Reference</Title>
+      <Title>Oracle PLSQL Language Pocket Reference</Title>
       <Genre>Programming</Genre>
       <Price>18.25</Price>
       <PublishDate>2015-09-04</PublishDate>
@@ -17,7 +17,7 @@ DECLARE
    l_xml2 XMLTYPE := XMLTYPE('<Catalog>
    <Book>
       <Author>Steven Feuerstein</Author>
-      <Title>Oracle PLSQL Languaje Pocket Reference</Title>
+      <Title>Oracle PLSQL Language Pocket Reference</Title>
       <Genre>Programming</Genre>
       <Price>18.25</Price>
       <PublishDate>2015-09-04</PublishDate>
@@ -28,7 +28,7 @@ DECLARE
    l_xml3 XMLTYPE := XMLTYPE('<Catalog>
    <Book>
       <Author>Steven Feuerstein</Author>
-      <Title>Oracle PLSQL Languaje Pocket Reference</Title>
+      <Title>Oracle PLSQL Language Pocket Reference</Title>
       <Genre>Programming</Genre>
       <Price>18.25</Price>
       <PublishDate>2015-09-04</PublishDate>
@@ -41,7 +41,7 @@ DECLARE
    l_xml4 XMLTYPE := XMLTYPE('<Catalog>
    <Book>
       <Author>Steven Feuerstein</Author>
-      <Title>Oracle PLSQL Languaje Pocket Reference</Title>
+      <Title>Oracle PLSQL Language Pocket Reference</Title>
       <Genre>Programming</Genre>
       <Price>18.25</Price>
       <PublishDate>2015-09-04</PublishDate>

@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: August 2025 (7.17.0)
+last_updated: March 2026 (7.23.0)
 ---
 
 ## Overview
@@ -77,7 +77,7 @@ exactly identical.
 
 {% include callout.html 
     type="primary"
-    content="The file collection options are common to PMD and CPD and [described over there](pmd_userdocs_cli_reference.html#file-collection-options)." %}
+    content="<span class='label label-info'>Since 7.14.0</span> The file collection options are common to PMD and CPD and [described over there](pmd_userdocs_cli_reference.html#file-collection-options)." %}
 
 <table>
     <tr>
@@ -113,6 +113,10 @@ exactly identical.
                description="Output format of the analysis report. The available formats
                             are described [here](#available-report-formats)."
                default="text"
+    %}
+    {% include custom/cli_option_row.html options="--report-file,-r"
+               option_arg="path"
+               description="<span class='label label-info'>Since 7.14.0</span> Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output."
     %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-error"
                description="Specifies whether CPD exits with non-zero status if recoverable errors occurred.
@@ -421,7 +425,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 ## Suppression
 
 Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Groovy**, **Javascript**,
-**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Scala**, **Swift** and **C#** by including the keywords `CPD-OFF` and `CPD-ON`.
+**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python**, **Scala**, **Swift**, **C#** and **Apex** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
 public Object someParameterizedFactoryMethod(int x) throws Exception {

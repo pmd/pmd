@@ -98,9 +98,9 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
     /**
      * This method is only relevant for this rule. It will be removed in the future.
      *
-     * @deprecated This method will be removed. Don't use it.
+     * @deprecated Since 7.1.0. This method will be removed. Don't use it.
      */
-    @Deprecated //(since = "7.1.0", forRemoval = true)
+    @Deprecated
     public static boolean mayBeSingular(ModifierOwner varId) {
         return isPrivateNotFinal(varId);
     }

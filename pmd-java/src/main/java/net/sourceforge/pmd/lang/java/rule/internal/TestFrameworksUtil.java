@@ -5,18 +5,27 @@
 package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import static net.sourceforge.pmd.util.CollectionUtil.union;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -24,10 +33,27 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  */
 public final class TestFrameworksUtil {
 
+
+    public static final class EqualMethod {
+        public final int actualPosition;
+        public final int expectedPosition;
+        private final InvocationMatcher matcher;
+
+        private EqualMethod(String pattern, int actualPosition, int expectedPosition) {
+            this.matcher = InvocationMatcher.parse(pattern);
+            this.expectedPosition = expectedPosition;
+            this.actualPosition = actualPosition;
+        }
+
+        public boolean matches(InvocationNode node) {
+            return matcher.matchesCall(node);
+        }
+    }
+
     private static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
     private static final String JUNIT4_TEST_ANNOT = "org.junit.Test";
 
-    private static final String TESTNG_TEST_ANNOT = "org.testng.annotations.Test";
+    private static final String TEST_NG_TEST_ANNOT = "org.testng.annotations.Test";
 
     private static final Set<String> JUNIT5_ALL_TEST_ANNOTS =
         setOf("org.junit.jupiter.api.Test",
@@ -46,22 +72,66 @@ public final class TestFrameworksUtil {
                                                                "junit.framework.Assert",
                                                                "junit.framework.TestCase");
 
+    private static final Set<String> JUNIT5_CONFIGURATION_ANNOTATIONS =
+            setOf(
+                    "org.junit.jupiter.api.BeforeEach",
+                    "org.junit.jupiter.api.BeforeAll",
+                    "org.junit.jupiter.api.AfterEach",
+                    "org.junit.jupiter.api.AfterAll"
+            );
+
+    private static final Set<String> JUNIT4_CONFIGURATION_ANNOTATIONS =
+            setOf(
+                    "org.junit.Before",
+                    "org.junit.BeforeClass",
+                    "org.junit.After",
+                    "org.junit.AfterClass"
+            );
+
+    private static final Set<String> TEST_NG_CONFIGURATION_ANNOTATIONS =
+            setOf(
+                    "org.testng.annotations.AfterClass",
+                    "org.testng.annotations.AfterGroups",
+                    "org.testng.annotations.AfterMethod",
+                    "org.testng.annotations.AfterSuite",
+                    "org.testng.annotations.AfterTest",
+                    "org.testng.annotations.BeforeClass",
+                    "org.testng.annotations.BeforeGroups",
+                    "org.testng.annotations.BeforeMethod",
+                    "org.testng.annotations.BeforeSuite",
+                    "org.testng.annotations.BeforeTest"
+            );
+
     private static final Set<String> TEST_CONFIGURATION_ANNOTATIONS =
-        setOf("org.junit.Before",
-                "org.junit.BeforeClass",
-                "org.junit.After",
-                "org.junit.AfterClass",
-                "org.testng.annotations.AfterClass",
-                "org.testng.annotations.AfterGroups",
-                "org.testng.annotations.AfterMethod",
-                "org.testng.annotations.AfterSuite",
-                "org.testng.annotations.AfterTest",
-                "org.testng.annotations.BeforeClass",
-                "org.testng.annotations.BeforeGroups",
-                "org.testng.annotations.BeforeMethod",
-                "org.testng.annotations.BeforeSuite",
-                "org.testng.annotations.BeforeTest"
-        );
+            union(
+                    JUNIT5_CONFIGURATION_ANNOTATIONS,
+                    JUNIT4_CONFIGURATION_ANNOTATIONS,
+                    TEST_NG_CONFIGURATION_ANNOTATIONS
+            );
+
+    public static final List<EqualMethod> EQUAL_METHODS = Arrays.asList(
+        // JUnit Jupiter: expected, actual, [message]
+        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_)", 1, 0),
+        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_,_)", 1, 0),
+        // JUnit 3 and 4, Spring: [message], expected, actual
+        new EqualMethod("org.junit.Assert#assertEquals(_,_)", 1, 0),
+        new EqualMethod("org.junit.Assert#assertEquals(java.lang.String,_,_)", 2, 1),
+        new EqualMethod("junit.framework.TestCase#assertEquals(_,_)", 1, 0),
+        new EqualMethod("junit.framework.TestCase#assertEquals(java.lang.String,_,_)", 2, 1),
+        new EqualMethod("org.springframework.test.util.AssertionErrors#assertEquals(_,_,_)", 2, 1),
+        // JUnit 3 and 4 delta overloads: [message], expected, actual, delta
+        new EqualMethod("org.junit.Assert#assertEquals(double,double,double)", 1, 0),
+        new EqualMethod("org.junit.Assert#assertEquals(float,float,float)", 1, 0),
+        new EqualMethod("org.junit.Assert#assertEquals(java.lang.String,_,_,_)", 2, 1),
+        new EqualMethod("junit.framework.TestCase#assertEquals(double,double,double)", 1, 0),
+        new EqualMethod("junit.framework.TestCase#assertEquals(float,float,float)", 1, 0),
+        new EqualMethod("junit.framework.TestCase#assertEquals(java.lang.String,_,_,_)", 2, 1),
+        // TestNG: actual, expected, [message]
+        new EqualMethod("org.testng.Assert#assertEquals(_*)", 0, 1),
+        // JSONAssert: [message], expected, actual, compare mode
+        new EqualMethod("org.skyscreamer.jsonassert.JSONAssert#assertEquals(_,_,_)", 1, 0),
+        new EqualMethod("org.skyscreamer.jsonassert.JSONAssert#assertEquals(_,_,_,_)", 2, 1)
+    );
 
     private TestFrameworksUtil() {
         // utility class
@@ -99,20 +169,32 @@ public final class TestFrameworksUtil {
     }
 
     private static boolean isTestNgMethod(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(TESTNG_TEST_ANNOT);
+        return isTestNgMethod(method.getSymbol());
+    }
+
+    private static boolean isTestNgMethod(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(
+                it -> TEST_NG_TEST_ANNOT.equals(it.getBinaryName())
+        );
     }
 
     public static boolean isJUnit4Method(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(JUNIT4_TEST_ANNOT)
-                && method.getVisibility() == Visibility.V_PUBLIC;
+        return isJUnit4Method(method.getSymbol());
+    }
+
+    private static boolean isJUnit4Method(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(
+                it -> JUNIT4_TEST_ANNOT.equals(it.getBinaryName())
+        );
     }
 
     public static boolean isJUnit5Method(ASTMethodDeclaration method) {
-        return method.getDeclaredAnnotations().any(
-            it -> {
-                String canonicalName = it.getTypeMirror().getSymbol().getCanonicalName();
-                return JUNIT5_ALL_TEST_ANNOTS.contains(canonicalName);
-            }
+        return isJUnit5Method(method.getSymbol());
+    }
+
+    private static boolean isJUnit5Method(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(
+                it -> JUNIT5_ALL_TEST_ANNOTS.contains(it.getBinaryName())
         );
     }
 
@@ -123,6 +205,26 @@ public final class TestFrameworksUtil {
 
     public static boolean isJunit4TestAnnotation(ASTAnnotation annot) {
         return TypeTestUtil.isA(JUNIT4_TEST_ANNOT, annot);
+    }
+
+    public static boolean isJunit4ConfigAnnotation(ASTAnnotation annot) {
+        return JUNIT4_CONFIGURATION_ANNOTATIONS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
+    }
+
+    public static boolean isJunit5TestAnnotation(ASTAnnotation annot) {
+        return JUNIT5_ALL_TEST_ANNOTS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
+    }
+
+    public static boolean isJunit5ConfigAnnotation(ASTAnnotation annot) {
+        return JUNIT5_CONFIGURATION_ANNOTATIONS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
+    }
+
+    public static boolean isTestNGTestAnnotation(ASTAnnotation annot) {
+        return TypeTestUtil.isA(TEST_NG_TEST_ANNOT, annot);
+    }
+
+    public static boolean isTestNGConfigAnnotation(ASTAnnotation annot) {
+        return TEST_NG_CONFIGURATION_ANNOTATIONS.stream().anyMatch(name -> TypeTestUtil.isA(name, annot));
     }
 
     /**
@@ -145,16 +247,75 @@ public final class TestFrameworksUtil {
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
     }
 
-    public static boolean isTestClass(ASTTypeDeclaration node) {
-        return node.isRegularClass() && !node.isAbstract() && !node.isNested()
-            && (isJUnit3Class(node)
-            || node.getDeclarations(ASTMethodDeclaration.class)
-                   .any(TestFrameworksUtil::isTestMethod));
+    public static boolean hasJUnit3Tests(ASTTypeDeclaration node) {
+        return node.getDeclarations(ASTMethodDeclaration.class).any(TestFrameworksUtil::isJunit3MethodSignature);
     }
 
+    public static boolean isTestClass(ASTClassDeclaration node) {
+        return isJUnit3Class(node) || isJUnit4Class(node) || isJUnit5Class(node) || isTestNGClass(node);
+    }
+
+    public static boolean isJUnit4Class(ASTClassDeclaration node) {
+        JClassType typeMirror = node.getTypeMirror();
+
+        return isConcreteToplevelClass(typeMirror) && hasJUnit4Tests(typeMirror);
+    }
+
+    public static boolean hasJUnit4Tests(ASTTypeDeclaration node) {
+        return hasJUnit4Tests(node.getTypeMirror());
+    }
+
+    private static boolean hasJUnit4Tests(JClassType typeMirror) {
+        return typeMirror.streamMethods(TestFrameworksUtil::isJUnit4Method)
+                .findAny().isPresent();
+    }
+
+    public static boolean isJUnit5Class(ASTClassDeclaration node) {
+        JClassType typeMirror = node.getTypeMirror();
+
+        return isConcreteToplevelClass(typeMirror) && hasJUnit5Tests(typeMirror);
+    }
+
+    public static boolean hasJUnit5Tests(ASTTypeDeclaration node) {
+        return hasJUnit5Tests(node.getTypeMirror());
+    }
+
+    private static boolean hasJUnit5Tests(JClassType typeMirror) {
+        return typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
+                        .findAny().isPresent()
+                || typeMirror.streamClasses()
+                        .filter(TestFrameworksUtil::isJUnit5NestedClass)
+                        .findAny().isPresent();
+    }
+
+    public static boolean isTestNGClass(ASTClassDeclaration node) {
+        JClassType typeMirror = node.getTypeMirror();
+
+        return isConcreteToplevelClass(typeMirror) && hasTestNGTests(typeMirror);
+    }
+
+    public static boolean hasTestNGTests(ASTClassDeclaration node) {
+        return hasTestNGTests(node.getTypeMirror());
+    }
+
+    private static boolean hasTestNGTests(JClassType typeMirror) {
+        return typeMirror.streamMethods(TestFrameworksUtil::isTestNgMethod)
+                .findAny().isPresent();
+    }
+
+    private static boolean isConcreteToplevelClass(JClassType typeMirror) {
+        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null;
+    }
 
     public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {
-        return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
+        return isJUnit5NestedClass(innerClassDecl.getTypeMirror());
+    }
+
+    private static boolean isJUnit5NestedClass(JTypeMirror innerClassMirror) {
+        TypeSystem ts = innerClassMirror.getTypeSystem();
+
+        return innerClassMirror.getSymbol().getDeclaredAnnotations().stream().anyMatch(
+                it -> TypeTestUtil.isA(JUNIT5_NESTED, ts.typeOf(it.getAnnotationSymbol(), false)));
     }
 
     public static boolean isExpectExceptionCall(ASTMethodCall call) {

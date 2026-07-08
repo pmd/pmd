@@ -1,7 +1,7 @@
 ---
 title: Writing documentation
 tags: [devdocs]
-last_updated: January 2025 (7.10.0)
+last_updated: January 2026 (7.21.0)
 permalink: pmd_devdocs_writing_documentation.html
 keywords: documentation, jekyll, markdown
 author: Andreas Dangel <andreas.dangel@adangel.org>
@@ -150,7 +150,7 @@ You can prevent this with "toc: false".
 
 You can add **keywords**, that will be used for the on-site search: "keywords: documentation, jekyll, markdown"
 
-It's useful to maintain a **last_update** field. This will be added at the bottom of the
+It's useful to maintain a **last_updated** field. This will be added at the bottom of the
 page.
 
 A **summary** can also be provided. It will be added in a box before the content.
@@ -162,7 +162,7 @@ For a more exhaustive list, see [Pages - Frontmatter](http://idratherbewriting.c
 
 See [Alerts](http://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html).
 
-For example, a info-box can be created like this:
+For example, an info-box can be created like this:
 
     {%raw%}{% include note.html content="This is a note." %}{%endraw%}
 

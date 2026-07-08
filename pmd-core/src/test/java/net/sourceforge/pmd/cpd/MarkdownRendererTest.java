@@ -5,23 +5,34 @@
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
 
 class MarkdownRendererTest {
 
     @Test
     void testMultipleDuplicates() throws IOException {
+        LanguageVersion java25 = mock();
+        Language java = mock();
+        when(java25.getLanguage()).thenReturn(java);
+        when(java.getId()).thenReturn("java");
+
         CPDReportRenderer renderer = new MarkdownRenderer();
         CpdTestUtils.CpdReportBuilder builder = new CpdTestUtils.CpdReportBuilder();
 
         FileId foo = CpdTestUtils.FOO_FILE_ID;
         FileId bar = CpdTestUtils.BAR_FILE_ID;
+
+        builder.setFileContent(foo, java25).setFileContent(bar, java25);
 
         int lineCount1 = 6;
         Mark mark1 = builder.createMark("public", foo, 48, lineCount1);

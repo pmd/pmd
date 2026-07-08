@@ -1,7 +1,7 @@
 ---
 title: HTML support
 permalink: pmd_languages_html.html
-last_updated: February 2024 (7.0.0)
+last_updated: September 2023 (7.0.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "HTML-specific features and guidance"
 ---

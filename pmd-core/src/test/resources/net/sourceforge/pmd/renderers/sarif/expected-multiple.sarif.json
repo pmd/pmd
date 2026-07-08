@@ -17,6 +17,7 @@
               "fullDescription": {
                 "text": "Description with Unicode Character U+2013: – ."
               },
+              "helpUri": "https://example.org/rules/foo",
               "help": {
                 "text": "Description with Unicode Character U+2013: – ."
               },
@@ -39,6 +40,7 @@
               "fullDescription": {
                 "text": "desc"
               },
+              "helpUri": "https://example.org/rules/boo",
               "help": {
                 "text": "desc"
               },

@@ -45,7 +45,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
         if (node.getBody() != null
             && !node.hasModifiers(JModifier.DEFAULT)
             && !JavaRuleUtil.isSerializationReadObject(node)
-            && !node.isOverridden()) {
+            && !node.isOverride()) {
             check(node, data);
         }
         return data;

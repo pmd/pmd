@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.21.0-SNAPSHOT</version>
+        <version>7.27.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -29,7 +29,7 @@
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
-                <version>9.0.2</version>
+                <version>10.0.0</version>
                 <executions>
                     <execution>
                         <id>get-the-git-infos</id>
@@ -45,6 +45,7 @@
                         <includeOnlyProperty>^git.commit.id$</includeOnlyProperty>
                         <includeOnlyProperty>^git.commit.time$</includeOnlyProperty>
                     </includeOnlyProperties>
+                    <useNativeGit>true</useNativeGit>  <!-- for worktree support. See https://github.com/git-commit-id/git-commit-id-maven-plugin/issues/215 -->
                 </configuration>
             </plugin>
             <plugin>

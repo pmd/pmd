@@ -4020,4 +4020,58 @@ class Lock {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation (TODO)</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4-4,7-7,10-10</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int a) {
+        int x =
+            0 // <--violation: line 4
+            ;
+        x =
+            1 // <--violation: line 7
+            ;
+        int c;
+        c = switch // <--violation: line 10
+        (a) {
+            case 0 -> 0;
+            default -> 1;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Regression with UnusedAssignment #4960</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class TreeNode {
+    private Map<String, TreeNode> childrenMap = new HashMap<>();
+
+    public Map<String, TreeNode> getChildrenMap() {
+        return childrenMap;
+    }
+
+    public List<TreeNode> getChildren() {
+        return new ArrayList<>(childrenMap.values());
+    }
+
+    public void collapsePackage() {
+        while (getChildren().size() == 1) {
+            TreeNode singleChild = getChildrenMap().values().iterator().next();
+            childrenMap = singleChild.getChildrenMap();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -2,7 +2,7 @@
 title: Support lifecycle
 permalink: pmd_about_support_lifecycle.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: June 2024 (PMD 7.3.0)
+last_updated: June 2024 (7.3.0)
 ---
 
 {% capture latest_release %}{{site.pmd.version}} ({{site.pmd.date | date: "%Y-%m-%d" }}){% endcapture %}

@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.stream.Collectors;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * A bundle of properties used by languages (see {@link Language#newPropertyBundle()}).
@@ -32,7 +33,7 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
                          .build();
     public static final String LANGUAGE_VERSION = "version";
 
-    private final PropertyDescriptor<LanguageVersion> languageVersion;
+    private final PropertyDescriptor<String> languageVersion;
     private final Language language;
 
     /**
@@ -40,24 +41,25 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
      */
     public LanguagePropertyBundle(@NonNull Language language) {
         this.language = language;
+        languageVersion = PropertyFactory.stringProperty(LANGUAGE_VERSION)
+                .desc("Language version to use for this language. See the --use-version CLI switch as well.")
+                .defaultValue(language.getDefaultVersion().getVersion())
+                .build();
 
         definePropertyDescriptor(SUPPRESS_MARKER);
-
-        languageVersion =
-            PropertyFactory.enumProperty(
-                               LANGUAGE_VERSION,
-                               CollectionUtil.associateBy(language.getVersions(), LanguageVersion::getVersion)
-                           )
-                           .desc("Language version to use for this language. See the --use-version CLI switch as well.")
-
-                           .defaultValue(language.getDefaultVersion())
-                           .build();
-
         definePropertyDescriptor(languageVersion);
     }
 
     public void setLanguageVersion(String string) {
-        setProperty(languageVersion, languageVersion.serializer().fromString(string));
+        LanguageVersion version = language.getVersion(string);
+        if (version == null) {
+            throw new IllegalArgumentException("'" + string + "' should be one of "
+                    + language.getVersions().stream()
+                        .map(LanguageVersion::getVersion)
+                        .map(s -> "'" + s + "'")
+                        .collect(Collectors.joining(", ")));
+        }
+        setProperty(languageVersion, version.getVersion());
     }
 
     @Override
@@ -75,7 +77,7 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
     }
 
     public LanguageVersion getLanguageVersion() {
-        return getProperty(languageVersion);
+        return language.getVersion(getProperty(languageVersion));
     }
 
     public String getSuppressMarker() {

@@ -19,6 +19,8 @@ Rules that flag issues when dealing with multiple threads of execution.
 Method-level synchronization will pin virtual threads and can cause performance problems. Additionally, it can cause
 problems when new code is added to the method.  Block-level ReentrantLock helps to ensure that only the code that
 needs mutual exclusion will be locked.
+
+See also {% rule AvoidSynchronizedStatement %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -40,14 +42,16 @@ public class Foo {
         // more code, that doesn't need synchronization
         // ...
     }
+
     // Prefer this:
     Lock instanceLock = new ReentrantLock();
 
     void bar() {
         // code, that doesn't need synchronization
         // ...
+        instanceLock.lock();
         try {
-            instanceLock.lock();  // or instanceLock.tryLock(long time, TimeUnit unit)
+            // code, that requires synchronization
             if (!sharedData.has("bar")) {
                 sharedData.add("bar");
             }
@@ -58,6 +62,30 @@ public class Foo {
         // ...
     }
 
+    // Or prefer this with tryLock:
+    Lock instanceLock = new ReentrantLock();
+
+    void bar() {
+        // code, that doesn't need synchronization
+        // ...
+        if (instanceLock.tryLock(10, TimeUnit.SECONDS)) {
+            try {
+                // code, that requires synchronization
+                if (!sharedData.has("bar")) {
+                    sharedData.add("bar");
+                }
+            } finally {
+                instanceLock.unlock();
+            }
+        } else {
+            // unable to acquire the lock
+        }
+        // more code, that doesn't need synchronization
+        // ...
+    }
+]]>
+        </example>
+        <example><![CDATA[
     // Try to avoid this for static methods:
     static synchronized void fooStatic() {
     }
@@ -68,8 +96,8 @@ public class Foo {
     static void barStatic() {
         // code, that doesn't need synchronization
         // ...
+        CLASS_LOCK.lock();
         try {
-            CLASS_LOCK.lock();
             // code, that requires synchronization
         } finally {
             CLASS_LOCK.unlock();
@@ -89,7 +117,20 @@ public class Foo {
         class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidsynchronizedstatement">
     <description>
-      Synchronization will pin virtual threads and can cause performance problems.
+      Reports any synchronization statements.
+
+      Virtual threads (introduced by Java 21 via [JEP 444](https://openjdk.org/jeps/444)) are pinned to their
+      carrier thread when executing code protected by `synchronized` (either synchronized blocks or synchronized
+      methods). When the virtual threads are blocked by I/O and need to wait, the carrier thread stays unavailable
+      for other virtual threads. If this happens with all carrier threads, no new virtual threads can be
+      executed and this can cause performance problems.
+
+      With Java 24 ([JEP 491](https://openjdk.org/jeps/491)) virtual threads can release their carrier thread,
+      when they are blocked by I/O inside a synchronized block. The situation, that all carrier threads are
+      exhausted, should be much less likely.
+
+      Note: Thread pinning still occurs, if the virtual thread is calling native methods inside a synchronized
+      block.
     </description>
     <priority>3</priority>
     <properties>
@@ -108,16 +149,32 @@ public class Foo {
         }
         // more code that doesn't need mutual exclusion
     }
+
     // Prefer this:
     Lock instanceLock = new ReentrantLock();
-
     void foo() {
         // code that doesn't need mutual exclusion
+        instanceLock.lock();
         try {
-            instanceLock.lock();  // or instanceLock.tryLock(long time, TimeUnit unit)
             // code that requires mutual exclusion
         } finally {
             instanceLock.unlock();
+        }
+        // more code that doesn't need mutual exclusion
+    }
+
+    // Or prefer this with tryLock:
+    Lock instanceLock = new ReentrantLock();
+    void foo() {
+        // code that doesn't need mutual exclusion
+        if (instanceLock.tryLock(10, TimeUnit.SECONDS)) {
+            try {
+                // code that requires mutual exclusion
+            } finally {
+                instanceLock.unlock();
+            }
+        } else {
+            // unable to acquire the lock
         }
         // more code that doesn't need mutual exclusion
     }
@@ -212,6 +269,8 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
                                               ]
                            ]
 )]
+(: allow Thread.onSpinWait() :)
+[not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#onSpinWait()')]])]
 (: exclude duplicated types on the same line :)
  [not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
  or
@@ -358,6 +417,50 @@ public static Foo getFoo() {
         </example>
     </rule>
 
+    <rule name="OverridingThreadRun"
+          language="java"
+          since="7.24.0"
+          message="Don''t override Thread.run() method, use Runnable instead"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#overridingthreadrun">
+        <description>
+            Overriding `Thread::run` method is not recommended. Instead, implement `Runnable`
+            and pass an instance to the thread constructor. Using `Runnable` to represent a task
+            makes it more reusable and allows your class to extend another class.
+            When you use lambdas, this also allows you to write more concise code,
+            e.g. `new Thread(() -> System.out.println("Hello!")).start();`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//(AnonymousClassDeclaration|ClassDeclaration)[ pmd-java:typeIs('java.lang.Thread') ]/ClassBody
+    /MethodDeclaration[@Name="run"][FormalParameters/@Size=0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class GreetingThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Hello!");
+    }
+}
+new GreetingThread().start(); // not recommended, use Runnable instead
+
+public class GreetingRunnable implements Runnable {
+    @Override
+    public void run() {
+        System.out.println("Hello!");
+    }
+}
+new Thread(new GreetingRunnable()).start(); // preferred
+]]>
+        </example>
+    </rule>
     <rule name="UnsynchronizedStaticFormatter"
           language="java"
           since="6.11.0"

@@ -29,6 +29,9 @@ public class SemanticException extends FileAnalysisException {
         super(message, cause);
     }
 
+    /**
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+     */
     @InternalApi
     public void setReported() {
         reported = true;

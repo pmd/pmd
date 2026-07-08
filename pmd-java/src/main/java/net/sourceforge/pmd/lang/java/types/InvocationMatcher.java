@@ -34,8 +34,8 @@ import net.sourceforge.pmd.util.StringUtil;
  *     _#toString()                  // match calls to toString on any receiver
  *     _#_()                         // match all calls to a method with no parameters
  *     _#toString(_*)                // match calls to a "toString" method with any number of parameters
- *     _#eq(_, _)                    // match calls to an "eq" method that has 2 parameters of unspecified type
- *     _#eq(java.lang.String, _)     // like the previous, but the first parameter must be String
+ *     _#eq(_,_)                     // match calls to an "eq" method that has 2 parameters of unspecified type
+ *     _#eq(java.lang.String,_)      // like the previous, but the first parameter must be String
  *     java.util.ArrayList#new(int)  // match constructor calls of this overload of the ArrayList constructor
  * </pre>
  *
@@ -95,12 +95,17 @@ public final class InvocationMatcher {
             return false;
         }
         if (expectedName != null && !node.getMethodName().equals(expectedName)
-            || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
+                || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
             return false;
         }
         OverloadSelectionResult info = node.getOverloadSelectionInfo();
-        return !info.isFailed() && matchQualifier(node)
-                && argsMatchOverload(info.getMethodType());
+        return matchQualifier(node)
+            && (info.isFailed() ? argsMatchByDefault(node) : argsMatchOverload(info.getMethodType()));
+    }
+
+    private boolean argsMatchByDefault(InvocationNode node) {
+        int count = ASTList.sizeOrZero(node.getArguments());
+        return argMatchers == null || argMatchers.isEmpty() && count == 0;
     }
 
     private boolean matchQualifier(InvocationNode node) {

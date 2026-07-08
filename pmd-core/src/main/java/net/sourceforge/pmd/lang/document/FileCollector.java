@@ -73,8 +73,8 @@ public final class FileCollector implements AutoCloseable {
     }
 
     /**
-     * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
-     * creating a collector yourself.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+     * Please use {@link PmdAnalysis#files()} instead of creating a collector yourself.
      */
     static FileCollector newCollector(LanguageVersionDiscoverer discoverer, PmdReporter reporter) {
         return new FileCollector(discoverer, reporter, null);
@@ -83,8 +83,8 @@ public final class FileCollector implements AutoCloseable {
     /**
      * Returns a new collector using the same configuration except for the logger.
      *
-     * @apiNote Internal API - please use {@link PmdAnalysis#files()} instead of
-     * creating a collector yourself.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+     * Please use {@link PmdAnalysis#files()} instead of creating a collector yourself.
      */
     FileCollector newCollector(PmdReporter logger) {
         FileCollector fileCollector = new FileCollector(discoverer, logger, null);

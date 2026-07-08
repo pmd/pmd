@@ -4,7 +4,7 @@ short_title: Configuring rules
 keywords: [property, properties, message, priority]
 tags: [userdocs, getting_started]
 summary: "Learn how to configure your rules directly from the ruleset XML."
-last_updated: February 2024 (7.0.0)
+last_updated: September 2025 (7.18.0)
 permalink: pmd_userdocs_configuring_rules.html
 author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---

@@ -1,7 +1,7 @@
 ---
 title: Swift support
 permalink: pmd_languages_swift.html
-last_updated: September 2023 (7.0.0)
+last_updated: December 2023 (7.0.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Swift-specific features and guidance"
 ---

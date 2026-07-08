@@ -2,7 +2,7 @@
 title:  Writing XPath rules
 tags: [extending, userdocs]
 summary: "This page describes XPath rule support in more details"
-last_updated: December 2023 (7.0.0)
+last_updated: April 2024 (7.2.0)
 permalink: pmd_userdocs_extending_writing_xpath_rules.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -63,7 +63,7 @@ to XDM types.
 
 The same `conv` function is used to translate rule property values to XDM values.
 
-Additionaly, PMD's own `net.sourceforge.pmd.lang.document.Chars` is also translated to a `xs:string`
+Additionally, PMD's own `net.sourceforge.pmd.lang.document.Chars` is also translated to a `xs:string`
 
 
 ## Rule properties

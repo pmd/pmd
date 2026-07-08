@@ -309,7 +309,7 @@ extension BTree {
     ///   and the child slot from which this step is ascending. The closure may set outside references to the
     ///   node it gets, and may modify the subtree as it likes; however, it shouldn't modify anything in the tree outside
     ///   the node's subtree.
-    internal mutating func edit(@noescape descend descend: Node -> Int?, @noescape ascend: (Node, Int) -> Void) {
+    internal mutating func edit(@noescape descend descend: (Node) -> Int?, @noescape ascend: (Node, Int) -> Void) {
         makeUnique()
         root.edit(descend: descend, ascend: ascend)
     }
@@ -822,7 +822,8 @@ extension BTree {
     /// - Parameter order: The desired b-tree order. If not specified (recommended), the default order is used.
     /// - Complexity: O(count * log(`count`))
     /// - SeeAlso: `init(sortedElements:order:fillFactor:)` for a (faster) variant that can be used if the sequence is already sorted.
-    public init<S: SequenceType where S.Generator.Element == Element>(_ elements: S, dropDuplicates: Bool = false, order: Int = Node.defaultOrder) {
+    public init<S: SequenceType>(_ elements: S, dropDuplicates: Bool = false, order: Int = Node.defaultOrder)
+        where S.Generator.Element == Element {
         self.init(Node(order: order))
         withCursorAtEnd { cursor in
             for element in elements {
@@ -851,7 +852,8 @@ extension BTree {
     ///      If not specified, a value of 1.0 is used, i.e., nodes will be loaded with as many elements as possible.
     /// - Complexity: O(count)
     /// - SeeAlso: `init(elements:order:fillFactor:)` for a (slower) unsorted variant.
-    public init<S: SequenceType where S.Generator.Element == Element>(sortedElements elements: S, dropDuplicates: Bool = false, order: Int = Node.defaultOrder, fillFactor: Double = 1) {
+    public init<S: SequenceType>(sortedElements elements: S, dropDuplicates: Bool = false, order: Int = Node.defaultOrder, fillFactor: Double = 1)
+        where S.Generator.Element == Element {
         var generator = elements.generate()
         self.init(order: order, fillFactor: fillFactor, dropDuplicates: dropDuplicates, next: { generator.next() })
     }
@@ -906,7 +908,7 @@ extension BTree {
           without "escaping" single quotes.
 
           The indentation of the closing quotes
-               below deside where the text line
+               below decide where the text line
           begins.
 
           You can even dynamically add values

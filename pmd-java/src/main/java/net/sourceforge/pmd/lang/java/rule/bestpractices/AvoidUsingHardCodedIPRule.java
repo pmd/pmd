@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,25 +20,25 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
 
     private enum AddressKinds {
-        IPV4("IPv4"),
-        IPV6("IPv6"),
-        IPV4_MAPPED_IPV6("IPv4 mapped IPv6");
-
-        private final String label;
-
-        AddressKinds(String label) {
-            this.label = label;
-        }
+        IPV4,
+        IPV6,
+        IPV4_MAPPED_IPV6
     }
 
+    private static final Map<String, AddressKinds> DEPRECATED_ADDRESS_KINDS = CollectionUtil.mapOf(
+            "IPv4", AddressKinds.IPV4,
+            "IPv6", AddressKinds.IPV6,
+            "IPv4 mapped IPv6", AddressKinds.IPV4_MAPPED_IPV6
+    );
 
     private static final PropertyDescriptor<List<AddressKinds>> CHECK_ADDRESS_TYPES_DESCRIPTOR =
-        PropertyFactory.enumListProperty("checkAddressTypes", AddressKinds.class, k -> k.label)
+        PropertyFactory.enumListPropertyTransitional("checkAddressTypes", AddressKinds.class, DEPRECATED_ADDRESS_KINDS)
                        .desc("Check for IP address types.")
                        .defaultValue(asList(AddressKinds.values()))
                        .build();

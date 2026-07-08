@@ -9,6 +9,39 @@
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
     </description>
 
+    <rule name="AssertEqualsArgumentOrder"
+          language="java"
+          since="7.26.0"
+          message="This assertEquals() call has mixed up expected and actual arguments"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.AssertEqualsArgumentOrderRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assertequalsargumentorder">
+        <description>
+            Unit testing frameworks provide the `assertEquals` method that takes expected and actual
+            value of an object as arguments.
+
+            Passing a constant as the actual value and a computed value as the expected value
+            indicates that the actual and expected values were swapped, leading to confusing
+            error messages should the test fail.
+
+            This rule currently supports assertions from JUnit Jupiter, JUnit versions 4 and 3,
+            TestNG, Spring assertions and the JSONAssert library.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        assertEquals(next("foo"), "bar"); // wrong argument order
+        assertEquals("bar", next("foo")); // good
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AssignmentInOperand"
           language="java"
           since="1.03"
@@ -554,7 +587,7 @@ Each caught exception type should be handled in its own catch clause.
 //CatchParameter
     /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
         /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
-            /following-sibling::TypeExpression/*
+            /following-sibling::*[self::TypeExpression or self::PatternExpression]//ClassType[1]
 ]]>
                 </value>
             </property>
@@ -806,7 +839,11 @@ public String bar(String string) {
           message="super should be called at the start of the method"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#callsuperfirst">
-        <description>Super should be called at the start of the method</description>
+        <description>
+Super should be called at the start of the method
+
+This rule is intended for Android development. Don't use for general purpose java development!
+        </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
@@ -851,6 +888,8 @@ public class DummyActivity extends Activity {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#callsuperlast">
         <description>
 Super should be called at the end of the method
+
+This rule is intended for Android development. Don't use for general purpose java development!
         </description>
         <priority>3</priority>
         <properties>
@@ -1084,6 +1123,12 @@ the types, if the type resolution / auxclasspath is not correctly setup.
 Note: Since PMD 6.16.0 the default value for the property `types` contains `java.lang.AutoCloseable` and detects
 now cases where the standard `java.io.*Stream` classes are involved. In order to restore the old behaviour,
 just remove "AutoCloseable" from the types.
+
+The property `allowedResourceMethodPatterns` can be used to specify method invocation patterns that return
+resources which are managed externally and don't need to be closed by the caller. This is useful for
+servlet-related streams like `HttpServletRequest.getReader()` or `HttpServletResponse.getWriter()`,
+which are managed by the servlet container. The patterns use InvocationMatcher syntax
+(e.g., `javax.servlet.ServletRequest#getReader()`).
         </description>
         <priority>3</priority>
         <example>
@@ -1556,6 +1601,7 @@ public class Foo {
     <rule name="DontImportSun"
           language="java"
           since="1.5"
+          deprecated="true"
           message="Avoid importing anything from the 'sun.*' packages"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dontimportsun">
@@ -1566,6 +1612,9 @@ and are likely to change.
 If you find yourself having to depend on Sun APIs, confine this dependency to as
 small a scope as possible, for instance by writing a stable wrapper class around
 the unstable API. You can then suppress this rule in the implementation of the wrapper.
+
+**Deprecated:** This rule is deprecated since PMD 7.21.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UnsupportedJdkApiUsage %}.
         </description>
         <priority>4</priority>
         <properties>
@@ -2047,6 +2096,43 @@ public class JumbledIncrementerRule1 {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="JUnitJupiterTestNoPrivateModifier"
+          language="java"
+          since="7.25.0"
+          message="JUnit tests cannot be private"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnitJupiterTestNoPrivateModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junitjupitertestnoprivatemodifier">
+        <description><![CDATA[
+JUnit Jupiter tests cannot be private. Otherwise, they won't be found by the framework:
+
+> Test classes, test methods, and lifecycle methods are not required to be `public`, but they must not be `private`.
+
+— [JUnit Documentation](https://docs.junit.org/6.0.3/writing-tests/test-classes-and-methods.html)
+        ]]></description>
+        <priority>3</priority>
+        <example>
+import org.junit.jupiter.api.Test;
+
+//bad
+class MyTests {
+    @Test
+    private void testFoo() { }
+}
+
+//bad
+private class MyTests {
+    @Test
+    void testFoo() { }
+}
+
+//good
+class MyTests {
+    @Test
+    void testFoo() { }
+}
         </example>
     </rule>
 
@@ -3234,6 +3320,14 @@ Do not use "if" statements whose conditionals are always true or always false.
                 <value>
  <![CDATA[
 //IfStatement[BooleanLiteral[1]]
+union
+//IfStatement/(VariableAccess|UnaryExpression[@Operator = '!']/VariableAccess)/self::VariableAccess[@CompileTimeConstant = false()]
+[@Name = ancestor::IfStatement
+         /preceding-sibling::LocalVariableDeclaration[PrimitiveType[@Kind = "boolean"]]
+         /VariableDeclarator[@Initializer = true()][BooleanLiteral]
+         /@Name]
+(: var is only initialized with a literal and used only with the if statement, there is no other var access :)
+[let $name := @Name return count(ancestor::Block//VariableAccess[@Name = $name]) = 1]
 ]]>
                 </value>
             </property>
@@ -3268,17 +3362,16 @@ an error, use the `fail()` method and provide an indication message of why it di
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration
-    [pmd-java:typeIs('junit.framework.TestCase')
-     or .//Annotation[pmd-java:typeIs('org.junit.Test')
-                   or pmd-java:typeIs('org.junit.jupiter.api.Test')
-                   or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
-                   or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
-                   or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
-                   or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
-     ]
-    ]
-    //MethodCall[@MethodName = ('assertTrue', 'assertFalse')]
+//MethodCall[pmd-java:matchesSig('junit.framework.TestCase#assertFalse(_*)')
+    or pmd-java:matchesSig('junit.framework.TestCase#assertTrue(_*)')
+    or pmd-java:matchesSig('org.junit.Assert#assertFalse(_*)')
+    or pmd-java:matchesSig('org.junit.Assert#assertTrue(_*)')
+    or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertFalse(_*)')
+    or pmd-java:matchesSig('org.junit.jupiter.api.Assertions#assertTrue(_*)')
+    or pmd-java:matchesSig('org.testng.Assert#assertFalse(_*)')
+    or pmd-java:matchesSig('org.testng.Assert#assertTrue(_*)')
+    or pmd-java:matchesSig('org.springframework.test.util.AssertionErrors#assertFalse(_*)')
+    or pmd-java:matchesSig('org.springframework.test.util.AssertionErrors#assertTrue(_*)')]
         [ArgumentList
             [
                 BooleanLiteral or
@@ -3355,6 +3448,51 @@ public String convert(int x) {
     String foo = new Integer(x).toString(); // this wastes an object
 
     return Integer.toString(x);             // preferred approach
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnsupportedJdkApiUsage"
+          language="java"
+          since="7.21.0"
+          message="Do not use unsupported JDK API"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unsupportedjdkapiusage">
+        <description>
+            Avoid importing classes or using APIs from the `sun.*` or `jdk.internal.*` packages, including `sun.misc.Unsafe` or
+            `jdk.internal.misc.Unsafe`. These packages are neither portable nor stable and may change or be removed in future
+            versions of the JDK. As the name implies, the `Unsafe` class methods are particularly dangerous and have been
+            superseded by safer alternatives, such as the VarHandle API (introduced in JDK 9) and the
+            Foreign Function &amp; Memory API (introduced in JDK 22). Refer to [JEP 471](https://openjdk.org/jeps/471)
+            for safer alternatives with examples.
+
+            If you must depend on Sun APIs, confine their usage to a minimal, isolated scope, such as within a stable
+            wrapper class. You may suppress this rule in the implementation of such a wrapper, but it’s strongly
+            recommended to migrate to official APIs wherever possible.
+
+            The use of such unsupported APIs will also be flagged by the Java compiler, as they are intended
+            strictly for internal purposes. This PMD rule has been added to facilitate independent code reviews
+            and to catch instances where compiler warnings may have been overlooked.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //ImportDeclaration[starts-with(@ImportedName, 'sun.') or starts-with(@ImportedName, 'jdk.internal.')]
+                    |
+                    //MethodCall[pmd-java:matchesSig('sun.misc.Unsafe#_(_*)') or pmd-java:matchesSig('jdk.internal.misc.Unsafe#_(_*)')]
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public final class MemoryWiper {
+  public static void main(final String[] args) throws NoSuchFieldException, IllegalAccessException {
+    for (final String s : args) {
+      sun.misc.Unsafe.getUnsafe().putAddress(Long.parseLong(s), 0L); // bad
+    }
+  }
 }
 ]]>
         </example>
@@ -3639,4 +3777,32 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="WrongTestAnnotation"
+          language="java"
+          since="7.26.0"
+          message="The annotation {0} is from {1}, your codebase is using {2}."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.WrongTestAnnotationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#wrongtestannotation">
+        <description>
+            When you use the @Test annotation from the wrong framework, your tests won't be executed.
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+// Example 1: GOOD if using JUnit Jupiter, BAD if using JUnit4/TestNG
+import org.junit.jupiter.api.Test;
+public class TestClass {
+    @Test
+    public void myTest() { }
+}
+
+// Example 2: GOOD if using TestNG, BAD if using JUnit
+import org.testng.annotations.Test;
+public class TestClass {
+    @Test
+    public void myTest() { }
+}
+]]>
+        </example>
+    </rule>
 </ruleset>

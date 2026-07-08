@@ -20,6 +20,7 @@ editmepath: false
 *   [RenamedRule2](pmd_rules_java_sample.html#renamedrule2): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer).
 *   [RenamedRule3](pmd_rules_java_sample.html#renamedrule3): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer).
 *   [RenamedRule4](pmd_rules_java_sample.html#renamedrule4): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer).
+*   [SampleRuleWithEnumProperties](pmd_rules_java_sample.html#samplerulewithenumproperties): This rule is for testing enum properties
 *   [XSSInDocumentation](pmd_rules_java_sample.html#xssindocumentation): &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.        ...
 
 ## Additional rulesets

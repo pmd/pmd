@@ -1,12 +1,12 @@
 /**
  * This Matlab grammar is derived from MParser ANTLR grammar. (http://www.mit.edu/~wingated/code/mparser_0.1.tar.gz)
  *
- * The ' character is ambiguous, because it is the tranpose operator but can also denote the start of a string.
+ * The ' character is ambiguous, because it is the transpose operator but can also denote the start of a string.
  * (see https://www.mathworks.com/matlabcentral/newsreader/view_thread/25108)
  *
  * Rule of the thumb:
  *
- * A single quotation character is a tranpose operator if it directly follows a right bracket ("]"), right parenthesis (")"),
+ * A single quotation character is a transpose operator if it directly follows a right bracket ("]"), right parenthesis (")"),
  * right brace ("}"), letter, digit, underline ("_"), punctuation mark ("."), or another single quote character ("'"). *
  *
  * To implement this an extra lexical state 'TRANSPOSE' was introduced. In this state the single quote character "'" will always be parsed as the TRANSPOSE operator.
@@ -50,7 +50,7 @@ PARSER_END(MatlabParserImpl)
 <IN_COMMENT> MORE:
 { < ~[] > }
 
-<DEFAULT, TRANSPOSE> TOKEN : /* SEPARATORS AND OTHER USEFULL LANGUAGE CONSTRUCTS*/
+<DEFAULT, TRANSPOSE> TOKEN : /* SEPARATORS AND OTHER USEFUL LANGUAGE CONSTRUCTS*/
 {
     < SEMI: ";" > : DEFAULT
 |   < LPAREN: "(" > : DEFAULT

@@ -1,0 +1,31 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.kotlin.ast;
+
+
+import java.util.concurrent.ExecutorService;
+
+import net.sourceforge.pmd.annotation.InternalApi;
+
+/**
+ * Internal API.
+ *
+ * <p>Acts as a bridge between outer parts of PMD and the restricted access
+ * internal API of this package.
+ *
+ * <p><b>None of this is published API, and compatibility can be broken anytime!</b>
+ * Use this only at your own risk.
+ *
+ * @since 7.25.0
+ * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+ */
+@InternalApi
+public final class InternalApiBridge {
+    private InternalApiBridge() {}
+
+    public static PmdKotlinParser newPmdKotlinParser(ExecutorService timeoutExecutor) {
+        return new PmdKotlinParser(timeoutExecutor);
+    }
+}

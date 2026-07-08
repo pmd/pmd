@@ -1,11 +1,15 @@
 repository: pmd/pmd
 
 pmd:
-    version: 7.21.0-SNAPSHOT
-    previous_version: 7.20.0
-    date: 2026-01-30
+    version: 7.27.0-SNAPSHOT
+    previous_version: 7.26.0
+    date: 2026-??-??
     # release types: major, minor, bugfix
     release_type: minor
+    # minimal version to build PMD
+    java_build_version: 21
+    # minimal version to run PMD
+    java_run_version: 8
 
 output: web
 # this property is useful for conditional filtering of content that is separate from the PDF.

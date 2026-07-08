@@ -187,4 +187,19 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>Array initializer - #6531</description>
+        <expected-problems>1</expected-problems>
+        <code>
+import javax.crypto.spec.IvParameterSpec;
+
+public class PosCase1 {
+    public void encrypt() throws Exception {
+        // Static byte array initialization with constants
+        byte[] iv = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+        new IvParameterSpec(iv);
+    }
+}
+        </code>
+    </test-code>
 </test-data>
