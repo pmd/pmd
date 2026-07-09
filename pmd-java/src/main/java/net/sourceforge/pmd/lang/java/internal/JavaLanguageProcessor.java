@@ -71,10 +71,12 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         } else {
             String auxClasspath = properties.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
 
-            if (!auxClasspath.contains("jrt-fs.jar") && !auxClasspath.contains("rt.jar")) {
+            Path relativeJrtFsJar = Paths.get("lib/jrt-fs.jar");
+            Path relativeRtJar = Paths.get("lib/rt.jar");
+            if (!auxClasspath.contains(relativeJrtFsJar.toString()) && !auxClasspath.contains(relativeRtJar.toString())) {
                 // TODO use AuxClasspathUtil.getPlatformClasspath() from #6841
-                Path jrtFsJar = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar"); // Java 11+
-                Path rtJar = Paths.get(System.getProperty("java.home"), "jre", "lib", "rt.jar"); // Java 8
+                Path jrtFsJar = Paths.get(System.getProperty("java.home")).resolve(relativeJrtFsJar); // Java 11+
+                Path rtJar = Paths.get(System.getProperty("java.home")).resolve(relativeRtJar); // Java 8
                 if (Files.isRegularFile(jrtFsJar)) {
                     LOG.debug("Adding current JVM runtime classes from {}", jrtFsJar);
                     auxClasspath += File.pathSeparator + jrtFsJar;
@@ -84,8 +86,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
                 }
             }
             LOG.debug("Using auxClasspath as analysis classloader: {}", auxClasspath);
-
-            this.auxClasspathLoader = new AuxClasspathLoader(auxClasspath);
+            this.auxClasspathLoader = AuxClasspathLoader.create(auxClasspath, properties.getProperty(JavaLanguageProperties.REUSE_AUX_CLASSLOADER));
             this.typeSystem = TypeSystem.usingClasspath(auxClasspathLoader);
         }
     }

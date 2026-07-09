@@ -36,6 +36,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 
@@ -53,6 +54,11 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 public class AuxClasspathLoader implements Classpath, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AuxClasspathLoader.class);
 
+    private static final Object LOCK = new Object();
+    private static AuxClasspathLoader previousAuxClasspathLoader;
+
+    private final String rawAuxClasspath;
+    private volatile boolean closeRequested;
     private final List<Path> auxClasspath = new ArrayList<>();
     private final ConcurrentMap<Path, ZipFile> zipFiles = new ConcurrentHashMap<>();
 
@@ -61,7 +67,9 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
     private FileSystem fileSystem;
     private Map<String, Set<String>> packagesDirsToModules;
 
-    public AuxClasspathLoader(String rawAuxClasspath) {
+    AuxClasspathLoader(String rawAuxClasspath) {
+        LOG.debug("Creating new AuxClasspathLoader for {}", rawAuxClasspath);
+        this.rawAuxClasspath = rawAuxClasspath;
         expandAuxClasspath(rawAuxClasspath);
 
         Iterator<Path> iterator = auxClasspath.iterator();
@@ -71,6 +79,54 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
                 initializeJrtFilesystem(filePath);
                 // don't add jrt-fs.jar to the normal aux classpath
                 iterator.remove();
+            }
+        }
+    }
+
+    public static AuxClasspathLoader create(String rawAuxClasspath, boolean reuse) {
+        if (!reuse) {
+            return new AuxClasspathLoader(rawAuxClasspath);
+        }
+
+        synchronized (LOCK) {
+            if (previousAuxClasspathLoader != null) {
+                if (previousAuxClasspathLoader.rawAuxClasspath.equals(rawAuxClasspath)) {
+                    LOG.debug("Reusing previously cached AuxClasspathLoader");
+                } else {
+                    LOG.debug("Can't reuse previous AuxClasspathLoader due to different auxClasspath");
+                    try {
+                        previousAuxClasspathLoader.close();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    previousAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath);
+                }
+            } else {
+                previousAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath);
+            }
+            return previousAuxClasspathLoader;
+        }
+    }
+
+    /**
+     * If {@link JavaLanguageProperties#REUSE_AUX_CLASSLOADER} is enabled, then this method can be used to explicitly
+     * close the auxiliary classpath classloader, when it is known, that PMD won't be executed
+     * anymore.
+     *
+     * @since 7.27.0
+     * @experimental
+     */
+    @Experimental
+    public static void closePreviousAuxClasspathLoader() {
+        synchronized (LOCK) {
+            if (previousAuxClasspathLoader != null) {
+                AuxClasspathLoader toBeClosed = previousAuxClasspathLoader;
+                previousAuxClasspathLoader = null;
+                try {
+                    toBeClosed.close();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -195,6 +251,10 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
         assert name != null;
         assert name.charAt(0) != '/'; // assuming only relative paths
 
+        if (closeRequested) {
+            throw new IllegalStateException("AuxClasspathLoader is closed");
+        }
+
         // always search first in the jars of the aux classpath.
         // this allows to override platform classes (java.lang.*) - which java wouldn't allow
         for (Path path : auxClasspath) {
@@ -268,6 +328,14 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
 
     @Override
     public void close() throws Exception {
+        synchronized (LOCK) {
+            if (previousAuxClasspathLoader == this) {
+                LOG.debug("Not closing AuxClasspathLoader as it is cached and might be reused");
+                return;
+            }
+        }
+
+        closeRequested = true;
         IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
         zipFiles.clear();
         if (fileSystem != null) {

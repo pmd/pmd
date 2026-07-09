@@ -27,6 +27,7 @@ import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -275,7 +276,14 @@ public abstract class RuleTst {
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
         configuration.setThreads(0); // don't use separate threads
+
+        // Java-specific configuration
         configuration.setAuxClasspath(System.getProperty("java.class.path"));
+        LanguagePropertyBundle languageProperties = configuration.getLanguageProperties(languageVersion.getLanguage());
+        PropertyDescriptor<Boolean> xReuseAuxClassloader = (PropertyDescriptor) languageProperties.getPropertyDescriptor("xReuseAuxClassloader");
+        if (xReuseAuxClassloader != null) {
+            languageProperties.setProperty(xReuseAuxClassloader, true);
+        }
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
