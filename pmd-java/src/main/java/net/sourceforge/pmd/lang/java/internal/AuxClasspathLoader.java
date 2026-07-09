@@ -58,7 +58,7 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
     private static AuxClasspathLoader previousAuxClasspathLoader;
 
     private final String rawAuxClasspath;
-    private volatile boolean closeRequested;
+    private boolean closeRequested;
     private final List<Path> auxClasspath = new ArrayList<>();
     private final ConcurrentMap<Path, ZipFile> zipFiles = new ConcurrentHashMap<>();
 
@@ -121,11 +121,15 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
         synchronized (LOCK) {
             if (previousAuxClasspathLoader != null) {
                 AuxClasspathLoader toBeClosed = previousAuxClasspathLoader;
-                previousAuxClasspathLoader = null;
                 try {
-                    toBeClosed.close();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    // need to set this to null before calling close, as a reused instance won't be closed
+                    previousAuxClasspathLoader = null;
+                } finally {
+                    try {
+                        toBeClosed.close();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
@@ -329,7 +333,7 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
     @Override
     public void close() throws Exception {
         synchronized (LOCK) {
-            if (previousAuxClasspathLoader == this) {
+            if (this.equals(previousAuxClasspathLoader)) {
                 LOG.debug("Not closing AuxClasspathLoader as it is cached and might be reused");
                 return;
             }
