@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import net.sourceforge.pmd.util.internal.AnalysisClasspathUtil;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -148,7 +148,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
     }
 
     private List<Path> getClassPathEntries() {
-        List<Path> classpathEntries = AnalysisClasspathUtil.getRuntimeClasspath();
+        List<Path> classpathEntries = AuxClasspathUtil.getRuntimeClasspath();
         final List<Path> entries = new ArrayList<>();
 
         final SimpleFileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
