@@ -118,6 +118,7 @@ code size and runtime complexity.
     [count(Block/*) = 1]
     [CatchParameter/ClassType/@SimpleName = Block/ThrowStatement/ConstructorCall/ClassType/@SimpleName]
     [Block/ThrowStatement/ConstructorCall/ArgumentList/@Size = 1]
+    [Block/ThrowStatement/ConstructorCall/ArgumentList//VariableAccess/@Name = CatchParameter/VariableId/@Name]
     /Block/ThrowStatement/ConstructorCall
 ]]>
                 </value>
