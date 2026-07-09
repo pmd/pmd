@@ -144,7 +144,7 @@ class OtherException extends Exception {}
         ]]></code>
     </test-code>
 
-<test-code>
+    <test-code>
         <description>#6844 new instance of same exception type with unrelated message, ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
