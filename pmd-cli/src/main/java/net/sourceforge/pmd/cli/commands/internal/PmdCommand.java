@@ -40,7 +40,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.internal.AnalysisClasspathUtil;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -304,8 +304,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                     return CliExitCode.ERROR;
                 }
 
-                LOG.debug("Runtime classpath:\n{}", AnalysisClasspathUtil.getRuntimeClasspath());
-                LOG.debug("Aux classpath: {}", AnalysisClasspathUtil.analysisClasspathEntries(configuration));
+                LOG.debug("Runtime classpath:\n{}", AuxClasspathUtil.getRuntimeClasspath());
+                LOG.debug("Aux classpath: {}", AuxClasspathUtil.getAuxClasspath(configuration));
 
                 if (showProgressBar) {
                     if (configuration.getReportFilePath() == null) {

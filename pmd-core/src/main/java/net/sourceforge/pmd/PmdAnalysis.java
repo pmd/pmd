@@ -63,7 +63,7 @@ import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.internal.AnalysisClasspathUtil;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -395,7 +395,7 @@ public final class PmdAnalysis implements AutoCloseable {
         try {
             @SuppressWarnings("PMD.CloseResource")
             AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets,
-                    AnalysisClasspathUtil.analysisClasspathEntries(configuration), textFiles);
+                    AuxClasspathUtil.getAuxClasspath(configuration), textFiles);
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),
                                                          GlobalAnalysisListener.tee(extraListeners),

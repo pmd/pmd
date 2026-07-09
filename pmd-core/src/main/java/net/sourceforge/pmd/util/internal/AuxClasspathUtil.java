@@ -29,7 +29,7 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Utilities to interpret a string-based classpath.
- * Can be used for the analysis classpath or runtime classpath.
+ * Can be used for the auxiliary classpath (analysis classpath) or runtime classpath.
  *
  * <p>The general format is a string consisting of entries separated by {@link File#pathSeparator}.
  * The entries are path names, that might point to a single jar file, a directory (which contains
@@ -46,18 +46,20 @@ import net.sourceforge.pmd.internal.util.IOUtil;
  *
  * @since 7.27.0
  */
-public final class AnalysisClasspathUtil {
-    private static final Logger LOG = LoggerFactory.getLogger(AnalysisClasspathUtil.class);
+public final class AuxClasspathUtil {
+    private static final Logger LOG = LoggerFactory.getLogger(AuxClasspathUtil.class);
 
-    private AnalysisClasspathUtil() {}
+    private AuxClasspathUtil() {}
 
     /**
      * Determines the currently used runtime classpath via the system property
      * {@code java.class.path}. Note: This doesn't include the platform classes
      * like "java.lang.Object".
+     *
+     * @see #getPlatformClasspath()
      */
     public static List<Path> getRuntimeClasspath() {
-        return expandAnalysisClasspath(System.getProperty("java.class.path"));
+        return expandClasspath(System.getProperty("java.class.path"));
     }
 
     /**
@@ -84,12 +86,13 @@ public final class AnalysisClasspathUtil {
     }
 
     /**
-     * Uses the given configuration to either return the classpath entries from a classloader
-     * (deprecated functionality) or from the analysis classpath.
+     * Uses the given configuration to either return the classpath entries from an externally
+     * provided classloader (soon to be deprecated functionality) or from the given auxClasspath
+     * (CLI option {@code --aux-classpath}).
      *
-     * @see #expandAnalysisClasspath(String)
+     * @see #expandClasspath(String)
      */
-    public static List<Path> analysisClasspathEntries(PMDConfiguration configuration) {
+    public static List<Path> getAuxClasspath(PMDConfiguration configuration) {
         List<Path> result = new ArrayList<>();
 
         ClassLoader classLoader = configuration.getClassLoader();
@@ -121,7 +124,7 @@ public final class AnalysisClasspathUtil {
      *
      * @throws IllegalArgumentException if there is a problem while resolving wildcard classpath entries.
      */
-    public static List<Path> expandAnalysisClasspath(String classpath) {
+    public static List<Path> expandClasspath(String classpath) {
         if (classpath == null) {
             return Collections.emptyList();
         }

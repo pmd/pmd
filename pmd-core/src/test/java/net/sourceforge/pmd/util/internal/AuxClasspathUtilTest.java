@@ -23,19 +23,19 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-class AnalysisClasspathUtilTest {
+class AuxClasspathUtilTest {
 
     @TempDir
     private Path tempDir;
 
     @Test
-    void expandAnalysisClasspathEmpty() {
-        assertEquals(emptyList(), AnalysisClasspathUtil.expandAnalysisClasspath(null));
-        assertEquals(emptyList(), AnalysisClasspathUtil.expandAnalysisClasspath(""));
+    void expandClasspathEmpty() {
+        assertEquals(emptyList(), AuxClasspathUtil.expandClasspath(null));
+        assertEquals(emptyList(), AuxClasspathUtil.expandClasspath(""));
     }
 
     @Test
-    void expandAnalysisClasspathSimpleEntries() {
+    void expandClasspathSimpleEntries() {
         assertEquals(CollectionUtil.listOf(
                 Paths.get("a.jar"),
                 Paths.get("b/c.jar"),
@@ -44,7 +44,7 @@ class AnalysisClasspathUtilTest {
                 Paths.get("libs"),
                 Paths.get("libs2/"),
                 Paths.get("/usr/lib")
-        ), AnalysisClasspathUtil.expandAnalysisClasspath(
+        ), AuxClasspathUtil.expandClasspath(
                 "a.jar" + File.pathSeparator
                 // note: whitespaces are trimmed
                 + "  b/c.jar  " + File.pathSeparator
@@ -56,7 +56,7 @@ class AnalysisClasspathUtilTest {
     }
 
     @Test
-    void expandAnalysisClasspathFile() throws IOException {
+    void expandClasspathFile() throws IOException {
         Path wildcardDirectory = prepareDirectory("mylibs", "file1.jar", "file2.JAR", "foo.txt");
         Path classpathFile = tempDir.resolve("classpath.cp");
         Files.write(classpathFile, CollectionUtil.listOf(
@@ -81,11 +81,11 @@ class AnalysisClasspathUtilTest {
                 Paths.get("/usr/lib"),
                 wildcardDirectory.resolve("file1.jar"),
                 wildcardDirectory.resolve("file2.JAR")
-        ), AnalysisClasspathUtil.expandAnalysisClasspath(classpathFile.toUri().toURL().toString()));
+        ), AuxClasspathUtil.expandClasspath(classpathFile.toUri().toURL().toString()));
     }
 
     @Test
-    void expandAnalysisClasspathFileEmpty() throws IOException {
+    void expandClasspathFileEmpty() throws IOException {
         Path classpathFile = tempDir.resolve("classpath.cp");
         Files.write(classpathFile, CollectionUtil.listOf(
                 "# empty classpath...",
@@ -93,16 +93,16 @@ class AnalysisClasspathUtilTest {
                 ""
         ), Charset.defaultCharset());
 
-        assertEquals(Collections.emptyList(), AnalysisClasspathUtil.expandAnalysisClasspath(classpathFile.toUri().toURL().toString()));
+        assertEquals(Collections.emptyList(), AuxClasspathUtil.expandClasspath(classpathFile.toUri().toURL().toString()));
     }
 
     @Test
-    void expandAnalysisClasspathWildcard() throws IOException {
+    void expandClasspathWildcard() throws IOException {
         Path wildcardDirectory = prepareDirectory("mylibs", "file1.jar", "file2.JAR", "foo.txt");
         assertEquals(CollectionUtil.listOf(
                 wildcardDirectory.resolve("file1.jar"),
                 wildcardDirectory.resolve("file2.JAR")
-        ), AnalysisClasspathUtil.expandAnalysisClasspath(wildcardDirectory + File.separator + "*"));
+        ), AuxClasspathUtil.expandClasspath(wildcardDirectory + File.separator + "*"));
     }
 
     private Path prepareDirectory(String directoryName, String... fileNames) throws IOException {
@@ -125,6 +125,6 @@ class AnalysisClasspathUtilTest {
 
         assertEquals(CollectionUtil.listOf(
                 aJar
-        ), AnalysisClasspathUtil.analysisClasspathEntries(configuration));
+        ), AuxClasspathUtil.getAuxClasspath(configuration));
     }
 }

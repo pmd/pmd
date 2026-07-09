@@ -37,7 +37,7 @@ import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.util.internal.AnalysisClasspathUtil;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -79,7 +79,7 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(new URL[0], parent);
-        List<Path> paths = AnalysisClasspathUtil.expandAnalysisClasspath(classpath);
+        List<Path> paths = AuxClasspathUtil.expandClasspath(classpath);
         for (URL url : pathToUrl(paths)) {
             addURL(url);
         }
