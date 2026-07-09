@@ -24,7 +24,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -95,7 +95,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -135,7 +135,7 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         # under linux we execute more extensive integration tests with various java versions
         if: ${{ runner.os == 'Linux' }}
         with:
@@ -145,7 +145,7 @@ jobs:
             11
             17
             25
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         # default java version for all os is 21
         with:
           distribution: 'temurin'
@@ -195,7 +195,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -281,7 +281,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -302,7 +302,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 #v1.315.0
+        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 #v1.316.0
         with:
           ruby-version: 4
       - name: Setup bundler
@@ -336,14 +336,14 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
         with:
           fetch-depth: 2
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 #v5.4.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
           java-version: |
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@0dafeac902942906541bc140009cdbf32665b601 #v1.315.0
+        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 #v1.316.0
         with:
           ruby-version: 4
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
