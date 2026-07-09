@@ -143,4 +143,25 @@ class SomeException extends Exception {}
 class OtherException extends Exception {}
         ]]></code>
     </test-code>
+
+<test-code>
+        <description>#6844 new instance of same exception type with unrelated message, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Tree parseMethod(String methodSource) {
+        Tree member;
+        try {
+            member = parseTypeMember(methodSource);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid method: " + methodSource);
+        }
+        return member;
+    }
+    Tree parseTypeMember(String s) { return null; }
+}
+class Tree {}
+        ]]></code>
+    </test-code>
+
 </test-data>
