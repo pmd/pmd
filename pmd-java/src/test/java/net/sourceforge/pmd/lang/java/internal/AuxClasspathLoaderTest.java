@@ -80,7 +80,7 @@ class AuxClasspathLoaderTest {
                 classesDir.toString()
         ));
 
-        try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader("file:" + classPathList)) {
+        try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(classPathList.toUri().toString())) {
             assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
             assertResource(classpathLoader, "OtherResource.class", "OtherResource in classes");
             assertResource(classpathLoader, "my/other/package/Other.class", "my.other.package.Other in lib1.jar");
