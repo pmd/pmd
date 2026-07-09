@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.io.TempDirDeletionStrategy;
 
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
@@ -122,39 +123,52 @@ class PmdConfigurationTest {
 
     @Test
     void auxClasspathWithRelativeFile() throws IOException {
-        // Prepare auxclasspath.cp file and jar files
-        Path currentWorkdirDir = Paths.get(".").toAbsolutePath();
-        Path lib1Jar = Files.createFile(tempDir.resolve("lib1.jar")).toAbsolutePath();
-        Path lib2Jar = Files.createFile(Files.createDirectories(tempDir.resolve("other/directory")).resolve("lib2.jar")).toAbsolutePath();
-        Path lib3Jar = Files.createFile(tempDir.resolve("lib3.jar")).toAbsolutePath();
-        Path classes = Files.createDirectory(tempDir.resolve("classes")).toAbsolutePath();
-        Path classes2 = Files.createDirectory(tempDir.resolve("classes2")).toAbsolutePath();
-        Path classes3 = Files.createDirectory(tempDir.resolve("classes3")).toAbsolutePath();
-        Path dirWithSpaces = Files.createDirectories(tempDir.resolve("relative source dir/bar")).toAbsolutePath();
-        Path auxClasspathFile = tempDir.resolve("auxclasspath.cp");
-        Files.write(auxClasspathFile, CollectionUtil.listOf(
-                "# relative paths here should be resolved relative to the current working directory - not relative to this file",
-                currentWorkdirDir.relativize(lib1Jar).toString(),
-                currentWorkdirDir.relativize(lib2Jar).toString(),
-                "# absolute paths work as well",
-                lib3Jar.toString(),
-                "# also directories are possible",
-                currentWorkdirDir.relativize(classes).toString(),
-                currentWorkdirDir.relativize(classes2) + File.separator,
-                classes3.toString(),
-                "# relative current directory",
-                ".",
-                "# a test with a space in the uri",
-                currentWorkdirDir.relativize(dirWithSpaces).toString()
-        ));
+        // when this test runs on a GitHub-hosted Runner under Windows, then the current
+        // working directory is on a different drive then the tempDir and we can't
+        // create relative paths from working directory to tempDir.
+        // That's why we prepare the files for the classpath under the current working directory
+        // target/tempdir - which is repo-root/pmd-core/target/tempdir
+        Path targetTempDir = Paths.get("target/tempdir").toAbsolutePath();
+        Files.createDirectory(targetTempDir);
 
-        PMDConfiguration configuration = new PMDConfiguration();
-        String auxClasspath = "file:" + currentWorkdirDir.relativize(auxClasspathFile);
-        configuration.prependAuxClasspath(auxClasspath);
-        assertEquals(auxClasspath, configuration.getAuxClasspath());
+        try {
 
-        // new since 7.27.0 - no classloader is created eagerly anymore
-        assertNull(configuration.getClassLoader(), "ClassLoader should be null - not used");
+            // Prepare auxclasspath.cp file and jar files
+            Path currentWorkdirDir = Paths.get(".").toAbsolutePath();
+            Path lib1Jar = Files.createFile(targetTempDir.resolve("lib1.jar")).toAbsolutePath();
+            Path lib2Jar = Files.createFile(Files.createDirectories(targetTempDir.resolve("other/directory")).resolve("lib2.jar")).toAbsolutePath();
+            Path lib3Jar = Files.createFile(targetTempDir.resolve("lib3.jar")).toAbsolutePath();
+            Path classes = Files.createDirectory(targetTempDir.resolve("classes")).toAbsolutePath();
+            Path classes2 = Files.createDirectory(targetTempDir.resolve("classes2")).toAbsolutePath();
+            Path classes3 = Files.createDirectory(targetTempDir.resolve("classes3")).toAbsolutePath();
+            Path dirWithSpaces = Files.createDirectories(targetTempDir.resolve("relative source dir/bar")).toAbsolutePath();
+            Path auxClasspathFile = targetTempDir.resolve("auxclasspath.cp");
+            Files.write(auxClasspathFile, CollectionUtil.listOf(
+                    "# relative paths here should be resolved relative to the current working directory - not relative to this file",
+                    currentWorkdirDir.relativize(lib1Jar).toString(),
+                    currentWorkdirDir.relativize(lib2Jar).toString(),
+                    "# absolute paths work as well",
+                    lib3Jar.toString(),
+                    "# also directories are possible",
+                    currentWorkdirDir.relativize(classes).toString(),
+                    currentWorkdirDir.relativize(classes2) + File.separator,
+                    classes3.toString(),
+                    "# relative current directory",
+                    ".",
+                    "# a test with a space in the uri",
+                    currentWorkdirDir.relativize(dirWithSpaces).toString()
+            ));
+
+            PMDConfiguration configuration = new PMDConfiguration();
+            String auxClasspath = "file:" + currentWorkdirDir.relativize(auxClasspathFile);
+            configuration.prependAuxClasspath(auxClasspath);
+            assertEquals(auxClasspath, configuration.getAuxClasspath());
+
+            // new since 7.27.0 - no classloader is created eagerly anymore
+            assertNull(configuration.getClassLoader(), "ClassLoader should be null - not used");
+        } finally {
+            TempDirDeletionStrategy.Standard.INSTANCE.delete(targetTempDir, null, null);
+        }
     }
 
     @Test
