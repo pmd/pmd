@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +60,50 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
 
     private final String rawAuxClasspath;
     private boolean closeRequested;
-    private final List<Path> auxClasspath = new ArrayList<>();
+
+    private static final class Entry {
+        private final Path path;
+        private final boolean isFile;
+
+        private Entry(Path path, boolean isFile) {
+            this.path = path;
+            this.isFile = isFile;
+        }
+
+        private static Entry create(Path path) {
+            if (Files.isRegularFile(path)) {
+                return new Entry(path, true);
+            } else if (Files.isDirectory(path)) {
+                return new Entry(path, false);
+            }
+            // TODO we probably should throw, revisit after #6845
+            return null;
+        }
+
+        public Path getPath() {
+            return path;
+        }
+
+        public boolean isFile() {
+            return isFile;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Entry entry = (Entry) o;
+            return isFile == entry.isFile && Objects.equals(path, entry.path);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(path, isFile);
+        }
+    }
+
+    private final List<Entry> auxClasspath = new ArrayList<>();
     private final ConcurrentMap<Path, ZipFile> zipFiles = new ConcurrentHashMap<>();
 
     String javaHome;
@@ -72,9 +116,9 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
         this.rawAuxClasspath = rawAuxClasspath;
         expandAuxClasspath(rawAuxClasspath);
 
-        Iterator<Path> iterator = auxClasspath.iterator();
+        Iterator<Entry> iterator = auxClasspath.iterator();
         while (iterator.hasNext()) {
-            Path filePath = iterator.next().toAbsolutePath();
+            Path filePath = iterator.next().getPath().toAbsolutePath();
             if (filePath.endsWith(Paths.get("lib", "jrt-fs.jar"))) {
                 initializeJrtFilesystem(filePath);
                 // don't add jrt-fs.jar to the normal aux classpath
@@ -158,6 +202,8 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
                             .filter(s -> !s.startsWith("#"))
                             .map(Paths::get)
                             .filter(Files::exists)
+                            .map(Entry::create)
+                            .filter(Objects::nonNull)
                             .collect(Collectors.toList()));
                 }
             } catch (IOException | URISyntaxException e) {
@@ -168,8 +214,9 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
             while (toker.hasMoreTokens()) {
                 String token = toker.nextToken();
                 Path path = Paths.get(token);
-                if (Files.exists(path)) {
-                    auxClasspath.add(path);
+                Entry entry = Entry.create(path);
+                if (entry != null) {
+                    auxClasspath.add(entry);
                 }
             }
         }
@@ -261,10 +308,10 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
 
         // always search first in the jars of the aux classpath.
         // this allows to override platform classes (java.lang.*) - which java wouldn't allow
-        for (Path path : auxClasspath) {
-            if (Files.isRegularFile(path)) {
+        for (Entry classpathEntry : auxClasspath) {
+            if (classpathEntry.isFile()) {
                 @SuppressWarnings("PMD.CloseResource") // we keep the zip file open and close all at the end, see #close
-                ZipFile jarFile = openJarFile(path);
+                ZipFile jarFile = openJarFile(classpathEntry.getPath());
                 ZipEntry entry = jarFile.getEntry(name);
                 if (entry != null) {
                     try {
@@ -273,8 +320,8 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
                         return null;
                     }
                 }
-            } else if (Files.isDirectory(path)) {
-                Path classFile = path.resolve(name);
+            } else {
+                Path classFile = classpathEntry.getPath().resolve(name);
                 if (Files.isRegularFile(classFile)) {
                     try {
                         return Files.newInputStream(classFile);
