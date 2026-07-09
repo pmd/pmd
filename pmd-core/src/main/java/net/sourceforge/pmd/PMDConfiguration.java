@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -290,13 +291,13 @@ public class PMDConfiguration extends AbstractConfiguration {
         List<Path> notExistingFiles = new ArrayList<>();
         if (classpath.startsWith("file:")) {
             try {
-                URI uri = new URI(classpath);
-                String uriPath = uri.getPath();
-                if (uriPath == null) {
-                    // to support relative paths, only the scheme specific part is available
-                    uriPath = uri.getSchemeSpecificPart();
+                Path path;
+                if (classpath.length() > 5 && classpath.charAt(5) == '/') {
+                    path = Paths.get(new URI(classpath));
+                } else {
+                    // support relative paths
+                    path = Paths.get(classpath.substring(5));
                 }
-                Path path = Paths.get(uriPath);
 
                 try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
                     notExistingFiles.addAll(lines

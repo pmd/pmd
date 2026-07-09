@@ -103,6 +103,18 @@ class PmdConfigurationTest {
     }
 
     @Test
+    void auxClasspathWithAbsoluteFileEmpty() throws IOException {
+        Path file = Files.createFile(tempDir.resolve("auxclasspath-empty.cp").toAbsolutePath());
+        PMDConfiguration configuration = new PMDConfiguration();
+        String auxClasspath = file.toUri().toString();
+        configuration.prependAuxClasspath(auxClasspath);
+        assertEquals(auxClasspath, configuration.getAuxClasspath());
+
+        // new since 7.27.0 - no classloader is created eagerly anymore
+        assertNull(configuration.getClassLoader(), "ClassLoader should be null - not used");
+    }
+
+    @Test
     void auxClasspathWithRelativeFileEmpty() {
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
@@ -137,7 +149,6 @@ class PmdConfigurationTest {
         Files.createDirectory(targetTempDir);
 
         try {
-
             // Prepare auxclasspath.cp file and jar files
             Path currentWorkdirDir = Paths.get(".").toAbsolutePath();
             Path lib1Jar = Files.createFile(targetTempDir.resolve("lib1.jar")).toAbsolutePath();
