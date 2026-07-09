@@ -6,6 +6,7 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLClassLoader;
@@ -15,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -218,8 +220,8 @@ public class PMDConfiguration extends AbstractConfiguration {
             throw new IllegalStateException("Can't mix setClassLoader with setAuxClasspath or prependAuxClasspath!");
         }
         if (classLoader != null && !(classLoader instanceof URLClassLoader)) {
-            getReporter().warn("Unsupported classloader for auxClasspath detected: " + classLoader.getClass() + ". "
-                    + "Only " + URLClassLoader.class.getName() + " is supported.");
+            getReporter().warn("Unsupported classloader for auxClasspath detected: {0}. "
+                    + "Only {1} is supported.", classLoader.getClass().getName(), URLClassLoader.class.getName());
         }
         this.classLoader = classLoader;
     }
@@ -263,11 +265,14 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
-     * Checks whether any referenced file on the classpath exists.
+     * Checks whether any referenced file on the classpath exists. File URLs are replaced by their
+     * content and each referenced file in the classpath-file must exist. If the classpath entry
+     * references a directory (an entry not ending with .jar) and the directory does not exist, it is
+     * ignored - only files must exist.
      *
      * <p>Valid classpath formats (under Unix):
      * <ul>
-     *     <li>/absolute/file.jar:relative/file.jar</li>
+     *     <li>/absolute/file.jar:relative/file.jar:/absolute/directory/with/classes</li>
      *     <li>file:relative/classpath.txt</li>
      *     <li>file:/absolute/classpath.txt</li>
      * </ul>
@@ -310,8 +315,24 @@ public class PMDConfiguration extends AbstractConfiguration {
             while (toker.hasMoreTokens()) {
                 String token = toker.nextToken();
                 Path path = Paths.get(token);
-                if (!Files.exists(path)) {
+                boolean isJarFile = path.getNameCount() > 0 && path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".jar");
+                if (isJarFile && !Files.isRegularFile(path)) {
                     notExistingFiles.add(path);
+                } else if (!isJarFile) {
+                    // might be a directory
+                    if (!Files.exists(path)) {
+                        getReporter().warn("Suspicious auxClasspath entry: {0} does not exist",
+                                path.toString());
+                    } else if (Files.isDirectory(path)) {
+                        try (Stream<Path> dir = Files.list(path)) {
+                            if (!dir.findAny().isPresent()) {
+                                getReporter().warn("Suspicious auxClasspath entry: directory {0} is empty",
+                                        path.toString());
+                            }
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    }
                 }
             }
         }

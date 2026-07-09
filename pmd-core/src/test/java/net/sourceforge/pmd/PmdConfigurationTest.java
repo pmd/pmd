@@ -6,7 +6,9 @@ package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,8 +93,9 @@ class PmdConfigurationTest {
         assertSame(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
         assertNull(configuration.getAuxClasspath(), "Default AuxClasspath should be null");
 
-        configuration.setClassLoader(PmdConfigurationTest.class.getClassLoader());
-        assertSame(PmdConfigurationTest.class.getClassLoader(), configuration.getClassLoader(), "Not anymore the default ClassLoader");
+        URLClassLoader customClassLoader = new URLClassLoader(new URL[0], PMDConfiguration.class.getClassLoader());
+        configuration.setClassLoader(customClassLoader);
+        assertSame(customClassLoader, configuration.getClassLoader(), "Not anymore the default ClassLoader");
 
         // reset
         configuration.setClassLoader(null);
@@ -169,6 +174,52 @@ class PmdConfigurationTest {
         } finally {
             TempDirDeletionStrategy.Standard.INSTANCE.delete(targetTempDir, null, null);
         }
+    }
+
+    @Test
+    void verifyAuxClasspathFiles() throws IOException {
+        PMDConfiguration configuration = new PMDConfiguration();
+
+        Path doesNotExistJar = tempDir.resolve("doesNotExist.jar");
+        assertFalse(Files.exists(doesNotExistJar), "Test setup failure: the file "
+                + doesNotExistJar + " must not exist for the test");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> configuration.prependAuxClasspath(doesNotExistJar.toString()));
+        assertThat(exception.getMessage(), containsString(doesNotExistJar.toString()));
+
+        Path doesNotExistJar2 = tempDir.resolve("doesNotExist.JAR");
+        assertFalse(Files.exists(doesNotExistJar2), "Test setup failure: the file "
+                + doesNotExistJar2 + " must not exist for the test");
+        exception = assertThrows(IllegalArgumentException.class, () -> configuration.prependAuxClasspath(doesNotExistJar2.toString()));
+        assertThat(exception.getMessage(), containsString(doesNotExistJar2.toString()));
+
+        Path existingJar = Files.createFile(tempDir.resolve("existing.jar"));
+        exception = assertThrows(IllegalArgumentException.class, () -> configuration.prependAuxClasspath(existingJar + File.pathSeparator + doesNotExistJar2));
+        assertThat(exception.getMessage(), containsString(doesNotExistJar2.toString()));
+        assertThat(exception.getMessage(), not(containsString(existingJar.toString())));
+
+        configuration.prependAuxClasspath(existingJar.toString());
+        assertEquals(existingJar.toString(), configuration.getAuxClasspath());
+    }
+
+    @Test
+    void verifyAuxClasspathDirectories() throws IOException {
+        PMDConfiguration configuration = new PMDConfiguration();
+
+        Path notExistingDirectory = tempDir.resolve("doesNotExist");
+        assertFalse(Files.exists(notExistingDirectory), "Test setup failure: the directory "
+            + notExistingDirectory + " must not exist for the test");
+        configuration.prependAuxClasspath(notExistingDirectory.toString()); // no exception
+        assertEquals(notExistingDirectory.toString(), configuration.getAuxClasspath());
+
+        Path existingJar = Files.createFile(tempDir.resolve("existing.jar"));
+        String classpathWithNotExistingDir = existingJar + File.pathSeparator + notExistingDirectory;
+        configuration.setAuxClasspath(classpathWithNotExistingDir);
+        assertEquals(classpathWithNotExistingDir, configuration.getAuxClasspath());
+
+        Path existingDirectory = Files.createDirectory(tempDir.resolve("existingDirectory"));
+        String classpath = existingJar + File.pathSeparator + existingDirectory;
+        configuration.setAuxClasspath(classpath);
+        assertEquals(classpath, configuration.getAuxClasspath());
     }
 
     @Test
