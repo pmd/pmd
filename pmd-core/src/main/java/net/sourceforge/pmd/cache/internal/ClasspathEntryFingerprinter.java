@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Path;
 import java.util.zip.Checksum;
 
 /**
@@ -28,5 +28,5 @@ public interface ClasspathEntryFingerprinter {
      * @param checksum The {@link Checksum} in which to accumulate fingerprints
      * @throws IOException
      */
-    void fingerprint(URL entry, Checksum checksum) throws IOException;
+    void fingerprint(Path entry, Checksum checksum) throws IOException;
 }

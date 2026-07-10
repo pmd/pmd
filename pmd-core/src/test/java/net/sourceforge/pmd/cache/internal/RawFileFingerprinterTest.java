@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.cache.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -28,9 +27,9 @@ class RawFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
     }
 
     @Override
-    protected File createValidNonEmptyFile() throws IOException {
+    protected Path createValidNonEmptyFile() throws IOException {
         Path file = tempDir.resolve("Foo.class");
         Files.write(file, "some content".getBytes(StandardCharsets.UTF_8));
-        return file.toFile();
+        return file;
     }
 }
