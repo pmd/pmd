@@ -8,18 +8,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -38,6 +35,7 @@ import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
@@ -282,60 +280,36 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist).
      */
     private void verifyAuxClasspath(String classpath) {
-        // TODO: Once #6841 is merged, use AnalysisClasspathUtil#expandAnalysisClasspath + check each entry for existence
         if (classpath == null) {
             return;
         }
 
-        List<Path> notExistingFiles = new ArrayList<>();
-        if (classpath.startsWith("file:")) {
-            try {
-                Path path;
-                if (classpath.length() > 5 && classpath.charAt(5) == '/') {
-                    path = Paths.get(new URI(classpath));
-                } else {
-                    // support relative paths
-                    path = Paths.get(classpath.substring(5));
-                }
-
-                try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
-                    notExistingFiles.addAll(lines
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .filter(s -> !s.startsWith("#"))
-                            .map(Paths::get)
-                            .filter(p -> !Files.exists(p))
-                            .collect(Collectors.toList()));
-                }
-            } catch (IOException | URISyntaxException e) {
-                throw new IllegalArgumentException(e);
-            }
-        } else {
-            StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
-            while (toker.hasMoreTokens()) {
-                String token = toker.nextToken();
-                Path path = Paths.get(token);
-                boolean isJarFile = path.getNameCount() > 0 && path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".jar");
-                if (isJarFile && !Files.isRegularFile(path)) {
-                    notExistingFiles.add(path);
-                } else if (!isJarFile) {
-                    // might be a directory
-                    if (!Files.exists(path)) {
-                        getReporter().warn("Suspicious auxClasspath entry: {0} does not exist",
-                                path.toString());
-                    } else if (Files.isDirectory(path)) {
-                        try (Stream<Path> dir = Files.list(path)) {
-                            if (!dir.findAny().isPresent()) {
-                                getReporter().warn("Suspicious auxClasspath entry: directory {0} is empty",
-                                        path.toString());
+        List<Path> expandedClasspath = AuxClasspathUtil.expandClasspath(classpath);
+        List<Path> notExistingFiles = expandedClasspath.stream()
+                .filter(path -> {
+                    boolean isJarFile = "jar".equalsIgnoreCase(IOUtil.getFilenameExtension(path.toString()));
+                    if (isJarFile && !Files.exists(path)) {
+                        return true;
+                    } else if (!isJarFile) {
+                        // might be a directory
+                        if (!Files.exists(path)) {
+                            getReporter().warn("Suspicious auxClasspath entry: {0} does not exist",
+                                    path.toString());
+                        } else if (Files.isDirectory(path)) {
+                            try (Stream<Path> dir = Files.list(path)) {
+                                if (!dir.findAny().isPresent()) {
+                                    getReporter().warn("Suspicious auxClasspath entry: directory {0} is empty",
+                                            path.toString());
+                                }
+                            } catch (IOException e) {
+                                throw new UncheckedIOException(e);
                             }
-                        } catch (IOException e) {
-                            throw new UncheckedIOException(e);
                         }
                     }
-                }
-            }
-        }
+                    return false;
+                })
+                .collect(Collectors.toList());
+
         if (!notExistingFiles.isEmpty()) {
             throw new IllegalArgumentException("Invalid classpath - not existing files: " + notExistingFiles);
         }
