@@ -133,4 +133,83 @@ public class Bar {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>grouped declarations at top of block, option disabled (#6846)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Distance between declaration of 'firstTree' and its first usage is 8, current threshold is 7</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Bar {
+    public void report() {
+        MyReport firstReport;
+        MyTree   firstTree;
+        MyFrame  frame;
+        MyReport secondReport;
+        MyFrame  secondTree;
+
+        firstReport  = new MyReport();
+        secondReport = new MyReport();
+        frame        = createFrame(0, "current", 1, 2);
+
+        MyReport.addFrame(frame);
+
+        firstTree  = firstReport.getTree();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>grouped declarations at top of block, option enabled (#6846)</description>
+        <rule-property name="ignoreVariablesAtTopOfBlock">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+    public void report() {
+        MyReport firstReport;
+        MyTree   firstTree;
+        MyFrame  frame;
+        MyReport secondReport;
+        MyFrame  secondTree;
+
+        firstReport  = new MyReport();
+        secondReport = new MyReport();
+        frame        = createFrame(0, "current", 1, 2);
+
+        MyReport.addFrame(frame);
+
+        firstTree  = firstReport.getTree();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>single declaration at top is still flagged even with option enabled</description>
+        <rule-property name="ignoreVariablesAtTopOfBlock">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Distance between declaration of 'length' and its first usage is 8, current threshold is 7</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Bar {
+    public void printLength(String value) {
+        int length = 0;
+        System.out.println("unrelated 1");
+        System.out.println("unrelated 2");
+        System.out.println("unrelated 3");
+        System.out.println("unrelated 4");
+        System.out.println("unrelated 5");
+        System.out.println("unrelated 6");
+        System.out.println("unrelated 7");
+        length = value.length();
+        System.out.println(length);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

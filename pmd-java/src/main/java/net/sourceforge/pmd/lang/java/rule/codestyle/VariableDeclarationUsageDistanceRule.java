@@ -31,6 +31,13 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
             .desc("Maximum distance between declaration and usage")
             .defaultValue(DEFAULT_DISTANCE)
             .build();
+    private static final PropertyDescriptor<Boolean> IGNORE_VARIABLES_AT_TOP_OF_BLOCK =
+        PropertyFactory.booleanProperty("ignoreVariablesAtTopOfBlock")
+            .desc("Ignore variables that are declared together with other variables at the very top of a "
+                + "block (e.g. method or loop), before any other statement. This supports the coding "
+                + "convention of declaring all local variables upfront.")
+            .defaultValue(false)
+            .build();
 
     public VariableDeclarationUsageDistanceRule() {
         super(ASTLocalVariableDeclaration.class);
@@ -40,7 +47,8 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         if (node.getParent() instanceof ASTForInit
             || node.getParent() instanceof ASTResource
-            || node.isFinal()) {
+            || node.isFinal()
+            || getProperty(IGNORE_VARIABLES_AT_TOP_OF_BLOCK) && isPartOfLeadingDeclarationGroup(node)) {
             // those don't count
             return null;
         }
@@ -71,5 +79,23 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
     /** Returns all the statements following the given local var declaration. */
     private static NodeStream<ASTStatement> statementsAfter(ASTLocalVariableDeclaration node) {
         return node.asStream().followingSiblings().filterIs(ASTStatement.class);
+    }
+
+    /**
+     * Returns true if the given declaration is declared alongside other variable declarations
+     * at the very top of its enclosing block, before any other statement. This is the case if
+     * all the statements preceding it in the block are themselves local variable declarations,
+     * and it is adjacent to at least one other declaration (either before or after it).
+     */
+    private static boolean isPartOfLeadingDeclarationGroup(ASTLocalVariableDeclaration node) {
+        NodeStream<ASTStatement> precedingStatements = node.asStream().precedingSiblings().filterIs(ASTStatement.class);
+        if (!precedingStatements.all(stmt -> stmt instanceof ASTLocalVariableDeclaration)) {
+            return false;
+        }
+        if (!precedingStatements.isEmpty()) {
+            return true;
+        }
+        ASTStatement nextStatement = node.asStream().followingSiblings().filterIs(ASTStatement.class).first();
+        return nextStatement instanceof ASTLocalVariableDeclaration;
     }
 }
