@@ -139,4 +139,9 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void multilineStringLiterals() {
         doTest("MultilineStringLiterals");
     }
+
+    @Test
+    void anonymousBlock() {
+        doTest("AnonymousBlock");
+    }
 }
