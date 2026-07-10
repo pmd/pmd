@@ -84,3 +84,19 @@ See [credits](docs/pages/pmd/projectdocs/credits.md) for the complete list.
 ## 📝️ License
 
 [BSD Style](LICENSE)
+## EHEPS Fork
+
+This repository is maintained by **EHEPS International Organization** as a fork of PMD for research, experimentation, and open-source collaboration.
+
+**Organization Websites**
+
+* https://eheps.com
+* https://eheps.org
+
+**Contact**
+
+* Executive Director: [executive@eheps.com](mailto:executive@eheps.com)
+* Administrator: [admin@eheps.com](mailto:admin@eheps.com)
+
+This fork may contain experimental rules, integrations, and improvements. The upstream PMD project remains available at the original repository, and contributions intended for the broader community should be submitted there through pull request![Uploading 3_-_Long_running_agents.max-1600x1600.png…]()
+
