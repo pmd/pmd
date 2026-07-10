@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
@@ -19,10 +21,10 @@ public class AnalysisCacheListener implements GlobalAnalysisListener {
 
     private final AnalysisCache cache;
 
-    public AnalysisCacheListener(AnalysisCache cache, RuleSets ruleSets, ClassLoader classLoader,
+    public AnalysisCacheListener(AnalysisCache cache, RuleSets ruleSets, List<Path> analysisClasspath,
                                  Collection<? extends TextFile> textFiles) {
         this.cache = cache;
-        cache.checkValidity(ruleSets, classLoader, textFiles);
+        cache.checkValidity(ruleSets, analysisClasspath, textFiles);
     }
 
     @Override
