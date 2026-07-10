@@ -134,4 +134,9 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void calendarYearSoql() {
         doTest("CalendarYearSoql");
     }
+
+    @Test
+    void multilineStringLiterals() {
+        doTest("MultilineStringLiterals");
+    }
 }
