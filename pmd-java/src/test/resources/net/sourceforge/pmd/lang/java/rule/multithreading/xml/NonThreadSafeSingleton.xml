@@ -212,4 +212,38 @@ class Tester {
 }
 ]]></code>
     </test-code>
+<test-code>
+        <description>#6780 non-static getInstance is flagged by default (checkNonStaticMethods=true)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance;
+
+    public Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6780 non-static getInstance is NOT flagged when checkNonStaticMethods=false</description>
+        <rule-property name="checkNonStaticMethods">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance;
+
+    public Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
