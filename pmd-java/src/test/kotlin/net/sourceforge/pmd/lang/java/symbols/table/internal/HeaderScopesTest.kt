@@ -374,6 +374,45 @@ class HeaderScopesTest : ProcessorTestSpec({
         block.symbolTable.types().shouldResolveToClass("List", "java.util.List")
     }
 
+    parserTest("$moduleImport should preserve type ambiguity across modules #6867") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse(
+                """
+            package some.pkg;
+            import module java.base;
+            import module java.sql;
+            class Foo {
+                static {}
+            }
+            """
+        )
+
+        val block = acu.descendants(ASTBlock::class.java).firstOrThrow()
+        block.symbolTable.types().resolve("Date")
+            .map { (it.symbol as JClassSymbol).binaryName }
+            .shouldContainExactlyInAnyOrder("java.util.Date", "java.sql.Date")
+    }
+
+    parserTest("$moduleImport should preserve type ambiguity within one module #6867") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse(
+                """
+            package some.pkg;
+            import module java.desktop;
+            class Foo {
+                static {}
+            }
+            """
+        )
+
+        val block = acu.descendants(ASTBlock::class.java).firstOrThrow()
+        block.symbolTable.types().resolve("Element")
+            .map { (it.symbol as JClassSymbol).binaryName }
+            .shouldContainExactlyInAnyOrder("javax.swing.text.Element", "javax.swing.text.html.parser.Element")
+    }
+
     parserTest("[java] Incorrect type resolution with classes having the same name #913") {
         val acu1 = parser.parseClass(javasymbols.testdata.deep.ClassInDifferentPackage::class.java)
         acu1.symbolTable.types().shouldResolveToClass("ClassInDifferentPackage", "javasymbols.testdata.deep.ClassInDifferentPackage")

@@ -1303,4 +1303,51 @@ public class BinaryTree<E extends Comparable<E>> implements Tree<E> {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6867 unambiguous module import declaration</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'List' is already in scope because it is imported in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+import module java.base;
+class Example {
+    java.util.List<?> values;
+}
+]]></code>
+        <source-type>java 25</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#6867 implicit module import in a compact compilation unit</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary qualifier 'java.util': 'List' is already in scope because it is implicitly imported</message>
+        </expected-messages>
+        <code><![CDATA[
+void main() {
+    java.util.List<?> values = null;
+}
+]]></code>
+        <source-type>java 25</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#6867 ambiguous types imported from multiple modules</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import module java.base;
+import module java.sql;
+class Example {
+    java.util.Date utilDate;
+    java.sql.Date sqlDate;
+    java.lang.reflect.Array reflectArray;
+    java.sql.Array sqlArray;
+}
+]]></code>
+        <source-type>java 25</source-type>
+    </test-code>
 </test-data>
