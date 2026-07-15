@@ -97,8 +97,7 @@ PMD version 7.26.0, so that we can create a bugfix release 7.26.1.
 
     ```
     ./mvnw versions:set -DnewVersion=7.26.1-SNAPSHOT
-    git add pom.xml \*/pom.xml pmd-scala-modules/\*/pom.xml
-    git commit -m "Prepare next version 7.26.1-SNAPSHOT"
+    git commit -a -m "Prepare next version 7.26.1-SNAPSHOT"
     git push
     ```
 
