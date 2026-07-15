@@ -599,6 +599,53 @@
     </test-code>
 
     <test-code>
+        <description>Switch expressions gain 1 complexity like switch statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public int foo(int n) {
+                return switch (n) {   // +1
+                  case 1 -> 1;
+                  case 2 -> 2;
+                  default -> 0;
+                };
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expressions increase nesting like switch statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public int foo(int n) {
+                return switch (n) {                 // +1
+                  case 1 -> 1;
+                  case 2, 3, 4, 5 -> {
+                    if (n <= 3) {                   // +2
+                      yield 3;
+                    }
+                    yield 2;
+                  }
+                  default -> 0;
+                };
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Anonymous class increase nesting level without structural increment</description>
         <expected-problems>2</expected-problems>
         <expected-messages>

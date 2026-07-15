@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -256,6 +257,11 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
 
     @Override
     public Void visit(ASTForeachStatement node, State state) {
+        return structural(node, state);
+    }
+
+    @Override
+    public Void visit(ASTSwitchExpression node, State state) {
         return structural(node, state);
     }
 
