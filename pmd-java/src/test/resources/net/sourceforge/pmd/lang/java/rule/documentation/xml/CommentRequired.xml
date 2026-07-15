@@ -83,6 +83,68 @@ public class Foo {
         <code-ref id="with-all-comments"/>
     </test-code>
 
+    <code-fragment id="package-private-without-comments"><![CDATA[
+public class Foo {
+    Foo(int a) {}
+    void doNothing() {}
+    void doSomething() {}
+}
+    ]]></code-fragment>
+
+    <code-fragment id="package-private-with-comments"><![CDATA[
+public class Foo {
+    /** Constructor comment. */
+    Foo(int a) {}
+    /** Method comment. */
+    void doNothing() {}
+    /** Another method comment. */
+    void doSomething() {}
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>[java] Package-private methods and constructors required but missing comments</description>
+        <rule-property name="classCommentRequirement">ignored</rule-property>
+        <rule-property name="packageMethodCommentRequirement">required</rule-property>
+        <expected-problems>3</expected-problems>
+        <code-ref id="package-private-without-comments"/>
+    </test-code>
+
+    <test-code>
+        <description>[java] Package-private methods and constructors required and present</description>
+        <rule-property name="classCommentRequirement">ignored</rule-property>
+        <rule-property name="packageMethodCommentRequirement">required</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="package-private-with-comments"/>
+    </test-code>
+
+    <test-code>
+        <description>[java] Package-private methods ignored by default (backwards compatible)</description>
+        <rule-property name="classCommentRequirement">ignored</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="package-private-without-comments"/>
+    </test-code>
+
+    <test-code>
+        <description>[java] Package-private methods unwanted but present</description>
+        <rule-property name="classCommentRequirement">ignored</rule-property>
+        <rule-property name="packageMethodCommentRequirement">unwanted</rule-property>
+        <expected-problems>3</expected-problems>
+        <code-ref id="package-private-with-comments"/>
+    </test-code>
+
+    <test-code>
+        <description>[java] Package-private requirement does not affect public or protected methods</description>
+        <rule-property name="classCommentRequirement">ignored</rule-property>
+        <rule-property name="fieldCommentRequirement">ignored</rule-property>
+        <rule-property name="publicMethodCommentRequirement">ignored</rule-property>
+        <rule-property name="enumCommentRequirement">ignored</rule-property>
+        <rule-property name="packageMethodCommentRequirement">required</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="without-any-comments"/>
+    </test-code>
+
+
     <test-code>
         <description>#1115 commentRequiredRule in pmd 5.1 is not working properly</description>
         <expected-problems>2</expected-problems>

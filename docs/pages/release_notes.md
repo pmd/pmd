@@ -24,6 +24,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+#### Changed Rules
+* The Java rule [`CommentRequired`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_documentation.html#commentrequired)
+  has a new property `packageMethodCommentRequirement`. It controls whether Javadoc comments are required (or
+  unwanted) for package-private methods and constructors. Previously, only `public` and `protected` methods could
+  be configured (via `publicMethodCommentRequirement` and `protectedMethodCommentRequirement`). The new property
+  defaults to `Ignored`, so existing rule configurations are unaffected.
+  This was implemented in [#6880](https://github.com/pmd/pmd/pull/6880).
+
 ### 🐛️ Fixed Issues
 * chore
   * [#6837](https://github.com/pmd/pmd/issues/6837): chore: Input 'app-id' has been deprecated with message: Use 'client-id' instead
