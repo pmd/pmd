@@ -2066,18 +2066,18 @@ with which the behavior can be modified, then these different cases can also be 
 <p>And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
 by an additional test case, so that the bug is not accidentally reintroduced later on.</p>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
-<strong>Note:</strong></p>
+<p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
+<strong>Note:</strong></span></p>
 
-  <p>This page describes how PMD tests its own rules internally. This approach can also be used
+<p>This page describes how PMD tests its own rules internally. This approach can also be used
 outside PMD to test custom rules and rulesets, though alternative methods are available.</p>
 
-  <p>One alternative is <strong>test-pmd-tool</strong>, which tests PMD XPath rules for coverage using their own examples
+<p>One alternative is <strong>test-pmd-tool</strong>, which tests PMD XPath rules for coverage using their own examples
 as unit tests. Written in TypeScript, it only requires PMD to be in the PATH to execute a ruleset.
 For more information, see <a href="https://github.com/starch-uk/test-pmd-tool">https://github.com/starch-uk/test-pmd-tool</a>.</p>
 
-</div>
+<p>&lt;/span&gt;</p>
 
 <h2 id="how-it-works">How it works</h2>
 
@@ -2134,12 +2134,12 @@ Just search in the project for a file <code class="language-plaintext highlighte
 unit test class for the given rule. And if the rule is a Java-based rule, the search for <code class="language-plaintext highlighter-rouge">&lt;Rule Name&gt;Rule</code>
 finds the rule implementation class.</div>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
+<p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
 If you want to use the test framework with a different package structure,
-see <a href="#using-the-test-framework-externally">Using the test framework externally</a>.</p>
-</div>
+see <a href="#using-the-test-framework-externally">Using the test framework externally</a>.
+</span></p>
 
 <h2 id="simple-example">Simple example</h2>
 
@@ -2157,12 +2157,12 @@ since the rule belongs to the category “Best Practices”:</p>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
+<p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
 You can also add additionally standard JUnit test methods annotated with <code class="language-plaintext highlighter-rouge">@Test</code> to
-this test class.</p>
-</div>
+this test class.
+</span></p>
 
 <h3 id="test-data-avoidbranchingstatementaslastinloopxml">Test Data: AvoidBranchingStatementAsLastInLoop.xml</h3>
 
@@ -2203,11 +2203,11 @@ you can verify the line number, too.</p>
 Each <code class="language-plaintext highlighter-rouge">&lt;test-code&gt;</code> element defines a single test case. <code class="language-plaintext highlighter-rouge">&lt;code-fragment&gt;</code> elements are used to share code snippets
 between different test cases.</p>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
+<p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
-The XML schema is available at <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_1.xsd">rule-tests.xsd</a>.</p>
-</div>
+The XML schema is available at <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_1.xsd">rule-tests.xsd</a>.
+</span></p>
 
 <h3 id="test-code-attributes"><code class="language-plaintext highlighter-rouge">&lt;test-code&gt;</code> attributes</h3>
 
@@ -2328,14 +2328,14 @@ public class ConsistentReturn {
 <span class="nt">&lt;/test-data&gt;</span>
 </code></pre></div></div>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
+<p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
 For better readability, the indentation should be 4 for spaces and no tabs.
 Each test-code should be separated by a blank line. CDATA
 sections are only required for the code snippets which should be formatted with indentation for
-better readability. The description can be written directly without a CDATA section.</p>
-</div>
+better readability. The description can be written directly without a CDATA section.
+</span></p>
 
 <h2 id="using-the-test-framework-externally">Using the test framework externally</h2>
 
@@ -2450,7 +2450,7 @@ create custom PMD rules for different languages including tests.</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2026 (7.22.0)<br /> Site last generated: Jul 13, 2026 <br />
+            February 2026 (7.22.0)<br /> Site last generated: Jul 15, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

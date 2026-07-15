@@ -2073,11 +2073,11 @@ to execute the unit tests.</li>
   <li>You can also run individual test classes.</li>
 </ul>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
+<p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
-When executing tests, NetBeans actually calls Maven with <code class="language-plaintext highlighter-rouge">surefire:test</code> goal.</p>
-</div>
+When executing tests, NetBeans actually calls Maven with <code class="language-plaintext highlighter-rouge">surefire:test</code> goal. 
+</span></p>
 
 <h2 id="running--debugging-pmd">Running / Debugging PMD</h2>
 
@@ -2094,22 +2094,22 @@ beginning to wait for the debugger. Then you can run in NetBeans “Debug &gt; A
 “SocketAttach” using port “8000”.</li>
 </ul>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
-<strong>Note:</strong></p>
+<p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
+<strong>Note:</strong></span></p>
 
-  <p>If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
+<p>If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
 PMD CLI as scope test, e.g.</p>
 
-  <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
             <span class="nt">&lt;artifactId&gt;</span>pmd-apex<span class="nt">&lt;/artifactId&gt;</span>
             <span class="nt">&lt;version&gt;</span>${project.version}<span class="nt">&lt;/version&gt;</span>
             <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
         <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div>  </div>
+</code></pre></div></div>
 
-</div>
+<p>&lt;/span&gt;</p>
 
 <h2 id="formatter-configuration">Formatter configuration</h2>
 
@@ -2179,7 +2179,7 @@ executed although surefire did run tests.</li>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            January 2025 (7.10.0)<br /> Site last generated: Jul 13, 2026 <br />
+            January 2025 (7.10.0)<br /> Site last generated: Jul 15, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

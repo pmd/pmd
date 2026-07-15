@@ -2061,25 +2061,38 @@
     <p>Review the pull request</p>
 
     <ul>
-      <li>Compilation and checkstyle is verified already by github actions build:
+      <li>Compilation and checkstyle is verified already by GitHub actions build:
 PRs are automatically checked.</li>
       <li>If it is a bug fix, a new unit test, that reproduces the bug, is mandatory.
 Without such a test, we might accidentally reintroduce the bug again.</li>
-      <li>Add the appropriate labels on the github issue: If the PR fixes a bug, the label “a:bug”
+      <li>Make sure the PR contains only the commits related to the bugfix/feature.</li>
+      <li>Add the appropriate labels on the GitHub issue: If the PR fixes a bug, the label “a:bug”
 should be used.</li>
-      <li>Make sure, the PR is added to the appropriate milestone.
+      <li>Add the PR to the appropriate milestone:
 If the PR fixes a bug, make sure, that the bug issue is added to the same milestone.</li>
+      <li>Make sure the target branch is set to <code class="language-plaintext highlighter-rouge">main</code></li>
     </ul>
   </li>
   <li>
-    <p>The actual merge commands:</p>
+    <p>Checkout the branch locally:</p>
 
-    <p>We assume, that the PR has been created from the main branch. If this is not the case,
-then we’ll either need to rebase or ask for rebasing before merging.</p>
+    <p>Use the <a href="https://cli.github.com/">GitHub CLI tool</a> to check out the branch:</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout main &amp;&amp; git pull origin main                        # make sure, you have the latest code
-git fetch origin pull/123/head:pr-123 &amp;&amp; git checkout pr-123     # creates a new temporary branch "pr-123"
+gh pr checkout https://github.com/pmd/pmd/pull/123 -b pr-123     # creates a new temporary branch "pr-123"
 </code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Now merge the main branch into the pull request branch:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git merge main
+</code></pre></div>    </div>
+
+    <p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
+<strong>Note:</strong>
+If there are merge conflicts, you’ll need to deal with them here.
+</span></p>
   </li>
   <li>
     <p>Update the <a href="https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md">release notes</a>:</p>
@@ -2093,10 +2106,8 @@ git fetch origin pull/123/head:pr-123 &amp;&amp; git checkout pr-123     # creat
         <p>Changes for modified rules are e.g. new properties or changed default values for properties.</p>
       </li>
       <li>If the PR fixes a bug, make sure, it is listed under the section “Fixed Issues”.
-Also make sure, that the PR description mentions this (e.g. “- fixes #issue-number”) and
-the this PR is linked with the issue. Merging this PR will then automatically close the issue.</li>
-      <li>In any case, add the PR to the section “Merged pull requests”. You can add it by calling
-<code class="language-plaintext highlighter-rouge">.ci/tools/release-notes-add-pr.sh prnumber</code>.</li>
+Also make sure, that the PR description mentions this (e.g. “- Fixes #issue-number”) and
+that the PR is linked with the issue. Merging this PR will then automatically close the issue.</li>
       <li>
         <p>Commit these changes with the message:</p>
 
@@ -2105,192 +2116,113 @@ git commit -m "[doc] Update release notes (#123)"
 </code></pre></div>        </div>
       </li>
     </ul>
-
-    <div class="alert alert-info" role="alert">
-      <p><i class="fas fa-info-circle"></i>
-<strong>Note:</strong>
-If the PR fixes a bug, verify, that we have a commit with the message
-“Fixes #issue-number”. If this doesn’t exist, you can add it to the commit message when
-updating the release notes: <code class="language-plaintext highlighter-rouge">[doc] Update release notes (#123, fixes #issue-number)</code>.
-This will automatically close the github issue.</p>
-    </div>
-  </li>
-</ol>
-<p>&lt;/div&gt;</p>
-
-<ol>
-  <li>
-    <p>Add the contributor to <code class="language-plaintext highlighter-rouge">.all-contributorsrc</code>:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx all-contributors add &lt;username&gt; code
-</code></pre></div>    </div>
-
-    <p>This will modify the files <code class="language-plaintext highlighter-rouge">.all-contributorsrc</code> and <code class="language-plaintext highlighter-rouge">docs/pages/pmd/projectdocs/credits.md</code>.
-Commit them with <code class="language-plaintext highlighter-rouge">git commit -am "Add @&lt;username&gt; as a contributor</code> into the current branch (pr-123).</p>
   </li>
   <li>
-    <p>Now merge the pull request into the main branch:</p>
+    <p>Push the PR back to GitHub</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout main
-git merge --no-ff pr-123 -m "Full-title-of-the-pr (#123)"
-</code></pre></div>    </div>
-
-    <div class="alert alert-info" role="alert">
-      <p><i class="fas fa-info-circle"></i>
-<strong>Note:</strong>
-If there are merge conflicts, you’ll need to deal with them here.</p>
-    </div>
-  </li>
-</ol>
-<p>&lt;/div&gt;</p>
-
-<ol>
-  <li>
-    <p>Run the complete build: <code class="language-plaintext highlighter-rouge">./mvnw clean verify -Pgenerate-rule-docs</code></p>
-
-    <div class="alert alert-info" role="alert">
-      <p><i class="fas fa-info-circle"></i>
-<strong>Note:</strong>
-This will execute all the unit tests and the checkstyle tests. It ensures,
-that the complete project can be build and is functioning on top of the current main.</p>
-    </div>
-  </li>
-</ol>
-<p>&lt;/div&gt;</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div markdown="block" class="alert alert-info" role="alert"&gt; &lt;i class="fas fa-info-circle"&gt;&lt;/i&gt; **Note:** The profile `generate-rule-docs` will run the doc checks, that would
-otherwise only run on github actions and fail the build, if e.g. a jdoc or rule reference is wrong.
-</code></pre></div></div>
-<p>&lt;/div&gt;</p>
-
-<ol>
-  <li>
-    <p>If the build was successful, you are ready to push:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin main
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push
 </code></pre></div>    </div>
 
     <p>Since the temporary branch is now not needed anymore, you can delete it:
 <code class="language-plaintext highlighter-rouge">git branch -d pr-123</code>.</p>
   </li>
+  <li>
+    <p>On the PR page, wait until the “Squash and Merge” button turns green, then press it.</p>
+  </li>
 </ol>
 
-<h2 id="example-2-merging-pr-124-into-a-maintenance-branch">Example 2: Merging PR #124 into a maintenance branch</h2>
+<h2 id="example-2-backporting-changes-into-a-maintenance-branch">Example 2: Backporting changes into a maintenance branch</h2>
 
-<p>We ask, to create every pull request against main, to make it easier to contribute.
-But if a pull request is intended to fix a bug in an older version of PMD, then we need to backport this pull request.</p>
+<p>Every change should go into main first.
+But in the rare case a fix needs to be made in an older version as well, we need to backport it.</p>
 
 <h3 id="creating-a-maintenance-branch">Creating a maintenance branch</h3>
 
-<p>For older versions, we use maintenance branches, like <code class="language-plaintext highlighter-rouge">pmd/5.8.x</code>. If there is no maintenance branch for
+<p>For older versions, we use maintenance branches, like <code class="language-plaintext highlighter-rouge">pmd/7.26.x</code>. If there is no maintenance branch for
 the specific version, then we’ll have to create it first. Let’s say, we want a maintenance branch for
-PMD version 5.8.0, so that we can create a bugfix release 5.8.1.</p>
+PMD version 7.26.0, so that we can create a bugfix release 7.26.1.</p>
 
 <ol>
   <li>
-    <p>We’ll simply create a new branch off of the release tag:</p>
+    <p>Make sure your checkout is in a clean state, that is, the output of</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch pmd/5.8.x pmd_releases/5.8.0 &amp;&amp; git checkout pmd/5.8.x
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git status
+</code></pre></div>    </div>
+
+    <p>ends with <code class="language-plaintext highlighter-rouge">nothing to commit, working tree clean</code>.</p>
+  </li>
+  <li>
+    <p>Create a new branch off of the release tag:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git branch pmd/7.26.x pmd_releases/7.26.0 &amp;&amp; git checkout pmd/7.26.x
 </code></pre></div>    </div>
   </li>
   <li>
     <p>Now we’ll need to adjust the version, since it’s currently the same as the release version.
-We’ll change the version to the next patch version: “5.8.1-SNAPSHOT”.</p>
+We’ll change the version to the next patch version: “7.26.1-SNAPSHOT”.</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mvnw versions:set -DnewVersion=5.8.1-SNAPSHOT
-git add pom.xml \*/pom.xml pmd-scala-modules/\*/pom.xml
-git commit -m "Prepare next version 5.8.1-SNAPSHOT"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mvnw versions:set -DnewVersion=7.26.1-SNAPSHOT
+git commit -a -m "Prepare next version 7.26.1-SNAPSHOT"
+git push
 </code></pre></div>    </div>
   </li>
 </ol>
 
-<h3 id="merging-the-pr">Merging the PR</h3>
+<h3 id="backporting-the-changes-from-the-pr">Backporting the changes from the PR</h3>
 
 <ol>
   <li>
-    <p>As above: Review the PR</p>
+    <p>Switch to the branch we created above, fetch recent changes:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout pmd/7.26.x
+git pull
+</code></pre></div>    </div>
   </li>
   <li>
-    <p>Fetch the PR and rebase it onto the maintenance branch:</p>
+    <p>Cherrypick the already merged PR from main branch into the maintenance branch:</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git fetch origin pull/124/head:pr-124 &amp;&amp; git checkout pr-124     # creates a new temporary branch
-git rebase main --onto pmd/5.8.x
-./mvnw clean verify                                # make sure, everything works after the rebase
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout backport-pr-124-to-7.26.x             # creates a new temporary branch
+git cherrypick commit-hash-you-want-to-packport
 </code></pre></div>    </div>
 
-    <div class="alert alert-info" role="alert">
-      <p><i class="fas fa-info-circle"></i>
+    <p><span class="alert alert-info" role="alert">
+<i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
-You might need to fix conflicts / backport the commits for the older
-PMD version.</p>
-    </div>
+At this point, that you will need to fix conflicts / backport the changes for the older
+PMD version. At least in the release notes (see above for details), maybe also in the code.
+</span></p>
+  </li>
+  <li>
+    <p>Run the complete build, then push:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mvnw clean verify -Pgenerate-rule-docs
+git push
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Create a PR on GitHub:</p>
+
+    <ul>
+      <li>Make sure that you merge <em>from</em> backport-pr-124-to-7.26.x <em>to</em> pmd/7.26.x.</li>
+      <li>Make sure that you mention #124 in the description.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Merge the PR (ideally by a second person)</p>
+
+    <p>Press the big green button if everything looks as expected.</p>
+  </li>
+  <li>
+    <p>Repeat for every version the fix needs to be backported to.</p>
   </li>
 </ol>
-<p>&lt;/div&gt;</p>
-
-<ol>
-  <li>
-    <p>Update the release notes. See above for details.</p>
-  </li>
-  <li>
-    <p>Now merge the pull request into the maintenance branch:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout pmd/5.8.x
-git merge --no-ff pr-124 -m "Merge pull request #124 from xyz:branch
-    
-Full-title-of-the-pr #124" --log
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>Just to be sure, run the complete build again: <code class="language-plaintext highlighter-rouge">./mvnw clean verify -Pgenerate-rule-docs</code>.</p>
-  </li>
-  <li>
-    <p>If the build was successful, you are ready to push:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push origin pmd/5.8.x
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>Since we have rebased the pull request, it won’t appear as merged on github.
-You need to manually close the pull request. Leave a comment, that it has been
-rebased onto the maintenance branch.</p>
-  </li>
-</ol>
-
-<h3 id="merging-into-main">Merging into main</h3>
-
-<p>Now the PR has been merged into the maintenance branch, but it is missing in any later version of PMD.
-Therefore, we merge first into the next minor version maintenance branch (if existing):</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout pmd/5.9.x
-git merge pmd/5.8.x
-</code></pre></div></div>
-
-<p>After that, we merge the changes into the main branch:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout main
-git merge pmd/5.9.x
-</code></pre></div></div>
-
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i>
-<strong>Note:</strong>
-This ensures, that every change on the maintenance branch eventually ends
-up in the main branch and therefore in any future version of PMD.<br />
-The downside is however, that there are inevitable merge conflicts for the maven <code class="language-plaintext highlighter-rouge">pom.xml</code> files, since
-every branch changed the version number differently.<br />
-We could avoid this by merging only the temporary branch “pr-124” into each maintenance branch and
-eventually into main, with the risk of missing single commits in a maintenance branch, that have been
-done outside the temporary branch.</p>
-</div>
 
 <h3 id="merging-vs-cherry-picking">Merging vs. Cherry-Picking</h3>
 
-<p>We are not using cherry-picking, so that each fix is represented by a single commit.
-Cherry-picking would duplicate the commit and you can’t see in the log, on which branches the fix has been
-integrated (e.g. gitk and github show the branches, from which the specific commit is reachable).</p>
-
-<p>The downside is a more complex history - the maintenance branches and main branch are “connected” and not separate.</p>
+<p>Since we are squashing, we are also using cherry-picking. This means that if the same fix is applied to multiple versions,
+it appears as several, seemingly unrelated commits. This is fine, since the commit message of the backported fix will
+reference the original PR.
+This leads to a linear history for each branch - the maintenance branches and main branch are separate and not “connected”.</p>
 
 
     <div class="tags">
@@ -2321,7 +2253,7 @@ integrated (e.g. gitk and github show the branches, from which the specific comm
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            January 2026 (7.21.0)<br /> Site last generated: Jul 13, 2026 <br />
+            June 2026 (7.27.0)<br /> Site last generated: Jul 15, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

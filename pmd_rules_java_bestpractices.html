@@ -2827,11 +2827,12 @@ rather than at runtime (if at all).</p>
 
 <p>Note: The fix it not necessarily just removing the default case. Maybe a case is missing which needs to be implemented.</p>
 
-<p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">SwitchStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nt">SwitchExpression</span><span class="p">)</span><span class="w">
-                      </span><span class="p">[</span><span class="na">@Exhaustive</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
-                      </span><span class="p">[</span><span class="na">@DefaultCase</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
-</span></code></pre></div></div>
+<p>Note 2: The compiler doesn’t create a compilation error for a switch <em>statement</em> over an enum that is non-exhaustive.
+When enabling this rule, you should consider also enabling the rule <a href="pmd_rules_java_bestpractices.html#nonexhaustiveswitch"><code class="language-plaintext highlighter-rouge">NonExhaustiveSwitch</code></a>, so that you are still
+notified, if someone adds a new enum constant and that new constant is not covered in an existing switch statement
+that previously was exhaustive but now is not anymore.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/ExhaustiveSwitchHasDefaultRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -5412,7 +5413,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 13, 2026 <br />
+             Site last generated: Jul 15, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
