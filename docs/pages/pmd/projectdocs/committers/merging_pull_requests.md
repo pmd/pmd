@@ -110,7 +110,7 @@ PMD version 7.26.0, so that we can create a bugfix release 7.26.1.
     git pull
     ```
 
-2.  Fetch the PR and rebase it onto the maintenance branch:
+2.  Cherrypick the already merged PR from main branch into the maintenance branch:
 
     ```
     git checkout backport-pr-124-to-7.26.x             # creates a new temporary branch
