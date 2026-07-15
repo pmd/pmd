@@ -67,7 +67,7 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 6.  On the PR page, wait until the "Squash and Merge" button turns green, then press it.
 
 
-## Example 2: Merging PR #124 into a maintenance branch
+## Example 2: Backporting changes into a maintenance branch
 
 Every change should go into main first.
 But in the rare case a fix needs to be made in an older version as well, we need to backport it.
