@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
-import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -23,7 +22,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
     public ExhaustiveSwitchHasDefaultRule() {
-        super(ASTSwitchExpression.class, ASTStatement.class);
+        super(ASTSwitchExpression.class, ASTSwitchStatement.class);
     }
 
     @Override
