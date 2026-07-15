@@ -98,7 +98,7 @@
         <javadoc.plugin.version>3.12.0</javadoc.plugin.version>
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <saxon.version>12.9</saxon.version>
+        <saxon.version>12.10</saxon.version>
         <byte.buddy.version>1.18.11</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
