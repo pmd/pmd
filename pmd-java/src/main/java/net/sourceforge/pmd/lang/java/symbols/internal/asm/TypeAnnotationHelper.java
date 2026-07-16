@@ -164,7 +164,7 @@ final class TypeAnnotationHelper {
         // eg for A.B.C, the list is [A.B.C, A.B, A]
         List<JClassType> enclosingTypes = getEnclosingTypes(t);
         int selectionDepth = 0;
-        while (path != null && path.getStep(i + selectionDepth) == TypePath.INNER_TYPE) {
+        while (path != null && i + selectionDepth < path.getLength() && path.getStep(i + selectionDepth) == TypePath.INNER_TYPE) {
             selectionDepth++;
         }
         final int selectedTypeIndex = enclosingTypes.size() - 1 - selectionDepth;

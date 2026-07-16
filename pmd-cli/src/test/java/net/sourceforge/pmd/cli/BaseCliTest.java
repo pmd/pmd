@@ -42,16 +42,18 @@ abstract class BaseCliTest {
     }
 
     protected CliExecutionResult runCliSuccessfully(String... args) throws Exception {
-        return runCli(CliExitCode.OK, args);
+        return runCli(new RunCliArgumentBuilder().args(args));
     }
 
     protected CliExecutionResult runCli(CliExitCode expectedExitCode, String... args) throws Exception {
-        final List<String> argList = new ArrayList<>();
-        argList.addAll(cliStandardArgs());
-        argList.addAll(Arrays.asList(args));
+        return runCli(new RunCliArgumentBuilder().args(args).expectedExitCode(expectedExitCode));
+    }
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayOutputStream err = new ByteArrayOutputStream();
+    protected CliExecutionResult runCli(RunCliArgumentBuilder args) throws Exception {
+        final List<String> argList = args.args;
+
+        ByteArrayOutputStream out = args.out;
+        ByteArrayOutputStream err = args.err;
 
         final PrintStream formerOut = System.out;
         final PrintStream formerErr = System.err;
@@ -75,7 +77,7 @@ abstract class BaseCliTest {
 
         return new CliExecutionResult(
             out, err, exitCode.get()
-        ).verify(e -> assertEquals(expectedExitCode, e.exitCode));
+        ).verify(e -> assertEquals(args.expectedExitCode, e.exitCode));
     }
 
     protected abstract List<String> cliStandardArgs();
@@ -111,6 +113,34 @@ abstract class BaseCliTest {
                     && StringUtils.countMatches((String) o, substring) == times;
             }
         };
+    }
+
+
+    class RunCliArgumentBuilder {
+        private CliExitCode expectedExitCode = CliExitCode.OK;
+        private List<String> args = new ArrayList<>(cliStandardArgs());
+        private ByteArrayOutputStream out = new ByteArrayOutputStream();
+        private ByteArrayOutputStream err = new ByteArrayOutputStream();
+
+        RunCliArgumentBuilder expectedExitCode(CliExitCode expectedExitCode) {
+            this.expectedExitCode = expectedExitCode;
+            return this;
+        }
+
+        RunCliArgumentBuilder args(String... args) {
+            this.args.addAll(Arrays.asList(args));
+            return this;
+        }
+
+        RunCliArgumentBuilder resetArgs() {
+            this.args.clear();
+            return this;
+        }
+
+        RunCliArgumentBuilder mergeStreams() {
+            this.err = this.out;
+            return this;
+        }
     }
 
 

@@ -23,9 +23,6 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
-#### Updated PMD Designer
-This PMD release ships a new version of the pmd-designer.
-For the changes, see [PMD Designer Changelog (7.19.3)](https://github.com/pmd/pmd-designer/releases/tag/7.19.3).
 
 #### Kotlin type-aware analysis
 
@@ -34,65 +31,37 @@ Resolved type names, return types, and annotation FQNs are available through `Ko
 
 Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
-### 🌟️ New and Changed Rules
-#### New Rules
-* The new Java rule {% rule java/errorprone/WrongTestAnnotation %} detects when test annotations from the wrong
-  testing framework (JUnit 4, JUnit Jupiter, or TestNG) are used in your code, preventing tests from being silently
-  skipped due to framework mismatches. This helps avoid the silent failure where tests compile but don't execute
-  because the test runner doesn't recognize the annotation.
-* The new Java rule {% rule java/errorprone/AssertEqualsArgumentOrder %} detects assertions
-  where the expected and actual arguments were swapped. This helps find assertions
-  that are producing a confusing error message when they fail.
-* The new Kotlin rule {% rule kotlin/bestpractices/LocalVariableShadowsParameter %} detects local variable
-  declarations that use the same name as a parameter of the enclosing function. This shadows the parameter
-  and may lead to confusion about which value is used.
-* The new Apex rule {% rule apex/errorprone/InvocableClassNoArgConstructor %} detects classes that use
-  `@InvocableVariable` properties, but that don't provide a no-arg constructor. Without such a constructor,
-  runtime exception occur when Salesforce Flow tries to instantiate such classes.
-
-#### Deprecated Rules
-* The rule {% rule java/design/UseObjectForClearerAPI %} was deprecated. Use {% rule java/design/ExcessiveParameterList %}
-  instead. The old rule name still works.
-
 ### 🐛️ Fixed Issues
-* apex
-  * [#6806](https://github.com/pmd/pmd/issues/6806): \[apex] ANTLR runtime mismatch 4.9.1 used for code generation does not match the current runtime version 4.13.2
-* apex-errorprone
-  * [#6793](https://github.com/pmd/pmd/issues/6793): \[apex] New Rule: Invocable Classes require a no argument constructor
-* apex-security
-  * [#2955](https://github.com/pmd/pmd/issues/2955): \[apex] ApexSOQLInjection: False positive when passing local var with concatenating strings
-  * [#3877](https://github.com/pmd/pmd/issues/3877): \[apex] ApexCRUDViolation: False positive with Lists of Objects with getSObjectType().getDescribe()
+* chore
+  * [#6837](https://github.com/pmd/pmd/issues/6837): chore: Input 'app-id' has been deprecated with message: Use 'client-id' instead
 * core
-  * [#6764](https://github.com/pmd/pmd/issues/6764): \[core] ANTLR: Report syntax errors as processing errors
-* cpp
-  * [#6641](https://github.com/pmd/pmd/issues/6641): \[cpp]: IndexOutOfBoundsException in CPD when a duplication is at end of file with UTF8-BOM
-* cli
-  * [#6741](https://github.com/pmd/pmd/issues/6741): \[cli] Designer: Fix quotes in PMD_OPENJFX_MODULE_PATH setting
+  * [#1995](https://github.com/pmd/pmd/issues/1995): \[core] PMD should display number of rules violated or errors found
+  * [#4952](https://github.com/pmd/pmd/issues/4952): \[doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader
+  * [#4953](https://github.com/pmd/pmd/issues/4953): \[core] Deprecate PMDConfiguration#setClassloader and #getClassloader
+* java
+  * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
+  * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
 * java-bestpractices
-  * [#6692](https://github.com/pmd/pmd/issues/6692): \[java] ForLoopCanBeForeach: inconsistent detection between i += 1 and i = i + 1 update forms
-  * [#6736](https://github.com/pmd/pmd/issues/6736): \[java] JUnitJupiterTestShouldBePackagePrivate: False negative when the only tests are in a @<!-- -->Nested class
-  * [#6782](https://github.com/pmd/pmd/issues/6782): \[java] UseStandardCharsets: ArrayIndexOutOfBoundsException in line 81
+  * [#5514](https://github.com/pmd/pmd/issues/5514): \[java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements
+  * [#5670](https://github.com/pmd/pmd/issues/5670): \[java] ExhaustiveSwitchHasDefault issue with final fields not initialized in constructor
 * java-codestyle
-  * [#6239](https://github.com/pmd/pmd/issues/6239): \[java] UseDiamondOperator: False positive with Guice TypeLiteral
-  * [#6775](https://github.com/pmd/pmd/issues/6775): \[java] UselessParentheses: False negative when on the right-hand side of an assignment statement
+  * [#6709](https://github.com/pmd/pmd/issues/6709): \[java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver
 * java-design
-  * [#3741](https://github.com/pmd/pmd/issues/3741): \[java] Deprecate UseObjectForClearerAPI
-  * [#6459](https://github.com/pmd/pmd/issues/6459): \[java] PublicMemberInNonPublicType: False positive for main(...) methods
-  * [#6460](https://github.com/pmd/pmd/issues/6460): \[java] PublicMemberInNonPublicType: False negative for overridden methods
+  * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
 * java-errorprone
-  * [#2846](https://github.com/pmd/pmd/issues/2846): \[java] New Rule: WrongTestAnnotation
-  * [#6743](https://github.com/pmd/pmd/issues/6743): \[java] CloseResource: False positive for closeable initialized with (T) null
-  * [#6781](https://github.com/pmd/pmd/issues/6781): \[java] UselessPureMethodCall: False positive for Stream.forEach
-* kotlin
-  * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add auxClasspath language property
-* kotlin-bestpractices
-  * [#6732](https://github.com/pmd/pmd/issues/6732): \[kotlin] New Rule: LocalVariableShadowsParameter
+  * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
 
 ### 🚨️ API Changes
+
+#### Deprecations
 * core
-  * {% jdoc core::lang.ast.impl.antlr4.AntlrBaseParser %} has been deprecated in favor of
-    {% jdoc core::lang.ast.impl.antlr4.AntlrBaseParserWithErrorHandling %}, which converts ANTLR's parsing
-    errors into PMD's processing errors by default.
+  * {%jdoc !!core::PMDConfiguration#getClassLoader() %} and {%jdoc !!core::PMDConfiguration#setClassLoader(java.lang.ClassLoader) %} are deprecated.
+    Use {%jdoc core::PMDConfiguration#prependAuxClasspath(String) %} or {%jdoc core::PMDConfiguration#setAuxClasspath(String) %} to
+    configure the auxClasspath for analyzing Java code.  
+    Note: In order to read back the currently configured auxClasspath, use {%jdoc core::PMDConfiguration#getAuxClasspath() %} and not the
+    deprecated `getClassLoader()` anymore.  
+    Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
+    By just configuring the auxClasspath, PMD internally can deal with that.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

@@ -63,7 +63,7 @@ public class AntlrTokenManager implements TokenManager<AntlrToken> {
                                 final int charPositionInLine,
                                 final String msg,
                                 final RecognitionException ex) {
-            throw new LexException(line, charPositionInLine, textDoc.getFileId(), msg, ex);
+            throw new LexException(line, charPositionInLine + 1, textDoc.getFileId(), msg, ex);
         }
     }
 

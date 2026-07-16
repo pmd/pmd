@@ -36,6 +36,8 @@ public class Foo {
         if (true) {
         } else if (true) {
         } else if (true) {
+        } else if (true) {
+        } else if (true) {
         } else {
             // this ain't good code, but it shouldn't trigger this rule
         }
@@ -46,7 +48,7 @@ public class Foo {
     <test-code>
         <description>Deep ifs with else</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
         public class Tester {
             public void foo() {
@@ -62,6 +64,25 @@ public class Foo {
                         }
                     } else {
 
+                    }
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Deep else branch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+        public class Tester {
+            public void foo() {
+                if (true) {
+                } else {
+                    if (true) {
+                    } else {
+                        if (true) { // violation
+                        }
                     }
                 }
             }
@@ -114,7 +135,8 @@ public class Foo {
                 if (true) {
                 } else if (true) {
                    if (true) {
-
+                   } else if (true) {
+                   } else if (true) {
                    }
                 } else if (true) {
                    if (true) {

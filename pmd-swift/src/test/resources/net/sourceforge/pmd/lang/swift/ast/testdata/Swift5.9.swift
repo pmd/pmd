@@ -13,7 +13,7 @@ struct ContentView: View {
 // Macro Expansion: https://github.com/apple/swift-evolution/blob/main/proposals/0382-expression-macros.md#macro-expansion
 let _: Font = #fontLiteral(name: "SF Mono", size: 14, weight: .regular)
 
-// Parameter packs
+// Parameter packs: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0393-parameter-packs.md
 func all<each Wrapped>(_ optional: repeat (each Wrapped)?) -> (repeat each Wrapped)?
 
 func useAll() {

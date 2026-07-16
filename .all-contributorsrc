@@ -8606,6 +8606,79 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Chordrain",
+      "name": "Xiao Te",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102977440?v=4",
+      "profile": "https://github.com/Chordrain",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "FishOfPrey",
+      "name": "Daniel Ballinger",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2396092?v=4",
+      "profile": "http://www.fishofprey.com/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "aaronmorris",
+      "name": "Aaron Morris",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4790725?v=4",
+      "profile": "https://github.com/aaronmorris",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "davidboden",
+      "name": "David Boden",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1673471?v=4",
+      "profile": "https://github.com/davidboden",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "k-satoda",
+      "name": "Kazutoshi SATODA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1337204?v=4",
+      "profile": "https://k-satoda.github.io/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dweep-js",
+      "name": "Subhadeep",
+      "avatar_url": "https://avatars.githubusercontent.com/u/177871500?v=4",
+      "profile": "https://github.com/dweep-js",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lukman48",
+      "name": "Lukman Hakim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17972172?v=4",
+      "profile": "https://github.com/lukman48/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "qwerty7878",
+      "name": "hyeonjune",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142138946?v=4",
+      "profile": "https://velog.io/@qwerty7878",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

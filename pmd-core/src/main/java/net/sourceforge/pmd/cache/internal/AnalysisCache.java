@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
@@ -58,12 +59,12 @@ public interface AnalysisCache {
      * conditions the good behaviour of {@link #isUpToDate(TextDocument)}.
      *
      * @param ruleSets                The rulesets configured for this analysis.
-     * @param auxclassPathClassLoader The class loader for auxclasspath configured for this analysis.
+     * @param analysisClasspath       The entries on the analysis classpath (auxClasspath) configured for this analysis.
      * @param files                   Set of files in the current analysis. File
      *                                records in the cache are matched to the file
      *                                IDs of these files.
      */
-    void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files);
+    void checkValidity(RuleSets ruleSets, List<Path> analysisClasspath, Collection<? extends TextFile> files);
 
     /**
      * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(TextFile)}.

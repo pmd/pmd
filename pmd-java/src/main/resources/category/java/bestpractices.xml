@@ -615,7 +615,7 @@ class ColorTester {
           language="java"
           since="7.10.0"
           message="The switch block is exhaustive even without the default case"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#exhaustiveswitchhasdefault">
         <description>
 When switching over an enum or sealed class, the compiler will ensure that all possible cases are covered.
@@ -627,17 +627,13 @@ new subclass to the sealed class hierarchy is added. We will discover this probl
 rather than at runtime (if at all).
 
 Note: The fix it not necessarily just removing the default case. Maybe a case is missing which needs to be implemented.
+
+Note 2: The compiler doesn't create a compilation error for a switch *statement* over an enum that is non-exhaustive.
+When enabling this rule, you should consider also enabling the rule {% rule NonExhaustiveSwitch %}, so that you are still
+notified, if someone adds a new enum constant and that new constant is not covered in an existing switch statement
+that previously was exhaustive but now is not anymore.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-                    //(SwitchStatement | SwitchExpression)
-                      [@Exhaustive = true()]
-                      [@DefaultCase = true()]
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 class Foo {
@@ -2261,7 +2257,7 @@ Byte arrays in any method and String arrays in `public static void main(String[]
             <property name="xpath">
                 <value>
 <![CDATA[
-//FormalParameters[not(parent::MethodDeclaration[@Overridden=true() or @MainMethod=true()])]
+//FormalParameters[not(parent::MethodDeclaration[@Override=true() or @MainMethod=true()])]
   /FormalParameter[position()=last()]
    [@Varargs=false()]
    [ArrayType[not(PrimitiveType[@Kind = "byte"] or ClassType[pmd-java:typeIs('java.lang.Byte')])]

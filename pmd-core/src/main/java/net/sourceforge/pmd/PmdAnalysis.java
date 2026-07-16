@@ -63,6 +63,7 @@ import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -217,7 +218,12 @@ public final class PmdAnalysis implements AutoCloseable {
             //  CLI syntax is implemented. #2947
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
             if (props instanceof JvmLanguagePropertyBundle) {
-                ((JvmLanguagePropertyBundle) props).setClassLoader(config.getClassLoader());
+                ClassLoader externallyConfiguredClassLoader = config.getClassLoader();
+                if (externallyConfiguredClassLoader != null) {
+                    ((JvmLanguagePropertyBundle) props).setClassLoader(externallyConfiguredClassLoader);
+                } else {
+                    props.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, config.getAuxClasspath());
+                }
             }
         }
 
@@ -393,10 +399,8 @@ public final class PmdAnalysis implements AutoCloseable {
         GlobalAnalysisListener listener;
         try {
             @SuppressWarnings("PMD.CloseResource")
-            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(),
-                                                                            rulesets,
-                                                                            configuration.getClassLoader(),
-                                                                            textFiles);
+            AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(), rulesets,
+                    AuxClasspathUtil.getAuxClasspath(configuration), textFiles);
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),
                                                          GlobalAnalysisListener.tee(extraListeners),

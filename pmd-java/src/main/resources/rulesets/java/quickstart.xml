@@ -191,6 +191,7 @@
 
 
 
+    <!-- <rule ref="category/java/errorprone.xml/AssertEqualsArgumentOrder" /> -->
     <rule ref="category/java/errorprone.xml/AssignmentInOperand">
         <properties>
             <property name="allowWhile" value="true"/>
@@ -296,6 +297,7 @@
     <rule ref="category/java/errorprone.xml/UselessPureMethodCall"/>
     <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader" /> -->
+    <!-- <rule ref="category/java/errorprone.xml/WrongTestAnnotation" /> -->
 
     <!-- Empty rules -->
     <rule ref="category/java/codestyle.xml/EmptyControlStatement"/>

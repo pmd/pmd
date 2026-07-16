@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Path;
 import java.util.zip.Checksum;
 
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class NoopFingerprinter implements ClasspathEntryFingerprinter {
     }
 
     @Override
-    public void fingerprint(URL entry, Checksum checksum) throws IOException {
+    public void fingerprint(Path entry, Checksum checksum) throws IOException {
         // noop
         LOG.debug("Ignoring classpath entry {}", entry);
     }
