@@ -33,6 +33,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#5514](https://github.com/pmd/pmd/issues/5514): \[java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements
   * [#5670](https://github.com/pmd/pmd/issues/5670): \[java] ExhaustiveSwitchHasDefault issue with final fields not initialized in constructor
 * java-codestyle
+  * [#6651](https://github.com/pmd/pmd/issues/6651): \[java] UnnecessaryImport false-positive when Javadoc {@link} references an array type
   * [#6709](https://github.com/pmd/pmd/issues/6709): \[java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver
 * java-design
   * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic

@@ -222,8 +222,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         fullname = m.group(2);
                         if (fullname != null) {
                             for (String param : fullname.split("\\s*,\\s*")) {
-                                removeReferenceSingleImport(param);
-                                removeReferenceOnDemandImport(param);
+                                String paramType = stripArrayOrVarargsSuffix(param);
+                                removeReferenceSingleImport(paramType);
+                                removeReferenceOnDemandImport(paramType);
                             }
                         }
                     }
@@ -438,6 +439,22 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
     }
 
+
+    /**
+     * A javadoc parameter type may be written as an array ({@code Type[]}) or
+     * varargs ({@code Type...}), e.g. in {@code {@link Foo#bar(Type[])}}. Strip
+     * that suffix so the remaining type name can be matched against an import.
+     */
+    private static String stripArrayOrVarargsSuffix(String paramType) {
+        String result = paramType;
+        if (result.endsWith("...")) {
+            result = result.substring(0, result.length() - "...".length());
+        }
+        while (result.endsWith("[]")) {
+            result = result.substring(0, result.length() - "[]".length());
+        }
+        return result;
+    }
 
     /** We found a reference to the type given by the name. */
     private void removeReferenceSingleImport(String referenceName) {
