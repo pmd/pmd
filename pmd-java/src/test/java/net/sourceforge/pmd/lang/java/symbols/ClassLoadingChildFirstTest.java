@@ -15,8 +15,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
@@ -43,10 +45,10 @@ class ClassLoadingChildFirstTest {
                 getClass().getPackage().getName().replace('.', '/'),
                 "custom_java_lang.jar");
 
-        PMDConfiguration config = new PMDConfiguration();
-        config.prependAuxClasspath(file.toAbsolutePath().toString());
+        JavaLanguageProperties languageProperties = (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
+        languageProperties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, file.toAbsolutePath().toString());
 
-        TypeSystem typeSystem = TypeSystem.usingClassLoaderClasspath(config.getClassLoader());
+        TypeSystem typeSystem = TypeSystem.usingClassLoaderClasspath(languageProperties.getAnalysisClassLoader());
 
         JClassType voidClass = typeSystem.BOXED_VOID;
         List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
