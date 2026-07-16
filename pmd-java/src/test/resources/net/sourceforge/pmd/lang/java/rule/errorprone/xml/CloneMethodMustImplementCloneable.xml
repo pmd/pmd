@@ -100,6 +100,19 @@ public class Foo extends Bar implements Cloneable{
     </test-code>
 
     <test-code>
+        <description>#6693 ok, doesn't implement Cloneable but only throws CloneNotSupportedException via a local variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final Object clone() throws CloneNotSupportedException {
+        CloneNotSupportedException e = new CloneNotSupportedException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Bug 1698550, nr 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

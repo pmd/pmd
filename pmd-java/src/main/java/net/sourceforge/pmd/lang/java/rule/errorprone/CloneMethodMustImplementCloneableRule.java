@@ -6,9 +6,13 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -47,13 +51,39 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
     }
 
     private static boolean justThrowsCloneNotSupported(ASTBlock body) {
-        return body.size() == 1
-                && body.getChild(0)
+        if (body.size() == 1) {
+            return body.getChild(0)
                    .asStream()
                    .filterIs(ASTThrowStatement.class)
                    .map(ASTThrowStatement::getExpr)
                    .filter(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it))
                    .nonEmpty();
+        }
+        return body.size() == 2 && throwsLocalCloneNotSupported(body);
+    }
+
+    /**
+     * Recognizes the equivalent two-statement form, where the exception is
+     * first assigned to a local variable and then thrown, e.g.
+     * {@code CloneNotSupportedException e = new CloneNotSupportedException(); throw e;}
+     */
+    private static boolean throwsLocalCloneNotSupported(ASTBlock body) {
+        if (!(body.getChild(0) instanceof ASTLocalVariableDeclaration)
+            || !(body.getChild(1) instanceof ASTThrowStatement)) {
+            return false;
+        }
+        ASTLocalVariableDeclaration decl = (ASTLocalVariableDeclaration) body.getChild(0);
+        if (decl.getVarIds().count() != 1) {
+            return false;
+        }
+        ASTVariableId varId = decl.getVarIds().firstOrThrow();
+        ASTExpression initializer = varId.getInitializer();
+        if (initializer == null || !TypeTestUtil.isA(CloneNotSupportedException.class, initializer)) {
+            return false;
+        }
+        ASTExpression thrown = ((ASTThrowStatement) body.getChild(1)).getExpr();
+        return thrown instanceof ASTVariableAccess
+            && varId.getSymbol().equals(((ASTVariableAccess) thrown).getReferencedSym());
     }
 
 }
