@@ -86,19 +86,19 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit.version>6.1.1</junit.version>
+        <junit.version>6.1.2</junit.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.6</surefire.version>
-        <checkstyle.version>13.7.0</checkstyle.version>
+        <checkstyle.version>13.8.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.17</ant.version>
         <javadoc.plugin.version>3.12.0</javadoc.plugin.version>
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <saxon.version>12.9</saxon.version>
+        <saxon.version>12.10</saxon.version>
         <byte.buddy.version>1.18.11</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -184,7 +184,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-help-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.5.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

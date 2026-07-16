@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.cache.internal;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,8 +58,8 @@ public class ZipFileFingerprinter implements ClasspathEntryFingerprinter {
     }
 
     @Override
-    public void fingerprint(URL entry, Checksum checksum) throws IOException {
-        try (ZipFile zip = new ZipFile(new File(entry.toURI()))) {
+    public void fingerprint(Path entry, Checksum checksum) throws IOException {
+        try (ZipFile zip = new ZipFile(entry.toFile())) {
             final List<ZipEntry> meaningfulEntries = getMeaningfulEntries(zip);
 
             /*
@@ -82,9 +80,6 @@ public class ZipFileFingerprinter implements ClasspathEntryFingerprinter {
             }
         } catch (final FileNotFoundException | NoSuchFileException ignored) {
             LOG.warn("Classpath entry {} doesn't exist, ignoring it", entry);
-        } catch (final URISyntaxException e) {
-            // Should never happen?
-            LOG.warn("Malformed classpath entry doesn't refer to zip in filesystem.", e);
         }
     }
 

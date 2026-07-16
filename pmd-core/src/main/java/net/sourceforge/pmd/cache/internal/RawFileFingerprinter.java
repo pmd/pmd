@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.cache.internal;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,13 +40,13 @@ public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
     }
 
     @Override
-    public void fingerprint(URL entry, Checksum checksum) throws IOException {
-        try (CheckedInputStream inputStream = new CheckedInputStream(entry.openStream(), checksum)) {
+    public void fingerprint(Path entry, Checksum checksum) throws IOException {
+        try (CheckedInputStream inputStream = new CheckedInputStream(Files.newInputStream(entry), checksum)) {
             // Just read it, the CheckedInputStream will update the checksum on its own
             while (IOUtil.skipFully(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
                 // just loop
             }
-        } catch (final FileNotFoundException ignored) {
+        } catch (final NoSuchFileException ignored) {
             LOG.warn("Classpath entry {} doesn't exist, ignoring it", entry);
         }
     }

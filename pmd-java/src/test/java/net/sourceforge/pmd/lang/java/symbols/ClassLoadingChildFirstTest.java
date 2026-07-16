@@ -54,7 +54,6 @@ class ClassLoadingChildFirstTest {
 
         try (AuxClasspathLoader auxClasspathLoader = AuxClasspathLoader.create(classpath, false)) {
             TypeSystem typeSystem = TypeSystem.usingClasspath(auxClasspathLoader);
-
             JClassType voidClass = typeSystem.BOXED_VOID;
             List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
             assertThat(declaredMethods, hasSize(1));
