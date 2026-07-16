@@ -2354,16 +2354,14 @@ public class Foo {
             Final variables are exempt from the rule to allow snapshot comparison,
             the same applies to variables defined using time measurement methods.
 
-            Variables that are declared together with other variables at the very top of a block,
-            before any other statement, can optionally be exempted too via the property
-            `ignoreVariablesAtTopOfBlock`, to support the coding convention of declaring all local
-            variables upfront.
+            Other local variable declarations that are not separated from the current one
+            by any executable statement don't count towards the distance either, so that
+            variables that are declared together (e.g. all at the top of a block) are not
+            reported just because of each other.
         </description>
         <priority>3</priority>
         <properties>
             <property name="maxDistance" type="Integer" value="7" description="Maximum distance between declaration and usage" />
-            <property name="ignoreVariablesAtTopOfBlock" type="Boolean" value="false"
-                      description="Ignore variables that are declared together with other variables at the very top of a block (e.g. method or loop), before any other statement. This supports the coding convention of declaring all local variables upfront." />
         </properties>
         <example>
             <![CDATA[
@@ -2390,8 +2388,8 @@ public void measure() {
     System.out.println("State changed: " + !state.equals(getState()));
 }
 
-// with ignoreVariablesAtTopOfBlock=true, none of these are reported,
-// since they are all declared together at the top of the block
+// none of these are reported: the other declarations in between don't count
+// towards the distance, since they aren't executable statements themselves
 public void report() {
     Report firstReport;
     Tree   firstTree;
