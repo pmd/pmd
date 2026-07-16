@@ -302,7 +302,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 #v1.316.0
+        uses: ruby/setup-ruby@8e41b362d2589a22a44c1cfa214b3c83052c195b #v1.318.0
         with:
           ruby-version: 4
       - name: Setup bundler
@@ -343,7 +343,7 @@ jobs:
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@d45b1a4e94b71acab930e56e79c6aa188764e7f9 #v1.316.0
+        uses: ruby/setup-ruby@8e41b362d2589a22a44c1cfa214b3c83052c195b #v1.318.0
         with:
           ruby-version: 4
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
