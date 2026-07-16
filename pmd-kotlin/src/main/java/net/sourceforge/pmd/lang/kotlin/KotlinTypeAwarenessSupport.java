@@ -38,8 +38,8 @@ final class KotlinTypeAwarenessSupport {
     private static final Logger LOG = LoggerFactory.getLogger(KotlinTypeAwarenessSupport.class);
 
     /** Populated in {@link #prepare} before any file is parsed. */
-    private volatile KotlinTypeAnnotationVisitor annotationVisitor;
-    private volatile KotlinTypeAnalysisContext analysisContext = KotlinTypeAnalysisContext.empty();
+    private KotlinTypeAnnotationVisitor annotationVisitor;
+    private KotlinTypeAnalysisContext analysisContext = KotlinTypeAnalysisContext.empty();
 
     private final KotlinAuxClasspathResolver classpathResolver;
 
