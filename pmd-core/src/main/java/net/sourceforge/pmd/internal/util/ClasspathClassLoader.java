@@ -45,7 +45,11 @@ import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
  * the file will be read with each line representing an path on the classpath.
  *
  * @author Edwin Chan
+ * @deprecated Since 7.27.0. Using ClassLoaders directly is discouraged, as it is unclear, if and
+ *     when the ClassLoaders should be closed to release their resources. By just configuring the auxClasspath
+ *     via {@link net.sourceforge.pmd.PMDConfiguration#setAuxClasspath(String)}, PMD internally can deal with that.
  */
+@Deprecated
 public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClasspathClassLoader.class);
