@@ -69,6 +69,10 @@ This is a {{ site.pmd.release_type }} release.
       is now set correctly when providing the auxClasspath via CLI parameter `--aux-classpath`.
     * The internal class `net.sourceforge.pmd.internal.util.ClasspathClassLoader` has been explicitly marked as deprecated.
       Using ClassLoaders directly is discouraged. Use {%jdoc !!core::PMDConfiguration#setAuxClasspath(String) %} instead.
+* java
+    * {%jdoc !!java::lang.java.types.TypeSystem#usingClassLoaderClasspath(java.lang.ClassLoader) %} is deprecated. Using
+      ClassLoaders directly is discouraged. Use {%jdoc java::lang.java.types.TypeSystem#usingClasspath(java::lang.java.symbols.internal.asm.Classpath) %}
+      instead.
 
 #### Experimental API
 * core
