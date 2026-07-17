@@ -152,6 +152,7 @@
     <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/>
     <!-- <rule ref="category/java/design.xml/GodClass" /> -->
     <!-- <rule ref="category/java/design.xml/ImmutableField" /> -->
+    <rule ref="category/java/design.xml/InstantiableUtilityClass"/>
     <!-- <rule ref="category/java/design.xml/InvalidJavaBean">-->
     <!--     <properties>-->
     <!--         <property name="packages" value="org.example.beans" />-->
@@ -179,7 +180,6 @@
     <!-- <rule ref="category/java/design.xml/TooManyFields" /> -->
     <!-- <rule ref="category/java/design.xml/TooManyMethods" /> -->
     <rule ref="category/java/design.xml/UselessOverridingMethod"/>
-    <rule ref="category/java/design.xml/UseUtilityClass"/>
 
 
     <!-- <rule ref="category/java/documentation.xml/CommentContent" /> -->
