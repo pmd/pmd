@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -11,23 +13,27 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 
 class JvmLanguagePropertyBundleTest {
+    @TempDir
+    private Path tempDir;
 
     @Test
     void setAuxClasspathProperty() throws IOException {
         JvmLanguagePropertyBundle bundle = new JvmLanguagePropertyBundle(DummyLanguageModule.getInstance());
 
-        String libJar = "path/to/lib.jar";
-        bundle.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, libJar);
-        assertEquals(libJar, bundle.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH));
+        Path libDir = Files.createDirectories(tempDir.resolve("path/to"));
+        Path libJar = Files.createFile(libDir.resolve("lib.jar"));
+        bundle.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, libJar.toString());
+        assertEquals(libJar.toString(), bundle.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH));
 
         // Note: this tests the deprecated method getAnalysisClassloader, which should use
         // the AUX_CLASSPATH property
@@ -35,9 +41,7 @@ class JvmLanguagePropertyBundleTest {
         assertNotNull(classLoader);
         assertInstanceOf(ClasspathClassLoader.class, classLoader);
         try (ClasspathClassLoader analysisClassLoader = (ClasspathClassLoader) classLoader) {
-            URL[] urls = analysisClassLoader.getURLs();
-            assertEquals(1, urls.length);
-            assertEquals(Paths.get(libJar).toUri().toURL().toString(), urls[0].toString());
+            assertThat(analysisClassLoader.toString(), containsString(libJar.toString()));
         }
     }
 

@@ -230,7 +230,13 @@ public class AuxClasspathLoader implements AutoCloseable {
 
         List<Path> paths = AuxClasspathUtil.expandClasspath(classpath);
         return paths.stream()
-                        .filter(Files::exists)
+                        .filter(path -> {
+                            boolean exists = Files.exists(path);
+                            if (!exists) {
+                                LOG.warn("Ignoring not existing auxClasspath entry '{}'", path);
+                            }
+                            return exists;
+                        })
                         .map(Entry::create)
                         .collect(Collectors.toList());
     }

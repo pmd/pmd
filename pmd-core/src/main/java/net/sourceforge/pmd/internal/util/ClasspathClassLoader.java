@@ -81,11 +81,6 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     @Override
-    public URL getResource(String name) {
-        return super.getResource(name);
-    }
-
-    @Override
     protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
         throw new IllegalStateException("This class loader shouldn't be used to load classes");
     }
