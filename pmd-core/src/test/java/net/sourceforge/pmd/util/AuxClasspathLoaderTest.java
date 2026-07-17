@@ -4,15 +4,19 @@
 
 package net.sourceforge.pmd.util;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,11 +24,16 @@ import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.platform.suite.api.Suite;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 class AuxClasspathLoaderTest {
     @TempDir
@@ -99,6 +108,78 @@ class AuxClasspathLoaderTest {
 
         try (AuxClasspathLoader loader = new AuxClasspathLoader(classPath)) {
             assertEquals(javaHome.toString(), loader.javaHome);
+            try (InputStream stream = loader.findResource("java/lang/Object.class")) {
+                assertClassFile(stream, javaVersion);
+            }
+
+            // should not fail for resources without a package
+            assertNull(loader.findResource("ClassInDefaultPackage.class"));
+
+            // load module java.base
+            try (InputStream stream = loader.findResource("java.base/module-info.class")) {
+                assertClassFile(stream, javaVersion);
+            }
+        }
+    }
+
+    @Test
+    void findModuleInfoFromJar() throws Exception {
+        try (AuxClasspathLoader loader = AuxClasspathLoader.create(
+                StringUtils.join(AuxClasspathUtil.getRuntimeClasspath(), File.pathSeparator))) {
+            // search for module org.junit.platform.suite.api, which should be on the test-classpath in pmd-core...
+            // inside a jar
+            String junitPlatformSuiteApiModule = "org.junit.platform.suite.api/module-info.class";
+            try (InputStream resource = loader.findResource(junitPlatformSuiteApiModule)) {
+                assertNotNull(resource, "module " + junitPlatformSuiteApiModule + " not found");
+                byte[] fromAuxClasspathLoader = readBytes(resource);
+
+                // org.junit.platform.suite.api.Suite is located in the same JarFile as junitPlatformSuiteApiModule
+                URL jarFile = Suite.class.getProtectionDomain().getCodeSource().getLocation();
+                URL jarModuleInfoUrl = new URL("jar:" + jarFile.toExternalForm() + "!/module-info.class");
+                try (InputStream jarStream = jarModuleInfoUrl.openStream()) {
+                    byte[] fromJarStream = readBytes(jarStream);
+                    assertArrayEquals(fromAuxClasspathLoader, fromJarStream, "wrong module-info.class loaded");
+                }
+            }
+        }
+    }
+
+    private static byte[] readBytes(InputStream stream) throws IOException {
+        assertNotNull(stream);
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        try (InputStream inputStream = stream) {
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = inputStream.read(buffer)) != -1) {
+                data.write(buffer, 0, count);
+            }
+        }
+        return data.toByteArray();
+    }
+
+
+    /**
+     * Verifies, that we load the class files from the runtime image of the correct java home.
+     * This tests multiple versions, in order to avoid that the test accidentally is successful when
+     * testing e.g. java17 and running the build with java17. In that case, we might load java.lang.Object
+     * from the system classloader and not from jrt-fs.jar.
+     *
+     * <p>
+     *     This test only runs, if you have a folder ${HOME}/openjdk{javaVersion}.
+     * </p>
+     */
+    @ParameterizedTest
+    @ValueSource(ints = {11, 17, 21, 25})
+    void loadFromJava(int javaVersion) throws Exception {
+        Path javaHome = Paths.get(System.getProperty("user.home"), "openjdk" + javaVersion);
+        assumeTrue(Files.isDirectory(javaHome), "Couldn't find java" + javaVersion + " installation at " + javaHome);
+
+        Path jrtfsPath = javaHome.resolve("lib/jrt-fs.jar");
+        assertTrue(Files.isRegularFile(jrtfsPath), "java" + javaVersion + " installation is incomplete. " + jrtfsPath + " not found!");
+        String classPath = jrtfsPath.toString();
+
+        try (AuxClasspathLoader loader = AuxClasspathLoader.create(classPath)) {
+            assertTrue(loader.toString().contains("jrt-fs: " + javaHome));
             try (InputStream stream = loader.findResource("java/lang/Object.class")) {
                 assertClassFile(stream, javaVersion);
             }

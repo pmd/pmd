@@ -33,6 +33,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ModuleVisitor;
+import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +68,9 @@ import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 @Experimental
 public class AuxClasspathLoader implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AuxClasspathLoader.class);
+
+    private static final String MODULE_INFO_SUFFIX = "module-info.class";
+    private static final String MODULE_INFO_SUFFIX_SLASH = "/" + MODULE_INFO_SUFFIX;
 
     private static final Object LOCK = new Object();
     private static Map<String, AuxClasspathLoader> cache;
@@ -109,6 +116,11 @@ public class AuxClasspathLoader implements AutoCloseable {
         public int hashCode() {
             return Objects.hash(path, isFile);
         }
+
+        @Override
+        public String toString() {
+            return path.toString();
+        }
     }
 
     private final List<Entry> auxClasspath;
@@ -118,6 +130,9 @@ public class AuxClasspathLoader implements AutoCloseable {
 
     private FileSystem fileSystem;
     private Map<String, Set<String>> packagesDirsToModules;
+
+    // this is lazily initialized on first query of a module-info.class
+    private Map<String, ZipFile> moduleNameToZipFile;
 
     AuxClasspathLoader(String rawAuxClasspath) {
         LOG.debug("Creating new AuxClasspathLoader for {}", rawAuxClasspath);
@@ -273,9 +288,6 @@ public class AuxClasspathLoader implements AutoCloseable {
         }
     }
 
-    private static final String MODULE_INFO_SUFFIX = "module-info.class";
-    private static final String MODULE_INFO_SUFFIX_SLASH = "/" + MODULE_INFO_SUFFIX;
-
     private static @Nullable String extractModuleName(String name) {
         if (!name.endsWith(MODULE_INFO_SUFFIX_SLASH)) {
             return null;
@@ -303,6 +315,23 @@ public class AuxClasspathLoader implements AutoCloseable {
             throw new IllegalStateException("AuxClasspathLoader is closed");
         }
 
+        String moduleName = extractModuleName(name);
+        if (moduleName != null) {
+            collectAllModules();
+            assert moduleNameToZipFile != null : "Modules should have been detected by collectAllModules()";
+
+            ZipFile moduleZipFile = moduleNameToZipFile.get(moduleName);
+            if (moduleZipFile != null) {
+                ZipEntry moduleZipFileEntry = moduleZipFile.getEntry(MODULE_INFO_SUFFIX);
+                try {
+                    return moduleZipFile.getInputStream(moduleZipFileEntry);
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+        }
+
+
         // always search first in the jars of the aux classpath.
         // this allows to override platform classes (java.lang.*) - which java wouldn't allow
         for (Entry classpathEntry : auxClasspath) {
@@ -314,7 +343,7 @@ public class AuxClasspathLoader implements AutoCloseable {
                     try {
                         return jarFile.getInputStream(entry);
                     } catch (IOException e) {
-                        return null;
+                        throw new UncheckedIOException(e);
                     }
                 }
             } else {
@@ -323,7 +352,7 @@ public class AuxClasspathLoader implements AutoCloseable {
                     try {
                         return Files.newInputStream(classFile);
                     } catch (IOException e) {
-                        return null;
+                        throw new UncheckedIOException(e);
                     }
                 }
             }
@@ -331,7 +360,6 @@ public class AuxClasspathLoader implements AutoCloseable {
 
         // then search in jrt-fs, if available
         if (fileSystem != null) {
-            String moduleName = extractModuleName(name);
             if (moduleName != null) {
                 LOG.trace("Trying to load module-info.class for module {} in jrt-fs", moduleName);
                 Path candidate = fileSystem.getPath("modules", moduleName, MODULE_INFO_SUFFIX);
@@ -367,6 +395,53 @@ public class AuxClasspathLoader implements AutoCloseable {
                 throw new UncheckedIOException(e);
             }
         });
+    }
+
+    private static class ModuleNameExtractor extends ClassVisitor {
+        private String moduleName;
+
+        protected ModuleNameExtractor() {
+            super(Opcodes.ASM9);
+        }
+
+        @Override
+        public ModuleVisitor visitModule(String name, int access, String version) {
+            moduleName = name;
+            return null;
+        }
+
+        public String getModuleName() {
+            return moduleName;
+        }
+    }
+
+    private void collectAllModules() {
+        if (moduleNameToZipFile != null) {
+            return;
+        }
+
+        Map<String, ZipFile> allModules = new HashMap<>();
+        for (Entry classpathEntry : auxClasspath) {
+            if (classpathEntry.isFile()) {
+                @SuppressWarnings("PMD.CloseResource") // we keep the zip file open and close all at the end, see #close
+                ZipFile jarFile = openJarFile(classpathEntry.getPath());
+                ZipEntry entry = jarFile.getEntry(MODULE_INFO_SUFFIX);
+                if (entry != null) {
+                    try {
+                        ModuleNameExtractor finder = new ModuleNameExtractor();
+                        try (InputStream inputStream = jarFile.getInputStream(entry)) {
+                            ClassReader classReader = new ClassReader(inputStream);
+                            classReader.accept(finder, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+                        }
+                        allModules.putIfAbsent(finder.getModuleName(), jarFile);
+                    } catch (IOException e) {
+                        // ignored
+                    }
+                }
+            }
+        }
+        LOG.debug("Found {} modules on auxClasspath", allModules.size());
+        moduleNameToZipFile = Collections.unmodifiableMap(allModules);
     }
 
     @Override
