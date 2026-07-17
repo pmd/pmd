@@ -74,7 +74,7 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
             // and https://github.com/apex-dev-tools/sobject-types
             SOBJECTS = Collections.unmodifiableMap(
                     ClassPath.from(ClassLoader.getSystemClassLoader())
-                            .getTopLevelClasses(com.nawforce.runforce.SObjects.Account.class.getPackage().getName())
+                            .getTopLevelClasses(io.github.apexdevtools.sobjecttypes.Account.class.getPackage().getName())
                             .stream()
                             .collect(Collectors.toMap(c -> c.getSimpleName().toLowerCase(Locale.ROOT),
                                     Function.identity()))
