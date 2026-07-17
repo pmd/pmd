@@ -79,7 +79,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
                 auxClasspath += File.pathSeparator + platformClasspath;
             }
             LOG.debug("Using auxClasspath as analysis classloader: {}", auxClasspath);
-            this.auxClasspathLoader = AuxClasspathLoader.create(auxClasspath, properties.getProperty(JavaLanguageProperties.REUSE_AUX_CLASSLOADER));
+            this.auxClasspathLoader = AuxClasspathLoader.create(auxClasspath);
             this.typeSystem = TypeSystem.usingClasspath(name -> auxClasspathLoader.findResource(name));
         }
     }

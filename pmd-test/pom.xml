@@ -56,6 +56,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-lambda</artifactId>
             <scope>compile</scope>

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -49,29 +48,11 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
                        .defaultValue(true)
                        .build();
 
-    /**
-     * @since 7.27.0
-     * @experimental
-     */
-    @Experimental
-    public static final PropertyDescriptor<Boolean> REUSE_AUX_CLASSLOADER =
-            PropertyFactory.booleanProperty("xReuseAuxClassloader")
-                    .desc("Creating a new AuxClasspathLoader is an expensive operation. If the auxClasspath doesn't "
-                            + "change, then reuse the instance. This is useful when within one running JVM PMD is "
-                            + "executed multiple times such as in unit test execution or in an IDE plugin. "
-                            + "Note that the last instance of the AuxClassloader is not closed and leaks "
-                            + "file resources. "
-                            + "Use AuxClasspathLoader#closePreviousAuxClasspathLoader() to explicitly close it "
-                            + "in the end.")
-                    .defaultValue(false)
-                    .build();
-
     public JavaLanguageProperties() {
         super(JavaLanguageModule.getInstance());
         definePropertyDescriptor(INTERNAL_INFERENCE_LOGGING_VERBOSITY);
         definePropertyDescriptor(INTERNAL_DO_STRICT_TYPERES);
         definePropertyDescriptor(FIRST_CLASS_LOMBOK);
-        definePropertyDescriptor(REUSE_AUX_CLASSLOADER);
         definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);

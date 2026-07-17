@@ -16,9 +16,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,9 +54,8 @@ public class AuxClasspathLoader implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AuxClasspathLoader.class);
 
     private static final Object LOCK = new Object();
-    private static AuxClasspathLoader previousAuxClasspathLoader;
+    private static Map<String, AuxClasspathLoader> cache;
 
-    private final String rawAuxClasspath;
     private boolean closeRequested;
 
     private static final class Entry {
@@ -108,7 +109,6 @@ public class AuxClasspathLoader implements AutoCloseable {
 
     AuxClasspathLoader(String rawAuxClasspath) {
         LOG.debug("Creating new AuxClasspathLoader for {}", rawAuxClasspath);
-        this.rawAuxClasspath = rawAuxClasspath;
         this.auxClasspath = expandAuxClasspath(rawAuxClasspath);
 
         Iterator<Entry> iterator = auxClasspath.iterator();
@@ -122,54 +122,76 @@ public class AuxClasspathLoader implements AutoCloseable {
         }
     }
 
-    public static AuxClasspathLoader create(String rawAuxClasspath, boolean reuse) {
-        if (!reuse) {
-            return new AuxClasspathLoader(rawAuxClasspath);
-        }
-
+    public static AuxClasspathLoader create(String rawAuxClasspath) {
         synchronized (LOCK) {
-            if (previousAuxClasspathLoader != null) {
-                if (previousAuxClasspathLoader.rawAuxClasspath.equals(rawAuxClasspath)) {
-                    LOG.debug("Reusing previously cached AuxClasspathLoader");
-                } else {
-                    LOG.debug("Can't reuse previous AuxClasspathLoader due to different auxClasspath");
-                    try {
-                        previousAuxClasspathLoader.close();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    previousAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath);
-                }
-            } else {
-                previousAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath);
+            if (cache == null) {
+                return new AuxClasspathLoader(rawAuxClasspath);
             }
-            return previousAuxClasspathLoader;
+
+            AuxClasspathLoader cachedAuxClasspathLoader = cache.get(rawAuxClasspath);
+            if (cachedAuxClasspathLoader != null) {
+                LOG.debug("Reusing previously cached AuxClasspathLoader");
+                return cachedAuxClasspathLoader;
+            }
+
+            LOG.debug("Creating new AuxClasspathLoader");
+            AuxClasspathLoader newAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath);
+            cache.put(rawAuxClasspath, newAuxClasspathLoader);
+            return newAuxClasspathLoader;
         }
     }
 
     /**
-     * If {@link JavaLanguageProperties#REUSE_AUX_CLASSLOADER} is enabled, then this method can be used to explicitly
-     * close the auxiliary classpath classloader, when it is known, that PMD won't be executed
-     * anymore.
+     * Enables caching of AuxClasspathLoader instances. This is useful for unit tests or IDE plugins,
+     * when PMD is executed multiple times within one JVM instance.
+     *
+     * @param count Maximum number of instances to be cached. The oldest instances are
+     *              evicted first.
+     *
+     * @see #disableReuse()
+     * @since 7.27.0
+     * @experimental
+     */
+    @Experimental
+    public static void enableReuse(int count) {
+        if (count < 1) {
+            throw new IllegalArgumentException("count must be >= 1");
+        }
+
+        synchronized (LOCK) {
+            if (cache == null) {
+                cache = new LinkedHashMap<String, AuxClasspathLoader>() {
+                    @Override
+                    protected boolean removeEldestEntry(Map.Entry<String, AuxClasspathLoader> eldest) {
+                        return size() > count;
+                    }
+                };
+            }
+        }
+    }
+
+    /**
+     * If {@link #enableReuse(int)} is used, then this method can be used to explicitly
+     * close the cached auxiliary classpath classloaders.
+     *
+     * <p>Call this only, when it is known, that PMD is not currently
+     * executing (e.g. PmdAnalysis is finished).</p>
      *
      * @since 7.27.0
      * @experimental
      */
     @Experimental
-    public static void closePreviousAuxClasspathLoader() {
+    public static void disableReuse() {
         synchronized (LOCK) {
-            if (previousAuxClasspathLoader != null) {
-                AuxClasspathLoader toBeClosed = previousAuxClasspathLoader;
-                try {
-                    // need to set this to null before calling close, as a reused instance won't be closed
-                    previousAuxClasspathLoader = null;
-                } finally {
-                    try {
-                        toBeClosed.close();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            if (cache == null) {
+                return;
+            }
+
+            Collection<AuxClasspathLoader> toBeClosed = cache.values();
+            cache = null; // disable reuse, make sure, we actually close (see #close())
+            Exception exception = IOUtil.closeAll(toBeClosed);
+            if (exception != null) {
+                throw new RuntimeException(exception);
             }
         }
     }
@@ -343,7 +365,7 @@ public class AuxClasspathLoader implements AutoCloseable {
     @Override
     public void close() throws Exception {
         synchronized (LOCK) {
-            if (this.equals(previousAuxClasspathLoader)) {
+            if (cache != null) {
                 LOG.debug("Not closing AuxClasspathLoader as it is cached and might be reused");
                 return;
             }

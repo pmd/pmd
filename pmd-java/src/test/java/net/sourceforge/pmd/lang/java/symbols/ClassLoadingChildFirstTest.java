@@ -52,7 +52,7 @@ class ClassLoadingChildFirstTest {
         JavaLanguageProperties languageProperties = (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
         languageProperties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
 
-        try (AuxClasspathLoader auxClasspathLoader = AuxClasspathLoader.create(classpath, false)) {
+        try (AuxClasspathLoader auxClasspathLoader = AuxClasspathLoader.create(classpath)) {
             TypeSystem typeSystem = TypeSystem.usingClasspath(name -> auxClasspathLoader.findResource(name));
             JClassType voidClass = typeSystem.BOXED_VOID;
             List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
