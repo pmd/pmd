@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.util.AuxClasspathLoader;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -79,7 +80,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
             }
             LOG.debug("Using auxClasspath as analysis classloader: {}", auxClasspath);
             this.auxClasspathLoader = AuxClasspathLoader.create(auxClasspath, properties.getProperty(JavaLanguageProperties.REUSE_AUX_CLASSLOADER));
-            this.typeSystem = TypeSystem.usingClasspath(auxClasspathLoader);
+            this.typeSystem = TypeSystem.usingClasspath(name -> auxClasspathLoader.findResource(name));
         }
     }
 

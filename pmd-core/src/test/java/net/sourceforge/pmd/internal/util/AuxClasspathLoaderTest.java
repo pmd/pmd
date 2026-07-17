@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.internal;
+package net.sourceforge.pmd.internal.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,7 +23,6 @@ import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 class AuxClasspathLoaderTest {

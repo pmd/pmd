@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.internal;
+package net.sourceforge.pmd.internal.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,8 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
@@ -50,7 +48,7 @@ import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
  *
  * @since 7.27.0
  */
-public class AuxClasspathLoader implements Classpath, AutoCloseable {
+public class AuxClasspathLoader implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AuxClasspathLoader.class);
 
     private static final Object LOCK = new Object();
@@ -263,7 +261,6 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
         }
     }
 
-    @Override
     public @Nullable InputStream findResource(String name) {
         assert name != null;
         assert name.charAt(0) != '/'; // assuming only relative paths
