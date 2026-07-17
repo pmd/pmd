@@ -64,10 +64,10 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     }
 
     private void initTypeSystem(JavaLanguageProperties properties) {
-        ClassLoader externallyConfiguratedClassLoader = properties.getExternalClassLoader();
-        if (externallyConfiguratedClassLoader != null) {
-            LOG.debug("Using externally configured classloader as analysis classloader: {}", externallyConfiguratedClassLoader);
-            this.typeSystem = TypeSystem.usingClassLoaderClasspath(externallyConfiguratedClassLoader);
+        ClassLoader externallyConfiguredClassLoader = properties.getExternalClassLoader();
+        if (externallyConfiguredClassLoader != null) {
+            LOG.debug("Using externally configured classloader as analysis classloader: {}", externallyConfiguredClassLoader);
+            this.typeSystem = TypeSystem.usingClassLoaderClasspath(externallyConfiguredClassLoader);
         } else {
             String auxClasspath = properties.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
 
