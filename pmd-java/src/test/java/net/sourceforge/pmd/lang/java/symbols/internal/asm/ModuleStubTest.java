@@ -54,4 +54,10 @@ class ModuleStubTest {
         JModuleSymbol moduleSymbol = TEST_TYPE_SYSTEM.getModuleSymbol("org.junit.platform.suite.api");
         assertThat(moduleSymbol.getSimpleName(), is("org.junit.platform.suite.api"));
     }
+
+    @Test
+    void loadJavaBaseModule() {
+        JModuleSymbol moduleSymbol = TEST_TYPE_SYSTEM.getModuleSymbol("java.base");
+        assertThat(moduleSymbol.getSimpleName(), is("java.base"));
+    }
 }

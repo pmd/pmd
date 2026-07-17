@@ -65,6 +65,11 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     }
 
     /**
+     * Returns exactly the same classloader set via {@link #setClassLoader(ClassLoader)}.
+     * Unlike {@link #getAnalysisClassLoader()}, no modification is performed.
+     *
+     * @since 7.27.0
+     * @see #setClassLoader(ClassLoader)
      * @deprecated Since 7.27.0. Only used to support backwards compatible configuration of classloaders.
      */
     @Deprecated

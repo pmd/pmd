@@ -15,12 +15,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +85,12 @@ public final class AuxClasspathUtil {
             return rtJar;
         }
         throw new IllegalStateException("Could not determine current jvm classpath");
+    }
+
+    public static String toRawClasspath(List<Path> paths, Path... additionalPaths) {
+        List<Path> completePath = new ArrayList<>(paths);
+        completePath.addAll(Arrays.asList(additionalPaths));
+        return StringUtils.join(completePath, File.pathSeparator);
     }
 
     /**

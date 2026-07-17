@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.test;
 
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -277,7 +279,7 @@ public abstract class RuleTst {
         configuration.setThreads(0); // don't use separate threads
 
         // Java-specific configuration
-        configuration.setAuxClasspath(System.getProperty("java.class.path"));
+        configuration.setAuxClasspath(toRawClasspath(getRuntimeClasspath()));
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));

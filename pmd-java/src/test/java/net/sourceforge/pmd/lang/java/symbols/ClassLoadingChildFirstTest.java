@@ -9,9 +9,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.AuxClasspathLoader;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * @author Clément Fournier
@@ -42,12 +44,12 @@ class ClassLoadingChildFirstTest {
      * </p>
      */
     @Test
-    void testClassLoading() throws Exception {
+    void testClassLoading() throws IOException {
         Path file = Paths.get("src/test/resources",
                 getClass().getPackage().getName().replace('.', '/'),
                 "custom_java_lang.jar");
-        Path jrtFsJar = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar");
-        String classpath = file.toAbsolutePath() + File.pathSeparator + jrtFsJar;
+        Path jrtFsJar = AuxClasspathUtil.getPlatformClasspath();
+        String classpath = AuxClasspathUtil.toRawClasspath(Arrays.asList(file, jrtFsJar));
 
         JavaLanguageProperties languageProperties = (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
         languageProperties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);

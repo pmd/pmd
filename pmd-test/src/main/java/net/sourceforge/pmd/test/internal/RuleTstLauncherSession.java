@@ -14,6 +14,7 @@ import net.sourceforge.pmd.util.AuxClasspathLoader;
 /**
  * @since 7.27.0
  */
+// Note: The class must be public to be instantiable via java.util.ServiceLoader
 public class RuleTstLauncherSession implements LauncherSessionListener {
     private static final Logger LOG = LoggerFactory.getLogger(RuleTstLauncherSession.class);
 

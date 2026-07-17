@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.internal.util;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -195,7 +197,7 @@ class ClasspathClassLoaderTest {
         String classPath = jrtfsPath.toString();
 
         try (ClasspathClassLoader loader = new ClasspathClassLoader(classPath, null)) {
-            assertTrue(loader.toString().contains("jrt-fs: " + javaHome));
+            assertThat(loader.toString(), containsString("jrt-fs: " + javaHome));
             try (InputStream stream = loader.getResourceAsStream("java/lang/Object.class")) {
                 assertClassFile(stream, javaVersion);
             }

@@ -57,6 +57,8 @@ import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
  * opening the platform classloader via the jrt-fs filesystem is expensive, it supports a simple
  * caching mechanism. See {@link #enableReuse(int)} and {@link #disableReuse()}.</p>
  *
+ * <p>To load resources, use {@link #findResource(String)}.</p>
+ *
  * <p>This class is usually not used directly for calling PMD but rather by language implementations
  * such as Java. The auxClasspath should be configured
  * via {@link net.sourceforge.pmd.PMDConfiguration#setAuxClasspath(String)}</p>
@@ -313,6 +315,28 @@ public class AuxClasspathLoader implements AutoCloseable {
         }
     }
 
+    /**
+     * Finds the first resource with the given name (e.g. {@code package/A.class})
+     * in the jars of the auxClasspath.
+     * If there is no match in the jar files, then the Java Runtime Image is searched
+     * via the given "jrt-fs.jar". This allows to find e.g. {@code java/lang/Object.class}.
+     * If no resource is found, {@code null} is returned.
+     *
+     * <p>The name is expected to be a valid, relative path name within a jar file without a leading slash, e.g.
+     * {@code package/A.class}.</p>
+     *
+     * <p>In order to load {@code module-info.class} files, which are all at the root of the jar files,
+     * these can be referenced by prefixing the module name, e.g. {@code full.module.name/module-info.class}
+     * or {@code java.base/module-info.class}.</p>
+     *
+     * <p>Note: Multi-Release Jars are not handled in a special way. This method does not automatically
+     * search for versioned resources.</p>
+     *
+     * @param name Name of the resource to load, e.g. {@code package/A.class}
+     * @return an open {@link InputStream} or {@code null} if the resource is not found.
+     *
+     * @see <a href="https://openjdk.org/jeps/220">JEP 220: Modular Run-Time Images</a>
+     */
     public @Nullable InputStream findResource(String name) {
         assert name != null;
         assert name.charAt(0) != '/'; // assuming only relative paths

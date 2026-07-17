@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util;
 
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,15 +18,17 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -123,9 +127,8 @@ class AuxClasspathLoaderTest {
     }
 
     @Test
-    void findModuleInfoFromJar() throws Exception {
-        try (AuxClasspathLoader loader = AuxClasspathLoader.create(
-                StringUtils.join(AuxClasspathUtil.getRuntimeClasspath(), File.pathSeparator))) {
+    void findModuleInfoFromJar() throws IOException {
+        try (AuxClasspathLoader loader = AuxClasspathLoader.create(toRawClasspath(getRuntimeClasspath()))) {
             // search for module org.junit.platform.suite.api, which should be on the test-classpath in pmd-core...
             // inside a jar
             String junitPlatformSuiteApiModule = "org.junit.platform.suite.api/module-info.class";
@@ -140,6 +143,20 @@ class AuxClasspathLoaderTest {
                     byte[] fromJarStream = readBytes(jarStream);
                     assertArrayEquals(fromAuxClasspathLoader, fromJarStream, "wrong module-info.class loaded");
                 }
+            }
+        }
+    }
+
+    @Test
+    void findJavaBaseModule() throws IOException {
+        try (AuxClasspathLoader loader = AuxClasspathLoader.create(AuxClasspathUtil.getPlatformClasspath().toString())) {
+            try (InputStream resource = loader.findResource("java.base/module-info.class")) {
+                assertNotNull(resource);
+                byte[] fromAuxClasspathLoader = readBytes(resource);
+
+                FileSystem fs = FileSystems.getFileSystem(URI.create("jrt:/"));
+                byte[] fromJrtFilesystem = readBytes(Files.newInputStream(fs.getPath("modules", "java.base", "module-info.class")));
+                assertArrayEquals(fromAuxClasspathLoader, fromJrtFilesystem, "wrong module-info.class loaded");
             }
         }
     }
@@ -170,7 +187,7 @@ class AuxClasspathLoaderTest {
      */
     @ParameterizedTest
     @ValueSource(ints = {11, 17, 21, 25})
-    void loadFromJava(int javaVersion) throws Exception {
+    void loadFromJava(int javaVersion) throws IOException {
         Path javaHome = Paths.get(System.getProperty("user.home"), "openjdk" + javaVersion);
         assumeTrue(Files.isDirectory(javaHome), "Couldn't find java" + javaVersion + " installation at " + javaHome);
 

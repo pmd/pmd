@@ -5,10 +5,11 @@
 package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getPlatformClasspath;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath;
 
-import java.io.File;
 import java.io.PrintStream;
-import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Si
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.util.AuxClasspathLoader;
-import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -57,9 +57,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
     public static final AuxClasspathLoader TEST_AUX_CLASSPATH_LOADER;
 
     static {
-        List<Path> classpath = new ArrayList<>(AuxClasspathUtil.getRuntimeClasspath());
-        classpath.add(AuxClasspathUtil.getPlatformClasspath());
-        TEST_AUX_CLASSPATH_LOADER = AuxClasspathLoader.create(StringUtils.join(classpath, File.pathSeparator));
+        TEST_AUX_CLASSPATH_LOADER = AuxClasspathLoader.create(toRawClasspath(getRuntimeClasspath(), getPlatformClasspath()));
         TEST_TYPE_SYSTEM = TypeSystem.usingClasspath(TEST_AUX_CLASSPATH_LOADER::findResource);
     }
 
