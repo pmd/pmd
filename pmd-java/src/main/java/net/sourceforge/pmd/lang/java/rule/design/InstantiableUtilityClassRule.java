@@ -19,6 +19,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
+/**
+ * Note: Before 7.27.0, the rule was called "UseUtilityClass".
+ * @since 7.27.0
+ */
 public class InstantiableUtilityClassRule extends AbstractJavaRulechainRule {
 
     private static final String LOMBOK_UTILITY_CLASS = "lombok.experimental.UtilityClass";
