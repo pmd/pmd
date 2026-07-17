@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that help you discover design issues.">
-<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CognitiveComplexity, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveImports, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, InvalidJavaBean, LawOfDemeter, LogicInversion, LoosePackageCoupling, MutableStaticState, NcssCount, NPathComplexity, PublicMemberInNonPublicType, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
+<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CognitiveComplexity, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveImports, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, InstantiableUtilityClass, InvalidJavaBean, LawOfDemeter, LogicInversion, LoosePackageCoupling, MutableStaticState, NcssCount, NPathComplexity, PublicMemberInNonPublicType, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
 <title>Design | PMD Source Code Analyzer</title>
 
 
@@ -3193,6 +3193,42 @@ see <em>Effective Java, 3rd Edition, Item 17: Minimize mutability</em>.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/ImmutableField"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="instantiableutilityclass">InstantiableUtilityClass</h2>
+
+<p><strong>Since:</strong> PMD 0.3</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>A class is a utility class, if and only if it fulfills ALL the following criteria:</p>
+<ul>
+  <li>ALL member functions, member variables, nested classes, and initializers are static.</li>
+  <li>The class has at least one member function, member variable, or nested class that is not private.</li>
+  <li>The class is a concrete class (neither abstract nor an interface).</li>
+  <li>The class has no superclasses and implements no interfaces.</li>
+  <li>The class has no main method.</li>
+</ul>
+
+<p>Utility classes should not be instantiable. Make sure that the only constructor is a
+private no-args constructor to enforce this.</p>
+
+<p>(Note, that this rule was known as UseSingleton before PMD 5.1.0 and as UseUtilityClass before PMD 7.27.0).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/InstantiableUtilityClassRule.java">net.sourceforge.pmd.lang.java.rule.design.InstantiableUtilityClassRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MaybeAUtility</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="no">SOME_CONST</span> <span class="o">=</span> <span class="mi">42</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/InstantiableUtilityClass"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="invalidjavabean">InvalidJavaBean</h2>
 
 <p><strong>Since:</strong> PMD 6.52.0</p>
@@ -4244,6 +4280,12 @@ Use <a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="lan
 
 <h2 id="useutilityclass">UseUtilityClass</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>This rule has been renamed. Use instead: <a href="#instantiableutilityclass">InstantiableUtilityClass</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 0.3</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -4260,9 +4302,9 @@ Use <a href="pmd_rules_java_design.html#excessiveparameterlist"><code class="lan
 <p>Utility classes should not be instantiable. Make sure that the only constructor is a
 private no-args constructor to enforce this.</p>
 
-<p>(Note, that this rule was known before PMD 5.1.0 as UseSingleton).</p>
+<p>(Note, that this rule was known as UseSingleton before PMD 5.1.0 and as UseUtilityClass before PMD 7.27.0).</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/UseUtilityClassRule.java">net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule</a></p>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/InstantiableUtilityClassRule.java">net.sourceforge.pmd.lang.java.rule.design.InstantiableUtilityClassRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
@@ -4307,7 +4349,7 @@ private no-args constructor to enforce this.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 16, 2026 <br />
+             Site last generated: Jul 17, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

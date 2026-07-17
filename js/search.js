@@ -2748,6 +2748,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/design.md",
+  "title": "InstantiableUtilityClass (Java, Design)",
+  "tags": "",
+  "keywords": "Instantiable Utility Class",
+  "url": "pmd_rules_java_design.html#instantiableutilityclass",
+  "summary": "A class is a utility class, if and only if it fulfills ALL the following..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/design.md",
   "title": "InvalidJavaBean (Java, Design)",
   "tags": "",
   "keywords": "Invalid Java Bean",
@@ -2904,7 +2912,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Use Utility Class",
   "url": "pmd_rules_java_design.html#useutilityclass",
-  "summary": "A class is a utility class, if and only if it fulfills ALL the following..."
+  "summary": "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> This rule..."
 },{
   "type": "ruledoc ruleset",
   "source": "pages/pmd/rules/java/documentation.md",

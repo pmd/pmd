@@ -10,6 +10,8 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [Renamed Rules](#renamed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
@@ -18,6 +20,11 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+
+### 🌟️ New and Changed Rules
+#### Renamed Rules
+* The rule [`InstantiableUtilityClass`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_design.html#instantiableutilityclass) (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
+  The old name still works but is deprecated.
 
 ### 🐛️ Fixed Issues
 * chore
@@ -35,6 +42,7 @@ This is a minor release.
 * java-codestyle
     * [#6709](https://github.com/pmd/pmd/issues/6709): \[java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver
 * java-design
+    * [#6714](https://github.com/pmd/pmd/issues/6714): \[java] Rename UseUtilityClass to InstantiableUtilityClass
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
 * java-errorprone
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
