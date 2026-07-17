@@ -71,16 +71,16 @@ public final class AuxClasspathUtil {
      *
      * @see <a href="https://openjdk.org/jeps/220">JEP 220: Modular Run-Time Images</a>
      */
-    public static List<Path> getPlatformClasspath() {
+    public static Path getPlatformClasspath() {
         String javaHome = System.getProperty("java.home");
         Path jrtFsJar = Paths.get(javaHome, "lib", "jrt-fs.jar"); // Java 11+
         Path rtJar = Paths.get(javaHome, "lib", "rt.jar"); // Java 8
         if (Files.isRegularFile(jrtFsJar)) {
             LOG.debug("Found current JVM runtime classes at {}", jrtFsJar);
-            return Collections.singletonList(jrtFsJar);
+            return jrtFsJar;
         } else if (Files.isRegularFile(rtJar)) {
             LOG.debug("Found current JVM runtime classes at {}", rtJar);
-            return Collections.singletonList(rtJar);
+            return rtJar;
         }
         throw new IllegalStateException("Could not determine current jvm classpath");
     }

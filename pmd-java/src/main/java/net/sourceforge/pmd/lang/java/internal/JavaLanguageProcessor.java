@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.internal;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -36,6 +35,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * @author Clément Fournier
@@ -74,16 +74,8 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
             Path relativeJrtFsJar = Paths.get("lib/jrt-fs.jar");
             Path relativeRtJar = Paths.get("lib/rt.jar");
             if (!auxClasspath.contains(relativeJrtFsJar.toString()) && !auxClasspath.contains(relativeRtJar.toString())) {
-                // TODO use AuxClasspathUtil.getPlatformClasspath() from #6841
-                Path jrtFsJar = Paths.get(System.getProperty("java.home")).resolve(relativeJrtFsJar); // Java 11+
-                Path rtJar = Paths.get(System.getProperty("java.home")).resolve(relativeRtJar); // Java 8
-                if (Files.isRegularFile(jrtFsJar)) {
-                    LOG.debug("Adding current JVM runtime classes from {}", jrtFsJar);
-                    auxClasspath += File.pathSeparator + jrtFsJar;
-                } else if (Files.isRegularFile(rtJar)) {
-                    LOG.debug("Adding current JVM runtime classes from {}", rtJar);
-                    auxClasspath += File.pathSeparator + rtJar;
-                }
+                Path platformClasspath = AuxClasspathUtil.getPlatformClasspath();
+                auxClasspath += File.pathSeparator + platformClasspath;
             }
             LOG.debug("Using auxClasspath as analysis classloader: {}", auxClasspath);
             this.auxClasspathLoader = AuxClasspathLoader.create(auxClasspath, properties.getProperty(JavaLanguageProperties.REUSE_AUX_CLASSLOADER));
