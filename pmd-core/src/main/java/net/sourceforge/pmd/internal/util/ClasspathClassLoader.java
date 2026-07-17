@@ -116,6 +116,7 @@ public class ClasspathClassLoader extends URLClassLoader {
      * @param filePath path to the file "lib/jrt-fs.jar" inside the java installation directory.
      * @see <a href="https://openjdk.org/jeps/220">JEP 220: Modular Run-Time Images</a>
      */
+    // CPD-OFF - duplication in new AuxClasspathLoader
     private void initializeJrtFilesystem(Path filePath) {
         try {
             LOG.debug("Detected Java Runtime Filesystem Provider in {}", filePath);
@@ -159,6 +160,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             throw new UncheckedIOException(e);
         }
     }
+    // CPD-ON
 
     @Override
     public String toString() {
@@ -182,6 +184,7 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     @Override
     public InputStream getResourceAsStream(String name) {
+        // CPD-OFF - duplication in new AuxClasspathLoader
         // always first search in jrt-fs, if available
         // note: we can't override just getResource(String) and return a jrt:/-URL, because the URL itself
         // won't be connected to the correct JrtFileSystem and would just load using the system classloader.
@@ -210,6 +213,7 @@ public class ClasspathClassLoader extends URLClassLoader {
                 }
             }
         }
+        // CPD-ON
 
         // search in the other jars of the aux classpath.
         // this will call this.getResource, which will do a child-first search, see below.
