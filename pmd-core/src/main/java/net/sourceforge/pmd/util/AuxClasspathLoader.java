@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -214,11 +213,12 @@ public class AuxClasspathLoader implements AutoCloseable {
                 return;
             }
 
-            Collection<AuxClasspathLoader> toBeClosed = cache.values();
+            List<AuxClasspathLoader> toBeClosed = new ArrayList<>(cache.values());
             cache = null; // disable reuse, make sure, we actually close (see #close())
-            Exception exception = IOUtil.closeAll(toBeClosed);
-            if (exception != null) {
-                throw new RuntimeException(exception);
+            try {
+                IOUtil.ensureClosed(toBeClosed, null);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -457,7 +457,7 @@ public class AuxClasspathLoader implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         synchronized (LOCK) {
             if (cache != null) {
                 LOG.debug("Not closing AuxClasspathLoader as it is cached and might be reused");
@@ -466,7 +466,11 @@ public class AuxClasspathLoader implements AutoCloseable {
         }
 
         closeRequested = true;
-        IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
+        try {
+            IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
         zipFiles.clear();
         if (fileSystem != null) {
             fileSystem.close();

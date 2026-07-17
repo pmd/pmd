@@ -29,7 +29,7 @@ import net.sourceforge.pmd.util.AuxClasspathLoader;
  */
 @Deprecated
 public class ClasspathClassLoader extends URLClassLoader {
-    private AuxClasspathLoader loader;
+    private final AuxClasspathLoader loader;
 
     static {
         registerAsParallelCapable();
@@ -45,20 +45,17 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
-    private void initAuxClasspathLoader(String rawClasspath) {
+    public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
+        super(new URL[0], parent);
+        String rawClasspath = files.stream()
+                .map(File::toString)
+                .collect(Collectors.joining(File.pathSeparator));
         this.loader = AuxClasspathLoader.create(rawClasspath);
     }
 
-    public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
+    public ClasspathClassLoader(String rawClasspath, ClassLoader parent) throws IOException {
         super(new URL[0], parent);
-        initAuxClasspathLoader(files.stream()
-                .map(File::toString)
-                .collect(Collectors.joining(File.pathSeparator)));
-    }
-
-    public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
-        super(new URL[0], parent);
-        initAuxClasspathLoader(classpath);
+        this.loader = AuxClasspathLoader.create(rawClasspath);
     }
 
     @Override
@@ -83,5 +80,11 @@ public class ClasspathClassLoader extends URLClassLoader {
     @Override
     protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
         throw new IllegalStateException("This class loader shouldn't be used to load classes");
+    }
+
+    @Override
+    public void close() throws IOException {
+        loader.close();
+        super.close();
     }
 }
