@@ -20,13 +20,13 @@ public class RuleTstLauncherSession implements LauncherSessionListener {
 
     @Override
     public void launcherSessionOpened(LauncherSession session) {
-        LOG.info("Enabling AuxClasspathLoader reuse");
+        LOG.debug("Enabling AuxClasspathLoader reuse");
         AuxClasspathLoader.enableReuse(1);
     }
 
     @Override
     public void launcherSessionClosed(LauncherSession session) {
-        LOG.info("Closing cache AuxClasspathLoaders");
+        LOG.debug("Closing cache AuxClasspathLoaders");
         AuxClasspathLoader.disableReuse();
     }
 }
