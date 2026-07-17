@@ -16,13 +16,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.internal.util.AuxClasspathLoader;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.util.AuxClasspathLoader;
 
 /**
  * @author Clément Fournier

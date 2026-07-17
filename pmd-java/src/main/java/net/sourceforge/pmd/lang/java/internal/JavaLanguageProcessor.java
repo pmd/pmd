@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.util.AuxClasspathLoader;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
@@ -35,6 +34,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.util.AuxClasspathLoader;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 

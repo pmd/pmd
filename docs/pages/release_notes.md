@@ -70,6 +70,14 @@ This is a {{ site.pmd.release_type }} release.
     * The internal class `net.sourceforge.pmd.internal.util.ClasspathClassLoader` has been explicitly marked as deprecated.
       Using ClassLoaders directly is discouraged. Use {%jdoc !!core::PMDConfiguration#setAuxClasspath(String) %} instead.
 
+#### Experimental API
+* core
+    * The new {%jdoc core::util.AuxClasspathLoader %} is a replacement for the deprecated `ClasspathClassLoader`.
+      It deals with a typical classpath to load classes need for Java's type resolution. It has the static method
+      `enableReuse(int)` which enables caching of AuxClasspathLoader instances. This is useful for unit tests
+      or IDE plugins, when PMD is executed multiple times within one JVM instance. Don't forget to call
+      `disableReuse()` when you're done to close all cached instances.
+
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.internal.util;
+package net.sourceforge.pmd.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,10 +20,11 @@ import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class AuxClasspathLoaderTest {
     @TempDir
@@ -160,7 +161,7 @@ class AuxClasspathLoaderTest {
     private static void assertResource(AuxClasspathLoader classpathLoader, String name, String expectedContent) throws IOException {
         try (InputStream resource = classpathLoader.findResource(name)) {
             assertNotNull(resource);
-            assertEquals(expectedContent, IOUtil.readToString(resource, StandardCharsets.UTF_8));
+            Assertions.assertEquals(expectedContent, IOUtil.readToString(resource, StandardCharsets.UTF_8));
         }
     }
 }

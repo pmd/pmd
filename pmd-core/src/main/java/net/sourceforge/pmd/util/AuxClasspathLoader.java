@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.internal.util;
+package net.sourceforge.pmd.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,19 +37,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * This class allows to load resources from a given classpath. Unlike a real classloader
- * like {@link URLClassLoader}, the jar files on the classpath are not opened with JarFile and
- * verified, but just with {@link ZipFile}. This should save memory.
+ * like {@link URLClassLoader}, the Jar files on the classpath are not opened with JarFile and
+ * their signature is not verified which saves memory. The Jar files are opened directly
+ * with {@link ZipFile}.
  *
  * <p>This classpath loader also supports loading platform classes (e.g. {@code java.lang}) from
  * the jrt-fs filesystem. All zip files and the jrt-fs are kept open, until this classpath loader
- * is closed.
+ * is closed.</p>
+ *
+ * <p>To create a new instance, use {@link #create(String)}. Because verifying the classpath and
+ * opening the platform classloader via the jrt-fs filesystem is expensive, it supports a simple
+ * caching mechanism. See {@link #enableReuse(int)} and {@link #disableReuse()}.</p>
+ *
+ * <p>This class is usually not used directly for calling PMD but rather by language implementations
+ * such as Java. The auxClasspath should be configured
+ * via {@link net.sourceforge.pmd.PMDConfiguration#setAuxClasspath(String)}</p>
  *
  * @since 7.27.0
+ * @experimental Replacement for {@link net.sourceforge.pmd.internal.util.ClasspathClassLoader}.
  */
+@Experimental
 public class AuxClasspathLoader implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AuxClasspathLoader.class);
 
