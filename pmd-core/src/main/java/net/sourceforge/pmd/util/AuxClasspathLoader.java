@@ -326,6 +326,8 @@ public class AuxClasspathLoader implements AutoCloseable {
             collectAllModules();
             assert moduleNameToZipFile != null : "Modules should have been detected by collectAllModules()";
 
+            @SuppressWarnings("PMD.CloseResource") // we keep the zip file open and close all at the end, see #close
+            // the zip files in #moduleNameToZipFile are the same as in #zipFiles
             ZipFile moduleZipFile = moduleNameToZipFile.get(moduleName);
             if (moduleZipFile != null) {
                 ZipEntry moduleZipFileEntry = moduleZipFile.getEntry(MODULE_INFO_SUFFIX);
@@ -429,7 +431,6 @@ public class AuxClasspathLoader implements AutoCloseable {
         Map<String, ZipFile> allModules = new HashMap<>();
         for (Entry classpathEntry : auxClasspath) {
             if (classpathEntry.isFile()) {
-                @SuppressWarnings("PMD.CloseResource") // we keep the zip file open and close all at the end, see #close
                 ZipFile jarFile = openJarFile(classpathEntry.getPath());
                 ZipEntry entry = jarFile.getEntry(MODULE_INFO_SUFFIX);
                 if (entry != null) {
@@ -441,7 +442,7 @@ public class AuxClasspathLoader implements AutoCloseable {
                         }
                         allModules.putIfAbsent(finder.getModuleName(), jarFile);
                     } catch (IOException e) {
-                        // ignored
+                        throw new UncheckedIOException(e);
                     }
                 }
             }
