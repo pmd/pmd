@@ -4,28 +4,25 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
@@ -40,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * This class allows to load resources from a given classpath. Unlike a real classloader
@@ -76,8 +74,7 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
             } else if (Files.isDirectory(path)) {
                 return new Entry(path, false);
             }
-            // TODO we probably should throw, revisit after #6845
-            return null;
+            throw new IllegalArgumentException("Path '" + path + "' does not exist");
         }
 
         public Path getPath() {
@@ -103,7 +100,7 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
         }
     }
 
-    private final List<Entry> auxClasspath = new ArrayList<>();
+    private final List<Entry> auxClasspath;
     private final ConcurrentMap<Path, ZipFile> zipFiles = new ConcurrentHashMap<>();
 
     String javaHome;
@@ -114,7 +111,7 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
     AuxClasspathLoader(String rawAuxClasspath) {
         LOG.debug("Creating new AuxClasspathLoader for {}", rawAuxClasspath);
         this.rawAuxClasspath = rawAuxClasspath;
-        expandAuxClasspath(rawAuxClasspath);
+        this.auxClasspath = expandAuxClasspath(rawAuxClasspath);
 
         Iterator<Entry> iterator = auxClasspath.iterator();
         while (iterator.hasNext()) {
@@ -179,47 +176,16 @@ public class AuxClasspathLoader implements Classpath, AutoCloseable {
         }
     }
 
-    // TODO: use AuxClasspathUtil from #6841
-    private void expandAuxClasspath(String classpath) {
+    private List<Entry> expandAuxClasspath(String classpath) {
         if (classpath == null) {
-            return;
+            return Collections.emptyList();
         }
 
-        if (classpath.startsWith("file:")) {
-            try {
-                Path path;
-                if (classpath.length() > 5 && classpath.charAt(5) == '/') {
-                    path = Paths.get(new URI(classpath));
-                } else {
-                    // support relative paths
-                    path = Paths.get(classpath.substring(5));
-                }
-
-                try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
-                    auxClasspath.addAll(lines
-                            .map(String::trim)
-                            .filter(s -> !s.isEmpty())
-                            .filter(s -> !s.startsWith("#"))
-                            .map(Paths::get)
-                            .filter(Files::exists)
-                            .map(Entry::create)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList()));
-                }
-            } catch (IOException | URISyntaxException e) {
-                throw new IllegalArgumentException(e);
-            }
-        } else {
-            StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
-            while (toker.hasMoreTokens()) {
-                String token = toker.nextToken();
-                Path path = Paths.get(token);
-                Entry entry = Entry.create(path);
-                if (entry != null) {
-                    auxClasspath.add(entry);
-                }
-            }
-        }
+        List<Path> paths = AuxClasspathUtil.expandClasspath(classpath);
+        return paths.stream()
+                        .filter(Files::exists)
+                        .map(Entry::create)
+                        .collect(Collectors.toList());
     }
 
     /**
