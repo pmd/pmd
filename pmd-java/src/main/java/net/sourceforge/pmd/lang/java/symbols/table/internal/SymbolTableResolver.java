@@ -52,6 +52,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
@@ -301,7 +303,12 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getBody());
             if (node instanceof ASTRecordDeclaration) {
                 // Members of a record declaration are in scope in the record header.
-                setTopSymbolTable(node.getRecordComponents());
+                ASTRecordComponentList components = ((ASTRecordDeclaration) node).getRecordComponents();
+                setTopSymbolTable(components);
+                // Synthesized accessor signatures may be requested while processing the body.
+                f.disambig(components.children(ASTRecordComponent.class)
+                               .map(ASTRecordComponent::getTypeNode),
+                           bodyCtx);
             }
 
             // preprocess siblings
