@@ -23,6 +23,12 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Kotlin type-aware analysis
+Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
+Resolved type names, return types, and annotation FQNs are available through
+{%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %} for use in Java-based rules.
+
+Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
 ### 🌟️ New and Changed Rules
 #### Renamed Rules
@@ -49,6 +55,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
 * java-errorprone
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
+* kotlin
+    * [#6795](https://github.com/pmd/pmd/issues/6795): \[kotlin] Add kotlin-type-mapper infrastructure
 
 ### 🚨️ API Changes
 
@@ -61,6 +69,11 @@ This is a {{ site.pmd.release_type }} release.
       deprecated `getClassLoader()` anymore.  
       Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
       By just configuring the auxClasspath, PMD internally can deal with that.
+
+#### Experimental API
+* kotlin
+    * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the initial API to access type information
+      on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
