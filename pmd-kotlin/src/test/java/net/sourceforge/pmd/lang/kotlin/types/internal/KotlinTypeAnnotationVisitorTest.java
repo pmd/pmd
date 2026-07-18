@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.types;
+package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
 /**
  * Tests that KotlinTypeAnnotationVisitor correctly annotates AST nodes with

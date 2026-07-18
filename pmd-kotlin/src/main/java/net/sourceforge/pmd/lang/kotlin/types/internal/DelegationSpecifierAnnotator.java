@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.types;
+package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -35,6 +36,8 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * {@code KtDelegationSpecifier} node so that XPath rules can query the written
  * supertype by its fully-qualified name, e.g.
  * {@code //ClassDeclaration[DelegationSpecifier[@TypeName='java.io.Serializable']]}.
+ *
+ * @since 7.27.0
  */
 final class DelegationSpecifierAnnotator {
 
@@ -54,41 +57,14 @@ final class DelegationSpecifierAnnotator {
         for (String fqn : superTypes) {
             simpleToFqn.put(KotlinTypeAnnotationVisitor.simpleNameOf(fqn), fqn);
         }
-        KtDelegationSpecifiers specsNode = findDelegationSpecifiersNode(classNode);
-        if (specsNode != null) {
-            annotateDelegationSpecifiersNode(specsNode, simpleToFqn);
-        }
-    }
 
-    private static KtDelegationSpecifiers findDelegationSpecifiersNode(KtClassDeclaration classNode) {
-        for (int i = 0; i < classNode.getNumChildren(); i++) {
-            KotlinNode child = classNode.getChild(i);
-            if (child instanceof KtDelegationSpecifiers) {
-                return (KtDelegationSpecifiers) child;
-            }
-        }
-        return null;
-    }
-
-    private static void annotateDelegationSpecifiersNode(
-            KtDelegationSpecifiers specsNode, Map<String, String> simpleToFqn) {
-        for (int j = 0; j < specsNode.getNumChildren(); j++) {
-            KotlinNode spec = specsNode.getChild(j);
-            if (spec instanceof KtAnnotatedDelegationSpecifier) {
-                annotateAnnotatedDelegationSpecifier(
-                        (KtAnnotatedDelegationSpecifier) spec, simpleToFqn);
-            }
-        }
-    }
-
-    private static void annotateAnnotatedDelegationSpecifier(
-            KtAnnotatedDelegationSpecifier annotated, Map<String, String> simpleToFqn) {
-        for (int k = 0; k < annotated.getNumChildren(); k++) {
-            KotlinNode inner = annotated.getChild(k);
-            if (inner instanceof KtDelegationSpecifier) {
-                annotateDelegationSpecifier((KtDelegationSpecifier) inner, simpleToFqn);
-            }
-        }
+        classNode
+                .children(KtDelegationSpecifiers.class).take(1)
+                .children(KtAnnotatedDelegationSpecifier.class)
+                .children(KtDelegationSpecifier.class)
+                .forEach(delegationSpecifier -> {
+                    annotateDelegationSpecifier(delegationSpecifier, simpleToFqn);
+                });
     }
 
     /**
@@ -108,7 +84,7 @@ final class DelegationSpecifierAnnotator {
             written = KotlinTypeAnnotationVisitor.rawTypeNameOf(written);
             String fqn = simpleToFqn.get(KotlinTypeAnnotationVisitor.simpleNameOf(written));
             if (fqn != null) {
-                KotlinNodeTypeData.setTypeName(spec, fqn);
+                InternalApiBridge.setTypeName(spec, fqn);
             }
         } catch (IndexOutOfBoundsException e) {
             throw AssertionUtil.contexted(e).addContextValue("delegation specifier", spec);

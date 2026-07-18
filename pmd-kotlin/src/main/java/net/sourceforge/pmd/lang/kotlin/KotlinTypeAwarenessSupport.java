@@ -25,13 +25,15 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
-import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeAnnotationVisitor;
+import net.sourceforge.pmd.lang.kotlin.types.internal.KotlinTypeAnnotationVisitor;
 
 import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
 import nl.stokpop.typemapper.model.TypedAst;
 
 /**
  * Encapsulates kotlin-type-mapper analysis and per-file annotation behavior.
+ *
+ * @since 7.27.0
  */
 final class KotlinTypeAwarenessSupport {
 
