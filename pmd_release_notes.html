@@ -2062,6 +2062,12 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
+<h4 id="kotlin-type-aware-analysis">Kotlin type-aware analysis</h4>
+<p>Kotlin now supports type-aware analysis via the <code class="language-plaintext highlighter-rouge">auxClasspath</code> language property (see <a href="https://github.com/pmd/pmd/issues/6677">#6677</a>).
+Resolved type names, return types, and annotation FQNs are available through
+<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#"><code>KotlinNodeTypeData</code></a> for use in Java-based rules.</p>
+
+<p>Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.</p>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
 <h4 id="renamed-rules">Renamed Rules</h4>
@@ -2112,6 +2118,11 @@ The old name still works but is deprecated.</li>
       <li><a href="https://github.com/pmd/pmd/issues/6826">#6826</a>: [java] AssertEqualsArgumentOrder: False positive for double assertEquals</li>
     </ul>
   </li>
+  <li>kotlin
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6795">#6795</a>: [kotlin] Add kotlin-type-mapper infrastructure</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
@@ -2127,6 +2138,16 @@ Note: In order to read back the currently configured auxClasspath, use <a href="
 deprecated <code class="language-plaintext highlighter-rouge">getClassLoader()</code> anymore.<br />
 Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
 By just configuring the auxClasspath, PMD internally can deal with that.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="experimental-api">Experimental API</h4>
+<ul>
+  <li>kotlin
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#"><code>KotlinNodeTypeData</code></a>: Provides the initial API to access type information
+on Kotlin AST nodes. It’s part of the new Kotlin type-aware analysis.</li>
     </ul>
   </li>
 </ul>
@@ -2169,7 +2190,7 @@ By just configuring the auxClasspath, PMD internally can deal with that.</li>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 17, 2026 <br />
+             Site last generated: Jul 18, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

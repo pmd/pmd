@@ -10,16 +10,24 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Kotlin type-aware analysis](#kotlin-type-aware-analysis)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [Renamed Rules](#renamed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
+    * [Experimental API](#experimental-api)
 * [✨️ Merged pull requests](#merged-pull-requests)
 * [📦️ Dependency updates](#dependency-updates)
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+#### Kotlin type-aware analysis
+Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
+Resolved type names, return types, and annotation FQNs are available through
+<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#"><code>KotlinNodeTypeData</code></a> for use in Java-based rules.
+
+Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
 ### 🌟️ New and Changed Rules
 #### Renamed Rules
@@ -46,6 +54,8 @@ This is a minor release.
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
 * java-errorprone
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
+* kotlin
+    * [#6795](https://github.com/pmd/pmd/issues/6795): \[kotlin] Add kotlin-type-mapper infrastructure
 
 ### 🚨️ API Changes
 
@@ -58,6 +68,11 @@ This is a minor release.
       deprecated `getClassLoader()` anymore.  
       Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
       By just configuring the auxClasspath, PMD internally can deal with that.
+
+#### Experimental API
+* kotlin
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#"><code>KotlinNodeTypeData</code></a>: Provides the initial API to access type information
+      on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
