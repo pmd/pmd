@@ -115,10 +115,17 @@ public final class TestFrameworksUtil {
         new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_,_)", 1, 0),
         // JUnit 3 and 4, Spring: [message], expected, actual
         new EqualMethod("org.junit.Assert#assertEquals(_,_)", 1, 0),
-        new EqualMethod("org.junit.Assert#assertEquals(_,_,_)", 2, 1),
+        new EqualMethod("org.junit.Assert#assertEquals(java.lang.String,_,_)", 2, 1),
         new EqualMethod("junit.framework.TestCase#assertEquals(_,_)", 1, 0),
-        new EqualMethod("junit.framework.TestCase#assertEquals(_,_,_)", 2, 1),
+        new EqualMethod("junit.framework.TestCase#assertEquals(java.lang.String,_,_)", 2, 1),
         new EqualMethod("org.springframework.test.util.AssertionErrors#assertEquals(_,_,_)", 2, 1),
+        // JUnit 3 and 4 delta overloads: [message], expected, actual, delta
+        new EqualMethod("org.junit.Assert#assertEquals(double,double,double)", 1, 0),
+        new EqualMethod("org.junit.Assert#assertEquals(float,float,float)", 1, 0),
+        new EqualMethod("org.junit.Assert#assertEquals(java.lang.String,_,_,_)", 2, 1),
+        new EqualMethod("junit.framework.TestCase#assertEquals(double,double,double)", 1, 0),
+        new EqualMethod("junit.framework.TestCase#assertEquals(float,float,float)", 1, 0),
+        new EqualMethod("junit.framework.TestCase#assertEquals(java.lang.String,_,_,_)", 2, 1),
         // TestNG: actual, expected, [message]
         new EqualMethod("org.testng.Assert#assertEquals(_*)", 0, 1),
         // JSONAssert: [message], expected, actual, compare mode
@@ -240,6 +247,10 @@ public final class TestFrameworksUtil {
             && TypeTestUtil.isA(JUNIT3_CLASS_NAME, node);
     }
 
+    public static boolean hasJUnit3Tests(ASTTypeDeclaration node) {
+        return node.getDeclarations(ASTMethodDeclaration.class).any(TestFrameworksUtil::isJunit3MethodSignature);
+    }
+
     public static boolean isTestClass(ASTClassDeclaration node) {
         return isJUnit3Class(node) || isJUnit4Class(node) || isJUnit5Class(node) || isTestNGClass(node);
     }
@@ -247,30 +258,53 @@ public final class TestFrameworksUtil {
     public static boolean isJUnit4Class(ASTClassDeclaration node) {
         JClassType typeMirror = node.getTypeMirror();
 
-        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
-                && typeMirror.streamMethods(TestFrameworksUtil::isJUnit4Method)
-                        .findAny().isPresent();
+        return isConcreteToplevelClass(typeMirror) && hasJUnit4Tests(typeMirror);
+    }
+
+    public static boolean hasJUnit4Tests(ASTTypeDeclaration node) {
+        return hasJUnit4Tests(node.getTypeMirror());
+    }
+
+    private static boolean hasJUnit4Tests(JClassType typeMirror) {
+        return typeMirror.streamMethods(TestFrameworksUtil::isJUnit4Method)
+                .findAny().isPresent();
     }
 
     public static boolean isJUnit5Class(ASTClassDeclaration node) {
         JClassType typeMirror = node.getTypeMirror();
 
-        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
-                && (
-                        typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
-                                .findAny().isPresent()
-                        || typeMirror.streamClasses()
-                                .filter(c -> TestFrameworksUtil.isJUnit5NestedClass(c))
-                                .findAny().isPresent()
-                );
+        return isConcreteToplevelClass(typeMirror) && hasJUnit5Tests(typeMirror);
+    }
+
+    public static boolean hasJUnit5Tests(ASTTypeDeclaration node) {
+        return hasJUnit5Tests(node.getTypeMirror());
+    }
+
+    private static boolean hasJUnit5Tests(JClassType typeMirror) {
+        return typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
+                        .findAny().isPresent()
+                || typeMirror.streamClasses()
+                        .filter(TestFrameworksUtil::isJUnit5NestedClass)
+                        .findAny().isPresent();
     }
 
     public static boolean isTestNGClass(ASTClassDeclaration node) {
         JClassType typeMirror = node.getTypeMirror();
 
-        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
-                && typeMirror.streamMethods(TestFrameworksUtil::isTestNgMethod)
-                        .findAny().isPresent();
+        return isConcreteToplevelClass(typeMirror) && hasTestNGTests(typeMirror);
+    }
+
+    public static boolean hasTestNGTests(ASTClassDeclaration node) {
+        return hasTestNGTests(node.getTypeMirror());
+    }
+
+    private static boolean hasTestNGTests(JClassType typeMirror) {
+        return typeMirror.streamMethods(TestFrameworksUtil::isTestNgMethod)
+                .findAny().isPresent();
+    }
+
+    private static boolean isConcreteToplevelClass(JClassType typeMirror) {
+        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null;
     }
 
     public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {

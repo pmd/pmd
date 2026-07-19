@@ -102,4 +102,52 @@ public class SimpleTest {
 ]]>
         </code>
     </test-code>
+    <test-code>
+        <description>[java] assertEquals double delta overloads, 3-arg and 4-arg #6826</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        assertEquals(100.0, computePercentage(), 0.01); // (expected, actual, delta), correctly ordered
+        assertEquals("pct", 100.0, computePercentage(), 0.01); // (message, expected, actual, delta), correctly ordered
+        assertEquals(computePercentage(), 100.0, 0.01); // expected and actual swapped
+        assertEquals("pct", computePercentage(), 100.0, 0.01); // expected and actual swapped
+    }
+
+    private double computePercentage() {
+        return 99.9;
+    }
+}
+]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>[java] assertEquals float delta overloads, 3-arg and 4-arg #6826</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+public class SimpleTest {
+    @Test
+    public void testX() {
+        assertEquals(100.0f, computePercentage(), 0.01f); // (expected, actual, delta), correctly ordered
+        assertEquals("pct", 100.0f, computePercentage(), 0.01f); // (message, expected, actual, delta), correctly ordered
+        assertEquals(computePercentage(), 100.0f, 0.01f); // expected and actual swapped
+        assertEquals("pct", computePercentage(), 100.0f, 0.01f); // expected and actual swapped
+    }
+
+    private float computePercentage() {
+        return 99.9f;
+    }
+}
+]]>
+        </code>
+    </test-code>
 </test-data>

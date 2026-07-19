@@ -5,7 +5,7 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: February 2026 (7.22.0)
+last_updated: July 2026 (7.27.0)
 ---
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
@@ -273,7 +273,7 @@ When this was successful, then a couple of other jobs are being executed in para
   upload a new docker image to Docker Hub and GitHub Packages.
   * Environment: github
   * Uses PMD Actions Helper app to call a workflow in the other repository
-  * Secrets: PMD_ACTIONS_HELPER_ID, PMD_ACTIONS_HELPER_PRIVATE_KEY
+  * Secrets: PMD_ACTIONS_HELPER_CLIENT_ID, PMD_ACTIONS_HELPER_PRIVATE_KEY
 
 
 ## Secrets and Variables
@@ -295,11 +295,11 @@ At time of this writing (2025-05-10), the following secrets and variables are co
 ### Organization
 See <https://github.com/organizations/pmd/settings/secrets/actions>
 
-* `PMD_ACTIONS_HELPER_ID` and `PMD_ACTIONS_HELPER_PRIVATE_KEY`: These are the app id and private key for our
+* `PMD_ACTIONS_HELPER_CLIENT_ID` and `PMD_ACTIONS_HELPER_PRIVATE_KEY`: These are the app's client id and private key for our
   custom GitHub App [PMD Actions Helper](https://github.com/organizations/pmd/settings/apps/pmd-actions-helper).
   This is a private app defined at our organization and can only be installed within our organization. With these two
   secrets and the action [create-github-app-token](https://github.com/actions/create-github-app-token) we can
-  create a temporary github token, that has more permissions to access other repositories.
+  create a temporary GitHub token, that has more permissions to access other repositories.
   This is used to trigger the workflow in pmd/docker from pmd/pmd to create and upload a new docker image and
   also in "publish-snapshot" to push to repository pmd/pmd-eclipse-plugin-p2-site during the build
   of pmd/pmd-eclipse-plugin.  

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cache.internal;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +36,7 @@ public class NoopAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, List<Path> analysisClasspath, Collection<? extends TextFile> files) {
         // noop
     }
 

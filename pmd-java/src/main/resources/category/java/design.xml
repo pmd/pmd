@@ -118,6 +118,7 @@ code size and runtime complexity.
     [count(Block/*) = 1]
     [CatchParameter/ClassType/@SimpleName = Block/ThrowStatement/ConstructorCall/ClassType/@SimpleName]
     [Block/ThrowStatement/ConstructorCall/ArgumentList/@Size = 1]
+    [Block/ThrowStatement/ConstructorCall/ArgumentList//VariableAccess/@Name = CatchParameter/VariableId/@Name]
     /Block/ThrowStatement/ConstructorCall
 ]]>
                 </value>
@@ -833,6 +834,38 @@ public class Foo {
   public void foo() {
      int a = x + 2;
   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="InstantiableUtilityClass"
+          language="java"
+          since="0.3"
+          message="All members are static. Consider adding a private no-args constructor to prevent instantiation."
+          class="net.sourceforge.pmd.lang.java.rule.design.InstantiableUtilityClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#instantiableutilityclass">
+        <description>
+            A class is a utility class, if and only if it fulfills ALL the following criteria:
+            * ALL member functions, member variables, nested classes, and initializers are static.
+            * The class has at least one member function, member variable, or nested class that is not private.
+            * The class is a concrete class (neither abstract nor an interface).
+            * The class has no superclasses and implements no interfaces.
+            * The class has no main method.
+
+            Utility classes should not be instantiable. Make sure that the only constructor is a
+            private no-args constructor to enforce this.
+
+            (Note, that this rule was known as UseSingleton before PMD 5.1.0 and as UseUtilityClass before PMD 7.27.0).
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class MaybeAUtility {
+    public static final int SOME_CONST = 42;
+
+    public static void foo() {}
+    public static void bar() {}
 }
 ]]>
         </example>
@@ -1569,36 +1602,6 @@ public class MyClass {
         </example>
     </rule>
 
-    <rule name="UseUtilityClass"
-          language="java"
-          since="0.3"
-          message="All members are static. Consider adding a private no-args constructor to prevent instantiation."
-          class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#useutilityclass">
-        <description>
-A class is a utility class, if and only if it fulfills ALL the following criteria:
-* ALL member functions, member variables, nested classes, and initializers are static.
-* The class has at least one member function, member variable, or nested class that is not private.
-* The class is a concrete class (neither abstract nor an interface).
-* The class has no superclasses and implements no interfaces.
-* The class has no main method.
-
-Utility classes should not be instantiable. Make sure that the only constructor is a
-private no-args constructor to enforce this.
-
-(Note, that this rule was known before PMD 5.1.0 as UseSingleton).
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class MaybeAUtility {
-    public static final int SOME_CONST = 42;
-
-    public static void foo() {}
-    public static void bar() {}
-}
-]]>
-        </example>
-    </rule>
+    <rule name="UseUtilityClass" deprecated="true" ref="InstantiableUtilityClass" />
 
 </ruleset>

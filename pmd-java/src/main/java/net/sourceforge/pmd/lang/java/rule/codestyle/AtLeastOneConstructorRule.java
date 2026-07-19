@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
-import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
+import net.sourceforge.pmd.lang.java.rule.design.InstantiableUtilityClassRule;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * This rule detects non-static classes with no constructors;
  * requiring even the default constructor to be explicit.
  * It ignores classes with solely static methods,
- * use {@link UseUtilityClassRule} to flag those.
+ * use {@link InstantiableUtilityClassRule} to flag those.
  */
 public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
 

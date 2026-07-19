@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A method declaration, in a class or interface declaration. Since 7.0,
@@ -57,10 +58,20 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
-     * Returns true if this method is overridden.
+     * Returns true if this method overrides a method in a supertype.
+     * @since 7.26.0
      */
-    public boolean isOverridden() {
+    public boolean isOverride() {
         return overriddenMethod != null;
+    }
+
+    /**
+     * @deprecated since 7.26.0. Use {@link #isOverride()} instead.
+     */
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Override")
+    public boolean isOverridden() {
+        return isOverride();
     }
 
     /**

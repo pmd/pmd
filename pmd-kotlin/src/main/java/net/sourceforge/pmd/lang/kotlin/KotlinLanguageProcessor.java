@@ -12,8 +12,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -77,13 +79,15 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
             final Parser base = baseHandler.getParser();
             return task -> {
                 KtKotlinFile root = (KtKotlinFile) base.parse(task);
-                typeAwareness.annotateIfPossible(
-                        root,
-                        task.getTextDocument().getFileId().getAbsolutePath(),
-                        task.getTextDocument().getText().toString());
+                typeAwareness.annotateIfPossible(root, task.getTextDocument().getFileId().getAbsolutePath());
                 return root;
             };
         }
+    }
+
+    @InternalApi
+    public void prepareForSingleDocument(TextDocument doc) {
+        typeAwareness.prepareForSingleDocument(doc);
     }
 
     @Override

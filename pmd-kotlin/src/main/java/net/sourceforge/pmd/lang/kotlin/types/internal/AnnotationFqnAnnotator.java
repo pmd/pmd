@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.types;
+package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
@@ -29,6 +29,8 @@ import nl.stokpop.typemapper.model.AnnotationAst;
  * child, matching by simple (unqualified) name.
  *
  * <p>For function parameter type annotation, see {@link FunctionParameterAnnotator}.
+ *
+ * @since 7.27.0
  */
 final class AnnotationFqnAnnotator {
 
@@ -56,7 +58,7 @@ final class AnnotationFqnAnnotator {
             fqnList.add(fqn);
         }
         if (!fqnList.isEmpty()) {
-            KotlinNodeTypeData.setAnnotationFqNames(declNode, fqnList);
+            InternalApiBridge.setAnnotationFqNames(declNode, fqnList);
         }
 
         // Set @TypeName on each KtUnescapedAnnotation in the declaration's modifiers
@@ -72,12 +74,12 @@ final class AnnotationFqnAnnotator {
                 fqn = simpleToFqn.get(writtenName); // handles fully-qualified written name
             }
             if (fqn != null) {
-                KotlinNodeTypeData.setTypeName(annNode, fqn);
+                InternalApiBridge.setTypeName(annNode, fqn);
                 // Also set on the parent SingleAnnotation so users can query
                 // //SingleAnnotation[@TypeName='org.example.Foo'] directly.
                 KotlinNode parent = annNode.getParent();
                 if (parent instanceof KtSingleAnnotation) {
-                    KotlinNodeTypeData.setTypeName(parent, fqn);
+                    InternalApiBridge.setTypeName(parent, fqn);
                 }
             }
         }
@@ -88,54 +90,12 @@ final class AnnotationFqnAnnotator {
      * of a declaration node (does not recurse into function/class bodies).
      */
     private static List<KtUnescapedAnnotation> collectAnnotationNodes(KotlinNode declNode) {
-        List<KtUnescapedAnnotation> result = new ArrayList<>();
-        for (int i = 0; i < declNode.getNumChildren(); i++) {
-            KotlinNode child = declNode.getChild(i);
-            if (child instanceof KotlinParser.KtModifiers) {
-                collectFromModifiers((KotlinParser.KtModifiers) child, result);
-                break;
-            }
-        }
-        return result;
-    }
-
-    private static void collectFromModifiers(KotlinParser.KtModifiers mods, List<KtUnescapedAnnotation> result) {
-        for (int i = 0; i < mods.getNumChildren(); i++) {
-            KotlinNode child = mods.getChild(i);
-            if (child instanceof KtAnnotation) {
-                collectFromAnnotationRule((KtAnnotation) child, result);
-            }
-        }
-    }
-
-    private static void collectFromAnnotationRule(KtAnnotation ann, List<KtUnescapedAnnotation> result) {
-        for (int i = 0; i < ann.getNumChildren(); i++) {
-            KotlinNode child = ann.getChild(i);
-            if (child instanceof KtSingleAnnotation) {
-                collectFromSingleAnnotation((KtSingleAnnotation) child, result);
-            } else if (child instanceof KtMultiAnnotation) {
-                collectFromMultiAnnotation((KtMultiAnnotation) child, result);
-            }
-        }
-    }
-
-    private static void collectFromSingleAnnotation(KtSingleAnnotation singleAnn, List<KtUnescapedAnnotation> result) {
-        for (int j = 0; j < singleAnn.getNumChildren(); j++) {
-            KotlinNode sub = singleAnn.getChild(j);
-            if (sub instanceof KtUnescapedAnnotation) {
-                result.add((KtUnescapedAnnotation) sub);
-                break;
-            }
-        }
-    }
-
-    private static void collectFromMultiAnnotation(KtMultiAnnotation multiAnn, List<KtUnescapedAnnotation> result) {
-        for (int j = 0; j < multiAnn.getNumChildren(); j++) {
-            KotlinNode sub = multiAnn.getChild(j);
-            if (sub instanceof KtUnescapedAnnotation) {
-                result.add((KtUnescapedAnnotation) sub);
-            }
-        }
+        return declNode
+                .children(KtModifier.class)
+                .children(KtAnnotation.class)
+                .children() // Either KtSingleAnnotation or KtMultiAnnotation
+                .children(KtUnescapedAnnotation.class)
+                .toList();
     }
 
     /**
@@ -154,7 +114,9 @@ final class AnnotationFqnAnnotator {
                     .sliceOriginalText(userType.getTextRegion())
                     .toString();
         } catch (IndexOutOfBoundsException e) {
-            throw AssertionUtil.contexted(e).addContextValue("annotation node", annNode);
+            throw AssertionUtil.contexted(e)
+                    .addContextValue("annotation node", annNode)
+                    .addContextValue("userType node", userType);
         }
     }
 

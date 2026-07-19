@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.kotlin.types;
+package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtTypeAlias;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
 /**
  * Tests that KotlinTypeAnnotationVisitor correctly annotates AST nodes with
@@ -206,6 +207,20 @@ class KotlinTypeAnnotationVisitorTest {
         assertEquals("kotlin.collections.List<kotlin.String>", KotlinNodeTypeData.getTypeName(param));
     }
 
+    @Test
+    void chainedCallPropertyTypeSet() {
+        // val on line 1; chained .filter on line 2; .first() on line 3.
+        // KtPropertyDeclaration starts on line 1 in both PMD and ktm.
+        KtKotlinFile root = PARSER.parse(
+                "val result: String = listOf(\"a\", \"b\")\n"
+                + "    .filter { it.isNotEmpty() }\n"
+                + "    .first()");
+        KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
+        assertNotNull(prop);
+        assertEquals(1, prop.getBeginLine(), "PMD node must start on line 1");
+        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(prop));
+    }
+
     // --- TypeAlias (issue #11) ---
 
     @Test
@@ -225,19 +240,5 @@ class KotlinTypeAnnotationVisitorTest {
         assertEquals(2, aliases.size(), "Expected 2 typealias declarations");
         assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(aliases.get(0)), "B alias");
         assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(aliases.get(1)), "A alias");
-    }
-
-    @Test
-    void chainedCallPropertyTypeSet() {
-        // val on line 1; chained .filter on line 2; .first() on line 3.
-        // KtPropertyDeclaration starts on line 1 in both PMD and ktm.
-        KtKotlinFile root = PARSER.parse(
-                "val result: String = listOf(\"a\", \"b\")\n"
-                + "    .filter { it.isNotEmpty() }\n"
-                + "    .first()");
-        KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
-        assertNotNull(prop);
-        assertEquals(1, prop.getBeginLine(), "PMD node must start on line 1");
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(prop));
     }
 }

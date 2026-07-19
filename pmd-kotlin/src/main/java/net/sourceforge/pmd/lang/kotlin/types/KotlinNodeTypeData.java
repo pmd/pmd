@@ -24,8 +24,8 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
  * values during its pre-analysis pass; rule code uses the {@code get*} methods
  * to read them.
  *
- * @since 7.26.0
- * @experimental
+ * @since 7.27.0
+ * @experimental Provides the initial API to access type information on Kotlin AST nodes.
  */
 @Experimental
 public final class KotlinNodeTypeData {

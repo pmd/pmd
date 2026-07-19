@@ -114,7 +114,7 @@ final class ApexCommentBuilder {
         lexer.addErrorListener(new BaseErrorListener() {
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                throw new LexException(line, charPositionInLine, sourceCode.getFileId(), msg, e);
+                throw new LexException(line, charPositionInLine + 1, sourceCode.getFileId(), msg, e);
             }
         });
 

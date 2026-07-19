@@ -59,7 +59,7 @@ public class AntlrErrorListener {
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                     int line, int charPositionInLine,
                                     String msg, RecognitionException e) {
-                addException(new LexException(line, charPositionInLine, task.getFileId(), msg, e));
+                addException(new LexException(line, charPositionInLine + 1, task.getFileId(), msg, e));
             }
         };
     }
@@ -74,7 +74,7 @@ public class AntlrErrorListener {
                                     int line, int charPositionInLine,
                                     String msg, RecognitionException e) {
                 ParseException parseException = new ParseException(msg)
-                        .withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine));
+                        .withLocation(FileLocation.caret(task.getFileId(), line, charPositionInLine + 1));
                 if (e != null) {
                     parseException.initCause(e);
                 }
