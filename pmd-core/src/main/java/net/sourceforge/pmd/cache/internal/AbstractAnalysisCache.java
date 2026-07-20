@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.cache.internal;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -29,7 +26,6 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -37,6 +33,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -115,7 +112,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, List<Path> analysisClasspath, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -124,19 +121,11 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
                 cacheIsValid = false;
             }
 
-            final long currentAuxClassPathChecksum;
-            if (auxclassPathClassLoader instanceof URLClassLoader) {
-                // not using try-with-resources as we don't want to close our aux classpath loader - we still need it...
-                final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
-                currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(urlClassLoader.getURLs());
-
-                if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
-                    // TODO some rules don't need that (in fact, some languages)
-                    LOG.debug("Analysis cache invalidated, auxclasspath changed.");
-                    cacheIsValid = false;
-                }
-            } else {
-                currentAuxClassPathChecksum = 0;
+            final long currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(analysisClasspath);
+            if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
+                // TODO some rules don't need that (in fact, some languages)
+                LOG.debug("Analysis cache invalidated, analysis classpath changed.");
+                cacheIsValid = false;
             }
 
             final long currentExecutionClassPathChecksum = FINGERPRINTER.fingerprint(getClassPathEntries());
@@ -158,48 +147,28 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
         }
     }
 
-    private static boolean isClassPathWildcard(String entry) {
-        return entry.endsWith("/*") || entry.endsWith("\\*");
-    }
-
-    private URL[] getClassPathEntries() {
-        final String classpath = System.getProperty("java.class.path");
-        final String[] classpathEntries = classpath.split(File.pathSeparator);
-        final List<URL> entries = new ArrayList<>();
+    private List<Path> getClassPathEntries() {
+        List<Path> classpathEntries = AuxClasspathUtil.getRuntimeClasspath();
+        final List<Path> entries = new ArrayList<>();
 
         final SimpleFileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(final Path file,
                                              final BasicFileAttributes attrs) throws IOException {
                 if (!attrs.isSymbolicLink()) { // Broken link that can't be followed
-                    entries.add(file.toUri().toURL());
-                }
-                return FileVisitResult.CONTINUE;
-            }
-        };
-        final SimpleFileVisitor<Path> jarFileVisitor = new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(final Path file,
-                                             final BasicFileAttributes attrs) throws IOException {
-                String extension = IOUtil.getFilenameExtension(file.toString());
-                if ("jar".equalsIgnoreCase(extension)) {
-                    fileVisitor.visitFile(file, attrs);
+                    entries.add(file);
                 }
                 return FileVisitResult.CONTINUE;
             }
         };
 
         try {
-            for (final String entry : classpathEntries) {
-                final File f = new File(entry);
-                if (isClassPathWildcard(entry)) {
-                    Files.walkFileTree(new File(entry.substring(0, entry.length() - 1)).toPath(),
-                                       EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
-                } else if (f.isFile()) {
-                    entries.add(f.toURI().toURL());
-                } else if (f.exists()) { // ignore non-existing directories
-                    Files.walkFileTree(f.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
-                                       fileVisitor);
+            for (final Path entry : classpathEntries) {
+                if (Files.isRegularFile(entry)) { // ignores non-existing files
+                    entries.add(entry);
+                } else if (Files.isDirectory(entry)) { // ignores non-existing directories
+                    Files.walkFileTree(entry, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
+                            fileVisitor);
                 }
             }
         } catch (final IOException e) {
@@ -207,7 +176,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
             throw new RuntimeException(e);
         }
 
-        return entries.toArray(new URL[0]);
+        return entries;
     }
 
     @Override

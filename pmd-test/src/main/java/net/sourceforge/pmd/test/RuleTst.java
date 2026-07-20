@@ -312,7 +312,7 @@ public abstract class RuleTst {
         configuration.setClassLoader(TEST_AUXCLASSPATH_CLASSLOADER);
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
+            pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("snippet." + languageVersion.getLanguage().getExtensions().get(0)), languageVersion));
             Collection<? extends Rule> extraRules = getExtraRules();
             if (!extraRules.isEmpty()) {
                 pmd.addRuleSet(RuleSet.create("extra rules", "description", "file.xml", Collections.emptyList(), Collections.emptyList(), extraRules));
