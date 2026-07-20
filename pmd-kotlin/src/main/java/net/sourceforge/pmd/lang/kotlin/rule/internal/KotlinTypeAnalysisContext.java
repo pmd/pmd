@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -240,7 +241,8 @@ public final class KotlinTypeAnalysisContext {
         try {
             return new File(path).getCanonicalPath();
         } catch (IOException e) {
-            return new File(path).getAbsolutePath();
+            throw new UncheckedIOException(
+                    "Cannot canonicalize path: " + path + " — file may not be accessible", e);
         }
     }
 }
