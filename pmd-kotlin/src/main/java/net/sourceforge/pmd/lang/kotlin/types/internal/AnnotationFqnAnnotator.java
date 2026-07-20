@@ -12,7 +12,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
@@ -91,7 +91,7 @@ final class AnnotationFqnAnnotator {
      */
     private static List<KtUnescapedAnnotation> collectAnnotationNodes(KotlinNode declNode) {
         return declNode
-                .children(KtModifier.class)
+                .children(KtModifiers.class)
                 .children(KtAnnotation.class)
                 .children() // Either KtSingleAnnotation or KtMultiAnnotation
                 .children(KtUnescapedAnnotation.class)
@@ -122,15 +122,14 @@ final class AnnotationFqnAnnotator {
 
     /** Finds the {@code KtUserType} directly inside a {@code KtUnescapedAnnotation}. */
     private static KtUserType findUserType(KtUnescapedAnnotation annNode) {
-        for (int i = 0; i < annNode.getNumChildren(); i++) {
-            KotlinNode child = annNode.getChild(i);
-            if (child instanceof KtUserType) {
-                return (KtUserType) child;
-            }
-            if (child instanceof KtConstructorInvocation) {
-                return KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation((KtConstructorInvocation) child);
-            }
+        // unescapedAnnotation : constructorInvocation | userType
+        KtUserType userType = annNode.firstChild(KtUserType.class);
+        if (userType != null) {
+            return userType;
         }
-        return null;
+        KtConstructorInvocation ctor = annNode.firstChild(KtConstructorInvocation.class);
+        return ctor != null
+                ? KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation(ctor)
+                : null;
     }
 }

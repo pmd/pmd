@@ -34,7 +34,6 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         return visitor.visitNode(this, data);
     }
 
-
     @Override // override to make visible in package
     protected PmdAsAntlrInnerNode<KotlinNode> asAntlrNode() {
         return super.asAntlrNode();
@@ -51,7 +50,7 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
     @Override
     @NoAttribute
     @Deprecated
-    public String getImage() {
+    public @Nullable String getImage() {
         return null;
     }
 
@@ -93,35 +92,37 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
 
     /**
      * Returns the attributes on the node and additionally the attributes of
-     * the corresponding attribute view, if there is one.
+     * the corresponding attribute view, if there is one. Duplicate names are
+     * suppressed and null-valued attributes (e.g. type attributes with no
+     * resolved type) are omitted.
      *
      * @see #attributes(Class)
      */
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
-        Iterator<Attribute> base = super.getXPathAttributesIterator();
-        AttributeView<?> attributeView = AttributeView.create(this);
-        if (attributeView == null) {
-            return base;
-        }
-        // Note: IteratorUtil.concat cannot be used here because it eagerly calls
-        // bs.hasNext() at construction time, before base is consumed. The view
-        // filter predicate depends on names collected from base, so base must be
-        // fully drained first.
         List<Attribute> result = new ArrayList<>();
         Set<String> names = new HashSet<>();
-        while (base.hasNext()) {
-            Attribute attr = base.next();
-            result.add(attr);
-            names.add(attr.getName());
+        addAttributes(super.getXPathAttributesIterator(), result, names);
+
+        AttributeView<?> attributeView = AttributeView.create(this);
+        if (attributeView != null) {
+            addAttributes(attributeView.getXPathAttributesIterator(), result, names);
         }
-        Iterator<Attribute> viewIt = attributeView.getXPathAttributesIterator();
-        while (viewIt.hasNext()) {
-            Attribute attr = viewIt.next();
-            if (!names.contains(attr.getName())) {
+        return result.iterator();
+    }
+
+    private static void addAttributes(Iterator<Attribute> source, List<Attribute> result, Set<String> names) {
+        while (source.hasNext()) {
+            Attribute attr = source.next();
+            // Dedup by name; skip null-valued attributes. This implements deliberate
+            // optional-attribute absence: the type-aware views (@TypeName, @ReturnTypeName,
+            // @AnnotationFqNames, @TypeInfoAvailable, ...) return null when the value does not
+            // apply, so the attribute is absent from XPath rather than present-with-null.
+            // Rules distinguish "unknown" (root has no @TypeInfoAvailable), "unresolved"
+            // (pmd-kotlin:hasUnresolvedReference()), and "genuinely none" — see the Kotlin docs.
+            if (attr.getValue() != null && names.add(attr.getName())) {
                 result.add(attr);
             }
         }
-        return result.iterator();
     }
 }
