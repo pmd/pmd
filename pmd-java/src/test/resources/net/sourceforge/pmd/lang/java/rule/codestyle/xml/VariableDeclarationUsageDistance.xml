@@ -180,4 +180,29 @@ public class Bar {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>declarations interspersed with executable statements are still counted (#6846)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Distance between declaration of 'a' and its first usage is 8, current threshold is 7</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Bar {
+    public void alternating() {
+        int a; // premature
+        int unused; // grouped with 'a': doesn't count
+        System.out.println("s1"); // first executable statement: ends the leading group
+        int b; // no longer grouped: counts towards the distance
+        System.out.println("s2");
+        System.out.println("s3");
+        System.out.println("s4");
+        System.out.println("s5");
+        System.out.println("s6");
+        a = 1;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
