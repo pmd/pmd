@@ -5,9 +5,9 @@
 import java.util.Map;
 
 /**
- * @see <a href="https://openjdk.org/jeps/530">JEP 530: Primitive Types in Patterns, instanceof, and switch (Fourth Preview)</a> (Java 26)
+ * @see <a href="https://openjdk.org/jeps/532">JEP 532: Primitive Types in Patterns, instanceof, and switch (Fifth Preview)</a> (Java 27)
  */
-public class Jep530_PrimitiveTypesInPatternsInstanceofAndSwitch {
+public class Jep532_PrimitiveTypesInPatternsInstanceofAndSwitch {
 
     /**
      * 1. Extend pattern matching so that primitive type patterns are applicable to a wider range of match candidate

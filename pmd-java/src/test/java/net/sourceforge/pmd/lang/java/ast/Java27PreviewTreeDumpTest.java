@@ -27,13 +27,13 @@ class Java27PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    void jep530PrimitiveTypesInPatternsInstanceofAndSwitch() {
-        doTest("Jep530_PrimitiveTypesInPatternsInstanceofAndSwitch");
+    void jep532PrimitiveTypesInPatternsInstanceofAndSwitch() {
+        doTest("Jep532_PrimitiveTypesInPatternsInstanceofAndSwitch");
     }
 
     @Test
-    void jep530PrimitiveTypesInPatternsInstanceofAndSwitchBeforeJava26Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java27.parseResource("Jep530_PrimitiveTypesInPatternsInstanceofAndSwitch.java"));
+    void jep532PrimitiveTypesInPatternsInstanceofAndSwitchBeforeJava27Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java27.parseResource("Jep532_PrimitiveTypesInPatternsInstanceofAndSwitch.java"));
         assertThat(thrown.getMessage(), containsString("Primitive types in patterns instanceof and switch is a preview feature of JDK 27, you should select your language version accordingly"));
     }
 }
