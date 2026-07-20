@@ -23,6 +23,22 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### 🚀️ New: Java 27 Support
+This release of PMD brings support for Java 27.
+
+There are no new standard language features.
+
+There is one preview language feature:
+* [JEP 532: Primitive Types in Patterns, instanceof, and switch (Fifth Preview)](https://openjdk.org/jeps/532)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to select the new language version `27-preview`:
+
+    pmd check --use-version java-27-preview ...
+
+Note: Support for Java 25 preview language features have been removed. The version "25-preview"
+is no longer available.
+
 #### Kotlin type-aware analysis
 Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
 Resolved type names, return types, and annotation FQNs are available through
@@ -43,7 +59,8 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#4952](https://github.com/pmd/pmd/issues/4952): \[doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader
     * [#4953](https://github.com/pmd/pmd/issues/4953): \[core] Deprecate PMDConfiguration#setClassloader and #getClassloader
 * java
-    * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
+    * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException
+    * [#6374](https://github.com/pmd/pmd/issues/6374): \[java] Support Java 27
     * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
 * java-bestpractices
     * [#5514](https://github.com/pmd/pmd/issues/5514): \[java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements
