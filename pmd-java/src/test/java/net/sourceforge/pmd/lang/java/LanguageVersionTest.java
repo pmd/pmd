@@ -42,7 +42,6 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
                 new TestDescriptor(java, "23"),
                 new TestDescriptor(java, "24"),
                 new TestDescriptor(java, "25"),
-                new TestDescriptor(java, "25-preview"),
                 new TestDescriptor(java, "26"),
                 new TestDescriptor(java, "26-preview"),
                 new TestDescriptor(java, "27"),
