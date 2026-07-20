@@ -152,6 +152,45 @@ for any single parameter and `..` as wildcard for any number of parameters.
 //PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.regex.Pattern#compile(_)')]
 ```
 
+### Java-based rules
+
+The same type information is accessible from Java-based rules via public interfaces and
+`KotlinNodeTypeData`:
+
+```java
+import net.sourceforge.pmd.lang.kotlin.ast.HasTypeName;
+import net.sourceforge.pmd.lang.kotlin.ast.HasModifiers;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+
+// Check type name on a node that implements HasTypeName
+// (PropertyDeclaration, FunctionDeclaration, ClassParameter, etc.)
+if (node instanceof HasTypeName) {
+    String typeName = ((HasTypeName) node).getTypeName(); // null if unresolved
+}
+
+// Get modifiers on declaration nodes implementing HasModifiers
+if (node instanceof HasModifiers) {
+    String mods = ((HasModifiers) node).getModifiers(); // e.g. "override suspend"
+}
+
+// Static helpers on KotlinNodeTypeData (work on any KotlinNode)
+String typeName = KotlinNodeTypeData.getTypeName(node);
+String returnType = KotlinNodeTypeData.getReturnTypeName(node);
+List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(node);
+
+// Check if type analysis ran (on root node)
+KtKotlinFile root = (KtKotlinFile) node.getRoot();
+boolean available = KotlinNodeTypeData.isTypeInfoAvailable(root);
+```
+
+All type getters return `null` when type analysis has not run or the type could not be resolved.
+
+> **Note:** Unlike pmd-java's `TypeNode.getTypeMirror()` which returns rich `JTypeMirror` objects
+> (never null, using `UNKNOWN` for unresolved types), pmd-kotlin exposes string-based type names
+> via `KotlinNodeTypeData` — reflecting the simpler output of kotlin-type-mapper.
+> A richer type model may be added in a future version.
+
 ## Language Properties
 
 See [Kotlin language properties](pmd_languages_configuration.html#kotlin-language-properties)
