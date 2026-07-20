@@ -44,6 +44,7 @@ enum class JavaVersion : Comparable<JavaVersion> {
     J24,
     J25, J25__PREVIEW,
     J26, J26__PREVIEW,
+    J27, J27__PREVIEW
     ;
 
     /** Name suitable for use with e.g. [JavaParsingHelper.parse] */
