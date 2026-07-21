@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.checkerframework.checker.lock.qual.GuardedBy;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -75,7 +76,7 @@ public class AuxClasspathLoader implements AutoCloseable {
     private static final String MODULE_INFO_SUFFIX_SLASH = "/" + MODULE_INFO_SUFFIX;
 
     private static final Object LOCK = new Object();
-    private static Map<String, AuxClasspathLoader> cache;
+    private static @GuardedBy("LOCK") Map<String, AuxClasspathLoader> cache;
 
     private final AtomicBoolean closeRequested = new AtomicBoolean(false);
 
