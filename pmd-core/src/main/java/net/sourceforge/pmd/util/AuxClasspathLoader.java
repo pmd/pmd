@@ -191,7 +191,16 @@ public class AuxClasspathLoader implements AutoCloseable {
                 cache = new LinkedHashMap<String, AuxClasspathLoader>() {
                     @Override
                     protected boolean removeEldestEntry(Map.Entry<String, AuxClasspathLoader> eldest) {
-                        return size() > count;
+                        boolean remove = size() > count;
+                        if (remove) {
+                            this.remove(eldest.getKey());
+                            try {
+                                eldest.getValue().close();
+                            } catch (IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
+                        }
+                        return false;
                     }
                 };
             }
@@ -483,7 +492,7 @@ public class AuxClasspathLoader implements AutoCloseable {
     @Override
     public void close() throws IOException {
         synchronized (LOCK) {
-            if (cache != null) {
+            if (cache != null && cache.containsValue(this)) {
                 LOG.debug("Not closing AuxClasspathLoader as it is cached and might be reused");
                 return;
             }
