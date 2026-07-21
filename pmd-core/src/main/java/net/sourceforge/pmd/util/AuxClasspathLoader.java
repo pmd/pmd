@@ -529,6 +529,9 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
         }
 
+        if (closeRequested.get()) {
+            throw new IllegalStateException("AuxClasspathLoader is closed");
+        }
         closeRequested.set(true);
         try {
             IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
