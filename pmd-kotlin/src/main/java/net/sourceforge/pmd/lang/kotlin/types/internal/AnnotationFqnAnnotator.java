@@ -93,7 +93,7 @@ final class AnnotationFqnAnnotator {
         return declNode
                 .children(KtModifiers.class)
                 .children(KtAnnotation.class)
-                .children()
+                .children() // Either KtSingleAnnotation or KtMultiAnnotation
                 .children(KtUnescapedAnnotation.class)
                 .toList();
     }
