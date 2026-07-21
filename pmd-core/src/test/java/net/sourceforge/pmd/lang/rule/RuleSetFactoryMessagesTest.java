@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
@@ -39,6 +40,22 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
                 + " 8| <rule name=\"MockRuleName\" language=\"dummy\" class=\"net.sourceforge.pmd.lang.rule.MockRuleWithNoProperties\" message=\"avoid the mock rule\">\n"
                 + " 9| <priority>not a priority</priority></rule></ruleset>\n"
                 + "    ^^^^^^^^^ Not a valid priority: 'not a priority', expected a number in [1,5]"
+        ));
+    }
+
+    @Test
+    void testMissingRuleReferenceMessage() throws Exception {
+        String ruleset = "net/sourceforge/pmd/lang/rule/TestRuleset1.xml";
+        String missingRule = "ThisRuleDoesNotExist";
+
+        String log = SystemLambda.tapSystemErr(() -> assertCannotParse(
+            rulesetXml(ruleRef(ruleset + "/" + missingRule))
+        ));
+
+        assertThat(log, containsString(
+            "Unable to find rule '" + missingRule + "' in ruleset '" + ruleset
+                + "' (PMD " + PMDVersion.VERSION + "). Check the spelling and whether the rule is available"
+                + " in this PMD version."
         ));
     }
 

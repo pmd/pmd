@@ -23,6 +23,12 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Kotlin type-aware analysis
+Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
+Resolved type names, return types, and annotation FQNs are available through
+{%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %} for use in Java-based rules.
+
+Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
 ### 🌟️ New and Changed Rules
 #### Renamed Rules
@@ -36,6 +42,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#1995](https://github.com/pmd/pmd/issues/1995): \[core] PMD should display number of rules violated or errors found
     * [#4952](https://github.com/pmd/pmd/issues/4952): \[doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader
     * [#4953](https://github.com/pmd/pmd/issues/4953): \[core] Deprecate PMDConfiguration#setClassloader and #getClassloader
+    * [#6865](https://github.com/pmd/pmd/issues/6865): \[core] Include the running PMD version in the "Unable to find referenced rule" error
 * java
     * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
     * [#6010](https://github.com/pmd/pmd/issues/6010): \[java] java.lang.OutOfMemoryError: Java heap space when accessing big Jar files with PMD 7
@@ -50,6 +57,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
 * java-errorprone
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
+* kotlin
+    * [#6795](https://github.com/pmd/pmd/issues/6795): \[kotlin] Add kotlin-type-mapper infrastructure
 
 ### 🚨️ API Changes
 
@@ -81,6 +90,11 @@ This is a {{ site.pmd.release_type }} release.
       `enableReuse(int)` which enables caching of AuxClasspathLoader instances. This is useful for unit tests
       or IDE plugins, when PMD is executed multiple times within one JVM instance. Don't forget to call
       `disableReuse()` when you're done to close all cached instances.
+
+#### Experimental API
+* kotlin
+    * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the initial API to access type information
+      on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
