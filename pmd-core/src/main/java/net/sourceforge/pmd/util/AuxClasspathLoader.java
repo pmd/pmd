@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -76,7 +77,7 @@ public class AuxClasspathLoader implements AutoCloseable {
     private static final Object LOCK = new Object();
     private static Map<String, AuxClasspathLoader> cache;
 
-    private boolean closeRequested;
+    private final AtomicBoolean closeRequested = new AtomicBoolean(false);
 
     private static final class Entry {
         private final Path path;
@@ -373,7 +374,7 @@ public class AuxClasspathLoader implements AutoCloseable {
         assert name != null;
         assert name.charAt(0) != '/'; // assuming only relative paths
 
-        if (closeRequested) {
+        if (closeRequested.get()) {
             throw new IllegalStateException("AuxClasspathLoader is closed");
         }
 
@@ -521,7 +522,7 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
         }
 
-        closeRequested = true;
+        closeRequested.set(true);
         try {
             IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
         } catch (Exception e) {
