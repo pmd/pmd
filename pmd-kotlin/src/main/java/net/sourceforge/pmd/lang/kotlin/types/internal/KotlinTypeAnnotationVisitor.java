@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtForStatement;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtTypeAlias;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
@@ -158,6 +159,20 @@ public final class KotlinTypeAnnotationVisitor {
             for (DeclarationAst decl : decls) {
                 if (decl.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && decl.getType() != null) {
                     InternalApiBridge.setTypeName(node, decl.getType());
+                    break;
+                }
+            }
+            return visitChildren(node, data);
+        }
+
+        @Override
+        public Void visitTypeAlias(KtTypeAlias node, Void data) {
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
+            for (DeclarationAst decl : decls) {
+                if (decl.getKind() == DeclarationKind.TYPEALIAS
+                        && !decl.getTypeAliasChain().isEmpty()) {
+                    List<String> chain = decl.getTypeAliasChain();
+                    InternalApiBridge.setTypeName(node, chain.get(chain.size() - 1));
                     break;
                 }
             }

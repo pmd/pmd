@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Date() constructor should use java.time API</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date
+
+class Bad {
+    val now = Date()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Date(millis) constructor should use java.time API</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date
+
+class Bad {
+    val epoch = Date(0L)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>java.time.Instant is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    val now = java.time.Instant.now()
+    val date = java.time.LocalDate.now()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fully qualified java.util.Date() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    val now = java.util.Date()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom class named Date is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Date(val value: String)
+
+class Good {
+    val d = Date("hello")
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

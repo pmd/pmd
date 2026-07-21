@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Extending Error directly is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+class MyError : Error("something went wrong")
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Extending AssertionError is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+class MyAssertionError : AssertionError("assertion failed")
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Extending RuntimeException is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MyException : RuntimeException("something went wrong")
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Extending Exception is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MyCheckedException : Exception("checked")
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Extending IllegalArgumentException is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MyIllegalArgumentException : IllegalArgumentException("bad argument")
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Sealed class extending RuntimeException is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+sealed class AppError : RuntimeException()
+class NotFoundError(msg: String) : AppError()
+class ValidationError(msg: String) : AppError()
+        ]]></code>
+    </test-code>
+
+</test-data>

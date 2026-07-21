@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>str.trim().length is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.trim().length == 0
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>str.strip().length is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.strip().length == 0
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>str.trim().isEmpty() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.trim().isEmpty()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>str.strip().isNullOrEmpty() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.strip().isNullOrEmpty()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>str.isBlank() is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.isBlank()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>str.isEmpty() is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.isEmpty()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>str.length without trim is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.length == 0
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>str.trim() result stored then length checked is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(s: String): Boolean {
+    return s.trim().length > 0
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

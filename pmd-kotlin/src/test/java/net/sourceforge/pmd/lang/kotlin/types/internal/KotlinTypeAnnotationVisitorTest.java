@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtTypeAlias;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
@@ -218,5 +219,26 @@ class KotlinTypeAnnotationVisitorTest {
         assertNotNull(prop);
         assertEquals(1, prop.getBeginLine(), "PMD node must start on line 1");
         assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(prop));
+    }
+
+    // --- TypeAlias (issue #11) ---
+
+    @Test
+    void typeAliasTypeNameSetToConcreteExpandedType() {
+        KtKotlinFile root = PARSER.parse("typealias MyStr = String");
+        KtTypeAlias alias = root.descendants(KtTypeAlias.class).first();
+        assertNotNull(alias);
+        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(alias));
+    }
+
+    @Test
+    void typeAliasChainedAliasTypeNameSetToConcreteType() {
+        KtKotlinFile root = PARSER.parse(
+                "typealias B = String\n"
+                + "typealias A = B\n");
+        List<KtTypeAlias> aliases = root.descendants(KtTypeAlias.class).toList();
+        assertEquals(2, aliases.size(), "Expected 2 typealias declarations");
+        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(aliases.get(0)), "B alias");
+        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(aliases.get(1)), "A alias");
     }
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Explicit finalize() call is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Resource {
+    fun close(res: Resource) {
+        // Bad: do not call finalize() explicitly
+        res.finalize()
+    }
+    protected fun finalize() { /* cleanup */ }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Calling finalize() on a newly created object is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Managed {
+    protected fun finalize() { /* cleanup */ }
+}
+fun bad() {
+    Managed().finalize() // violation
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using use{} for AutoCloseable is the idiomatic Kotlin approach - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun process(res: AutoCloseable) {
+        res.use { /* work with res */ }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No finalize() call - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Resource : AutoCloseable {
+    override fun close() { /* release resources */ }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>super.finalize() inside an overriding finalize() method is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MyResource {
+    override fun finalize() {
+        super.finalize() // ok: legitimate super call within the override
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>finalize() called on another object inside a finalize() override is still a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    private val other = Bad()
+    override fun finalize() {
+        super.finalize() // ok
+        other.finalize() // violation: explicit call on another object
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

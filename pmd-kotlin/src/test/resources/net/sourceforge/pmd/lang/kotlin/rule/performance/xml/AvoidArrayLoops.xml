@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple array copy loop -- violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun bad(src: IntArray, dst: IntArray) {
+    for (i in src.indices) {
+        dst[i] = src[i]
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>array copy with explicit range -- violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun bad(src: IntArray, dst: IntArray, n: Int) {
+    for (i in 0 until n) {
+        dst[i] = src[i]
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>use copyInto -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(src: IntArray, dst: IntArray) {
+    src.copyInto(dst)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>loop body with more than one statement -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(src: IntArray, dst: IntArray, flags: BooleanArray) {
+    for (i in src.indices) {
+        dst[i] = src[i]
+        flags[i] = true
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>transform during copy -- violation (rule flags any indexed assignment in a simple loop)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun bad(src: IntArray, dst: IntArray) {
+    for (i in src.indices) {
+        dst[i] = src[i] * 2
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested loop -- inner simple copy loop is flagged</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun bad(matrix: Array<IntArray>, dst: Array<IntArray>) {
+    for (i in matrix.indices) {
+        for (j in matrix[i].indices) {
+            dst[i][j] = matrix[i][j]
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>transform loop encoding pairs of chars into bytes - no violation (not an array copy)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun decode(input: CharArray, output: ByteArray) {
+    val len = input.size
+    for (i in 0 until len step 2) {
+        output[i / 2] = ((Character.digit(input[i], 16) shl 4) +
+                Character.digit(input[i + 1], 16)).toByte()
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

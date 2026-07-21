@@ -30,6 +30,13 @@ Resolved type names, return types, and annotation FQNs are available through
 
 Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
+#### Kotlin type-aware analysis
+
+Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
+Resolved type names, return types, and annotation FQNs are available through `KotlinNodeTypeData` for use in Java-based rules.
+
+Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
+
 ### 🌟️ New and Changed Rules
 #### Renamed Rules
 * The rule {%rule java/design/InstantiableUtilityClass %} (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.

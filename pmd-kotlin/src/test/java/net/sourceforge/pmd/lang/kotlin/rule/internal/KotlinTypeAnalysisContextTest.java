@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -97,4 +98,95 @@ class KotlinTypeAnalysisContextTest {
         }
     }
 
+    // --- issue #10: dispatchReceiverType / extensionReceiverType, callsOnReceiver / callsReturning ---
+
+    @Test
+    void callSiteDispatchReceiverTypeIsSetForMethodCall() {
+        // list.add("hello") is a regular method call; ktm must record non-null dispatchReceiverType.
+        String code = "import java.util.ArrayList\n"
+                + "fun f() {\n"
+                + "    val list = ArrayList<String>()\n"
+                + "    list.add(\"hello\")\n"
+                + "}\n";
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
+        List<CallSiteAst> calls = ctx.callSitesAt("snippet.kt", 4);
+        assertFalse(calls.isEmpty(), "Expected call site for list.add at line 4");
+        String recv = calls.get(0).getDispatchReceiverType();
+        assertNotNull(recv, "dispatchReceiverType must be non-null for a regular method call");
+        assertTrue(recv.startsWith("java.util.ArrayList"), "Expected ArrayList receiver, got: " + recv);
+    }
+
+    @Test
+    void callsOnReceiverFindsMethodCallsOnMatchingType() {
+        // Verifies KotlinTypeAnalysisContext.callsOnReceiver() delegation (issue #10).
+        String code = "import java.util.ArrayList\n"
+                + "fun f() {\n"
+                + "    val list = ArrayList<String>()\n"
+                + "    list.add(\"hello\")\n"
+                + "}\n";
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
+        List<CallSiteAst> calls = ctx.callsOnReceiver("java.util.ArrayList");
+        assertFalse(calls.isEmpty(), "Expected calls on java.util.ArrayList receiver");
+    }
+
+    @Test
+    void callsReturningFindsCallsWithMatchingReturnType() {
+        // Verifies KotlinTypeAnalysisContext.callsReturning() delegation (issue #10).
+        String code = "fun give(): String = \"x\"\n"
+                + "val x: String = give()\n";
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
+        List<CallSiteAst> calls = ctx.callsReturning("kotlin.String");
+        assertFalse(calls.isEmpty(), "Expected calls returning kotlin.String");
+    }
+
+    // --- type alias query delegation ---
+
+    @Test
+    void resolveTypeAliasReturnsConcreteType() {
+        String code = "typealias MyStr = String\n"
+                + "fun give(): MyStr = \"x\"\n";
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
+        assertEquals("kotlin.String", ctx.resolveTypeAlias("MyStr"));
+    }
+
+    @Test
+    void callsReturningExpandingAliasFindsCallsThroughAlias() {
+        // callsReturning("MyStr") returns empty because ktm records the expanded type.
+        // callsReturningExpandingAlias("MyStr") expands first and finds the call.
+        String code = "typealias MyStr = String\n"
+                + "fun give(): MyStr = \"x\"\n"
+                + "val x = give()\n";
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
+        assertTrue(ctx.callsReturning("MyStr").isEmpty(),
+                "callsReturning by alias name must return empty (ktm stores expanded type)");
+        assertFalse(ctx.callsReturningExpandingAlias("MyStr").isEmpty(),
+                "callsReturningExpandingAlias must find calls by expanding the alias");
+    }
+
+    @Test
+    void callsOnReceiverExpandingAliasFindsCallsThroughAlias() {
+        // callsOnReceiver("MyList") returns empty; callsOnReceiverExpandingAlias expands first.
+        String code = "typealias MyList = java.util.ArrayList<String>\n"
+                + "fun f() {\n"
+                + "    val list = java.util.ArrayList<String>()\n"
+                + "    list.add(\"hello\")\n"
+                + "}\n";
+        TypedAst ast = KotlinTypeMapper.fromSources(
+                Collections.singletonMap("snippet.kt", code), Collections.<File>emptyList());
+        KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
+        assertTrue(ctx.callsOnReceiver("MyList").isEmpty(),
+                "callsOnReceiver by alias name must return empty (ktm stores expanded type)");
+        assertFalse(ctx.callsOnReceiverExpandingAlias("MyList").isEmpty(),
+                "callsOnReceiverExpandingAlias must find calls by expanding the alias");
+    }
 }

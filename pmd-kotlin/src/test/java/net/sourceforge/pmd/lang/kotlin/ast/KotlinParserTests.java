@@ -40,6 +40,11 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     @Test
+    void testDesignPatterns() {
+        doTest("DesignPatterns");
+    }
+
+    @Test
     void syntaxErrorThrowsParseException() {
         ParseException parseException = assertThrows(ParseException.class, () ->
                 KotlinParsingHelper.DEFAULT.parse("fun foo( { }", null, FileId.fromPathLikeString("myfile.kt"))

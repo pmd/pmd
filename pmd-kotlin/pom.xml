@@ -115,5 +115,12 @@
             <artifactId>pmd-lang-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Provides kotlinx.coroutines types for integration tests that configure auxClasspath. -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+            <version>1.8.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>return null from nullable List function - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun getItems(): List<String>? {
+        return null
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return null from nullable Collection function - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun getItems(): Collection<String>? {
+        return null
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return null from nullable Map function - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun getConfig(): Map<String, String>? {
+        return null
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>conditional return null from nullable List function - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun getItems(flag: Boolean): List<String>? {
+        if (!flag) {
+            return null
+        }
+        return listOf()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>expression body returning null from nullable List function - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun getItems(): List<String>? = null
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return emptyList() from nullable List - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun getItems(): List<String>? {
+        return emptyList()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return null from nullable String - no violation (not a collection)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun getLabel(): String? {
+        return null
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return null inside anonymous function nested in collection function - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun getItems(): List<String>? {
+        val transform = fun(): String? { return null }
+        return listOf(transform() ?: "")
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

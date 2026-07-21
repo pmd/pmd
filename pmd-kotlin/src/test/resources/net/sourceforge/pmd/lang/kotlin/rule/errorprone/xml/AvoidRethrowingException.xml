@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>catch that only rethrows the caught variable is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun bad() {
+    try {
+        risky()
+    } catch (e: IllegalStateException) {
+        throw e
+    }
+}
+fun risky() {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch that logs before rethrowing is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good() {
+    try {
+        risky()
+    } catch (e: IllegalStateException) {
+        println(e.message)
+        throw e
+    }
+}
+fun risky() {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch that wraps exception is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good() {
+    try {
+        risky()
+    } catch (e: IllegalStateException) {
+        throw RuntimeException("wrapped", e)
+    }
+}
+fun risky() {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch that throws a different exception is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good() {
+    try {
+        risky()
+    } catch (e: IllegalStateException) {
+        throw IllegalArgumentException("different")
+    }
+}
+fun risky() {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>multiple catches where only one is a plain rethrow</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun bad() {
+    try {
+        risky()
+    } catch (e: IllegalStateException) {
+        throw e
+    } catch (e: IllegalArgumentException) {
+        println("handled")
+    }
+}
+fun risky() {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch CancellationException and rethrow is not a violation (coroutines convention)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.concurrent.CancellationException
+
+fun check() {
+    try {
+        risky()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        println("handled")
+    }
+}
+fun risky() {}
+        ]]></code>
+    </test-code>
+
+</test-data>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>lock.notify() on java.lang.Object is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[fun bad(lock: java.lang.Object) {
+    synchronized(lock) {
+        lock.notify()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple notify() calls are each a violation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun bad(a: java.lang.Object, b: java.lang.Object) {
+        synchronized(this) {
+            a.notify() // violation
+            b.notify() // violation
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>lock.notifyAll() is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[fun good(lock: java.lang.Object) {
+    synchronized(lock) {
+        lock.notifyAll()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No synchronization primitives used - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[class Good {
+    private val value = 42
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

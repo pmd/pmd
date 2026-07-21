@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>no violation - trivial function, complexity 1</description>
+        <rule-property name="reportLevel">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun greet(name: String): String = "Hello, $name"
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation - single if, complexity 2</description>
+        <rule-property name="reportLevel">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Int): String {
+    if (x > 0) return "positive"
+    return ""
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation - if plus else, complexity 2</description>
+        <rule-property name="reportLevel">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Int): String {
+    return if (x > 0) "positive" else "non-positive"
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - nested if adds nesting penalty, complexity 4</description>
+        <rule-property name="reportLevel">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun check(a: Int, b: Int): String {
+    if (a > 0) {
+        if (b > 0) return "both positive"
+    }
+    return ""
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - for with nested if, nesting penalty, complexity 4</description>
+        <rule-property name="reportLevel">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun sumPositive(items: List<Int>): Int {
+    var sum = 0
+    for (item in items) {
+        if (item > 0) sum += item
+    }
+    return sum
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation - simple when expression, complexity 2</description>
+        <rule-property name="reportLevel">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun label(n: Int): String = when {
+    n > 0 -> "positive"
+    else  -> "other"
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - when nested inside if gets nesting penalty, complexity 4</description>
+        <rule-property name="reportLevel">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun describe(x: Int, y: Int): String {
+    if (x > 0) {
+        return when {
+            y > 0 -> "both positive"
+            else  -> "only x"
+        }
+    }
+    return "neither"
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

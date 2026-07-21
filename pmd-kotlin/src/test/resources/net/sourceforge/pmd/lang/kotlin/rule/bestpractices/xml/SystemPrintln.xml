@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>System.out.println() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun run() {
+        System.out.println("debug info")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>System.err.println() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun run() {
+        System.err.println("error")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>System.out.print() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun run() {
+        System.out.print("no newline")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>System.out.printf() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun run() {
+        System.out.printf("value: %d%n", 42)
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using a logger is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.LoggerFactory
+
+class Good {
+    private val log = LoggerFactory.getLogger(Good::class.java)
+    fun run() {
+        log.info("debug info")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>kotlin-logging KotlinLogging.logger is idiomatic - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import mu.KotlinLogging
+
+class Good {
+    private val log = KotlinLogging.logger {}
+    fun run() {
+        log.info("debug info")
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

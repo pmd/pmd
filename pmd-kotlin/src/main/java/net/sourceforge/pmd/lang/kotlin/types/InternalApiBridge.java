@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.types;
 
 import java.util.List;
 
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
@@ -38,6 +39,7 @@ public final class InternalApiBridge {
     public static void setAnnotationFqNames(KotlinNode node, List<String> fqnList) {
         KotlinNodeTypeData.setAnnotationFqNames(node, fqnList);
     }
+
 
     /** @see KotlinNodeTypeData#setTypeInfoAvailable(KtKotlinFile) */
     public static void setTypeInfoAvailable(KtKotlinFile rootNode) {
