@@ -534,7 +534,10 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
         }
 
-        ensureNotClosed();
+        if (closeRequested.get()) {
+            return; // already closed
+        }
+
         closeRequested.set(true);
         synchronized (this) {
             try {
