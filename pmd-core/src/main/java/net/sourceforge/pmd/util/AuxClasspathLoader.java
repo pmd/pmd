@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -127,7 +125,7 @@ public class AuxClasspathLoader implements AutoCloseable {
     }
 
     private final List<Entry> auxClasspath;
-    private final ConcurrentMap<Path, ZipFile> zipFiles = new ConcurrentHashMap<>();
+    private final @GuardedBy("this") Map<Path, ZipFile> zipFiles = new HashMap<>();
 
     private final String javaHome;
     private final FileSystem fileSystem;
@@ -381,9 +379,7 @@ public class AuxClasspathLoader implements AutoCloseable {
         assert name != null;
         assert name.charAt(0) != '/'; // assuming only relative paths
 
-        if (closeRequested.get()) {
-            throw new IllegalStateException("AuxClasspathLoader is closed");
-        }
+        ensureNotClosed();
 
         String moduleName = extractModuleName(name);
         if (moduleName != null) {
@@ -460,13 +456,16 @@ public class AuxClasspathLoader implements AutoCloseable {
     }
 
     private ZipFile openJarFile(Path path) {
-        return zipFiles.computeIfAbsent(path, (p) -> {
-            try {
-                return new ZipFile(p.toFile());
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        });
+        synchronized (this) {
+            ensureNotClosed();
+            return zipFiles.computeIfAbsent(path, (p) -> {
+                try {
+                    return new ZipFile(p.toFile());
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            });
+        }
     }
 
     private static class ModuleNameExtractor extends ClassVisitor {
@@ -520,6 +519,12 @@ public class AuxClasspathLoader implements AutoCloseable {
         return "AuxClasspathLoader [auxClasspath=" + auxClasspath + ", jrt-fs: " + javaHome + ']';
     }
 
+    private void ensureNotClosed() {
+        if (closeRequested.get()) {
+            throw new IllegalStateException("AuxClasspathLoader is closed");
+        }
+    }
+
     @Override
     public void close() throws IOException {
         synchronized (LOCK) {
@@ -529,23 +534,23 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
         }
 
-        if (closeRequested.get()) {
-            throw new IllegalStateException("AuxClasspathLoader is closed");
-        }
+        ensureNotClosed();
         closeRequested.set(true);
-        try {
-            IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
-        zipFiles.clear();
-        if (fileSystem != null) {
-            fileSystem.close();
-            // jrt created an own classloader to load the JrtFileSystemProvider class out of the
-            // jrt-fs.jar. This needs to be closed manually.
-            ClassLoader classLoader = fileSystem.getClass().getClassLoader();
-            if (classLoader instanceof URLClassLoader) {
-                ((URLClassLoader) classLoader).close();
+        synchronized (this) {
+            try {
+                IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
+            zipFiles.clear();
+            if (fileSystem != null) {
+                fileSystem.close();
+                // jrt created an own classloader to load the JrtFileSystemProvider class out of the
+                // jrt-fs.jar. This needs to be closed manually.
+                ClassLoader classLoader = fileSystem.getClass().getClassLoader();
+                if (classLoader instanceof URLClassLoader) {
+                    ((URLClassLoader) classLoader).close();
+                }
             }
         }
     }
