@@ -12,7 +12,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
@@ -91,7 +91,7 @@ final class AnnotationFqnAnnotator {
      */
     private static List<KtUnescapedAnnotation> collectAnnotationNodes(KotlinNode declNode) {
         return declNode
-                .children(KtModifier.class)
+                .children(KtModifiers.class)
                 .children(KtAnnotation.class)
                 .children() // Either KtSingleAnnotation or KtMultiAnnotation
                 .children(KtUnescapedAnnotation.class)
