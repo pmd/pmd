@@ -111,7 +111,7 @@ class AuxClasspathLoaderTest {
         String classPath = jrtfsPath.toString();
 
         try (AuxClasspathLoader loader = new AuxClasspathLoader(classPath)) {
-            assertEquals(javaHome.toString(), loader.javaHome);
+            assertEquals(javaHome.toString(), loader.getJavaHome());
             try (InputStream stream = loader.findResource("java/lang/Object.class")) {
                 assertClassFile(stream, javaVersion);
             }

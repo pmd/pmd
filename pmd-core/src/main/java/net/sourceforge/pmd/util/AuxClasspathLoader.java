@@ -127,10 +127,9 @@ public class AuxClasspathLoader implements AutoCloseable {
     private final List<Entry> auxClasspath;
     private final ConcurrentMap<Path, ZipFile> zipFiles = new ConcurrentHashMap<>();
 
-    String javaHome;
-
-    private FileSystem fileSystem;
-    private Map<String, Set<String>> packagesDirsToModules;
+    private final String javaHome;
+    private final FileSystem fileSystem;
+    private final Map<String, Set<String>> packagesDirsToModules;
 
     // this is lazily initialized on first query of a module-info.class
     private Map<String, ZipFile> moduleNameToZipFile;
@@ -139,14 +138,29 @@ public class AuxClasspathLoader implements AutoCloseable {
         LOG.debug("Creating new AuxClasspathLoader for {}", rawAuxClasspath);
         this.auxClasspath = expandAuxClasspath(rawAuxClasspath);
 
+        List<Path> jrtJars = new ArrayList<>();
         Iterator<Entry> iterator = auxClasspath.iterator();
         while (iterator.hasNext()) {
             Path filePath = iterator.next().getPath().toAbsolutePath();
             if (filePath.endsWith(Paths.get("lib", "jrt-fs.jar"))) {
-                initializeJrtFilesystem(filePath);
+                jrtJars.add(filePath);
                 // don't add jrt-fs.jar to the normal aux classpath
                 iterator.remove();
             }
+        }
+
+        if (jrtJars.isEmpty()) {
+            // no jrt filesystem
+            javaHome = null;
+            fileSystem = null;
+            packagesDirsToModules = null;
+        } else if (jrtJars.size() == 1) {
+            Path jrtJarPath = jrtJars.get(0);
+            javaHome = jrtJarPath.getParent().getParent().toString();
+            fileSystem = initializeJrtFilesystem(javaHome, jrtJarPath);
+            packagesDirsToModules = Collections.unmodifiableMap(initializePackagesDirsToModules());
+        } else {
+            throw new IllegalStateException("Multiple jrt-fs.jar files on the auxClasspath: " + jrtJars);
         }
     }
 
@@ -260,7 +274,7 @@ public class AuxClasspathLoader implements AutoCloseable {
      * @param filePath path to the file "lib/jrt-fs.jar" inside the java installation directory.
      * @see <a href="https://openjdk.org/jeps/220">JEP 220: Modular Run-Time Images</a>
      */
-    private void initializeJrtFilesystem(Path filePath) {
+    private FileSystem initializeJrtFilesystem(String javaHome, Path filePath) {
         try {
             LOG.debug("Detected Java Runtime Filesystem Provider in {}", filePath);
 
@@ -272,19 +286,27 @@ public class AuxClasspathLoader implements AutoCloseable {
                 throw new IllegalArgumentException("Can't determine java home from " + filePath + " - please provide a complete path.");
             }
 
-            javaHome = filePath.getParent().getParent().toString();
+            if (!filePath.getParent().getParent().toString().equals(javaHome)) {
+                throw new IllegalArgumentException("Invalid javaHome/jrt-fs.jar file combination. JavaHome=" + javaHome + " jrt-fs.jar=" + filePath);
+            }
 
-            try (URLClassLoader loader = new URLClassLoader(new URL[] { filePath.toUri().toURL() })) {
+            try (URLClassLoader loader = new URLClassLoader(new URL[]{filePath.toUri().toURL()})) {
                 Map<String, String> env = new HashMap<>();
                 // note: providing java.home here is crucial, so that the correct runtime image is loaded.
                 // the class loader is only used to provide an implementation of JrtFileSystemProvider, if the current
                 // Java runtime doesn't provide one (e.g. if running in Java 8).
                 env.put("java.home", javaHome);
                 LOG.debug("Creating jrt-fs with env {}", env);
-                fileSystem = FileSystems.newFileSystem(URI.create("jrt:/"), env, loader);
+                return FileSystems.newFileSystem(URI.create("jrt:/"), env, loader);
             }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 
-            packagesDirsToModules = new HashMap<>();
+    private Map<String, Set<String>> initializePackagesDirsToModules() {
+        try {
+            final Map<String, Set<String>> result = new HashMap<>();
             Path packages = fileSystem.getPath("packages");
             try (Stream<Path> packagesStream = Files.list(packages)) {
                 packagesStream.forEach(p -> {
@@ -294,12 +316,13 @@ public class AuxClasspathLoader implements AutoCloseable {
                                 .map(Path::getFileName)
                                 .map(Path::toString)
                                 .collect(Collectors.toSet());
-                        packagesDirsToModules.put(packageName, modules);
+                        result.put(packageName, modules);
                     } catch (IOException e) {
                         throw new UncheckedIOException(e);
                     }
                 });
             }
+            return result;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -513,8 +536,10 @@ public class AuxClasspathLoader implements AutoCloseable {
             if (classLoader instanceof URLClassLoader) {
                 ((URLClassLoader) classLoader).close();
             }
-            packagesDirsToModules = null;
-            fileSystem = null;
         }
+    }
+
+    String getJavaHome() {
+        return javaHome;
     }
 }
