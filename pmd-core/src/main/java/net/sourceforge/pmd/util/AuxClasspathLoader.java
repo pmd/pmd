@@ -134,6 +134,12 @@ public class AuxClasspathLoader implements AutoCloseable {
     private final Map<String, Set<String>> packagesDirsToModules;
 
     // this is lazily initialized on first query of a module-info.class
+    // Note: access to this field is not synchronized. It might therefore happen, that this field is still null,
+    // while a different thread is currently calculating the map. The current thread would then also calculate
+    // unnecessarily this map again. Since both calculations only depend on the auxClasspath and we make the
+    // assumption, that the auxClasspath content on disk is stable (the actual files are not modified during
+    // PMD execution), both calculation result in the same map. The last assignment to the field wins.
+    // The resulting map is not modifiable and doesn't need extra synchronization.
     private Map<String, ZipFile> moduleNameToZipFile;
 
     AuxClasspathLoader(String rawAuxClasspath) {
