@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  *
  * @param <T> Type of the result
  */
-// TODO remove implements AutoCloseable.
+// TODO: PMD 8: remove implements AutoCloseable.
 // Implementing AutoCloseable implies that the class is intended to be used with try-with-resources.
 // A BaseResultProducingCloseable is supposed to produce a result AFTER it has been closed,
 // which won't work inside a try-with-resources. At that point is has gone out of scope.
