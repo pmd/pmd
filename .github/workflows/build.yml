@@ -23,7 +23,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
@@ -77,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - name: Spell Check Repo
         uses: crate-ci/typos@bee27e3a4fd1ea2111cf90ab89cd076c870fce14 #v1.48.0
         # note: don't fail the build on typos, just annotate them
@@ -94,7 +94,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
@@ -134,7 +134,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         # under linux we execute more extensive integration tests with various java versions
         if: ${{ runner.os == 'Linux' }}
@@ -194,7 +194,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
@@ -280,7 +280,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
         with:
           distribution: 'temurin'
@@ -333,7 +333,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 #v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           fetch-depth: 2
       - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a #v5.5.0
