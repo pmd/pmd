@@ -2062,6 +2062,10 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
+<h4 id="updated-apex-support">Updated Apex Support</h4>
+<p>The Apex language support has been bumped to version 67.0 (Summer ‘26). It supports the new
+<a href="https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&amp;release=262&amp;type=5">Multiline String</a> literals.</p>
+
 <h4 id="kotlin-type-aware-analysis">Kotlin type-aware analysis</h4>
 <p>Kotlin now supports type-aware analysis via the <code class="language-plaintext highlighter-rouge">auxClasspath</code> language property (see <a href="https://github.com/pmd/pmd/issues/6677">#6677</a>).
 Resolved type names, return types, and annotation FQNs are available through
@@ -2078,6 +2082,12 @@ The old name still works but is deprecated.</li>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6478">#6478</a>: [apex] Parser error when using CALENDAR_YEAR() in SOQL</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6887">#6887</a>: [apex] ParseException on Summer ‘26 multiline string literals (‘'’…’’’)</li>
+    </ul>
+  </li>
   <li>chore
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6837">#6837</a>: chore: Input ‘app-id’ has been deprecated with message: Use ‘client-id’ instead</li>
