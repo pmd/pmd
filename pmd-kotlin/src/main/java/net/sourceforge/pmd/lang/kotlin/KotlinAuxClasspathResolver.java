@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 final class KotlinAuxClasspathResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(KotlinAuxClasspathResolver.class);
+    private static final AtomicBoolean MISSING_AUX_CLASSPATH_WARNED = new AtomicBoolean(false);
 
     private final JvmLanguagePropertyBundle bundle;
 
@@ -40,8 +42,12 @@ final class KotlinAuxClasspathResolver {
     List<Path> resolve() {
         String raw = bundle.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
         if (raw == null || raw.isEmpty()) {
-            LOG.warn("No auxClasspath configured for Kotlin; type resolution will not work. "
-                    + "Configure via --aux-classpath or the auxClasspath language property.");
+            if (MISSING_AUX_CLASSPATH_WARNED.compareAndSet(false, true)) {
+                LOG.warn("No auxClasspath configured for Kotlin; type resolution will not work. "
+                        + "Configure via --aux-classpath or the auxClasspath language property.");
+            } else {
+                LOG.debug("No auxClasspath configured for Kotlin; type resolution will not work.");
+            }
             return Collections.emptyList();
         }
         List<Path> entries = new ArrayList<>();
@@ -58,7 +64,7 @@ final class KotlinAuxClasspathResolver {
     static List<Path> filterEntries(List<Path> entries) {
         List<Path> filtered = new ArrayList<>(entries.size());
         for (Path entry : entries) {
-            if (Files.exists(entry) && (Files.isDirectory(entry) || entry.getFileName().toString().endsWith(".jar"))) {
+            if (Files.exists(entry) && (Files.isDirectory(entry) || (entry.getFileName() != null && entry.getFileName().toString().endsWith(".jar")))) {
                 filtered.add(entry);
             } else {
                 LOG.warn("Skipping invalid Kotlin aux classpath entry: {}", entry);

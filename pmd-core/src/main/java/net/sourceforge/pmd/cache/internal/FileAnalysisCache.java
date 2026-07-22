@@ -12,6 +12,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,10 +45,10 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, List<Path> analysisClasspath, Collection<? extends TextFile> files) {
         // load cached data before checking for validity
         loadFromFile(cacheFile, files);
-        super.checkValidity(ruleSets, auxclassPathClassLoader, files);
+        super.checkValidity(ruleSets, analysisClasspath, files);
     }
 
     /**

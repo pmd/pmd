@@ -8,11 +8,15 @@ import java.io.Closeable;
 import java.util.function.Consumer;
 
 /**
- * Base class for an autocloseable that produce a result once it has
+ * Base class for a class that produces a result once it has
  * been closed. None of the methods of this class are synchronized.
  *
  * @param <T> Type of the result
  */
+// TODO: PMD 8: remove implements AutoCloseable.
+// Implementing AutoCloseable implies that the class is intended to be used with try-with-resources.
+// A BaseResultProducingCloseable is supposed to produce a result AFTER it has been closed,
+// which won't work inside a try-with-resources. At that point is has gone out of scope.
 public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
 
     private boolean closed;
@@ -50,7 +54,8 @@ public abstract class BaseResultProducingCloseable<T> implements AutoCloseable {
 
     /**
      * Close this closeable as per the contract of {@link Closeable#close()}.
-     * Called exactly once. By default does nothing.
+     * Called exactly once.
+     * @implSpec This implementation is empty.
      */
     protected void closeImpl() {
         // override

@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
@@ -43,7 +43,7 @@ abstract class AbstractClasspathEntryFingerprinterTest {
 
     protected abstract String[] getInvalidFileExtensions();
 
-    protected abstract File createValidNonEmptyFile() throws IOException;
+    protected abstract Path createValidNonEmptyFile() throws IOException;
 
     @Test
     void appliesToNullIsSafe() {
@@ -66,7 +66,7 @@ abstract class AbstractClasspathEntryFingerprinterTest {
     void fingerprintNonExistingFile() throws MalformedURLException, IOException {
         final long prevValue = checksum.getValue();
 
-        fingerprinter.fingerprint(new File("non-existing").toURI().toURL(), checksum);
+        fingerprinter.fingerprint(Paths.get("non-existing"), checksum);
 
         assertEquals(prevValue, checksum.getValue());
     }
@@ -74,13 +74,13 @@ abstract class AbstractClasspathEntryFingerprinterTest {
     @Test
     void fingerprintExistingValidFile() throws IOException {
         final long prevValue = checksum.getValue();
-        final File file = createValidNonEmptyFile();
+        final Path file = createValidNonEmptyFile();
 
         assertNotEquals(prevValue, updateFingerprint(file));
     }
 
-    protected long updateFingerprint(final File file) throws MalformedURLException, IOException {
-        fingerprinter.fingerprint(file.toURI().toURL(), checksum);
+    protected long updateFingerprint(final Path file) throws IOException {
+        fingerprinter.fingerprint(file, checksum);
         return checksum.getValue();
     }
 }

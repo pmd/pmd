@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,16 +24,16 @@ public class ClasspathFingerprinter {
             new NoopFingerprinter() // catch-all fingerprinter, MUST be last
         ));
 
-    public long fingerprint(final URL... classpathEntry) {
+    public long fingerprint(final List<Path> entries) {
         final Adler32 adler32 = new Adler32();
 
         try {
-            for (final URL url : classpathEntry) {
-                final String extension = getExtension(url);
+            for (final Path entry : entries) {
+                final String extension = getExtension(entry);
 
                 for (ClasspathEntryFingerprinter f : FINGERPRINTERS) {
                     if (f.appliesTo(extension)) {
-                        f.fingerprint(url, adler32);
+                        f.fingerprint(entry, adler32);
                         break;
                     }
                 }
@@ -47,8 +47,8 @@ public class ClasspathFingerprinter {
         return adler32.getValue();
     }
 
-    private String getExtension(final URL url) {
-        final String file = url.getFile();
+    private String getExtension(final Path path) {
+        final String file = path.getFileName().toString();
         final int lastDot = file.lastIndexOf('.');
 
         if (lastDot == -1) {
