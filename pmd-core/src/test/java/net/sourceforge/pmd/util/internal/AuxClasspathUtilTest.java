@@ -127,4 +127,15 @@ class AuxClasspathUtilTest {
                 aJar
         ), AuxClasspathUtil.getAuxClasspath(configuration));
     }
+
+    @Test
+    void fromConfigurationAuxClasspath() throws IOException {
+        Path bJar = Files.createFile(tempDir.resolve("b.jar"));
+        PMDConfiguration configuration = new PMDConfiguration();
+        configuration.setAuxClasspath(bJar.toString());
+
+        assertEquals(CollectionUtil.listOf(
+                bJar
+        ), AuxClasspathUtil.getAuxClasspath(configuration));
+    }
 }

@@ -45,6 +45,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6865](https://github.com/pmd/pmd/issues/6865): \[core] Include the running PMD version in the "Unable to find referenced rule" error
 * java
     * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
+    * [#6010](https://github.com/pmd/pmd/issues/6010): \[java] java.lang.OutOfMemoryError: Java heap space when accessing big Jar files with PMD 7
     * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
 * java-bestpractices
     * [#5514](https://github.com/pmd/pmd/issues/5514): \[java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements
@@ -71,6 +72,25 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
       deprecated `getClassLoader()` anymore.  
       Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
       By just configuring the auxClasspath, PMD internally can deal with that.
+* core
+    * {%jdoc !!core::lang.JvmLanguagePropertyBundle.setClassLoader(ClassLoader) %} and
+      {%jdoc !!core::lang.JvmLanguagePropertyBundle.getAnalysisClassLoader() %} are deprecated. Use the language property
+      {%jdoc !!core::lang.JvmLanguagePropertyBundle#AUX_CLASSPATH %} instead via `getProperty()` and `setProperty()`. This language property
+      is now set correctly when providing the auxClasspath via CLI parameter `--aux-classpath`.
+    * The internal class `net.sourceforge.pmd.internal.util.ClasspathClassLoader` has been explicitly marked as deprecated.
+      Using ClassLoaders directly is discouraged. Use {%jdoc !!core::PMDConfiguration#setAuxClasspath(String) %} instead.
+* java
+    * {%jdoc !!java::lang.java.types.TypeSystem#usingClassLoaderClasspath(java.lang.ClassLoader) %} is deprecated. Using
+      ClassLoaders directly is discouraged. Use {%jdoc java::lang.java.types.TypeSystem#usingClasspath(java::lang.java.symbols.internal.asm.Classpath) %}
+      instead.
+
+#### Experimental API
+* core
+    * The new {%jdoc core::util.AuxClasspathLoader %} is a replacement for the deprecated `ClasspathClassLoader`.
+      It deals with a typical classpath to load classes need for Java's type resolution. It has the static method
+      `enableReuse(int)` which enables caching of AuxClasspathLoader instances. This is useful for unit tests
+      or IDE plugins, when PMD is executed multiple times within one JVM instance. Don't forget to call
+      `disableReuse()` when you're done to close all cached instances.
 
 #### Experimental API
 * kotlin

@@ -58,6 +58,14 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
     }
 
+    /**
+     * @deprecated Since 7.27.0.
+     */
+    @Deprecated
+    ClassLoader getExternalClassLoader() {
+        return getClassLoader();
+    }
+
     public static boolean isPreviewEnabled(LanguageVersion version) {
         return version.getVersion().endsWith("-preview");
     }
