@@ -71,7 +71,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (checkNonStaticMethods && !node.hasModifiers(JModifier.STATIC)
+        if (!checkNonStaticMethods && !node.hasModifiers(JModifier.STATIC)
                 || node.hasModifiers(JModifier.SYNCHRONIZED)) {
             return data;
         }
