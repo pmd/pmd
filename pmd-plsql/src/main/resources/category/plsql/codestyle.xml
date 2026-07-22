@@ -12,7 +12,7 @@ Rules which enforce a specific coding style.
     <rule name="AvoidTabCharacter"
           language="plsql"
           since="6.13.0"
-          message="Avoid tab characters for indentation. Use spaces instead."
+          message="Tab characters are not allowed. Use spaces for indentation."
           class="net.sourceforge.pmd.lang.plsql.rule.codestyle.AvoidTabCharacterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#avoidtabcharacter">
         <description>
@@ -156,7 +156,7 @@ END;
     <rule name="LineLength"
           language="plsql"
           since="6.13.0"
-          message="The line is too long."
+          message="The line is too long ({0} characters). Only {1} characters are allowed."
           class="net.sourceforge.pmd.lang.plsql.rule.codestyle.LineLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#linelength">
         <description>

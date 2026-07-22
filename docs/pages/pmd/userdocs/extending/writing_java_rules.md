@@ -80,7 +80,7 @@ public class MyRule extends AbstractJavaRule {
             // reports a violation at the position of the node
             // the "data" parameter is a context object handed to by your rule
             // the message for the violation is the message defined in the rule declaration XML element
-            asCtx(data).addViolation(node);
+            asCtx(data).at(node).report();
         }
 
         // this calls back to the default implementation, which recurses further down the subtree
@@ -125,17 +125,17 @@ passed the nodes it is interested in. To use the rulechain correctly:
 In Java rule implementations, you often need to navigate the AST to find the interesting nodes.
 In your `visit` implementation, you can start navigating the AST from the given node.
 
-The {% jdoc core::lang.ast.Node %} interface provides a couple of useful methods
-that return a {%jdoc core::lang.ast.NodeStream %} and can be used to query the AST:
+The {% jdoc coreast::Node %} interface provides a couple of useful methods
+that return a {%jdoc coreast::NodeStream %} and can be used to query the AST:
 
-* {% jdoc core::lang.ast.Node#ancestors() %}
-* {% jdoc core::lang.ast.Node#ancestorsOrSelf() %}
-* {% jdoc core::lang.ast.Node#children() %}
-* {% jdoc core::lang.ast.Node#descendants() %}
-* {% jdoc core::lang.ast.Node#descendantsOrSelf() %}
-* {% jdoc core::lang.ast.Node#ancestors(java.lang.Class) %}
-* {% jdoc core::lang.ast.Node#children(java.lang.Class) %}
-* {% jdoc core::lang.ast.Node#descendants(java.lang.Class) %}
+* {% jdoc coreast::Node#ancestors() %}
+* {% jdoc coreast::Node#ancestorsOrSelf() %}
+* {% jdoc coreast::Node#children() %}
+* {% jdoc coreast::Node#descendants() %}
+* {% jdoc coreast::Node#descendantsOrSelf() %}
+* {% jdoc coreast::Node#ancestors(java.lang.Class) %}
+* {% jdoc coreast::Node#children(java.lang.Class) %}
+* {% jdoc coreast::Node#descendants(java.lang.Class) %}
 
 The returned NodeStream API provides easy to use methods that follow the Java Stream API (`java.util.stream`).
 
@@ -143,28 +143,23 @@ Example:
 
 ```java
 NodeStream.of(someNode)                           // the stream here is empty if the node is null
-          .filterIs(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
+          .filterIs(ASTVariableId.class)          // the stream here is empty if the node was not a variable id
           .followingSiblings()                    // the stream here contains only the siblings, not the original node
-          .filterIs(ASTVariableInitializer.class)
-          .children(ASTExpression.class)
-          .children(ASTPrimaryExpression.class)
-          .children(ASTPrimaryPrefix.class)
-          .children(ASTLiteral.class)
-          .filterMatching(Node::getImage, "0")
-          .filterNot(ASTLiteral::isStringLiteral)
+          .filterIs(ASTNumericLiteral.class)
+          .filterMatching(ASTNumericLiteral::getValueAsInt, 0)
           .nonEmpty(); // If the stream is non empty here, then all the pipeline matched
 ```
 
-The {% jdoc core::lang.ast.Node %} interface provides also an alternative way to navigate the AST for convenience:
+The {% jdoc coreast::Node %} interface provides also an alternative way to navigate the AST for convenience:
 
-* {% jdoc core::lang.ast.Node#getParent() %}
-* {% jdoc core::lang.ast.Node#getNumChildren() %}
-* {% jdoc core::lang.ast.Node#getChild(int) %}
-* {% jdoc core::lang.ast.Node#getFirstChild() %}
-* {% jdoc core::lang.ast.Node#getLastChild() %}
-* {% jdoc core::lang.ast.Node#getPreviousSibling() %}
-* {% jdoc core::lang.ast.Node#getNextSibling() %}
-* {% jdoc core::lang.ast.Node#firstChild(java.lang.Class) %}
+* {% jdoc coreast::Node#getParent() %}
+* {% jdoc coreast::Node#getNumChildren() %}
+* {% jdoc coreast::Node#getChild(int) %}
+* {% jdoc coreast::Node#getFirstChild() %}
+* {% jdoc coreast::Node#getLastChild() %}
+* {% jdoc coreast::Node#getPreviousSibling() %}
+* {% jdoc coreast::Node#getNextSibling() %}
+* {% jdoc coreast::Node#firstChild(java.lang.Class) %}
 
 Depending on the AST of the language, there might also be more specific methods that can be used to
 navigate. E.g. in Java there exists the method {% jdoc !!java::lang.java.ast.ASTIfStatement#getCondition() %}
@@ -173,24 +168,24 @@ to get the condition of an If-statement.
 ### Reporting violations
 
 In your visit method, you have access to the {% jdoc core::reporting.RuleContext %} which is the entry point into
-reporting back during the analysis.
+reporting back during the analysis. Violations are reported in 2 stages:
+1. Selecting the location of the violation with {% jdoc core::reporting.RuleContext#at(core::reporting.Reportable) %}
+2. Specifying the message (and possible arguments to the message) of the violation
+using one of the terminal methods of {% jdoc core::reporting.RuleContext.ViolationBuilder %}.
 
-* {% jdoc core::reporting.RuleContext#addViolation(core::lang.ast.Node) %} reports a rule violation at
-  the position of the given node with the message defined in the rule declaration XML element.
-* The message defined in the rule declaration XML element might contain **placeholder**, such as `{0}`.
-  In that case, you need to call {% jdoc core::reporting.RuleContext#addViolation(core::lang.ast.Node,java.lang.Object...) %}
-  and provide the values for the placeholders. The message is actually processed as a `java.text.MessageFormat`.
-* Sometimes a rule might want to differentiate between different cases of a violation and use different
-  messages. This is possible by calling the methods
-  {% jdoc core::reporting.RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String) %} or
-  {% jdoc core::reporting.RuleContext#addViolationWithMessage(core::lang.ast.Node,java.lang.String,java.lang.Object...) %}.
-  Using these methods, the message defined in the rule declaration XML element is _not used_.
-* Rules can be customized using properties and sometimes you want to include the actual value of a property
-  in the message, e.g. if the rule enforces a specific limit.
-  The syntax for such placeholders is: `${propertyName}`.
-* Some languages support additional placeholder variables. E.g. for Java, you can use `${methodName}` to insert
-  the name of the method in which the violation occurred.
-  See [Java-specific features and guidance](pmd_languages_java.html#violation-decorators).
+Refer to the Javadoc of those methods for more information and examples.
+
+Messages must be valid `java.text.MessageFormat` instances.
+This means you can use **placeholders**, such as `{0}` to interpolate different
+values into a message. Even if your message has no placeholders, it must
+respect the `MessageFormat` specification, meaning single quotes and curly braces
+must be escaped by prepending a single quote to them. 
+
+Additionally, placeholders such as `${propertyName}` can be used to interpolate
+rule property values, e.g. including the threshold a rule uses for reporting.
+Some languages also support additional placeholder variables.
+E.g. for Java, you can use `${methodName}` to insert the name of the method in which
+the violation occurred. See [Java-specific features and guidance](pmd_languages_java.html#violation-decorators).
 
 
 ### Execution across files, thread-safety and statefulness
@@ -248,7 +243,7 @@ a different set of files to analyse. Then, for each such file and for each
 rule copy:
 
 1. {% jdoc core::lang.rule.Rule#start(core::reporting.RuleContext) %} is called once, before parsing
-2. {% jdoc core::lang.rule.Rule#apply(core::lang.ast.Node,core::reporting.RuleContext) %} is called with the root
+2. {% jdoc core::lang.rule.Rule#apply(coreast::Node,core::reporting.RuleContext) %} is called with the root
 of the AST. That method performs the AST traversal that ultimately calls visit methods.
 It's not called for RuleChain rules.
 3. {% jdoc core::lang.rule.Rule#end(core::reporting.RuleContext) %} is called when the rule is done processing

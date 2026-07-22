@@ -91,7 +91,7 @@ class AbstractRuleTest {
             assertEquals(r, rv.getRule(), "Rule object mismatch!");
             assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
             assertEquals("foo", rv.getRule().getRuleSetName(), "RuleSet name mismatch!");
-        }, r).addViolation(s);
+        }, r, s).addViolation(s);
     }
 
     @Test
@@ -104,7 +104,7 @@ class AbstractRuleTest {
             assertEquals("filename", rv.getFileId().getOriginalPath(), "Filename mismatch!");
             assertEquals(r, rv.getRule(), "Rule object mismatch!");
             assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
-        }, r).addViolationWithMessage(s, "specificdescription");
+        }, r, s).addViolationWithMessage(s, "specificdescription");
     }
 
     @Test
@@ -130,7 +130,7 @@ class AbstractRuleTest {
         n = n.withNoPmdComments(new SuppressionCommentImpl<>(n, "ohio"));
 
         FileAnalysisListener listener = mock(FileAnalysisListener.class);
-        RuleContext ctx = InternalApiBridge.createRuleContext(listener, new MyRule());
+        RuleContext ctx = InternalApiBridge.createRuleContext(listener, new MyRule(), n);
         ctx.addViolationWithMessage(n, "message");
 
         verify(listener, never()).onRuleViolation(any());
