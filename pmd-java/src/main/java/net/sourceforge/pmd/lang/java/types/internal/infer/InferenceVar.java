@@ -41,14 +41,14 @@ public final class InferenceVar implements SubstVar {
     private static final String NAMES = "abcdefghijklmnopqrstuvwxyz"; // + "αβγδεζηθκλμνξπρςυφχψω"
 
     private final InferenceContext ctx;
-    private JTypeVar tvar;
+    private @Nullable JTypeVar tvar;
     private final int id;
 
     // Equal ivars share the same BoundSet
     private BoundSet boundSet = new BoundSet();
     private boolean hasNonTrivialBound;
 
-    InferenceVar(InferenceContext ctx, JTypeVar tvar, int id) {
+    InferenceVar(InferenceContext ctx, @Nullable JTypeVar tvar, int id) {
         this.ctx = ctx;
         this.tvar = tvar;
         this.id = id;
@@ -183,18 +183,18 @@ public final class InferenceVar implements SubstVar {
             }
         }
 
-        if (tvar.isCaptured()) {
+        if (tvar != null && tvar.isCaptured()) {
             tvar = tvar.substInBounds(substitution);
         }
     }
 
-    JTypeVar getBaseVar() {
+    @Nullable JTypeVar getBaseVar() {
         return tvar;
     }
 
 
     boolean isCaptured() {
-        return tvar.isCaptured();
+        return tvar != null && tvar.isCaptured();
     }
 
     public boolean isEquivalentTo(JTypeMirror t) {
