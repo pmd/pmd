@@ -23,6 +23,10 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Updated Apex Support
+The Apex language support has been bumped to version 67.0 (Summer '26). It supports the new
+[Multiline String](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&release=262&type=5) literals.
+
 #### Kotlin type-aware analysis
 Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
 Resolved type names, return types, and annotation FQNs are available through
@@ -36,6 +40,9 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
   The old name still works but is deprecated.
 
 ### 🐛️ Fixed Issues
+* apex
+    * [#6478](https://github.com/pmd/pmd/issues/6478): \[apex] Parser error when using CALENDAR_YEAR() in SOQL
+    * [#6887](https://github.com/pmd/pmd/issues/6887): \[apex] ParseException on Summer '26 multiline string literals ('''...''')
 * chore
     * [#6837](https://github.com/pmd/pmd/issues/6837): chore: Input 'app-id' has been deprecated with message: Use 'client-id' instead
 * core

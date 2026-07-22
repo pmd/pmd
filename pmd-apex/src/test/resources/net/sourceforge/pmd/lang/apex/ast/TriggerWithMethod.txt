@@ -15,7 +15,7 @@
          +- FieldDeclarationStatements[@DefiningType = "TriggerWithMethod", @RealLoc = true, @TypeArguments = (), @TypeName = "String"]
          |  +- ModifierNode[@Abstract = false, @DefiningType = "TriggerWithMethod", @DeprecatedTestMethod = false, @Final = false, @Global = false, @InheritedSharing = false, @Modifiers = 0, @Override = false, @Private = false, @Protected = false, @Public = false, @RealLoc = false, @Static = false, @Test = false, @TestOrTestSetup = false, @Transient = false, @Virtual = false, @WebService = false, @WithSharing = false, @WithoutSharing = false]
          |  +- FieldDeclaration[@DefiningType = "TriggerWithMethod", @Image = "body", @Name = "body", @RealLoc = true]
-         |     +- LiteralExpression[@Boolean = false, @Decimal = false, @DefiningType = "TriggerWithMethod", @Double = false, @Image = "email body", @Integer = false, @LiteralType = LiteralType.STRING, @Long = false, @Name = null, @Null = false, @RealLoc = true, @String = true]
+         |     +- LiteralExpression[@Boolean = false, @Decimal = false, @DefiningType = "TriggerWithMethod", @Double = false, @Image = "email body", @Integer = false, @LiteralType = LiteralType.STRING, @Long = false, @MultilineString = false, @Name = null, @Null = false, @RealLoc = true, @String = true]
          |     +- VariableExpression[@DefiningType = "TriggerWithMethod", @Image = "body", @RealLoc = true]
          |        +- EmptyReferenceExpression[@DefiningType = null, @RealLoc = false]
          +- ForEachStatement[@DefiningType = "TriggerWithMethod", @RealLoc = true]

@@ -54,6 +54,13 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
         return getLiteralType() == LiteralType.STRING;
     }
 
+    /**
+     * @since 7.27.0
+     */
+    public boolean isMultilineString() {
+        return node instanceof LiteralExpression.StringVal && ((LiteralExpression.StringVal) node).getMultiline();
+    }
+
     public boolean isBoolean() {
         return getLiteralType() == LiteralType.TRUE || getLiteralType() == LiteralType.FALSE;
     }

@@ -126,4 +126,22 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void castExpressionTypeInfo() {
         doTest("CastExpressionTypeInfo");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/6478">[apex] Parser error when using CALENDAR_YEAR() in SOQL</a>
+     */
+    @Test
+    void calendarYearSoql() {
+        doTest("CalendarYearSoql");
+    }
+
+    @Test
+    void multilineStringLiterals() {
+        doTest("MultilineStringLiterals");
+    }
+
+    @Test
+    void anonymousBlock() {
+        doTest("AnonymousBlock");
+    }
 }
