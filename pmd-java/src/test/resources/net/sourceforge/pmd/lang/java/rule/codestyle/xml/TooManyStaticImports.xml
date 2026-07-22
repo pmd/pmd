@@ -60,4 +60,19 @@ import static Yoko; // Too much !
 public class Split {}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6737 simple violation with suppression on class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static Lennon;
+import static Ringo;
+import static George;
+import static Paul;
+import static Yoko; // Too much ! But it is suppressed
+@SuppressWarnings("PMD.TooManyStaticImports")
+public class Split {}
+        ]]></code>
+    </test-code>
+
 </test-data>
