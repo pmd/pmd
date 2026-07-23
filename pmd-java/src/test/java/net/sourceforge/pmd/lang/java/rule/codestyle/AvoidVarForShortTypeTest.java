@@ -18,13 +18,12 @@ class AvoidVarForShortTypeTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "0",
-            "\"\"",
-            "new DemoGeneric<? extends Demo>()",
-            "new DemoGeneric<DemoGeneric<Demo1>>()"
+        "0",
+        "\"\"",
+        "new DemoGeneric<? extends Demo>()",
+        "new DemoGeneric<DemoGeneric<Demo1>>()"
     })
     void shouldViolate(String config) {
-
         final Report report = getReportForConfig(config);
         assertEquals(1, report.getViolations().size());
         assertInstanceOf(AvoidVarForShortTypeRule.class, report.getViolations().get(0).getRule());
@@ -32,11 +31,10 @@ class AvoidVarForShortTypeTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "new DemoGeneric<DemoGeneric<Demo12>>()",
-            "new DemoGeneric<? extends DemoGeneric<?>>()"
+        "new DemoGeneric<DemoGeneric<Demo12>>()",
+        "new DemoGeneric<? extends DemoGeneric<?>>()"
     })
     void shouldNotViolate(String config) {
-
         final Report report = getReportForConfig(config);
         assertTrue(report.getViolations().isEmpty());
     }
@@ -44,22 +42,22 @@ class AvoidVarForShortTypeTest {
     private static Report getReportForConfig(String code) {
         final AvoidVarForShortTypeRule rule = new AvoidVarForShortTypeRule();
         rule.setMessage(""); // Ignore just don't throw an NPE
-        
+
         return JavaParsingHelper.DEFAULT.executeRule(
-                rule,
-                "public class Bar {\n"
-                        + " void test() {\n"
-                        + "  var x = " + code + ";\n "
-                        + " }\n"
-                        + " static class DemoGeneric<T> {\n"
-                        + " }\n"
-                        + " static class Demo {\n"
-                        + " }\n"
-                        + " static class Demo1 {\n"
-                        + " }\n"
-                        + " static class Demo12 {\n"
-                        + " }\n"
-                        + "}"
+            rule,
+            "public class Bar {\n"
+                + " void test() {\n"
+                + "  var x = " + code + ";\n "
+                + " }\n"
+                + " static class DemoGeneric<T> {\n"
+                + " }\n"
+                + " static class Demo {\n"
+                + " }\n"
+                + " static class Demo1 {\n"
+                + " }\n"
+                + " static class Demo12 {\n"
+                + " }\n"
+                + "}"
         );
     }
 }
