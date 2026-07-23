@@ -535,9 +535,11 @@ final class RuleSetFactory {
 
         if (referencedRule == null) {
             throw err.at(ruleNode).error(
-                "Unable to find referenced rule {0}"
-                    + "; perhaps the rule name is misspelled?",
-                otherRuleSetReferenceId.getRuleName());
+                "Unable to find rule ''{0}'' in ruleset ''{1}'' (PMD {2})."
+                    + " Check the spelling and whether the rule is available in this PMD version.",
+                otherRuleSetReferenceId.getRuleName(),
+                otherRuleSetReferenceId.getRuleSetFileName(),
+                PMDVersion.VERSION);
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {
