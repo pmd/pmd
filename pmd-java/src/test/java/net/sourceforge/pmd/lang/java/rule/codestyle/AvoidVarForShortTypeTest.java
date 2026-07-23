@@ -42,8 +42,11 @@ class AvoidVarForShortTypeTest {
     }
 
     private static Report getReportForConfig(String code) {
+        final AvoidVarForShortTypeRule rule = new AvoidVarForShortTypeRule();
+        rule.setMessage(""); // Ignore just don't throw an NPE
+        
         return JavaParsingHelper.DEFAULT.executeRule(
-                new AvoidVarForShortTypeRule(),
+                rule,
                 "public class Bar {\n"
                         + " void test() {\n"
                         + "  var x = " + code + ";\n "
