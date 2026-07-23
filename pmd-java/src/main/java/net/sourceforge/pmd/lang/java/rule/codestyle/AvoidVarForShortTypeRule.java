@@ -40,7 +40,7 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
         final List<String> currentClassDeclarationCanonicalPrefixes =
                 computeCurrentClassDeclarationCanonicalPrefixes(node);
 
-        final Integer limitLength = this.getProperty(LIMIT_LENGTH_DESCRIPTOR);
+        final int limitLength = this.getProperty(LIMIT_LENGTH_DESCRIPTOR);
         Optional.ofNullable(node.firstChild(ASTVariableDeclarator.class))
                 .map(n -> n.firstChild(ASTVariableId.class))
                 .map(ASTVariableId::getTypeMirror)
