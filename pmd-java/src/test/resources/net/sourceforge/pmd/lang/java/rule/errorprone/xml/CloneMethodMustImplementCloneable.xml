@@ -113,6 +113,97 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#6693 ok, doesn't implement Cloneable but only throws CloneNotSupportedException, preceded by a statement that isn't a throw</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final Object clone() throws CloneNotSupportedException {
+        System.out.println("clone is not supported");
+        throw new CloneNotSupportedException();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6693 ok, doesn't implement Cloneable but throw of CloneNotSupportedException is inside a try/catch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final Object clone() throws CloneNotSupportedException {
+        try {
+            logAttempt();
+        } catch (RuntimeException ignored) {
+            // ignore
+        }
+        throw new CloneNotSupportedException();
+    }
+    private void logAttempt() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6693 bad, no throw statement at all is not exempted (empty/no-op body)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final Object clone() {
+        System.out.println("clone called");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6693 bad, not all throws are CloneNotSupportedException</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object clone() throws Exception {
+        try {
+            doSomething();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException(e);
+        }
+        throw new CloneNotSupportedException();
+    }
+    private void doSomething() throws java.io.IOException {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6693 bad, a return statement anywhere in the body disqualifies the exemption</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object clone() throws CloneNotSupportedException {
+        if (System.currentTimeMillis() < 0) {
+            throw new CloneNotSupportedException();
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6693 ok, a return statement inside a nested lambda doesn't count against the enclosing method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final Object clone() throws CloneNotSupportedException {
+        Runnable r = () -> {
+            return;
+        };
+        throw new CloneNotSupportedException();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Bug 1698550, nr 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
