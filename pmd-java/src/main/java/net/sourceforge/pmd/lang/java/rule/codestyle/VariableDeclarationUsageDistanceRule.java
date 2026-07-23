@@ -54,10 +54,17 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
                 continue;
             }
             int distance = 1;
+            boolean inLeadingDeclarationGroup = true;
             for (ASTStatement stmt : statementsAfter(node)) {
                 if (JavaRuleUtil.hasReferencesIn(stmt, id)) {
                     break;
                 }
+                if (inLeadingDeclarationGroup && stmt instanceof ASTLocalVariableDeclaration) {
+                    // still grouped with the current declaration, not yet
+                    // separated from it by any executable statement
+                    continue;
+                }
+                inLeadingDeclarationGroup = false;
                 distance++;
             }
             if (distance > maxDistance) {
