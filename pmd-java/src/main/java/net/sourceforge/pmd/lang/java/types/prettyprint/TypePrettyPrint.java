@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeVisitable;
 public final class TypePrettyPrint {
 
     private TypePrettyPrint() {
-
     }
 
     public static @NonNull String prettyPrint(@NonNull JTypeVisitable t) {
