@@ -4,25 +4,59 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.reporting.Report;
-import net.sourceforge.pmd.test.PmdRuleTst;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
-class AvoidVarForShortTypeTest extends PmdRuleTst {
-    // no additional unit tests
+class AvoidVarForShortTypeTest {
 
-    @Test
-    void test() {
-        final Report report = JavaParsingHelper.DEFAULT.executeRule(
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "0",
+            "\"\"",
+            "new DemoGeneric<? extends Demo>()",
+            "new DemoGeneric<DemoGeneric<Demo1>>()"
+    })
+    void shouldViolate(String config) {
+
+        final Report report = getReportForConfig(config);
+        assertEquals(1, report.getViolations().size());
+        assertInstanceOf(AvoidVarForShortTypeRule.class, report.getViolations().get(0).getRule());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "new DemoGeneric<DemoGeneric<Demo12>>()",
+            "new DemoGeneric<? extends DemoGeneric<?>>()"
+    })
+    void shouldNotViolate(String config) {
+
+        final Report report = getReportForConfig(config);
+        assertTrue(report.getViolations().isEmpty());
+    }
+
+    private static Report getReportForConfig(String code) {
+        return JavaParsingHelper.DEFAULT.executeRule(
                 new AvoidVarForShortTypeRule(),
                 "public class Bar {\n"
                         + " void test() {\n"
-                        + "  var x = 0;\n"
+                        + "  var x = " + code + ";\n "
+                        + " }\n"
+                        + " static class DemoGeneric<T> {\n"
+                        + " }\n"
+                        + " static class Demo {\n"
+                        + " }\n"
+                        + " static class Demo1 {\n"
+                        + " }\n"
+                        + " static class Demo12 {\n"
                         + " }\n"
                         + "}"
         );
-        Assertions.assertFalse(report.getViolations().isEmpty());
     }
 }
