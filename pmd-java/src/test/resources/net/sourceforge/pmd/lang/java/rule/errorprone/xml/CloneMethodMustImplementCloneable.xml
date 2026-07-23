@@ -204,6 +204,22 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#6693 ok, multiple throw statements in different branches, all of them CloneNotSupportedException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final Object clone() throws CloneNotSupportedException {
+        if (System.currentTimeMillis() > 0) {
+            throw new CloneNotSupportedException("a");
+        } else {
+            throw new CloneNotSupportedException("b");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Bug 1698550, nr 1</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
