@@ -1,5 +1,11 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -7,27 +13,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JIntersectionType;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
-import net.sourceforge.pmd.lang.java.types.JWildcardType;
-import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
+import net.sourceforge.pmd.lang.java.types.prettyprint.PrettyPrintVisitor;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrinter;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.OptionalBool;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<Integer> LIMIT_LENGTH_DESCRIPTOR =
             PropertyFactory.intProperty("lengthLimit")
-                    .desc("The rule will be triggered when the length is below this limit")
+                    .desc("The length of a type must be above this limit to allow using var")
                     .defaultValue(32)
                     .build();
 
@@ -51,16 +45,17 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
                 .map(n -> n.firstChild(ASTVariableId.class))
                 .map(ASTVariableId::getTypeMirror)
                 .map(variableTypeMirror -> {
-                    final Printer printer = new Printer(currentClassDeclarationCanonicalPrefixes);
-                    variableTypeMirror.acceptVisitor(Visitor.INSTANCE, printer);
-                    return printer.consumeResult();
+                    final VisitState state = new VisitState(limitLength, currentClassDeclarationCanonicalPrefixes);
+                    try {
+                        variableTypeMirror.acceptVisitor(Visitor.INSTANCE, state);
+                    } catch (OverLimitLengthException ignored) {
+                        // Quick exit/abort to not compute full string length
+                        return null;
+                    }
+                    return state.consumeResult();
                 })
                 .filter(s -> s.length() < limitLength)
-                .ifPresent(type -> this.asCtx(data).addViolationWithMessage(
-                        node,
-                        "The declared type ''{0}'' is not long enough (<{1}) to justify the usage of var",
-                        type,
-                        limitLength));
+                .ifPresent(type -> this.asCtx(data).addViolation(node, type, limitLength));
 
         return data;
     }
@@ -84,169 +79,83 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
         return currentClassDeclarationCanonicalPrefixes;
     }
 
-    static class Printer {
+    static class OverLimitLengthException extends RuntimeException {
+
+    }
+
+    static class VisitState extends TypePrettyPrinter {
+        final int limitLength;
         final List<String> currentClassDeclarationCanonicalPrefixes;
-        final StringBuilder sb = new StringBuilder();
-        OptionalBool printTypeVarBounds = OptionalBool.UNKNOWN;
 
-        public Printer(final List<String> currentClassDeclarationCanonicalPrefixes) {
+        int currentLength;
+
+        public VisitState(
+                final int limitLength,
+                final List<String> currentClassDeclarationCanonicalPrefixes) {
+            this.limitLength = limitLength;
             this.currentClassDeclarationCanonicalPrefixes = currentClassDeclarationCanonicalPrefixes;
+
+            printMethodHeader(false);
+            printMethodResult(false);
+            printAnnotations(false);
         }
 
-        StringBuilder append(final char o) {
-            return this.sb.append(o);
+        void throwIfCurrentLengthOverLimit() {
+            if (currentLength >= limitLength) {
+                throw new OverLimitLengthException();
+            }
         }
 
-        StringBuilder append(final String o) {
-            return this.sb.append(o);
+        @Override
+        public StringBuilder append(char o) {
+            currentLength++;
+            throwIfCurrentLengthOverLimit();
+            return super.append(o);
         }
 
-        String consumeResult() {
-            return this.sb.toString();
+        @Override
+        public StringBuilder append(String o) {
+            currentLength += o.length();
+            throwIfCurrentLengthOverLimit();
+            return super.append(o);
         }
     }
 
-
-    static class Visitor implements JTypeVisitor<Void, Printer> {
+    static class Visitor extends PrettyPrintVisitor<VisitState> {
         static final Visitor INSTANCE = new Visitor();
 
         @Override
-        public Void visit(final JTypeMirror t, final Printer sb) {
-            sb.append(t.toString());
-            return null;
-        }
-
-        @Override
-        public Void visitClass(final JClassType t, final Printer sb) {
-            final JClassType enclosing = t.getEnclosingType();
-            final boolean isAnon = t.getSymbol().isAnonymousClass();
-
-            if (enclosing != null && !isAnon) {
-                this.visitClass(enclosing, sb);
-                sb.append('#');
-            } else if (t.hasErasedSuperTypes() && !t.isRaw()) {
-                sb.append("(erased) ");
-            }
-
-            if (t.getSymbol().isUnresolved()) {
-                sb.append('*'); // a small marker to spot them
-            }
-
-            this.processClassName(t, sb);
-
-            final List<JTypeMirror> targs = t.getTypeArgs();
-            if (t.isRaw() || targs.isEmpty()) {
-                return null;
-            }
-
-            if (t.isGenericTypeDeclaration() && sb.printTypeVarBounds != OptionalBool.NO) {
-                sb.printTypeVarBounds = OptionalBool.YES;
-            }
-            this.join(sb, targs, ", ", "<", ">");
-            return null;
-        }
-
-        private void processClassName(final JClassType t, final Printer sb) {
+        protected void appendClassName(
+                JClassType t,
+                VisitState s,
+                JClassType enclosing,
+                boolean isAnon) {
             final String canonicalName = t.getSymbol().getCanonicalName();
             if (canonicalName == null) {
                 return;
             }
 
-            if (!sb.currentClassDeclarationCanonicalPrefixes.isEmpty()) {
+            if (!s.currentClassDeclarationCanonicalPrefixes.isEmpty()) {
                 // last -> top-most
                 final String topMostCurrentClassDeclarationBinaryName =
-                        sb.currentClassDeclarationCanonicalPrefixes.get(
-                                sb.currentClassDeclarationCanonicalPrefixes.size() - 1);
+                        s.currentClassDeclarationCanonicalPrefixes.get(
+                                s.currentClassDeclarationCanonicalPrefixes.size() - 1);
                 if (canonicalName.startsWith(topMostCurrentClassDeclarationBinaryName)) {
                     final Optional<String> optMostMatchedCanonicalClassPrefix =
-                            sb.currentClassDeclarationCanonicalPrefixes.stream()
+                            s.currentClassDeclarationCanonicalPrefixes.stream()
                                     .filter(canonicalName::startsWith)
                                     .findFirst();
                     if (optMostMatchedCanonicalClassPrefix.isPresent()) {
-                        sb.append(canonicalName.substring(optMostMatchedCanonicalClassPrefix.get().length()));
+                        s.append(canonicalName.substring(optMostMatchedCanonicalClassPrefix.get().length()));
                         return;
                     }
                 }
             }
 
             final String packageName = t.getSymbol().getPackageName();
-            sb.append(canonicalName.startsWith(packageName) && canonicalName.length() > packageName.length()
+            s.append(canonicalName.startsWith(packageName) && canonicalName.length() > packageName.length()
                     ? canonicalName.substring(packageName.length() + 1)
                     : canonicalName);
-        }
-
-        @Override
-        public Void visitWildcard(final JWildcardType t, final Printer sb) {
-            sb.append("?");
-            if (t.isUnbounded()) {
-                return null;
-            }
-
-            sb.append(t.isUpperBound() ? " extends " : " super ");
-
-            t.getBound().acceptVisitor(this, sb);
-            return null;
-        }
-
-        @Override
-        public Void visitPrimitive(final JPrimitiveType t, final Printer sb) {
-            sb.append(t.getSimpleName());
-            return null;
-        }
-
-        @Override
-        public Void visitTypeVar(final JTypeVar t, final Printer sb) {
-            sb.append(t.getName());
-
-            if (sb.printTypeVarBounds == OptionalBool.YES) {
-                sb.printTypeVarBounds = OptionalBool.NO;
-                if (!t.getUpperBound().isTop()) {
-                    sb.append(" extends ");
-                    t.getUpperBound().acceptVisitor(this, sb);
-                }
-                if (!t.getLowerBound().isBottom()) {
-                    sb.append(" super ");
-                    t.getLowerBound().acceptVisitor(this, sb);
-                }
-                sb.printTypeVarBounds = OptionalBool.YES;
-            }
-            return null;
-        }
-
-        @Override
-        public Void visitIntersection(final JIntersectionType t, final Printer sb) {
-            return this.join(sb, t.getComponents(), " & ", "", "");
-        }
-
-        @Override
-        public Void visitNullType(final JTypeMirror t, final Printer sb) {
-            sb.append("null");
-            return null;
-        }
-
-        @Override
-        public Void visitInferenceVar(final InferenceVar t, final Printer sb) {
-            sb.append(t.getName());
-            return null;
-        }
-
-        private Void join(
-                final Printer sb,
-                final List<? extends JTypeMirror> types,
-                final String delim,
-                final String prefix,
-                final String suffix) {
-            final boolean empty = types.isEmpty();
-            sb.append(prefix);
-            if (!empty) {
-                for (int i = 0; i < types.size() - 1; i++) {
-                    types.get(i).acceptVisitor(this, sb);
-                    sb.append(delim);
-                }
-                types.get(types.size() - 1).acceptVisitor(this, sb);
-            }
-            sb.append(suffix);
-            return null;
         }
     }
 }
