@@ -191,7 +191,7 @@ public class Bar {
         <code><![CDATA[
 public class Bar {
     public void alternating() {
-        int a; // premature
+        int a = 0; // premature
         int unused; // grouped with 'a': doesn't count
         System.out.println("s1"); // first executable statement: ends the leading group
         int b; // no longer grouped: counts towards the distance
@@ -200,7 +200,7 @@ public class Bar {
         System.out.println("s4");
         System.out.println("s5");
         System.out.println("s6");
-        a = 1;
+        System.out.println(a);
     }
 }
         ]]></code>
