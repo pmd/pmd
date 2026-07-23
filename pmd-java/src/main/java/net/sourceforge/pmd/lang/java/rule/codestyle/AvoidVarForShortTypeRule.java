@@ -48,7 +48,7 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
                     final VisitState state = new VisitState(limitLength, currentClassDeclarationCanonicalPrefixes);
                     try {
                         variableTypeMirror.acceptVisitor(Visitor.INSTANCE, state);
-                    } catch (OverLimitLengthException ignored) {
+                    } catch (OverLengthLimitException ignored) {
                         // Quick exit/abort to not compute full string length
                         return null;
                     }
@@ -79,7 +79,7 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
         return currentClassDeclarationCanonicalPrefixes;
     }
 
-    static class OverLimitLengthException extends RuntimeException {
+    static class OverLengthLimitException extends RuntimeException {
 
     }
 
@@ -102,7 +102,7 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
 
         void throwIfCurrentLengthOverLimit() {
             if (currentLength >= limitLength) {
-                throw new OverLimitLengthException();
+                throw new OverLengthLimitException();
             }
         }
 
