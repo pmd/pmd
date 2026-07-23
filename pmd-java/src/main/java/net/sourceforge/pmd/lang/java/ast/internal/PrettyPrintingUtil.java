@@ -66,8 +66,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrinter;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

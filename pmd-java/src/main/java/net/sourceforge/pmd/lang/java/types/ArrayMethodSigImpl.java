@@ -17,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 
 // for array clone or array constructor
 class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
