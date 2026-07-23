@@ -13,10 +13,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrinter;
 
 /**
  * Carrier for {@link ResolutionFailure}. Throwing an exception is the

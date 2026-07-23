@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

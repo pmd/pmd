@@ -26,16 +26,13 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-/**
- *
- */
 public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     private static final Set<String> INTERESTING_NAMES = setOf(

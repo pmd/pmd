@@ -25,8 +25,8 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
 import net.sourceforge.pmd.lang.java.types.SubstVar;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 
 /**
  * Represents an inference variable. Inference variables are just

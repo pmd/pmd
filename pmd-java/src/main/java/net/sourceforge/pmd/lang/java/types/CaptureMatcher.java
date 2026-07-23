@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
  * Test only. This binds to the first capture variable it tests equal
  * with, and keeps the same binding forever.
  */
-final class CaptureMatcher implements JTypeVar {
+public final class CaptureMatcher implements JTypeVar {
 
     private final JWildcardType wild;
     private @Nullable JTypeVar captured = null;

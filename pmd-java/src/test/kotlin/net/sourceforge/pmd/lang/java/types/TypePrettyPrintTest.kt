@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrinter
 
 /**
  * @author Clément Fournier

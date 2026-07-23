@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 
 public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainRule {
 
