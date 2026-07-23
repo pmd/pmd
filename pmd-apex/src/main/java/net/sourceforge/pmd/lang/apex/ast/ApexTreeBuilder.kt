@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
 import net.sourceforge.pmd.lang.ast.ParseException
 
+import com.google.summit.ast.AnonymousUnit
 import com.google.summit.ast.CompilationUnit
 import com.google.summit.ast.Identifier
 import com.google.summit.ast.Node
@@ -83,11 +84,10 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
     /** Builds and returns an [ASTApexFile] corresponding to the given [CompilationUnit]. */
     fun buildTree(compilationUnit: CompilationUnit): ASTApexFile {
         // Build tree
-        val baseClass =
-            build(compilationUnit, parent = null) as? BaseApexClass<*>
-                ?: throw ParseException("Unable to build tree")
+        val baseNode = build(compilationUnit, parent = null)
+            ?: throw ParseException("Unable to build tree")
         val result = ASTApexFile(task, compilationUnit, commentBuilder.suppressMap, proc)
-        baseClass.setParent(result)
+        baseNode.setParent(result)
 
         // Post-processing passes
         generateAdditional(result)
@@ -124,7 +124,7 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
     private fun build(node: Node?, parent: AbstractApexNode?): AbstractApexNode? =
         when (node) {
             null -> null
-            is CompilationUnit -> build(node.typeDeclaration, parent)
+            is CompilationUnit -> buildCompilationUnit(node, parent)
             is TypeDeclaration -> buildTypeDeclaration(node)
             is EnumValue -> buildEnumValue(node)
             is MethodDeclaration -> buildMethodDeclaration(node, parent)
@@ -183,6 +183,7 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
             is AnnotationModifier -> ASTAnnotation(node).apply { buildChildren(node, parent = this) }
             is ElementArgument ->
                 ASTAnnotationParameter(node).apply { buildChildren(node, parent = this) }
+            is AnonymousUnit -> buildAnonymousUnit(node)
             is ElementValue,
             is Identifier,
             is KeywordModifier,
@@ -207,6 +208,20 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
         parent: AbstractApexNode,
         exclude: (Node) -> Boolean = { false } // exclude none by default
     ) = node.getChildren().filterNot(exclude).forEach { buildAndSetParent(it, parent) }
+
+    private fun buildCompilationUnit(node: CompilationUnit, parent: AbstractApexNode?): AbstractApexNode? {
+        if (node.typeDeclaration != null) {
+            return build(node.typeDeclaration, parent)
+        }
+        if (node.anonymousUnit != null) {
+            return build(node.anonymousUnit, parent)
+        }
+        return null
+    }
+
+    private fun buildAnonymousUnit(node: AnonymousUnit): ASTAnonymousBlock {
+        return ASTAnonymousBlock(node).apply { buildChildren(node, parent = this) }
+    }
 
     /** Builds an [BaseApexClass] wrapper for the [TypeDeclaration] node. */
     private fun buildTypeDeclaration(node: TypeDeclaration) =
@@ -781,8 +796,10 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
             node.parent as BaseApexClass<*>
         } else if (node.parent is ASTMethod && (node.parent as ASTMethod).isTriggerBlock) {
             node.parent.parent as BaseApexClass<*>
+        } else if (node.parent is ASTAnonymousBlock) {
+            node.parent as AbstractApexNode
         } else {
-            throw IllegalStateException("Unexpected apex tree - field declaration $node cannot appear hear")
+            throw IllegalStateException("Unexpected apex tree - field declaration $node cannot appear here")
         }
 
         node.node.declarations
