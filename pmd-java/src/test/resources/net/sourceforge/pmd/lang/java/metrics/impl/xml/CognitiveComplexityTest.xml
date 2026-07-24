@@ -599,7 +599,7 @@
     </test-code>
 
     <test-code>
-        <description>Switch expressions gain 1 complexity like switch statements</description>
+        <description>#6881 Switch expressions gain 1 complexity like switch statements</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 1.</message>
@@ -620,7 +620,7 @@
     </test-code>
 
     <test-code>
-        <description>Switch expressions increase nesting like switch statements</description>
+        <description>#6881 Switch expressions increase nesting like switch statements</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Foo#foo(int)' has value 3.</message>
