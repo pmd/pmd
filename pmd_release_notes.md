@@ -14,6 +14,7 @@ This is a minor release.
     * [Kotlin type-aware analysis](#kotlin-type-aware-analysis)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [Renamed Rules](#renamed-rules)
+    * [Changed Rules](#changed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
@@ -38,6 +39,14 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
 #### Renamed Rules
 * The rule [`InstantiableUtilityClass`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_design.html#instantiableutilityclass) (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
   The old name still works but is deprecated.
+
+#### Changed Rules
+* The Java rule [`CommentRequired`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_documentation.html#commentrequired)
+  has a new property `packageMethodCommentRequirement`. It controls whether Javadoc comments are required (or
+  unwanted) for package-private methods and constructors. Previously, only `public` and `protected` methods could
+  be configured (via `publicMethodCommentRequirement` and `protectedMethodCommentRequirement`). The new property
+  defaults to `Ignored`, so existing rule configurations are unaffected.
+  This was implemented in [#6880](https://github.com/pmd/pmd/pull/6880).
 
 ### 🐛️ Fixed Issues
 * apex
