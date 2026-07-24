@@ -13,6 +13,7 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 abstract class TypeVarImpl implements JTypeVar {

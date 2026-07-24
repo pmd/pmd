@@ -169,6 +169,53 @@ public class SomeJNIClass {
         </example>
     </rule>
 
+    <rule name="AvoidVarForShortType"
+          language="java"
+          minimumLanguageVersion="10"
+          since="7.27"
+          message="The declared type ''{0}'' is not long enough (&lt;{1}) to justify the use of var"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.AvoidVarForShortTypeRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidvarforshorttype">
+        <description>
+            The `var` keyword can be useful to minimize writing type declarations, however it should only be used when
+            required - usually on very long types - because:
+            * Reading code is more important than writing code
+            * Code should be clearly understandable without IDE support (e.g. during review)
+            * Most IDEs provide support for variable extraction that automatically adds the correct type
+
+            Further information can be found in the [OpenJDK's Local Variable Type Inference
+            CSG](https://openjdk.org/projects/amber/guides/lvti-style-guide).
+
+            A violation will be triggered when the length of the detected type declaration is below the specified
+            `lengthLimit`.
+        </description>
+        <priority>4</priority>
+        <example>
+            <![CDATA[
+String msg = "Hello world"; // ok
+var msg = "Hello world";    // bad: Could have just used `String`
+
+
+byte flag = 0x2; // ok
+var flag = 0x2;  // bad: Will create an `int`
+
+
+List<String> DEFAULT_LIST = List.of(); // ok: Type is automatically inferred
+var DEFAULT_LIST = List.of();          // bad: Accidentally forgot <String>; will create List<Object>
+
+
+var customers = db.execQuery("SELECT ...");              // bad: What is customers? Maybe a List? a Set? an Array?
+// A dozen lines of other code...
+customers.map(Customer::name).toList();                  // bad: it looks like it's probably a Stream
+
+Stream<Customer> customers = db.execQuery("SELECT ..."); // ok: You can immediately see that this is a Stream
+
+
+var iterator = (Iterator<Map.Entry<? extends MyCacheKey, ? extends MyValue>>)create(); // ok: Type is very long
+]]>
+        </example>
+    </rule>
+
     <rule name="BooleanGetMethodName"
           language="java"
           since="4.0"

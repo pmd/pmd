@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**

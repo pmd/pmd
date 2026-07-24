@@ -15,6 +15,7 @@ import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 
 /**
  * Mirror a primitive types. Even though {@code void.class.isPrimitive()}

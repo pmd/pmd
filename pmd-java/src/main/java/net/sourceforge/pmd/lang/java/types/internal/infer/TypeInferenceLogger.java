@@ -27,12 +27,12 @@ import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
-import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
+import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrinter;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
