@@ -5478,6 +5478,11 @@ It is often simpler and cleaner to return or throw the value directly.</p>
 <p>Final variables are exempt from the rule to allow snapshot comparison,
 the same applies to variables defined using time measurement methods.</p>
 
+<p>Other local variable declarations that are not separated from the current one
+by any executable statement don’t count towards the distance either, so that
+variables that are declared together (e.g. all at the top of a block) are not
+reported just because of each other.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/VariableDeclarationUsageDistanceRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.VariableDeclarationUsageDistanceRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -5503,6 +5508,22 @@ the same applies to variables defined using time measurement methods.</p>
     <span class="kt">long</span> <span class="n">duration</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">;</span>
     <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Duration: "</span> <span class="o">+</span> <span class="n">duration</span><span class="o">);</span>
     <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"State changed: "</span> <span class="o">+</span> <span class="o">!</span><span class="n">state</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">getState</span><span class="o">()));</span>
+<span class="o">}</span>
+
+<span class="c1">// none of these are reported: the other declarations in between don't count</span>
+<span class="c1">// towards the distance, since they aren't executable statements themselves</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">report</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">Report</span> <span class="n">firstReport</span><span class="o">;</span>
+    <span class="nc">Tree</span>   <span class="n">firstTree</span><span class="o">;</span>
+    <span class="nc">Frame</span>  <span class="n">frame</span><span class="o">;</span>
+    <span class="nc">Report</span> <span class="n">secondReport</span><span class="o">;</span>
+
+    <span class="n">firstReport</span>  <span class="o">=</span> <span class="k">new</span> <span class="nc">Report</span><span class="o">();</span>
+    <span class="n">secondReport</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Report</span><span class="o">();</span>
+    <span class="n">frame</span>        <span class="o">=</span> <span class="n">createFrame</span><span class="o">();</span>
+    <span class="c1">// ... many unrelated statements</span>
+
+    <span class="n">firstTree</span> <span class="o">=</span> <span class="n">firstReport</span><span class="o">.</span><span class="na">getTree</span><span class="o">();</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -5566,7 +5587,7 @@ the same applies to variables defined using time measurement methods.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 24, 2026 <br />
+             Site last generated: Jul 25, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
