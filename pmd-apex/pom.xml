@@ -96,17 +96,17 @@
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-parser</artifactId>
-            <version>5.0.0</version>
+            <version>5.1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.google.summit</groupId>
+            <groupId>com.github.adangel</groupId>
             <artifactId>summit-ast</artifactId>
-            <version>2.4.0</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-ls_2.13</artifactId>
-            <version>6.0.2</version>
+            <version>6.1.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
