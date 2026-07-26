@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
+
+    <test-code>
+        <description>Method annotated with @CheckReturnValue - Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5-5</expected-linenumbers>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Verify violation message</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Result of 'Foo.bar()' is ignored.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Method not annotated with @CheckReturnValue</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Return value is assigned to a variable</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        int x = bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Return value is passed to another function</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        qux(bar());
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+
+    private void qux(int x) {}
+}
+            ]]>
+        </code>
+    </test-code>
+</test-data>

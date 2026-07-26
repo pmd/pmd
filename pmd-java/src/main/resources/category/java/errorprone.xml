@@ -3531,8 +3531,8 @@ public class Test {
 
     public void method(String a) {
         String b;
-        // I don't know it method1() can be "null"
-        // but I know "a" is not null..
+        // I don't know if method1() can be "null"
+        // but I know "a" is not null.
         // I'd better write a.equals(method1())
 
         if (a!=null && method1().equals(a)) { // will trigger the rule
@@ -3560,6 +3560,40 @@ public class Test {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedReturnValue"
+          language="java"
+          since="7.27.0"
+          message="Result of ''{0}'' is ignored."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnusedReturnValueRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusedreturnvalue">
+        <description>
+The UnusedReturnValue rule ensures that developers do not ignore the return values of methods annotated with
+`@CheckReturnValue` or methods within annotated classes and packages.
+
+Ignoring these return values often indicates a bug, such as treating a mutation-by-copy operation
+(like String.concat() or BigDecimal.add()) as an in-place mutation, or forgetting to handle a critical validation result, error code, or stream.
+By enforcing that the returned object is assigned to a variable, passed to another method, or explicitly handled,
+this rule prevents silent logic failures.
+
+See {% rule "UnusedAssignment" %} if you think assigning to a variable isn't enough.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
         </example>
     </rule>
 
