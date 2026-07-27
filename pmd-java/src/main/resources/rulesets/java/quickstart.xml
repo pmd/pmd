@@ -225,7 +225,6 @@
     <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
     <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst" /> -->
     <!-- <rule ref="category/java/errorprone.xml/CallSuperLast" /> -->
-    <rule ref="category/java/errorprone.xml/CheckSkipResult"/>
     <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray"/>
     <rule ref="category/java/errorprone.xml/CloneMethodMustBePublic"/>
     <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable"/>
@@ -295,7 +294,6 @@
     <!-- <rule ref="category/java/errorprone.xml/UnsupportedJdkApiUsage" /> -->
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" /> -->
     <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
-    <rule ref="category/java/errorprone.xml/UselessPureMethodCall"/>
     <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader" /> -->
     <!-- <rule ref="category/java/errorprone.xml/WrongTestAnnotation" /> -->

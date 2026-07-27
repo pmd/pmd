@@ -7,11 +7,13 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -24,6 +26,12 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
 
     private static final String CHECK_RETURN_VALUE_ANNOTATION = "CheckReturnValue";
     private static final String CAN_IGNORE_RETURN_VALUE_ANNOTATION = "CanIgnoreReturnValue";
+
+    private static final InvocationMatcher.CompoundInvocationMatcher METHODS_RETURNINING_NUMBER_OF_BYTES_READ = InvocationMatcher.parseAll(
+            "java.io.InputStream#skip(long)",
+            "java.io.InputStream#read(byte[])",
+            "java.io.InputStream#read(byte[],int,int)"
+    );
 
     public UnusedReturnValueRule() {
         super(ASTMethodCall.class);
@@ -47,7 +55,9 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
     }
 
     private boolean shouldCheckResult(ASTMethodCall call) {
-        return isCheckReturnValueAnnotated(call);
+        return isCheckReturnValueAnnotated(call)
+                || JavaRuleUtil.isKnownPure(call)
+                || METHODS_RETURNINING_NUMBER_OF_BYTES_READ.anyMatch(call);
     }
 
     // visible for testing
