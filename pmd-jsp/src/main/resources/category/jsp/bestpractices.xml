@@ -6,7 +6,7 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
-Rules which enforce generally accepted best practices.
+        Rules which enforce generally accepted best practices.
     </description>
 
     <rule name="DontNestJsfInJstlIteration"
@@ -16,20 +16,20 @@ Rules which enforce generally accepted best practices.
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration">
         <description>
-Do not nest JSF component custom actions inside a custom action that iterates over its body.
+            Do not nest JSF component custom actions inside a custom action that iterates over its body.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[
+                    <![CDATA[
 //Element[ @Name="c:forEach" ] // Element[ @NamespacePrefix="h" or @NamespacePrefix="f" ]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
-<![CDATA[
+            <![CDATA[
 <html>
   <body>
     <ul>
@@ -50,20 +50,20 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#noclassattribute">
         <description>
-Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
+            Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
         </description>
         <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[
-//Attribute[ upper-case(@Name)="CLASS" ]
+                    <![CDATA[
+//Element[lower-case(@Name) != 'jsp:usebean' and lower-case(@UnannotatedName) != 'usebean']/Attribute[upper-case(@Name)='CLASS']
 ]]>
                 </value>
             </property>
         </properties>
         <example>
-<![CDATA[
+            <![CDATA[
 <HTML> <BODY>
 <P class="MajorHeading">Some text</P>
 </BODY> </HTML>
@@ -78,22 +78,22 @@ Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#nohtmlcomments">
         <description>
-In a production system, HTML comments increase the payload
-between the application server to the client, and serve
-little other purpose. Consider switching to JSP comments.
+            In a production system, HTML comments increase the payload
+            between the application server to the client, and serve
+            little other purpose. Consider switching to JSP comments.
         </description>
         <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[
+                    <![CDATA[
 //CommentTag
 ]]>
                 </value>
             </property>
         </properties>
         <example>
-<![CDATA[
+            <![CDATA[
 <HTML><title>bad example><BODY>
 <!-- HTML comment -->
 </BODY> </HTML>
@@ -112,20 +112,20 @@ little other purpose. Consider switching to JSP comments.
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#nojspforward">
         <description>
-Do not do a forward from within a JSP file.
+            Do not do a forward from within a JSP file.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[
+                    <![CDATA[
 //Element[ @Name="jsp:forward" ]
 ]]>
                 </value>
             </property>
         </properties>
         <example>
-<![CDATA[
+            <![CDATA[
 <jsp:forward page='UnderConstruction.jsp'/>
 ]]>
         </example>
