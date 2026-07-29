@@ -507,8 +507,7 @@ public final class JavaRuleUtil {
             ASTUnaryExpression unary = (ASTUnaryExpression) expr;
             if (unary.getOperator() == UnaryOp.NEGATION) {
                 expr = unary.getOperand();
-            }
-            else {
+            } else {
                 return false;
             }
         }
