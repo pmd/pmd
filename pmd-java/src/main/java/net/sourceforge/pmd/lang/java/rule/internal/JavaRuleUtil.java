@@ -508,6 +508,9 @@ public final class JavaRuleUtil {
             if (unary.getOperator() == UnaryOp.NEGATION) {
                 expr = unary.getOperand();
             }
+            else {
+                return false;
+            }
         }
         if (expr instanceof ASTInfixExpression) {
             ASTInfixExpression condition = (ASTInfixExpression) expr;
