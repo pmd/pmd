@@ -12,6 +12,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -77,26 +78,28 @@ public final class JavaResolvers {
     static @NonNull NameResolver<JTypeMirror> moduleImport(Set<String> moduleNames,
                                                   final SymbolResolver symbolResolver,
                                                   final String thisPackage) {
-        return new SingleNameResolver<JTypeMirror>() {
+        return new NameResolver<JTypeMirror>() {
             @Override
-            public @Nullable JTypeMirror resolveFirst(String simpleName) {
+            public @NonNull List<JTypeMirror> resolveHere(String simpleName) {
+                Set<JTypeMirror> result = new LinkedHashSet<>();
+
                 for (String module : moduleNames) {
                     JModuleSymbol moduleSymbol = symbolResolver.resolveModule(module);
 
                     if (moduleSymbol == null) {
                         // TODO: log warning about incomplete auxclasspath
-                        return null;
+                        return Collections.emptyList();
                     }
 
                     for (String packageName : moduleSymbol.getExportedPackages()) {
                         JClassSymbol sym = symbolResolver.resolveClassFromCanonicalName(packageName + "." + simpleName);
                         if (sym != null && canBeImportedIn(thisPackage, sym)) {
-                            return sym.getTypeSystem().typeOf(sym, false);
+                            result.add(sym.getTypeSystem().typeOf(sym, false));
                         }
                     }
                 }
 
-                return null;
+                return new ArrayList<>(result);
             }
 
             @Override
