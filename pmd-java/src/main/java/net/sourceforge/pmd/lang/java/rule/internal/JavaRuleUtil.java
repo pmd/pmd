@@ -56,6 +56,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -502,6 +503,12 @@ public final class JavaRuleUtil {
     }
 
     public static boolean isNullCheck(ASTExpression expr, StablePathMatcher matcher) {
+        while (expr instanceof ASTUnaryExpression) {
+            ASTUnaryExpression unary = (ASTUnaryExpression) expr;
+            if (unary.getOperator() == UnaryOp.NEGATION) {
+                expr = unary.getOperand();
+            }
+        }
         if (expr instanceof ASTInfixExpression) {
             ASTInfixExpression condition = (ASTInfixExpression) expr;
             if (condition.getOperator().hasSamePrecedenceAs(BinaryOp.EQ)) {
