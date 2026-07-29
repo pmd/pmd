@@ -35,6 +35,11 @@ Resolved type names, return types, and annotation FQNs are available through
 Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
 ### 🌟️ New and Changed Rules
+#### New Rules
+* The new java rule {% rule java/errorprone/UnusedReturnValue %} finds method calls whose result is not used,
+  although ignoring the result of these method calls is likely a mistake.
+  The rule is referenced in the quickstart.xml ruleset for Java.
+
 #### Renamed Rules
 * The rule {%rule java/design/InstantiableUtilityClass %} (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
   The old name still works but is deprecated.
@@ -46,6 +51,13 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
   be configured (via `publicMethodCommentRequirement` and `protectedMethodCommentRequirement`). The new property
   defaults to `Ignored`, so existing rule configurations are unaffected.
   This was implemented in [#6880](https://github.com/pmd/pmd/pull/6880).
+
+#### Deprecated Rules
+* The java rule {% rule java/errorprone/CheckSkipResult %} has been deprecated for removal
+  in favor of the new rule {% rule java/errorprone/UnusedReturnValue %}.
+* The java rule {% rule java/errorprone/UselessPureMethodCall %} has been deprecated for removal
+  in favor of the new rule {% rule java/errorprone/UnusedReturnValue %}.
+
 
 ### 🐛️ Fixed Issues
 * apex
