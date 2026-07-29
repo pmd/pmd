@@ -1317,7 +1317,6 @@ class Example {
     java.util.List<?> values;
 }
 ]]></code>
-        <source-type>java 25</source-type>
     </test-code>
 
     <test-code>
@@ -1332,7 +1331,6 @@ void main() {
     java.util.List<?> values = null;
 }
 ]]></code>
-        <source-type>java 25</source-type>
     </test-code>
 
     <test-code>
@@ -1348,6 +1346,5 @@ class Example {
     java.sql.Array sqlArray;
 }
 ]]></code>
-        <source-type>java 25</source-type>
     </test-code>
 </test-data>
