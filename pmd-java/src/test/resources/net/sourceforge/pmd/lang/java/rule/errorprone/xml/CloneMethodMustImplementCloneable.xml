@@ -148,8 +148,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    final Object clone() {
-        System.out.println("clone called");
+    protected final Object clone() {
+        while (true) {
+            System.out.println("clone called");
+        }
     }
 }
         ]]></code>
