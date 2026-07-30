@@ -324,10 +324,10 @@ class JavaRuleUtilTest extends BaseParserTest {
             ASTCompilationUnit acu = java.parse("class Foo {" +
                     "void Bar(Integer x) {" +
                     "x++;}}");
-            ASTExpression condition = acu.descendants(ASTUnaryExpression.class).firstOrThrow();
+            ASTExpression unaryExpr = acu.descendants(ASTUnaryExpression.class).firstOrThrow();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertFalse(isNullCheck(condition, xSymbol));
+            assertFalse(isNullCheck(unaryExpr, xSymbol));
         }
 
         @Test
@@ -336,10 +336,10 @@ class JavaRuleUtilTest extends BaseParserTest {
             ASTCompilationUnit acu = java.parse("class Foo {" +
                     "void Bar(Integer x) {" +
                     "if (((x == null))) {}}}");
-            ASTExpression condition = acu.descendants(ASTUnaryExpression.class).firstOrThrow();
+            ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertFalse(isNullCheck(condition, xSymbol));
+            assertTrue(isNullCheck(condition, xSymbol));
         }
 
         @Test
@@ -348,10 +348,10 @@ class JavaRuleUtilTest extends BaseParserTest {
             ASTCompilationUnit acu = java.parse("class Foo {" +
                     "void Bar(Integer x) {" +
                     "if (((!((!(x == null)))))) {}}}");
-            ASTExpression condition = acu.descendants(ASTUnaryExpression.class).firstOrThrow();
+            ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertFalse(isNullCheck(condition, xSymbol));
+            assertTrue(isNullCheck(condition, xSymbol));
         }
     }
 }
