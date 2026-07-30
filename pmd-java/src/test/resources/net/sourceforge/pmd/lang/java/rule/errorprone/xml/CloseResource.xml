@@ -2331,4 +2331,79 @@ public class CastNullAfter {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: resource returned from the method directly (#2840)</description>
+        <rule-property name="types">java.sql.Connection</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+    Connection bar(Pool pool) {
+        Connection c = pool.getConnection();
+        return c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: resource declared inside a nested block and returned (#2840)</description>
+        <rule-property name="types">java.sql.Connection</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+    Connection bar(Pool pool, boolean flag) {
+        if (flag) {
+            Connection c = pool.getConnection();
+            return c;
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: plain close, declaration with initializer (#6742 control, rule defaults)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclBefore {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: plain close, split declaration and assignment (#6742)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclAfter {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout;
+        oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
