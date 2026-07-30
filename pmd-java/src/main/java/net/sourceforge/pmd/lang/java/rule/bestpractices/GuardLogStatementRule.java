@@ -16,6 +16,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
@@ -24,10 +27,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -141,7 +149,60 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
                 return true;
             }
         }
+        return hasEarlyExitGuard(node, logLevel);
+    }
+
+    /**
+     * Recognizes the guard clause style, where the guard is not an ancestor of the log
+     * statement but a preceding sibling that leaves the block:
+     *
+     * <pre>{@code
+     * if (!log.isDebugEnabled()) {
+     *     return;
+     * }
+     * log.debug("..." + expensive());
+     * }</pre>
+     */
+    private boolean hasEarlyExitGuard(ASTMethodCall node, String logLevel) {
+        ASTStatement statement = node.ancestors(ASTStatement.class).first();
+        if (statement == null || !(statement.getParent() instanceof ASTBlock)) {
+            return false;
+        }
+
+        for (ASTStatement sibling : statement.getParent().children(ASTStatement.class)) {
+            if (sibling == statement) {
+                return false;
+            }
+            if (sibling instanceof ASTIfStatement) {
+                ASTIfStatement ifStatement = (ASTIfStatement) sibling;
+                if (ifStatement.getElseBranch() == null
+                        && isNegation(ifStatement.getCondition())
+                        && containsGuardMethod(ifStatement, logLevel)
+                        && alwaysExits(ifStatement.getThenBranch())) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    private boolean isNegation(ASTExpression condition) {
+        return condition instanceof ASTUnaryExpression
+                && ((ASTUnaryExpression) condition).getOperator() == UnaryOp.NEGATION;
+    }
+
+    private boolean alwaysExits(ASTStatement statement) {
+        if (statement instanceof ASTBlock) {
+            ASTStatement last = null;
+            for (ASTStatement child : ((ASTBlock) statement).children(ASTStatement.class)) {
+                last = child;
+            }
+            return last != null && alwaysExits(last);
+        }
+        return statement instanceof ASTReturnStatement
+                || statement instanceof ASTThrowStatement
+                || statement instanceof ASTContinueStatement
+                || statement instanceof ASTBreakStatement;
     }
 
     /**

@@ -833,4 +833,61 @@ public class Foo {
 }
     ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] guard clause with early return, slf4j (#1287)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class Foo {
+    private static final Logger LOG = null;
+
+    private void log(Object o) {
+        if (!LOG.isDebugEnabled()) {
+            return;
+        }
+        LOG.debug("logging from " + o);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] guard clause without braces, early return (#1287)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class Foo {
+    private static final Logger LOG = null;
+
+    private void log(Object o) {
+        if (!LOG.isDebugEnabled())
+            return;
+        LOG.debug("logging from " + o);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] positive guard clause that does not exit is still unguarded (#1287)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class Foo {
+    private static final Logger LOG = null;
+
+    private void log(Object o) {
+        if (!LOG.isDebugEnabled()) {
+            System.out.println("still here");
+        }
+        LOG.debug("logging from " + o);
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
