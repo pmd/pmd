@@ -12,8 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
@@ -266,6 +265,32 @@ class JavaRuleUtilTest extends BaseParserTest {
         }
     }
 
+    @Nested
+    class OverloadedIsNullCheckTest {
+        @Test
+        @DisplayName("Returns true when variable is compared to null literal in overloaded method")
+        void testStandardNullComparison() {
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Object x) {"
+                    + "if (x == null) {}}}");
+            ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
+            JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
+
+            assertTrue(isNullCheck(condition, xSymbol));
+        }
+
+        @Test
+        @DisplayName("Returns false when variable is compared to non-null literal in overloaded method")
+        void testStandardIntegerComparison() {
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Integer x) {"
+                    + "if (x == 1) {}}}");
+            ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
+            JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
+
+            assertFalse(isNullCheck(condition, xSymbol));
+        }
+    }
 
     @Nested
     class IsNullCheckTest {
@@ -273,85 +298,97 @@ class JavaRuleUtilTest extends BaseParserTest {
         @Test
         @DisplayName("Returns true when variable is compared to null literal")
         void testStandardNullComparison() {
-            ASTCompilationUnit acu = java.parse("class Foo {" +
-                    "void Bar(Object x) {" +
-                    "if (x == null) {}}}");
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Object x) {"
+                    + "if (x == null) {}}}");
             ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertTrue(isNullCheck(condition, xSymbol));
+            assertTrue(isNullCheck(condition, StablePathMatcher.matching(xSymbol)));
+        }
+
+        @Test
+        @DisplayName("Returns true when variable is compared to null literal as (null == variable)")
+        void testYodaNullComparison() {
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Object x) {"
+                    + "if (null == x) {}}}");
+            ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
+            JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
+
+            assertTrue(isNullCheck(condition, StablePathMatcher.matching(xSymbol)));
         }
 
         @Test
         @DisplayName("Returns true when variable is compared as not equal to null literal")
         void testNotEqualNullComparison() {
-            ASTCompilationUnit acu = java.parse("class Foo {" +
-                    "void Bar(Object x) {" +
-                    "if (x != null) {}}}");
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Object x) {"
+                    + "if (x != null) {}}}");
             ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertTrue(isNullCheck(condition, xSymbol));
+            assertTrue(isNullCheck(condition, StablePathMatcher.matching(xSymbol)));
         }
 
         @Test
         @DisplayName("Returns false when variable is compared directly to non-null literal")
         void testStandardIntegerComparison() {
-            ASTCompilationUnit acu = java.parse("class Foo {" +
-                    "void Bar(Integer x) {" +
-                    "if (x == 1) {}}}");
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Integer x) {"
+                    + "if (x == 1) {}}}");
             ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertFalse(isNullCheck(condition, xSymbol));
+            assertFalse(isNullCheck(condition, StablePathMatcher.matching(xSymbol)));
         }
 
         @Test
         @DisplayName("Returns true when variable is compared to null literal inside a negation")
         void testWrappedNullComparison() {
-            ASTCompilationUnit acu = java.parse("class Foo {" +
-                    "void Bar(Object x) {" +
-                    "if (!(!(x == null))) {}}}");
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Object x) {"
+                    + "if (!(!(x == null))) {}}}");
             ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertTrue(isNullCheck(condition, xSymbol));
+            assertTrue(isNullCheck(condition, StablePathMatcher.matching(xSymbol)));
         }
 
         @Test
         @DisplayName("Returns false when condition contains non-negation unary operator")
         void testNonNegationUnaryOperator() {
-            ASTCompilationUnit acu = java.parse("class Foo {" +
-                    "void Bar(Integer x) {" +
-                    "x++;}}");
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Integer x) {"
+                    + "x++;}}");
             ASTExpression unaryExpr = acu.descendants(ASTUnaryExpression.class).firstOrThrow();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertFalse(isNullCheck(unaryExpr, xSymbol));
+            assertFalse(isNullCheck(unaryExpr, StablePathMatcher.matching(xSymbol)));
         }
 
         @Test
         @DisplayName("Returns true when variable is compared to null literal inside redundant parentheses")
         void testRedundantParentheses() {
-            ASTCompilationUnit acu = java.parse("class Foo {" +
-                    "void Bar(Integer x) {" +
-                    "if (((x == null))) {}}}");
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Integer x) {"
+                    + "if (((x == null))) {}}}");
             ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertTrue(isNullCheck(condition, xSymbol));
+            assertTrue(isNullCheck(condition, StablePathMatcher.matching(xSymbol)));
         }
 
         @Test
         @DisplayName("Returns true when variable is compared to null literal inside redundant parentheses and negations")
         void testRedundantParenthesesWithNegations() {
-            ASTCompilationUnit acu = java.parse("class Foo {" +
-                    "void Bar(Integer x) {" +
-                    "if (((!((!(x == null)))))) {}}}");
+            ASTCompilationUnit acu = java.parse("class Foo {"
+                    + "void Bar(Integer x) {"
+                    + "if (((!((!(x == null)))))) {}}}");
             ASTExpression condition = acu.descendants(ASTIfStatement.class).firstOrThrow().getCondition();
             JVariableSymbol xSymbol = acu.descendants(ASTVariableId.class).firstOrThrow().getSymbol();
 
-            assertTrue(isNullCheck(condition, xSymbol));
+            assertTrue(isNullCheck(condition, StablePathMatcher.matching(xSymbol)));
         }
     }
 }
