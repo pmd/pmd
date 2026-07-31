@@ -136,7 +136,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         String branchChoice = thenTrue || thenFalse ? "{elseBranch}" : "{thenBranch}";
 
         boolean conditionNeedsParens = conditionNegated && needsNewParensWhenNegating(condition)
-        || !doesNotNeedNewParensUnderInfix(condition, op);
+            || !doesNotNeedNewParensUnderInfix(condition, op);
         boolean branchNeedsParens = !doesNotNeedNewParensUnderInfix(branch, op);
 
         String conditionParensLeft = conditionNeedsParens ? "(" : "";
