@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -42,6 +43,31 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
         rs = new RuleSetLoader().loadFromResource(TEST_RULESET_1);
         assertEquals(rs.getFileName(), TEST_RULESET_1, "wrong RuleSet file name");
+    }
+
+    @Test
+    void testLoadFromStringUsesConfiguredClassLoader() {
+        String ruleClass = "net.sourceforge.pmd.lang.rule.RuleOnlyVisibleToCustomClassLoader";
+        AtomicBoolean askedForRuleClass = new AtomicBoolean();
+        ClassLoader customClassLoader = new ClassLoader(RuleSetFactoryTest.class.getClassLoader()) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                if (ruleClass.equals(name)) {
+                    askedForRuleClass.set(true);
+                    return MockRuleWithNoProperties.class;
+                }
+                return super.loadClass(name);
+            }
+        };
+
+        RuleSet rs = new RuleSetLoader().loadResourcesWith(customClassLoader)
+                                        .withReporter(mockReporter)
+                                        .loadFromString("ruleset.xml", rulesetXml(
+                                            dummyRule(attrs -> attrs.put(SchemaConstants.CLASS, ruleClass))));
+
+        assertTrue(askedForRuleClass.get(), "the configured class loader was not used to load the rule class");
+        assertEquals(1, rs.size());
+        assertEquals(MockRuleWithNoProperties.class, rs.getRules().iterator().next().getClass());
     }
 
     @Test
