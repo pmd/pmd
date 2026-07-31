@@ -133,20 +133,22 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         // the branch that is not a literal, if both are literals, prefers elseExpr
         ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
 
+        boolean conditionNeedsParens = !doesNotNeedNewParensUnderInfix(condition, op);
+        boolean branchNeedsParens = !doesNotNeedNewParensUnderInfix(branch, op);
 
-        if (doesNotNeedNewParensUnderInfix(condition, op)
-            && doesNotNeedNewParensUnderInfix(branch, op)) {
-            if (thenTrue) {
-                return "return {condition} || {elseBranch};";
-            } else if (thenFalse) {
-                return "return !{condition} && {elseBranch};";
-            } else if (elseTrue) {
-                return "return !{condition} || {thenBranch};";
-            } else {
-                return "return {condition} && {thenBranch};";
-            }
-        }
-        return null;
+        String conditionParensLeft = conditionNeedsParens ? "(" : "";
+        String conditionParensRight = conditionNeedsParens ? ")" : "";
+        String branchParensLeft = branchNeedsParens ? "(" : "";
+        String branchParensRight = branchNeedsParens ? ")" : "";
+
+        // from the above logic it is guaranteed that exactly one of the four booleans is true
+        String conditionNegation = thenFalse || elseTrue ? "!" : "";
+        String operator = thenTrue || elseTrue ? "||" : "&&";
+        String branchChoice = thenTrue || thenFalse ? "{elseBranch}" : "{thenBranch}";
+
+        return "return " + conditionNegation + conditionParensLeft + "{condition}"
+                + conditionParensRight + " " + operator + " " + branchParensLeft
+                + branchChoice + branchParensRight + ";";
     }
 
     private static boolean needsNewParensWhenNegating(ASTExpression e) {
