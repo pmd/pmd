@@ -124,16 +124,19 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             }
         }
 
-        boolean conditionNegated = thenFalse || elseTrue;
-        if (conditionNegated && needsNewParensWhenNegating(condition)) {
-            return null;
-        }
 
         BinaryOp op = thenFalse || elseFalse ? CONDITIONAL_AND : CONDITIONAL_OR;
         // the branch that is not a literal, if both are literals, prefers elseExpr
         ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
 
-        boolean conditionNeedsParens = !doesNotNeedNewParensUnderInfix(condition, op);
+        boolean conditionNegated = thenFalse || elseTrue;
+        // from the above logic it is guaranteed that exactly one of the four booleans is true
+        String conditionNegation = conditionNegated ? "!" : "";
+        String operator = thenTrue || elseTrue ? "||" : "&&";
+        String branchChoice = thenTrue || thenFalse ? "{elseBranch}" : "{thenBranch}";
+
+        boolean conditionNeedsParens = conditionNegated && needsNewParensWhenNegating(condition)
+        || !doesNotNeedNewParensUnderInfix(condition, op);
         boolean branchNeedsParens = !doesNotNeedNewParensUnderInfix(branch, op);
 
         String conditionParensLeft = conditionNeedsParens ? "(" : "";
@@ -141,10 +144,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         String branchParensLeft = branchNeedsParens ? "(" : "";
         String branchParensRight = branchNeedsParens ? ")" : "";
 
-        // from the above logic it is guaranteed that exactly one of the four booleans is true
-        String conditionNegation = thenFalse || elseTrue ? "!" : "";
-        String operator = thenTrue || elseTrue ? "||" : "&&";
-        String branchChoice = thenTrue || thenFalse ? "{elseBranch}" : "{thenBranch}";
+
 
         return "return " + conditionNegation + conditionParensLeft + "{condition}"
                 + conditionParensRight + " " + operator + " " + branchParensLeft
