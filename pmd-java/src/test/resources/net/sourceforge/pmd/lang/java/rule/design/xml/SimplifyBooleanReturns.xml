@@ -142,11 +142,15 @@ public class SimplifyBooleanReturns {
     </test-code>
 
     <test-code>
-        <description>don't report if expr would need paren</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>13</expected-linenumbers>
+        <description>report if expr would need parens</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>3,8,13,18,23</expected-linenumbers>
         <expected-messages>
+            <message>This if statement can be replaced by `return {condition} &amp;&amp; ({thenBranch});`</message>
+            <message>This if statement can be replaced by `return !({condition}) || {thenBranch};`</message>
             <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
+            <message>This if statement can be replaced by `return ({condition}) &amp;&amp; {thenBranch};`</message>
+            <message>This if statement can be replaced by `return !({condition}) &amp;&amp; {elseBranch};`</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -172,9 +176,9 @@ public class SimplifyBooleanReturns {
                         return false;
                     }
                     if (foo instanceof Foo) { // !(foo instanceof Foo) && a;
-                        return a;
+                        return false;
                     } else {
-                        return true;
+                        return a;
                     }
                 }
             }
