@@ -318,8 +318,8 @@ class Tester {
         <description> [java] Issue #6694 - inconsistent triggering of rule with and without parentheses </description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>This if statement can be replaced by return {condition} &amp;&amp; ({thenBranch});</message>
-            <message>This if statement can be replaced by return {condition} &amp;&amp; {thenBranch};</message>
+            <message>This if statement can be replaced by `return {condition} &amp;&amp; ({thenBranch});`</message>
+            <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
         </expected-messages>
         <code><![CDATA[
             public class FactoryChecker {
