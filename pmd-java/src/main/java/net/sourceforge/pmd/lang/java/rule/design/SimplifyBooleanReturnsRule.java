@@ -135,16 +135,14 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         String operator = thenTrue || elseTrue ? "||" : "&&";
         String branchChoice = thenTrue || thenFalse ? "{elseBranch}" : "{thenBranch}";
 
-        boolean conditionNeedsParens = conditionNegated && needsNewParensWhenNegating(condition)
-            || !doesNotNeedNewParensUnderInfix(condition, op);
-        boolean branchNeedsParens = !doesNotNeedNewParensUnderInfix(branch, op);
+        boolean conditionNeedsParens = (conditionNegated && needsNewParensWhenNegating(condition))
+            || needsNewParensUnderInfix(condition, op);
+        boolean branchNeedsParens = needsNewParensUnderInfix(branch, op);
 
         String conditionParensLeft = conditionNeedsParens ? "(" : "";
         String conditionParensRight = conditionNeedsParens ? ")" : "";
         String branchParensLeft = branchNeedsParens ? "(" : "";
         String branchParensRight = branchNeedsParens ? ")" : "";
-
-
 
         return "return " + conditionNegation + conditionParensLeft + "{condition}"
                 + conditionParensRight + " " + operator + " " + branchParensLeft
@@ -172,13 +170,13 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    private static boolean doesNotNeedNewParensUnderInfix(ASTExpression e, BinaryOp op) {
+    private static boolean needsNewParensUnderInfix(ASTExpression e, BinaryOp op) {
         // those nodes have greater precedence than infix
-        return e instanceof ASTPrimaryExpression
+        return !(e instanceof ASTPrimaryExpression
             || e instanceof ASTCastExpression
             || e instanceof ASTUnaryExpression
             || e.isParenthesized()
-            || isInfixExprWithOperator(e, opsWithGreaterPrecedence(op));
+            || isInfixExprWithOperator(e, opsWithGreaterPrecedence(op)));
     }
 
     private @Nullable ASTExpression getReturnExpr(JavaNode node) {
