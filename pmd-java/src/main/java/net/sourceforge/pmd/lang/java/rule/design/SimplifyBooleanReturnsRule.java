@@ -124,7 +124,6 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             }
         }
 
-
         BinaryOp op = thenFalse || elseFalse ? CONDITIONAL_AND : CONDITIONAL_OR;
         // the branch that is not a literal, if both are literals, prefers elseExpr
         ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
