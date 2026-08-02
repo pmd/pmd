@@ -26,7 +26,7 @@
         <description>All variables should be declared before any initialisation</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The local variable `localVariable2` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable2` should be declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -46,7 +46,7 @@
         <description>Variables should not be declared and initialized on the same line</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The local variable `localVariable1` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable1` should be declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -62,8 +62,8 @@
         <description>Variable declaration and initialization should be separated and all declarations should happen before initialization</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>The local variable `localVariable1` should be declared without initialization at start of block</message>
-            <message>The local variable `localVariable2` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable1` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable2` should be declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -83,12 +83,12 @@
         <rule-property name="requireBeforeThisSuper">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The local variable `localVariable1` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable1` should be declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
                     public Bar () {
-                        super()
+                        super();
                         int localVariable1; // incorrect, super has been called above the variable declarations
                         localVariable1 = 1;
                     }
@@ -104,7 +104,7 @@
         <code><![CDATA[
                 public class Bar {
                     public Bar () {
-                        this()
+                        this();
                         int localVariable1;
                         localVariable1 = 1;
                     }
@@ -114,7 +114,7 @@
 
 
     <test-code>
-        <description>Rule should not be enforced on declarations with var</description>
+        <description>Rule should not be triggered on declarations with var</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Bar {
@@ -128,5 +128,45 @@
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Rule should not be triggered on fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+
+                public int field1 = 1; // should not trigger
+
+                public void foo1 () {}
+
+                public int field2 = 2; // should not trigger
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Rule should not be triggered on for-loop initialisers</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Local variable `localVariable3` should be declared without initialization at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+
+                public void foo1 () {
+                    int localVariable1;
+                    localVariable1 = 1;
+
+                    for (int i = 0; i < 10; i++) {
+                        int localVariable2;
+                        localVariable2 = 2;
+                    }
+                    
+                    int localVariable3; // incorrect, should be at top
+                }
+            }
+        ]]></code>
+    </test-code>
 
 </test-data>
