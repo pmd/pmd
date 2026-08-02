@@ -14,4 +14,4 @@
             |     +- VariableExpression[@DefiningType = "ToLabelInSosl", @Image = "searchResults", @RealLoc = true]
             |        +- EmptyReferenceExpression[@DefiningType = null, @RealLoc = false]
             +- ReturnStatement[@DefiningType = "ToLabelInSosl", @RealLoc = true]
-               +- LiteralExpression[@Boolean = false, @Decimal = false, @DefiningType = "ToLabelInSosl", @Double = false, @Image = "", @Integer = false, @LiteralType = LiteralType.NULL, @Long = false, @Name = null, @Null = true, @RealLoc = true, @String = false]
+               +- LiteralExpression[@Boolean = false, @Decimal = false, @DefiningType = "ToLabelInSosl", @Double = false, @Image = "", @Integer = false, @LiteralType = LiteralType.NULL, @Long = false, @MultilineString = false, @Name = null, @Null = true, @RealLoc = true, @String = false]

@@ -30,8 +30,8 @@ import com.google.common.reflect.ClassPath;
  *
  * @since 7.13.0
  * @implNote This finds the available system / schema types by searching for classes in the dependency
- *     io.github.apex-dev-tools:standard-types in the packages {@code com.nawforce.runforce.System}
- *     and {@code com.nawforce.runforce.Schema}.
+ *     io.github.apex-dev-tools:standard-types in the packages {@code io.github.apexdevtools.standardtypes.System}
+ *     and {@code io.github.apexdevtools.standardtypes.Schema}.
  */
 public class TypeShadowsBuiltInNamespaceRule extends AbstractRule {
     private static final ApexVisitor<RuleContext, Void> VISITOR = new Visitor();
@@ -52,7 +52,7 @@ public class TypeShadowsBuiltInNamespaceRule extends AbstractRule {
 
         private Visitor() {
             try {
-                String systemPackageName = com.nawforce.runforce.System.System.class.getPackage().getName();
+                String systemPackageName = io.github.apexdevtools.standardtypes.System.System.class.getPackage().getName();
                 systemTypes = ClassPath.from(ClassLoader.getSystemClassLoader())
                         .getTopLevelClasses(systemPackageName)
                         .stream()
@@ -60,7 +60,7 @@ public class TypeShadowsBuiltInNamespaceRule extends AbstractRule {
                         .map(s -> s.toLowerCase(Locale.ROOT))
                         .collect(Collectors.toSet());
 
-                String schemaPackageName = com.nawforce.runforce.Schema.SObjectType.class.getPackage().getName();
+                String schemaPackageName = io.github.apexdevtools.standardtypes.Schema.SObjectType.class.getPackage().getName();
                 schemaTypes = ClassPath.from(ClassLoader.getSystemClassLoader())
                         .getTopLevelClasses(schemaPackageName)
                         .stream()

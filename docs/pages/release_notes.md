@@ -23,6 +23,10 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Updated Apex Support
+The Apex language support has been bumped to version 67.0 (Summer '26). It supports the new
+[Multiline String](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&release=262&type=5) literals.
+
 #### Kotlin type-aware analysis
 Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
 Resolved type names, return types, and annotation FQNs are available through
@@ -35,7 +39,18 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
 * The rule {%rule java/design/InstantiableUtilityClass %} (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
   The old name still works but is deprecated.
 
+#### Changed Rules
+* The Java rule [`CommentRequired`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_documentation.html#commentrequired)
+  has a new property `packageMethodCommentRequirement`. It controls whether Javadoc comments are required (or
+  unwanted) for package-private methods and constructors. Previously, only `public` and `protected` methods could
+  be configured (via `publicMethodCommentRequirement` and `protectedMethodCommentRequirement`). The new property
+  defaults to `Ignored`, so existing rule configurations are unaffected.
+  This was implemented in [#6880](https://github.com/pmd/pmd/pull/6880).
+
 ### 🐛️ Fixed Issues
+* apex
+    * [#6478](https://github.com/pmd/pmd/issues/6478): \[apex] Parser error when using CALENDAR_YEAR() in SOQL
+    * [#6887](https://github.com/pmd/pmd/issues/6887): \[apex] ParseException on Summer '26 multiline string literals ('''...''')
 * chore
     * [#6837](https://github.com/pmd/pmd/issues/6837): chore: Input 'app-id' has been deprecated with message: Use 'client-id' instead
 * core
@@ -52,9 +67,12 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
 * java-codestyle
     * [#6709](https://github.com/pmd/pmd/issues/6709): \[java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver
     * [#6737](https://github.com/pmd/pmd/issues/6737): \[java] TooManyStaticImports: @<!-- -->SuppressWarnings("PMD.TooManyStaticImports") has stopped working
+    * [#6846](https://github.com/pmd/pmd/issues/6846): \[java] VariableDeclarationUsageDistance: False positive with variables grouped at the top of a block
+    * [#6867](https://github.com/pmd/pmd/issues/6867): \[java] UnnecessaryFullyQualifiedName: ContextedAssertionError: This should be unreachable: unknown constant ScopeInfo: MODULE_IMPORT
 * java-design
     * [#6714](https://github.com/pmd/pmd/issues/6714): \[java] Rename UseUtilityClass to InstantiableUtilityClass
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
+    * [#6881](https://github.com/pmd/pmd/issues/6881): \[java] CognitiveComplexity does not count switch expressions
 * java-errorprone
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
 * kotlin
