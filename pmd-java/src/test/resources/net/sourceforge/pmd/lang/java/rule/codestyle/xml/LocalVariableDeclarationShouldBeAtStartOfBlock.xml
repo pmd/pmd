@@ -81,6 +81,25 @@
 
 
     <test-code>
+        <description>Multiple variables declared on the same line should trigger only with the initialized variable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable4` should be declared without initialization at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable1, localVariable2; // correct
+
+                        int localVariable3, localVariable4 = 2; // incorrect, should flag 4
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
         <description>When requireBeforeThisSuper is true declarations should come before super(...) and this(...) calls</description>
         <rule-property name="requireBeforeThisSuper">true</rule-property>
         <expected-problems>1</expected-problems>
@@ -149,9 +168,9 @@
 
 
     <test-code>
-        <description>Rule should not be triggered on for-loop initialisers</description>
+        <description>Rule should not be triggered in statement initialisers</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>12</expected-linenumbers>
+        <expected-linenumbers>17</expected-linenumbers>
         <expected-messages>
             <message>Local variable `localVariable3` should be declared without initialization at start of block</message>
         </expected-messages>
@@ -166,6 +185,11 @@
                         int localVariable2;
                         localVariable2 = 2;
                     }
+
+                    for (int i: new int[5]) {}
+
+                    try (int a = 1) {}
+                    catch (FileNotFoundException e) {}
                     
                     int localVariable3; // incorrect, should be at top
                 }

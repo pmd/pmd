@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
-import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -31,10 +31,9 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlock extends AbstractJava
 
     @Override
     public Object visit(ASTLocalVariableDeclaration declaration, Object data) {
-        JavaNode parent = declaration.getParent(); // parent cannot be null here
-
         // rule does not apply to variables declared and initialized inside for loop initializers
-        if (parent.getParent() instanceof ASTForStatement || parent.getParent() instanceof ASTForeachStatement) {
+        // it also does not apply to try-with-resources blocks
+        if (isInStatementInitializer(declaration)) {
             return data;
         }
 
@@ -43,24 +42,44 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlock extends AbstractJava
             return data;
         }
 
-        if (!isAtStartOfBlock(declaration) || containsInitialization(declaration)) {
-            ASTVariableId firstVarID = declaration.getVarIds().first();
-            if (firstVarID == null) { // should never be null but just in case
+        boolean declarationContainsInitialization = containsInitialization(declaration);
+
+        if (!isAtStartOfBlock(declaration) || declarationContainsInitialization) {
+            JavaNode child = declaration.getFirstChild();
+            ASTVariableId firstFlaggedVarID = null;
+
+            while (child != null) {
+                if (child instanceof ASTVariableDeclarator) {
+                    ASTVariableDeclarator castedChild = (ASTVariableDeclarator) child;
+                    if (!declarationContainsInitialization || castedChild.hasInitializer()) {
+                        firstFlaggedVarID = castedChild.getVarId();
+                        break;
+                    }
+                }
+                child = child.getNextSibling();
+            }
+
+            if (firstFlaggedVarID == null) { // should never be null but just in case
+                asCtx(data).addViolation(declaration, "THIS IS NOT SUPPOSED TO HAPPEN");
                 return data;
             }
-            asCtx(data).addViolation(declaration, firstVarID.getName());
+            asCtx(data).addViolation(declaration, firstFlaggedVarID.getName());
         }
 
         return data;
+    }
+
+    private boolean isInStatementInitializer(ASTLocalVariableDeclaration declaration) {
+        // this will stop working if a distinct scope can exist inside a new type of statement (not braces or case of switch)
+        return !(declaration.getParent() instanceof ASTBlock
+                || declaration.getParent() instanceof ASTSwitchFallthroughBranch);
     }
 
     /*
     Whether any variables in the declaration are initialized
      */
     private boolean containsInitialization(ASTLocalVariableDeclaration declaration) {
-        for (int childNum = 0; childNum < declaration.getNumChildren(); childNum++) {
-            JavaNode nthChild = declaration.getChild(childNum);
-
+        for (JavaNode nthChild: declaration.children()) {
             if (nthChild instanceof ASTVariableDeclarator) {
                 ASTVariableDeclarator declarator = (ASTVariableDeclarator) nthChild;
 
