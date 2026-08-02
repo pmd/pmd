@@ -982,7 +982,7 @@ public class Bar {
     <rule name="LocalVariableDeclarationShouldBeAtStartOfBlock"
           language="java"
           since="7.27"
-          message="Local variable `{0}` should be declared without initialization at start of block"
+          message="Local variable `{0}` is not declared without initialization at start of block"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock">
         <description>
@@ -991,11 +991,11 @@ This rule exists in order to make it easy to see the type of any given variable 
 in amongst other code or long initialization assignments.
 
 It ignores initializations that exist within statement initializers such as for loop, foreach loop and try-with-resources initializers.
-For the purposes of this rule a case in a switch statement counts as block.
-By default super(...) and this(...) must be placed below the declarations.
+For the purposes of this rule a case in a `switch` statement counts as block.
+By default `super(...)` and `this(...)` must be placed below the declarations.
 
 requireBeforeThisSuper can be set to false (required in older versions of Java which do not allow flexible constructor bodies).
-This will allow super(...) and this(...) calls to be placed before declarations.
+This will allow `super(...)` and `this(...)` calls to be placed before declarations.
         </description>
         <priority>3</priority>
         <example>

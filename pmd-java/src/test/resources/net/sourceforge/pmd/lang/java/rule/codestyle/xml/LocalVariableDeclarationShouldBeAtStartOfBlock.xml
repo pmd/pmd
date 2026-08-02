@@ -27,7 +27,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `localVariable2` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable2` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -48,7 +48,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `localVariable1` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable1` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -65,7 +65,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `localVariable1` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable1` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -85,7 +85,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `localVariable4` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable4` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -105,7 +105,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `localVariable1` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable1` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
@@ -172,7 +172,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>17</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `localVariable3` should be declared without initialization at start of block</message>
+            <message>Local variable `localVariable3` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
             public class Bar {
@@ -203,9 +203,9 @@
         <expected-problems>3</expected-problems>
         <expected-linenumbers>14,18,23</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `b` should be declared without initialization at start of block</message>
-            <message>Local variable `b` should be declared without initialization at start of block</message>
-            <message>Local variable `b` should be declared without initialization at start of block</message>
+            <message>Local variable `b` is not declared without initialization at start of block</message>
+            <message>Local variable `b` is not declared without initialization at start of block</message>
+            <message>Local variable `b` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
             public class Bar {
@@ -243,8 +243,8 @@
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,10</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `encoded` should be declared without initialization at start of block</message>
-            <message>Local variable `decoded` should be declared without initialization at start of block</message>
+            <message>Local variable `encoded` is not declared without initialization at start of block</message>
+            <message>Local variable `decoded` is not declared without initialization at start of block</message>
         </expected-messages>
         <code><![CDATA[
             public class Bar {
