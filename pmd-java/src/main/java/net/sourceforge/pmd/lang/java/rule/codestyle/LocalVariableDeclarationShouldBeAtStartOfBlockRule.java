@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-public class LocalVariableDeclarationShouldBeAtStartOfBlock extends AbstractJavaRulechainRule {
+public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> REQUIRE_BEFORE_THIS_SUPER =
             PropertyFactory.booleanProperty("requireBeforeThisSuper")
@@ -24,7 +24,7 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlock extends AbstractJava
                     .defaultValue(true)
                     .build();
 
-    public LocalVariableDeclarationShouldBeAtStartOfBlock() {
+    public LocalVariableDeclarationShouldBeAtStartOfBlockRule() {
         super(ASTLocalVariableDeclaration.class);
         definePropertyDescriptor(REQUIRE_BEFORE_THIS_SUPER);
     }

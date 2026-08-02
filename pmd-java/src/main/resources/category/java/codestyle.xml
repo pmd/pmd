@@ -983,7 +983,7 @@ public class Bar {
           language="java"
           since="7.27"
           message="Local variable `{0}` should be declared without initialization at start of block"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlock"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock">
         <description>
             All local variables should be declared together at the start of the block and then initialized later.
