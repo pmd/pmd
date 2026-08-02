@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -43,38 +42,46 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlock extends AbstractJava
             return data;
         }
 
-        if (parent instanceof ASTBlock) {
-
-            if (!isAtStartOfBlock(declaration)) {
-                ASTVariableId firstVarID = declaration.getVarIds().first();
-                if (firstVarID == null) { // should never be null but just in case
-                    return data;
-                }
-                asCtx(data).addViolation(declaration, firstVarID.getName());
+        if (!isAtStartOfBlock(declaration) || containsInitialization(declaration)) {
+            ASTVariableId firstVarID = declaration.getVarIds().first();
+            if (firstVarID == null) { // should never be null but just in case
+                return data;
             }
+            asCtx(data).addViolation(declaration, firstVarID.getName());
         }
 
         return data;
     }
 
+    /*
+    Whether any variables in the declaration are initialized
+     */
+    private boolean containsInitialization(ASTLocalVariableDeclaration declaration) {
+        for (int childNum = 0; childNum < declaration.getNumChildren(); childNum++) {
+            JavaNode nthChild = declaration.getChild(childNum);
+
+            if (nthChild instanceof ASTVariableDeclarator) {
+                ASTVariableDeclarator declarator = (ASTVariableDeclarator) nthChild;
+
+                if (declarator.getInitializer() != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean isAtStartOfBlock(ASTLocalVariableDeclaration declaration) {
-        JavaNode sibling = declaration;
+
+        JavaNode sibling = declaration.getPreviousSibling();
         while (sibling != null) {
 
-            if (sibling instanceof ASTLocalVariableDeclaration) {
-                ASTLocalVariableDeclaration siblingDecl = (ASTLocalVariableDeclaration) sibling;
-                // declaration cannot not have a declarator so there should be no risk of NPE
-                ASTVariableDeclarator declarator = (ASTVariableDeclarator) siblingDecl.getLastChild();
-                // if declarator includes more than just variable name (also includes expression)
-                if (declarator.getNumChildren() != 1) {
-                    return false;
-                }
-            } else if (sibling instanceof ASTExplicitConstructorInvocation) {
+            if (sibling instanceof ASTExplicitConstructorInvocation) {
                 // super or this
                 if (getProperty(REQUIRE_BEFORE_THIS_SUPER)) {
                     return false;
                 }
-            } else {
+            } else if (!(sibling instanceof ASTLocalVariableDeclaration)) {
                 return false;
             }
 

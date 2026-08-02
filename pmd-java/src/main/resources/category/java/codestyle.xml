@@ -1010,6 +1010,9 @@ public class Bar {
 
     public void foo3 () {
         int localVariable1 = 1; // incorrect, variables should be declared first and initialized later
+
+        int localVariable2; // correct, because 1 is initialized in its declaration the fault lies in that line, not here
+        localVariable2 = 2;
     }
 
     // requireBeforeThisSuper set to true
