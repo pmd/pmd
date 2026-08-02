@@ -1495,6 +1495,40 @@ public class Something {
         </example>
     </rule>
 
+    <rule name="SortVariableDeclarationsAtStartOfBLock"
+          language="java"
+          since="7.27"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.SortVariableDeclarationsAtStartOfBlockRule"
+          message="[sortBy: {0}] The variable `{1}` should be declared before `{2}`"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#sortvariabledeclarationsatstartofblock">
+        <description>
+            Local variable declarations at the start of a code block should be sorted lexicographically by either type or name
+        </description>
+        <priority>3</priority>
+        <example>
+            class Bar {
+                // sortBy set to 'name'
+                public void foo1 () {
+                    int localVariableB;
+                    int localVariableA; // incorrect, variable A comes before variable B lexicographically
+                }
+
+                // sortBy set to 'name' and caseSensitiveSorting set to true
+                public void foo2 () {
+                    int localVariable_B;
+                    int localVariable_a; // correct, B comes before a when case-sensitive
+                }
+
+                // sortBy set to 'type' and caseSensitiveSorting set to true
+                public void foo3 () {
+                    int localVariable2;
+                    int localVariable1; // incorrect, variables of the same type should be sorted according to name
+                    String localVariable3; // incorrect, String comes before int with a case-sensitive sort
+                }
+            }
+        </example>
+    </rule>
+
     <rule name="TooManyStaticImports"
           language="java"
           since="4.1"
