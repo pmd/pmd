@@ -24,7 +24,7 @@ class JavaAnnotationSuppressorTest {
      */
     @Test
     void suppressTopLevelNodes() {
-        ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parse("import foo; @SupressWarnings(\"\") class Bar {}");
+        ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parse("import foo; @SuppressWarnings(\"\") class Bar {}");
         ASTImportDeclaration astImportDeclaration = root.firstChild(ASTImportDeclaration.class);
         ASTAnnotation astAnnotation = root.descendants(ASTAnnotation.class).first();
 
@@ -35,7 +35,7 @@ class JavaAnnotationSuppressorTest {
 
     @Test
     void suppressTopLevelNodesConsiderOnlyNextSibling() {
-        ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parse("import foo; public class FirstClass {}\n @SupressWarnings(\"\") class Bar {}");
+        ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parse("import foo; public class FirstClass {}\n @SuppressWarnings(\"\") class Bar {}");
         ASTImportDeclaration astImportDeclaration = root.firstChild(ASTImportDeclaration.class);
         ASTAnnotation astAnnotation = root.descendants(ASTAnnotation.class).first();
 
@@ -47,7 +47,7 @@ class JavaAnnotationSuppressorTest {
 
     @Test
     void suppressAnnotatableNode() {
-        ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parse("@SupressWarnings(\"\") class Bar {}");
+        ASTCompilationUnit root = JavaParsingHelper.DEFAULT.parse("@SuppressWarnings(\"\") class Bar {}");
         ASTClassDeclaration astClassDeclaration = root.firstChild(ASTClassDeclaration.class);
         ASTAnnotation astAnnotation = root.descendants(ASTAnnotation.class).first();
 
