@@ -121,7 +121,7 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Bar {
-                public void foo1 () {
+                public void foo () {
                     int localVariable1;
                     localVariable1 = 1;
 
@@ -140,7 +140,7 @@
 
                 public int field1 = 1; // should not trigger
 
-                public void foo1 () {}
+                public void foo () {}
 
                 public int field2 = 2; // should not trigger
             }
@@ -158,7 +158,7 @@
         <code><![CDATA[
             public class Bar {
 
-                public void foo1 () {
+                public void foo () {
                     int localVariable1;
                     localVariable1 = 1;
 
@@ -169,6 +169,46 @@
                     
                     int localVariable3; // incorrect, should be at top
                 }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Switch statements should allow variables to be declared at start of case scope</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>14,18,23</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `b` should be declared without initialization at start of block</message>
+            <message>Local variable `b` should be declared without initialization at start of block</message>
+            <message>Local variable `b` should be declared without initialization at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+               private void foo()
+               {
+                    int localVariable1;
+                    localVariable1 = 1;
+
+                    switch (localVariable1) {
+                        case 1:
+                            int a; // correct
+                            a = 1;
+                        case 2:
+                            int a; // correct
+                            a = 2;
+                            int b; // incorrect
+                        case 3: {
+                            int a; // correct
+                            a = 3;
+                            int b; // incorrect
+                        }
+                        default:
+                            int a; // correct
+                            a = 4;
+                            int b; // incorrect
+                    }
+               }
             }
         ]]></code>
     </test-code>

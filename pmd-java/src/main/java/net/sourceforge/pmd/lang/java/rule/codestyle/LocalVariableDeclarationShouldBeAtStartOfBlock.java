@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -81,7 +82,8 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlock extends AbstractJava
                 if (getProperty(REQUIRE_BEFORE_THIS_SUPER)) {
                     return false;
                 }
-            } else if (!(sibling instanceof ASTLocalVariableDeclaration)) {
+            } else if (!(sibling instanceof ASTLocalVariableDeclaration
+                    || sibling instanceof ASTSwitchLabel)) {
                 return false;
             }
 
