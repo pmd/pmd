@@ -60,7 +60,6 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
             }
 
             if (firstFlaggedVarID == null) { // should never be null but just in case
-                asCtx(data).addViolation(declaration, "THIS IS NOT SUPPOSED TO HAPPEN");
                 return data;
             }
             asCtx(data).addViolation(declaration, firstFlaggedVarID.getName());
