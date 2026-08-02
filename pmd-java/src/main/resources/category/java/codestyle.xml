@@ -986,7 +986,7 @@ public class Bar {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlock"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock">
         <description>
-            Variables should be declared at the start of the block and then initialized later.
+            All local variables should be declared together at the start of the block and then initialized later.
         </description>
         <priority>3</priority>
         <example>
@@ -995,7 +995,6 @@ public class Bar {
     public void foo1 () {
         int localVariable1; // correct, variables are declared at the start of the block and not initialized
         int localVariable2;
-
 
         localVariable1 = 1; // correct, once all variables are declared they can be initialized and used
         localVariable2 = 2;
@@ -1018,6 +1017,13 @@ public class Bar {
         super()
         int localVariable1; // incorrect, super has been called above the variable declarations
         localVariable1 = 1;
+    }
+
+    public void foo4 () {
+        int localVariable1;
+        localVariable1 = 1;
+
+        var localVariable2 = 2; // correct, rule does not apply to inferred types
     }
 }
 ]]>
