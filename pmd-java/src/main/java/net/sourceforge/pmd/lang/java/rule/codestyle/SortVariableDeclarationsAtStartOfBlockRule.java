@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static java.util.Locale.ENGLISH;
 import static net.sourceforge.pmd.properties.PropertyFactory.conventionalEnumProperty;
 
 import java.util.function.Function;
@@ -112,7 +113,7 @@ public class SortVariableDeclarationsAtStartOfBlockRule extends AbstractJavaRule
         }
 
         asCtx(data).addViolation(node, nodeName, prevName,
-                getProperty(SORT_BY).toString().toLowerCase());
+                getProperty(SORT_BY).toString().toLowerCase(ENGLISH));
 
         return data;
     }
@@ -128,18 +129,18 @@ public class SortVariableDeclarationsAtStartOfBlockRule extends AbstractJavaRule
             if (type1 == null) {
                 t1 = "var";
             } else {
-                t1 = type1.getOriginalText().toString();
+                t1 = type1.getOriginalText().toString().replace(" ", "");
             }
 
             if (type2 == null) {
                 t2 = "var";
             } else {
-                t2 = type2.getOriginalText().toString();
+                t2 = type2.getOriginalText().toString().replace(" ", "");
             }
 
             if (!getProperty(CASE_SENSITIVE_SORTING)) {
-                t1 = t1.toLowerCase();
-                t2 = t2.toLowerCase();
+                t1 = t1.toLowerCase(ENGLISH);
+                t2 = t2.toLowerCase(ENGLISH);
             }
 
             // if they are the same then continue to name sorting
@@ -148,21 +149,18 @@ public class SortVariableDeclarationsAtStartOfBlockRule extends AbstractJavaRule
                 if ("var".equals(t1)) {
                     return false;
                 }
-                if ("var".equals(t2)) {
-                    return true;
-                }
-                // if neither are var then they can be compared directly
-                return t1.compareTo(t2) < 0;
+                return "var".equals(t2) || t1.compareTo(t2) < 0;
             }
-
         }
 
         // either sort by is set to name or their types are the same and it has defaulted to name
         if (!getProperty(CASE_SENSITIVE_SORTING)) {
-            name1 = name1.toLowerCase();
-            name2 = name2.toLowerCase();
+            name1 = name1.toLowerCase(ENGLISH);
+            name2 = name2.toLowerCase(ENGLISH);
         }
-        return name1.compareTo(name2) < 0;
+        // non-strict inequality because variables with the same name but different capitalization are equal
+        // but should not be flagged when caseSensitiveSorting is false
+        return name1.compareTo(name2) <= 0;
 
     }
 
