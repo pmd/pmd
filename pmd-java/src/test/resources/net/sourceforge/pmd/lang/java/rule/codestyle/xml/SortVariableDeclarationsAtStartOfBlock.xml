@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to name</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariableA` comes before `localVariableB` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariableB;
+                        int localVariableA; // incorrect, variable A comes before variable B lexicographically
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to name and is case sensitive</description>
+        <rule-property name="sortBy">name</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable_B` comes before `localVariable_a` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable_a;
+                        int localVariable_B; // incorrect, B comes before a with a case-sensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should ignore casing when caseSensitiveSorting is false</description>
+        <rule-property name="sortBy">name</rule-property>
+        <rule-property name="caseSensitiveSorting">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a_var` comes before `B_var` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    int B_var;
+                    int a_var; // incorrect, 'a' comes before 'B' in a case-insensitive sort
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to type</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable2` comes before `localVariable1` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        String localVariable1;
+                        int localVariable2; // incorrect, int comes before String with a case-insensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to type and is case sensitive</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable2` comes before `localVariable1` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable1;
+                        String localVariable2; // incorrect, String comes before int with a case-sensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations of the same type should be ordered by name</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable1` comes before `localVariable2` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        String localVariable2;
+                        String localVariable1; // incorrect, variables of the same type should be ordered by name
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Variables should be sorted by type and then by name</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable1` comes before `localVariable2` when ordered by type.</message>
+            <message>The variable `localVariable3` comes before `localVariable1` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable2;
+                        int localVariable1; // incorrect, variables of the same type should be sorted according to name
+                        String localVariable3; // incorrect, String comes before int with a case-sensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Type inference with var should come last</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable3` comes before `localVariable1` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable2;
+                        var localVariable1 = 1;
+                        XCustomType localVariable3; // incorrect, X comes after v but var should always come last
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Explicit constructor calls should not affect ordering</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        super();
+                        int localVariable1;
+                    }
+
+                    public Bar(int a) {
+                        this();
+                        String localVariable2;
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>With multiple declarations on one line only the first variable name should be considered</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,8</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `b` comes before `c` when ordered by name.</message>
+            <message>The variable `l` comes before `p` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int a, d = 2;
+                        int c, e = 1;
+                        int b = 3, f; // incorrect, b comes before c
+                        
+                        int p = 2, y;
+                        int l = 3, z = 4; // incorrect, l comes before p
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>With multiple declarations on one line only the first variable type should be considered</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `b` comes before `a` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int[] a;
+                        int b, c[]; // incorrect, int comes before int[]
+                    }
+
+                    public void foo2 () {
+                        int a[], b;
+                        int c; // correct, only the overall type is considered
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Fields should be ordered the same as local variables</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `y` comes before `x` when ordered by type.</message>
+            <message>The variable `z` comes before `y` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    int a = 1;
+                    int[] b = new int[5];
+                    var x = 3;
+                    String y = "15"; // incorrect, var comes last
+                    JavaNode z; // incorrect, J comes before S
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Verify the ignoreLocalVariableDeclarations property works</description>
+        <rule-property name="sortBy">name</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <rule-property name="ignoreLocalVariableDeclarations">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    int b = 1;
+                    int a = 2; // incorrect, b before a
+
+                    void foo () {
+                        int d;
+                        int c; // correct, local variables are ignored
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Verify the ignoreFieldDeclarations property works</description>
+        <rule-property name="sortBy">name</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <rule-property name="ignoreFieldDeclarations">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `c` comes before `d` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    int b = 1;
+                    int a = 2; // correct, fields are ignored
+
+                    void foo () {
+                        int d;
+                        int c; // incorrect, c comes before d
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations at the start of nested blocks should be ordered</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo (boolean flag) {
+                    if (flag) {
+                        int b = 1;
+                        int a = 2; // incorrect, a should come before b in this block
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations inside switch statement blocks should be ordered</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `first` comes before `second` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo (int value) {
+                    switch (value) {
+                        case 1:
+                            int second;
+                            int first; // incorrect, first comes before second
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations after statements are not at the top of the block and should be ignored</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    int z = 1;
+                    System.out.println("Doing some work");
+                    int a = 2; // correct, this is no longer the top of the block
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Fields declared after a method are not considered at the top of the block</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+                int z = 1;
+
+                public void doSomething() {
+                }
+
+                int a = 2; // correct, field is declared after a method so it is ignored
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Modifiers like final should not affect type sorting</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    final String b = "test";
+                    final int a = 1; // incorrect, 'int' comes before 'String' despite 'final'
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Multiple var declarations should be sorted by name when sorting by type</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by type.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    int x;
+                    var b = "hello";
+                    var a = 123; // incorrect, both are 'var', so 'a' must come before 'b'
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations inside static or instance initializer blocks should be ordered</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by name.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                static {
+                    int b = 1;
+                    int a = 2; // incorrect, static initializer is a block scope
+                }
+            }
+        ]]></code>
+    </test-code>
+</test-data>

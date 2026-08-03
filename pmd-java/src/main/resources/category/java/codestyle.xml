@@ -1495,7 +1495,7 @@ public class Something {
         </example>
     </rule>
 
-    <rule name="SortVariableDeclarationsAtStartOfBLock"
+    <rule name="SortVariableDeclarationsAtStartOfBlock"
           language="java"
           since="7.27"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.SortVariableDeclarationsAtStartOfBlockRule"
@@ -1510,6 +1510,9 @@ This rule deems the top of the block to be:
 - Fields - before any method declarations.
 - Local Variables - before everything except other local variable declarations and calls to `this(...)` or `super(...)` in the constructor.
 Whether a variable is initialized does not affect this rule.
+If multiple variables are declared on the same line then when sorting by name only the first variable is considered.
+In all cases when sorting by type the only consideration is the initial type of the line (`int a[]` is `int` whereas `int[] a` is `int[]`).
+If sorting by type "var" declarations will be placed at the end of all other declarations.
 
 ignoreFieldDeclarations and ignoreLocalVariableDeclarations exist because field declarations are substantially different enough
 from local variable declarations that you may reasonably want one and not the other.
