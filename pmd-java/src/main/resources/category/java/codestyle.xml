@@ -1506,6 +1506,10 @@ This rule reports any variable declaration at the start of a block which does no
 It exists to make it easier for readers to parse initial groups of declarations.
 
 For this rule blocks are any local scope defined by curly braces, class bodies and cases in a switch statement.
+This rule deems the top of the block to be:
+- Fields - before any method declarations.
+- Local Variables - before everything except other local variable declarations and calls to `this(...)` or `super(...)` in the constructor.
+Whether a variable is initialized does not affect this rule.
 
 ignoreFieldDeclarations and ignoreLocalVariableDeclarations exist because field declarations are substantially different enough
 from local variable declarations that you may reasonably want one and not the other.
