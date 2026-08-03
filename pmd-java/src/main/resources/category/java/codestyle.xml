@@ -1507,9 +1507,9 @@ It exists to make it easier for readers to parse initial groups of declarations.
 
 For this rule blocks are any local scope defined by curly braces, class bodies and cases in a switch statement.
 
-ignoreClassBodies and ignoreNonClassBodies exist because field declarations are substantially different enough from local variable
-declarations that you may reasonably want one and not the other.
-caseSensitiveSorting gives flexibility for whichever method of sorting you deem more readable.
+ignoreFieldDeclarations and ignoreLocalVariableDeclarations exist because field declarations are substantially different enough
+from local variable declarations that you may reasonably want one and not the other.
+caseSensitiveSorting gives the flexibility to use whichever method of sorting you deem more readable.
         </description>
         <priority>3</priority>
         <example>

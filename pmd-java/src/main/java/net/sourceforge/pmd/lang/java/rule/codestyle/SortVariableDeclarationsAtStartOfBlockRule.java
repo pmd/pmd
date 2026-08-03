@@ -38,7 +38,19 @@ public class SortVariableDeclarationsAtStartOfBlockRule extends AbstractJavaRule
 
     private static final PropertyDescriptor<Boolean> CASE_SENSITIVE_SORTING =
             PropertyFactory.booleanProperty("caseSensitiveSorting")
-                    .desc("Use case sensitive sorting provided sortBy is not 'none'.")
+                    .desc("Use case sensitive sorting")
+                    .defaultValue(false)
+                    .build();
+
+    private static final PropertyDescriptor<Boolean> IGNORE_FIELD_DECLARATIONS =
+            PropertyFactory.booleanProperty("ignoreFieldDeclarations")
+                    .desc("Do not check the ordering of field declarations.")
+                    .defaultValue(false)
+                    .build();
+
+    private static final PropertyDescriptor<Boolean> IGNORE_LOCAL_VARIABLE_DECLARATIONS =
+            PropertyFactory.booleanProperty("ignoreLocalVariableDeclarations")
+                    .desc("Do not check the ordering of local variable declarations.")
                     .defaultValue(false)
                     .build();
 
