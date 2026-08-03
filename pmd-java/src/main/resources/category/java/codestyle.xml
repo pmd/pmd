@@ -256,7 +256,7 @@ public class Foo extends Bar{
             properties.
 
             By default, this rule uses the standard Java naming convention (Pascal case).
-            
+
             The rule can detect utility classes and enforce a different naming convention
             on those. E.g. setting the property `utilityClassPattern` to
             `[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants)` reports any utility class, whose name
@@ -1499,33 +1499,40 @@ public class Something {
           language="java"
           since="7.27"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.SortVariableDeclarationsAtStartOfBlockRule"
-          message="[sortBy: {0}] The variable `{1}` should be declared before `{2}`"
+          message="The variable `{0}` comes before `{1}` when ordered by {2}."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#sortvariabledeclarationsatstartofblock">
         <description>
-            Local variable declarations at the start of a code block should be sorted lexicographically by either type or name
+This rule reports any variable declaration at the start of a block which does not follow the previous declaration lexicographically.
+It exists to make it easier for readers to parse initial groups of declarations.
+
+For this rule blocks are any local scope defined by curly braces, class bodies and cases in a switch statement.
+
+ignoreClassBodies and ignoreNonClassBodies exist because field declarations are substantially different enough from local variable
+declarations that you may reasonably want one and not the other.
+caseSensitiveSorting gives flexibility for whichever method of sorting you deem more readable.
         </description>
         <priority>3</priority>
         <example>
-            class Bar {
-                // sortBy set to 'name'
-                public void foo1 () {
-                    int localVariableB;
-                    int localVariableA; // incorrect, variable A comes before variable B lexicographically
-                }
+class Bar {
+    // sortBy set to 'name'
+    public void foo1 () {
+        int localVariableB;
+        int localVariableA; // incorrect, variable A comes before variable B lexicographically
+    }
 
-                // sortBy set to 'name' and caseSensitiveSorting set to true
-                public void foo2 () {
-                    int localVariable_B;
-                    int localVariable_a; // correct, B comes before a when case-sensitive
-                }
+    // sortBy set to 'name' and caseSensitiveSorting set to true
+    public void foo2 () {
+        int localVariable_B;
+        int localVariable_a; // correct, B comes before a when case-sensitive
+    }
 
-                // sortBy set to 'type' and caseSensitiveSorting set to true
-                public void foo3 () {
-                    int localVariable2;
-                    int localVariable1; // incorrect, variables of the same type should be sorted according to name
-                    String localVariable3; // incorrect, String comes before int with a case-sensitive sort
-                }
-            }
+    // sortBy set to 'type' and caseSensitiveSorting set to true
+    public void foo3 () {
+        int localVariable2;
+        int localVariable1; // incorrect, variables of the same type should be sorted according to name
+        String localVariable3; // incorrect, String comes before int with a case-sensitive sort
+    }
+}
         </example>
     </rule>
 
@@ -2033,8 +2040,8 @@ public class Foo {
             Reports unnecessary semicolons (so called "empty statements" and "empty declarations").
             These can be removed without changing the program. The Java grammar
             allows them for historical reasons, but they should be avoided.
-            
-            This rule will not report empty statements that are syntactically 
+
+            This rule will not report empty statements that are syntactically
             required, for instance, because they are the body of a control statement.
 
             This rule replaces EmptyStatementNotInLoop.
