@@ -193,10 +193,10 @@ EOF
   </project>
 
   <project>
-    <name>Schedul-o-matic-9000</name>
+    <name>declarative-lookup-rollup-summaries</name>
     <type>git</type>
-    <connection>https://github.com/SalesforceLabs/Schedul-o-matic-9000</connection>
-    <tag>6b1229ba43b38931fbbab5924bc9b9611d19a786</tag>
+    <connection>https://github.com/SFDO-Community/declarative-lookup-rollup-summaries</connection>
+    <tag>5dbd186bb057bc8aea13d24dcf94d561830376c1</tag>
     <cpd-options>
       <language>apex</language>
       <minimum-tokens>100</minimum-tokens>
