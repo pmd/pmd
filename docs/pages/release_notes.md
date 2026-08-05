@@ -46,6 +46,8 @@ This is a {{ site.pmd.release_type }} release.
     ```
 
 ### 🐛️ Fixed Issues
+* java
+    * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
 * java-bestpractices
     * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
 * java-codestyle
@@ -73,4 +75,3 @@ This is a {{ site.pmd.release_type }} release.
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
-
