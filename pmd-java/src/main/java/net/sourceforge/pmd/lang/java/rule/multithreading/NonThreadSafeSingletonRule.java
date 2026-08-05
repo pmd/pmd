@@ -13,6 +13,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -106,6 +107,36 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             if (violation) {
                 asCtx(data).addViolation(ifStatement);
             }
+        }
+
+        // The same check-then-act race can be written as a ternary assignment:
+        //   field = field == null ? new T() : field;
+        // which is not an ASTIfStatement and was previously missed.
+        for (ASTAssignmentExpression assignment : node.descendants(ASTAssignmentExpression.class).toList()) {
+            if (assignment.ancestors(ASTSynchronizedStatement.class).nonEmpty()) {
+                continue;
+            }
+            ASTAssignableExpr left = assignment.getLeftOperand();
+            if (!(left instanceof ASTNamedReferenceExpr)) {
+                continue;
+            }
+            String fieldName = ((ASTNamedReferenceExpr) left).getName();
+            JVariableSymbol referencedSym = ((ASTNamedReferenceExpr) left).getReferencedSym();
+            if (!(referencedSym instanceof JFieldSymbol) || !fields.contains(fieldName)) {
+                continue;
+            }
+            if (!(assignment.getRightOperand() instanceof ASTConditionalExpression)) {
+                continue;
+            }
+            ASTConditionalExpression ternary = (ASTConditionalExpression) assignment.getRightOperand();
+            if (ternary.getCondition().descendants(ASTNullLiteral.class).isEmpty()) {
+                continue;
+            }
+            ASTNamedReferenceExpr condField = ternary.getCondition().descendants(ASTNamedReferenceExpr.class).first();
+            if (condField == null || !fieldName.equals(condField.getName())) {
+                continue;
+            }
+            asCtx(data).addViolation(assignment);
         }
         return data;
     }
