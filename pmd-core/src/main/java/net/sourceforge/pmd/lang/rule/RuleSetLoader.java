@@ -52,7 +52,21 @@ public final class RuleSetLoader {
         // default
     }
 
-    RuleSetLoader withReporter(@NonNull PmdReporter reporter) {
+    /**
+     * Replace the reporter used to handle non-fatal issues while loading
+     * rulesets (for example XML validation messages or deprecation warnings).
+     * The default is {@link PmdReporter#quiet()}, which still counts errors
+     * but does not print them.
+     *
+     * <p>A custom reporter is useful when callers need the detailed message
+     * behind a {@link RuleSetLoadException} (the exception message itself is
+     * often only a summary).
+     *
+     * @param reporter Reporter to use; must not be null
+     *
+     * @return This instance, modified
+     */
+    public RuleSetLoader withReporter(@NonNull PmdReporter reporter) {
         this.reporter = Objects.requireNonNull(reporter);
         return this;
     }

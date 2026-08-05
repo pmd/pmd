@@ -58,6 +58,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#4952](https://github.com/pmd/pmd/issues/4952): \[doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader
     * [#4953](https://github.com/pmd/pmd/issues/4953): \[core] Deprecate PMDConfiguration#setClassloader and #getClassloader
     * [#6865](https://github.com/pmd/pmd/issues/6865): \[core] Include the running PMD version in the "Unable to find referenced rule" error
+    * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] RuleSetLoader#withReporter is not publicly accessible
 * java
     * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
     * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
@@ -82,6 +83,12 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6891](https://github.com/pmd/pmd/issues/6891): \[kotlin] AnnotationFqnAnnotator: @<!-- -->TypeName not set on UnescapedAnnotation nodes
 
 ### 🚨️ API Changes
+
+* core
+    * {%jdoc core::lang.rule.RuleSetLoader#withReporter(net.sourceforge.pmd.util.log.PmdReporter) %} is now public.
+      This allows configuring a custom {%jdoc core::util.log.PmdReporter %} when loading rulesets outside of
+      {%jdoc core::PmdAnalysis %}, so that detailed validation and loading messages can be observed.
+      See [#6912](https://github.com/pmd/pmd/issues/6912).
 
 #### Deprecations
 * core
