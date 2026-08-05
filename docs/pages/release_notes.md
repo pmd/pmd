@@ -75,6 +75,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
     * [#6881](https://github.com/pmd/pmd/issues/6881): \[java] CognitiveComplexity does not count switch expressions
 * java-errorprone
+    * [#6547](https://github.com/pmd/pmd/issues/6547): \[java] NonSerializableClass: Report non-serializable generic element/value types of collections and maps
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
     * [#6900](https://github.com/pmd/pmd/issues/6900): \[java] DoubleCheckedLocking: False negative when the outer null check is written as !(x != null)
 * kotlin

@@ -384,4 +384,43 @@ class Buzz implements java.io.Serializable {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Non-serializable generic element/value type of collections and maps</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+class Foo implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private List<NotSerializable> items;
+    private Map<String, NotSerializable> map;
+}
+class NotSerializable {}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Skip generic element/value types that cannot be determined statically</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+class Foo<T> implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private List<String> serializableElements;
+    private List<T> typeVariable;
+    private Map<String, T> mapTypeVariable;
+    private List<? extends Serializable> wildcard;
+}
+class Bar<T extends NotSerializable> implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private List<T> boundedTypeVariable;
+}
+class NotSerializable {}
+]]></code>
+    </test-code>
 </test-data>
