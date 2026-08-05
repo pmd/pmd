@@ -3333,7 +3333,11 @@ Do not use "if" statements whose conditionals are always true or always false.
             <property name="xpath">
                 <value>
  <![CDATA[
-//IfStatement[BooleanLiteral[1]]
+//IfStatement[
+    every $node in *[1]/descendant-or-self::*
+    satisfies $node/self::BooleanLiteral
+              or $node/self::UnaryExpression[@Operator = '!']
+]
 union
 //IfStatement/(VariableAccess|UnaryExpression[@Operator = '!']/VariableAccess)/self::VariableAccess[@CompileTimeConstant = false()]
 [@Name = ancestor::IfStatement
