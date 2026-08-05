@@ -165,7 +165,15 @@ class ClassTypeImpl implements JClassType {
         } else if (isGenericTypeDeclaration() || !isGeneric()) {
             return Substitution.EMPTY;
         } else {
-            return Substitution.mapping(getFormalTypeParams(), getTypeArgs());
+            List<JTypeVar> formals = getFormalTypeParams();
+            List<JTypeMirror> args = getTypeArgs();
+            // Unresolved types keep the arity of the first use (see UnresolvedClassStore).
+            // Later uses with a different arity are reported during disambiguation but the
+            // ClassTypeImpl may still hold mismatched typeArgs. Do not crash analysis.
+            if (formals.size() != args.size()) {
+                return Substitution.erasing(formals);
+            }
+            return Substitution.mapping(formals, args);
         }
     }
 
