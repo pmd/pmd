@@ -101,6 +101,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
 * java-errorprone
     * [#2840](https://github.com/pmd/pmd/issues/2840): \[java] CloseResource: False positive on mocks
     * [#6435](https://github.com/pmd/pmd/issues/6435): \[java] UnconditionalIfStatement: False negative for negated boolean constant
+    * [#6537](https://github.com/pmd/pmd/issues/6537): \[java] StaticEJBFieldShouldBeFinal: Detect @Stateless/@Stateful/@Singleton/@MessageDriven annotated EJB classes (javax.ejb and jakarta.ejb)
     * [#6547](https://github.com/pmd/pmd/issues/6547): \[java] NonSerializableClass: Report non-serializable generic element/value types of collections and maps
     * [#6742](https://github.com/pmd/pmd/issues/6742): \[java] CloseResource: False positive when a correctly-closed resource is declared without initializer
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
