@@ -145,4 +145,40 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6513 null check separated from instanceof by a &amp;&amp; chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x, Object y) {
+        if (x != null && y != null && x instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check separated from !(instanceof) by a || chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x, Object y) {
+        if (x == null || y == null || !(x instanceof String)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null checks on unrelated subjects in the chain are not reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object s2, Object obj) {
+        if (obj != null && s2 != null && s instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

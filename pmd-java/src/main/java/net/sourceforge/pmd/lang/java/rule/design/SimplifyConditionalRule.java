@@ -15,6 +15,7 @@ import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isNullChe
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.StablePathMatcher;
 
@@ -35,22 +36,29 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
                 return null;
             }
 
-            ASTExpression nullCheckExpr;
+            BinaryOp chainOp;
             boolean negated;
+            ASTExpression sibling;
             if (isInfixExprWithOperator(node.getParent(), CONDITIONAL_AND)) {
-                // a != null && a instanceof T
+                // a != null && ... && a instanceof T
+                chainOp = CONDITIONAL_AND;
                 negated = false;
-                nullCheckExpr = getOtherOperandIfInInfixExpr(node);
+                sibling = getOtherOperandIfInInfixExpr(node);
             } else if (isBooleanNegation(node.getParent())
                 && isInfixExprWithOperator(node.getParent().getParent(), CONDITIONAL_OR)) {
-                // a == null || a instanceof T
+                // a == null || ... || !(a instanceof T)
+                chainOp = CONDITIONAL_OR;
                 negated = true;
-                nullCheckExpr = getOtherOperandIfInInfixExpr(node.getParent());
+                sibling = getOtherOperandIfInInfixExpr(node.getParent());
             } else {
                 return null;
             }
 
-            if (!isNullCheck(nullCheckExpr, instanceOfSubject)) {
+            // The null check and the instanceof might be separated by other
+            // conditions in the same short-circuit chain, so look through the
+            // whole sibling chain instead of only the directly adjacent operand.
+            ASTExpression nullCheckExpr = findNullCheckInChain(sibling, chainOp, instanceOfSubject);
+            if (nullCheckExpr == null) {
                 return null;
             }
 
@@ -59,5 +67,25 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
             }
         }
         return null;
+    }
+
+    /**
+     * Searches the given expression (and any same-operator short-circuit chain
+     * nested within it) for a null check on the provided subject. This handles
+     * cases where the null check is not directly adjacent to the instanceof,
+     * e.g. {@code a != null && other && a instanceof T}.
+     */
+    private static ASTExpression findNullCheckInChain(ASTExpression expr, BinaryOp chainOp, StablePathMatcher subject) {
+        if (expr == null) {
+            return null;
+        }
+        if (isInfixExprWithOperator(expr, chainOp)) {
+            ASTExpression found = findNullCheckInChain(((ASTInfixExpression) expr).getLeftOperand(), chainOp, subject);
+            if (found != null) {
+                return found;
+            }
+            return findNullCheckInChain(((ASTInfixExpression) expr).getRightOperand(), chainOp, subject);
+        }
+        return isNullCheck(expr, subject) ? expr : null;
     }
 }
