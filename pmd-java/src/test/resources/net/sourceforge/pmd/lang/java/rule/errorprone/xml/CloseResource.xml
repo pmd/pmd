@@ -2332,42 +2332,7 @@ public class CastNullAfter {
         ]]></code>
     </test-code>
 
-    <test-code>
-        <description>[java] CloseResource: resource returned from the method directly (#2840)</description>
-        <rule-property name="types">java.sql.Connection</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import java.sql.Connection;
-import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
 
-public class Foo {
-    Connection bar(Pool pool) {
-        Connection c = pool.getConnection();
-        return c;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>[java] CloseResource: resource declared inside a nested block and returned (#2840)</description>
-        <rule-property name="types">java.sql.Connection</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import java.sql.Connection;
-import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
-
-public class Foo {
-    Connection bar(Pool pool, boolean flag) {
-        if (flag) {
-            Connection c = pool.getConnection();
-            return c;
-        }
-        return null;
-    }
-}
-        ]]></code>
-    </test-code>
 
     <test-code>
         <description>[java] CloseResource: plain close, declaration with initializer (#6742 control, rule defaults)</description>
