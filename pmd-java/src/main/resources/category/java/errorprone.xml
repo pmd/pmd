@@ -1127,8 +1127,16 @@ just remove "AutoCloseable" from the types.
 The property `allowedResourceMethodPatterns` can be used to specify method invocation patterns that return
 resources which are managed externally and don't need to be closed by the caller. This is useful for
 servlet-related streams like `HttpServletRequest.getReader()` or `HttpServletResponse.getWriter()`,
-which are managed by the servlet container. The patterns use InvocationMatcher syntax
-(e.g., `javax.servlet.ServletRequest#getReader()`).
+which are managed by the servlet container, and for mocking frameworks, whose mocks are not real
+resources even when the mocked type implements `java.lang.AutoCloseable`. The patterns use
+InvocationMatcher syntax (e.g., `javax.servlet.ServletRequest#getReader()`).
+
+The defaults cover the servlet API and Mockito's `mock()` and `spy()`. Mocks created by other frameworks
+can be allowed by adding their factory methods, for example `org.easymock.EasyMock#createMock(_*)`,
+`org.jmock.Mockery#mock(_*)` or `mockit.Mocked#new(_*)`.
+
+Note that `Mockito.mockStatic()` is intentionally not among the defaults: it returns a `MockedStatic`,
+which does have to be closed, so a violation there is a true positive.
         </description>
         <priority>3</priority>
         <example>

@@ -2371,4 +2371,59 @@ public class SplitDeclAfter {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#2840 [java] CloseResource: False positive on mocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Closeable;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+interface MockRequest extends Closeable {
+    int execute(String request, String body);
+}
+
+class MockTest {
+    @Test
+    void testMock() {
+        MockRequest mock = Mockito.mock(MockRequest.class);
+        Mockito.when(mock.execute("foo", "bar")).thenReturn(200);
+
+        Assertions.assertEquals(200, mock.execute("foo", "bar"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2840 Mockito spy of a closeable type should not be reported either</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Closeable;
+import java.io.IOException;
+import org.mockito.Mockito;
+
+class SpyTest {
+    void test(Closeable real) {
+        Closeable spy = Mockito.spy(real);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2840 Mockito.mockStatic returns a MockedStatic and must still be reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+class StaticMockTest {
+    void test() {
+        MockedStatic<Integer> mocked = Mockito.mockStatic(Integer.class);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
