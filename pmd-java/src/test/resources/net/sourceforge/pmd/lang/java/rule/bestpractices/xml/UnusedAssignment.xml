@@ -2073,7 +2073,7 @@ public class Foo {
 
     public int visit(int i) {
         int x = c ? foo(i++) : 17;
-        return i;
+        return i + x;
     }
 }
         ]]></code>
