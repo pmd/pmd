@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
@@ -109,5 +110,11 @@ public final class NodeFindingUtil {
         });
     }
 
+    public static boolean nodeCoversLocation(Node node, FileLocation loc) {
+        FileLocation nodeLoc = node.getTextDocument().toLocation(node.getTextRegion());
+
+        return nodeLoc.getStartPos().compareTo(loc.getStartPos()) <= 0
+               && nodeLoc.getEndPos().compareTo(loc.getEndPos()) >= 0;
+    }
 
 }

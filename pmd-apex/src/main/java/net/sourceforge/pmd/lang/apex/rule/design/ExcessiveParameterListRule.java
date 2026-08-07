@@ -30,12 +30,12 @@ public class ExcessiveParameterListRule extends AbstractCounterCheckRule<ASTMeth
     protected FileLocation getReportLocation(ASTMethod node) {
         ApexNode<?> lastParameter = node.children(ASTParameter.class).last();
         if (lastParameter == null) {
-            lastParameter = node;
+            return node.getReportLocation();
         }
-        TextRange2d textRange = TextRange2d.range2d(node.getBeginLine(), node.getBeginColumn(),
-                lastParameter.getEndLine(), lastParameter.getEndColumn());
-
-        return FileLocation.range(node.getAstInfo().getTextDocument().getFileId(), textRange);
+        return FileLocation.range(node.getTextDocument().getFileId(),
+            TextRange2d.range2d(
+                node.getReportLocation().getStartPos(),
+                lastParameter.getReportLocation().getEndPos()));
     }
 
     @Override

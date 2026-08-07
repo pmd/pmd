@@ -66,16 +66,17 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
     }
 
     @Override
-    public Object visitApexNode(ApexNode<?> node, Object data) {
+    public Object visitApexNode(ApexNode<?> genericNode, Object data) {
         @SuppressWarnings("unchecked")
-        T t = (T) node;
+        T node = (T) genericNode;
         // since we only visit this node, it's ok
 
-        if (!isIgnored(t)) {
-            int metric = getMetric(t);
+        if (!isIgnored(node)) {
+            int metric = getMetric(node);
             int limit = getProperty(reportLevel);
             if (metric >= limit) {
-                asCtx(data).addViolationWithPosition(t, t.getAstInfo(), getReportLocation(t), getMessage(), getViolationParameters(t, metric, limit));
+                asCtx(data).at(node.atLocation(getReportLocation(node)))
+                           .reportWithArgs(getViolationParameters(node, metric, limit));
             }
         }
 
