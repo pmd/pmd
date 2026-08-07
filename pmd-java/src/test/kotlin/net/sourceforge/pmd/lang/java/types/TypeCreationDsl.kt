@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot
 import net.sourceforge.pmd.lang.java.symbols.internal.FakeSymAnnot
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside
 import net.sourceforge.pmd.lang.java.types.TypeOps.isSameType
-import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint
 import kotlin.reflect.KClass
 
 

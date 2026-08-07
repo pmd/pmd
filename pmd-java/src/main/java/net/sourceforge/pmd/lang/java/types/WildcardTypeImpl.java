@@ -12,7 +12,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 
 
 final class WildcardTypeImpl implements JWildcardType {

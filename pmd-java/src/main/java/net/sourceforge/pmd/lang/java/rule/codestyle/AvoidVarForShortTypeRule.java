@@ -17,8 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.prettyprint.PrettyPrintVisitor;
-import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrinter;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -87,7 +86,7 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
 
     }
 
-    static class VisitState extends TypePrettyPrinter {
+    static class VisitState extends TypePrettyPrint.TypePrettyPrinter {
         final int limitLength;
         final List<String> currentClassDeclarationCanonicalPrefixes;
 
@@ -125,7 +124,7 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
         }
     }
 
-    static class Visitor extends PrettyPrintVisitor<VisitState> {
+    static class Visitor extends TypePrettyPrint.PrettyPrintVisitor<VisitState> {
         static final Visitor INSTANCE = new Visitor();
 
         @Override

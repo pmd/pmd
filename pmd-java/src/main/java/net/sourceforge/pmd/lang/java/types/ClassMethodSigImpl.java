@@ -18,7 +18,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
-import net.sourceforge.pmd.lang.java.types.prettyprint.TypePrettyPrint;
 
 class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
 
