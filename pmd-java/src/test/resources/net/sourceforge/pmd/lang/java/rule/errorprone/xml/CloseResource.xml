@@ -2331,4 +2331,44 @@ public class CastNullAfter {
 }
         ]]></code>
     </test-code>
+
+
+
+    <test-code>
+        <description>[java] CloseResource: plain close, declaration with initializer (#6742 control, rule defaults)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclBefore {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: plain close, split declaration and assignment (#6742)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclAfter {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout;
+        oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
