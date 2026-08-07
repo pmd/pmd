@@ -3581,7 +3581,7 @@ as an in-place mutation, or forgetting to handle a critical validation result, e
 By enforcing that the returned object is assigned to a variable, passed to another method, or explicitly handled,
 this rule prevents silent logic failures.
 
-See {% rule "UnusedAssignment" %} if you think assigning to a variable isn't enough.
+See {% rule "java/bestpractices/UnusedAssignment" %} if you think assigning to a variable isn't enough.
 
 This rule replaces the old rules {% rule CheckSkipResult %} and {% rule UselessPureMethodCall %}.
         </description>
