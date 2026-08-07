@@ -138,11 +138,11 @@ public class Foo {
 import java.math.*;
 public class Foo {
     public void foo() {
-        BigInteger bi = new BigInteger(5);
-        bar(bi.add(new BigInteger(5)));
+        BigInteger bi = new BigInteger("5");
+        bar(bi.add(new BigInteger("5")));
     }
 
-    private void bar(BigInteger bi);
+    private void bar(BigInteger bi) {};
 }
         ]]></code>
     </test-code>
