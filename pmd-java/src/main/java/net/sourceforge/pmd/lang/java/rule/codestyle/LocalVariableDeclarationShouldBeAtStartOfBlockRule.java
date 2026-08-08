@@ -42,27 +42,23 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
             return data;
         }
 
-        boolean declarationContainsInitialization = containsInitialization(declaration);
+        boolean declarationIsAtStartOfBlock = isAtStartOfBlock(declaration);
 
-        if (!isAtStartOfBlock(declaration) || declarationContainsInitialization) {
-            JavaNode child = declaration.getFirstChild();
-            ASTVariableId firstFlaggedVarID = null;
+        JavaNode child = declaration.getFirstChild();
 
-            while (child != null) {
-                if (child instanceof ASTVariableDeclarator) {
-                    ASTVariableDeclarator castedChild = (ASTVariableDeclarator) child;
-                    if (!declarationContainsInitialization || castedChild.hasInitializer()) {
-                        firstFlaggedVarID = castedChild.getVarId();
-                        break;
-                    }
+        while (child != null) {
+            if (child instanceof ASTVariableDeclarator) {
+                ASTVariableDeclarator castedChild = (ASTVariableDeclarator) child;
+                if (castedChild.hasInitializer()) {
+                    String childName = castedChild.getVarId().getName();
+                    asCtx(data).addViolationWithMessage(castedChild, "Local variable `" + childName + "` is declared with initialization");
                 }
-                child = child.getNextSibling();
+                if (!declarationIsAtStartOfBlock) {
+                    String childName = castedChild.getVarId().getName();
+                    asCtx(data).addViolationWithMessage(castedChild, "Local variable `" + childName + "` is not declared at start of block");
+                }
             }
-
-            if (firstFlaggedVarID == null) { // should never be null but just in case
-                return data;
-            }
-            asCtx(data).addViolation(declaration, firstFlaggedVarID.getName());
+            child = child.getNextSibling();
         }
 
         return data;
@@ -72,22 +68,6 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         // this will stop working if a distinct scope can exist inside a new type of statement (not braces or case of switch)
         return !(declaration.getParent() instanceof ASTBlock
                 || declaration.getParent() instanceof ASTSwitchFallthroughBranch);
-    }
-
-    /*
-    Whether any variables in the declaration are initialized
-     */
-    private boolean containsInitialization(ASTLocalVariableDeclaration declaration) {
-        for (JavaNode nthChild: declaration.children()) {
-            if (nthChild instanceof ASTVariableDeclarator) {
-                ASTVariableDeclarator declarator = (ASTVariableDeclarator) nthChild;
-
-                if (declarator.getInitializer() != null) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private boolean isAtStartOfBlock(ASTLocalVariableDeclaration declaration) {
