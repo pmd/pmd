@@ -1,3 +1,4 @@
+xml
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
@@ -131,7 +132,7 @@ public class Foo {
     private static List<Object> buz = null;
     private static List<Object> bar() {
         if (buz == null) {
-            buz = Collections.<Object> emptyList();
+            buz = Collections.emptyList();
         }
         return buz;
     }
@@ -201,19 +202,20 @@ public class Foo {
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 class Tester {
-    private static List buz;
-    public static List bar() {
-        if (true) { // the first warning (wrong)
-            if (buz == null) // the second warning (correct)
-                buz = new ArrayList();
+    private static List<Object> buz;
+    public static List<Object> bar() {
+        if (true) {
+            if (buz == null)
+                buz = new ArrayList<>();
         }
         return buz;
     }
 }
-]]></code>
+        ]]></code>
     </test-code>
-<test-code>
-        <description>#6780 non-static getInstance is flagged by default (checkNonStaticMethods=true)</description>
+
+    <test-code>
+        <description>#6780 non-static getInstance is flagged by default</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Singleton {
@@ -230,9 +232,9 @@ public class Singleton {
     </test-code>
 
     <test-code>
-        <description>#6780 non-static getInstance is NOT flagged when checkNonStaticMethods=false</description>
+        <description>#6780 checkNonStaticMethods is deprecated and ignored - non-static getInstance is still flagged even when set to false</description>
         <rule-property name="checkNonStaticMethods">false</rule-property>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Singleton {
     private static Singleton instance;
@@ -246,4 +248,5 @@ public class Singleton {
 }
         ]]></code>
     </test-code>
+
 </test-data>
