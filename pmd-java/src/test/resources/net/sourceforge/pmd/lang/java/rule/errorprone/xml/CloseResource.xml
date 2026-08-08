@@ -2397,22 +2397,6 @@ class MockTest {
     </test-code>
 
     <test-code>
-        <description>#2840 Mockito spy of a closeable type should not be reported either</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-import java.io.Closeable;
-import java.io.IOException;
-import org.mockito.Mockito;
-
-class SpyTest {
-    void test(Closeable real) {
-        Closeable spy = Mockito.spy(real);
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>#2840 Mockito.mockStatic returns a MockedStatic and must still be reported</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

@@ -1131,12 +1131,14 @@ which are managed by the servlet container, and for mocking frameworks, whose mo
 resources even when the mocked type implements `java.lang.AutoCloseable`. The patterns use
 InvocationMatcher syntax (e.g., `javax.servlet.ServletRequest#getReader()`).
 
-The defaults cover the servlet API and Mockito's `mock()` and `spy()`. Mocks created by other frameworks
+The defaults cover the servlet API and Mockito's `mock()`. Mocks created by other frameworks
 can be allowed by adding their factory methods, for example `org.easymock.EasyMock#createMock(_*)`,
 `org.jmock.Mockery#mock(_*)` or `mockit.Mocked#new(_*)`.
 
-Note that `Mockito.mockStatic()` is intentionally not among the defaults: it returns a `MockedStatic`,
-which does have to be closed, so a violation there is a true positive.
+Note that `Mockito.spy()` and `Mockito.mockStatic()` are intentionally not among the defaults.
+A spy calls through to the real object by default, so either the spy or the object it wraps still
+has to be closed; `mockStatic()` returns a `MockedStatic`, which has to be closed as well. A violation
+in either case is a true positive.
         </description>
         <priority>3</priority>
         <example>
