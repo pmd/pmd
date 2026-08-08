@@ -31,16 +31,17 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR = booleanProperty(
             "checkNonStaticMethods")
-                    .desc("Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.")
+                    .desc("deprecated! This property is ignored and has no effect - non-static methods are "
+                            + "always checked now (see https://github.com/pmd/pmd/issues/6780). This property "
+                            + "will be removed in PMD 8.0.0.")
                     .defaultValue(true).build();
     private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_FIELDS_DESCRIPTOR = booleanProperty(
             "checkNonStaticFields")
-                    .desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.")
+                    .desc("Check for non-static fields.")
                     .defaultValue(false).build();
 
     private Set<String> fields = new HashSet<>();
 
-    private boolean checkNonStaticMethods = true;
     private boolean checkNonStaticFields = true;
 
     public NonThreadSafeSingletonRule() {
@@ -53,7 +54,6 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
     @Override
     public void start(RuleContext ctx) {
         fields.clear();
-        checkNonStaticMethods = getProperty(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
         checkNonStaticFields = getProperty(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
     }
 
@@ -71,8 +71,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (!checkNonStaticMethods && !node.hasModifiers(JModifier.STATIC)
-                || node.hasModifiers(JModifier.SYNCHRONIZED)) {
+        if (node.hasModifiers(JModifier.SYNCHRONIZED)) {
             return data;
         }
 
