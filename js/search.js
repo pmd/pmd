@@ -4128,7 +4128,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "No Class Attribute",
   "url": "pmd_rules_jsp_bestpractices.html#noclassattribute",
-  "summary": "Do not use an attribute called 'class'. Use &quot;styleclass&quot; for CSS styles."
+  "summary": "Do not use an attribute called 'class'. Use &quot;styleclass&quot; for CSS styles. The &quot;class&quot; attribute..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/jsp/bestpractices.md",
