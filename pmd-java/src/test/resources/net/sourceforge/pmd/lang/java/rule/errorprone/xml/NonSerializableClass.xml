@@ -423,4 +423,18 @@ class Bar<T extends NotSerializable> implements Serializable {
 class NotSerializable {}
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Bare Iterable is not a collection that holds its elements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Serializable;
+import java.util.Iterator;
+class Foo implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private Iterable<NotSerializable> generator;
+}
+class NotSerializable {}
+]]></code>
+    </test-code>
 </test-data>

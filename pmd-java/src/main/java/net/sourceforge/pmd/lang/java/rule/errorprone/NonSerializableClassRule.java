@@ -10,6 +10,7 @@ import java.io.Externalizable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -182,8 +183,8 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * If the given type is a parameterized collection or map (more generally, an
-     * {@link Iterable} or {@link Map}), checks whether any of its concrete class
+     * If the given type is a parameterized collection or map (a
+     * {@link Collection} or {@link Map}), checks whether any of its concrete class
      * type arguments is non-serializable. The container type itself might be
      * serializable (e.g. {@code ArrayList}), while its elements/values are not,
      * which would still make the field non-serializable in practice.
@@ -197,7 +198,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
             return false;
         }
         JClassType classType = (JClassType) typeMirror;
-        if (!TypeTestUtil.isA(Iterable.class, classType) && !TypeTestUtil.isA(Map.class, classType)) {
+        if (!TypeTestUtil.isA(Collection.class, classType) && !TypeTestUtil.isA(Map.class, classType)) {
             return false;
         }
         for (JTypeMirror typeArg : classType.getTypeArgs()) {
