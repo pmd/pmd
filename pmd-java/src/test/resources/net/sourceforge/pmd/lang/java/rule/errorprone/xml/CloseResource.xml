@@ -2349,8 +2349,81 @@ public class Foo {
         try {
         } catch (Exception e) {
         } finally {
-            // a lambda has the same effect
             closeConnection(c);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: the called method closes another resource, not the one passed to it</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    void closeSecondArg(Connection c, Connection other) {
+        other.close();
+    }
+
+    void bar(Pool pool, Connection other) {
+        Connection c = pool.getConnection();
+        try {
+        } catch (Exception e) {
+        } finally {
+            closeSecondArg(c, other);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: False positive with resource being closed in a method of a nested class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    static class Helper {
+        void closeConnection(Connection c) {
+            c.close();
+        }
+    }
+
+    void bar(Pool pool) {
+        Connection c = pool.getConnection();
+        Helper helper = new Helper();
+        try {
+        } catch (Exception e) {
+        } finally {
+            helper.closeConnection(c);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: False positive with resource being closed in a lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import java.util.function.Consumer;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    void bar(Pool pool) {
+        Connection c = pool.getConnection();
+        Consumer<Connection> closeConnection = conn -> conn.close();
+        try {
+        } catch (Exception e) {
+        } finally {
+            closeConnection.accept(c);
         }
     }
 }
