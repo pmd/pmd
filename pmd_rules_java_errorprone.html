@@ -3334,8 +3334,18 @@ just remove "AutoCloseable" from the types.</p>
 <p>The property <code class="language-plaintext highlighter-rouge">allowedResourceMethodPatterns</code> can be used to specify method invocation patterns that return
 resources which are managed externally and don’t need to be closed by the caller. This is useful for
 servlet-related streams like <code class="language-plaintext highlighter-rouge">HttpServletRequest.getReader()</code> or <code class="language-plaintext highlighter-rouge">HttpServletResponse.getWriter()</code>,
-which are managed by the servlet container. The patterns use InvocationMatcher syntax
-(e.g., <code class="language-plaintext highlighter-rouge">javax.servlet.ServletRequest#getReader()</code>).</p>
+which are managed by the servlet container, and for mocking frameworks, whose mocks are not real
+resources even when the mocked type implements <code class="language-plaintext highlighter-rouge">java.lang.AutoCloseable</code>. The patterns use
+InvocationMatcher syntax (e.g., <code class="language-plaintext highlighter-rouge">javax.servlet.ServletRequest#getReader()</code>).</p>
+
+<p>The defaults cover the servlet API and Mockito’s <code class="language-plaintext highlighter-rouge">mock()</code>. Mocks created by other frameworks
+can be allowed by adding their factory methods, for example <code class="language-plaintext highlighter-rouge">org.easymock.EasyMock#createMock(_*)</code>,
+<code class="language-plaintext highlighter-rouge">org.jmock.Mockery#mock(_*)</code> or <code class="language-plaintext highlighter-rouge">mockit.Mocked#new(_*)</code>.</p>
+
+<p>Note that <code class="language-plaintext highlighter-rouge">Mockito.spy()</code> and <code class="language-plaintext highlighter-rouge">Mockito.mockStatic()</code> are intentionally not among the defaults.
+A spy calls through to the real object by default, so either the spy or the object it wraps still
+has to be closed; <code class="language-plaintext highlighter-rouge">mockStatic()</code> returns a <code class="language-plaintext highlighter-rouge">MockedStatic</code>, which has to be closed as well. A violation
+in either case is a true positive.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CloseResourceRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule</a></p>
 
@@ -3400,7 +3410,7 @@ which are managed by the servlet container. The patterns use InvocationMatcher s
     </tr>
     <tr>
       <td>allowedResourceMethodPatterns</td>
-      <td>javax.servlet.ServletRequest#getReader() , javax.servlet.ServletResponse#getWriter() , javax.servlet.ServletResponse#getOutputStream() , javax.servlet.http.HttpServletRequest#getReader() , javax.servlet.http.HttpServletResponse#getWriter() , javax.servlet.http.HttpServletResponse#getOutputStream() , jakarta.servlet.ServletRequest#getReader() , jakarta.servlet.ServletResponse#getWriter() , jakarta.servlet.ServletResponse#getOutputStream() , jakarta.servlet.http.HttpServletRequest#getReader() , jakarta.servlet.http.HttpServletResponse#getWriter() , jakarta.servlet.http.HttpServletResponse#getOutputStream()</td>
+      <td>javax.servlet.ServletRequest#getReader() , javax.servlet.ServletResponse#getWriter() , javax.servlet.ServletResponse#getOutputStream() , javax.servlet.http.HttpServletRequest#getReader() , javax.servlet.http.HttpServletResponse#getWriter() , javax.servlet.http.HttpServletResponse#getOutputStream() , jakarta.servlet.ServletRequest#getReader() , jakarta.servlet.ServletResponse#getWriter() , jakarta.servlet.ServletResponse#getOutputStream() , jakarta.servlet.http.HttpServletRequest#getReader() , jakarta.servlet.http.HttpServletResponse#getWriter() , jakarta.servlet.http.HttpServletResponse#getOutputStream() , org.mockito.Mockito#mock(_*)</td>
       <td>Method invocation patterns that return resources managed externally (InvocationMatcher syntax)</td>
     </tr>
     <tr>
@@ -3422,7 +3432,7 @@ which are managed by the servlet container. The patterns use InvocationMatcher s
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"types"</span> <span class="na">value=</span><span class="s">"java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeAsDefaultTarget"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceTypes"</span> <span class="na">value=</span><span class="s">"java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceMethodPatterns"</span> <span class="na">value=</span><span class="s">"javax.servlet.ServletRequest#getReader(),javax.servlet.ServletResponse#getWriter(),javax.servlet.ServletResponse#getOutputStream(),javax.servlet.http.HttpServletRequest#getReader(),javax.servlet.http.HttpServletResponse#getWriter(),javax.servlet.http.HttpServletResponse#getOutputStream(),jakarta.servlet.ServletRequest#getReader(),jakarta.servlet.ServletResponse#getWriter(),jakarta.servlet.ServletResponse#getOutputStream(),jakarta.servlet.http.HttpServletRequest#getReader(),jakarta.servlet.http.HttpServletResponse#getWriter(),jakarta.servlet.http.HttpServletResponse#getOutputStream()"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceMethodPatterns"</span> <span class="na">value=</span><span class="s">"javax.servlet.ServletRequest#getReader(),javax.servlet.ServletResponse#getWriter(),javax.servlet.ServletResponse#getOutputStream(),javax.servlet.http.HttpServletRequest#getReader(),javax.servlet.http.HttpServletResponse#getWriter(),javax.servlet.http.HttpServletResponse#getOutputStream(),jakarta.servlet.ServletRequest#getReader(),jakarta.servlet.ServletResponse#getWriter(),jakarta.servlet.ServletResponse#getOutputStream(),jakarta.servlet.http.HttpServletRequest#getReader(),jakarta.servlet.http.HttpServletResponse#getWriter(),jakarta.servlet.http.HttpServletResponse#getOutputStream(),org.mockito.Mockito#mock(_*)"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeNotInFinally"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
