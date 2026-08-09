@@ -13,8 +13,10 @@ This is a minor release.
     * [Updated Apex Support](#updated-apex-support)
     * [Kotlin type-aware analysis](#kotlin-type-aware-analysis)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
     * [Renamed Rules](#renamed-rules)
     * [Changed Rules](#changed-rules)
+    * [Deprecated Rules](#deprecated-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
@@ -36,6 +38,11 @@ Resolved type names, return types, and annotation FQNs are available through
 Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
 
 ### 🌟️ New and Changed Rules
+#### New Rules
+* The new java rule [`UnusedReturnValue`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_errorprone.html#unusedreturnvalue) finds method calls whose result is not used,
+  although ignoring the result of these method calls is likely a mistake.
+  The rule is referenced in the quickstart.xml ruleset for Java.
+
 #### Renamed Rules
 * The rule [`InstantiableUtilityClass`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_design.html#instantiableutilityclass) (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
   The old name still works but is deprecated.
@@ -47,6 +54,13 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
   be configured (via `publicMethodCommentRequirement` and `protectedMethodCommentRequirement`). The new property
   defaults to `Ignored`, so existing rule configurations are unaffected.
   This was implemented in [#6880](https://github.com/pmd/pmd/pull/6880).
+
+#### Deprecated Rules
+* The java rule [`CheckSkipResult`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_errorprone.html#checkskipresult) has been deprecated for removal
+  in favor of the new rule [`UnusedReturnValue`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_errorprone.html#unusedreturnvalue).
+* The java rule [`UselessPureMethodCall`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_errorprone.html#uselesspuremethodcall) has been deprecated for removal
+  in favor of the new rule [`UnusedReturnValue`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_errorprone.html#unusedreturnvalue).
+
 
 ### 🐛️ Fixed Issues
 * apex

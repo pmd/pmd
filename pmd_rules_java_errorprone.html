@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssertEqualsArgumentOrder, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, IdenticalConditionalBranches, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitJupiterTestNoPrivateModifier, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitch, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnsupportedJdkApiUsage, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader, WrongTestAnnotation">
+<meta name="keywords" content=" Error Prone, AssertEqualsArgumentOrder, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, IdenticalConditionalBranches, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitJupiterTestNoPrivateModifier, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitch, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnsupportedJdkApiUsage, UnusedNullCheckInEquals, UnusedReturnValue, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader, WrongTestAnnotation">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -3145,11 +3145,16 @@ It is likely that you used || instead of &amp;&amp; or vice versa.</p>
 
 <h2 id="checkskipresult">CheckSkipResult</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by <a href="pmd_rules_java_errorprone.html#unusedreturnvalue"><code class="language-plaintext highlighter-rouge">UnusedReturnValue</code></a></p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CheckSkipResultRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.CheckSkipResultRule</a></p>
 
@@ -5880,8 +5885,8 @@ it to another object’s equals() method.</p>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">(</span><span class="nc">String</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
         <span class="nc">String</span> <span class="n">b</span><span class="o">;</span>
-        <span class="c1">// I don't know it method1() can be "null"</span>
-        <span class="c1">// but I know "a" is not null..</span>
+        <span class="c1">// I don't know if method1() can be "null"</span>
+        <span class="c1">// but I know "a" is not null.</span>
         <span class="c1">// I'd better write a.equals(method1())</span>
 
         <span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">!=</span><span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">method1</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">a</span><span class="o">))</span> <span class="o">{</span> <span class="c1">// will trigger the rule</span>
@@ -5912,6 +5917,43 @@ it to another object’s equals() method.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/UnusedNullCheckInEquals"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unusedreturnvalue">UnusedReturnValue</h2>
+
+<p><strong>Since:</strong> PMD 7.27.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>The UnusedReturnValue rule ensures that developers do not ignore the return values of methods where doing so value would likely be a bug.</p>
+
+<p>This could be because you are treating a mutation-by-copy operation (like String.concat() or BigDecimal.add())
+as an in-place mutation, or forgetting to handle a critical validation result, error code, or stream.
+By enforcing that the returned object is assigned to a variable, passed to another method, or explicitly handled,
+this rule prevents silent logic failures.</p>
+
+<p>See <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a> if you think assigning to a variable isn’t enough.</p>
+
+<p>This rule replaces the old rules <a href="pmd_rules_java_errorprone.html#checkskipresult"><code class="language-plaintext highlighter-rouge">CheckSkipResult</code></a> and <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UnusedReturnValueRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.UnusedReturnValueRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">bar</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@CheckReturnValue</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="mi">42</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/UnusedReturnValue"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="usecorrectexceptionlogging">UseCorrectExceptionLogging</h2>
@@ -6018,6 +6060,8 @@ This rule has been replaced by <a href="pmd_rules_java_errorprone.html#uselesspu
 
 <h2 id="uselesspuremethodcall">UselessPureMethodCall</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 7.17.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -6026,6 +6070,9 @@ This rule has been replaced by <a href="pmd_rules_java_errorprone.html#uselesspu
 side effects. Therefore, ignoring the result of such a method call is likely a mistake.</p>
 
 <p>Either the method call can be removed or the result should be used.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by <a href="pmd_rules_java_errorprone.html#unusedreturnvalue"><code class="language-plaintext highlighter-rouge">UnusedReturnValue</code></a></p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UselessPureMethodCallRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.UselessPureMethodCallRule</a></p>
 
@@ -6204,7 +6251,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 8, 2026 <br />
+             Site last generated: Aug 9, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -3708,6 +3708,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",
+  "title": "UnusedReturnValue (Java, Error Prone)",
+  "tags": "",
+  "keywords": "Unused Return Value",
+  "url": "pmd_rules_java_errorprone.html#unusedreturnvalue",
+  "summary": "The UnusedReturnValue rule ensures that developers do not ignore the return values of methods where..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/errorprone.md",
   "title": "UseCorrectExceptionLogging (Java, Error Prone)",
   "tags": "",
   "keywords": "Use Correct Exception Logging",

@@ -2074,6 +2074,13 @@ Resolved type names, return types, and annotation FQNs are available through
 <p>Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.</p>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new java rule <a href="pmd_rules_java_errorprone.html#unusedreturnvalue"><code class="language-plaintext highlighter-rouge">UnusedReturnValue</code></a> finds method calls whose result is not used,
+although ignoring the result of these method calls is likely a mistake.
+The rule is referenced in the quickstart.xml ruleset for Java.</li>
+</ul>
+
 <h4 id="renamed-rules">Renamed Rules</h4>
 <ul>
   <li>The rule <a href="pmd_rules_java_design.html#instantiableutilityclass"><code class="language-plaintext highlighter-rouge">InstantiableUtilityClass</code></a> (Java Design) was renamed from <code class="language-plaintext highlighter-rouge">UseUtilityClass</code> to better reflect the problem.
@@ -2088,6 +2095,14 @@ unwanted) for package-private methods and constructors. Previously, only <code c
 be configured (via <code class="language-plaintext highlighter-rouge">publicMethodCommentRequirement</code> and <code class="language-plaintext highlighter-rouge">protectedMethodCommentRequirement</code>). The new property
 defaults to <code class="language-plaintext highlighter-rouge">Ignored</code>, so existing rule configurations are unaffected.
 This was implemented in <a href="https://github.com/pmd/pmd/pull/6880">#6880</a>.</li>
+</ul>
+
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+<ul>
+  <li>The java rule <a href="pmd_rules_java_errorprone.html#checkskipresult"><code class="language-plaintext highlighter-rouge">CheckSkipResult</code></a> has been deprecated for removal
+in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnvalue"><code class="language-plaintext highlighter-rouge">UnusedReturnValue</code></a>.</li>
+  <li>The java rule <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a> has been deprecated for removal
+in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnvalue"><code class="language-plaintext highlighter-rouge">UnusedReturnValue</code></a>.</li>
 </ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
@@ -2232,7 +2247,7 @@ on Kotlin AST nodes. It’s part of the new Kotlin type-aware analysis.</li>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 8, 2026 <br />
+             Site last generated: Aug 9, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
