@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -89,19 +88,8 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             List<ASTAssignmentExpression> assignments = ifStatement.descendants(ASTAssignmentExpression.class).toList();
             boolean violation = false;
             for (ASTAssignmentExpression assignment : assignments) {
-                if (assignment.ancestors(ASTSynchronizedStatement.class).nonEmpty()) {
-                    continue;
-                }
-
-                ASTAssignableExpr left = assignment.getLeftOperand();
-                if (left instanceof ASTNamedReferenceExpr) {
-                    JVariableSymbol referencedSym = ((ASTNamedReferenceExpr) left).getReferencedSym();
-                    if (referencedSym instanceof JFieldSymbol) {
-                        String name = ((ASTNamedReferenceExpr) left).getName();
-                        if (fields.contains(name)) {
-                            violation = true;
-                        }
-                    }
+                if (fieldWriteName(assignment) != null) {
+                    violation = true;
                 }
             }
             if (violation) {
@@ -113,16 +101,8 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
         //   field = field == null ? new T() : field;
         // which is not an ASTIfStatement and was previously missed.
         for (ASTAssignmentExpression assignment : node.descendants(ASTAssignmentExpression.class).toList()) {
-            if (assignment.ancestors(ASTSynchronizedStatement.class).nonEmpty()) {
-                continue;
-            }
-            ASTAssignableExpr left = assignment.getLeftOperand();
-            if (!(left instanceof ASTNamedReferenceExpr)) {
-                continue;
-            }
-            String fieldName = ((ASTNamedReferenceExpr) left).getName();
-            JVariableSymbol referencedSym = ((ASTNamedReferenceExpr) left).getReferencedSym();
-            if (!(referencedSym instanceof JFieldSymbol) || !fields.contains(fieldName)) {
+            String fieldName = fieldWriteName(assignment);
+            if (fieldName == null) {
                 continue;
             }
             if (!(assignment.getRightOperand() instanceof ASTConditionalExpression)) {
@@ -139,5 +119,28 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             asCtx(data).addViolation(assignment);
         }
         return data;
+    }
+
+
+    /**
+     * Returns the name of the monitored field written by {@code assignment}, or {@code null}
+     * if {@code assignment} is not a non-synchronized write to one of the tracked singleton
+     * fields. Shared by the if-statement and ternary check-then-act detection so both cases
+     * apply identical field-write criteria and cannot drift apart.
+     */
+    private String fieldWriteName(ASTAssignmentExpression assignment) {
+        if (assignment.ancestors(ASTSynchronizedStatement.class).nonEmpty()) {
+            return null;
+        }
+        ASTAssignableExpr left = assignment.getLeftOperand();
+        if (!(left instanceof ASTNamedReferenceExpr)) {
+            return null;
+        }
+        ASTNamedReferenceExpr ref = (ASTNamedReferenceExpr) left;
+        if (!(ref.getReferencedSym() instanceof JFieldSymbol)) {
+            return null;
+        }
+        String name = ref.getName();
+        return fields.contains(name) ? name : null;
     }
 }
