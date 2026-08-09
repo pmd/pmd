@@ -13,7 +13,9 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
  * Reports usages of pure methods where the result is ignored.
  *
  * @since 7.17.0
+ * @deprecated since 7.27.0. Use UnusedReturnValueRule instead.
  */
+@Deprecated
 public class UselessPureMethodCallRule extends AbstractJavaRulechainRule {
 
     public UselessPureMethodCallRule() {
