@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -78,11 +79,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
         List<ASTIfStatement> ifStatements = node.descendants(ASTIfStatement.class).toList();
         for (ASTIfStatement ifStatement : ifStatements) {
-            if (ifStatement.getCondition().descendants(ASTNullLiteral.class).isEmpty()) {
-                continue;
-            }
-            ASTNamedReferenceExpr n = ifStatement.getCondition().descendants(ASTNamedReferenceExpr.class).first();
-            if (n == null || !fields.contains(n.getName())) {
+            if (!isNullCheckOnField(ifStatement.getCondition(), null)) {
                 continue;
             }
             List<ASTAssignmentExpression> assignments = ifStatement.descendants(ASTAssignmentExpression.class).toList();
@@ -109,16 +106,30 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                 continue;
             }
             ASTConditionalExpression ternary = (ASTConditionalExpression) assignment.getRightOperand();
-            if (ternary.getCondition().descendants(ASTNullLiteral.class).isEmpty()) {
-                continue;
-            }
-            ASTNamedReferenceExpr condField = ternary.getCondition().descendants(ASTNamedReferenceExpr.class).first();
-            if (condField == null || !fieldName.equals(condField.getName())) {
+            if (!isNullCheckOnField(ternary.getCondition(), fieldName)) {
                 continue;
             }
             asCtx(data).addViolation(assignment);
         }
         return data;
+    }
+
+
+    /**
+     * Returns whether {@code condition} is a null-check on a tracked singleton field.
+     * If {@code targetField} is non-null, the checked field must equal it (used by the
+     * ternary case, where the same field is both read in the condition and written);
+     * otherwise any tracked field matches (used by the if case, which keeps pmd's
+     * long-standing conservative behavior). Centralizing this lets the if and ternary
+     * cases share identical condition-check logic.
+     */
+    private boolean isNullCheckOnField(ASTExpression condition, String targetField) {
+        if (condition.descendants(ASTNullLiteral.class).isEmpty()) {
+            return false;
+        }
+        ASTNamedReferenceExpr ref = condition.descendants(ASTNamedReferenceExpr.class).first();
+        return ref != null
+                && (targetField != null ? targetField.equals(ref.getName()) : fields.contains(ref.getName()));
     }
 
 
