@@ -333,7 +333,8 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         }
 
         private boolean hasWrongBooleanGetterName() {
-            return (getter != null && (TypeTestUtil.isA(Boolean.class, declaratorId) || TypeTestUtil.isA(Boolean.TYPE, declaratorId)))
+            return getter != null
+                && (TypeTestUtil.isA(Boolean.class, declaratorId) || TypeTestUtil.isA(Boolean.TYPE, declaratorId))
                 && !getter.getName().startsWith("is");
         }
 
