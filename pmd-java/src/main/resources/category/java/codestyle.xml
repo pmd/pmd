@@ -986,10 +986,11 @@ public class Bar {
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock">
         <description>
+**Note**: This rule goes against virtually all Java style guidelines. See {% rule VariableDeclarationUsageDistance %} for an alternative.
+
 This rule reports variables that are declared and initialized on the same line or that are not declared at the start of their block.
 This rule exists in order to make it easy to see the type of any given variable at a glance and not have declarations hidden
 in amongst other code or long initialization assignments.
-**Note**: This rule goes against virtually all Java style guidelines. See {% rule VariableDeclarationUsageDistance %} for an alternative.
 
 It ignores initializations that exist within statement initializers such as for loop, foreach loop and try-with-resources initializers.
 For the purposes of this rule a case in a `switch` statement counts as block.

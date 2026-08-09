@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchFallthroughBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -43,22 +43,19 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
 
         boolean declarationIsAtStartOfBlock = isAtStartOfBlock(declaration);
 
-        JavaNode child = declaration.getFirstChild();
-
-        while (child != null) {
-            if (child instanceof ASTVariableDeclarator) {
-                ASTVariableDeclarator castedChild = (ASTVariableDeclarator) child;
-                if (castedChild.hasInitializer()) {
-                    String childName = castedChild.getVarId().getName();
-                    asCtx(data).addViolationWithMessage(castedChild, "Local variable `" + childName + "` is declared with initialization");
-                }
-                if (!declarationIsAtStartOfBlock) {
-                    String childName = castedChild.getVarId().getName();
-                    asCtx(data).addViolationWithMessage(castedChild, "Local variable `" + childName + "` is not declared at start of block");
-                }
-            }
-            child = child.getNextSibling();
-        }
+        declaration.children(ASTVariableDeclarator.class).forEach(
+                child -> {
+                    if (child.hasInitializer()) {
+                        String childName = child.getVarId().getName();
+                        asCtx(data).addViolationWithMessage(child,
+                                "Local variable `" + childName + "` is declared with initialization");
+                    }
+                    if (!declarationIsAtStartOfBlock) {
+                        String childName = child.getVarId().getName();
+                        asCtx(data).addViolationWithMessage(child,
+                                "Local variable `" + childName + "` is not declared at start of block");
+                    }
+                });
 
         return data;
     }
@@ -71,21 +68,14 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
 
     private boolean isAtStartOfBlock(ASTLocalVariableDeclaration declaration) {
 
-        JavaNode sibling = declaration.getPreviousSibling();
-        while (sibling != null) {
-
-            if (sibling instanceof ASTExplicitConstructorInvocation) {
-                // super or this
-                if (getProperty(REQUIRE_BEFORE_THIS_SUPER)) {
-                    return false;
+        return StreamImpl.precedingSiblings(declaration).all(
+            sibling -> {
+                if (sibling instanceof ASTExplicitConstructorInvocation) {
+                    // super or this
+                    return !getProperty(REQUIRE_BEFORE_THIS_SUPER);
                 }
-            } else if (!(sibling instanceof ASTLocalVariableDeclaration
-                    || sibling instanceof ASTSwitchLabel)) {
-                return false;
+                return sibling instanceof ASTLocalVariableDeclaration || sibling instanceof ASTSwitchLabel;
             }
-
-            sibling = sibling.getPreviousSibling();
-        }
-        return true;
+        );
     }
 }
