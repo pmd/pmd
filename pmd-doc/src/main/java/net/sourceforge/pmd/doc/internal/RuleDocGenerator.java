@@ -336,7 +336,9 @@ public class RuleDocGenerator {
                         .replaceAll("\n+|\r+", " ")
                         .replaceAll("\\|", "\\\\|")
                         .replaceAll("`", "'")
-                        .replaceAll("\\*", "")),
+                        .replaceAll("\\*", "")
+                        .replaceAll("\\[([^\\]]+)\\]\\([^\\)]*\\)", "$1")
+                ),
                 100));
         return EscapeUtils.preserveRuleTagQuotes(htmlEscaped);
     }
