@@ -129,11 +129,9 @@ abstract class IncorporationAction {
                 return checkSubtype(t, s, ctx);
             }
             // eq bounds are so rare we shouldn't care if they're cached
-            if (InternalApiBridge.isSameTypeInInference(t, s)) {
-                return true;
-            }
+            return InternalApiBridge.isSameTypeInInference(t, s)
             // don't fail if one of those is (*unknown*) or (*error*)
-            return isSpecialUnresolved(t) || isSpecialUnresolved(s);
+            || isSpecialUnresolved(t) || isSpecialUnresolved(s);
         }
 
         private static boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {

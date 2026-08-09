@@ -85,11 +85,9 @@ public interface JExecutableSymbol extends JTypeParameterOwnerSymbol {
         if (isStatic()) {
             return false;
         }
-        if (this instanceof JConstructorSymbol) {
-            return !getEnclosingClass().isStatic()
-                && getEnclosingClass().getEnclosingClass() != null;
-        }
-        return true;
+        return !(this instanceof JConstructorSymbol)
+            || (!getEnclosingClass().isStatic()
+                && getEnclosingClass().getEnclosingClass() != null);
     }
 
 
