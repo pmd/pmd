@@ -130,7 +130,7 @@ abstract class IncorporationAction {
             }
             // eq bounds are so rare we shouldn't care if they're cached
             return InternalApiBridge.isSameTypeInInference(t, s)
-            // don't fail if one of those is (*unknown*) or (*error*)
+                // don't fail if one of those is (*unknown*) or (*error*)
                 || isSpecialUnresolved(t) || isSpecialUnresolved(s);
         }
 

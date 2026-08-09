@@ -286,7 +286,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return javaLanguage.hasFirstClassLombokSupport() && (
                 TypeTestUtil.isExactlyA("lombok.val", typeNode)
                 || !onlyVal && TypeTestUtil.isExactlyA("lombok.var", typeNode)
-        );
+            );
     }
 
     /**
