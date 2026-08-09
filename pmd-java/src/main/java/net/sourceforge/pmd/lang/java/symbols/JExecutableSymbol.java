@@ -82,10 +82,10 @@ public interface JExecutableSymbol extends JTypeParameterOwnerSymbol {
      * outer or static class.
      */
     default boolean hasReceiver() {
-        return isStatic()
-            && (!(this instanceof JConstructorSymbol)
+        return !isStatic()
+            && !(this instanceof JConstructorSymbol)
             || (!getEnclosingClass().isStatic()
-                && getEnclosingClass().getEnclosingClass() != null));
+                && getEnclosingClass().getEnclosingClass() != null);
     }
 
 
