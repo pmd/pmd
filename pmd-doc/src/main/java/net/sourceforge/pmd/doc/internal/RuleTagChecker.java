@@ -155,7 +155,7 @@ public class RuleTagChecker {
         }
     }
 
-    private static class ParseException extends RuntimeException {
+    private static final class ParseException extends RuntimeException {
         private ParseException(Path file, int line, Exception cause) {
             super(String.format("File: %s, Line: %d: %s", file.toString(), line, cause.getMessage()), cause);
         }
