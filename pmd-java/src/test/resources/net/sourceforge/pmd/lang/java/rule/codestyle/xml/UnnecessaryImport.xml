@@ -255,6 +255,21 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#6651 False Positive in UnusedImports for Javadoc @link with array type parameter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+
+/**
+ * See {@link Files#createDirectory(Path, FileAttribute[])} for directory creation.
+ */
+public class Test {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Bug 2606609 : False "UnusedImports" positive in package-info.java</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

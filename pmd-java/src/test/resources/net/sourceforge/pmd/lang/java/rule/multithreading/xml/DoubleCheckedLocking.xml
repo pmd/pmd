@@ -212,4 +212,45 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6900: DoubleCheckedLocking with negated selection conditions</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object baz;
+    Object bar() {
+        if (!(baz != null)) { // negated condition should still trigger rule
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                }
+            }
+        }
+        return baz;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6900: DoubleCheckedLocking with nested negated selection conditions</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object baz;
+    Object bar() {
+        if (!(!(baz == null))) { // nested negated condition should still trigger rule
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                }
+            }
+        }
+        return baz;
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

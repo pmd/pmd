@@ -2331,4 +2331,83 @@ public class CastNullAfter {
 }
         ]]></code>
     </test-code>
+
+
+
+    <test-code>
+        <description>[java] CloseResource: plain close, declaration with initializer (#6742 control, rule defaults)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclBefore {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: plain close, split declaration and assignment (#6742)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclAfter {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout;
+        oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2840 [java] CloseResource: False positive on mocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Closeable;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+interface MockRequest extends Closeable {
+    int execute(String request, String body);
+}
+
+class MockTest {
+    @Test
+    void testMock() {
+        MockRequest mock = Mockito.mock(MockRequest.class);
+        Mockito.when(mock.execute("foo", "bar")).thenReturn(200);
+
+        Assertions.assertEquals(200, mock.execute("foo", "bar"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2840 Mockito.mockStatic returns a MockedStatic and must still be reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+class StaticMockTest {
+    void test() {
+        MockedStatic<Integer> mocked = Mockito.mockStatic(Integer.class);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
