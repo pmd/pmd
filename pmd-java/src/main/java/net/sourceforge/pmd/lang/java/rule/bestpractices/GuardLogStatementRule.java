@@ -162,13 +162,34 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
      * }
      * log.debug("..." + expensive());
      * }</pre>
+     *
+     * <p>The guard also covers log statements nested deeper than the guard itself,
+     * as the early exit applies to everything that follows it in the block:
+     *
+     * <pre>{@code
+     * if (!log.isDebugEnabled()) {
+     *     return;
+     * }
+     * for (Object o : os) {
+     *     log.debug("..." + o);
+     * }
+     * }</pre>
      */
     private boolean hasEarlyExitGuard(ASTMethodCall node, String logLevel) {
-        ASTStatement statement = node.ancestors(ASTStatement.class).first();
-        if (statement == null || !(statement.getParent() instanceof ASTBlock)) {
-            return false;
+        for (ASTStatement statement : node.ancestors(ASTStatement.class)) {
+            if (statement.getParent() instanceof ASTBlock
+                    && isGuardedBefore(statement, logLevel)) {
+                return true;
+            }
         }
+        return false;
+    }
 
+    /**
+     * Whether a statement preceding {@code statement} in its enclosing block is a
+     * guard clause for {@code logLevel}.
+     */
+    private boolean isGuardedBefore(ASTStatement statement, String logLevel) {
         for (ASTStatement sibling : statement.getParent().children(ASTStatement.class)) {
             if (sibling == statement) {
                 return false;
@@ -191,13 +212,9 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
                 && ((ASTUnaryExpression) condition).getOperator() == UnaryOp.NEGATION;
     }
 
-    private boolean alwaysExits(ASTStatement statement) {
+    private boolean alwaysExits(@Nullable ASTStatement statement) {
         if (statement instanceof ASTBlock) {
-            ASTStatement last = null;
-            for (ASTStatement child : ((ASTBlock) statement).children(ASTStatement.class)) {
-                last = child;
-            }
-            return last != null && alwaysExits(last);
+            return alwaysExits(statement.children(ASTStatement.class).last());
         }
         return statement instanceof ASTReturnStatement
                 || statement instanceof ASTThrowStatement

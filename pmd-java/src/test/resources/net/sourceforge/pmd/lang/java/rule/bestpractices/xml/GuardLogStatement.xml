@@ -890,4 +890,94 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] guard clause covers a log statement nested in a loop (#1287)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class Foo {
+    private static final Logger LOG = null;
+
+    private void log(Object[] os) {
+        if (!LOG.isDebugEnabled()) {
+            return;
+        }
+        for (Object o : os) {
+            LOG.debug("logging from " + o);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] guard clause covers a log statement nested several blocks deep (#1287)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class Foo {
+    private static final Logger LOG = null;
+
+    private void log(Object[] os, boolean flag) {
+        if (!LOG.isDebugEnabled()) {
+            return;
+        }
+        for (Object o : os) {
+            if (flag) {
+                try {
+                    LOG.debug("logging from " + o);
+                } finally {
+                    System.out.println("done");
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] continue guard inside a loop does not guard a log after the loop (#1287)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class Foo {
+    private static final Logger LOG = null;
+
+    private void log(Object[] os) {
+        for (Object o : os) {
+            if (!LOG.isDebugEnabled()) {
+                continue;
+            }
+        }
+        LOG.debug("logging from " + os.length);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] guard in a sibling block does not guard a later log statement (#1287)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+
+public class Foo {
+    private static final Logger LOG = null;
+
+    private void log(Object o, boolean flag) {
+        if (flag) {
+            if (!LOG.isDebugEnabled()) {
+                return;
+            }
+        }
+        LOG.debug("logging from " + o);
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
