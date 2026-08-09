@@ -178,6 +178,7 @@ public class SomeJNIClass {
         <description>
             Methods that return boolean or Boolean results should be named as predicate statements to denote this.
             I.e., 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc. Avoid the use of the 'get' prefix for these methods.
+            By default, methods returning the Boolean wrapper type are checked as well. This can be disabled with the includeWrappedType property.
         </description>
         <priority>4</priority>
         <properties>
@@ -187,16 +188,17 @@ public class SomeJNIClass {
 //MethodDeclaration
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
-    [ (PrimitiveType[@Kind = 'boolean'] or ClassType[pmd-java:typeIs('java.lang.Boolean')]) and @Override = false() ]
+    [ (PrimitiveType[@Kind = 'boolean'] or ($includeWrappedType and ClassType[pmd-java:typeIs('java.lang.Boolean')])) and @Override = false() ]
 ]]>
                 </value>
             </property>
             <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods" value="false"/>
+            <property name="includeWrappedType" type="Boolean" description="Include methods returning the Boolean wrapper type" value="true"/>
         </properties>
         <example>
             <![CDATA[
 public boolean getFoo();            // bad
-public Boolean getFoo();            // bad
+public Boolean getFoo();            // bad by default
 public boolean isFoo();             // ok
 public Boolean isFoo();             // ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
