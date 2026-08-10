@@ -2089,12 +2089,15 @@ The old name still works but is deprecated.</li>
 
 <h4 id="changed-rules">Changed Rules</h4>
 <ul>
-  <li>The Java rule <a href="https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a>
+  <li>The rule <a href="pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a> (Java Documentation)
 has a new property <code class="language-plaintext highlighter-rouge">packageMethodCommentRequirement</code>. It controls whether Javadoc comments are required (or
 unwanted) for package-private methods and constructors. Previously, only <code class="language-plaintext highlighter-rouge">public</code> and <code class="language-plaintext highlighter-rouge">protected</code> methods could
 be configured (via <code class="language-plaintext highlighter-rouge">publicMethodCommentRequirement</code> and <code class="language-plaintext highlighter-rouge">protectedMethodCommentRequirement</code>). The new property
 defaults to <code class="language-plaintext highlighter-rouge">Ignored</code>, so existing rule configurations are unaffected.
 This was implemented in <a href="https://github.com/pmd/pmd/pull/6880">#6880</a>.</li>
+  <li>The rule <a href="pmd_rules_java_codestyle.html#booleangetmethodname"><code class="language-plaintext highlighter-rouge">BooleanGetMethodName</code></a> (Java Codestyle) has a new property
+<code class="language-plaintext highlighter-rouge">includeWrappedType</code>. If set to true (default), the rule treats Boolean and boolean identical.
+If set to false, the rule follows the bean convention and treats Boolean like any other object.</li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
@@ -2147,6 +2150,7 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6958">#6958</a>: [java] BooleanGetMethodName should have the option to treat boolean wrapper type differently</li>
       <li><a href="https://github.com/pmd/pmd/issues/6274">#6274</a>: [java] UselessParentheses: Treat parentheses around a ternary in the else-branch as clarifying, consistent with the then-branch.</li>
       <li><a href="https://github.com/pmd/pmd/issues/6651">#6651</a>: [java] UnnecessaryImport false-positive when Javadoc {@link} references an array type</li>
       <li><a href="https://github.com/pmd/pmd/issues/6709">#6709</a>: [java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver</li>

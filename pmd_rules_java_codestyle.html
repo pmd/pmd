@@ -2234,19 +2234,20 @@ and increases the maintenance burden.</p>
 <p><strong>Priority:</strong> Medium Low (4)</p>
 
 <p>Methods that return boolean or Boolean results should be named as predicate statements to denote this.
-I.e., ‘isReady()’, ‘hasValues()’, ‘canCommit()’, ‘willFail()’, etc. Avoid the use of the ‘get’ prefix for these methods.</p>
+I.e., ‘isReady()’, ‘hasValues()’, ‘canCommit()’, ‘willFail()’, etc. Avoid the use of the ‘get’ prefix for these methods.
+By default, methods returning the Boolean wrapper type are checked as well. This can be disabled with the includeWrappedType property.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="w">
     </span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Name</span><span class="p">,</span><span class="w"> </span><span class="s1">'get'</span><span class="p">)]</span><span class="w">
     </span><span class="p">[</span><span class="na">@Arity</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$checkParameterizedMethods</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
-    </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Kind</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'boolean'</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Boolean'</span><span class="p">)])</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Override</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="w"> </span><span class="p">(</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Kind</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'boolean'</span><span class="p">]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="p">(</span><span class="nv">$includeWrappedType</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Boolean'</span><span class="p">)]))</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Override</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">getFoo</span><span class="o">();</span>            <span class="c1">// bad</span>
-<span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">getFoo</span><span class="o">();</span>            <span class="c1">// bad</span>
+<span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">getFoo</span><span class="o">();</span>            <span class="c1">// bad if includeWrappedType=true (default)</span>
 <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isFoo</span><span class="o">();</span>             <span class="c1">// ok</span>
 <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">isFoo</span><span class="o">();</span>             <span class="c1">// ok</span>
 <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">getFoo</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">bar</span><span class="o">);</span> <span class="c1">// ok, unless checkParameterizedMethods=true</span>
@@ -2268,6 +2269,11 @@ I.e., ‘isReady()’, ‘hasValues()’, ‘canCommit()’, ‘willFail()’, e
       <td>false</td>
       <td>Check parameterized methods</td>
     </tr>
+    <tr>
+      <td>includeWrappedType</td>
+      <td>true</td>
+      <td>Include methods returning the Boolean wrapper type</td>
+    </tr>
   </tbody>
 </table>
 
@@ -2279,6 +2285,7 @@ I.e., ‘isReady()’, ‘hasValues()’, ‘canCommit()’, ‘willFail()’, e
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/BooleanGetMethodName"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkParameterizedMethods"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"includeWrappedType"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
