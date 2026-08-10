@@ -1351,6 +1351,7 @@ public int getLength(String[] strings) {
   RecordDeclaration |
   ClassDeclaration |
   AnnotationTypeDeclaration |
+  ConstructorDeclaration |
   MethodDeclaration[ @Override=false() ]
 )[@Visibility="protected"]
  ]]>

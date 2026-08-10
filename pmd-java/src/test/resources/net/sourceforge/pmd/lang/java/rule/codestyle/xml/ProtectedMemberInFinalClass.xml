@@ -181,4 +181,16 @@ public final class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Protected constructor is bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public final class Test {
+    protected Test() {}
+    public Test(String s) {}
+}
+        ]]></code>
+    </test-code>
 </test-data>
