@@ -2,10 +2,121 @@
 <test-data
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
 
     <test-code>
-        <description>Collection methods</description>
+        <description>Method annotated with @CheckReturnValue - Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5-5</expected-linenumbers>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Verify violation message</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Result of 'Foo.bar()' is ignored.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Method not annotated with @CheckReturnValue</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Return value is assigned to a variable</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        int x = bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Return value is passed to another function</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.unusedreturnvalue.CheckReturnValue;
+
+public class Foo {
+    public void foo() {
+        qux(bar());
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+
+    private void qux(int x) {}
+}
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Collection methods (from UselessPureMethodCall)</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>8,9,10,11</expected-linenumbers>
         <code><![CDATA[
@@ -25,8 +136,9 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    
     <test-code>
-        <description>Throwable methods (formerly rule AvoidLosingExceptionInformation)</description>
+        <description>Throwable methods (formerly rule AvoidLosingExceptionInformation) (from UselessPureMethodCall)</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>6,7,8,9</expected-linenumbers>
         <code><![CDATA[
@@ -49,7 +161,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#5881 [java] AvoidLosingExceptionInformation does not trigger when inside if-else</description>
+        <description>#5881 [java] AvoidLosingExceptionInformation does not trigger when inside if-else (from UselessPureMethodCall)</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>7,9</expected-linenumbers>
         <code><![CDATA[
@@ -70,7 +182,7 @@ class AvoidLosingExceptionInformation {
     </test-code>
 
     <test-code>
-        <description>String methods</description>
+        <description>String methods (from UselessPureMethodCall)</description>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>5,8,9</expected-linenumbers>
         <code><![CDATA[
@@ -90,7 +202,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>useless operation on BigDecimal</description>
+        <description>useless operation on BigDecimal (from UselessPureMethodCall)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -104,7 +216,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>useless operation on BigInteger</description>
+        <description>useless operation on BigInteger (from UselessPureMethodCall)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -118,7 +230,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>using the result, so OK</description>
+        <description>using the result, so OK (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -132,7 +244,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>using the result in a method call, so OK</description>
+        <description>using the result in a method call, so OK (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -148,7 +260,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>BigInteger obtained from compound method call</description>
+        <description>BigInteger obtained from compound method call (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -165,7 +277,7 @@ public class Bar {
     </test-code>
 
     <test-code>
-        <description>Using generics on List, OK</description>
+        <description>Using generics on List, OK (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -183,7 +295,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>BigInteger in conditional statement</description>
+        <description>BigInteger in conditional statement (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -197,7 +309,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>1702782, Immutable used in comparison</description>
+        <description>1702782, Immutable used in comparison (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -222,7 +334,7 @@ public class RuleViolator {
     </test-code>
 
     <test-code>
-        <description>String calls in expressions</description>
+        <description>String calls in expressions (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -238,7 +350,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>String::getChars is allowed</description>
+        <description>String::getChars is allowed (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -250,7 +362,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>BigInteger calls in expression</description>
+        <description>BigInteger calls in expression (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -266,7 +378,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>2645268, ClassCastException using Annotation on Local Field</description>
+        <description>2645268, ClassCastException using Annotation on Local Field (from UselessPureMethodCall)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.math.*;
@@ -282,7 +394,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] UselessOperationOnImmutable various false negatives with String #4513</description>
+        <description>[java] UselessOperationOnImmutable various false negatives with String #4513 (from UselessPureMethodCall)</description>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>3,6,9</expected-linenumbers>
         <code><![CDATA[
@@ -301,7 +413,7 @@ public class TestCase {
     </test-code>
 
     <test-code>
-        <description>[java] UselessOperationOnImmutable should detect java.time types #5244</description>
+        <description>[java] UselessOperationOnImmutable should detect java.time types #5244 (from UselessPureMethodCall)</description>
         <expected-problems>44</expected-problems>
         <expected-linenumbers>7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,61,66,71,76</expected-linenumbers>
         <code><![CDATA[
@@ -388,7 +500,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>[java] UselessOperationOnImmutable should detect java.time types #5244 - Duration, Period</description>
+        <description>[java] UselessOperationOnImmutable should detect java.time types #5244 - Duration, Period (from UselessPureMethodCall)</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>5,10</expected-linenumbers>
         <code><![CDATA[
@@ -409,7 +521,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>False positive for package private method calls in openjdk</description>
+        <description>False positive for package private method calls in openjdk (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package java.time;
@@ -423,7 +535,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>#6055 Atomic increments</description>
+        <description>#6055 Atomic increments (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 
@@ -443,7 +555,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>#6060 Stream methods with side-effects</description>
+        <description>#6060 Stream methods with side-effects (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 
@@ -461,7 +573,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>[java] UselessPureMethodCall false negative for primitive stream peek #6517</description>
+        <description>[java] UselessPureMethodCall false negative for primitive stream peek #6517 (from UselessPureMethodCall)</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>8,11,14,17</expected-linenumbers>
         <code><![CDATA[
@@ -488,7 +600,7 @@ public class a {
     </test-code>
 
     <test-code>
-        <description>[java] UselessPureMethodCall false negative for unresolved type #6781</description>
+        <description>[java] UselessPureMethodCall false negative for unresolved type #6781 (from UselessPureMethodCall)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.util.ArrayList;
@@ -500,6 +612,139 @@ public class Tester {
         var varResult = source.stream()
             .collect(Collectors.toCollection(ArrayList::new));
         source.stream().forEach(varResult::add);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case (from CheckSkipResult, but added test for read())</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>9,10,11</expected-linenumbers>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class Foo {
+
+    private FileInputStream _s = new FileInputStream("file");
+
+    public void skip(int n, byte[] buf) throws IOException {
+        _s.skip(n); // You are not sure that exactly n bytes are skipped
+        _s.read(buf);
+        _s.read(buf, 1, 1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>failure case but obfuscated (from CheckSkipResult)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class Foo {
+
+    private FileInputStream _s = new FileInputStream("file");
+
+    public void skip(int n) throws IOException {
+        (_s.skip(n));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return value is assigned to a variable (from CheckSkipResult)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.EOFException;
+
+public class Foo {
+
+    private FileInputStream _s = new FileInputStream("file");
+
+    public void skip(int n) throws IOException {
+        while (n != 0) {
+            long skipped = _s.skip(n);
+            if (skipped == 0)
+                throw new EOFException();
+            n -= skipped;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return value is used in a function (from CheckSkipResult)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class Foo {
+
+    private FileInputStream _s = new FileInputStream("file");
+
+    public void skip(int n) throws IOException {
+        System.out.println(_s.skip(n));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return value is returned (from CheckSkipResult)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class Foo {
+
+    private FileInputStream _s = new FileInputStream("file");
+
+    public int skip(int n) throws IOException {
+        return _s.skip(n);
+   }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>NPE when using Pattern matching variables #3169 (from CheckSkipResult)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.InputStream;
+
+            public class Foo {
+                public void service(Object servletRequest) {
+                    if (servletRequest instanceof InputStream nanoRequest) {
+                        // ...
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5207 FP with skip overload on custom FileInputStream class (from CheckSkipResult)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class Foo extends FileInputStream {
+    public void bar() {
+        skip(1);
+    }
+
+    public void skip(int n) throws IOException {
     }
 }
         ]]></code>
