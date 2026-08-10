@@ -198,7 +198,7 @@ public class SomeJNIClass {
         <example>
             <![CDATA[
 public boolean getFoo();            // bad
-public Boolean getFoo();            // bad by default
+public Boolean getFoo();            // bad if includeWrappedType=true (default)
 public boolean isFoo();             // ok
 public Boolean isFoo();             // ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
