@@ -120,6 +120,14 @@ class TypeSystemTest : IntelliMarker, FunSpec({
         }
     }
 
+    test("Test getModuleSymbol") {
+        ts.getModuleSymbol("java.base")?.simpleName shouldBe "java.base"
+    }
+
+    test("Test getPackageSymbol") {
+        ts.getPackageSymbol("java.net")?.simpleName shouldBe "package-info"
+    }
+
     test("Test parameterize special types") {
         ts.parameterise(ts.INT.symbol, emptyList()) shouldBeSameInstanceAs ts.INT
         shouldThrow<java.lang.IllegalArgumentException> {
