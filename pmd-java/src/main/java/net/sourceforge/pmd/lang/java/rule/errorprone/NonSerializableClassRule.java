@@ -183,10 +183,10 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * If the given type is a parameterized collection or map (a
-     * {@link Collection} or {@link Map}), checks whether any of its concrete class
+     * If the given type is a parameterized {@link java.util.Collection Collection} or
+     * {@link java.util.Map Map}, checks whether any of its concrete class
      * type arguments is non-serializable. The container type itself might be
-     * serializable (e.g. {@code ArrayList}), while its elements/values are not,
+     * serializable (e.g. {@link java.util.ArrayList ArrayList}), while its elements/values are not,
      * which would still make the field non-serializable in practice.
      *
      * <p>Type arguments that cannot be determined statically (type variables,
