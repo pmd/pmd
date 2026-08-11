@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
@@ -49,7 +50,7 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
     private String formatCall(ASTMethodCall call) {
         JMethodSig methodSig = call.getMethodType();
 
-        return methodSig.getDeclaringType().getSymbol().getSimpleName() + "." + methodSig.getName() + "()";
+        return ((JClassSymbol) methodSig.getDeclaringType().getSymbol()).getCanonicalName() + "." + methodSig.getName() + "()";
     }
 
     private boolean shouldCheckResult(ASTMethodCall call) {

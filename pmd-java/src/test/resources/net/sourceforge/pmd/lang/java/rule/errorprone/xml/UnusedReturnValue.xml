@@ -31,7 +31,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <expected-messages>
-            <message>Result of 'Foo.bar()' is ignored.</message>
+            <message>Result of 'foo.bar.Foo.bar()' is ignored.</message>
         </expected-messages>
         <code>
             <![CDATA[
@@ -756,7 +756,7 @@ public class Foo extends FileInputStream {
         <description>Violation message when generics are used</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Result of 'Collection.size()' is ignored.</message>
+            <message>Result of 'java.util.Collection.size()' is ignored.</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.Collection;
@@ -765,6 +765,27 @@ class Wildcard
 {
     public static void foo(Collection < ? extends Wildcard[] > collection) {
         collection.size();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Violation message for nested classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Result of 'java.util.Map.Entry.getValue()' is ignored.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.Map;
+
+class Foo
+{
+    public static void foo(Map<String, Integer> x)
+    {
+        for (final Map.Entry<String, Integer> entry : x.entrySet()) {
+            entry.getValue();
+        }
     }
 }
         ]]></code>
