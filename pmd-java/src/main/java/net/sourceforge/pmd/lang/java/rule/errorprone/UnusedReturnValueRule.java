@@ -49,7 +49,7 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
     private String formatCall(ASTMethodCall call) {
         JMethodSig methodSig = call.getMethodType();
 
-        return methodSig.getDeclaringType() + "." + methodSig.getName() + "()";
+        return methodSig.getDeclaringType().getSymbol().getSimpleName() + "." + methodSig.getName() + "()";
     }
 
     private boolean shouldCheckResult(ASTMethodCall call) {
