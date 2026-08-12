@@ -377,7 +377,7 @@ public class AuxClasspathLoader implements AutoCloseable {
      */
     public @Nullable InputStream findResource(String name) {
         assert name != null;
-        assert name.charAt(0) != '/'; // assuming only relative paths
+        assert name.charAt(0) != '/' : "not a relative path name: " + name; // assuming only relative paths
 
         ensureNotClosed();
 
