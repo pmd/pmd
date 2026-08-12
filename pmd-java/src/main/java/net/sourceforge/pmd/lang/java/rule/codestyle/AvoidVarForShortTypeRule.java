@@ -4,17 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
@@ -23,10 +21,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<Integer> LIMIT_LENGTH_DESCRIPTOR =
-            PropertyFactory.intProperty("lengthLimit")
-                    .desc("The length of a type must be above this limit to allow using var")
-                    .defaultValue(32)
-                    .build();
+        PropertyFactory.intProperty("lengthLimit")
+            .desc("The length of a type must be above this limit to allow using var")
+            .defaultValue(32)
+            .build();
 
     public AvoidVarForShortTypeRule() {
         super(ASTLocalVariableDeclaration.class);
@@ -40,46 +38,32 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
             return data;
         }
 
-        final List<String> currentClassDeclarationCanonicalPrefixes =
-                computeCurrentClassDeclarationCanonicalPrefixes(node);
+        // These prefixes are used to correctly shorten types that are declared by subclasses
+        final List<String> currentClassDeclarationCanonicalPrefixes = node.ancestors(ASTClassDeclaration.class)
+            .toStream()
+            .map(ASTClassDeclaration::getCanonicalName)
+            .filter(Objects::nonNull)
+            .map(s -> s + ".")
+            .collect(Collectors.toList());
 
         final int limitLength = this.getProperty(LIMIT_LENGTH_DESCRIPTOR);
         Optional.ofNullable(node.firstChild(ASTVariableDeclarator.class))
-                .map(n -> n.firstChild(ASTVariableId.class))
-                .map(ASTVariableId::getTypeMirror)
-                .map(variableTypeMirror -> {
-                    final VisitState state = new VisitState(limitLength, currentClassDeclarationCanonicalPrefixes);
-                    try {
-                        variableTypeMirror.acceptVisitor(Visitor.INSTANCE, state);
-                    } catch (OverLengthLimitException ignored) {
-                        // Quick exit/abort to not compute full string length
-                        return null;
-                    }
-                    return state.consumeResult();
-                })
-                .filter(s -> s.length() < limitLength)
-                .ifPresent(type -> this.asCtx(data).addViolation(node, type, limitLength));
+            .map(n -> n.firstChild(ASTVariableId.class))
+            .map(ASTVariableId::getTypeMirror)
+            .map(variableTypeMirror -> {
+                final VisitState state = new VisitState(limitLength, currentClassDeclarationCanonicalPrefixes);
+                try {
+                    variableTypeMirror.acceptVisitor(Visitor.INSTANCE, state);
+                } catch (OverLengthLimitException ignored) {
+                    // Quick exit/abort to not compute full string length
+                    return null;
+                }
+                return state;
+            })
+            .map(TypePrettyPrint.TypePrettyPrinter::consumeResult)
+            .ifPresent(type -> this.asCtx(data).addViolation(node, type, limitLength));
 
         return data;
-    }
-
-    private List<String> computeCurrentClassDeclarationCanonicalPrefixes(ASTLocalVariableDeclaration node) {
-        final List<String> currentClassDeclarationCanonicalPrefixes = new ArrayList<>();
-        final Set<JavaNode> alreadyProcessed = new HashSet<>();
-
-        JavaNode parent = node.getParent();
-        while (parent != null && !alreadyProcessed.contains(parent)) {
-            if (parent instanceof ASTClassDeclaration) {
-                ASTClassDeclaration classDeclaration = (ASTClassDeclaration) parent;
-                Optional.ofNullable(classDeclaration.getCanonicalName())
-                        .map(s -> s + ".")
-                        .ifPresent(currentClassDeclarationCanonicalPrefixes::add);
-            }
-            alreadyProcessed.add(parent);
-            parent = parent.getParent();
-        }
-
-        return currentClassDeclarationCanonicalPrefixes;
     }
 
     static class OverLengthLimitException extends RuntimeException {
@@ -93,8 +77,8 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
         int currentLength;
 
         VisitState(
-                final int limitLength,
-                final List<String> currentClassDeclarationCanonicalPrefixes) {
+            final int limitLength,
+            final List<String> currentClassDeclarationCanonicalPrefixes) {
             this.limitLength = limitLength;
             this.currentClassDeclarationCanonicalPrefixes = currentClassDeclarationCanonicalPrefixes;
 
@@ -129,25 +113,26 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
 
         @Override
         protected void appendClassName(
-                JClassType t,
-                VisitState s,
-                JClassType enclosing,
-                boolean isAnon) {
+            JClassType t,
+            VisitState s,
+            JClassType enclosing,
+            boolean isAnon) {
             final String canonicalName = t.getSymbol().getCanonicalName();
             if (canonicalName == null) {
                 return;
             }
 
+            // Correct resolve subclasses e.g. Foo.Bar needs to be Bar when inside Foo
             if (!s.currentClassDeclarationCanonicalPrefixes.isEmpty()) {
                 // last -> top-most
                 final String topMostCurrentClassDeclarationBinaryName =
-                        s.currentClassDeclarationCanonicalPrefixes.get(
-                                s.currentClassDeclarationCanonicalPrefixes.size() - 1);
+                    s.currentClassDeclarationCanonicalPrefixes.get(
+                        s.currentClassDeclarationCanonicalPrefixes.size() - 1);
                 if (canonicalName.startsWith(topMostCurrentClassDeclarationBinaryName)) {
                     final Optional<String> optMostMatchedCanonicalClassPrefix =
-                            s.currentClassDeclarationCanonicalPrefixes.stream()
-                                    .filter(canonicalName::startsWith)
-                                    .findFirst();
+                        s.currentClassDeclarationCanonicalPrefixes.stream()
+                            .filter(canonicalName::startsWith)
+                            .findFirst();
                     if (optMostMatchedCanonicalClassPrefix.isPresent()) {
                         s.append(canonicalName.substring(optMostMatchedCanonicalClassPrefix.get().length()));
                         return;
@@ -157,8 +142,8 @@ public class AvoidVarForShortTypeRule extends AbstractJavaRulechainRule {
 
             final String packageName = t.getSymbol().getPackageName();
             s.append(canonicalName.startsWith(packageName) && canonicalName.length() > packageName.length()
-                    ? canonicalName.substring(packageName.length() + 1)
-                    : canonicalName);
+                ? canonicalName.substring(packageName.length() + 1)
+                : canonicalName);
         }
     }
 }
