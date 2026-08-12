@@ -52,6 +52,9 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         = requirementPropertyBuilder("publicMethodCommentRequirement", "Public method and constructor comments").build();
     private static final PropertyDescriptor<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("protectedMethodCommentRequirement", "Protected method constructor comments").build();
+    private static final PropertyDescriptor<CommentRequirement> PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("packageMethodCommentRequirement", "Package-private method and constructor comments")
+        .defaultValue(CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("enumCommentRequirement", "Enum comments").build();
     private static final PropertyDescriptor<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
@@ -72,6 +75,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
+        definePropertyDescriptor(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(ENUM_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR);
@@ -84,6 +88,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         propertyValues.put(FIELD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
+        propertyValues.put(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(ENUM_CMT_REQUIREMENT_DESCRIPTOR, getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR,
                 getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR));
@@ -155,6 +160,8 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
             checkCommentMeetsRequirement(data, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         } else if (decl.getVisibility() == Visibility.V_PROTECTED) {
             checkCommentMeetsRequirement(data, decl, PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
+        } else if (decl.getVisibility() == Visibility.V_PACKAGE) {
+            checkCommentMeetsRequirement(data, decl, PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         }
     }
 
@@ -187,6 +194,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
                 && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
                 && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
                 && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
                 && getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
                 && getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
                 && getProperty(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED;

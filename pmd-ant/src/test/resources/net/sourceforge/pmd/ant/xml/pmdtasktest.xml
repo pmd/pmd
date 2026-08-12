@@ -39,6 +39,17 @@
         </pmd>
     </target>
 
+    <!-- https://github.com/pmd/pmd/issues/6952 -->
+    <target name="testRelativeRulesetReference">
+        <pmd noCache="true" failOnError="true">
+            <ruleset>${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/rulesets/main.xml</ruleset>
+            <formatter type="text" toFile="${pmd.home}/target/pmd-ant-relative-ruleset.txt" />
+            <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">
+                <include name="sample.dummy"/>
+            </fileset>
+        </pmd>
+    </target>
+
     <target name="testXmlFormatter">
         <pmd noCache="true">
             <!-- note: this ruleset is in pmd-core/src/test/resources -->

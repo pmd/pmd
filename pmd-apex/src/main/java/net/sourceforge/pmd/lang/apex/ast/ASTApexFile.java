@@ -43,7 +43,14 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
     }
 
     public ASTUserClassOrInterface<?> getMainNode() {
-        return (ASTUserClassOrInterface<?>) getChild(0);
+        return firstChild(ASTUserClassOrInterface.class);
+    }
+
+    /**
+     * @since 7.27.0
+     */
+    public ASTAnonymousBlock getAnonymousBlock() {
+        return firstChild(ASTAnonymousBlock.class);
     }
 
     @Override

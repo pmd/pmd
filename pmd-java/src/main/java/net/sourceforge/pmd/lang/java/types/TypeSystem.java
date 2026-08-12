@@ -24,6 +24,7 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -405,6 +406,20 @@ public final class TypeSystem {
      */
     public @Nullable JModuleSymbol getModuleSymbol(String moduleName) {
         return resolver.resolveModule(moduleName);
+    }
+
+    /**
+     * Returns a symbol for the pseudo-class representing a package (usually called "package-info.java")
+     *
+     * Returns a AnnotableSymbol, since the only thing this is used for is to check for annotations - and
+     * to keep the option of introducing a JPackageSymbol later.
+     *
+     * @since 7.27.0
+     */
+    public @Nullable AnnotableSymbol getPackageSymbol(String packageName) {
+        AssertionUtil.assertValidJavaPackageName(packageName);
+
+        return resolver.resolvePackage(packageName);
     }
 
     /**

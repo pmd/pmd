@@ -20,6 +20,8 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
@@ -218,5 +220,23 @@ class KotlinTypeAnnotationVisitorTest {
         assertNotNull(prop);
         assertEquals(1, prop.getBeginLine(), "PMD node must start on line 1");
         assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(prop));
+    }
+
+    // --- Regression: #6891 KtModifiers vs KtModifier in collectAnnotationNodes ---
+
+    @Test
+    void unescapedAnnotationOnFunctionHasTypeName() {
+        KtKotlinFile root = PARSER.parse("@Deprecated(\"use X\") fun foo(): String = \"\"");
+        KtUnescapedAnnotation ann = root.descendants(KtUnescapedAnnotation.class).first();
+        assertNotNull(ann);
+        assertEquals("kotlin.Deprecated", KotlinNodeTypeData.getTypeName(ann));
+    }
+
+    @Test
+    void singleAnnotationHasTypeName() {
+        KtKotlinFile root = PARSER.parse("@Deprecated(\"use X\") fun foo(): String = \"\"");
+        KtSingleAnnotation ann = root.descendants(KtSingleAnnotation.class).first();
+        assertNotNull(ann);
+        assertEquals("kotlin.Deprecated", KotlinNodeTypeData.getTypeName(ann));
     }
 }

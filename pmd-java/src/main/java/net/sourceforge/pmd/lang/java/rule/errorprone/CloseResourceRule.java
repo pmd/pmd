@@ -125,7 +125,12 @@ public class CloseResourceRule extends AbstractJavaRule {
                 "jakarta.servlet.ServletResponse#getOutputStream()",
                 "jakarta.servlet.http.HttpServletRequest#getReader()",
                 "jakarta.servlet.http.HttpServletResponse#getWriter()",
-                "jakarta.servlet.http.HttpServletResponse#getOutputStream()"
+                "jakarta.servlet.http.HttpServletResponse#getOutputStream()",
+                // org.mockito - a mock is not a real resource, even when the mocked type
+                // implements AutoCloseable. Mockito#spy and Mockito#mockStatic are deliberately
+                // absent: a spy calls through to a real object, and mockStatic returns a
+                // MockedStatic; both of those do have to be closed.
+                "org.mockito.Mockito#mock(_*)"
             )
             .build();
 
@@ -281,7 +286,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private TypeNode getWrappedResourceType(ASTVariableId var) {
-        ASTExpression initExpr = initializerExpressionOf(var);
+        ASTExpression initExpr = initializerOrFirstAssignedValueOf(var);
         if (initExpr != null) {
             ASTConstructorCall resAlloc = getLastResourceAllocation(initExpr);
             if (resAlloc != null) {
@@ -294,6 +299,28 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private ASTExpression initializerExpressionOf(ASTVariableId var) {
         return var.getInitializer();
+    }
+
+    /**
+     * Returns the expression the variable gets its value from: its initializer, or - for a
+     * variable declared without one - the value of its first assignment. Per JLS 14.4.2 a
+     * declaration with an initializer is equivalent to a declaration followed by a separate
+     * assignment, so both shapes have to be recognized the same way.
+     */
+    private ASTExpression initializerOrFirstAssignedValueOf(ASTVariableId var) {
+        ASTExpression initExpr = var.getInitializer();
+        if (initExpr != null) {
+            return initExpr;
+        }
+        for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
+            if (usage.getParent() instanceof ASTAssignmentExpression) {
+                ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
+                if (assignment.getLeftOperand() == usage) {
+                    return assignment.getRightOperand();
+                }
+            }
+        }
+        return null;
     }
 
     private ASTConstructorCall getLastResourceAllocation(ASTExpression expr) {

@@ -150,4 +150,29 @@ public class SimpleTest {
 ]]>
         </code>
     </test-code>
+    <test-code>
+        <description>Jupiter assertions with precision</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
+        <code>
+            <![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+public class SimpleTest {
+    private static final double CONST = 1.0;
+    @Test
+    public void testX() {
+        assertEquals(CONST, 1.0, 0.1, "reason"); // wrong argument order
+        assertEquals(1.0, CONST, 0.1, "other reason"); // OK
+        assertEquals(next(1.0), .5 * 2, 0.1); // wrong argument order
+        assertEquals(.5 * 2, next("foo"), 0.1); // good
+        assertEquals(.5 * 2, 2 * .5, 0.1); // good
+    }
+    private double next(double x) {
+        return 1.0;
+    }
+}
+]]>
+        </code>
+    </test-code>
 </test-data>

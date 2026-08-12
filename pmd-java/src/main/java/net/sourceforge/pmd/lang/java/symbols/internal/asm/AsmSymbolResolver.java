@@ -15,6 +15,7 @@ import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -85,6 +86,11 @@ public class AsmSymbolResolver implements SymbolResolver {
             return new ModuleStub(this, moduleName, new StreamLoader(moduleName, inputStream));
         }
         return null;
+    }
+
+    @Override
+    public @Nullable AnnotableSymbol resolvePackage(@NonNull String packageName) {
+        return resolveClassFromBinaryName(packageName + ".package-info");
     }
 
     SignatureParser getSigParser() {

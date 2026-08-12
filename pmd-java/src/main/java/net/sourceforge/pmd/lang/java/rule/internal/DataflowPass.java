@@ -931,7 +931,7 @@ public final class DataflowPass {
             JVariableSymbol var = node.getVarId().getSymbol();
             ASTExpression rhs = node.getInitializer();
             if (rhs != null) {
-                rhs.acceptVisitor(this, data);
+                data = rhs.acceptVisitor(this, data);
                 data.assign(var, rhs);
             } else if (isAssignedImplicitly(node.getVarId())) {
                 data.declareBlank(node.getVarId());

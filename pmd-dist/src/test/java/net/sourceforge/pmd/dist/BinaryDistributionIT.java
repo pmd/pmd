@@ -40,7 +40,8 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     private static final List<String> SUPPORTED_LANGUAGES_PMD = listOf(
         "apex-52", "apex-53", "apex-54", "apex-55",
         "apex-56", "apex-57", "apex-58", "apex-59",
-        "apex-60",
+        "apex-60", "apex-61", "apex-62", "apex-63",
+        "apex-64", "apex-65", "apex-66", "apex-67",
         "ecmascript-3", "ecmascript-5",
         "ecmascript-6", "ecmascript-7", "ecmascript-8",
         "ecmascript-9", "ecmascript-ES2015",
@@ -70,7 +71,9 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
         "velocity-2.0", "velocity-2.1", "velocity-2.2", "velocity-2.3",
         "visualforce-52", "visualforce-53", "visualforce-54", "visualforce-55", "visualforce-56",
         "visualforce-57", "visualforce-58", "visualforce-59",
-        "visualforce-60",
+        "visualforce-60", "visualforce-61", "visualforce-62",
+        "visualforce-63", "visualforce-64", "visualforce-65",
+        "visualforce-66", "visualforce-67",
         "wsdl-1.1", "wsdl-2.0",
         "xml-1.0", "xml-1.1",
         "xsl-1.0", "xsl-2.0", "xsl-3.0"
