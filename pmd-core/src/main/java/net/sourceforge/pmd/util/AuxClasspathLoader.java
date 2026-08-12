@@ -534,11 +534,10 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
         }
 
-        if (closeRequested.get()) {
+        if (closeRequested.compareAndSet(false, true)) {
             return; // already closed
         }
 
-        closeRequested.set(true);
         synchronized (this) {
             try {
                 IOUtil.ensureClosed(new ArrayList<>(zipFiles.values()), null);
