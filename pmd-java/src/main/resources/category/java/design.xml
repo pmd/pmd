@@ -19,8 +19,6 @@ Rules that help you discover design issues.
 If an abstract class does not provide any methods, it may be acting as a simple data container
 that is not meant to be instantiated. In this case, it is probably better to use a private or
 protected constructor in order to prevent instantiation than make the class misleadingly abstract.
-This rule does not report abstract subclasses: if the parent type already declares abstract
-methods, the subclass must stay abstract and cannot be replaced by a private constructor.
         </description>
         <priority>1</priority>
         <properties>
@@ -28,8 +26,7 @@ methods, the subclass must stay abstract and cannot be replaced by a private con
                 <value>
 <![CDATA[
 //ClassDeclaration
-    [@Abstract = true() and @Interface = false()]
-    [not(ExtendsList)]
+    [@Abstract = true() and @Interface = false() and not(ExtendsList)]
     [ClassBody[not(ConstructorDeclaration | MethodDeclaration)]]
     [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
          or pmd-java:hasAnnotation('lombok.AllArgsConstructor')
