@@ -142,6 +142,32 @@ abstract class RequiredArgs {
     </test-code>
 
     <test-code>
+        <description>[java] AbstractClassWithoutAnyMethod false positive on derived abstract class #6965</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class BaseFooType {
+    public abstract Foo getFoo();
+}
+
+public abstract class SpecificBoo extends BaseFooType {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6965 derived abstract class whose parent already has abstract methods (nested)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+abstract class AbstractSuperclass {
+    protected abstract void foo();
+}
+
+abstract class EmptySubclass extends AbstractSuperclass {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Verify location of violation</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2-2</expected-linenumbers>

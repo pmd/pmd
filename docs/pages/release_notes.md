@@ -98,6 +98,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
     * [#6881](https://github.com/pmd/pmd/issues/6881): \[java] CognitiveComplexity does not count switch expressions
     * [#6925](https://github.com/pmd/pmd/issues/6925): \[java] ImmutableField: false positive on picocli annotated fields with default
+    * [#6965](https://github.com/pmd/pmd/issues/6965): \[java] AbstractClassWithoutAnyMethod false positive on derived abstract class
 * java-documentation
     * [#6270](https://github.com/pmd/pmd/issues/6270): \[java] CommentSize: Skip file header comments.
 * java-errorprone
