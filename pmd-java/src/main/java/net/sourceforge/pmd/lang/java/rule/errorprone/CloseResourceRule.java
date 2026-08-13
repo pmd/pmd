@@ -129,7 +129,12 @@ public class CloseResourceRule extends AbstractJavaRule {
                 "jakarta.servlet.ServletResponse#getOutputStream()",
                 "jakarta.servlet.http.HttpServletRequest#getReader()",
                 "jakarta.servlet.http.HttpServletResponse#getWriter()",
-                "jakarta.servlet.http.HttpServletResponse#getOutputStream()"
+                "jakarta.servlet.http.HttpServletResponse#getOutputStream()",
+                // org.mockito - a mock is not a real resource, even when the mocked type
+                // implements AutoCloseable. Mockito#spy and Mockito#mockStatic are deliberately
+                // absent: a spy calls through to a real object, and mockStatic returns a
+                // MockedStatic; both of those do have to be closed.
+                "org.mockito.Mockito#mock(_*)"
             )
             .build();
 
