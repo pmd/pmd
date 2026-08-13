@@ -18,11 +18,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -42,6 +47,25 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
         rs = new RuleSetLoader().loadFromResource(TEST_RULESET_1);
         assertEquals(rs.getFileName(), TEST_RULESET_1, "wrong RuleSet file name");
+    }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/6952">pmd/pmd#6952</a>
+     */
+    @Test
+    void testRefToSiblingRuleset(@TempDir Path tempDir) throws IOException {
+        write(tempDir.resolve("leaf.xml"), rulesetXml(dummyRule()));
+        write(tempDir.resolve("base.xml"), rulesetXml(rulesetRef("leaf.xml")));
+        write(tempDir.resolve("main.xml"), rulesetXml(rulesetRef("base.xml")));
+
+        // the rulesets are neither on the classpath nor in the working directory
+        RuleSet rs = new RuleSetLoader().loadFromResource(tempDir.resolve("main.xml").toString());
+        assertEquals(1, rs.size());
+        assertNotNull(rs.getRuleByName("MockRuleName"));
+    }
+
+    private static void write(Path file, String content) throws IOException {
+        Files.write(file, content.getBytes(StandardCharsets.UTF_8));
     }
 
     @Test
