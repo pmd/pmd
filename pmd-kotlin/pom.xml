@@ -77,17 +77,6 @@
                     </parameter>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>enforce-bytecode-version</id>
-                        <!-- disabled - nl.stokpop.typemapper:kotlin-type-mapper-model requires Java 17 already -->
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 

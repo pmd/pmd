@@ -794,6 +794,19 @@
                                     <ignoredScopes>
                                         <ignoredScope>test</ignoredScope>
                                     </ignoredScopes>
+                                    <excludes>
+                                        <!-- The test modules use junit6, which uses Java17. But these modules are used in test-scope only -->
+                                        <exclude>net.sourceforge.pmd:pmd-test</exclude>
+                                        <exclude>net.sourceforge.pmd:pmd-lang-test</exclude>
+                                        <!-- pmd-languages-deps and pmd-dist contain all modules, including groovy and kotlin, which require a newer JDK -->
+                                        <exclude>net.sourceforge.pmd:pmd-languages-deps</exclude>
+                                        <exclude>net.sourceforge.pmd:pmd-dist</exclude>
+                                        <!-- pmd-groovy already uses groovy 5.x, which requires at least java 11 -->
+                                        <exclude>org.apache.groovy:groovy</exclude>
+                                        <!-- pmd-kotlin uses kotlin-type-mapper which requires at least java 17 -->
+                                        <exclude>nl.stokpop.typemapper:kotlin-type-mapper-model</exclude>
+                                        <exclude>nl.stokpop.typemapper:kotlin-type-mapper-analyzer</exclude>
+                                    </excludes>
                                     <ignoreClasses>
                                         <!-- asm dependency contains a java9 module-info.class -->
                                         <ignoreClass>module-info</ignoreClass>
@@ -803,6 +816,13 @@
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>1.12.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

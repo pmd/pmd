@@ -29,17 +29,6 @@
                     </parameter>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>enforce-bytecode-version</id>
-                        <!-- disabled - some language modules (groovy, kotlin) do not work with Java 8 anymore due to dependencies -->
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
