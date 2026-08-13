@@ -782,6 +782,26 @@
                             </rules>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>enforce-bytecode-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <enforceBytecodeVersion>
+                                    <maxJdkVersion>8</maxJdkVersion>
+                                    <ignoredScopes>
+                                        <ignoredScope>test</ignoredScope>
+                                    </ignoredScopes>
+                                    <ignoreClasses>
+                                        <!-- asm dependency contains a java9 module-info.class -->
+                                        <ignoreClass>module-info</ignoreClass>
+                                    </ignoreClasses>
+                                </enforceBytecodeVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
