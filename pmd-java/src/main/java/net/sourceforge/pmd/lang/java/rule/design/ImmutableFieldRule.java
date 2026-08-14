@@ -39,7 +39,10 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
     private static final Set<String> INVALIDATING_FIELD_ANNOT =
         setOf(
-            "lombok.Setter"
+            "lombok.Setter",
+            // picocli injects values into option/parameter fields at runtime
+            "picocli.CommandLine.Option",
+            "picocli.CommandLine.Parameters"
         );
     private static final Function<Object, JavaNode> INTERESTING_ANCESTOR =
         NodeStream.asInstanceOf(ASTLambdaExpression.class,

@@ -101,6 +101,32 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Should not match boxed Boolean when includeWrappedType is false (#6958)</description>
+        <rule-property name="includeWrappedType">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Boolean getEnabled() {
+        return true;
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should still match primitive boolean when includeWrappedType is false (#6958)</description>
+        <rule-property name="includeWrappedType">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean getEnabled() {
+        return true;
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Should not match for boxed Boolean on methods annotated with @Override (#5253)</description>
         <expected-problems>0</expected-problems>
         <expected-suppressions>

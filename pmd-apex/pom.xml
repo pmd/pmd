@@ -106,7 +106,7 @@
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-ls_2.13</artifactId>
-            <version>6.1.0</version>
+            <version>6.2.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
