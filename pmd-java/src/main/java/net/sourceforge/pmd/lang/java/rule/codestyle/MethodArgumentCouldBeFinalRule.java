@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
 
@@ -20,26 +21,28 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration meth, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (meth.getBody() == null) {
-            return data;
+            return null;
         }
-        lookForViolation(meth, data);
-        return data;
+        lookForViolation(meth, ctx);
+        return null;
     }
 
     @Override
     public Object visit(ASTConstructorDeclaration constructor, Object data) {
-        lookForViolation(constructor, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        lookForViolation(constructor, ctx);
+        return null;
     }
 
-    private void lookForViolation(ASTExecutableDeclaration node, Object data) {
+    private void lookForViolation(ASTExecutableDeclaration node, RuleContext ctx) {
         for (ASTFormalParameter param : node.getFormalParameters()) {
             ASTVariableId varId = param.getVarId();
             if (!param.isFinal()
                 && !JavaAstUtils.isNeverUsed(varId)
                 && JavaAstUtils.isEffectivelyFinal(varId)) {
-                asCtx(data).addViolation(varId, varId.getName());
+                ctx.addViolation(varId, varId.getName());
             }
         }
     }

@@ -48,6 +48,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -64,6 +65,8 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCastExpression castExpr, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ASTExpression operand = castExpr.getOperand();
 
         // eg in
@@ -95,7 +98,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // is a functional interface.
             if (coercionType.equals(context.getTargetType())) {
                 // then we also know that the context is functional
-                reportCast(castExpr, data);
+                reportCast(castExpr, ctx);
             }
             // otherwise the cast is narrowing, and removing it would
             // change the runtime class of the produced lambda.
@@ -103,17 +106,17 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // If we remove the cast, even if it might compile,
             // the object will not implement SubItf anymore.
         } else if (isCastUnnecessary(castExpr, context, coercionType, operandType)) {
-            reportCast(castExpr, data);
+            reportCast(castExpr, ctx);
         } else if (castExpr.getParent() instanceof ASTMethodCall
                     && castExpr.getIndexInParent() == 0) {
             JMethodSig methodType = ((ASTMethodCall) castExpr.getParent()).getMethodType();
-            handleMethodCall(castExpr, methodType, operandType, data);
+            handleMethodCall(castExpr, methodType, operandType, ctx);
         }
         return null;
     }
 
     private void handleMethodCall(ASTCastExpression castExpr, JMethodSig methodType,
-            JTypeMirror operandType, Object data) {
+            JTypeMirror operandType, RuleContext ctx) {
         boolean generic = methodType.getSymbol().getFormalParameters().stream()
             .anyMatch(fp -> isTypeExpression(fp.getTypeMirror(Substitution.EMPTY)));
         if (!generic) {
@@ -124,7 +127,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
                 declaringType = declaringType.getErasure();
             }
             if (TypeTestUtil.isA(declaringType, operandType)) {
-                reportCast(castExpr, data);
+                reportCast(castExpr, ctx);
             }
         }
     }
@@ -164,8 +167,8 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         return coercionType.isRaw() && !operandType.isRaw();
     }
 
-    private void reportCast(ASTCastExpression castExpr, Object data) {
-        asCtx(data).addViolation(castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
+    private void reportCast(ASTCastExpression castExpr, RuleContext ctx) {
+        ctx.addViolation(castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
     }
 
     private static boolean castIsUnnecessaryToMatchContext(ExprContext context,
