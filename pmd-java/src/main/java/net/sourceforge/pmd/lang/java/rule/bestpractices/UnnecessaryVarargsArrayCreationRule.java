@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 
@@ -34,6 +35,8 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
 
     @Override
     public Object visit(ASTArrayAllocation array, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (array.getArrayInitializer() == null) {
             return null;
         }
@@ -60,7 +63,7 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
                     // The explicit array is required, do not report. See #6611.
                     return null;
                 }
-                asCtx(data).addViolation(array);
+                ctx.addViolation(array);
             }
         }
 
