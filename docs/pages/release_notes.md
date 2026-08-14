@@ -103,7 +103,6 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6742](https://github.com/pmd/pmd/issues/6742): \[java] CloseResource: False positive when a correctly-closed resource is declared without initializer
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
     * [#6900](https://github.com/pmd/pmd/issues/6900): \[java] DoubleCheckedLocking: False negative when the outer null check is written as !(x != null)
-    * [#6967](https://github.com/pmd/pmd/issues/6967): \[java] UnusedReturnValue produces inconsistent violation messages
 * java-multithreading
     * [#6747](https://github.com/pmd/pmd/issues/6747): \[java] NonThreadSafeSingleton: False negative with ternary conditional operator
 * kotlin
