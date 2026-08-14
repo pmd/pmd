@@ -32,10 +32,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
-import net.sourceforge.pmd.lang.java.ast.UnaryOp;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -156,26 +155,8 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
 
     /**
      * Recognizes the guard clause style, where the guard is not an ancestor of the log
-     * statement but a preceding sibling that leaves the block:
-     *
-     * <pre>{@code
-     * if (!log.isDebugEnabled()) {
-     *     return;
-     * }
-     * log.debug("..." + expensive());
-     * }</pre>
-     *
-     * <p>The guard also covers log statements nested deeper than the guard itself,
-     * as the early exit applies to everything that follows it in the block:
-     *
-     * <pre>{@code
-     * if (!log.isDebugEnabled()) {
-     *     return;
-     * }
-     * for (Object o : os) {
-     *     log.debug("..." + o);
-     * }
-     * }</pre>
+     * statement, but an earlier statement of an enclosing block that exits that block.
+     * Such a guard covers everything following it, however deeply nested.
      */
     private boolean hasEarlyExitGuard(ASTMethodCall node, String logLevel) {
         for (ASTStatement statement : node.ancestors(ASTStatement.class)) {
@@ -199,7 +180,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
             if (sibling instanceof ASTIfStatement) {
                 ASTIfStatement ifStatement = (ASTIfStatement) sibling;
                 if (ifStatement.getElseBranch() == null
-                        && isNegation(ifStatement.getCondition())
+                        && JavaAstUtils.isBooleanNegation(ifStatement.getCondition())
                         && containsGuardMethod(ifStatement, logLevel)
                         && alwaysExits(ifStatement.getThenBranch())) {
                     return true;
@@ -207,11 +188,6 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
             }
         }
         return false;
-    }
-
-    private boolean isNegation(ASTExpression condition) {
-        return condition instanceof ASTUnaryExpression
-                && ((ASTUnaryExpression) condition).getOperator() == UnaryOp.NEGATION;
     }
 
     private boolean alwaysExits(@Nullable ASTStatement statement) {
