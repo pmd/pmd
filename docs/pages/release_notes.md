@@ -88,6 +88,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6393](https://github.com/pmd/pmd/issues/6393): \[java] UnusedPrivateMethod: False positive with overloaded private methods called with values returned from methods of an unresolved type
     * [#6611](https://github.com/pmd/pmd/issues/6611): \[java] UnnecessaryVarargsArrayCreation: false positive when removing the array creates overload ambiguity
 * java-codestyle
+    * [#5441](https://github.com/pmd/pmd/issues/5441): \[java] UseDiamondOperator: False positive with interdependent generic vars
     * [#6958](https://github.com/pmd/pmd/issues/6958): \[java] BooleanGetMethodName should have the option to treat boolean wrapper type differently
     * [#6274](https://github.com/pmd/pmd/issues/6274): \[java] UselessParentheses: Treat parentheses around a ternary in the else-branch as clarifying, consistent with the then-branch.
     * [#6651](https://github.com/pmd/pmd/issues/6651): \[java] UnnecessaryImport false-positive when Javadoc {@link} references an array type
