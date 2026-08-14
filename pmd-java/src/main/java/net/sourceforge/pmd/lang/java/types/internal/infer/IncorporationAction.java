@@ -10,6 +10,8 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isSpecialUnresolved;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * An action to execute during the incorporation phase.
@@ -55,9 +58,16 @@ abstract class IncorporationAction {
             this.myBound = bound;
         }
 
-        private static boolean isClassType(JTypeMirror bound) {
+        /** This is either a class (not interface) or array. */
+        private static boolean mayBePrimaryBound(JTypeMirror bound) {
             JTypeDeclSymbol symbol = bound.getSymbol();
             return symbol instanceof JClassSymbol && !symbol.isInterface();
+        }
+
+        /** This is either a class, interface, or array. */
+        private static boolean hasClassSymbol(JTypeMirror bound) {
+            JTypeDeclSymbol symbol = bound.getSymbol();
+            return symbol instanceof JClassSymbol;
         }
 
         /**
@@ -80,24 +90,72 @@ abstract class IncorporationAction {
                 }
             }
 
-            if (myKind == BoundKind.UPPER && isClassType(myBound)) {
+            if (myKind == BoundKind.UPPER && hasClassSymbol(myBound)) {
                 // Check that other upper bounds that are class types are related to this bound.
                 // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
-                for (JTypeMirror otherBound : ivar.getBounds(BoundKind.UPPER)) {
-                    if (otherBound != myBound && isClassType(otherBound)) { // NOPMD CompareObjectsWithEquals
-                        // Since we are testing both directions we cannot let those tests add bounds on the ivars,
-                        // because they could be contradictory.
-                        boolean areRelated = TypeOps.isConvertiblePure(myBound, otherBound).somehow()
-                            || TypeOps.isConvertiblePure(otherBound, myBound).somehow();
 
-                        if (!areRelated) {
-                            throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
+                // Since the loop body can add bounds we need to make a
+                // copy to avoid concurrent mod exceptions.
+                for (JTypeMirror otherBound : new ArrayList<>(ivar.getBounds(BoundKind.UPPER))) {
+                    if (otherBound != myBound && hasClassSymbol(otherBound)) { // NOPMD CompareObjectsWithEquals
+                        // So we have ivar <: myBound and ivar <: otherBound
+                        // But we don't know whether myBound <: otherBound or the other way around.
+                        // We will check in both directions without adding constraints first, otherwise
+                        // we risk introducing contradictions.
+                        BoundKind ordering = getOrderingBetweenBounds(myBound, otherBound);
+
+                        if (ordering == null && mustTypesHaveAnOrdering(myBound, otherBound)
+                            || ordering != null && !checkRelativeOrdering(ctx, otherBound, ordering)) {
+                            throw ResolutionFailedException.incompatibleBound(
+                                ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
                         }
                     }
                 }
             }
         }
 
+        private boolean checkRelativeOrdering(InferenceContext ctx, JTypeMirror otherBound, BoundKind ordering) {
+            // Now that we found out the relative ordering of myBound and otherBound,
+            // we can add constraints on them without creating extra contradictions.
+            switch (ordering) {
+            case UPPER:
+                // otherBound <: myBound
+                return checkBound(false, otherBound, myBound, ctx);
+            case EQ:
+                // mybound = otherBound
+                return checkBound(true, myBound, otherBound, ctx);
+            case LOWER:
+                // mybound <: otherBound
+                return checkBound(false, myBound, otherBound, ctx);
+            }
+            throw AssertionUtil.shouldNotReachHere("switch is exhaustive");
+        }
+
+        private static boolean mustTypesHaveAnOrdering(JTypeMirror myBound, JTypeMirror otherBound) {
+            return mayBePrimaryBound(myBound) && mayBePrimaryBound(otherBound)
+                   || myBound.getErasure().isConvertibleTo(otherBound.getErasure()).somehow()
+                   || otherBound.getErasure().isConvertibleTo(myBound.getErasure()).somehow();
+        }
+
+        private static @Nullable BoundKind getOrderingBetweenBounds(JTypeMirror myBound, JTypeMirror otherBound) {
+            // Since we are testing both directions we cannot let those tests add bounds on the ivars,
+            // because they could be contradictory.
+
+            // myBound = myBound.getErasure();
+            // otherBound = otherBound.getErasure();
+
+            if (TypeOps.isConvertiblePure(myBound, otherBound).somehow()) {
+                Convertibility otherConvertible = TypeOps.isConvertiblePure(otherBound, myBound);
+                if (otherConvertible.withoutWarnings()) {
+                    return BoundKind.EQ;
+                } else {
+                    return BoundKind.LOWER;
+                }
+            } else if (TypeOps.isConvertiblePure(otherBound, myBound).somehow()) {
+                return BoundKind.UPPER;
+            }
+            return null;
+        }
 
         /**
          * Check compatibility between this bound and another.

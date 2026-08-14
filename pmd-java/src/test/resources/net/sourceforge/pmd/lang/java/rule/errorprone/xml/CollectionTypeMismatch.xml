@@ -1090,4 +1090,40 @@ public class Bug3470297a {
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Generics test</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collection;
+
+public class Bug3470297a {
+    public static void main(String[] args, Collection<Class<?>> classes, Class<String> klass) {
+        classes.remove(klass);
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Openjdk bug</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Collection;
+
+import java.util.Map;
+class Bar {}
+class Foo {
+    final Map<Class<? extends Bar>, Bar> annotations;
+
+    static <A extends Bar> A annot(Class<A> klass) {
+        return (A) annotations.get(klass);
+    }
+}
+
+            ]]></code>
+    </test-code>
+
+
 </test-data>
