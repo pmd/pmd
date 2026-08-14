@@ -104,9 +104,11 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         DataflowResult result = DataflowPass.getDataflowResult(node);
-        reportFinished(result, (RuleContext) data);
-        return data;
+        reportFinished(result, ctx);
+        return null;
     }
 
     private void reportFinished(DataflowResult result, RuleContext ruleCtx) {
