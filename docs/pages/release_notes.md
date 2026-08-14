@@ -84,6 +84,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#5514](https://github.com/pmd/pmd/issues/5514): \[java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements
     * [#5670](https://github.com/pmd/pmd/issues/5670): \[java] ExhaustiveSwitchHasDefault issue with final fields not initialized in constructor
     * [#6200](https://github.com/pmd/pmd/issues/6200): \[java] UnusedAssignment: False positive about the ++ unary operator
+    * [#6611](https://github.com/pmd/pmd/issues/6611): \[java] UnnecessaryVarargsArrayCreation: false positive when removing the array creates overload ambiguity
 * java-codestyle
     * [#6958](https://github.com/pmd/pmd/issues/6958): \[java] BooleanGetMethodName should have the option to treat boolean wrapper type differently
     * [#6274](https://github.com/pmd/pmd/issues/6274): \[java] UselessParentheses: Treat parentheses around a ternary in the else-branch as clarifying, consistent with the then-branch.
