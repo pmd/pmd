@@ -10,6 +10,7 @@ import java.io.Externalizable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -152,16 +154,20 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
 
     private boolean isNotSerializable(TypeNode node) {
         JTypeMirror typeMirror = node.getTypeMirror();
+        return isNotSerializableType(typeMirror) || hasNonSerializableElementType(typeMirror);
+    }
+
+    private boolean isNotSerializableType(JTypeMirror typeMirror) {
         JTypeDeclSymbol typeSymbol = typeMirror.getSymbol();
         JClassSymbol classSymbol = null;
         if (typeSymbol instanceof JClassSymbol) {
             classSymbol = (JClassSymbol) typeSymbol;
         }
-        boolean notSerializable = !TypeTestUtil.isA(Serializable.class, node)
+        boolean notSerializable = !TypeTestUtil.isA(Serializable.class, typeMirror)
                 && !typeMirror.isPrimitive();
         if (!getProperty(CHECK_ABSTRACT_TYPES) && classSymbol != null) {
             // exclude java.lang.Object, interfaces, abstract classes
-            notSerializable &= !TypeTestUtil.isExactlyA(Object.class, node)
+            notSerializable &= !TypeTestUtil.isExactlyA(Object.class, typeMirror)
                     && !classSymbol.isInterface()
                     && !classSymbol.isAbstract();
         }
@@ -174,6 +180,38 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
             notSerializable = false;
         }
         return notSerializable;
+    }
+
+    /**
+     * If the given type is a parameterized {@link java.util.Collection Collection} or
+     * {@link java.util.Map Map}, checks whether any of its concrete class
+     * type arguments is non-serializable. The container type itself might be
+     * serializable (e.g. {@link java.util.ArrayList ArrayList}), while its elements/values are not,
+     * which would still make the field non-serializable in practice.
+     *
+     * <p>Type arguments that cannot be determined statically (type variables,
+     * wildcards, arrays, intersection types, ...) are ignored to avoid false
+     * positives.
+     */
+    private boolean hasNonSerializableElementType(JTypeMirror typeMirror) {
+        if (!(typeMirror instanceof JClassType)) {
+            return false;
+        }
+        JClassType classType = (JClassType) typeMirror;
+        if (!TypeTestUtil.isA(Collection.class, classType) && !TypeTestUtil.isA(Map.class, classType)) {
+            return false;
+        }
+        for (JTypeMirror typeArg : classType.getTypeArgs()) {
+            // only check concrete class type arguments; skip type variables,
+            // wildcards, arrays, intersection types, etc.
+            if (!(typeArg instanceof JClassType)) {
+                continue;
+            }
+            if (isNotSerializableType(typeArg) || hasNonSerializableElementType(typeArg)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<String> determinePersistentFields(ASTTypeDeclaration typeDeclaration) {
