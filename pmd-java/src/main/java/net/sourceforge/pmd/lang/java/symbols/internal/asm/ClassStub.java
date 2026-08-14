@@ -202,8 +202,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
             The non-visibility differences are disjoint, so they can be
             combined with OR. Visibility needs to be merged separately:
-            bytecode processors may produce conflicting InnerClasses
-            entries, and class stubs can be populated in different orders.
+            Bytecode processors (e.g. Android Proguard/R8) may produce
+            conflicting InnerClasses entries (widening access modifiers to
+            allow easier optimizations), and class stubs can be
+            populated in different orders.
          */
         if (fromClassInfo) {
             // we don't care about ACC_SUPER and it conflicts
