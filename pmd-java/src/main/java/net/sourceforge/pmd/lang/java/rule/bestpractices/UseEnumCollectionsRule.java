@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Detect cases where EnumSet and EnumMap can be used.
@@ -30,6 +31,8 @@ public class UseEnumCollectionsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall call, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         JTypeMirror builtType = call.getTypeMirror();
 
         if (!builtType.isRaw()) {
@@ -41,7 +44,7 @@ public class UseEnumCollectionsRule extends AbstractJavaRulechainRule {
 
                 if (keySymbol instanceof JClassSymbol && ((JClassSymbol) keySymbol).isEnum()) {
                     String enumCollectionReplacement = isMap ? "EnumMap" : "EnumSet";
-                    asCtx(data).addViolation(call.getTypeNode(), enumCollectionReplacement);
+                    ctx.addViolation(call.getTypeNode(), enumCollectionReplacement);
                 }
             }
         }
