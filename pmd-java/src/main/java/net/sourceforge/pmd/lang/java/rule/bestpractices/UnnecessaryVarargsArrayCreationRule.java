@@ -21,9 +21,9 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRule {
 
