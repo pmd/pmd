@@ -90,6 +90,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6200](https://github.com/pmd/pmd/issues/6200): \[java] UnusedAssignment: False positive about the ++ unary operator
     * [#6393](https://github.com/pmd/pmd/issues/6393): \[java] UnusedPrivateMethod: False positive with overloaded private methods called with values returned from methods of an unresolved type
     * [#6611](https://github.com/pmd/pmd/issues/6611): \[java] UnnecessaryVarargsArrayCreation: false positive when removing the array creates overload ambiguity
+    * [#6901](https://github.com/pmd/pmd/issues/6901): \[java] MethodReturnsInternalArray: False negative when the same array escapes through Collections.singletonList(data).get(0)
     * [#6965](https://github.com/pmd/pmd/issues/6965): \[java] AbstractClassWithoutAnyMethod False Positive on derived abstract class
 * java-codestyle
     * [#5441](https://github.com/pmd/pmd/issues/5441): \[java] UseDiamondOperator: False positive with interdependent generic vars
