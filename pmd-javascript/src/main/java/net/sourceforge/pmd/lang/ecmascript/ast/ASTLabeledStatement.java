@@ -25,6 +25,6 @@ public final class ASTLabeledStatement extends AbstractEcmascriptNode<LabeledSta
     }
 
     public EcmascriptNode<?> getStatement() {
-        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
+        return getChild(getNumChildren() - 1);
     }
 }
