@@ -2813,4 +2813,29 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6393 FP with overloaded private method called with value returned from a method of an unresolved type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface UnusedPrivateMethodFalsePositivePrivateMethod {
+
+    default String publicMethod(final Thing l) {
+        return transform(l.getLong());
+    }
+
+    default String publicMethod2(final Thing l) {
+        return transform(l.getString());
+    }
+
+    private String transform(final String l) {
+        return l;
+    }
+
+    private String transform(final Long l) {
+        return l.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
