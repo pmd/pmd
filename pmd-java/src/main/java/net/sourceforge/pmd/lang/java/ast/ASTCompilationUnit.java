@@ -66,14 +66,16 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         return astInfo;
     }
 
-    void setComments(List<JavaComment> comments) {
+    void setComments(List<JavaComment> comments, boolean markdownJavadocSupported) {
         List<JavaComment> result = new ArrayList<>();
 
-        // collapses single line markdown comments into consecutive JavadocComments
+        // collapses single line markdown comments into consecutive JavadocComments,
+        // but only if markdown javadoc (JEP 467) is supported, i.e. since Java 23.
+        // Before that, /// comments are ordinary single line comments.
         List<JavaComment> currentMarkdownBlock = null;
 
         for (JavaComment comment : comments) {
-            if (JavaAstUtils.isMarkdownComment(comment.getToken())) {
+            if (markdownJavadocSupported && JavaAstUtils.isMarkdownComment(comment.getToken())) {
                 if (currentMarkdownBlock == null) {
                     currentMarkdownBlock = new ArrayList<>();
                 } else {
