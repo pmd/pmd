@@ -473,7 +473,7 @@ the comment based approach will be extended to those of them that can support it
 CPD has been through three major incarnations:
 
 *   First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
-    [here](http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html)).
+    [here](https://web.archive.org/web/20030323100855/http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html)).
 
 *   Then it was completely rewritten by Brian Ewins using the
     [Burrows-Wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform).
