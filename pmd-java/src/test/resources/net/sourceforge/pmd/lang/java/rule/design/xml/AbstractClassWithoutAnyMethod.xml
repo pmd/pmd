@@ -142,7 +142,7 @@ abstract class RequiredArgs {
     </test-code>
 
     <test-code>
-        <description>[java] AbstractClassWithoutAnyMethod false positive on derived abstract class #6965</description>
+        <description>[java] AbstractClassWithoutAnyMethod false positive on derived abstract class #1237/#6965</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class BaseFooType {
