@@ -249,7 +249,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             return "declared in the same package";
         case SINGLE_IMPORT:
         case IMPORT_ON_DEMAND:
+        case MODULE_IMPORT:
             return "imported in this file";
+        case SIMPLE_COMPILATION_UNIT:
+            return "implicitly imported";
         case INHERITED:
             return "inherited by an enclosing type";
         case ENCLOSING_TYPE_MEMBER:

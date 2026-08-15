@@ -2331,4 +2331,181 @@ public class CastNullAfter {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: False positive with resource being closed in method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    void closeConnection(Connection c) {
+        c.close();
+    }
+
+    void bar(Pool pool) {
+        Connection c = pool.getConnection();
+        try {
+        } catch (Exception e) {
+        } finally {
+            closeConnection(c);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: the called method closes another resource, not the one passed to it</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    void closeSecondArg(Connection c, Connection other) {
+        other.close();
+    }
+
+    void bar(Pool pool, Connection other) {
+        Connection c = pool.getConnection();
+        try {
+        } catch (Exception e) {
+        } finally {
+            closeSecondArg(c, other);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: False positive with resource being closed in a method of a nested class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    static class Helper {
+        void closeConnection(Connection c) {
+            c.close();
+        }
+    }
+
+    void bar(Pool pool) {
+        Connection c = pool.getConnection();
+        Helper helper = new Helper();
+        try {
+        } catch (Exception e) {
+        } finally {
+            helper.closeConnection(c);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#4623 [java] CloseResource: False positive with resource being closed in a lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.Connection;
+import java.util.function.Consumer;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Pool;
+
+public class Foo {
+
+    void bar(Pool pool) {
+        Connection c = pool.getConnection();
+        Consumer<Connection> closeConnection = conn -> conn.close();
+        try {
+        } catch (Exception e) {
+        } finally {
+            closeConnection.accept(c);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>[java] CloseResource: plain close, declaration with initializer (#6742 control, rule defaults)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclBefore {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] CloseResource: plain close, split declaration and assignment (#6742)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+
+public class SplitDeclAfter {
+    public static void main(String[] args) throws Exception {
+        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+        ObjectOutputStream oout;
+        oout = new ObjectOutputStream(pout);
+        oout.writeObject("x");
+        oout.close();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2840 [java] CloseResource: False positive on mocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Closeable;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+interface MockRequest extends Closeable {
+    int execute(String request, String body);
+}
+
+class MockTest {
+    @Test
+    void testMock() {
+        MockRequest mock = Mockito.mock(MockRequest.class);
+        Mockito.when(mock.execute("foo", "bar")).thenReturn(200);
+
+        Assertions.assertEquals(200, mock.execute("foo", "bar"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2840 Mockito.mockStatic returns a MockedStatic and must still be reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+class StaticMockTest {
+    void test() {
+        MockedStatic<Integer> mocked = Mockito.mockStatic(Integer.class);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
