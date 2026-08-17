@@ -76,7 +76,7 @@ public class RuleTagChecker {
                     int pos = ruleTagMatcher.end();
                     if (pos + 1 >= line.length()
                             || line.charAt(pos) != '%'
-                            || pos + 1 >= line.length() || line.charAt(pos + 1) != '}'
+                            || line.charAt(pos + 1) != '}'
                     ) {
                         addIssue(file, lineNo, "Rule tag for " + ruleReference + " is not closed properly");
                     } else if (ruleReference.startsWith(QUOTE) && !ruleReference.endsWith(QUOTE)
