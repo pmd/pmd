@@ -125,6 +125,8 @@ enum ReductionStep {
      */
     static final List<List<ReductionStep>> WAVES =
         listOf(
+            listOf(EQ),
+            listOf(EQ, LOWER),
             listOf(EQ, LOWER, UPPER, CAPTURED),
             listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
     //                        ^^^^^^

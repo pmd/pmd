@@ -928,11 +928,15 @@ public class DummyActivity extends Activity {
     <rule name="CheckSkipResult"
           language="java"
           since="5.0"
+          deprecated="true"
           message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.CheckSkipResultRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#checkskipresult">
         <description>
 The skip() method may skip a smaller number of bytes than requested. Check the returned value to find out if it was the case or not.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UnusedReturnValue %}
         </description>
         <priority>3</priority>
         <example>
@@ -1127,8 +1131,18 @@ just remove "AutoCloseable" from the types.
 The property `allowedResourceMethodPatterns` can be used to specify method invocation patterns that return
 resources which are managed externally and don't need to be closed by the caller. This is useful for
 servlet-related streams like `HttpServletRequest.getReader()` or `HttpServletResponse.getWriter()`,
-which are managed by the servlet container. The patterns use InvocationMatcher syntax
-(e.g., `javax.servlet.ServletRequest#getReader()`).
+which are managed by the servlet container, and for mocking frameworks, whose mocks are not real
+resources even when the mocked type implements `java.lang.AutoCloseable`. The patterns use
+InvocationMatcher syntax (e.g., `javax.servlet.ServletRequest#getReader()`).
+
+The defaults cover the servlet API and Mockito's `mock()`. Mocks created by other frameworks
+can be allowed by adding their factory methods, for example `org.easymock.EasyMock#createMock(_*)`,
+`org.jmock.Mockery#mock(_*)` or `mockit.Mocked#new(_*)`.
+
+Note that `Mockito.spy()` and `Mockito.mockStatic()` are intentionally not among the defaults.
+A spy calls through to the real object by default, so either the spy or the object it wraps still
+has to be closed; `mockStatic()` returns a `MockedStatic`, which has to be closed as well. A violation
+in either case is a true positive.
         </description>
         <priority>3</priority>
         <example>
@@ -3319,7 +3333,11 @@ Do not use "if" statements whose conditionals are always true or always false.
             <property name="xpath">
                 <value>
  <![CDATA[
-//IfStatement[BooleanLiteral[1]]
+//IfStatement[
+    every $node in *[1]/descendant-or-self::*
+    satisfies $node/self::BooleanLiteral
+              or $node/self::UnaryExpression[@Operator = '!']
+]
 union
 //IfStatement/(VariableAccess|UnaryExpression[@Operator = '!']/VariableAccess)/self::VariableAccess[@CompileTimeConstant = false()]
 [@Name = ancestor::IfStatement
@@ -3531,8 +3549,8 @@ public class Test {
 
     public void method(String a) {
         String b;
-        // I don't know it method1() can be "null"
-        // but I know "a" is not null..
+        // I don't know if method1() can be "null"
+        // but I know "a" is not null.
         // I'd better write a.equals(method1())
 
         if (a!=null && method1().equals(a)) { // will trigger the rule
@@ -3560,6 +3578,41 @@ public class Test {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedReturnValue"
+          language="java"
+          since="7.27.0"
+          message="Result of ''{0}'' is ignored."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UnusedReturnValueRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusedreturnvalue">
+        <description>
+The UnusedReturnValue rule ensures that developers do not ignore the return values of methods where doing so would likely be a bug.
+
+This could be because you are treating a mutation-by-copy operation (like String.concat() or BigDecimal.add())
+as an in-place mutation, or forgetting to handle a critical validation result, error code, or stream.
+By enforcing that the returned object is assigned to a variable, passed to another method, or explicitly handled,
+this rule prevents silent logic failures.
+
+See {% rule "java/bestpractices/UnusedAssignment" %} if you think assigning to a variable isn't enough.
+
+This rule replaces the old rules {% rule CheckSkipResult %} and {% rule UselessPureMethodCall %}.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    public void foo() {
+        bar();
+    }
+
+    @CheckReturnValue
+    private int bar() {
+        return 42;
+    }
+}
+            ]]>
         </example>
     </rule>
 
@@ -3675,6 +3728,7 @@ class Test {
     <rule name="UselessPureMethodCall"
           language="java"
           since="7.17.0"
+          deprecated="true"
           message="Do not call pure method {0} if the result is not used."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessPureMethodCallRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselesspuremethodcall">
@@ -3683,6 +3737,9 @@ This rule detects method calls of pure methods whose result is unused. A pure me
 side effects. Therefore, ignoring the result of such a method call is likely a mistake.
 
 Either the method call can be removed or the result should be used.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UnusedReturnValue %}
         </description>
         <priority>3</priority>
         <example>
