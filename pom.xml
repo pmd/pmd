@@ -91,7 +91,7 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.6</surefire.version>
-        <checkstyle.version>13.8.0</checkstyle.version>
+        <checkstyle.version>13.10.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.17</ant.version>
@@ -108,7 +108,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>39</pmd.build-tools.version>
+        <pmd.build-tools.version>40</pmd.build-tools.version>
 
         <pmd-designer.version>7.19.3</pmd-designer.version>
 
