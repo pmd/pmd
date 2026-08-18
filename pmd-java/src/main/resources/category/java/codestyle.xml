@@ -1335,7 +1335,7 @@ public int getLength(String[] strings) {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#protectedmemberinfinalclass">
         <description>
-            Do not use protected members in most final classes since they cannot be subclassed. This does
+            Do not use protected members in final classes since they cannot be subclassed. This does
             not apply to methods that override a protected method from a superclass, since visibility cannot be decreased .
             Clarify your intent by using private or package access modifiers instead.
         </description>
