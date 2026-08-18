@@ -2910,7 +2910,7 @@ public class Foo {
     <rule name="ReturnEmptyCollectionRatherThanNull"
           language="java"
           since="6.37.0"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.ReturnEmptyCollectionRatherThanNullRule"
           message="Return an empty collection rather than 'null'."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#returnemptycollectionratherthannull">
         <description>
@@ -2921,21 +2921,6 @@ inadvertent NullPointerExceptions.
 See Effective Java, 3rd Edition, Item 54: Return empty collections or arrays instead of null
         </description>
         <priority>1</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ReturnStatement/NullLiteral
-[ancestor::MethodDeclaration[1]
-    [ArrayType
-     or ClassType[pmd-java:typeIs('java.util.Collection')
-        or pmd-java:typeIs('java.util.Map')]]
-]
-[not(./ancestor::LambdaExpression)]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class Example {
@@ -3588,7 +3573,7 @@ public class Test {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UnusedReturnValueRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unusedreturnvalue">
         <description>
-The UnusedReturnValue rule ensures that developers do not ignore the return values of methods where doing so value would likely be a bug.
+The UnusedReturnValue rule ensures that developers do not ignore the return values of methods where doing so would likely be a bug.
 
 This could be because you are treating a mutation-by-copy operation (like String.concat() or BigDecimal.add())
 as an in-place mutation, or forgetting to handle a critical validation result, error code, or stream.

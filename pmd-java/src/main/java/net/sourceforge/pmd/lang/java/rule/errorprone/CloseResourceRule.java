@@ -12,11 +12,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -32,6 +34,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -734,11 +738,41 @@ public class CloseResourceRule extends AbstractJavaRule {
     private boolean hasMethodCallClosingResourceVariable(ASTBlock block, ASTVariableId variableToClose) {
         List<ASTMethodCall> methodCalls = block.descendants(ASTMethodCall.class).crossFindBoundaries().toList();
         for (ASTMethodCall call : methodCalls) {
-            if (isMethodCallClosingResourceVariable(call, variableToClose)) {
+            if (isMethodCallClosingResourceVariable(call, variableToClose)
+                    || isClosedByCallee(call, variableToClose)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isClosedByCallee(ASTMethodCall call, ASTVariableId variableToClose) {
+        ASTExpression argument = call.getArguments().toStream()
+                .filter(arg -> JavaAstUtils.isReferenceToVar(arg, variableToClose.getSymbol()))
+                .first();
+        // the resource is only closed if the callee closes the exact parameter it was passed as
+        ASTVariableId param = argument == null ? null : calleeParameters(call).get(argument.getIndexInParent());
+        return param != null && param.getLocalUsages().stream()
+                .anyMatch(usage -> usage.getParent() instanceof ASTMethodCall
+                        && isCloseTargetMethodCall((ASTMethodCall) usage.getParent()));
+    }
+
+    private NodeStream<ASTVariableId> calleeParameters(ASTMethodCall call) {
+        JavaNode method = call.getMethodType().getSymbol().tryGetNode();
+        if (method instanceof ASTMethodDeclaration) {
+            return ((ASTMethodDeclaration) method).getFormalParameters().toStream().map(ASTFormalParameter::getVarId);
+        }
+
+        Optional<JVariableSymbol> lambdaCallCandidate = Optional.ofNullable(call.getQualifier() instanceof ASTVariableAccess
+                ? ((ASTVariableAccess) call.getQualifier()).getReferencedSym() : null);
+
+        return lambdaCallCandidate.map(JVariableSymbol::tryGetNode)
+                .map(this::initializerOrFirstAssignedValueOf)
+                .filter(ASTLambdaExpression.class::isInstance)
+                .map(ASTLambdaExpression.class::cast)
+                .map(ASTLambdaExpression::getParameters)
+                .map(params -> params.toStream().map(ASTLambdaParameter::getVarId))
+                .orElse(NodeStream.empty());
     }
 
     private boolean isMethodCallClosingResourceVariable(ASTExpression expr, ASTVariableId variableToClose) {

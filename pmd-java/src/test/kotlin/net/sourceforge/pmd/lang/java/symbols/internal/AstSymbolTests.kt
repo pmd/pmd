@@ -9,6 +9,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.*
 import net.sourceforge.pmd.lang.java.types.Substitution
@@ -543,6 +544,32 @@ class AstSymbolTests : ParserTestSpec({
             anonAnon::getEnclosingMethod shouldBe null
             initAnon::getEnclosingMethod shouldBe null
             staticInitAnon::getEnclosingMethod shouldBe null
+        }
+    }
+
+    parserTestContainer("Package symbols") {
+        doTest("package declaration only") {
+            val acu = parser.withProcessing().parse("""
+                package com.foo;
+            """)
+
+            val packageSym = acu.descendants(ASTPackageDeclaration::class.java)
+                .first()?.symbol!!
+            packageSym.simpleName shouldBe "com.foo"
+            packageSym.declaredAnnotations shouldBe emptyList()
+        }
+
+        doTest("package with annotations") {
+            val acu = parser.withProcessing().parse("""
+                @Deprecated
+                package com.foo;
+            """)
+
+            val packageSym = acu.descendants(ASTPackageDeclaration::class.java)
+                .first()?.symbol!!
+            packageSym.simpleName shouldBe "com.foo"
+            packageSym.declaredAnnotations.size shouldBe 1
+            packageSym.declaredAnnotations.first().simpleName shouldBe "Deprecated"
         }
     }
 })
