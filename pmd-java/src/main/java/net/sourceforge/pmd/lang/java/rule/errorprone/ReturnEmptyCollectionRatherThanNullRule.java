@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * {@code null} literal is ignored when it appears only in a condition, a switch selector or an array
  * element rather than in the produced value.
  *
- * @since 7.27.0
+ * @since 6.37.0 (as XPath) / 7.27.0 (as Java)
  */
 public class ReturnEmptyCollectionRatherThanNullRule extends AbstractJavaRulechainRule {
 
@@ -60,7 +60,7 @@ public class ReturnEmptyCollectionRatherThanNullRule extends AbstractJavaRulecha
             return data;
         }
 
-        if (mayYieldExplicitNull(expression) || reachesExplicitNullThroughLocal(expression)) {
+        if (mayReturnExplicitNull(expression) || reachesExplicitNullThroughLocal(expression)) {
             asCtx(data).addViolation(returnStmt);
         }
         return data;
@@ -79,18 +79,18 @@ public class ReturnEmptyCollectionRatherThanNullRule extends AbstractJavaRulecha
      * expressions, not produced values, so they are not examined. Local variables are not traced
      * here; {@link #reachesExplicitNullThroughLocal(ASTExpression)} handles a bare returned local.
      */
-    private static boolean mayYieldExplicitNull(ASTExpression expression) {
+    private static boolean mayReturnExplicitNull(ASTExpression expression) {
         if (expression instanceof ASTNullLiteral) {
             return true;
         } else if (expression instanceof ASTConditionalExpression) {
             ASTConditionalExpression conditional = (ASTConditionalExpression) expression;
-            return mayYieldExplicitNull(conditional.getThenBranch())
-                || mayYieldExplicitNull(conditional.getElseBranch());
+            return mayReturnExplicitNull(conditional.getThenBranch())
+                || mayReturnExplicitNull(conditional.getElseBranch());
         } else if (expression instanceof ASTCastExpression) {
-            return mayYieldExplicitNull(((ASTCastExpression) expression).getOperand());
+            return mayReturnExplicitNull(((ASTCastExpression) expression).getOperand());
         } else if (expression instanceof ASTSwitchExpression) {
             for (ASTExpression yielded : ((ASTSwitchExpression) expression).getYieldExpressions()) {
-                if (mayYieldExplicitNull(yielded)) {
+                if (mayReturnExplicitNull(yielded)) {
                     return true;
                 }
             }
@@ -100,7 +100,7 @@ public class ReturnEmptyCollectionRatherThanNullRule extends AbstractJavaRulecha
             // Only a plain assignment can carry an explicit null reference as its value;
             // compound assignments are not a direct null source.
             return !assignment.isCompound()
-                && mayYieldExplicitNull(assignment.getRightOperand());
+                && mayReturnExplicitNull(assignment.getRightOperand());
         }
         return false;
     }
@@ -124,7 +124,7 @@ public class ReturnEmptyCollectionRatherThanNullRule extends AbstractJavaRulecha
         }
         for (AssignmentEntry def : reaching.getReaching()) {
             ASTExpression rhs = def.getRhsAsExpression();
-            if (rhs != null && mayYieldExplicitNull(rhs)) {
+            if (rhs != null && mayReturnExplicitNull(rhs)) {
                 return true;
             }
         }
