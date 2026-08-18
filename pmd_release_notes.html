@@ -2184,10 +2184,13 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2840">#2840</a>: [java] CloseResource: False positive on mocks</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3880">#3880</a>: [java] ReturnEmptyCollectionRatherThanNull: False negative when a null value is assigned to a local that is later returned</li>
       <li><a href="https://github.com/pmd/pmd/issues/4623">#4623</a>: [java] CloseResource: False positive with resource being closed in method</li>
       <li><a href="https://github.com/pmd/pmd/issues/6435">#6435</a>: [java] UnconditionalIfStatement: False negative for negated boolean constant</li>
       <li><a href="https://github.com/pmd/pmd/issues/6547">#6547</a>: [java] NonSerializableClass: Report non-serializable generic element/value types of collections and maps</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6695">#6695</a>: [java] ReturnEmptyCollectionRatherThanNull: False negative when null is returned through a local variable</li>
       <li><a href="https://github.com/pmd/pmd/issues/6742">#6742</a>: [java] CloseResource: False positive when a correctly-closed resource is declared without initializer</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6744">#6744</a>: [java] ReturnEmptyCollectionRatherThanNull: False negatives when a returned expression can evaluate to null</li>
       <li><a href="https://github.com/pmd/pmd/issues/6826">#6826</a>: [java] AssertEqualsArgumentOrder: False positive for double assertEquals</li>
       <li><a href="https://github.com/pmd/pmd/issues/6900">#6900</a>: [java] DoubleCheckedLocking: False negative when the outer null check is written as !(x != null)</li>
     </ul>
@@ -2270,7 +2273,7 @@ on Kotlin AST nodes. It’s part of the new Kotlin type-aware analysis.</li>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 15, 2026 <br />
+             Site last generated: Aug 18, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
