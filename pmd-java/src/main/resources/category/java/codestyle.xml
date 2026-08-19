@@ -1338,6 +1338,8 @@ public int getLength(String[] strings) {
             Do not use protected members in final classes since they cannot be subclassed. This does
             not apply to methods that override a protected method from a superclass, since visibility cannot be decreased .
             Clarify your intent by using private or package access modifiers instead.
+
+            This replaced the old rules "AvoidProtectedFieldInFinalClass" and "AvoidProtectedMethodInFinalClassNotExtending" in PMD 7.27.0
         </description>
         <priority>3</priority>
         <properties>
