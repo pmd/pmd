@@ -102,6 +102,52 @@ private class TestRunAs {
         </example>
     </rule>
 
+    <rule name="ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation"
+          language="apex"
+          since="7.14.0"
+          message="Apex unit test classes should have either the 'critical' or the 'testFor' modifier of the @IsTest annotation"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunrelevanttestsannotation">
+        <description>
+Apex unit test classes should declare either `@IsTest(critical=true)` or `@IsTest(testFor='...')` (Beta, Salesforce
+API v66.0+), used together with the `RunRelevantTests` deployment test level. Without one of these modifiers, a test
+class relies entirely on Salesforce's automatic dependency detection to decide whether it runs during a
+`RunRelevantTests` deployment. For test classes covering critical paths, or classes that exercise code reached only
+through dynamic mechanisms (e.g. `Type.forName`, metadata-driven routing/dispatch), automatic detection can miss the
+dependency, and the test class may silently be skipped during a deployment even though the code it protects changed.
+
+See more here: [IsTest Annotation](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_isTest.htm)
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+@isTest
+private class OpportunityEODTest { // not good, no 'critical' or 'testFor' modifier
+    @isTest
+    static void validatesOrgWideBehavior() {
+        // ...
+    }
+}
+
+@isTest(critical=true) // good, explicitly marked as always relevant
+private class OpportunityEODTest {
+    @isTest
+    static void validatesOrgWideBehavior() {
+        // ...
+    }
+}
+
+@isTest(testFor='ApexClass:InvoiceEngine, ApexTrigger:InvoiceTrigger') // good, explicitly tied to its dependencies
+private class InvoiceDynamicFlowTests {
+    @isTest
+    static void validatesDynamicInvocationPath() {
+        // ...
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ApexUnitTestMethodShouldHaveIsTestAnnotation"
           since="6.13.0"
           language="apex"
