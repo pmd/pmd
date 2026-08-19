@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JPackageSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -403,6 +404,17 @@ public final class TypeSystem {
      */
     public @Nullable JModuleSymbol getModuleSymbol(String moduleName) {
         return resolver.resolveModule(moduleName);
+    }
+
+    /**
+     * Returns a symbol for the pseudo-class representing a package (usually called "package-info.java")
+     *
+     * @since 7.27.0
+     */
+    public @Nullable JPackageSymbol getPackageSymbol(String packageName) {
+        AssertionUtil.assertValidJavaPackageName(packageName);
+
+        return resolver.resolvePackage(packageName);
     }
 
     /**

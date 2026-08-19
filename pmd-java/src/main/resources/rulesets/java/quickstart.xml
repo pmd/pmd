@@ -92,8 +92,8 @@
     <!-- OTHER -->
     <!-- <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" /> -->
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/>
-    <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/>
-    <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
+    <!-- <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/> -->
+    <!-- <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/> -->
     <!-- <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode"/>-->
     <!-- <rule ref="category/java/codestyle.xml/BooleanGetMethodName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/CallSuperInConstructor" /> -->
@@ -113,6 +113,7 @@
     <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" /> -->
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn" /> -->
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
+    <rule ref="category/java/codestyle.xml/ProtectedMemberInFinalClass"/>
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBlock"/> -->
@@ -225,7 +226,6 @@
     <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
     <!-- <rule ref="category/java/errorprone.xml/CallSuperFirst" /> -->
     <!-- <rule ref="category/java/errorprone.xml/CallSuperLast" /> -->
-    <rule ref="category/java/errorprone.xml/CheckSkipResult"/>
     <rule ref="category/java/errorprone.xml/ClassCastExceptionWithToArray"/>
     <rule ref="category/java/errorprone.xml/CloneMethodMustBePublic"/>
     <rule ref="category/java/errorprone.xml/CloneMethodMustImplementCloneable"/>
@@ -291,10 +291,10 @@
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange" /> -->
     <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/>
     <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/>
+    <rule ref="category/java/errorprone.xml/UnusedReturnValue"/>
     <!-- <rule ref="category/java/errorprone.xml/UnsupportedJdkApiUsage" /> -->
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" /> -->
     <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
-    <rule ref="category/java/errorprone.xml/UselessPureMethodCall"/>
     <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader" /> -->
     <!-- <rule ref="category/java/errorprone.xml/WrongTestAnnotation" /> -->
