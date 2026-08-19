@@ -2348,6 +2348,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/codestyle.md",
+  "title": "ProtectedMemberInFinalClass (Java, Code Style)",
+  "tags": "",
+  "keywords": "Protected Member In Final Class",
+  "url": "pmd_rules_java_codestyle.html#protectedmemberinfinalclass",
+  "summary": "Do not use protected members in final classes since they cannot be subclassed. This does..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/codestyle.md",
   "title": "RemoteInterfaceNamingConvention (Java, Code Style)",
   "tags": "",
   "keywords": "Remote Interface Naming Convention",
@@ -2472,7 +2480,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Unnecessary Local Before Return",
   "url": "pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn",
-  "summary": "Avoid the creation of unnecessary local variables. This rule has been deprecated since 7.17.0. Use..."
+  "summary": "Avoid the creation of unnecessary local variables. **Deprecated:** This rule has been deprecated since 7.17.0...."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/codestyle.md",
