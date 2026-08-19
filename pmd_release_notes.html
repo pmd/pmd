@@ -2062,6 +2062,25 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
+<h4 id="️-new-java-27-support">🚀️ New: Java 27 Support</h4>
+<p>This release of PMD brings support for Java 27.</p>
+
+<p>There are no new standard language features.</p>
+
+<p>There is one preview language feature:</p>
+<ul>
+  <li><a href="https://openjdk.org/jeps/532">JEP 532: Primitive Types in Patterns, instanceof, and switch (Fifth Preview)</a></li>
+</ul>
+
+<p>In order to analyze a project with PMD that uses these preview language features,
+you’ll need to select the new language version <code class="language-plaintext highlighter-rouge">27-preview</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check --use-version java-27-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for Java 25 preview language features have been removed. The version “25-preview”
+is no longer available.</p>
+
 <h4 id="updated-apex-support">Updated Apex Support</h4>
 <p>The Apex language support has been bumped to version 67.0 (Summer ‘26). It supports the new
 <a href="https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&amp;release=262&amp;type=5">Multiline String</a> literals.</p>
@@ -2143,6 +2162,7 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5041">#5041</a>: [java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6374">#6374</a>: [java] Support Java 27</li>
       <li><a href="https://github.com/pmd/pmd/issues/6768">#6768</a>: [java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class</li>
       <li><a href="https://github.com/pmd/pmd/issues/6932">#6932</a>: [java] AssertionError when outer class is parsed before inner class with conflicting visibility</li>
     </ul>
