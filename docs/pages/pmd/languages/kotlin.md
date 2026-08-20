@@ -127,7 +127,7 @@ Use the XPath `=` operator (which tests sequence membership) to check for a spec
 
 **`pmd-kotlin:isNullable()`** — Returns `true` if the context node's declared type is nullable
 (i.e. has a `?` suffix in the Kotlin source). Works on `PropertyDeclaration`, `FunctionDeclaration`,
-`ClassParameter`, and `FunctionValueParameter` nodes.
+`ClassParameter`, `FunctionValueParameter`, `CatchBlock`, and `ForStatement` nodes.
 
 ```xml
 //PropertyDeclaration[pmd-kotlin:isNullable()]
