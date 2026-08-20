@@ -212,7 +212,7 @@ public class CognitiveComplexityRule extends AbstractKotlinRule {
 
     private void visitChildrenForComplexity(KotlinNode node, State state, KotlinNode scope) {
         for (int i = 0; i < node.getNumChildren(); i++) {
-            visitForComplexity((KotlinNode) node.getChild(i), state, scope);
+            visitForComplexity(node.getChild(i), state, scope);
         }
     }
 
