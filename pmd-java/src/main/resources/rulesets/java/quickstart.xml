@@ -113,7 +113,6 @@
     <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" /> -->
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn" /> -->
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
-    <rule ref="category/java/codestyle.xml/ProtectedMemberInFinalClass"/>
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBlock"/> -->
@@ -170,6 +169,7 @@
     <!-- <rule ref="category/java/design.xml/MutableStaticState" /> -->
     <!-- <rule ref="category/java/design.xml/NcssCount" /> -->
     <!-- <rule ref="category/java/design.xml/NPathComplexity" /> -->
+    <rule ref="category/java/design.xml/ProtectedMemberInFinalClass"/>
     <!-- <rule ref="category/java/design.xml/PublicMemberInNonPublicType" /> -->
     <!-- <rule ref="category/java/design.xml/SignatureDeclareThrowsException" /> -->
     <rule ref="category/java/design.xml/SimplifiedTernary"/>
