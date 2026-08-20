@@ -237,6 +237,8 @@ public final class KotlinTypeAnalysisContext {
         return TypedAstHierarchyQueriesKt.isSubtypeOfUpward(typedAst, expectedType, actualType);
     }
 
+    // Fail fast: if getCanonicalPath() fails the file is inaccessible and
+    // analysis would produce wrong index keys later anyway (PR #6795 review).
     private static String canonicalize(String path) {
         try {
             return new File(path).getCanonicalPath();
