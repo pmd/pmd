@@ -279,7 +279,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class)));
 
         try {
-            configuration.prependAuxClasspath(auxClasspath);
+            configuration.setAuxClasspath(auxClasspath);
         } catch (IllegalArgumentException e) {
             throw new ParameterException(spec.commandLine(), "Invalid auxiliary classpath: " + e.getMessage(), e);
         }

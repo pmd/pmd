@@ -17,7 +17,7 @@ public final class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> 
     }
 
     public EcmascriptNode<?> getTryBlock() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public boolean hasCatch() {
@@ -43,6 +43,6 @@ public final class ASTTryStatement extends AbstractEcmascriptNode<TryStatement> 
         if (!hasFinally()) {
             return null;
         }
-        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
+        return getChild(getNumChildren() - 1);
     }
 }

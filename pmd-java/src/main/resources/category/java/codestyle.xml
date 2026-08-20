@@ -69,12 +69,15 @@ public class Fo$o {  // not a recommended name
     <rule name="AvoidProtectedFieldInFinalClass"
           language="java"
           since="2.1"
+          deprecated="true"
           message="Avoid protected fields in a final class.  Change to private or package access."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass">
         <description>
 Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule ProtectedMemberInFinalField %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
@@ -102,6 +105,7 @@ public final class Bar {
     <rule name="AvoidProtectedMethodInFinalClassNotExtending"
           language="java"
           since="5.1"
+          deprecated="true"
           message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending">
@@ -109,6 +113,8 @@ public final class Bar {
 Do not use protected methods in most final classes since they cannot be subclassed. This should
 only be allowed in final classes that extend other classes with protected methods (whose
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule ProtectedMemberInFinalField %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
@@ -178,6 +184,7 @@ public class SomeJNIClass {
         <description>
             Methods that return boolean or Boolean results should be named as predicate statements to denote this.
             I.e., 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc. Avoid the use of the 'get' prefix for these methods.
+            By default, methods returning the Boolean wrapper type are checked as well. This can be disabled with the includeWrappedType property.
         </description>
         <priority>4</priority>
         <properties>
@@ -187,16 +194,17 @@ public class SomeJNIClass {
 //MethodDeclaration
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
-    [ (PrimitiveType[@Kind = 'boolean'] or ClassType[pmd-java:typeIs('java.lang.Boolean')]) and @Override = false() ]
+    [ (PrimitiveType[@Kind = 'boolean'] or ($includeWrappedType and ClassType[pmd-java:typeIs('java.lang.Boolean')])) and @Override = false() ]
 ]]>
                 </value>
             </property>
             <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods" value="false"/>
+            <property name="includeWrappedType" type="Boolean" description="Include methods returning the Boolean wrapper type" value="true"/>
         </properties>
         <example>
             <![CDATA[
 public boolean getFoo();            // bad
-public Boolean getFoo();            // bad
+public Boolean getFoo();            // bad if includeWrappedType=true (default)
 public boolean isFoo();             // ok
 public Boolean isFoo();             // ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
@@ -1319,7 +1327,6 @@ public int getLength(String[] strings) {
 ]]>
         </example>
     </rule>
-
     <rule name="RemoteInterfaceNamingConvention"
           language="java"
           since="4.0"
@@ -1906,7 +1913,7 @@ class C extends A implements J { // Unnecessary to declare that C implements J, 
         <description>
 Avoid the creation of unnecessary local variables.
 
-This rule has been deprecated since 7.17.0. Use the new rule
+**Deprecated:** This rule has been deprecated since 7.17.0. Use the new rule
 {%rule VariableCanBeInlined %} instead, which additionally covers throw statements.
         </description>
         <priority>3</priority>
@@ -2353,6 +2360,11 @@ public class Foo {
 
             Final variables are exempt from the rule to allow snapshot comparison,
             the same applies to variables defined using time measurement methods.
+
+            Other local variable declarations that are not separated from the current one
+            by any executable statement don't count towards the distance either, so that
+            variables that are declared together (e.g. all at the top of a block) are not
+            reported just because of each other.
         </description>
         <priority>3</priority>
         <properties>
@@ -2381,6 +2393,22 @@ public void measure() {
     long duration = System.currentTimeMillis() - start;
     System.out.println("Duration: " + duration);
     System.out.println("State changed: " + !state.equals(getState()));
+}
+
+// none of these are reported: the other declarations in between don't count
+// towards the distance, since they aren't executable statements themselves
+public void report() {
+    Report firstReport;
+    Tree   firstTree;
+    Frame  frame;
+    Report secondReport;
+
+    firstReport  = new Report();
+    secondReport = new Report();
+    frame        = createFrame();
+    // ... many unrelated statements
+
+    firstTree = firstReport.getTree();
 }
 ]]>
         </example>

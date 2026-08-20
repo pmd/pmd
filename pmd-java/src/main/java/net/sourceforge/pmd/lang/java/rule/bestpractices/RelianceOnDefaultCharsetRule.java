@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Detects constructors and methods that use the JVM's default character set
@@ -81,24 +82,28 @@ public class RelianceOnDefaultCharsetRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        checkInvocation(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        checkInvocation(node, ctx);
+        return null;
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        checkInvocation(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        checkInvocation(node, ctx);
+        return null;
     }
 
-    private void checkInvocation(net.sourceforge.pmd.lang.java.ast.JavaNode node, Object data) {
+    private void checkInvocation(net.sourceforge.pmd.lang.java.ast.JavaNode node, RuleContext ctx) {
         for (Map.Entry<InvocationMatcher, String> entry : METHOD_TO_MIN_VERSION.entrySet()) {
             InvocationMatcher matcher = entry.getKey();
             String minVersion = entry.getValue();
             
             // Only flag violation if replacement method is available in current Java version
             if (node.getLanguageVersion().compareToVersion(minVersion) >= 0 && matcher.matchesCall(node)) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         }
     }
