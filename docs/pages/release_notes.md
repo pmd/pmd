@@ -126,7 +126,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#3880](https://github.com/pmd/pmd/issues/3880): \[java] ReturnEmptyCollectionRatherThanNull: False negative when a null value is assigned to a local that is later returned
     * [#4623](https://github.com/pmd/pmd/issues/4623): \[java] CloseResource: False positive with resource being closed in method
     * [#6435](https://github.com/pmd/pmd/issues/6435): \[java] UnconditionalIfStatement: False negative for negated boolean constant
-    * [#6537](https://github.com/pmd/pmd/issues/6537): \[java] StaticEJBFieldShouldBeFinal: Detect @Stateless/@Stateful/@Singleton/@MessageDriven annotated EJB classes (javax.ejb and jakarta.ejb)
+    * [#6537](https://github.com/pmd/pmd/issues/6537): \[java] StaticEJBFieldShouldBeFinal: False Negative when using @Stateless etc.
     * [#6547](https://github.com/pmd/pmd/issues/6547): \[java] NonSerializableClass: False negative for generic element/value types of collections and maps
     * [#6625](https://github.com/pmd/pmd/issues/6625): \[java] New rule: UnusedReturnValue
     * [#6695](https://github.com/pmd/pmd/issues/6695): \[java] ReturnEmptyCollectionRatherThanNull: False negative when null is returned through a local variable
