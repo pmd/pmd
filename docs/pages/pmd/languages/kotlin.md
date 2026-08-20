@@ -58,6 +58,10 @@ and the kotlin-type-mapper analysis has resolved the types:
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
 
+> **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name). Modifiers like
+> `private`, `lateinit`, or `const` are on the parent `PropertyDeclaration` node.
+> Use `//PropertyDeclaration[@Modifiers = 'private']` rather than querying `VariableDeclaration`.
+
 #### Absent value: unknown vs unresolved vs genuinely none
 
 An absent attribute is ambiguous on its own — the type could be unresolved, or genuinely not present,
