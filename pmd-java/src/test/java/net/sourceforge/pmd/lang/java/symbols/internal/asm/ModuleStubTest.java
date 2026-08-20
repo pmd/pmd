@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import static net.sourceforge.pmd.lang.java.JavaParsingHelper.TEST_AUX_CLASSPATH_LOADER;
+import static net.sourceforge.pmd.lang.java.JavaParsingHelper.TEST_TYPE_SYSTEM;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
@@ -23,8 +25,6 @@ class ModuleStubTest {
     @Test
     void loadModuleInfo() {
         TypeSystem ts = TypeSystem.usingClasspath(name -> {
-            ClassLoader classLoader = ModuleStubTest.class.getClassLoader();
-
             // make sure to load our special prepared test resources
             if (name.startsWith("net/sourceforge/pmd") || name.startsWith("test.net.sourceforge.pmd/")) {
                 String prefixForTest = "net/sourceforge/pmd/lang/java/symbols/modules/";
@@ -32,13 +32,13 @@ class ModuleStubTest {
                 if (name.endsWith("/module-info.class")) {
                     nameToLookup = "module-info.class";
                 }
-                InputStream lookup = classLoader.getResourceAsStream(prefixForTest + nameToLookup);
+                InputStream lookup = TEST_AUX_CLASSPATH_LOADER.findResource(prefixForTest + nameToLookup);
                 if (lookup != null) {
                     return lookup;
                 }
             }
 
-            return classLoader.getResourceAsStream(name);
+            return TEST_AUX_CLASSPATH_LOADER.findResource(name);
         });
         JModuleSymbol moduleSymbol = ts.getModuleSymbol("test.net.sourceforge.pmd");
         assertThat(moduleSymbol.getExportedPackages(), hasSize(3));
@@ -47,5 +47,17 @@ class ModuleStubTest {
         PSet<SymbolicValue.SymAnnot> annotations = moduleSymbol.getDeclaredAnnotations();
         assertThat(annotations.size(), is(1));
         assertEquals("net.sourceforge.pmd.annotation.ModuleTestExperimental", annotations.stream().findFirst().get().getBinaryName());
+    }
+
+    @Test
+    void loadJunitPlatformSuiteApiModule() {
+        JModuleSymbol moduleSymbol = TEST_TYPE_SYSTEM.getModuleSymbol("org.junit.platform.suite.api");
+        assertThat(moduleSymbol.getSimpleName(), is("org.junit.platform.suite.api"));
+    }
+
+    @Test
+    void loadJavaBaseModule() {
+        JModuleSymbol moduleSymbol = TEST_TYPE_SYSTEM.getModuleSymbol("java.base");
+        assertThat(moduleSymbol.getSimpleName(), is("java.base"));
     }
 }

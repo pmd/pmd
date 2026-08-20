@@ -81,7 +81,7 @@ public class AsmSymbolResolver implements SymbolResolver {
     public @Nullable JModuleSymbol resolveModule(@NonNull String moduleName) {
         // by convention try to load module-info via "moduleName/module-info.class". The used
         // classloader will need to handle this case to return the correct module-info.class for the
-        // requested module. See impl of ClasspathClassLoader in pmd-core.
+        // requested module. See impl of AuxClasspathLoader in pmd-core.
         InputStream inputStream = classLoader.findResource(moduleName + "/module-info.class");
         if (inputStream != null) {
             return new ModuleStub(this, moduleName, new StreamLoader(moduleName, inputStream));
