@@ -2162,6 +2162,7 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5041">#5041</a>: [java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6010">#6010</a>: [java] java.lang.OutOfMemoryError: Java heap space when accessing big Jar files with PMD 7</li>
       <li><a href="https://github.com/pmd/pmd/issues/6374">#6374</a>: [java] Support Java 27</li>
       <li><a href="https://github.com/pmd/pmd/issues/6768">#6768</a>: [java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class</li>
       <li><a href="https://github.com/pmd/pmd/issues/6932">#6932</a>: [java] AssertionError when outer class is parsed before inner class with conflicting visibility</li>
@@ -2247,9 +2248,39 @@ Using ClassLoaders directly is discouraged, as it is unclear, if and when the Cl
 By just configuring the auxClasspath, PMD internally can deal with that.</li>
     </ul>
   </li>
+  <li>core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/JvmLanguagePropertyBundle.setClassLoader.html#"><code>net.sourceforge.pmd.lang.JvmLanguagePropertyBundle.setClassLoader</code></a> and
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/JvmLanguagePropertyBundle.getAnalysisClassLoader.html#"><code>net.sourceforge.pmd.lang.JvmLanguagePropertyBundle.getAnalysisClassLoader</code></a> are deprecated. Use the language property
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/JvmLanguagePropertyBundle.html#AUX_CLASSPATH"><code>JvmLanguagePropertyBundle#AUX_CLASSPATH</code></a> instead via <code class="language-plaintext highlighter-rouge">getProperty()</code> and <code class="language-plaintext highlighter-rouge">setProperty()</code>. This language property
+is now set correctly when providing the auxClasspath via CLI parameter <code class="language-plaintext highlighter-rouge">--aux-classpath</code>.</li>
+      <li>The internal class <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.internal.util.ClasspathClassLoader</code> has been explicitly marked as deprecated.
+Using ClassLoaders directly is discouraged. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setAuxClasspath(String)"><code>PMDConfiguration#setAuxClasspath</code></a> instead.</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeSystem.html#usingClassLoaderClasspath(java.lang.ClassLoader)"><code>TypeSystem#usingClassLoaderClasspath</code></a> is deprecated. Using
+ClassLoaders directly is discouraged. Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeSystem.html#usingClasspath(net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath)"><code>usingClasspath</code></a>
+instead.</li>
+    </ul>
+  </li>
 </ul>
 
 <h4 id="experimental-api">Experimental API</h4>
+<ul>
+  <li>core
+    <ul>
+      <li>The new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/util/AuxClasspathLoader.html#"><code>AuxClasspathLoader</code></a> is a replacement for the deprecated <code class="language-plaintext highlighter-rouge">ClasspathClassLoader</code>.
+It deals with a typical classpath to load classes need for Java’s type resolution. It has the static method
+<code class="language-plaintext highlighter-rouge">enableReuse(int)</code> which enables caching of AuxClasspathLoader instances. This is useful for unit tests
+or IDE plugins, when PMD is executed multiple times within one JVM instance. Don’t forget to call
+<code class="language-plaintext highlighter-rouge">disableReuse()</code> when you’re done to close all cached instances.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="experimental-api-1">Experimental API</h4>
 <ul>
   <li>kotlin
     <ul>
@@ -2297,7 +2328,7 @@ on Kotlin AST nodes. It’s part of the new Kotlin type-aware analysis.</li>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 19, 2026 <br />
+             Site last generated: Aug 20, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

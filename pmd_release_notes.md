@@ -22,6 +22,7 @@ This is a minor release.
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
     * [Experimental API](#experimental-api)
+    * [Experimental API](#experimental-api)
 * [✨️ Merged pull requests](#merged-pull-requests)
 * [📦️ Dependency updates](#dependency-updates)
 * [📈️ Stats](#stats)
@@ -104,6 +105,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6952](https://github.com/pmd/pmd/issues/6952): \[core] Ruleset references are not resolved relative to the referencing ruleset
 * java
     * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException
+    * [#6010](https://github.com/pmd/pmd/issues/6010): \[java] java.lang.OutOfMemoryError: Java heap space when accessing big Jar files with PMD 7
     * [#6374](https://github.com/pmd/pmd/issues/6374): \[java] Support Java 27
     * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
     * [#6932](https://github.com/pmd/pmd/issues/6932): \[java] AssertionError when outer class is parsed before inner class with conflicting visibility
@@ -161,6 +163,25 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
       deprecated `getClassLoader()` anymore.  
       Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
       By just configuring the auxClasspath, PMD internally can deal with that.
+* core
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/JvmLanguagePropertyBundle.setClassLoader.html#"><code>net.sourceforge.pmd.lang.JvmLanguagePropertyBundle.setClassLoader</code></a> and
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/JvmLanguagePropertyBundle.getAnalysisClassLoader.html#"><code>net.sourceforge.pmd.lang.JvmLanguagePropertyBundle.getAnalysisClassLoader</code></a> are deprecated. Use the language property
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/JvmLanguagePropertyBundle.html#AUX_CLASSPATH"><code>JvmLanguagePropertyBundle#AUX_CLASSPATH</code></a> instead via `getProperty()` and `setProperty()`. This language property
+      is now set correctly when providing the auxClasspath via CLI parameter `--aux-classpath`.
+    * The internal class `net.sourceforge.pmd.internal.util.ClasspathClassLoader` has been explicitly marked as deprecated.
+      Using ClassLoaders directly is discouraged. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/PMDConfiguration.html#setAuxClasspath(String)"><code>PMDConfiguration#setAuxClasspath</code></a> instead.
+* java
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeSystem.html#usingClassLoaderClasspath(java.lang.ClassLoader)"><code>TypeSystem#usingClassLoaderClasspath</code></a> is deprecated. Using
+      ClassLoaders directly is discouraged. Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.27.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/TypeSystem.html#usingClasspath(net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath)"><code>usingClasspath</code></a>
+      instead.
+
+#### Experimental API
+* core
+    * The new <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.27.0-SNAPSHOT/net/sourceforge/pmd/util/AuxClasspathLoader.html#"><code>AuxClasspathLoader</code></a> is a replacement for the deprecated `ClasspathClassLoader`.
+      It deals with a typical classpath to load classes need for Java's type resolution. It has the static method
+      `enableReuse(int)` which enables caching of AuxClasspathLoader instances. This is useful for unit tests
+      or IDE plugins, when PMD is executed multiple times within one JVM instance. Don't forget to call
+      `disableReuse()` when you're done to close all cached instances.
 
 #### Experimental API
 * kotlin
