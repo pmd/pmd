@@ -143,13 +143,14 @@ filtering out false positives in rules that depend on fully-resolved types.
 ```
 
 **`pmd-kotlin:matchesSig(signature)`** — Returns `true` if the context node represents a call site
-whose method signature matches `signature`. Uses the same signature pattern syntax as the Java
-`pmd-java:matchesSig()` function: `TypeName#methodName(paramType, ...)` with `_` as wildcard
-for any single parameter and `..` as wildcard for any number of parameters.
+whose method signature matches `signature`. Signature format: `ReceiverType#methodName(paramType, ...)`
+with `_` as wildcard for receiver or any single parameter type, and `*` as wildcard for any
+parameter list (any number of parameters).
 
 ```xml
 //PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.Calendar#getInstance()')]
 //PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.regex.Pattern#compile(_)')]
+//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.Throwable#printStackTrace(*)')]
 ```
 
 ### Java-based rules
