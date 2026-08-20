@@ -55,7 +55,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
 * The new java rule {% rule java/errorprone/UnusedReturnValue %} (Java Error Prone) finds method calls whose result is not used,
   although ignoring the result of these method calls is likely a mistake.
   The rule is referenced in the quickstart.xml ruleset for Java.
-* New rule {% rule java/codestyle/ProtectedMemberInFinalClass %} (Java Codestyle) finds protected members defined in final classes.
+* New rule {% rule java/design/ProtectedMemberInFinalClass %} (Java Design) finds protected members defined in final classes.
   Such members should use package or private visibility to clarify their intended scope.
   The rule replaces now deprecated rules {% rule java/codestyle/AvoidProtectedFieldInFinalClass %} and {% rule java/codestyle/AvoidProtectedMethodInFinalClassNotExtending %}
   and flags members that were previously not detected by either of these rules, such as nested types or constructors.
