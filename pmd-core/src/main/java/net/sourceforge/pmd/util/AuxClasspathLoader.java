@@ -534,7 +534,7 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
         }
 
-        if (closeRequested.compareAndSet(false, true)) {
+        if (!closeRequested.compareAndSet(false, true)) {
             return; // already closed
         }
 
