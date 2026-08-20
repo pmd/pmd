@@ -32,16 +32,18 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if ("equals".equals(call.getMethodName())
             && call.getArguments().size() == 1
             && isEqualsObjectAndNotAnOverload(call)) {
-            checkArgs((RuleContext) data, call);
+            checkArgs(ctx, call);
         } else if (STRING_COMPARISONS.contains(call.getMethodName())
             && call.getArguments().size() == 1
             && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
-            checkArgs((RuleContext) data, call);
+            checkArgs(ctx, call);
         }
-        return data;
+        return null;
     }
 
     private boolean isEqualsObjectAndNotAnOverload(ASTMethodCall call) {

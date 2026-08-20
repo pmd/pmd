@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -214,7 +216,8 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private Set<String> determinePersistentFields(ASTTypeDeclaration typeDeclaration) {
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull") // null means no serialPersistentFields declaration
+    private @Nullable Set<String> determinePersistentFields(ASTTypeDeclaration typeDeclaration) {
         if (cachedPersistentFieldNames.containsKey(typeDeclaration)) {
             return cachedPersistentFieldNames.get(typeDeclaration);
         }

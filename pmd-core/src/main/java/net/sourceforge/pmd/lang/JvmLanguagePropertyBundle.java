@@ -31,6 +31,10 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
                          .defaultValue("")
                          .build();
 
+    /**
+     * @deprecated Since 7.27.0. Only used as fallback, if a ClassLoader is set externally.
+     */
+    @Deprecated
     private ClassLoader classLoader;
 
     public JvmLanguagePropertyBundle(Language language) {
@@ -51,14 +55,36 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * setting of a classpath as a string via {@link #setProperty(PropertyDescriptor, Object)}.
      * If the parameter is null, the classloader returned by {@link #getAnalysisClassLoader()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
+     *
+     * @deprecated Since 7.27.0. Use {@code setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, "file.jar")}
+     * instead.
      */
+    @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     /**
-     * Returns the classloader to use to resolve classes for this language.
+     * Returns exactly the same classloader set via {@link #setClassLoader(ClassLoader)}.
+     * Unlike {@link #getAnalysisClassLoader()}, no modification is performed.
+     *
+     * @since 7.27.0
+     * @see #setClassLoader(ClassLoader)
+     * @deprecated Since 7.27.0. Only used to support backwards compatible configuration of classloaders.
      */
+    @Deprecated
+    protected ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    /**
+     * Returns the classloader to use to resolve classes for this language.
+     *
+     * @deprecated Since 7.27.0. This is language specific and will be moved to the corresponding language.
+     * Future versions might not even use a real classloader to resolve class files. Use
+     * {@code getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH)} instead.
+     */
+    @Deprecated
     public @NonNull ClassLoader getAnalysisClassLoader() {
         if (classLoader != null) {
             return classLoader;

@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -46,7 +47,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertEquals("dummyRuleset.xml", rs.getFileName());
 
         rs = new RuleSetLoader().loadFromResource(TEST_RULESET_1);
-        assertEquals(rs.getFileName(), TEST_RULESET_1, "wrong RuleSet file name");
+        assertEquals(TEST_RULESET_1, rs.getFileName(), "wrong RuleSet file name");
     }
 
     /**
@@ -66,6 +67,31 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     private static void write(Path file, String content) throws IOException {
         Files.write(file, content.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void testLoadFromStringUsesConfiguredClassLoader() {
+        String ruleClass = "net.sourceforge.pmd.lang.rule.RuleOnlyVisibleToCustomClassLoader";
+        AtomicBoolean askedForRuleClass = new AtomicBoolean();
+        ClassLoader customClassLoader = new ClassLoader(RuleSetFactoryTest.class.getClassLoader()) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                if (ruleClass.equals(name)) {
+                    askedForRuleClass.set(true);
+                    return MockRuleWithNoProperties.class;
+                }
+                return super.loadClass(name);
+            }
+        };
+
+        RuleSet rs = new RuleSetLoader().loadResourcesWith(customClassLoader)
+                                        .withReporter(mockReporter)
+                                        .loadFromString("ruleset.xml", rulesetXml(
+                                            dummyRule(attrs -> attrs.put(SchemaConstants.CLASS, ruleClass))));
+
+        assertTrue(askedForRuleClass.get(), "the configured class loader was not used to load the rule class");
+        assertEquals(1, rs.size());
+        assertEquals(MockRuleWithNoProperties.class, rs.getRules().iterator().next().getClass());
     }
 
     @Test
@@ -777,7 +803,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertTrue(r instanceof RuleReference, "Rule Reference");
         assertFalse(r.isDeprecated(), "Not deprecated");
         assertTrue(((RuleReference) r).getRule().isDeprecated(), "Original Rule Deprecated");
-        assertEquals(r.getName(), DEPRECATED_RULE_NAME, "Rule name");
+        assertEquals(DEPRECATED_RULE_NAME, r.getName(), "Rule name");
     }
 
     @Test
