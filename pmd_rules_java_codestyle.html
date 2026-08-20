@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, ProtectedMemberInFinalClass, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBlock, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined, VariableDeclarationUsageDistance">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBlock, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined, VariableDeclarationUsageDistance">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -4090,48 +4090,6 @@ can reorder code.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/PrematureDeclaration"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<h2 id="protectedmemberinfinalclass">ProtectedMemberInFinalClass</h2>
-
-<p><strong>Since:</strong> PMD 7.27.0</p>
-
-<p><strong>Priority:</strong> Medium (3)</p>
-
-<p>Do not use protected members in final classes since they cannot be subclassed. This does
-not apply to methods that override a protected method from a superclass, since visibility cannot be decreased .
-Clarify your intent by using private or package access modifiers instead.</p>
-
-<p>This replaced the old rules "AvoidProtectedFieldInFinalClass" and "AvoidProtectedMethodInFinalClassNotExtending" in PMD 7.27.0</p>
-
-<p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="o">/</span><span class="nt">ClassBody</span><span class="o">/</span><span class="w">
-</span><span class="p">(</span><span class="w">
-  </span><span class="nt">FieldDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w">
-  </span><span class="nt">EnumDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w">
-  </span><span class="nt">RecordDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w">
-  </span><span class="nt">ClassDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w">
-  </span><span class="nt">AnnotationTypeDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w">
-  </span><span class="nt">ConstructorDeclaration</span><span class="w"> </span><span class="p">|</span><span class="w">
-  </span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="w"> </span><span class="na">@Override</span><span class="err">=</span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="p">]</span><span class="w">
-</span><span class="p">)[</span><span class="na">@Visibility</span><span class="err">=</span><span class="s2">"protected"</span><span class="p">]</span><span class="w">
-</span></code></pre></div></div>
-
-<p><strong>Example(s):</strong></p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="kt">int</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{}</span>
-  <span class="kd">protected</span> <span class="kt">int</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?</span>
-  <span class="kd">protected</span> <span class="kt">int</span> <span class="n">field</span><span class="o">;</span> <span class="c1">// This should be a private or package visible field</span>
-  <span class="kd">protected</span> <span class="kd">enum</span> <span class="nc">InnerEnum</span> <span class="o">{}</span> <span class="c1">// Same for enums ...</span>
-  <span class="kd">protected</span> <span class="kd">class</span> <span class="nc">InnerClass</span> <span class="o">{}</span> <span class="c1">// ... classes ...</span>
-  <span class="kd">protected</span> <span class="kd">record</span> <span class="nc">InnerRecord</span> <span class="o">{}</span> <span class="c1">// ... record ...</span>
-  <span class="kd">protected</span> <span class="nd">@interface</span> <span class="nc">InnerAnnotation</span> <span class="o">{}</span> <span class="c1">// ... and annotations</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p><strong>Use this rule by referencing it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ProtectedMemberInFinalClass"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="remoteinterfacenamingconvention">RemoteInterfaceNamingConvention</h2>

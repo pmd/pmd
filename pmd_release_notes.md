@@ -60,7 +60,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
 * The new java rule [`UnusedReturnValue`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_errorprone.html#unusedreturnvalue) (Java Error Prone) finds method calls whose result is not used,
   although ignoring the result of these method calls is likely a mistake.
   The rule is referenced in the quickstart.xml ruleset for Java.
-* New rule [`ProtectedMemberInFinalClass`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_codestyle.html#protectedmemberinfinalclass) (Java Codestyle) finds protected members defined in final classes.
+* New rule [`ProtectedMemberInFinalClass`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_design.html#protectedmemberinfinalclass) (Java Design) finds protected members defined in final classes.
   Such members should use package or private visibility to clarify their intended scope.
   The rule replaces now deprecated rules [`AvoidProtectedFieldInFinalClass`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass) and [`AvoidProtectedMethodInFinalClassNotExtending`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending)
   and flags members that were previously not detected by either of these rules, such as nested types or constructors.
