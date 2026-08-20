@@ -5434,13 +5434,28 @@ with write access. However, static read-only fields are allowed. This ensures pr
 behavior especially when instances are distributed by the container on several JREs.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="nt">ImplementsList</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="w">
-        </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.SessionBean'</span><span class="p">)</span><span class="w">
-     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBHome'</span><span class="p">)</span><span class="w">
-     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBLocalObject'</span><span class="p">)</span><span class="w">
-     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBLocalHome'</span><span class="p">)</span><span class="w">
-     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBObject'</span><span class="p">)</span><span class="w">
-    </span><span class="p">]]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="w">
+        </span><span class="nt">ImplementsList</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="w">
+            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.SessionBean'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'jakarta.ejb.SessionBean'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBHome'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'jakarta.ejb.EJBHome'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBLocalObject'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'jakarta.ejb.EJBLocalObject'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBLocalHome'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'jakarta.ejb.EJBLocalHome'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.ejb.EJBObject'</span><span class="p">)</span><span class="w">
+         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'jakarta.ejb.EJBObject'</span><span class="p">)</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'javax.ejb.Stateless'</span><span class="p">)</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'jakarta.ejb.Stateless'</span><span class="p">)</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'javax.ejb.Stateful'</span><span class="p">)</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'jakarta.ejb.Stateful'</span><span class="p">)</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'javax.ejb.Singleton'</span><span class="p">)</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'jakarta.ejb.Singleton'</span><span class="p">)</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'javax.ejb.MessageDriven'</span><span class="p">)</span><span class="w">
+     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">hasAnnotation</span><span class="p">(</span><span class="s1">'jakarta.ejb.MessageDriven'</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
     </span><span class="o">/</span><span class="nt">ClassBody</span><span class="o">/</span><span class="nt">FieldDeclaration</span><span class="w">
         </span><span class="p">[</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'static'</span><span class="p">]</span><span class="w">
         </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-java:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'final'</span><span class="p">)]</span><span class="w">
@@ -5453,6 +5468,14 @@ behavior especially when instances are distributed by the container on several J
     <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nc">CountA</span><span class="o">;</span>          <span class="c1">// poor, field can be edited</span>
 
     <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="nc">CountB</span><span class="o">;</span>    <span class="c1">// preferred, read-only access</span>
+<span class="o">}</span>
+
+<span class="c1">// Since EJB 3.0, components may be declared with @Stateless / @Stateful /</span>
+<span class="c1">// @Singleton / @MessageDriven instead of implementing an EJB interface.</span>
+<span class="nd">@Stateless</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MySessionBean</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nc">CountC</span><span class="o">;</span>          <span class="c1">// poor, field can be edited</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
