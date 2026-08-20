@@ -2062,7 +2062,7 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-<h4 id="️-new-java-27-support">🚀️ New: Java 27 Support</h4>
+<h4 id="java-27-support">Java 27 Support</h4>
 <p>This release of PMD brings support for Java 27.</p>
 
 <p>There are no new standard language features.</p>
@@ -2095,10 +2095,10 @@ Resolved type names, return types, and annotation FQNs are available through
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
 <h4 id="new-rules">New Rules</h4>
 <ul>
-  <li>The new java rule <a href="pmd_rules_java_errorprone.html#unusedreturnvalue"><code class="language-plaintext highlighter-rouge">UnusedReturnValue</code></a> finds method calls whose result is not used,
+  <li>The new java rule <a href="pmd_rules_java_errorprone.html#unusedreturnvalue"><code class="language-plaintext highlighter-rouge">UnusedReturnValue</code></a> (Java Error Prone) finds method calls whose result is not used,
 although ignoring the result of these method calls is likely a mistake.
 The rule is referenced in the quickstart.xml ruleset for Java.</li>
-  <li>New rule <a href="pmd_rules_java_codestyle.html#protectedmemberinfinalclass"><code class="language-plaintext highlighter-rouge">ProtectedMemberInFinalClass</code></a> finds protected members defined in final classes.
+  <li>New rule <a href="pmd_rules_java_codestyle.html#protectedmemberinfinalclass"><code class="language-plaintext highlighter-rouge">ProtectedMemberInFinalClass</code></a> (Java Codestyle) finds protected members defined in final classes.
 Such members should use package or private visibility to clarify their intended scope.
 The rule replaces now deprecated rules <a href="pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass"><code class="language-plaintext highlighter-rouge">AvoidProtectedFieldInFinalClass</code></a> and <a href="pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending"><code class="language-plaintext highlighter-rouge">AvoidProtectedMethodInFinalClassNotExtending</code></a>
 and flags members that were previously not detected by either of these rules, such as nested types or constructors.</li>
@@ -2144,21 +2144,6 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
       <li><a href="https://github.com/pmd/pmd/issues/5904">#5904</a>: [apex] ApexUnitTestShouldNotUseSeeAllDataTrue violation range should only be the annotation and not the entire test method</li>
     </ul>
   </li>
-  <li>chore
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6837">#6837</a>: chore: Input ‘app-id’ has been deprecated with message: Use ‘client-id’ instead</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1995">#1995</a>: [core] PMD should display number of rules violated or errors found</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4952">#4952</a>: [doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4953">#4953</a>: [core] Deprecate PMDConfiguration#setClassloader and #getClassloader</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6865">#6865</a>: [core] Include the running PMD version in the “Unable to find referenced rule” error</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6913">#6913</a>: [core] RuleSetLoader#loadFromString ignores previously configured Resource/ClassLoader</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6952">#6952</a>: [core] Ruleset references are not resolved relative to the referencing ruleset</li>
-    </ul>
-  </li>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5041">#5041</a>: [java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException</li>
@@ -2170,23 +2155,24 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
   </li>
   <li>java-bestpractices
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1237">#1237</a>: [java] AbstractClassWithoutAnyMethod - Only detecting empty classes</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1237">#1237</a>: [java] AbstractClassWithoutAnyMethod: False positive for empty subclasses that inherit methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/1287">#1287</a>: [java] GuardLogStatement: False positive when using negative guard conditions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2033">#2033</a>: [jsp] NoClassAttribute rule is generating a false positive</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5514">#5514</a>: [java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5670">#5670</a>: [java] ExhaustiveSwitchHasDefault issue with final fields not initialized in constructor</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2033">#2033</a>: [jsp] NoClassAttribute: False positive for jsp:useBean</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5514">#5514</a>: [java] ExhaustiveSwitchHasDefault: False positive for non-exhaustive switch statements</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5670">#5670</a>: [java] ExhaustiveSwitchHasDefault: False positive with final fields not initialized in constructor</li>
       <li><a href="https://github.com/pmd/pmd/issues/6200">#6200</a>: [java] UnusedAssignment: False positive about the ++ unary operator</li>
       <li><a href="https://github.com/pmd/pmd/issues/6393">#6393</a>: [java] UnusedPrivateMethod: False positive with overloaded private methods called with values returned from methods of an unresolved type</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6611">#6611</a>: [java] UnnecessaryVarargsArrayCreation: false positive when removing the array creates overload ambiguity</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6965">#6965</a>: [java] AbstractClassWithoutAnyMethod False Positive on derived abstract class</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6611">#6611</a>: [java] UnnecessaryVarargsArrayCreation: False positive when removing the array creates overload ambiguity</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6965">#6965</a>: [java] AbstractClassWithoutAnyMethod: False Positive on derived abstract class</li>
     </ul>
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2974">#2974</a>: [java] Merge rules about protected in final class (AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending)</li>
       <li><a href="https://github.com/pmd/pmd/issues/5441">#5441</a>: [java] UseDiamondOperator: False positive with interdependent generic vars</li>
       <li><a href="https://github.com/pmd/pmd/issues/6958">#6958</a>: [java] BooleanGetMethodName should have the option to treat boolean wrapper type differently</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6274">#6274</a>: [java] UselessParentheses: Treat parentheses around a ternary in the else-branch as clarifying, consistent with the then-branch.</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6651">#6651</a>: [java] UnnecessaryImport false-positive when Javadoc {@link} references an array type</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6274">#6274</a>: [java] UselessParentheses: False positive in ternary else expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6651">#6651</a>: [java] UnnecessaryImport: False positive when Javadoc {@<!-- -->link} references an array type</li>
       <li><a href="https://github.com/pmd/pmd/issues/6709">#6709</a>: [java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver</li>
       <li><a href="https://github.com/pmd/pmd/issues/6737">#6737</a>: [java] TooManyStaticImports: @<!-- -->SuppressWarnings(“PMD.TooManyStaticImports”) has stopped working</li>
       <li><a href="https://github.com/pmd/pmd/issues/6846">#6846</a>: [java] VariableDeclarationUsageDistance: False positive with variables grouped at the top of a block</li>
@@ -2198,12 +2184,13 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
       <li><a href="https://github.com/pmd/pmd/issues/6714">#6714</a>: [java] Rename UseUtilityClass to InstantiableUtilityClass</li>
       <li><a href="https://github.com/pmd/pmd/issues/6844">#6844</a>: [java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic</li>
       <li><a href="https://github.com/pmd/pmd/issues/6881">#6881</a>: [java] CognitiveComplexity does not count switch expressions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6925">#6925</a>: [java] ImmutableField: false positive on picocli annotated fields with default</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6925">#6925</a>: [java] ImmutableField: False positive on picocli annotated fields</li>
     </ul>
   </li>
   <li>java-documentation
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6270">#6270</a>: [java] CommentSize: Skip file header comments.</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6270">#6270</a>: [java] CommentSize: False positive with file header comments</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6880">#6880</a>: [java] CommentRequired: add packageMethodCommentRequirement property</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -2212,7 +2199,8 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
       <li><a href="https://github.com/pmd/pmd/issues/3880">#3880</a>: [java] ReturnEmptyCollectionRatherThanNull: False negative when a null value is assigned to a local that is later returned</li>
       <li><a href="https://github.com/pmd/pmd/issues/4623">#4623</a>: [java] CloseResource: False positive with resource being closed in method</li>
       <li><a href="https://github.com/pmd/pmd/issues/6435">#6435</a>: [java] UnconditionalIfStatement: False negative for negated boolean constant</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6547">#6547</a>: [java] NonSerializableClass: Report non-serializable generic element/value types of collections and maps</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6547">#6547</a>: [java] NonSerializableClass: False negative for generic element/value types of collections and maps</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6625">#6625</a>: [java] New rule: UnusedReturnValue</li>
       <li><a href="https://github.com/pmd/pmd/issues/6695">#6695</a>: [java] ReturnEmptyCollectionRatherThanNull: False negative when null is returned through a local variable</li>
       <li><a href="https://github.com/pmd/pmd/issues/6742">#6742</a>: [java] CloseResource: False positive when a correctly-closed resource is declared without initializer</li>
       <li><a href="https://github.com/pmd/pmd/issues/6744">#6744</a>: [java] ReturnEmptyCollectionRatherThanNull: False negatives when a returned expression can evaluate to null</li>
@@ -2231,10 +2219,21 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#unusedreturnval
       <li><a href="https://github.com/pmd/pmd/issues/6891">#6891</a>: [kotlin] AnnotationFqnAnnotator: @<!-- -->TypeName not set on UnescapedAnnotation nodes</li>
     </ul>
   </li>
+  <li>miscellaneous
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1995">#1995</a>: [core] PMD should display number of rules violated or errors found</li>
+      <li><a href="https://github.com/pmd/pmd/issues/2527">#2527</a>: [doc] CPD: Invalid link to String Tiling Algorithm</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4952">#4952</a>: [doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4953">#4953</a>: [core] Deprecate PMDConfiguration#setClassloader and #getClassloader</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6837">#6837</a>: [ci] chore: actions/create-github-app-token: Input ‘app-id’ has been deprecated with message: Use ‘client-id’ instead</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6865">#6865</a>: [core] Include the running PMD version in the “Unable to find referenced rule” error</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6913">#6913</a>: [core] RuleSetLoader#loadFromString ignores previously configured Resource/ClassLoader</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6952">#6952</a>: [core] Ruleset references are not resolved relative to the referencing ruleset</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-
 <h4 id="deprecations">Deprecations</h4>
 <ul>
   <li>core
