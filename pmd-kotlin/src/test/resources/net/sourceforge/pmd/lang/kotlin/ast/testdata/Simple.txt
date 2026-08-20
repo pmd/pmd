@@ -40,7 +40,7 @@
    |  |        +- ClassMemberDeclarations[]
    |  |        |  +- ClassMemberDeclaration[]
    |  |        |  |  +- Declaration[]
-   |  |        |  |     +- PropertyDeclaration[@AnnotationFqNames = (), @Mutable = false, @TypeName = "kotlin.String"]
+   |  |        |  |     +- PropertyDeclaration[@AnnotationFqNames = (), @Modifiers = "private", @Mutable = false, @TypeName = "kotlin.String"]
    |  |        |  |        +- Modifiers[]
    |  |        |  |        |  +- Modifier[]
    |  |        |  |        |     +- VisibilityModifier[]

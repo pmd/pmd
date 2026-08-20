@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
  * @experimental See {@link AttributeView}.
  */
 @Experimental
-public class KtPropertyDeclarationAttributes extends AttributeView<KotlinParser.KtPropertyDeclaration> implements HasTypeName {
+public class KtPropertyDeclarationAttributes extends AttributeView<KotlinParser.KtPropertyDeclaration> implements HasModifiers, HasTypeName {
     public KtPropertyDeclarationAttributes(KotlinParser.KtPropertyDeclaration node) {
         super(node);
     }

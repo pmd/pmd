@@ -241,6 +241,26 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     @Test
+    void modifiersAttributeOnPropertyDeclaration() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "class Foo {\n    private lateinit var name: String\n}");
+        KotlinParser.KtPropertyDeclaration prop =
+                file.descendants(KotlinParser.KtPropertyDeclaration.class).first();
+        assertEquals("private lateinit",
+                prop.attributes(KtPropertyDeclarationAttributes.class).getModifiers());
+    }
+
+    @Test
+    void modifiersAttributeOnFunctionValueParameter() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "fun spread(vararg items: String) {}");
+        KotlinParser.KtFunctionValueParameter param =
+                file.descendants(KotlinParser.KtFunctionValueParameter.class).first();
+        assertEquals("vararg",
+                param.attributes(KtFunctionValueParameterAttributes.class).getModifiers());
+    }
+
+    @Test
     void xpathAttributesHaveNoDuplicates() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
                 "import com.example.Foo\nfun greet(name: String) {}");
