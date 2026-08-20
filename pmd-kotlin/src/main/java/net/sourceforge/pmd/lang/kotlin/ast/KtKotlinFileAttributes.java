@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
@@ -30,7 +32,7 @@ public class KtKotlinFileAttributes extends AttributeView<KotlinParser.KtKotlinF
      * {@code null} otherwise. Returning {@code null} causes the attribute to be absent
      * from XPath, so {@code [@TypeInfoAvailable]} is a clean truthy test.
      */
-    public Boolean isTypeInfoAvailable() {
+    public @Nullable Boolean isTypeInfoAvailable() {
         return KotlinNodeTypeData.isTypeInfoAvailable(getNode()) ? Boolean.TRUE : null;
     }
 }
