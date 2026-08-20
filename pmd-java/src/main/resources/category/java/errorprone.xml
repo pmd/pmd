@@ -3079,13 +3079,28 @@ behavior especially when instances are distributed by the container on several J
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration[ImplementsList/ClassType[
-        pmd-java:typeIs('javax.ejb.SessionBean')
-     or pmd-java:typeIs('javax.ejb.EJBHome')
-     or pmd-java:typeIs('javax.ejb.EJBLocalObject')
-     or pmd-java:typeIs('javax.ejb.EJBLocalHome')
-     or pmd-java:typeIs('javax.ejb.EJBObject')
-    ]]
+//ClassDeclaration[
+        ImplementsList/ClassType[
+            pmd-java:typeIs('javax.ejb.SessionBean')
+         or pmd-java:typeIs('jakarta.ejb.SessionBean')
+         or pmd-java:typeIs('javax.ejb.EJBHome')
+         or pmd-java:typeIs('jakarta.ejb.EJBHome')
+         or pmd-java:typeIs('javax.ejb.EJBLocalObject')
+         or pmd-java:typeIs('jakarta.ejb.EJBLocalObject')
+         or pmd-java:typeIs('javax.ejb.EJBLocalHome')
+         or pmd-java:typeIs('jakarta.ejb.EJBLocalHome')
+         or pmd-java:typeIs('javax.ejb.EJBObject')
+         or pmd-java:typeIs('jakarta.ejb.EJBObject')
+        ]
+     or pmd-java:hasAnnotation('javax.ejb.Stateless')
+     or pmd-java:hasAnnotation('jakarta.ejb.Stateless')
+     or pmd-java:hasAnnotation('javax.ejb.Stateful')
+     or pmd-java:hasAnnotation('jakarta.ejb.Stateful')
+     or pmd-java:hasAnnotation('javax.ejb.Singleton')
+     or pmd-java:hasAnnotation('jakarta.ejb.Singleton')
+     or pmd-java:hasAnnotation('javax.ejb.MessageDriven')
+     or pmd-java:hasAnnotation('jakarta.ejb.MessageDriven')
+    ]
     /ClassBody/FieldDeclaration
         [pmd-java:modifiers() = 'static']
         [not(pmd-java:modifiers() = 'final')]
@@ -3100,6 +3115,14 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
     private static int CountA;          // poor, field can be edited
 
     private static final int CountB;    // preferred, read-only access
+}
+
+// Since EJB 3.0, components may be declared with @Stateless / @Stateful /
+// @Singleton / @MessageDriven instead of implementing an EJB interface.
+@Stateless
+public class MySessionBean {
+
+    private static int CountC;          // poor, field can be edited
 }
 ]]>
         </example>
