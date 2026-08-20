@@ -92,8 +92,8 @@
     <!-- OTHER -->
     <!-- <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" /> -->
     <rule ref="category/java/codestyle.xml/AvoidDollarSigns"/>
-    <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/>
-    <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/>
+    <!-- <rule ref="category/java/codestyle.xml/AvoidProtectedFieldInFinalClass"/> -->
+    <!-- <rule ref="category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending"/> -->
     <!-- <rule ref="category/java/codestyle.xml/AvoidUsingNativeCode"/>-->
     <!-- <rule ref="category/java/codestyle.xml/BooleanGetMethodName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/CallSuperInConstructor" /> -->
@@ -113,6 +113,7 @@
     <!-- <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" /> -->
     <!-- <rule ref="category/java/codestyle.xml/OnlyOneReturn" /> -->
     <!-- <rule ref="category/java/codestyle.xml/PrematureDeclaration" /> -->
+    <rule ref="category/java/codestyle.xml/ProtectedMemberInFinalClass"/>
     <!-- <rule ref="category/java/codestyle.xml/TooManyStaticImports" /> -->
     <rule ref="category/java/codestyle.xml/UnnecessaryAnnotationValueElement"/>
     <!-- <rule ref="category/java/codestyle.xml/UnnecessaryBlock"/> -->

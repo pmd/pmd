@@ -23,9 +23,26 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### 🚀️ New: Java 27 Support
+This release of PMD brings support for Java 27.
+
+There are no new standard language features.
+
+There is one preview language feature:
+* [JEP 532: Primitive Types in Patterns, instanceof, and switch (Fifth Preview)](https://openjdk.org/jeps/532)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to select the new language version `27-preview`:
+
+    pmd check --use-version java-27-preview ...
+
+Note: Support for Java 25 preview language features have been removed. The version "25-preview"
+is no longer available.
+
 #### Updated Apex Support
 The Apex language support has been bumped to version 67.0 (Summer '26). It supports the new
 [Multiline String](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&release=262&type=5) literals.
+
 
 #### Kotlin type-aware analysis
 Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
@@ -51,6 +68,10 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 * The new java rule {% rule java/errorprone/UnusedReturnValue %} finds method calls whose result is not used,
   although ignoring the result of these method calls is likely a mistake.
   The rule is referenced in the quickstart.xml ruleset for Java.
+* New rule {% rule java/codestyle/ProtectedMemberInFinalClass %} finds protected members defined in final classes.
+  Such members should use package or private visibility to clarify their intended scope.
+  The rule replaces now deprecated rules {% rule java/codestyle/AvoidProtectedFieldInFinalClass %} and {% rule java/codestyle/AvoidProtectedMethodInFinalClassNotExtending %}
+  and flags members that were previously not detected by either of these rules, such as nested types or constructors.
 
 #### Renamed Rules
 * The rule {%rule java/design/InstantiableUtilityClass %} (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
@@ -90,7 +111,8 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6913](https://github.com/pmd/pmd/issues/6913): \[core] RuleSetLoader#loadFromString ignores previously configured Resource/ClassLoader
     * [#6952](https://github.com/pmd/pmd/issues/6952): \[core] Ruleset references are not resolved relative to the referencing ruleset
 * java
-    * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
+    * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException
+    * [#6374](https://github.com/pmd/pmd/issues/6374): \[java] Support Java 27
     * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
     * [#6932](https://github.com/pmd/pmd/issues/6932): \[java] AssertionError when outer class is parsed before inner class with conflicting visibility
 * java-bestpractices
@@ -121,10 +143,13 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6270](https://github.com/pmd/pmd/issues/6270): \[java] CommentSize: Skip file header comments.
 * java-errorprone
     * [#2840](https://github.com/pmd/pmd/issues/2840): \[java] CloseResource: False positive on mocks
+    * [#3880](https://github.com/pmd/pmd/issues/3880): \[java] ReturnEmptyCollectionRatherThanNull: False negative when a null value is assigned to a local that is later returned
     * [#4623](https://github.com/pmd/pmd/issues/4623): \[java] CloseResource: False positive with resource being closed in method
     * [#6435](https://github.com/pmd/pmd/issues/6435): \[java] UnconditionalIfStatement: False negative for negated boolean constant
     * [#6547](https://github.com/pmd/pmd/issues/6547): \[java] NonSerializableClass: Report non-serializable generic element/value types of collections and maps
+    * [#6695](https://github.com/pmd/pmd/issues/6695): \[java] ReturnEmptyCollectionRatherThanNull: False negative when null is returned through a local variable
     * [#6742](https://github.com/pmd/pmd/issues/6742): \[java] CloseResource: False positive when a correctly-closed resource is declared without initializer
+    * [#6744](https://github.com/pmd/pmd/issues/6744): \[java] ReturnEmptyCollectionRatherThanNull: False negatives when a returned expression can evaluate to null
     * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
     * [#6900](https://github.com/pmd/pmd/issues/6900): \[java] DoubleCheckedLocking: False negative when the outer null check is written as !(x != null)
 * java-multithreading

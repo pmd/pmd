@@ -989,7 +989,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>5.0.8</version>
+                <version>5.1.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -1004,7 +1004,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.6.0-jre</version>
+                <version>33.7.1-jre</version>
             </dependency>
 
             <!-- scala-reflect and scala-library needed by pmd-apex via apex-link -->
