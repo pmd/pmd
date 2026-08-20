@@ -115,4 +115,35 @@ module my.module.name {
             }
         </code>
     </test-code>
+    <test-code>
+        <description>#6450: Markdown javadoc (///) before Java 23 is not a documentation comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class JD {
+
+    public void test() {
+
+        //// A comment
+        while (true);
+    }
+}
+    ]]></code>
+    <source-type>java 21</source-type>
+    </test-code>
+    <test-code>
+        <description>#6450: Markdown javadoc (///) since Java 23 is a dangling documentation comment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class JD {
+
+    public void test() {
+
+        //// A comment
+        while (true);
+    }
+}
+    ]]></code>
+    <source-type>java 23</source-type>
+    </test-code>
 </test-data>

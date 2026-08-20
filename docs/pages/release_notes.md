@@ -130,6 +130,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6925](https://github.com/pmd/pmd/issues/6925): \[java] ImmutableField: false positive on picocli annotated fields with default
 * java-documentation
     * [#6270](https://github.com/pmd/pmd/issues/6270): \[java] CommentSize: Skip file header comments.
+    * [#6450](https://github.com/pmd/pmd/issues/6450): \[java] DanglingJavadoc: False positive on /// comments for Java < 23
 * java-errorprone
     * [#2840](https://github.com/pmd/pmd/issues/2840): \[java] CloseResource: False positive on mocks
     * [#3880](https://github.com/pmd/pmd/issues/3880): \[java] ReturnEmptyCollectionRatherThanNull: False negative when a null value is assigned to a local that is later returned

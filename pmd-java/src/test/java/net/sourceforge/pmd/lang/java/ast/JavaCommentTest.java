@@ -9,6 +9,10 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,6 +65,25 @@ class JavaCommentTest extends BaseParserTest {
 
         assertThat(comment.getFilteredLines(true),
                    contains(Chars.wrap(""), Chars.wrap("@author Clément Fournier"), Chars.wrap(""), Chars.wrap("")));
+    }
+
+    @Test
+    void markdownCommentsAreJavadocOnlySinceJava23() {
+        String source = "/// markdown doc\n"
+                          + "/// second line\n"
+                          + "class Foo {}\n";
+
+        // before Java 23 (JEP 467), /// comments are ordinary single line comments
+        ASTCompilationUnit unit = java.withDefaultVersion("21").parse(source);
+        assertEquals(2, unit.getComments().size());
+        assertFalse(unit.getComments().stream().anyMatch(JavadocComment.class::isInstance));
+        assertNull(unit.getTypeDeclarations().first().getJavadocComment());
+
+        // since Java 23, consecutive /// comments are collapsed into a single JavadocComment
+        unit = java.withDefaultVersion("23").parse(source);
+        assertEquals(1, unit.getComments().size());
+        assertInstanceOf(JavadocComment.class, unit.getComments().get(0));
+        assertNotNull(unit.getTypeDeclarations().first().getJavadocComment());
     }
 
     JavaComment parseComment(String text) {
