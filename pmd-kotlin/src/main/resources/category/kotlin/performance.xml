@@ -24,7 +24,10 @@ In Kotlin, prefer string templates (`"$value"`) or `value.toString()` for explic
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//AdditiveExpression[starts-with(pmd-kotlin:nodeText(), '"" +')]
+//AdditiveExpression[
+    AdditiveOperator/T-ADD
+    and *[1]//PrimaryExpression/StringLiteral[pmd-kotlin:nodeText() = '""']
+]
                 ]]></value>
             </property>
         </properties>

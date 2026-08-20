@@ -502,14 +502,13 @@ Use `Exception` or `RuntimeException` (or a Kotlin sealed class hierarchy) inste
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//ClassDeclaration//DelegationSpecifier/ConstructorInvocation
-    /UserType/SimpleUserType[last()]/SimpleIdentifier/T-Identifier[
-        @Text = 'Error'
-        or @Text = 'AssertionError'
-        or @Text = 'ThreadDeath'
-        or @Text = 'LinkageError'
-        or @Text = 'VirtualMachineError'
-    ]
+//ClassDeclaration//DelegationSpecifier[
+    pmd-kotlin:typeIs('java.lang.Error')
+    or pmd-kotlin:typeIs('java.lang.AssertionError')
+    or pmd-kotlin:typeIs('java.lang.ThreadDeath')
+    or pmd-kotlin:typeIs('java.lang.LinkageError')
+    or pmd-kotlin:typeIs('java.lang.VirtualMachineError')
+]
                 ]]></value>
             </property>
         </properties>
