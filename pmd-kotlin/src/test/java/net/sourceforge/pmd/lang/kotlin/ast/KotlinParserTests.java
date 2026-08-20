@@ -25,6 +25,8 @@ import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCompanionObject;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtImportHeader;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
@@ -214,6 +216,28 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                         "Attribute @" + attr.getName() + " has null value on " + node.getXPathNodeName());
             }
         });
+    }
+
+    @Test
+    void modifiersAttributeOnClassParameter() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "open class Base(open val name: String)\n"
+                + "class Foo(override val name: String) : Base(name)");
+        KtClassParameter param = file.descendants(KtClassParameter.class)
+                .filter(p -> {
+                    KtClassParameterAttributes attrs = p.attributes(KtClassParameterAttributes.class);
+                    return attrs != null && "override".equals(attrs.getModifiers());
+                }).first();
+        assertNotNull(param, "Expected a ClassParameter with 'override' modifier");
+    }
+
+    @Test
+    void identifierAttributeOnCompanionObject() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "class Foo {\n    companion object MyCompanion { }\n}");
+        KtCompanionObject companion = file.descendants(KtCompanionObject.class).first();
+        assertEquals("MyCompanion",
+                companion.attributes(KtCompanionObjectAttributes.class).getIdentifier());
     }
 
     @Test

@@ -53,7 +53,7 @@ and the kotlin-type-mapper analysis has resolved the types:
 | `@TypeName` | `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name |
 | `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
-| `@Modifiers` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Space-separated modifier keywords (e.g. `"override suspend"`). For arbitrary nodes use the `pmd-kotlin:modifiers()` function. |
+| `@Modifiers` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject` | Space-separated modifier keywords (e.g. `"override suspend"`). For arbitrary nodes use the `pmd-kotlin:modifiers()` function. |
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
