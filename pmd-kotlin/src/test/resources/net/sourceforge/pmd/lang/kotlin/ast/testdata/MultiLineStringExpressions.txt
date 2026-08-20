@@ -169,7 +169,7 @@
    |  |        |  |              |           |                                                     |  |                                |  +- AsExpression[]
    |  |        |  |              |           |                                                     |  |                                |     +- PrefixUnaryExpression[]
    |  |        |  |              |           |                                                     |  |                                |        +- PostfixUnaryExpression[]
-   |  |        |  |              |           |                                                     |  |                                |           +- PrimaryExpression[]
+   |  |        |  |              |           |                                                     |  |                                |           +- PrimaryExpression[@Identifier = "productName"]
    |  |        |  |              |           |                                                     |  |                                |              +- SimpleIdentifier[]
    |  |        |  |              |           |                                                     |  |                                |                 +- T-Identifier[@Text = "productName"]
    |  |        |  |              |           |                                                     |  |                                +- AdditiveOperator[]
