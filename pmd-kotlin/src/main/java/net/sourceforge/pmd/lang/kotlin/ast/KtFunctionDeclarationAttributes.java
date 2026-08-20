@@ -29,8 +29,17 @@ public class KtFunctionDeclarationAttributes extends AttributeView<KotlinParser.
         return KotlinNodeTypeData.getReturnTypeName(node);
     }
 
-    public @Nullable List<String> getAnnotationFqNames() {
-        List<String> names = KotlinNodeTypeData.getAnnotationFqNames(node);
-        return names.isEmpty() ? null : names;
+    /**
+     * Returns fully-qualified annotation class names for this function declaration.
+     * Returns an empty list when no annotation names are available.
+     *
+     * <p>This method follows the same pattern as pmd-java's
+     * {@code AnnotableSymbol.getDeclaredAnnotations()},
+     * where collections are always non-null: an empty collection means "no annotations present"
+     * rather than "unknown". Empty lists distinguish between unavailable information and genuinely
+     * no annotations.
+     */
+    public List<String> getAnnotationFqNames() {
+        return KotlinNodeTypeData.getAnnotationFqNames(node);
     }
 }

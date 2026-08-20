@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -159,6 +160,35 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     @Test
+    void annotationFqNamesAttributeEmptyListWhenFunctionHasNoAnnotations() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun plain() {}");
+        KtFunctionDeclaration func =
+                file.descendants(KtFunctionDeclaration.class).first();
+        List<String> annotationNames = func.attributes(KtFunctionDeclarationAttributes.class).getAnnotationFqNames();
+        assertTrue(annotationNames.isEmpty());
+    }
+
+    @Test
+    void annotationFqNamesAttributeEmptyListWhenClassHasNoAnnotations() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class Plain");
+        KtClassDeclaration clazz = file.descendants(KtClassDeclaration.class).first();
+        List<String> annotationNames = clazz.attributes(KtClassDeclarationAttributes.class).getAnnotationFqNames();
+        assertTrue(annotationNames.isEmpty());
+    }
+
+    @Test
+    void annotationFqNamesXpathAttributePresentWhenEmptyForBothFunctionAndClass() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class C\nfun plain() {}");
+        KtClassDeclaration clazz = file.descendants(KtClassDeclaration.class).first();
+        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
+
+        // Both class and function declarations expose non-null AnnotationFqNames attribute,
+        // even when empty. KotlinInnerNode omits only null-valued attributes.
+        assertTrue(hasAnnotationFqNamesXPathAttribute(func));
+        assertTrue(hasAnnotationFqNamesXPathAttribute(clazz));
+    }
+
+    @Test
     void nameAttributeOnImportHeader() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
                 "import com.example.Foo\nfun f() {}");
@@ -204,6 +234,17 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
             assertEquals(names.stream().distinct().count(), names.size(),
                     "Duplicate XPath attributes on " + node.getXPathNodeName() + ": " + names);
         });
+    }
+
+    private static boolean hasAnnotationFqNamesXPathAttribute(KotlinNode node) {
+        Iterator<Attribute> it = node.getXPathAttributesIterator();
+        while (it.hasNext()) {
+            Attribute attr = it.next();
+            if ("AnnotationFqNames".equals(attr.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
