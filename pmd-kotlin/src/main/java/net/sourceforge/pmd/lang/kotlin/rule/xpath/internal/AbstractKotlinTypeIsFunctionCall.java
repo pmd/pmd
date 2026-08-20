@@ -19,6 +19,11 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
 
+/**
+ * Base class for {@code pmd-kotlin:typeIs} and {@code pmd-kotlin:typeIsExactly}.
+ *
+ * @since 7.27.0
+ */
 abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefinition.FunctionCall {
 
     @Override
@@ -76,7 +81,8 @@ abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefiniti
 
     private boolean matchesAnyCallSite(List<CallSiteAst> calls, String typeName, KotlinTypeAnalysisContext ctx) {
         for (CallSiteAst call : calls) {
-            if (matchesType(typeName, call.getReturnType(), ctx)) {
+            String returnType = call.getReturnType();
+            if (returnType != null && matchesType(typeName, returnType, ctx)) {
                 return true;
             }
         }

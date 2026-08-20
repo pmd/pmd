@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.kotlin.ast;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * @since 7.25.0
+ * @since 7.27.0
  * @experimental See {@link AttributeView}.
  */
 @Experimental

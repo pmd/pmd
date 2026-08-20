@@ -37,6 +37,8 @@ import nl.stokpop.typemapper.model.DeclarationAst;
  * //FunctionDeclaration[pmd-kotlin:isNullable() and pmd-kotlin:typeIs('java.util.Collection')]
  * //PropertyDeclaration[pmd-kotlin:isNullable()]
  * }</pre>
+ *
+ * @since 7.27.0
  */
 public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
 

@@ -12,7 +12,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
@@ -48,6 +49,8 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
  * //ClassDeclaration[pmd-kotlin:modifiers() = 'data']
  * //FunctionDeclaration[pmd-kotlin:modifiers() = ('override', 'suspend')]
  * }</pre>
+ *
+ * @since 7.27.0
  */
 public final class KotlinModifiersFunction extends BaseKotlinXPathFunction {
 
@@ -83,7 +86,7 @@ public final class KotlinModifiersFunction extends BaseKotlinXPathFunction {
             if (!(contextNode instanceof KotlinNode)) {
                 return Collections.emptyList();
             }
-            KotlinParser.KtModifiers modifiers = findModifiers((KotlinNode) contextNode);
+            KtModifiers modifiers = ((KotlinNode) contextNode).firstChild(KtModifiers.class);
             if (modifiers == null) {
                 return Collections.emptyList();
             }
@@ -91,50 +94,24 @@ public final class KotlinModifiersFunction extends BaseKotlinXPathFunction {
         }
     }
 
-    private static List<String> collectModifierTexts(KotlinParser.KtModifiers modifiers) {
+    private static List<String> collectModifierTexts(KtModifiers modifiers) {
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < modifiers.getNumChildren(); i++) {
-            KotlinNode child = modifiers.getChild(i);
-            if (child instanceof KotlinParser.KtModifier) {
-                String text = getModifierText((KotlinParser.KtModifier) child);
-                if (text != null) {
-                    result.add(text);
-                }
+        // KtAnnotation children are skipped: only KtModifier keywords are collected.
+        for (KtModifier modifier : modifiers.children(KtModifier.class)) {
+            String text = getModifierText(modifier);
+            if (text != null) {
+                result.add(text);
             }
-            // KtAnnotation children are skipped
         }
         return result;
-    }
-
-    private static KotlinParser.KtModifiers findModifiers(KotlinNode declNode) {
-        for (int i = 0; i < declNode.getNumChildren(); i++) {
-            KotlinNode child = declNode.getChild(i);
-            if (child instanceof KotlinParser.KtModifiers) {
-                return (KotlinParser.KtModifiers) child;
-            }
-        }
-        return null;
     }
 
     /**
      * Returns the modifier keyword text from a {@code KtModifier} node by
      * finding the first terminal leaf in its subtree (the keyword token).
      */
-    static String getModifierText(KotlinParser.KtModifier modifier) {
-        KotlinTerminalNode terminal = firstTerminal(modifier);
+    static String getModifierText(KtModifier modifier) {
+        KotlinTerminalNode terminal = modifier.descendants(KotlinTerminalNode.class).first();
         return terminal != null ? terminal.getText() : null;
-    }
-
-    private static KotlinTerminalNode firstTerminal(KotlinNode node) {
-        if (node instanceof KotlinTerminalNode) {
-            return (KotlinTerminalNode) node;
-        }
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            KotlinTerminalNode found = firstTerminal(node.getChild(i));
-            if (found != null) {
-                return found;
-            }
-        }
-        return null;
     }
 }
