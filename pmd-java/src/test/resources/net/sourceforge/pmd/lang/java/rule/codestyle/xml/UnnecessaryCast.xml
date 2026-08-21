@@ -1273,6 +1273,28 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#6943 False positive: raw cast passed as method argument (INVOCATION context)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+interface PropertySerializer<T> {
+    String toString(T value);
+}
+
+interface PropertyDescriptor<T> {
+    PropertySerializer<T> serializer();
+}
+
+public class Foo {
+    void take(PropertySerializer s) {}
+
+    void serialize(PropertyDescriptor<?> propertyDescriptor, Object value) {
+        take(((PropertyDescriptor) propertyDescriptor).serializer());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#6943 False positive: cast of qualified inner instance with different enclosing args</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
