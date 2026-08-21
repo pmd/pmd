@@ -987,6 +987,71 @@ public class Bar {
         </example>
     </rule>
 
+    <rule name="LocalVariableDeclarationShouldBeAtStartOfBlock"
+          language="java"
+          since="7.27"
+          message="This local variable is not declared at start of block/is initialized when declared"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlockRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock">
+        <description>
+**Note**: This rule goes against virtually all Java style guidelines. For an alternative see {% rule VariableDeclarationUsageDistance %}.
+
+This rule reports variables that are declared and initialized on the same line or that are not declared at the start of their block.
+This rule exists in order to make it easy to see the type of any given variable at a glance and not have declarations hidden
+in amongst other code or long initialization assignments.
+
+It ignores initializations that exist within statement initializers such as for loop, foreach loop and try-with-resources initializers.
+For the purposes of this rule a case in a `switch` statement counts as block.
+By default `super(...)` and `this(...)` must be placed below the declarations.
+
+requireBeforeThisSuper can be set to false (required in older versions of Java which do not allow flexible constructor bodies).
+This will allow `super(...)` and `this(...)` calls to be placed before declarations.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Bar {
+    public void foo1 () {
+        int localVariable1; // correct, variables are declared at the start of the block and not initialized
+        int localVariable2;
+
+        localVariable1 = 1; // correct, once all variables are declared they can be initialized and used
+        localVariable2 = 2;
+    }
+
+    public void foo2 () {
+        int localVariable1;
+        localVariable1 = 1;
+
+        int localVariable2; // incorrect, variable2 is declared after others are initialized
+        localVariable2 = 2;
+    }
+
+    public void foo3 () {
+        int localVariable1 = 1; // incorrect, variables should be declared first and initialized later
+
+        int localVariable2; // correct, because 1 is initialized in its declaration the fault lies in that line, not here
+        localVariable2 = 2;
+    }
+
+    // requireBeforeThisSuper set to true
+    public Bar () {
+        super()
+        int localVariable1; // incorrect, super has been called above the variable declarations
+        localVariable1 = 1;
+    }
+
+    public void foo4 () {
+        int localVariable1;
+        localVariable1 = 1;
+
+        var localVariable2 = 2; // correct, rule does not apply to inferred types
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="LocalVariableNamingConventions"
           language="java"
           since="6.6.0"
