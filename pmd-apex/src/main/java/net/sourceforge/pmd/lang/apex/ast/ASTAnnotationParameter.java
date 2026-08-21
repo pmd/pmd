@@ -14,6 +14,22 @@ import com.google.summit.ast.modifier.ElementValue;
 public final class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgument> {
     public static final String SEE_ALL_DATA = "seeAllData";
 
+    /**
+     * The {@code critical} modifier of the {@code @IsTest} annotation, used together with the
+     * {@code RunRelevantTests} deployment test level. (Beta, Salesforce API v66.0+)
+     *
+     * @since 7.27.0
+     */
+    public static final String CRITICAL = "critical";
+
+    /**
+     * The {@code testFor} modifier of the {@code @IsTest} annotation, used together with the
+     * {@code RunRelevantTests} deployment test level. (Beta, Salesforce API v66.0+)
+     *
+     * @since 7.27.0
+     */
+    public static final String TEST_FOR = "testFor";
+
     ASTAnnotationParameter(ElementArgument elementArgument) {
         super(elementArgument);
     }
