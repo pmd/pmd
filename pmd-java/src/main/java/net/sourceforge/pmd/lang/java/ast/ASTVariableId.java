@@ -280,14 +280,13 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         }
         @SuppressWarnings("PMD.CloseResource")
         JavaLanguageProcessor javaLanguage = (JavaLanguageProcessor) typeNode.getAstInfo().getLanguageProcessor();
-        if (!javaLanguage.hasFirstClassLombokSupport()) {
-            return false;
-        }
         // Note that if language version is >= 10, then a variable cannot have
         // type lombok.var unless it uses a qualified name. `var` is interpreted
         // as a keyword by the parser and produces no type node.
-        return TypeTestUtil.isExactlyA("lombok.val", typeNode)
-            || !onlyVal && TypeTestUtil.isExactlyA("lombok.var", typeNode);
+        return javaLanguage.hasFirstClassLombokSupport() && (
+                TypeTestUtil.isExactlyA("lombok.val", typeNode)
+                || !onlyVal && TypeTestUtil.isExactlyA("lombok.var", typeNode)
+            );
     }
 
     /**

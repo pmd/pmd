@@ -218,12 +218,9 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             return false;
         }
         
-        if (!convertedExpr.getTypeMirror().isBoxedPrimitive() || !conversionExpr.getTypeMirror().isPrimitive()) {
-            return false;
-        }
-        
-        // Check if there are overloads that would accept the boxed type differently
-        return hasObjectOverloadAtPosition(currentMethod, argIndex, invocation instanceof ASTConstructorCall);
+        return convertedExpr.getTypeMirror().isBoxedPrimitive() && conversionExpr.getTypeMirror().isPrimitive()
+            // Check if there are overloads that would accept the boxed type differently
+            && hasObjectOverloadAtPosition(currentMethod, argIndex, invocation instanceof ASTConstructorCall);
     }
     
     /**

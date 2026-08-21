@@ -124,29 +124,28 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             }
         }
 
-        boolean conditionNegated = thenFalse || elseTrue;
-        if (conditionNegated && needsNewParensWhenNegating(condition)) {
-            return null;
-        }
-
         BinaryOp op = thenFalse || elseFalse ? CONDITIONAL_AND : CONDITIONAL_OR;
         // the branch that is not a literal, if both are literals, prefers elseExpr
         ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
 
+        boolean conditionNegated = thenFalse || elseTrue;
+        // from the above logic it is guaranteed that exactly one of the four booleans is true
+        String conditionNegation = conditionNegated ? "!" : "";
+        String operator = thenTrue || elseTrue ? "||" : "&&";
+        String branchChoice = thenTrue || thenFalse ? "{elseBranch}" : "{thenBranch}";
 
-        if (doesNotNeedNewParensUnderInfix(condition, op)
-            && doesNotNeedNewParensUnderInfix(branch, op)) {
-            if (thenTrue) {
-                return "return {condition} || {elseBranch};";
-            } else if (thenFalse) {
-                return "return !{condition} && {elseBranch};";
-            } else if (elseTrue) {
-                return "return !{condition} || {thenBranch};";
-            } else {
-                return "return {condition} && {thenBranch};";
-            }
-        }
-        return null;
+        boolean conditionNeedsParens = (conditionNegated && needsNewParensWhenNegating(condition))
+            || needsNewParensUnderInfix(condition, op);
+        boolean branchNeedsParens = needsNewParensUnderInfix(branch, op);
+
+        String conditionParensLeft = conditionNeedsParens ? "(" : "";
+        String conditionParensRight = conditionNeedsParens ? ")" : "";
+        String branchParensLeft = branchNeedsParens ? "(" : "";
+        String branchParensRight = branchNeedsParens ? ")" : "";
+
+        return "return " + conditionNegation + conditionParensLeft + "{condition}"
+                + conditionParensRight + " " + operator + " " + branchParensLeft
+                + branchChoice + branchParensRight + ";";
     }
 
     private static boolean needsNewParensWhenNegating(ASTExpression e) {
@@ -170,13 +169,13 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    private static boolean doesNotNeedNewParensUnderInfix(ASTExpression e, BinaryOp op) {
+    private static boolean needsNewParensUnderInfix(ASTExpression e, BinaryOp op) {
         // those nodes have greater precedence than infix
-        return e instanceof ASTPrimaryExpression
+        return !(e instanceof ASTPrimaryExpression
             || e instanceof ASTCastExpression
             || e instanceof ASTUnaryExpression
             || e.isParenthesized()
-            || isInfixExprWithOperator(e, opsWithGreaterPrecedence(op));
+            || isInfixExprWithOperator(e, opsWithGreaterPrecedence(op)));
     }
 
     private @Nullable ASTExpression getReturnExpr(JavaNode node) {
