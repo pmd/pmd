@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>append with + concatenation is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun build(prefix: String, value: Int): String {
+    val sb = StringBuilder()
+    sb.append(prefix + ": " + value)
+    return sb.toString()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuffer.append with + concatenation is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun build(prefix: String, value: Int): String {
+    val sb = StringBuffer()
+    sb.append(prefix + value)
+    return sb.toString()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>chained append calls are ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun build(prefix: String, value: Int): String {
+    val sb = StringBuilder()
+    sb.append(prefix).append(": ").append(value)
+    return sb.toString()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>append with single literal is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun build(value: Int): String {
+    val sb = StringBuilder()
+    sb.append("value: ")
+    sb.append(value)
+    return sb.toString()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>buildString idiom is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun build(prefix: String, value: Int): String =
+    buildString {
+        append(prefix)
+        append(": ")
+        append(value)
+    }
+        ]]></code>
+    </test-code>
+
+</test-data>

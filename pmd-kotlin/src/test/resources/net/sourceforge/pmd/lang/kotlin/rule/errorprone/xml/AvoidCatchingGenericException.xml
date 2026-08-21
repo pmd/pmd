@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>catch(e: Exception) is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun doSomething() {
+    try {
+        riskyOp()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch(e: RuntimeException) is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun doSomething() {
+    try {
+        riskyOp()
+    } catch (e: RuntimeException) {
+        e.printStackTrace()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch(e: NullPointerException) is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun doSomething() {
+    try {
+        riskyOp()
+    } catch (e: NullPointerException) {
+        e.printStackTrace()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Catching specific IOException is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException
+
+fun doSomething() {
+    try {
+        riskyOp()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>runCatching with onFailure is idiomatic Kotlin - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun doSomething() {
+    runCatching { riskyOp() }.onFailure { println(it) }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

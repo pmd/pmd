@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>if/else returning true/false with braces - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun isBarEqualTo(bar: Int, x: Int): Boolean {
+    if (bar == x) {
+        return true
+    } else {
+        return false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if/else returning false/true with braces - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun isBarNotEqualTo(bar: Int, x: Int): Boolean {
+    if (bar == x) {
+        return false
+    } else {
+        return true
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if/else returning true/false without braces - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun isBarEqualTo(bar: Int, x: Int): Boolean {
+    if (bar == x) return true
+    else return false
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>direct boolean return - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun isBarEqualTo(bar: Int, x: Int): Boolean {
+    return bar == x
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if/else returning a non-boolean value - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun describe(bar: Int, x: Int): String {
+    if (bar == x) {
+        return "equal"
+    } else {
+        return "not equal"
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if without else - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(bar: Int, x: Int): Boolean {
+    if (bar == x) {
+        return true
+    }
+    return false
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if/else branch with multiple statements - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(bar: Int, x: Int): Boolean {
+    if (bar == x) {
+        println("equal")
+        return true
+    } else {
+        return false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if/else returning computed boolean - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(bar: Int, x: Int): Boolean {
+    if (bar == x) {
+        return bar > 0
+    } else {
+        return false
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>expression body function returning true/false - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun isEqual(bar: Int, x: Int): Boolean = if (bar == x) true else false
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>expression body function returning false/true - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun isNotEqual(bar: Int, x: Int): Boolean = if (bar == x) false else true
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>if-as-expression assigned to local variable - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun compute(bar: Int, x: Int): Boolean {
+    val result = if (bar == x) true else false
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>expression body where one branch is non-literal - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(bar: Int, x: Int): Boolean = if (bar == x) bar > 0 else false
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>expression body with non-boolean expression - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun describe(bar: Int, x: Int): String = if (bar == x) "equal" else "not equal"
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>when expression returning true/false in expression body - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun isEqual(bar: Int, x: Int): Boolean = when { bar == x -> true; else -> false }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when expression returning false/true (negated) - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun isNotEqual(bar: Int, x: Int): Boolean = when { bar == x -> false; else -> true }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when expression assigned to val - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun compute(bar: Int, x: Int): Boolean {
+    val result = when {
+        bar == x -> true
+        else -> false
+    }
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when with more than two entries - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun classify(bar: Int, x: Int): Boolean = when {
+    bar < x -> true
+    bar > x -> false
+    else -> true
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when returning non-boolean literals - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun describe(bar: Int, x: Int): String = when {
+    bar == x -> "equal"
+    else -> "not equal"
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>when on enum subject with multiple comma-separated cases grouping to true - no violation (false positive: cannot be simplified to a plain boolean expression)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum class Category {
+    Alpha, Beta, Gamma, Delta, Epsilon, Zeta, Eta, Theta, Iota, Kappa
+}
+
+val Category.isGroup1: Boolean
+    get() = when (this) {
+        Category.Alpha,
+        Category.Beta,
+        Category.Gamma,
+        Category.Delta,
+        Category.Epsilon,
+        Category.Zeta,
+        Category.Eta,
+        Category.Theta,
+        -> true
+        else -> false
+    }
+        ]]></code>
+    </test-code>
+
+</test-data>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>catch(e: NullPointerException) is a violation - use null safety</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun bad(s: String?): Int {
+    return try {
+        s!!.length
+    } catch (e: NullPointerException) {
+        0
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch(e: IOException) is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException
+
+fun good() {
+    try {
+        riskyIO()
+    } catch (e: IOException) {
+        // handle
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Safe call with Elvis is the idiomatic alternative - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(s: String?): Int {
+    return s?.length ?: 0
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch with fully-qualified NullPointerException is also a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+fun bad(s: String?): Int {
+    return try {
+        s!!.length
+    } catch (e: java.lang.NullPointerException) {
+        -1
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

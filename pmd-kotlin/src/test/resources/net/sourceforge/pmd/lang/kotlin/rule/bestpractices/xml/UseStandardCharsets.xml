@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Charset.forName("UTF-8") should use StandardCharsets.UTF_8</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.Charset
+
+class Bad {
+    val cs = Charset.forName("UTF-8")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Charset.forName("ISO-8859-1") should use StandardCharsets.ISO_8859_1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.Charset
+
+class Bad {
+    val cs = Charset.forName("ISO-8859-1")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StandardCharsets.UTF_8 is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.charset.StandardCharsets
+
+class Good {
+    val cs = StandardCharsets.UTF_8
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Charset.forName with unknown charset is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.charset.Charset
+
+class Good {
+    val cs = Charset.forName("windows-1252")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom class named Charset is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Charset {
+    companion object {
+        fun forName(name: String): Charset = Charset()
+    }
+}
+
+class Good {
+    val cs = Charset.forName("UTF-8")
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

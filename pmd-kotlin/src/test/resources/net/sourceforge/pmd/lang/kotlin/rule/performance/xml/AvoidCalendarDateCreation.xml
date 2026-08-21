@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Calendar.getInstance() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar
+
+class Bad {
+    fun schedule() { val cal = Calendar.getInstance() }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Calendar.getInstance(Locale) is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar
+import java.util.Locale
+
+class Bad {
+    fun schedule() { val cal = Calendar.getInstance(Locale.US) }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>new GregorianCalendar() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.GregorianCalendar
+
+class Bad {
+    fun schedule() { val cal = GregorianCalendar() }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Calendar.getInstance(TimeZone, Locale) with two args is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
+
+class Bad {
+    fun schedule() { val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"), Locale.US) }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using Instant.now() is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.Instant
+
+class Good {
+    fun now(): Instant = Instant.now()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using LocalDateTime (java.time API) is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDateTime
+
+class Good {
+    fun schedule(): LocalDateTime = LocalDateTime.now()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using ZonedDateTime is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.ZonedDateTime
+import java.time.ZoneId
+
+class Good {
+    fun schedule(): ZonedDateTime = ZonedDateTime.now(ZoneId.of("UTC"))
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Multithreading"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag issues when dealing with multiple threads of execution.
+    </description>
+
+    <rule name="DontCallThreadRun"
+          language="kotlin"
+          since="7.25.0"
+          message="Don't call Thread.run() explicitly; call Thread.start() to execute in a new thread. Consider using coroutines instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_multithreading.html#dontcallthreadrun">
+        <description>
+Calling `thread.run()` executes the `run()` method in the current thread, not a new one.
+Use `thread.start()` to actually create a new thread. For Kotlin prefer coroutines
+(`launch {}`) over raw threads.
+
+Kotlin equivalent of Java rule: category/java/multithreading.xml/DontCallThreadRun
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/multithreading.xml/DontCallThreadRun"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.Thread#run()')]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
+class Bad {
+    fun bad(t: Thread) {
+        t.run() // violation: runs in the current thread, not a new one
+    }
+}
+
+class Good {
+    fun good(t: Thread) {
+        t.start() // ok: starts a new OS thread
+    }
+
+    fun goodKotlin() {
+        GlobalScope.launch { /* ... */ } // ok: idiomatic Kotlin coroutine
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UseConcurrentHashMap"
+          language="kotlin"
+          since="7.25.0"
+          message="Use ConcurrentHashMap instead of HashMap for concurrent access. Consider using a coroutine-safe data structure."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_multithreading.html#useconcurrenthashmap">
+        <description>
+`HashMap` is not thread-safe. In multi-threaded code, concurrent reads/writes without
+synchronization can corrupt the map. Use `ConcurrentHashMap` for safe concurrent access,
+or consider Kotlin coroutine-friendly alternatives.
+
+Kotlin equivalent of Java rule: category/java/multithreading.xml/UseConcurrentHashMap
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/multithreading.xml/UseConcurrentHashMap"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PropertyDeclaration[not(ancestor::FunctionBody) and pmd-kotlin:typeIsExactly('java.util.HashMap')]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+import java.util.HashMap
+import java.util.concurrent.ConcurrentHashMap
+
+class Bad {
+    private val map: HashMap<String, Int> = HashMap() // violation: not thread-safe as a field
+}
+
+class Good {
+    private val map = ConcurrentHashMap<String, Int>() // ok: thread-safe
+
+    fun localOnly() {
+        val local: HashMap<String, Int> = HashMap() // ok: local variable, not a field
+    }
+}
+        ]]></example>
+    </rule>
+
+    <rule name="UseNotifyAllInsteadOfNotify"
+          language="kotlin"
+          since="7.25.0"
+          message="Call notifyAll() rather than notify() to wake all waiting threads. Consider using coroutines instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_multithreading.html#usenotifyallinsteadofnotify">
+        <description>
+`notify()` wakes only one thread waiting on an object's monitor, chosen arbitrarily.
+`notifyAll()` wakes all waiting threads and avoids missed wake-up bugs. For Kotlin prefer
+coroutine primitives (`Mutex`, `Channel`, `StateFlow`) over raw synchronization.
+
+Kotlin equivalent of Java rule: category/java/multithreading.xml/UseNotifyAllInsteadOfNotify
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="javaEquivalentRule" type="String"
+                      description="Java rule this Kotlin rule is based on; update this rule when the Java rule changes."
+                      value="category/java/multithreading.xml/UseNotifyAllInsteadOfNotify"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.Object#notify()')]
+                ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Bad {
+    fun bad(lock: Any) {
+        synchronized(lock) {
+            lock.notify() // violation: may miss waiting threads
+        }
+    }
+}
+
+class Good {
+    fun good(lock: Any) {
+        synchronized(lock) {
+            lock.notifyAll() // ok: wakes all waiting threads
+        }
+    }
+}
+        ]]></example>
+    </rule>
+
+</ruleset>

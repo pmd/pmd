@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>same Person created every for-loop iteration -- violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Person(val name: String)
+class BankTransaction(val person: Person, val amount: java.math.BigDecimal)
+fun bad(name: String, amounts: List<java.math.BigDecimal>): List<BankTransaction> {
+    val result = mutableListOf<BankTransaction>()
+    for (amount in amounts) {
+        val person = Person(name)
+        result.add(BankTransaction(person, amount))
+    }
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>same Person and same BankTransaction created every iteration -- two violations</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+class Person(val name: String)
+class BankTransaction(val person: Person, val amount: java.math.BigDecimal)
+fun bad(name: String, amounts: List<java.math.BigDecimal>): List<String> {
+    val log = mutableListOf<String>()
+    for (amount in amounts) {
+        val person = Person(name)
+        val tx = BankTransaction(person, java.math.BigDecimal.ZERO)
+        log.add(tx.toString())
+    }
+    return log
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>same Person created every while-loop iteration -- violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Person(val name: String)
+class BankTransaction(val person: Person, val amount: java.math.BigDecimal)
+fun bad(name: String, amounts: ArrayDeque<java.math.BigDecimal>): List<BankTransaction> {
+    val result = mutableListOf<BankTransaction>()
+    while (amounts.isNotEmpty()) {
+        val person = Person(name)
+        result.add(BankTransaction(person, amounts.removeFirst()))
+    }
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>same Person created every do-while iteration -- violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Person(val name: String)
+class BankTransaction(val person: Person, val amount: java.math.BigDecimal)
+fun bad(name: String, amounts: ArrayDeque<java.math.BigDecimal>): List<BankTransaction> {
+    val result = mutableListOf<BankTransaction>()
+    do {
+        val person = Person(name)
+        result.add(BankTransaction(person, amounts.removeFirst()))
+    } while (amounts.isNotEmpty())
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Person created outside loop -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Person(val name: String)
+class BankTransaction(val person: Person, val amount: java.math.BigDecimal)
+fun good(name: String, amounts: List<java.math.BigDecimal>): List<BankTransaction> {
+    val person = Person(name)
+    val result = mutableListOf<BankTransaction>()
+    for (amount in amounts) {
+        result.add(BankTransaction(person, amount))
+    }
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>lowercase function call inside loop -- no violation (not a constructor)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Person(val name: String)
+fun good(names: List<String>): List<Person> {
+    val result = mutableListOf<Person>()
+    for (name in names) {
+        val normalized = name.trim().lowercase()
+        result.add(Person(normalized))
+    }
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BankTransaction uses loop variable amount -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Person(val name: String)
+class BankTransaction(val person: Person, val amount: java.math.BigDecimal)
+fun good(name: String, amounts: List<java.math.BigDecimal>): List<BankTransaction> {
+    val person = Person(name)
+    val result = mutableListOf<BankTransaction>()
+    for (amount in amounts) {
+        val tx = BankTransaction(person, amount)
+        result.add(tx)
+    }
+    return result
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BankTransaction uses destructured loop variables -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Person(val name: String)
+class BankTransaction(val person: Person, val amount: java.math.BigDecimal)
+fun good(entries: List<Pair<Person, java.math.BigDecimal>>): List<BankTransaction> {
+    val result = mutableListOf<BankTransaction>()
+    for ((person, amount) in entries) {
+        val tx = BankTransaction(person, amount)
+        result.add(tx)
+    }
+    return result
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>java.io.File uses loop variable dir -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File
+fun good(watchDirs: List<File>) {
+    for (dir in watchDirs) {
+        val achFile = File(dir, "achievements.json")
+        achFile.mkdirs()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor arg is a derived loop-body local (1-level) -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Widget(val label: String)
+fun good(items: List<String>) {
+    for (i in items.indices) {
+        val elem = items[i]       // derived from loop var i
+        val w = Widget(elem)      // elem is derived -- not a repeated identical object
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor arg method-call on derived local (1-level) -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Report(val title: String)
+fun good(sections: Array<String>) {
+    for (i in sections.indices) {
+        val section = sections[i]
+        val report = Report(section.trim())  // section (derived var) in args
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>anonymous class delegation uses loop var -- no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File
+abstract class FileWatcher(val dir: File) {
+    abstract fun onEvent(path: String?)
+}
+fun good(watchDirs: List<File>) {
+    for (dir in watchDirs) {
+        val watcher = object : FileWatcher(dir) {
+            override fun onEvent(path: String?) {
+                if (path == "achievements.json") {
+                    process(File(dir, "achievements.json"))
+                }
+            }
+        }
+        watcher.onEvent("test")
+    }
+}
+fun process(file: File) {}
+        ]]></code>
+    </test-code>
+
+</test-data>

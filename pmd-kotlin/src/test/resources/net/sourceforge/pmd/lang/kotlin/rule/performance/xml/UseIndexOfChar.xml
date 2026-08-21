@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>indexOf with single-char String argument is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun parseHeader(line: String): Int {
+        return line.indexOf(":")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>lastIndexOf with single-char String argument is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun findLastSlash(path: String): Int {
+        return path.lastIndexOf("/")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>indexOf with Char argument is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun parseHeader(line: String): Int {
+        return line.indexOf(':')
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>indexOf with multi-character String is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun findSeparator(s: String): Int {
+        return s.indexOf("::")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Both indexOf and lastIndexOf violations in one function</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun parsePath(path: String): Pair<Int, Int> {
+        val start = path.indexOf("/")
+        val end   = path.lastIndexOf("/")
+        return Pair(start, end)
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>indexOf on List, not String, is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun findItem(items: List<String>): Int {
+        return items.indexOf("x")
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

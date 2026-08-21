@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>return in finally block discards exceptions</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun load(): Int {
+        try {
+            return 1
+        } finally {
+            return 2
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no return in finally block is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun load(): Int {
+        try {
+            return 1
+        } finally {
+            cleanup()
+        }
+    }
+
+    private fun cleanup() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return inside anonymous function in finally is ok - returns from the anon fun, not the outer fun</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun load(): Int {
+        try {
+            return 1
+        } finally {
+            val action = fun(): Int { return 0 }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

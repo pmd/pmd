@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>toString() on a String field is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[class Bad {
+    private val name: String = "hello"
+    fun bad() {
+        val s = name.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Using the String field directly is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[class Good {
+    private val name: String = "hello"
+    fun good(): String {
+        return name
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>toString() on an Int is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[fun good(value: Int): String {
+    return value.toString()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>
+            Regression: multi-line call with string templates + concatenation should only report the explicit `.toString()` on the string literal.
+        </description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>22</expected-linenumbers>
+        <code><![CDATA[private fun reportProblem(
+    cause: Exception,
+    info: String,
+    context: String,
+    service: Any
+) {
+    // no-op
+}
+
+private data class RequestData(
+    val userId: String,
+    val cardNumber: String,
+    val iban: String
+)
+
+private fun reproduceFalsePositive(request: RequestData, service: Any, ex: Exception) {
+    reportProblem(
+        cause = ex,
+        info =
+            "userId: ${request.userId} card: " +
+                "${request.cardNumber} iban:${request.iban}",
+        context = "unlinking".toString(), // violation
+        service = service
+    )
+}
+        ]]></code>
+    </test-code>
+
+
+
+    <test-code>
+        <description>Only the explicit toString() inside a multi-line constructor call should be flagged, not the constructor call itself</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[class ServiceException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
+
+fun bad(ioException: java.io.IOException) {
+    throw ServiceException(
+        "Exception encountered".toString(),
+        cause = ioException
+    )
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

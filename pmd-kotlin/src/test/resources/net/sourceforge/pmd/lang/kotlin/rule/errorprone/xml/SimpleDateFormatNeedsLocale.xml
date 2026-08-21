@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>SimpleDateFormat without Locale is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.text.SimpleDateFormat
+
+class Bad {
+    val formatter = SimpleDateFormat("yyyy-MM-dd")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SimpleDateFormat with Locale is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+class Good {
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DateTimeFormatter is ok - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+class Good {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fully qualified java.text.SimpleDateFormat without Locale is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    val formatter = java.text.SimpleDateFormat("yyyy-MM-dd")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom class named SimpleDateFormat is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class SimpleDateFormat(pattern: String)
+
+class Good {
+    val formatter = SimpleDateFormat("yyyy-MM-dd")
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

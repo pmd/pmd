@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>String.toLowerCase() without Locale is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun normalize(s: String): String {
+        return s.toLowerCase()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String.toUpperCase() without Locale is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun shout(s: String): String {
+        return s.toUpperCase()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Kotlin lowercase() uses Locale.ROOT - not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun normalize(s: String): String {
+        return s.lowercase()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Kotlin uppercase() uses Locale.ROOT - not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun shout(s: String): String {
+        return s.uppercase()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Both toLowerCase and toUpperCase in one function - two violations</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun normalize(s: String): String {
+        val lower = s.toLowerCase()
+        val upper = s.toUpperCase()
+        return "$lower-$upper"
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

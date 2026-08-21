@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>append with single-char String literal is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("x")
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>append with comma single-char String literal is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun join(parts: List<String>): String {
+        val sb = StringBuilder()
+        sb.append(",")
+        parts.forEach { sb.append(it) }
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>append with multi-character String literal is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("hello")
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>append with Char literal is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append('x')
+        sb.append(',')
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuffer append with single-char String is also a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun bad(sb: StringBuffer): StringBuffer {
+    return sb.append(".")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Two single-char appends in one function - two violations</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("(")
+        sb.append(")")
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
