@@ -92,6 +92,7 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
     * [#6010](https://github.com/pmd/pmd/issues/6010): \[java] java.lang.OutOfMemoryError: Java heap space when accessing big Jar files with PMD 7
     * [#6374](https://github.com/pmd/pmd/issues/6374): \[java] Support Java 27
     * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
+    * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
     * [#6932](https://github.com/pmd/pmd/issues/6932): \[java] AssertionError when outer class is parsed before inner class with conflicting visibility
 * java-bestpractices
     * [#1237](https://github.com/pmd/pmd/issues/1237): \[java] AbstractClassWithoutAnyMethod: False positive for empty subclasses that inherit methods
