@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -236,11 +237,14 @@ public final class KotlinTypeAnalysisContext {
         return TypedAstHierarchyQueriesKt.isSubtypeOfUpward(typedAst, expectedType, actualType);
     }
 
+    // Fail fast: if getCanonicalPath() fails the file is inaccessible and
+    // analysis would produce wrong index keys later anyway (PR #6795 review).
     private static String canonicalize(String path) {
         try {
             return new File(path).getCanonicalPath();
         } catch (IOException e) {
-            return new File(path).getAbsolutePath();
+            throw new UncheckedIOException(
+                    "Cannot canonicalize path: " + path + " — file may not be accessible", e);
         }
     }
 }

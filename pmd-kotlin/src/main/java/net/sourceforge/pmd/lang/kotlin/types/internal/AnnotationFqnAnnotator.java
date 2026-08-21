@@ -122,15 +122,14 @@ final class AnnotationFqnAnnotator {
 
     /** Finds the {@code KtUserType} directly inside a {@code KtUnescapedAnnotation}. */
     private static KtUserType findUserType(KtUnescapedAnnotation annNode) {
-        for (int i = 0; i < annNode.getNumChildren(); i++) {
-            KotlinNode child = annNode.getChild(i);
-            if (child instanceof KtUserType) {
-                return (KtUserType) child;
-            }
-            if (child instanceof KtConstructorInvocation) {
-                return KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation((KtConstructorInvocation) child);
-            }
+        // unescapedAnnotation : constructorInvocation | userType
+        KtUserType userType = annNode.firstChild(KtUserType.class);
+        if (userType != null) {
+            return userType;
         }
-        return null;
+        KtConstructorInvocation ctor = annNode.firstChild(KtConstructorInvocation.class);
+        return ctor != null
+                ? KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation(ctor)
+                : null;
     }
 }
