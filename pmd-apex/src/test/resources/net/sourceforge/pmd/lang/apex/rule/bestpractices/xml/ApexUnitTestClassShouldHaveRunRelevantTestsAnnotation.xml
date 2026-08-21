@@ -53,7 +53,7 @@ private class InvoiceDynamicFlowTests {
    </test-code>
 
    <test-code>
-      <description>ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation assumes APEX is case sensitive for modifier names</description>
+      <description>Modifier names are matched case-insensitively, so CRITICAL=true still counts as 'critical'</description>
       <expected-problems>0</expected-problems>
       <code>
          <![CDATA[
