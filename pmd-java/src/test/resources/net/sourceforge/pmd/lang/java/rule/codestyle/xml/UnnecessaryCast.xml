@@ -1248,4 +1248,66 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6943 False positive: raw cast then generic method used in a chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+interface PropertySerializer<T> {
+    String toString(T value);
+}
+
+interface PropertyDescriptor<T> {
+    PropertySerializer<T> serializer();
+}
+
+public class Foo {
+    // Dogfood: AbstractPropertySource#toStringMap
+    // PropertyDescriptor<?>.serializer() is PropertySerializer<?>, whose toString
+    // does not accept Object. The raw cast is required for the chained call.
+    String serialize(PropertyDescriptor<?> propertyDescriptor, Object value) {
+        return ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6943 False positive: raw cast passed as method argument (INVOCATION context)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+interface PropertySerializer<T> {
+    String toString(T value);
+}
+
+interface PropertyDescriptor<T> {
+    PropertySerializer<T> serializer();
+}
+
+public class Foo {
+    void take(PropertySerializer s) {}
+
+    void serialize(PropertyDescriptor<?> propertyDescriptor, Object value) {
+        take(((PropertyDescriptor) propertyDescriptor).serializer());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6943 False positive: cast of qualified inner instance with different enclosing args</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ShadowChainBuilder<S, I> {
+    public class ResolverBuilder { }
+
+    // Dogfood: JavaResolvers#getNamedMemberResolver
+    // classes.new ResolverBuilder() has type ShadowChainBuilder<? super S, ?>.ResolverBuilder
+    // which is not assignable to ShadowChainBuilder<S, ?>.ResolverBuilder.
+    ShadowChainBuilder<S, ?>.ResolverBuilder create(ShadowChainBuilder<? super S, ?> classes) {
+        return (ShadowChainBuilder<S, ?>.ResolverBuilder) classes.new ResolverBuilder();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
