@@ -225,12 +225,40 @@ public class Bar {
           message="Use of modifier volatile is not recommended."
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#avoidusingvolatile">
         <description>
-'volatile' is an extremely low-level tool. It requires more knowledge of the Java Memory Model than most
-Java developers have. Therefore, most Java developers shouldn't use it.
+The `volatile` modifier is an extremely low-level concurrency tool (like `notify` and `wait`).
+It makes sure that all threads see a consistent value for a field, and it establishes a happens-before
+relationship: everything the writing thread did before the volatile write becomes visible to any thread
+that afterwards reads the field.
 
-Instead, use the higher-level classes from `java.util.concurrent`.
+What `volatile` does **not** do:
 
-Note that this rule allows no exceptions. This is intentional.
+*   It doesn't make updates atomic. Read and write remain separate operations, so `counter++` is a read,
+    an increment and a write - two threads can interleave and lose an update. The same applies to every
+    check-then-act idiom.
+*   On a reference or array field, it only covers the reference itself. Writes to the referenced object's
+    fields, or to the array's elements, are not covered.
+
+Using `volatile` correctly requires more knowledge of the Java Memory Model than most Java developers have.
+Therefore, most Java developers shouldn't use it. Instead, use the higher-level classes from `java.util.concurrent`,
+especially the Atomic wrapper classes:
+
+*   instead of a volatile `boolean`, `int`, `long` or reference: `AtomicBoolean`, `AtomicInteger`, `AtomicLong`,
+    `AtomicReference`
+*   instead of a volatile array: `AtomicIntegerArray`, `AtomicLongArray`, `AtomicReferenceArray`
+*   for counters under contention: `LongAdder`, `DoubleAdder`
+*   for a value that never changes after construction: `final`
+*   for shared collections: the concurrent collections, e.g. `ConcurrentHashMap`
+
+A related trap concerns 64-bit fields: a write to a non-volatile `long` or `double` field is not required to be
+atomic (JLS §17.7). The JVM may split it into two separate 32-bit writes, so another thread can read a value
+assembled from two different writes - a value nobody ever wrote. Declaring the field `volatile` does fix this
+specific problem, but it still leaves `++` and `+=` non-atomic. `AtomicLong` fixes both and is the better default.
+(There is no `AtomicDouble` in the JDK; use `DoubleAdder`, an `AtomicReference<Double>`, or an `AtomicLong`
+with `Double.doubleToRawLongBits`.)
+
+Note that this rule allows no exceptions. This is intentional. Valid uses exist but are rare (e.g. {% rule DoubleCheckedLocking %}). If yours is one
+of them, suppress the violation explicitly with `// NOPMD` or `@SuppressWarnings("PMD.AvoidUsingVolatile")`
+and a comment explaining why.
         </description>
         <priority>2</priority>
         <properties>
