@@ -1367,18 +1367,22 @@ public boolean isBarEqualTo(int x) {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
         <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
-When the null check and the instanceof are separated by other conditions in the same chain, the instanceof must
-be evaluated before any other condition that uses the subject once the null check is dropped, otherwise such a
-condition could throw a NullPointerException.
+When the null check and the instanceof are separated by other conditions in the same short-circuit chain, the
+null check is still redundant. If none of the conditions in between uses the subject, it can simply be removed.
+Otherwise removing it alone could make such a condition throw a NullPointerException, so the violation suggests
+moving the instanceof in front of the conditions using the subject instead.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 class Foo {
-  void bar(Object x) {
-    if (x != null && x instanceof Bar) {
-      // just drop the "x != null" check
-    }
+  void bar(java.net.Socket socket, Object x) {
+    // just drop the "x != null" check
+    if (x != null && x instanceof String) {}
+
+    // socket.isConnected() needs a non-null socket: move the instanceof
+    // first, then the null check can be dropped
+    if (socket != null && socket.isConnected() && socket instanceof javax.net.ssl.SSLSocket) {}
   }
 }
 ]]>

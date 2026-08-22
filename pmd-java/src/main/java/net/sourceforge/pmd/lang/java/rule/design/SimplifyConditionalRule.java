@@ -25,6 +25,9 @@ import net.sourceforge.pmd.lang.java.rule.internal.StablePathMatcher;
 
 public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
 
+    private static final String MOVE_INSTANCEOF_MESSAGE =
+            "Move the instanceof check and remove the unnecessary null check to simplify this conditional";
+
     public SimplifyConditionalRule() {
         super(ASTInfixExpression.class);
     }
@@ -77,10 +80,16 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
                     return null;
                 }
             }
-            for (ASTExpression leaf : operands) {
+            int instanceofIdx = operands.indexOf(instanceofOperand);
+            for (int i = 0; i < operands.size(); i++) {
+                ASTExpression leaf = operands.get(i);
                 if (leaf != instanceofOperand && isNullCheck(leaf, instanceOfSubject)
                     && negated != isInfixExprWithOperator(leaf, NE)) {
-                    asCtx(data).addViolation(leaf);
+                    if (canRemoveWithoutReordering(operands, i, instanceofIdx, instanceOfSubject)) {
+                        asCtx(data).addViolation(leaf);
+                    } else {
+                        asCtx(data).addViolationWithMessage(leaf, MOVE_INSTANCEOF_MESSAGE);
+                    }
                 }
             }
         }
@@ -98,6 +107,41 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
         } else {
             leaves.add(expr);
         }
+    }
+
+    /**
+     * Returns true if the null check at {@code nullCheckIdx} can be removed
+     * without reordering the chain. An operand evaluated between the null
+     * check and the instanceof could throw a NullPointerException once it
+     * is no longer guarded by the null check, unless it is itself a null
+     * check or an instanceof on the subject, which cannot throw. Operands
+     * after the instanceof stay guarded by it, since the instanceof is
+     * false for a null subject.
+     */
+    private static boolean canRemoveWithoutReordering(List<ASTExpression> operands,
+                                                      int nullCheckIdx,
+                                                      int instanceofIdx,
+                                                      StablePathMatcher subject) {
+        for (int i = nullCheckIdx + 1; i < instanceofIdx; i++) {
+            ASTExpression operand = operands.get(i);
+            if (!isNullCheck(operand, subject) && !isSubjectInstanceof(operand, subject)
+                && operand.descendantsOrSelf().filterIs(ASTExpression.class).any(subject::matches)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if the operand is an instanceof on the subject, possibly
+     * negated. Such an operand never throws for a null subject.
+     */
+    private static boolean isSubjectInstanceof(ASTExpression expr, StablePathMatcher subject) {
+        if (isBooleanNegation(expr)) {
+            expr = ((ASTUnaryExpression) expr).getOperand();
+        }
+        return isInfixExprWithOperator(expr, INSTANCEOF)
+            && subject.matches(((ASTInfixExpression) expr).getLeftOperand());
     }
 
     /**
