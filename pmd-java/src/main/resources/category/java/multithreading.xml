@@ -253,8 +253,7 @@ A related trap concerns 64-bit fields: a write to a non-volatile `long` or `doub
 atomic (JLS §17.7). The JVM may split it into two separate 32-bit writes, so another thread can read a value
 assembled from two different writes - a value nobody ever wrote. Declaring the field `volatile` does fix this
 specific problem, but it still leaves `++` and `+=` non-atomic. `AtomicLong` fixes both and is the better default.
-(There is no `AtomicDouble` in the JDK; use `DoubleAdder`, an `AtomicReference&lt;Double&gt;`, or an `AtomicLong`
-with `Double.doubleToRawLongBits`.)
+(There is no `AtomicDouble` in the JDK; use `DoubleAdder` or  an `AtomicReference&lt;Double&gt;`.)
 
 Note that this rule allows no exceptions. This is intentional. Valid uses exist but are rare (e.g. {% rule DoubleCheckedLocking %}). If yours is one
 of them, suppress the violation explicitly with `// NOPMD` or `@SuppressWarnings("PMD.AvoidUsingVolatile")`
