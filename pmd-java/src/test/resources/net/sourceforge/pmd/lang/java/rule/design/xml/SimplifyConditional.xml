@@ -171,12 +171,108 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#6513 null checks on unrelated subjects in the chain are not reported</description>
+        <description>#6513 chain with an intermediate operand that dereferences the subject is still reported (fix is reordering, not dropping)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s != null && s.equals(other) && s instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check after the instanceof in a &amp;&amp; chain is redundant</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s instanceof String && other != null && s != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check after the !(instanceof) in a || chain is redundant</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (other == null || !(s instanceof String) || s == null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 instanceof in the middle of the chain, null check after it</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (other != null && s instanceof String && s != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 two instanceofs on the same subject share one redundant null check</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s) {
+        if (s != null && s instanceof String && s instanceof CharSequence) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 two negated instanceofs on the same subject share one redundant null check</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x, Object s) {
+        if (x == null || !(s instanceof String) || !(s instanceof CharSequence) || s == null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 several redundant null checks on the same subject in one chain are each reported</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s) {
+        if (s != null && s instanceof String && s != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check in a parenthesized || operand inside a &amp;&amp; chain is not reported</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    void bar(Object s, Object s2, Object obj) {
-        if (obj != null && s2 != null && s instanceof String) {}
+    void bar(Object s, Object other) {
+        if (s instanceof String && (other == null || s != null)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check outside a parenthesized &amp;&amp; operand of a || chain is not reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s == null || (other != null && !(s instanceof String))) {}
     }
 }
         ]]></code>

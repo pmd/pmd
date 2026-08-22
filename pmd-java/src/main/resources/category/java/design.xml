@@ -1367,6 +1367,9 @@ public boolean isBarEqualTo(int x) {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
         <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+When the null check and the instanceof are separated by other conditions in the same chain, the instanceof must
+be evaluated before any other condition that uses the subject once the null check is dropped, otherwise such a
+condition could throw a NullPointerException.
         </description>
         <priority>3</priority>
         <example>
