@@ -7,6 +7,9 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     void bar(Object x) {
@@ -144,5 +147,228 @@ public class Foo {
     }
 }
 ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check separated from instanceof by a &amp;&amp; chain</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x, Object y) {
+        if (x != null && y != null && x instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check separated from !(instanceof) by a || chain</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x, Object y) {
+        if (x == null || y == null || !(x instanceof String)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 intermediate operand using the subject: the fix is reordering, not dropping</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Move the instanceof check and remove the unnecessary null check to simplify this conditional</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(java.net.Socket socket) {
+        if (socket != null && socket.isConnected() && socket instanceof javax.net.ssl.SSLSocket) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 subject used only as an argument of an intermediate operand still counts as a use</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Move the instanceof check and remove the unnecessary null check to simplify this conditional</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s != null && other.equals(s) && s instanceof String) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 intermediate operand using the subject in a || chain: the fix is reordering, not dropping</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Move the instanceof check and remove the unnecessary null check to simplify this conditional</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s == null || s.equals(other) || !(s instanceof String)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check after the instanceof in a &amp;&amp; chain is redundant</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s instanceof String && other != null && s != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 operand using the subject after the instanceof is guarded by it, the null check at the end can be dropped</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s instanceof String && s.equals(other) && s != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 operand using the subject after the instanceof is guarded by it, the null check before the instanceof can be dropped</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s != null && s instanceof String && s.equals(other)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check after the !(instanceof) in a || chain is redundant</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (other == null || !(s instanceof String) || s == null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 instanceof in the middle of the chain, null check after it</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (other != null && s instanceof String && s != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 two instanceofs on the same subject share one redundant null check</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s) {
+        if (s != null && s instanceof String && s instanceof CharSequence) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 two negated instanceofs on the same subject share one redundant null check</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object x, Object s) {
+        if (x == null || !(s instanceof String) || !(s instanceof CharSequence) || s == null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 several redundant null checks on the same subject in one chain are each reported</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s) {
+        if (s != null && s instanceof String && s != null) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 a negated instanceof on the subject in between cannot throw, the null check can be dropped</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>No need to check for null before an instanceof</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s) {
+        if (s != null && !(s instanceof String) && s instanceof CharSequence) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check in a parenthesized || operand inside a &amp;&amp; chain is not reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s instanceof String && (other == null || s != null)) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6513 null check outside a parenthesized &amp;&amp; operand of a || chain is not reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object s, Object other) {
+        if (s == null || (other != null && !(s instanceof String))) {}
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>
