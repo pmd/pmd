@@ -12,6 +12,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
  * Apex unit test classes should declare either the {@code critical} or the {@code testFor} modifier
  * of the {@code @IsTest} annotation, so that their relevance for a {@code RunRelevantTests} deployment
  * is explicit rather than left entirely to Salesforce's automatic dependency detection.
+ *
+ * @since 7.27.0
  */
 public class ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationRule extends AbstractApexUnitTestRule {
 
