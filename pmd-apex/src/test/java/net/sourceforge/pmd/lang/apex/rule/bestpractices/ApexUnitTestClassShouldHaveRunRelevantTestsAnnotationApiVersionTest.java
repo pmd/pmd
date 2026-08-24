@@ -15,14 +15,13 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileTestSupport;
 import net.sourceforge.pmd.reporting.Report;
-import net.sourceforge.pmd.test.PmdRuleTst;
 
 /**
  * Tests that {@link ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationRule} takes the class's
  * {@code apiVersion} (read from its companion {@code -meta.xml} file) into account. This requires
  * real files on disk, so it can't be expressed with the usual in-memory XML-based rule tests.
  */
-class ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationApiVersionTest extends PmdRuleTst {
+class ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationApiVersionTest {
 
     private static final String TEST_RESOURCES_BASE =
             "src/test/resources/net/sourceforge/pmd/lang/apex/rule/bestpractices/RunRelevantTestsApiVersion/";
