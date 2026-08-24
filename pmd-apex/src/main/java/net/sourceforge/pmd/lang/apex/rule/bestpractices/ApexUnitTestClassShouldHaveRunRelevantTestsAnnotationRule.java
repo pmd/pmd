@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -39,7 +40,9 @@ public class ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationRule extends A
         final ASTModifierNode modifierNode = node.firstChild(ASTModifierNode.class);
 
         if (modifierNode != null) {
-            for (ASTAnnotationParameter parameter : modifierNode.descendants(ASTAnnotationParameter.class)) {
+            for (ASTAnnotationParameter parameter : modifierNode.children(ASTAnnotation.class)
+                    .filter(a -> "IsTest".equals(a.getName()))
+                    .children(ASTAnnotationParameter.class)) {
                 if (parameter.hasName(ASTAnnotationParameter.CRITICAL) && parameter.getBooleanValue()) {
                     return;
                 }
