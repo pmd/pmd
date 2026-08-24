@@ -139,6 +139,7 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
             Document document = factory.newDocumentBuilder().parse(metaXmlPath.toFile());
             NodeList nodes = document.getElementsByTagName("apiVersion");
             if (nodes.getLength() == 0) {
+                LOG.debug("No apiVersion found in {}", metaXmlPath);
                 return null;
             }
             return Double.parseDouble(nodes.item(0).getTextContent().trim());
