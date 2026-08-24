@@ -67,7 +67,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 * The new java rule {% rule java/errorprone/UnusedReturnValue %} (Java Error Prone) finds method calls whose result is not used,
   although ignoring the result of these method calls is likely a mistake.
   The rule is referenced in the quickstart.xml ruleset for Java.
-* New rule {% rule java/codestyle/ProtectedMemberInFinalClass %} (Java Codestyle) finds protected members defined in final classes.
+* New rule {% rule java/design/ProtectedMemberInFinalClass %} (Java Design) finds protected members defined in final classes.
   Such members should use package or private visibility to clarify their intended scope.
   The rule replaces now deprecated rules {% rule java/codestyle/AvoidProtectedFieldInFinalClass %} and {% rule java/codestyle/AvoidProtectedMethodInFinalClassNotExtending %}
   and flags members that were previously not detected by either of these rules, such as nested types or constructors.
@@ -125,6 +125,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6737](https://github.com/pmd/pmd/issues/6737): \[java] TooManyStaticImports: @<!-- -->SuppressWarnings("PMD.TooManyStaticImports") has stopped working
     * [#6846](https://github.com/pmd/pmd/issues/6846): \[java] VariableDeclarationUsageDistance: False positive with variables grouped at the top of a block
     * [#6867](https://github.com/pmd/pmd/issues/6867): \[java] UnnecessaryFullyQualifiedName: ContextedAssertionError: This should be unreachable: unknown constant ScopeInfo: MODULE_IMPORT
+    * [#6943](https://github.com/pmd/pmd/issues/6943): \[java] UnnecessaryCast: False positives related to generics
 * java-design
     * [#6714](https://github.com/pmd/pmd/issues/6714): \[java] Rename UseUtilityClass to InstantiableUtilityClass
     * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
@@ -138,6 +139,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#3880](https://github.com/pmd/pmd/issues/3880): \[java] ReturnEmptyCollectionRatherThanNull: False negative when a null value is assigned to a local that is later returned
     * [#4623](https://github.com/pmd/pmd/issues/4623): \[java] CloseResource: False positive with resource being closed in method
     * [#6435](https://github.com/pmd/pmd/issues/6435): \[java] UnconditionalIfStatement: False negative for negated boolean constant
+    * [#6537](https://github.com/pmd/pmd/issues/6537): \[java] StaticEJBFieldShouldBeFinal: False Negative when using @Stateless etc.
     * [#6547](https://github.com/pmd/pmd/issues/6547): \[java] NonSerializableClass: False negative for generic element/value types of collections and maps
     * [#6625](https://github.com/pmd/pmd/issues/6625): \[java] New rule: UnusedReturnValue
     * [#6695](https://github.com/pmd/pmd/issues/6695): \[java] ReturnEmptyCollectionRatherThanNull: False negative when null is returned through a local variable
