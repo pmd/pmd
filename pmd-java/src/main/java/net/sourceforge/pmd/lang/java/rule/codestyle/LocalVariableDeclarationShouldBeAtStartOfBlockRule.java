@@ -20,6 +20,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
+
+/**
+ * @since 7.27.0
+ */
 public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> REQUIRE_BEFORE_THIS_SUPER =
@@ -108,8 +112,8 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         );
     }
 
-    /*
-    Takes a declaration and raises a violation if it is out of order with the previous declaration
+    /**
+     * Takes a declaration and raises a violation if it is out of order with the previous declaration
      */
     private Object flagSorting(ASTLocalVariableDeclaration node,
                                                 Object data,
@@ -139,8 +143,8 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         return data;
     }
 
-    /*
-    It takes the properties of two variables, 1 comes before 2 in the code and returns whether they are in the correct order
+    /**
+     * Takes the properties of two variables, 1 comes before 2 in the code and returns whether they are in the correct order
      */
     private boolean isDeclarationOrderCorrect(TypeNode type1, String name1, TypeNode type2, String name2) {
         if (getProperty(SORT_BY) == SortBy.TYPE) {

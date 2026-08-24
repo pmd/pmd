@@ -981,7 +981,7 @@ public class Bar {
 
     <rule name="LocalVariableDeclarationShouldBeAtStartOfBlock"
           language="java"
-          since="7.27"
+          since="7.27.0"
           message="The variable `{0}` comes before `{1}` when ordered by {2}"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlockRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock">
