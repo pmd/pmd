@@ -144,7 +144,7 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
             }
             return Double.parseDouble(nodes.item(0).getTextContent().trim());
         } catch (IOException | SAXException | ParserConfigurationException | NumberFormatException e) {
-            LOG.debug("Could not read apiVersion from {}: {}", metaXmlPath, e.toString());
+            LOG.debug("Could not read apiVersion from {}: {}", metaXmlPath, e.toString(), e);
             return null;
         }
     }
