@@ -1,4 +1,4 @@
-package nl.stokpop.kotlin
+package net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis
 
 import java.io.Serializable
 
