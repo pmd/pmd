@@ -30,11 +30,11 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 @Experimental
 public final class KotlinNodeTypeData {
 
-    private static final SimpleDataKey<String> TYPE_NAME_KEY =
-            DataMap.simpleDataKey("kotlin.typeName");
+    private static final SimpleDataKey<KotlinTypeName> TYPE_KEY =
+            DataMap.simpleDataKey("kotlin.type");
 
-    private static final SimpleDataKey<String> RETURN_TYPE_KEY =
-            DataMap.simpleDataKey("kotlin.returnTypeName");
+    private static final SimpleDataKey<KotlinTypeName> RETURN_TYPE_KEY =
+            DataMap.simpleDataKey("kotlin.returnType");
 
     private static final SimpleDataKey<List<String>> ANNOTATION_NAMES_KEY =
             DataMap.simpleDataKey("kotlin.annotationNames");
@@ -48,37 +48,57 @@ public final class KotlinNodeTypeData {
     private KotlinNodeTypeData() {}
 
     /**
-     * Returns the resolved type name stored on this node,
+     * Returns the resolved type stored on this node,
      * or {@code null} when type analysis has not been run or the node has no type.
      * Used on variable declarations, function parameters, annotation nodes,
      * catch blocks, delegation specifiers, and for-loop variables.
      */
-    public static @Nullable String getTypeName(KotlinNode node) {
-        return node.getUserMap().get(TYPE_NAME_KEY);
+    public static @Nullable KotlinTypeName getType(KotlinNode node) {
+        return node.getUserMap().get(TYPE_KEY);
     }
 
     /**
-     * Stores the resolved type name on a node.
+     * Returns the resolved type name stored on this node (FQN string including generics
+     * and nullable marker), or {@code null} when type analysis has not been run.
+     * This is the value exposed as the {@code @TypeName} XPath attribute.
+     */
+    public static @Nullable String getTypeName(KotlinNode node) {
+        KotlinTypeName type = node.getUserMap().get(TYPE_KEY);
+        return type != null ? type.toDisplayString() : null;
+    }
+
+    /**
+     * Stores the resolved type on a node.
      * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
      */
-    static void setTypeName(KotlinNode node, String typeName) {
-        node.getUserMap().set(TYPE_NAME_KEY, typeName);
+    static void setType(KotlinNode node, KotlinTypeName type) {
+        node.getUserMap().set(TYPE_KEY, type);
+    }
+
+    /**
+     * Returns the resolved return type for a function declaration node,
+     * or {@code null} when type analysis has not been run.
+     */
+    public static @Nullable KotlinTypeName getReturnType(KotlinNode node) {
+        return node.getUserMap().get(RETURN_TYPE_KEY);
     }
 
     /**
      * Returns the resolved return type name for a function declaration node,
      * or {@code null} when type analysis has not been run.
+     * This is the value exposed as the {@code @ReturnTypeName} XPath attribute.
      */
     public static @Nullable String getReturnTypeName(KotlinNode node) {
-        return node.getUserMap().get(RETURN_TYPE_KEY);
+        KotlinTypeName type = node.getUserMap().get(RETURN_TYPE_KEY);
+        return type != null ? type.toDisplayString() : null;
     }
 
     /**
-     * Stores the resolved return type name on a function declaration node.
+     * Stores the resolved return type on a function declaration node.
      * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
      */
-    static void setReturnTypeName(KotlinNode node, String returnTypeName) {
-        node.getUserMap().set(RETURN_TYPE_KEY, returnTypeName);
+    static void setReturnType(KotlinNode node, KotlinTypeName returnType) {
+        node.getUserMap().set(RETURN_TYPE_KEY, returnType);
     }
 
     /**

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
@@ -69,8 +70,8 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
         return new IsNullableFunctionCall();
     }
 
-    private static boolean isNullableType(@Nullable String typeName) {
-        return typeName != null && typeName.endsWith("?");
+    private static boolean isNullable(@Nullable KotlinTypeName type) {
+        return type != null && type.isNullable();
     }
 
     private static boolean isNullableTypeAst(@Nullable TypeAst type) {
@@ -86,8 +87,8 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
 
             if (contextNode instanceof KotlinNode) {
                 KotlinNode kotlinNode = (KotlinNode) contextNode;
-                if (isNullableType(KotlinNodeTypeData.getTypeName(kotlinNode))
-                        || isNullableType(KotlinNodeTypeData.getReturnTypeName(kotlinNode))) {
+                if (isNullable(KotlinNodeTypeData.getType(kotlinNode))
+                        || isNullable(KotlinNodeTypeData.getReturnType(kotlinNode))) {
                     return true;
                 }
             }

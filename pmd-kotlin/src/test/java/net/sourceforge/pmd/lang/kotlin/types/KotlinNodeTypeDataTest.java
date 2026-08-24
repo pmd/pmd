@@ -35,7 +35,7 @@ class KotlinNodeTypeDataTest {
     @Test
     void typeNameRoundtrip() {
         KtKotlinFile root = parse("val x = 1");
-        KotlinNodeTypeData.setTypeName(root, "java.lang.String");
+        KotlinNodeTypeData.setType(root, KotlinTypeName.ofFqName("java.lang.String"));
         assertEquals("java.lang.String", KotlinNodeTypeData.getTypeName(root));
     }
 
@@ -50,7 +50,7 @@ class KotlinNodeTypeDataTest {
     @Test
     void returnTypeNameRoundtrip() {
         KtKotlinFile root = parse("fun foo() {}");
-        KotlinNodeTypeData.setReturnTypeName(root, "kotlin.Int");
+        KotlinNodeTypeData.setReturnType(root, KotlinTypeName.ofFqName("kotlin.Int"));
         assertEquals("kotlin.Int", KotlinNodeTypeData.getReturnTypeName(root));
     }
 
@@ -84,9 +84,9 @@ class KotlinNodeTypeDataTest {
     // --- InternalApiBridge (public setters) ---
 
     @Test
-    void internalApiBridgeSetTypeName() {
+    void internalApiBridgeSetType() {
         KtKotlinFile root = parse("val x = 1");
-        InternalApiBridge.setTypeName(root, "java.util.List");
+        InternalApiBridge.setType(root, KotlinTypeName.ofFqName("java.util.List"));
         assertEquals("java.util.List", KotlinNodeTypeData.getTypeName(root));
     }
 

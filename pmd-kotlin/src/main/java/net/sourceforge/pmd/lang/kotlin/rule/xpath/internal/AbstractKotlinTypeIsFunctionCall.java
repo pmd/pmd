@@ -46,7 +46,7 @@ abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefiniti
             // that didn't match, trust the annotation and do not fall through to the call site
             // index. This prevents RHS constructor calls from matching when the declared type
             // on the same line is a different (e.g. interface) type.
-            if (KotlinNodeTypeData.getTypeName(kn) != null || KotlinNodeTypeData.getReturnTypeName(kn) != null) {
+            if (KotlinNodeTypeData.getType(kn) != null || KotlinNodeTypeData.getReturnType(kn) != null) {
                 return false;
             }
         }

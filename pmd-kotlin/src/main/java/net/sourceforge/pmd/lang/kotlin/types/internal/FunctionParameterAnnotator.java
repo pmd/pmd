@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 
 import nl.stokpop.typemapper.model.ParameterAst;
+import nl.stokpop.typemapper.model.TypeAst;
 
 /**
  * Annotates {@code KtFunctionValueParameter} nodes with resolved parameter types.
@@ -44,8 +45,9 @@ final class FunctionParameterAnnotator {
 
     private static void annotateParameterNodes(List<KtFunctionValueParameter> pmdParameters, List<ParameterAst> ktmParameters) {
         for (int j = 0; j < pmdParameters.size(); j++) {
-            String type = ktmParameters.get(j).getType().toFqString();
-            InternalApiBridge.setTypeName(pmdParameters.get(j), type);
+            TypeAst typeAst = ktmParameters.get(j).getType();
+            InternalApiBridge.setType(pmdParameters.get(j),
+                    KotlinTypeAnnotationVisitor.toKotlinTypeName(typeAst));
         }
     }
 }
