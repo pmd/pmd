@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
+import nl.stokpop.typemapper.model.TypeAst;
 
 /**
  * XPath function {@code pmd-kotlin:isNullable()}.
@@ -72,6 +73,10 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
         return typeName != null && typeName.endsWith("?");
     }
 
+    private static boolean isNullableTypeAst(@Nullable TypeAst type) {
+        return type != null && type.isNullable();
+    }
+
     private static final class IsNullableFunctionCall implements FunctionCall {
         @Override
         public Object call(@Nullable Node contextNode, Object[] arguments) throws XPathFunctionException {
@@ -93,7 +98,7 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
             int line = contextNode.getBeginLine();
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, line);
             for (DeclarationAst decl : decls) {
-                if (isNullableType(decl.getType()) || isNullableType(decl.getReturnType())) {
+                if (isNullableTypeAst(decl.getType()) || isNullableTypeAst(decl.getReturnType())) {
                     return true;
                 }
             }

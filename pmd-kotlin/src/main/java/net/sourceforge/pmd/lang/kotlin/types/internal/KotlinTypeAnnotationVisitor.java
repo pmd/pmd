@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.DeclarationKind;
+import nl.stokpop.typemapper.model.TypeAst;
 
 /**
  * Walks a parsed Kotlin AST and sets type/annotation attributes on nodes using
@@ -101,8 +102,9 @@ public final class KotlinTypeAnnotationVisitor {
         public Void visitPropertyDeclaration(KtPropertyDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
-                if (decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
+                TypeAst type = decl.getType();
+                if (type != null) {
+                    InternalApiBridge.setTypeName(node, type.toFqString());
                     AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     break;
                 }
@@ -117,8 +119,9 @@ public final class KotlinTypeAnnotationVisitor {
         public Void visitClassParameter(KtClassParameter node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
-                if (decl.getKind() == DeclarationKind.PROPERTY && decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
+                TypeAst type = decl.getType();
+                if (decl.getKind() == DeclarationKind.PROPERTY && type != null) {
+                    InternalApiBridge.setTypeName(node, type.toFqString());
                     AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     break;
                 }
@@ -130,8 +133,9 @@ public final class KotlinTypeAnnotationVisitor {
         public Void visitFunctionDeclaration(KtFunctionDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
-                if (decl.getReturnType() != null) {
-                    InternalApiBridge.setReturnTypeName(node, decl.getReturnType());
+                TypeAst returnType = decl.getReturnType();
+                if (returnType != null) {
+                    InternalApiBridge.setReturnTypeName(node, returnType.toFqString());
                     AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     FunctionParameterAnnotator.setFunctionParameterTypes(node, decl.getParameters());
                     break;
@@ -144,8 +148,9 @@ public final class KotlinTypeAnnotationVisitor {
         public Void visitCatchBlock(KtCatchBlock node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
-                if (decl.getKind() == DeclarationKind.CATCH_VARIABLE && decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
+                TypeAst type = decl.getType();
+                if (decl.getKind() == DeclarationKind.CATCH_VARIABLE && type != null) {
+                    InternalApiBridge.setTypeName(node, type.toFqString());
                     break;
                 }
             }
@@ -156,8 +161,9 @@ public final class KotlinTypeAnnotationVisitor {
         public Void visitForStatement(KtForStatement node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             for (DeclarationAst decl : decls) {
-                if (decl.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
+                TypeAst type = decl.getType();
+                if (decl.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && type != null) {
+                    InternalApiBridge.setTypeName(node, type.toFqString());
                     break;
                 }
             }

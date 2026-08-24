@@ -44,7 +44,7 @@ final class FunctionParameterAnnotator {
 
     private static void annotateParameterNodes(List<KtFunctionValueParameter> pmdParameters, List<ParameterAst> ktmParameters) {
         for (int j = 0; j < pmdParameters.size(); j++) {
-            String type = ktmParameters.get(j).getType();
+            String type = ktmParameters.get(j).getType().toFqString();
             InternalApiBridge.setTypeName(pmdParameters.get(j), type);
         }
     }
