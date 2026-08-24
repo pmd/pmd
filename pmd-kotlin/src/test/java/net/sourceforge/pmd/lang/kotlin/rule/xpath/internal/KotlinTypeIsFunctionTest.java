@@ -22,7 +22,7 @@ import nl.stokpop.typemapper.model.TypedAst;
 class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
 
     private static final String TYPE_IS_RESOURCE_DIR =
-            "net/sourceforge/pmd/lang/kotlin/rule/xpath/typeIs";
+            "net/sourceforge/pmd/lang/kotlin/rule/xpath/typeis";
 
     @Test
     void typeIsCalendarMatchesMeetingProperty() {
@@ -99,7 +99,7 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
                 Collections.singletonList(kotlinFile.toPath()),
                 Collections.emptyList());
         KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
-        assumeTrue(ctx.getTypeHierarchy().containsKey("nl.stokpop.kotlin.SerializableSubtype"),
+        assumeTrue(ctx.getTypeHierarchy().containsKey("net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis.SerializableSubtype"),
                 "Type hierarchy for SerializableSubtype unavailable (no aux classpath) - skipping");
         Report report = runXPath("//PropertyDeclaration[pmd-kotlin:typeIs('java.io.Serializable')]", kotlinFile);
         assertNoErrors(report);
@@ -223,10 +223,10 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
         // ClassDeclaration nodes should have @TypeName set to the class's own FQN
         File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/InferredTypeSubtype.kt");
         Report report = runXPath(
-                "//ClassDeclaration[@TypeName='nl.stokpop.kotlin.Simple']", kotlinFile);
+                "//ClassDeclaration[@TypeName='net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis.Simple']", kotlinFile);
         assertNoErrors(report);
         assertTrue(!report.getViolations().isEmpty(),
-                "Expected ClassDeclaration[@TypeName='nl.stokpop.kotlin.Simple'] to match");
+                "Expected ClassDeclaration[@TypeName='net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis.Simple'] to match");
     }
 
     // --- AvoidStringBufferField ---

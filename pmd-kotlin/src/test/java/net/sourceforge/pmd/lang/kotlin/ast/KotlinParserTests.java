@@ -66,7 +66,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
 
     @Test
     void multipleErrorsShouldBeCollectedAsSuppressedExceptions() {
-        String badCode = "package nl.stokpop\n"
+        String badCode = "package net.sourceforge.pmd.lang.kotlin.ast\n"
                 + "\n"
                 + "fun xor1(a: Int, b: Int) = (a ^ b)\n"
                 + "fun xor2(a: Int, b: Int) = (a ^ b)\n"

@@ -1,4 +1,4 @@
-package nl.stokpop.kotlin
+package net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis
 
 import java.io.Serializable
 
@@ -11,6 +11,6 @@ class SerializableHolder {
     // typeIsExactly('java.io.Serializable') should NOT match (wrong exact type)
     val item2: SerializableSubtype = SerializableSubtype("world")
 
-    // typeIsExactly('nl.stokpop.kotlin.SerializableSubtype') should match
+    // typeIsExactly('net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis.SerializableSubtype') should match
     val item3: SerializableSubtype = SerializableSubtype("!")
 }

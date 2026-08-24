@@ -1,4 +1,4 @@
-package nl.stokpop.test
+package net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis
 
 import java.util.Calendar
 
