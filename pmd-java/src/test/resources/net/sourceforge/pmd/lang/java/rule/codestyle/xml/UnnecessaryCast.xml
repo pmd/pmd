@@ -1310,4 +1310,77 @@ public class ShadowChainBuilder<S, I> {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5732 False positive: cast required to call package-private method on subclass from another package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessarycast;
+
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessarycast.other.PackagePrivateSub;
+
+public class Caller {
+    String call(PackagePrivateSub sub) {
+        // Package-private methods are not inherited by subclasses in another package.
+        return ((PackagePrivateSuper) sub).packagePrivate();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5732 False positive: cast required to access package-private field on subclass from another package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessarycast;
+
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessarycast.other.PackagePrivateSub;
+
+public class Caller {
+    String call(PackagePrivateSub sub) {
+        return ((PackagePrivateSuper) sub).packagePrivateField;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5732 Still flag unnecessary cast when calling a public method on a subclass from another package</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessarycast;
+
+import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessarycast.other.PackagePrivateSub;
+
+public class Caller {
+    String call(PackagePrivateSub sub) {
+        return ((PackagePrivateSuper) sub).publicMethod();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5732 Still flag unnecessary cast when subclass is in the same package</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <code><![CDATA[
+package same;
+
+class Super {
+    String packagePrivate() {
+        return "pkg";
+    }
+}
+
+class Sub extends Super {}
+
+public class Caller {
+    String call(Sub sub) {
+        return ((Super) sub).packagePrivate();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

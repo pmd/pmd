@@ -19,6 +19,7 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.XOR;
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
 
+import java.lang.reflect.Modifier;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -39,6 +41,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -104,6 +109,10 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // Eg `SuperItf obj = (SubItf) ()-> {};`
             // If we remove the cast, even if it might compile,
             // the object will not implement SubItf anymore.
+        } else if (isCastRequiredForMemberAccess(castExpr, operandType)) {
+            // Package-private members are not inherited by subclasses in
+            // another package, so the cast is required to select the member.
+            return null;
         } else if (isCastUnnecessary(castExpr, context, coercionType, operandType)) {
             reportCast(castExpr, data);
         } else if (castExpr.getParent() instanceof ASTMethodCall
@@ -277,6 +286,53 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
         }
         return false;
+    }
+
+
+    /**
+     * Whether this cast is required because it selects a package-private
+     * member that is not inherited by the operand type. Subclasses in a
+     * different package do not inherit package-private methods/fields, so
+     * {@code ((Super) sub).packagePrivate()} cannot be rewritten as
+     * {@code sub.packagePrivate()}.
+     *
+     * @see <a href="https://github.com/pmd/pmd/issues/5732">#5732</a>
+     */
+    private boolean isCastRequiredForMemberAccess(ASTCastExpression castExpr, JTypeMirror operandType) {
+        JavaNode parent = castExpr.getParent();
+        if (parent instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) parent;
+            if (call.getQualifier() != castExpr || call.getOverloadSelectionInfo().isFailed()) {
+                return false;
+            }
+            return !isPackagePrivateMemberAccessibleOn(call.getMethodType().getSymbol(), operandType);
+        }
+        if (parent instanceof ASTFieldAccess) {
+            ASTFieldAccess access = (ASTFieldAccess) parent;
+            if (access.getQualifier() != castExpr) {
+                return false;
+            }
+            JFieldSymbol field = access.getReferencedSym();
+            return field != null && !isPackagePrivateMemberAccessibleOn(field, operandType);
+        }
+        return false;
+    }
+
+    /**
+     * Public/protected members are inherited; package-private members are
+     * only members of types in the same package as the declaration.
+     */
+    private static boolean isPackagePrivateMemberAccessibleOn(JAccessibleElementSymbol member,
+                                                              JTypeMirror operandType) {
+        int access = member.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
+        if (access != 0) {
+            return true;
+        }
+        if (!(operandType instanceof JClassType) || TypeOps.isUnresolvedOrNull(operandType)) {
+            return true;
+        }
+        JClassSymbol operandSym = ((JClassType) operandType).getSymbol();
+        return operandSym != null && member.getPackageName().equals(operandSym.getPackageName());
     }
 
     private static @Nullable ASTLambdaExpression getLambdaParent(ASTCastExpression castExpr) {
