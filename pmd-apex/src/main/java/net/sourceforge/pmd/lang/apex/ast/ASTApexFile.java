@@ -128,6 +128,7 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
         FileId fileId = getAstInfo().getTextDocument().getFileId();
         Path metaXmlPath = Paths.get(fileId.getAbsolutePath() + "-meta.xml");
         if (!Files.isRegularFile(metaXmlPath)) {
+            LOG.debug("File {} doesn't exist to read apiVersion", metaXmlPath);
             return null;
         }
         try {
