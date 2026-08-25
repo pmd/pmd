@@ -56,6 +56,8 @@ and the kotlin-type-mapper analysis has resolved the types:
 | `@Modifiers` | `ClassDeclaration`, `FunctionDeclaration`, `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CompanionObject` | Space-separated modifier keywords (e.g. `"override suspend"`). For arbitrary nodes use the `pmd-kotlin:modifiers()` function. |
 | `@Mutable` | `PropertyDeclaration` | `true` for `var`, `false` for `val`. Always present. |
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
+| `@TypeInfoAvailable` | `KotlinFile` (root) | Present (and `true`) when kotlin-type-mapper analysis ran; absent otherwise. Use `[@TypeInfoAvailable]` as a truthy test. |
+| `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
 
