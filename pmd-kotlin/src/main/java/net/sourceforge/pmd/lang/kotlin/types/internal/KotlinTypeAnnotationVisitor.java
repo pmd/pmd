@@ -179,7 +179,7 @@ public final class KotlinTypeAnnotationVisitor {
                 if (decl.getKind() == DeclarationKind.TYPEALIAS
                         && !decl.getTypeAliasChain().isEmpty()) {
                     List<String> chain = decl.getTypeAliasChain();
-                    InternalApiBridge.setTypeName(node, chain.get(chain.size() - 1));
+                    InternalApiBridge.setType(node, KotlinTypeName.ofFqName(chain.get(chain.size() - 1)));
                     break;
                 }
             }

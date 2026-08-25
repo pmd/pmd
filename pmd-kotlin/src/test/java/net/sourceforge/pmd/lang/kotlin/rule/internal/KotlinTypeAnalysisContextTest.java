@@ -113,7 +113,7 @@ class KotlinTypeAnalysisContextTest {
         KotlinTypeAnalysisContext ctx = KotlinTypeAnalysisContext.from(ast);
         List<CallSiteAst> calls = ctx.callSitesAt("snippet.kt", 4);
         assertFalse(calls.isEmpty(), "Expected call site for list.add at line 4");
-        String recv = calls.get(0).getDispatchReceiverType();
+        String recv = calls.get(0).getDispatchReceiverType().toFqString();
         assertNotNull(recv, "dispatchReceiverType must be non-null for a regular method call");
         assertTrue(recv.startsWith("java.util.ArrayList"), "Expected ArrayList receiver, got: " + recv);
     }

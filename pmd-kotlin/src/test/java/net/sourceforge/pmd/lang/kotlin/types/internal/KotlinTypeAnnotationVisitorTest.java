@@ -231,7 +231,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("typealias MyStr = String");
         KtTypeAlias alias = root.descendants(KtTypeAlias.class).first();
         assertNotNull(alias);
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(alias));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(alias)));
     }
 
     @Test
@@ -241,8 +241,8 @@ class KotlinTypeAnnotationVisitorTest {
                 + "typealias A = B\n");
         List<KtTypeAlias> aliases = root.descendants(KtTypeAlias.class).toList();
         assertEquals(2, aliases.size(), "Expected 2 typealias declarations");
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(aliases.get(0)), "B alias");
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(aliases.get(1)), "A alias");
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(aliases.get(0))), "B alias");
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(aliases.get(1))), "A alias");
     }
 
     // --- Regression: #6891 KtModifiers vs KtModifier in collectAnnotationNodes ---
