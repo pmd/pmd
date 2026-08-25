@@ -6,8 +6,13 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.branchJustThrows;
 import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.defaultBranchIsNecessary;
+import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.formatMissingCases;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -135,6 +140,24 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTSwitchLike switchLike = root.descendants(ASTSwitchStatement.class).first();
 
             assertFalse(defaultBranchIsNecessary(switchLike));
+        }
+    }
+
+    @Nested
+    class FormatMissingCases {
+        @Test
+        void emptyListOmitsParentheses() {
+            assertEquals("", formatMissingCases(Collections.emptyList()));
+        }
+
+        @Test
+        void singleName() {
+            assertEquals(" (NEW)", formatMissingCases(Collections.singletonList("NEW")));
+        }
+
+        @Test
+        void truncatesAfterThreeNames() {
+            assertEquals(" (A, B, C, ...)", formatMissingCases(Arrays.asList("A", "B", "C", "D", "E")));
         }
     }
 }
