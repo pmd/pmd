@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 
 /**
  * Marks {@link AttributeView} subclasses that expose a {@code @TypeName} XPath attribute.
@@ -21,11 +22,18 @@ public interface HasTypeName extends KotlinNode {
     KotlinNode getNode();
 
     /**
-     * Returns the resolved type name stored on this node by the kotlin-type-mapper
-     * pre-analysis pass, or {@code null} when type analysis has not been run or
-     * the type could not be resolved.
+     * Returns the resolved type stored on this node, or {@code null} when type
+     * analysis has not been run or the type could not be resolved.
+     */
+    default @Nullable KotlinTypeName getType() {
+        return KotlinNodeTypeData.getType(getNode());
+    }
+
+    /**
+     * Returns the resolved type name as a string for the {@code @TypeName}
+     * XPath attribute, or {@code null} when type information is unavailable.
      */
     default @Nullable String getTypeName() {
-        return KotlinNodeTypeData.getTypeName(getNode());
+        return KotlinTypeName.displayStringOf(getType());
     }
 }

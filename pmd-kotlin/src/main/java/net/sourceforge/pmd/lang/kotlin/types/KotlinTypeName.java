@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin.types;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -49,6 +50,14 @@ public final class KotlinTypeName {
      */
     public static KotlinTypeName ofFqName(@NonNull String fqName) {
         return new KotlinTypeName(fqName, false, false, fqName);
+    }
+
+    /**
+     * Null-safe helper returning the display string of a type, or {@code null} if the type is null.
+     * Used by XPath attribute getters that must return String.
+     */
+    public static @Nullable String displayStringOf(@Nullable KotlinTypeName type) {
+        return type != null ? type.displayString : null;
     }
 
     /**

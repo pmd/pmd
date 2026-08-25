@@ -24,34 +24,38 @@ class KotlinNodeTypeDataTest {
         return PARSER.parse(source);
     }
 
-    // --- typeName ---
+    // --- type ---
 
     @Test
-    void typeNameNullWhenNotSet() {
+    void typeNullWhenNotSet() {
         KtKotlinFile root = parse("val x = 1");
-        assertNull(KotlinNodeTypeData.getTypeName(root));
+        assertNull(KotlinNodeTypeData.getType(root));
     }
 
     @Test
-    void typeNameRoundtrip() {
+    void typeRoundtrip() {
         KtKotlinFile root = parse("val x = 1");
         KotlinNodeTypeData.setType(root, KotlinTypeName.ofFqName("java.lang.String"));
-        assertEquals("java.lang.String", KotlinNodeTypeData.getTypeName(root));
+        KotlinTypeName type = KotlinNodeTypeData.getType(root);
+        assertEquals("java.lang.String", type.getFqName());
+        assertEquals("java.lang.String", type.toDisplayString());
     }
 
-    // --- returnTypeName ---
+    // --- returnType ---
 
     @Test
-    void returnTypeNameNullWhenNotSet() {
+    void returnTypeNullWhenNotSet() {
         KtKotlinFile root = parse("fun foo() {}");
-        assertNull(KotlinNodeTypeData.getReturnTypeName(root));
+        assertNull(KotlinNodeTypeData.getReturnType(root));
     }
 
     @Test
-    void returnTypeNameRoundtrip() {
+    void returnTypeRoundtrip() {
         KtKotlinFile root = parse("fun foo() {}");
         KotlinNodeTypeData.setReturnType(root, KotlinTypeName.ofFqName("kotlin.Int"));
-        assertEquals("kotlin.Int", KotlinNodeTypeData.getReturnTypeName(root));
+        KotlinTypeName type = KotlinNodeTypeData.getReturnType(root);
+        assertEquals("kotlin.Int", type.getFqName());
+        assertEquals("kotlin.Int", type.toDisplayString());
     }
 
     // --- annotationFqNames ---
@@ -87,7 +91,8 @@ class KotlinNodeTypeDataTest {
     void internalApiBridgeSetType() {
         KtKotlinFile root = parse("val x = 1");
         InternalApiBridge.setType(root, KotlinTypeName.ofFqName("java.util.List"));
-        assertEquals("java.util.List", KotlinNodeTypeData.getTypeName(root));
+        KotlinTypeName type = KotlinNodeTypeData.getType(root);
+        assertEquals("java.util.List", type.getFqName());
     }
 
     @Test

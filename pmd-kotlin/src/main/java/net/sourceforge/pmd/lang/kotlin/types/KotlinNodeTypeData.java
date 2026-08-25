@@ -58,16 +58,6 @@ public final class KotlinNodeTypeData {
     }
 
     /**
-     * Returns the resolved type name stored on this node (FQN string including generics
-     * and nullable marker), or {@code null} when type analysis has not been run.
-     * This is the value exposed as the {@code @TypeName} XPath attribute.
-     */
-    public static @Nullable String getTypeName(KotlinNode node) {
-        KotlinTypeName type = node.getUserMap().get(TYPE_KEY);
-        return type != null ? type.toDisplayString() : null;
-    }
-
-    /**
      * Stores the resolved type on a node.
      * Called by the kotlin-type-mapper pre-analysis pass via {@link InternalApiBridge}.
      */
@@ -81,16 +71,6 @@ public final class KotlinNodeTypeData {
      */
     public static @Nullable KotlinTypeName getReturnType(KotlinNode node) {
         return node.getUserMap().get(RETURN_TYPE_KEY);
-    }
-
-    /**
-     * Returns the resolved return type name for a function declaration node,
-     * or {@code null} when type analysis has not been run.
-     * This is the value exposed as the {@code @ReturnTypeName} XPath attribute.
-     */
-    public static @Nullable String getReturnTypeName(KotlinNode node) {
-        KotlinTypeName type = node.getUserMap().get(RETURN_TYPE_KEY);
-        return type != null ? type.toDisplayString() : null;
     }
 
     /**
