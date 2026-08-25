@@ -32,10 +32,8 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  * (absolute file path, line number) for fast lookup during XPath function evaluation.
  *
  * <p>Note: kotlin-type-mapper records the <em>concrete expanded type</em> in all call-site
- * fields -- type alias names are not preserved.
- * Call-site receiver/return queries ({@code callsOnReceiver}, {@code callsReturning}) and
- * type alias query support ({@code resolveTypeAlias}, {@code ...ExpandingAlias} variants)
- * are planned for a future release.
+ * fields -- type alias names are not preserved. Use {@code TypedAst.expandAlias()} from
+ * kotlin-type-mapper to resolve aliases before querying.
  *
  * @since 7.27.0
  * @experimental

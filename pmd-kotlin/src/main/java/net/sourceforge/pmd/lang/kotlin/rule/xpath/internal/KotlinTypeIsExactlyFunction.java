@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 
 /**
  * XPath function {@code pmd-kotlin:typeIsExactly(typeName)}.
@@ -58,12 +59,12 @@ public final class KotlinTypeIsExactlyFunction extends BaseKotlinXPathFunction {
     private static final class TypeIsExactlyFunctionCall extends AbstractKotlinTypeIsFunctionCall {
         @Override
         protected boolean matchesNodeAttribute(KotlinNode node, String typeName, KotlinTypeAnalysisContext ctx) {
-            String nodeType = KotlinNodeTypeData.getTypeName(node);
+            KotlinTypeName nodeType = KotlinNodeTypeData.getType(node);
             if (nodeType != null) {
-                return ctx.isTypeEquivalent(typeName, nodeType);
+                return ctx.isTypeEquivalent(typeName, nodeType.toDisplayString());
             }
-            String returnType = KotlinNodeTypeData.getReturnTypeName(node);
-            return returnType != null && ctx.isTypeEquivalent(typeName, returnType);
+            KotlinTypeName returnType = KotlinNodeTypeData.getReturnType(node);
+            return returnType != null && ctx.isTypeEquivalent(typeName, returnType.toDisplayString());
         }
 
         @Override

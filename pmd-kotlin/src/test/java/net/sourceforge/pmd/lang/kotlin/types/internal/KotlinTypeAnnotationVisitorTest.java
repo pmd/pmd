@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtTypeAlias;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 
 /**
  * Tests that KotlinTypeAnnotationVisitor correctly annotates AST nodes with
@@ -42,7 +43,7 @@ class KotlinTypeAnnotationVisitorTest {
     void propertyTypeNameMatchesKotlinType() {
         KtKotlinFile root = PARSER.parse("val x: String = \"hello\"");
         KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(prop));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(prop)));
     }
 
     // --- FunctionDeclaration ---
@@ -51,7 +52,7 @@ class KotlinTypeAnnotationVisitorTest {
     void returnTypeNameMatchesKotlinType() {
         KtKotlinFile root = PARSER.parse("fun count(): Int = 42");
         KtFunctionDeclaration fn = root.descendants(KtFunctionDeclaration.class).first();
-        assertEquals("kotlin.Int", KotlinNodeTypeData.getReturnTypeName(fn));
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getReturnType(fn)));
     }
 
     // --- CatchBlock ---
@@ -62,7 +63,7 @@ class KotlinTypeAnnotationVisitorTest {
                 "fun f() { try { } catch (e: IllegalArgumentException) { } }");
         KtCatchBlock catchBlock = root.descendants(KtCatchBlock.class).first();
         assertNotNull(catchBlock);
-        assertEquals("java.lang.IllegalArgumentException", KotlinNodeTypeData.getTypeName(catchBlock));
+        assertEquals("java.lang.IllegalArgumentException", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(catchBlock)));
     }
 
     // --- ForStatement ---
@@ -73,7 +74,7 @@ class KotlinTypeAnnotationVisitorTest {
                 "fun f(items: List<String>) { for (item in items) { } }");
         KtForStatement forStmt = root.descendants(KtForStatement.class).first();
         assertNotNull(forStmt);
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(forStmt));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(forStmt)));
     }
 
     @Test
@@ -82,7 +83,7 @@ class KotlinTypeAnnotationVisitorTest {
                 "fun f(items: List<String>) { for (item in items) { } }");
         KtFunctionValueParameter param = root.descendants(KtFunctionValueParameter.class).first();
         assertNotNull(param);
-        assertEquals("kotlin.collections.List<kotlin.String>", KotlinNodeTypeData.getTypeName(param));
+        assertEquals("kotlin.collections.List<kotlin.String>", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(param)));
     }
 
     // --- ClassParameter (primary constructor val/var) ---
@@ -92,7 +93,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("class Foo(val name: String)");
         KtClassParameter param = root.descendants(KtClassParameter.class).first();
         assertNotNull(param);
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(param));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(param)));
     }
 
     // --- ClassDeclaration ---
@@ -103,7 +104,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("class MyService");
         KtClassDeclaration clazz = root.descendants(KtClassDeclaration.class).first();
         assertNotNull(clazz);
-        assertEquals("MyService", KotlinNodeTypeData.getTypeName(clazz));
+        assertEquals("MyService", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(clazz)));
     }
 
     @Test
@@ -111,7 +112,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("package com.example\nclass MyService");
         KtClassDeclaration clazz = root.descendants(KtClassDeclaration.class).first();
         assertNotNull(clazz);
-        assertEquals("com.example.MyService", KotlinNodeTypeData.getTypeName(clazz));
+        assertEquals("com.example.MyService", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(clazz)));
     }
 
     // --- DelegationSpecifier (extends / implements) ---
@@ -121,7 +122,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("class Foo : Exception(\"msg\")");
         KtDelegationSpecifier spec = root.descendants(KtDelegationSpecifier.class).first();
         assertNotNull(spec);
-        assertEquals("java.lang.Exception", KotlinNodeTypeData.getTypeName(spec));
+        assertEquals("java.lang.Exception", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(spec)));
     }
 
     @Test
@@ -129,7 +130,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("class Foo : java.io.Serializable");
         KtDelegationSpecifier spec = root.descendants(KtDelegationSpecifier.class).first();
         assertNotNull(spec);
-        assertEquals("java.io.Serializable", KotlinNodeTypeData.getTypeName(spec));
+        assertEquals("java.io.Serializable", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(spec)));
     }
 
     // --- Annotation FQN ---
@@ -159,7 +160,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtFunctionDeclaration fn = root.descendants(KtFunctionDeclaration.class).first();
         assertNotNull(fn);
         assertEquals(1, fn.getBeginLine(), "PMD node must start on annotation line 1");
-        assertEquals("kotlin.String", KotlinNodeTypeData.getReturnTypeName(fn));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getReturnType(fn)));
         List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(fn);
         assertNotNull(annotations);
         assertEquals(2, annotations.size());
@@ -177,7 +178,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtFunctionDeclaration fn = root.descendants(KtFunctionDeclaration.class).first();
         assertNotNull(fn);
         assertEquals(1, fn.getBeginLine(), "PMD node must start on line 1 (fun keyword)");
-        assertEquals("kotlin.collections.List<kotlin.String>", KotlinNodeTypeData.getReturnTypeName(fn));
+        assertEquals("kotlin.collections.List<kotlin.String>", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getReturnType(fn)));
     }
 
     @Test
@@ -190,7 +191,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
         assertNotNull(prop);
         assertEquals(3, prop.getBeginLine(), "PMD node must start on line 3");
-        assertEquals("kotlin.Int", KotlinNodeTypeData.getTypeName(prop));
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(prop)));
     }
 
     @Test
@@ -206,7 +207,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtFunctionValueParameter param = root.descendants(KtFunctionValueParameter.class).first();
         assertNotNull(param);
         assertEquals(1, param.getBeginLine(), "PMD node must start on line 1");
-        assertEquals("kotlin.collections.List<kotlin.String>", KotlinNodeTypeData.getTypeName(param));
+        assertEquals("kotlin.collections.List<kotlin.String>", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(param)));
     }
 
     @Test
@@ -220,7 +221,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
         assertNotNull(prop);
         assertEquals(1, prop.getBeginLine(), "PMD node must start on line 1");
-        assertEquals("kotlin.String", KotlinNodeTypeData.getTypeName(prop));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(prop)));
     }
 
     // --- TypeAlias (issue #11) ---
@@ -251,7 +252,7 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("@Deprecated(\"use X\") fun foo(): String = \"\"");
         KtUnescapedAnnotation ann = root.descendants(KtUnescapedAnnotation.class).first();
         assertNotNull(ann);
-        assertEquals("kotlin.Deprecated", KotlinNodeTypeData.getTypeName(ann));
+        assertEquals("kotlin.Deprecated", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(ann)));
     }
 
     @Test
@@ -259,6 +260,6 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("@Deprecated(\"use X\") fun foo(): String = \"\"");
         KtSingleAnnotation ann = root.descendants(KtSingleAnnotation.class).first();
         assertNotNull(ann);
-        assertEquals("kotlin.Deprecated", KotlinNodeTypeData.getTypeName(ann));
+        assertEquals("kotlin.Deprecated", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(ann)));
     }
 }

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 import nl.stokpop.typemapper.model.CallSiteAst;
 import nl.stokpop.typemapper.model.DeclarationAst;
+import nl.stokpop.typemapper.model.TypeAst;
 
 /**
  * Base class for {@code pmd-kotlin:typeIs} and {@code pmd-kotlin:typeIsExactly}.
@@ -45,7 +46,7 @@ abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefiniti
             // that didn't match, trust the annotation and do not fall through to the call site
             // index. This prevents RHS constructor calls from matching when the declared type
             // on the same line is a different (e.g. interface) type.
-            if (KotlinNodeTypeData.getTypeName(kn) != null || KotlinNodeTypeData.getReturnTypeName(kn) != null) {
+            if (KotlinNodeTypeData.getType(kn) != null || KotlinNodeTypeData.getReturnType(kn) != null) {
                 return false;
             }
         }
@@ -67,12 +68,12 @@ abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefiniti
 
     private boolean matchesAnyDeclaration(List<DeclarationAst> decls, String typeName, KotlinTypeAnalysisContext ctx) {
         for (DeclarationAst decl : decls) {
-            String type = decl.getType();
-            if (type != null && matchesType(typeName, type, ctx)) {
+            TypeAst type = decl.getType();
+            if (type != null && matchesType(typeName, type.toFqString(), ctx)) {
                 return true;
             }
-            String returnType = decl.getReturnType();
-            if (returnType != null && matchesType(typeName, returnType, ctx)) {
+            TypeAst returnType = decl.getReturnType();
+            if (returnType != null && matchesType(typeName, returnType.toFqString(), ctx)) {
                 return true;
             }
         }
@@ -81,8 +82,8 @@ abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefiniti
 
     private boolean matchesAnyCallSite(List<CallSiteAst> calls, String typeName, KotlinTypeAnalysisContext ctx) {
         for (CallSiteAst call : calls) {
-            String returnType = call.getReturnType();
-            if (returnType != null && matchesType(typeName, returnType, ctx)) {
+            TypeAst returnType = call.getReturnType();
+            if (matchesType(typeName, returnType.toFqString(), ctx)) {
                 return true;
             }
         }

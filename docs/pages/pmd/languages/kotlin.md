@@ -50,13 +50,18 @@ and the kotlin-type-mapper analysis has resolved the types:
 
 | Attribute | Nodes | Meaning |
 |-----------|-------|---------|
-| `@TypeName` | `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name |
-| `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name |
+| `@TypeName` | `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
+| `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name (including generic type arguments and nullable marker) |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
 | `@Modifiers` | `ClassDeclaration`, `FunctionDeclaration`, `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CompanionObject` | Space-separated modifier keywords (e.g. `"override suspend"`). For arbitrary nodes use the `pmd-kotlin:modifiers()` function. |
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
+
+> **Note:** `@TypeName` and `@ReturnTypeName` use fully-qualified names for generic type arguments:
+> `kotlin.collections.List<kotlin.String>?`, not `List<String>?`. When comparing in XPath, use
+> the full FQN form: `@TypeName = 'kotlin.collections.List<kotlin.String>'`. For type checks that
+> ignore generics, prefer `pmd-kotlin:typeIs()` or `pmd-kotlin:typeIsExactly()`.
 
 > **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name). Modifiers like
 > `private`, `lateinit`, or `const` are on the parent `PropertyDeclaration` node.
@@ -98,6 +103,8 @@ or a subtype of it (uses the type hierarchy from kotlin-type-mapper).
 Works on `PropertyDeclaration`, `FunctionDeclaration`, `ClassParameter`, `FunctionValueParameter`,
 `CatchBlock`, `ForStatement`, and `DelegationSpecifier` nodes.
 Both Kotlin names (`kotlin.String`) and Java names (`java.lang.String`) are accepted.
+Generic type arguments are ignored for comparison — `typeIs('kotlin.collections.List')` matches
+`List<String>`, `List<Int>`, etc.
 
 ```xml
 <rule ...>
@@ -110,7 +117,7 @@ Both Kotlin names (`kotlin.String`) and Java names (`java.lang.String`) are acce
 ```
 
 **`pmd-kotlin:typeIsExactly(typeName)`** — Like `typeIs`, but only matches the exact declared type,
-not subtypes. Useful for detecting a specific class without matching subclasses.
+not subtypes. Generic type arguments are also ignored for comparison.
 
 **`pmd-kotlin:hasAnnotation(name)`** — Returns `true` if the context node is annotated with
 an annotation whose simple name or fully-qualified name matches `name`.
@@ -167,11 +174,17 @@ import net.sourceforge.pmd.lang.kotlin.ast.HasTypeName;
 import net.sourceforge.pmd.lang.kotlin.ast.HasModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 
-// Check type name on a node that implements HasTypeName
+// Check type on a node that implements HasTypeName
 // (PropertyDeclaration, FunctionDeclaration, ClassParameter, etc.)
 if (node instanceof HasTypeName) {
-    String typeName = ((HasTypeName) node).getTypeName(); // null if unresolved
+    KotlinTypeName type = ((HasTypeName) node).getType(); // null if unresolved
+    if (type != null) {
+        String fqName = type.getFqName();       // e.g. "kotlin.collections.List"
+        boolean nullable = type.isNullable();    // true if declared as nullable (?)
+        String display = type.toDisplayString(); // e.g. "kotlin.collections.List<kotlin.String>?"
+    }
 }
 
 // Get modifiers on declaration nodes implementing HasModifiers
@@ -180,8 +193,8 @@ if (node instanceof HasModifiers) {
 }
 
 // Static helpers on KotlinNodeTypeData (work on any KotlinNode)
-String typeName = KotlinNodeTypeData.getTypeName(node);
-String returnType = KotlinNodeTypeData.getReturnTypeName(node);
+KotlinTypeName type = KotlinNodeTypeData.getType(node);
+KotlinTypeName returnType = KotlinNodeTypeData.getReturnType(node);
 List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(node);
 
 // Check if type analysis ran (on root node)
@@ -190,10 +203,12 @@ boolean available = KotlinNodeTypeData.isTypeInfoAvailable(root);
 ```
 
 All type getters return `null` when type analysis has not run or the type could not be resolved.
+The `KotlinTypeName` class provides structured access to the FQ name, nullability, resolution
+status, and full display string (including generic type arguments).
 
 > **Note:** Unlike pmd-java's `TypeNode.getTypeMirror()` which returns rich `JTypeMirror` objects
-> (never null, using `UNKNOWN` for unresolved types), pmd-kotlin exposes string-based type names
-> via `KotlinNodeTypeData` — reflecting the simpler output of kotlin-type-mapper.
+> (never null, using `UNKNOWN` for unresolved types), pmd-kotlin exposes `KotlinTypeName` with
+> string-based type names — reflecting the simpler output of kotlin-type-mapper.
 > A richer type model may be added in a future version.
 
 ## Language Properties

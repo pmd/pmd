@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 
 /**
  * @since 7.25.0
@@ -22,11 +23,20 @@ public class KtFunctionDeclarationAttributes extends AttributeView<KotlinParser.
     }
 
     /**
-     * Returns the resolved return type name of this function declaration,
+     * Returns the resolved return type of this function declaration,
      * or {@code null} when type analysis has not been run.
      */
+    public @Nullable KotlinTypeName getReturnType() {
+        return KotlinNodeTypeData.getReturnType(node);
+    }
+
+    /**
+     * Returns the resolved return type name as a string for the
+     * {@code @ReturnTypeName} XPath attribute, or {@code null} when type
+     * analysis has not been run.
+     */
     public @Nullable String getReturnTypeName() {
-        return KotlinNodeTypeData.getReturnTypeName(node);
+        return KotlinTypeName.displayStringOf(getReturnType());
     }
 
     /**

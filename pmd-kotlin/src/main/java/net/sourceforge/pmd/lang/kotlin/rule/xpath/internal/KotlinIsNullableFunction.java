@@ -13,9 +13,11 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
+import nl.stokpop.typemapper.model.TypeAst;
 
 /**
  * XPath function {@code pmd-kotlin:isNullable()}.
@@ -68,8 +70,12 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
         return new IsNullableFunctionCall();
     }
 
-    private static boolean isNullableType(@Nullable String typeName) {
-        return typeName != null && typeName.endsWith("?");
+    private static boolean isNullable(@Nullable KotlinTypeName type) {
+        return type != null && type.isNullable();
+    }
+
+    private static boolean isNullableTypeAst(@Nullable TypeAst type) {
+        return type != null && type.isNullable();
     }
 
     private static final class IsNullableFunctionCall implements FunctionCall {
@@ -81,8 +87,8 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
 
             if (contextNode instanceof KotlinNode) {
                 KotlinNode kotlinNode = (KotlinNode) contextNode;
-                if (isNullableType(KotlinNodeTypeData.getTypeName(kotlinNode))
-                        || isNullableType(KotlinNodeTypeData.getReturnTypeName(kotlinNode))) {
+                if (isNullable(KotlinNodeTypeData.getType(kotlinNode))
+                        || isNullable(KotlinNodeTypeData.getReturnType(kotlinNode))) {
                     return true;
                 }
             }
@@ -93,7 +99,7 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
             int line = contextNode.getBeginLine();
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, line);
             for (DeclarationAst decl : decls) {
-                if (isNullableType(decl.getType()) || isNullableType(decl.getReturnType())) {
+                if (isNullableTypeAst(decl.getType()) || isNullableTypeAst(decl.getReturnType())) {
                     return true;
                 }
             }

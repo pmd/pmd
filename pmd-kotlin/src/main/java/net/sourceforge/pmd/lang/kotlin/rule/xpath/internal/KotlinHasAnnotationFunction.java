@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 /**
@@ -128,9 +129,10 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
             return false;
         }
         if (UNESCAPED_ANNOTATION.equals(xpathName)) {
-            String typeName = KotlinNodeTypeData.getTypeName(node);
-            if (typeName != null) {
-                return typeName.equals(className) || simpleNameOf(typeName).equals(simpleName);
+            KotlinTypeName type = KotlinNodeTypeData.getType(node);
+            if (type != null) {
+                String fqName = type.getFqName();
+                return fqName.equals(className) || simpleNameOf(fqName).equals(simpleName);
             }
             return false; // no FQN resolved for this annotation
         }
