@@ -54,6 +54,7 @@ and the kotlin-type-mapper analysis has resolved the types:
 | `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name (including generic type arguments and nullable marker) |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
 | `@Modifiers` | `ClassDeclaration`, `FunctionDeclaration`, `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CompanionObject` | Space-separated modifier keywords (e.g. `"override suspend"`). For arbitrary nodes use the `pmd-kotlin:modifiers()` function. |
+| `@Mutable` | `PropertyDeclaration` | `true` for `var`, `false` for `val`. Always present. |
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
@@ -66,6 +67,10 @@ A type-info attribute is **absent** (not present with a null value) whenever its
 > **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name). Modifiers like
 > `private`, `lateinit`, or `const` are on the parent `PropertyDeclaration` node.
 > Use `//PropertyDeclaration[@Modifiers = 'private']` rather than querying `VariableDeclaration`.
+
+> **Note:** Boolean attributes like `@Mutable` require XPath's `true()` / `false()` functions:
+> `//PropertyDeclaration[@Mutable=false()]` (immutable `val` declarations).
+> Using `false` without parentheses matches a node name, not a boolean value.
 
 #### Absent value: unknown vs unresolved vs genuinely none
 
