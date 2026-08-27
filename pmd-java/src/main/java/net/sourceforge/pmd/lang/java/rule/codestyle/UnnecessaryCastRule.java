@@ -27,6 +27,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
@@ -38,6 +39,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -121,7 +123,18 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             .anyMatch(fp -> isTypeExpression(fp.getTypeMirror(Substitution.EMPTY)));
         if (!generic) {
             JTypeMirror declaringType = methodType.getDeclaringType();
-            if (!isTypeExpression(methodType.getSymbol().getReturnType(Substitution.EMPTY))) {
+            JTypeMirror returnType = methodType.getSymbol().getReturnType(Substitution.EMPTY);
+            if (isTypeExpression(returnType)) {
+                // A raw cast changes a generic return type (e.g. PropertySerializer<T>
+                // becomes the raw type). That can be required for a chained call
+                // such as serializer().toString(value) on PropertyDescriptor<?>.
+                JTypeMirror coercionType = castExpr.getCastType().getTypeMirror();
+                ExprContext methodCtx = ((ASTMethodCall) castExpr.getParent()).getConversionContext();
+                if (coercionType.isRaw()
+                    && (methodCtx.isMissing() || methodCtx.hasKind(ExprContextKind.INVOCATION))) {
+                    return;
+                }
+            } else {
                 // declaring type of List<T>::size is List<T>, but since the return type
                 // is not generic, it's enough to check that operand is a List
                 declaringType = declaringType.getErasure();
@@ -137,7 +150,10 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isCastUnnecessary(ASTCastExpression castExpr, @NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType) {
-        if (operandType.equals(coercionType)) {
+        if (isCastNarrowingEnclosingType(castExpr, coercionType)) {
+            // e.g. (Outer<S, ?>.Inner) outer.new Inner() when outer is Outer<? super S, ?>
+            return false;
+        } else if (operandType.equals(coercionType)) {
             return true;
         } else if (context.isMissing()) {
             // then we have fewer violation conditions
@@ -165,6 +181,32 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
      */
     private boolean isCastToRawType(JTypeMirror coercionType, JTypeMirror operandType) {
         return coercionType.isRaw() && !operandType.isRaw();
+    }
+
+    /**
+     * Whether this cast changes the enclosing type arguments of a
+     * qualified inner-class instance creation. The type of
+     * {@code outer.new Inner()} is determined by {@code outer}, so a
+     * cast to {@code Outer<S>.Inner} is required when {@code outer} is
+     * e.g. {@code Outer<? super S>} - even if type resolution reports
+     * the same type for the operand and the cast.
+     */
+    private static boolean isCastNarrowingEnclosingType(ASTCastExpression castExpr, JTypeMirror coercionType) {
+        ASTExpression operand = castExpr.getOperand();
+        if (!(operand instanceof ASTConstructorCall) || !(coercionType instanceof JClassType)) {
+            return false;
+        }
+        ASTConstructorCall ctor = (ASTConstructorCall) operand;
+        if (!ctor.isQualifiedInstanceCreation()) {
+            return false;
+        }
+        ASTExpression qualifier = ctor.getQualifier();
+        JClassType castEnclosing = ((JClassType) coercionType).getEnclosingType();
+        if (qualifier == null || castEnclosing == null) {
+            return false;
+        }
+        JTypeMirror qualifierType = qualifier.getTypeMirror();
+        return !TypeOps.isUnresolvedOrNull(qualifierType) && !qualifierType.isSubtypeOf(castEnclosing);
     }
 
     private void reportCast(ASTCastExpression castExpr, RuleContext ctx) {

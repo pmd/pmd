@@ -91,7 +91,7 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.6</surefire.version>
-        <checkstyle.version>13.8.0</checkstyle.version>
+        <checkstyle.version>14.0.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.17</ant.version>
@@ -99,7 +99,7 @@
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.10</saxon.version>
-        <byte.buddy.version>1.18.11</byte.buddy.version>
+        <byte.buddy.version>1.18.12</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -108,7 +108,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>39</pmd.build-tools.version>
+        <pmd.build-tools.version>40</pmd.build-tools.version>
 
         <pmd-designer.version>7.19.3</pmd-designer.version>
 
@@ -782,7 +782,47 @@
                             </rules>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>enforce-bytecode-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <enforceBytecodeVersion>
+                                    <maxJdkVersion>8</maxJdkVersion>
+                                    <ignoredScopes>
+                                        <ignoredScope>test</ignoredScope>
+                                    </ignoredScopes>
+                                    <excludes>
+                                        <!-- The test modules use junit6, which uses Java17. But these modules are used in test-scope only -->
+                                        <exclude>net.sourceforge.pmd:pmd-test</exclude>
+                                        <exclude>net.sourceforge.pmd:pmd-lang-test</exclude>
+                                        <!-- pmd-languages-deps and pmd-dist contain all modules, including groovy and kotlin, which require a newer JDK -->
+                                        <exclude>net.sourceforge.pmd:pmd-languages-deps</exclude>
+                                        <exclude>net.sourceforge.pmd:pmd-dist</exclude>
+                                        <!-- pmd-groovy already uses groovy 5.x, which requires at least java 11 -->
+                                        <exclude>org.apache.groovy:groovy</exclude>
+                                        <!-- pmd-kotlin uses kotlin-type-mapper which requires at least java 17 -->
+                                        <exclude>nl.stokpop.typemapper:kotlin-type-mapper-model</exclude>
+                                        <exclude>nl.stokpop.typemapper:kotlin-type-mapper-analyzer</exclude>
+                                    </excludes>
+                                    <ignoreClasses>
+                                        <!-- asm dependency contains a java9 module-info.class -->
+                                        <ignoreClass>module-info</ignoreClass>
+                                    </ignoreClasses>
+                                </enforceBytecodeVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>1.12.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -914,7 +954,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>4.2.2</version>
+                <version>3.55.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -949,7 +989,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>5.0.8</version>
+                <version>5.1.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -964,7 +1004,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.6.0-jre</version>
+                <version>33.7.1-jre</version>
             </dependency>
 
             <!-- scala-reflect and scala-library needed by pmd-apex via apex-link -->
@@ -1145,7 +1185,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.35.1</version>
+                <version>4.36.0</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit6 needs.

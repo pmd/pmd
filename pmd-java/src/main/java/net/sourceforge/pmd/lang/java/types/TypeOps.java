@@ -2318,7 +2318,7 @@ public final class TypeOps {
     public static boolean isContextDependent(JExecutableSymbol symbol) {
         if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
             if (symbol instanceof JMethodSymbol) {
-                JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);
+                JTypeMirror returnType = symbol.getReturnType(EMPTY);
                 return mentionsAny(returnType, symbol.getTypeParameters())
                     || mentionsAny(returnType, symbol.getEnclosingClass().getTypeParameters());
             }

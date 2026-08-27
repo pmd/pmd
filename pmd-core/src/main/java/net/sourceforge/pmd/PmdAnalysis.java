@@ -130,7 +130,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  * <h2>Specifying the Java classpath</h2>
  *
  * <p>Java rules work better if you specify the path to the compiled classes
- * of the analysed sources. See {@link PMDConfiguration#prependAuxClasspath(String)}.
+ * of the analysed sources. See {@link PMDConfiguration#setAuxClasspath(String)}.
  *
  * <h2>Customizing message output</h2>
  *
@@ -218,11 +218,11 @@ public final class PmdAnalysis implements AutoCloseable {
             //  CLI syntax is implemented. #2947
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
             if (props instanceof JvmLanguagePropertyBundle) {
-                ClassLoader externallyConfiguredClassLoader = config.getClassLoader();
-                if (externallyConfiguredClassLoader != null) {
-                    ((JvmLanguagePropertyBundle) props).setClassLoader(externallyConfiguredClassLoader);
-                } else {
+                if (config.getAuxClasspath() != null) {
                     props.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, config.getAuxClasspath());
+                } else {
+                    ClassLoader externallyConfiguredClassLoader = config.getClassLoader();
+                    ((JvmLanguagePropertyBundle) props).setClassLoader(externallyConfiguredClassLoader);
                 }
             }
         }

@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface Classpath {
 
     /**
-     * Returns a URL to load the given resource if it exists in this classpath.
+     * Returns a open {@link InputStream} to load the given resource if it exists in this classpath.
      * Otherwise returns null. This will typically be used to find Java class files.
      * A typical input would be {@code java/lang/String.class}.
      *
@@ -58,11 +58,17 @@ public interface Classpath {
     /**
      * Returns a classpath instance that uses {@link ClassLoader#getResourceAsStream(String)}
      * to find resources.
+     * @deprecated Since 7.27.0. Real Classloaders shouldn't be used anymore.
      */
+    @Deprecated
     static Classpath forClassLoader(ClassLoader classLoader) {
         return classLoader::getResourceAsStream;
     }
 
+    /**
+     * @deprecated Since 7.27.0
+     */
+    @Deprecated
     static Classpath contextClasspath() {
         return forClassLoader(Thread.currentThread().getContextClassLoader());
     }

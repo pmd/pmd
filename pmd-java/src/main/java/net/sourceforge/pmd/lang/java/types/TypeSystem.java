@@ -24,13 +24,13 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JPackageSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -184,7 +184,9 @@ public final class TypeSystem {
      * @param bootstrapResourceLoader Classloader used to resolve class files
      *                                to populate the fields of the new type
      *                                system
+     * @deprecated Since 7.27.0. Use {@link #usingClasspath(Classpath)} instead.
      */
+    @Deprecated
     public static TypeSystem usingClassLoaderClasspath(ClassLoader bootstrapResourceLoader) {
         return usingClasspath(Classpath.forClassLoader(bootstrapResourceLoader));
     }
@@ -314,7 +316,7 @@ public final class TypeSystem {
     private JClassSymbol getBootStrapSymbol(Class<?> clazz) {
         AssertionUtil.requireParamNotNull("clazz", clazz);
         JClassSymbol sym = resolver.resolveClassFromBinaryName(clazz.getName());
-        return Objects.requireNonNull(sym, "sym");
+        return Objects.requireNonNull(sym, "symbol for " + clazz + " was null");
     }
 
     private @NonNull JPrimitiveType createPrimitive(PrimitiveTypeKind kind, Class<?> box) {
@@ -409,12 +411,9 @@ public final class TypeSystem {
     /**
      * Returns a symbol for the pseudo-class representing a package (usually called "package-info.java")
      *
-     * Returns a AnnotableSymbol, since the only thing this is used for is to check for annotations - and
-     * to keep the option of introducing a JPackageSymbol later.
-     *
      * @since 7.27.0
      */
-    public @Nullable AnnotableSymbol getPackageSymbol(String packageName) {
+    public @Nullable JPackageSymbol getPackageSymbol(String packageName) {
         AssertionUtil.assertValidJavaPackageName(packageName);
 
         return resolver.resolvePackage(packageName);
