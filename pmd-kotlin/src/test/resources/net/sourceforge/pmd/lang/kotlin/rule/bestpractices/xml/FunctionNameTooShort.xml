@@ -25,4 +25,46 @@ class BadBar {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>override fun with short name should not be flagged -- cannot rename an override</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MyListener {
+    override fun on(event: String) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>'on' is in the default allowedNames and should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class EventBus {
+    fun on(listener: () -> Unit) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>allowedNames can be overridden to remove the default exclusion</description>
+        <rule-property name="allowedNames">__none__</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class EventBus {
+    fun on(listener: () -> Unit) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>'dp' is in the default allowedNames -- Android density-pixel helper should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MyView {
+    private fun dp(value: Int): Int = (value * 2.5f).toInt()
+}
+        ]]></code>
+    </test-code>
 </test-data>

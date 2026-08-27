@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>no violation - fewer than threshold parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun process(a: Int, b: Int, c: Int) { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation - exactly at threshold (10 parameters)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun process(a: Int, b: Int, c: Int, d: Int, e: Int,
+            f: Int, g: Int, h: Int, i: Int, j: Int) { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation - one over threshold (11 parameters)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+fun process(a: Int, b: Int, c: Int, d: Int, e: Int,
+            f: Int, g: Int, h: Int, i: Int, j: Int, k: Int) { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation - function with no parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun doWork() { }
+        ]]></code>
+    </test-code>
+
+</test-data>

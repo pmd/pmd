@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Thread.run() call is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun bad(t: Thread) {
+    t.run()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Calling run() on a newly constructed Thread is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun bad() {
+    Thread { println("work") }.run() // violation: runs in current thread
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Thread.start() is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(t: Thread) {
+    t.start()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Coroutine launch is the idiomatic Kotlin approach - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
+fun goodKotlin() {
+    GlobalScope.launch { /* work */ }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

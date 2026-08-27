@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Field with DecimalFormat type is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.text.DecimalFormat
+
+class Bad {
+    private val numFormat: DecimalFormat = DecimalFormat("###.###")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local variable with DecimalFormat is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.DecimalFormat
+
+class Good {
+    fun format(value: Double): String {
+        val fmt = DecimalFormat("###.###")
+        return fmt.format(value)
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

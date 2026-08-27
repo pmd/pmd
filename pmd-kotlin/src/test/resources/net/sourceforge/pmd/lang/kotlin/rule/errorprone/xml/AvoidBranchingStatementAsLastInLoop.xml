@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>break directly in for loop body is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun bad(list: List<Int>) {
+        for (i in list) {
+            break
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>continue directly in for loop body is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun bad(list: List<Int>) {
+        for (i in list) {
+            continue
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return directly in for loop body is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun first(list: List<Int>): Int? {
+        for (i in list) {
+            return i
+        }
+        return null
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>break directly in while loop body is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun bad() {
+        while (true) {
+            break
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>break directly in do-while loop body is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    fun bad() {
+        do {
+            break
+        } while (true)
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>break inside if inside loop is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good(list: List<Int>, cond: Boolean) {
+        for (i in list) {
+            if (cond) {
+                break
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>continue inside if inside loop is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good(list: List<Int>) {
+        for (i in list) {
+            if (i < 0) {
+                continue
+            }
+            process(i)
+        }
+    }
+    private fun process(i: Int) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>break inside when inside loop is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good(list: List<Int>) {
+        for (i in list) {
+            when (i) {
+                0 -> break
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>return inside anonymous function inside loop is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good(items: List<String>) {
+        for (item in items) {
+            val fn = fun(): Boolean { return item.isNotEmpty() }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>continue as elvis right-hand side in for loop is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good(items: List<String?>) {
+        for (item in items) {
+            val value = item ?: continue
+            process(value)
+        }
+    }
+    private fun process(s: String) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>break as elvis right-hand side in while loop is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    fun good(items: Iterator<String?>) {
+        while (items.hasNext()) {
+            val value = items.next() ?: break
+            process(value)
+        }
+    }
+    private fun process(s: String) {}
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

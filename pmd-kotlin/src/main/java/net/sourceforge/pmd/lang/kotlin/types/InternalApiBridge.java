@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.types;
 
 import java.util.List;
 
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
@@ -25,19 +26,20 @@ public final class InternalApiBridge {
 
     private InternalApiBridge() {}
 
-    /** @see KotlinNodeTypeData#setTypeName(KotlinNode, String) */
-    public static void setTypeName(KotlinNode node, String typeName) {
-        KotlinNodeTypeData.setTypeName(node, typeName);
+    /** @see KotlinNodeTypeData#setType(KotlinNode, KotlinTypeName) */
+    public static void setType(KotlinNode node, KotlinTypeName type) {
+        KotlinNodeTypeData.setType(node, type);
     }
 
-    /** @see KotlinNodeTypeData#setReturnTypeName(KotlinNode, String) */
-    public static void setReturnTypeName(KotlinNode node, String returnTypeName) {
-        KotlinNodeTypeData.setReturnTypeName(node, returnTypeName);
+    /** @see KotlinNodeTypeData#setReturnType(KotlinNode, KotlinTypeName) */
+    public static void setReturnType(KotlinNode node, KotlinTypeName returnType) {
+        KotlinNodeTypeData.setReturnType(node, returnType);
     }
 
     public static void setAnnotationFqNames(KotlinNode node, List<String> fqnList) {
         KotlinNodeTypeData.setAnnotationFqNames(node, fqnList);
     }
+
 
     /** @see KotlinNodeTypeData#setTypeInfoAvailable(KtKotlinFile) */
     public static void setTypeInfoAvailable(KtKotlinFile rootNode) {

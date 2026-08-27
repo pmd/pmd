@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>System.exit() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun bad(code: Int) {
+    println("shutting down")
+    System.exit(code)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Runtime.halt() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun bad(code: Int) {
+    println("halting")
+    Runtime.getRuntime().halt(code)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Runtime.exit() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun bad(code: Int) {
+    println("exiting")
+    Runtime.getRuntime().exit(code)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throwing an exception instead is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun good(code: Int): Nothing {
+    throw IllegalStateException("shutdown requested with code $code")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple violations in one function</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+fun bad(code: Int) {
+    try {
+        System.exit(code)
+        Runtime.getRuntime().halt(code)
+    } catch (e: SecurityException) {
+        // swallowed
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

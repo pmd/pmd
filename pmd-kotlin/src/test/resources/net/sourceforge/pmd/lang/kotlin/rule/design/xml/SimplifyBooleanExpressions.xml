@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>x == true - no violation (idiomatic nullable Boolean check)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Boolean?): Boolean {
+    return x == true
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>x != true - no violation (idiomatic nullable Boolean check)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Boolean?): Boolean {
+    return x != true
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>x == false - no violation (idiomatic nullable Boolean check)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Boolean?): Boolean {
+    return x == false
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>direct boolean variable - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Boolean): Boolean {
+    return x
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>x &amp;&amp; true is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(x: Boolean): Boolean {
+    return x && true
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>true &amp;&amp; x is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(x: Boolean): Boolean {
+    return true && x
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>x || false is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(x: Boolean): Boolean {
+    return x || false
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>false || x is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+fun check(x: Boolean): Boolean {
+    return false || x
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>x &amp;&amp; false - no violation (absorbing element, changes semantics)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Boolean): Boolean {
+    return x && false
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>x || true - no violation (absorbing element, changes semantics)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun check(x: Boolean): Boolean {
+    return x || true
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

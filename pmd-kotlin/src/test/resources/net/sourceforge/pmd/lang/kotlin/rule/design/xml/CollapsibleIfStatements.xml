@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>inner if without braces in outer if without braces - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun withoutBraces(x: Boolean, y: Boolean) {
+    if (x)
+        if (y) println("both")
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner if with braces inside single-statement outer if block - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+fun withBraces(x: Boolean, y: Boolean) {
+    if (x) {
+        if (y) {
+            println("both")
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>outer if has else - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun withElse(x: Boolean, y: Boolean) {
+    if (x) {
+        if (y) {
+            println("both")
+        }
+    } else {
+        println("not x")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner if has else - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun innerWithElse(x: Boolean, y: Boolean) {
+    if (x) {
+        if (y) {
+            println("both")
+        } else {
+            println("only x")
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>outer block has two statements - no violation (not collapsible)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun twoStatements(x: Boolean, y: Boolean) {
+    if (x) {
+        doSomething()
+        if (y) {
+            println("both")
+        }
+    }
+}
+
+fun doSomething() {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>already merged with and - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun merged(x: Boolean, y: Boolean) {
+    if (x && y) {
+        println("both")
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>inner if is inside a call argument - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+fun test(x: Boolean, y: Boolean) {
+    if (x) {
+        println(if (y) "yes" else "no")
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

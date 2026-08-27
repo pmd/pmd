@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>System.gc() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun afterBulkLoad() {
+        System.gc()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Runtime.getRuntime().gc() is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    fun afterBulkLoad() {
+        Runtime.getRuntime().gc()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not calling gc explicitly is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun afterBulkLoad() {
+        // trust the JVM GC
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Calling other Runtime methods is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun memInfo(): Long {
+        return Runtime.getRuntime().freeMemory()
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

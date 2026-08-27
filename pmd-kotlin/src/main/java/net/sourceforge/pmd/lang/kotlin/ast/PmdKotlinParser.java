@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.kotlin.KotlinHandler;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageProcessor;
+import net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
@@ -34,11 +35,11 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
  *
  * <p>Each parse injects a fresh {@link InterruptibleParserATNSimulator} with its own DFA arrays
  * and {@link PredictionContextCache}. Using per-parse instances avoids lock contention when
- * PMD parses files in parallel, which would otherwise cause severe performance degradation due
- * to the complexity of the Kotlin grammar.
+ * PMD parses files in parallel and prevents unbounded ATN state accumulation across files,
+ * which would otherwise cause severe slowdowns with the complexity of the Kotlin grammar.
  *
  * <p>A per-file parse timeout acts as a safety net. Files exceeding the timeout are skipped with a processing
- * error. The timeout is configured via {@link net.sourceforge.pmd.lang.kotlin.KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
+ * error. The timeout is configured via {@link KotlinLanguageProperties#PARSE_TIMEOUT_SECONDS}.
  *
  * <p>Error handling strategy, see {@link AntlrBaseParserWithErrorHandling}</p>
  */

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>BigInteger.valueOf(0) is a violation - use BigInteger.ZERO</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger
+
+class Bad {
+    val zero: BigInteger = BigInteger.valueOf(0)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger.valueOf(1) is a violation - use BigInteger.ONE</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger
+
+class Bad {
+    val one: BigInteger = BigInteger.valueOf(1)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger.valueOf(10) is a violation - use BigInteger.TEN</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger
+
+class Bad {
+    val ten: BigInteger = BigInteger.valueOf(10)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger.valueOf(1L) with long literal is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger
+
+class Bad {
+    val one: BigInteger = BigInteger.valueOf(1L)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger.valueOf(2) is not a violation - no named constant for 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.BigInteger
+
+class Good {
+    val two: BigInteger = BigInteger.valueOf(2)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>BigInteger.ZERO constant is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.math.BigInteger
+
+class Good {
+    val zero = BigInteger.ZERO
+    val one  = BigInteger.ONE
+    val ten  = BigInteger.TEN
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Kotlin extension toBigInteger() is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    val zero = 0.toBigInteger()
+    val one  = 1.toBigInteger()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom class named BigInteger is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class BigInteger(val value: Long) {
+    companion object {
+        fun valueOf(v: Long): BigInteger = BigInteger(v)
+    }
+}
+
+class Good {
+    val zero = BigInteger.valueOf(0)
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

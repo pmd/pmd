@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>StringBuffer field is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    // Prefer buildString {} or a local StringBuilder
+    private val buf: StringBuffer = StringBuffer()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuilder field is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    private val sb: StringBuilder = StringBuilder()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>StringBuilder field with inferred type is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class Bad {
+    private val sb = StringBuilder()
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local StringBuilder in a function is not a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun build(): String {
+        val sb = StringBuilder()
+        sb.append("hello")
+        return sb.toString()
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>buildString{} is the idiomatic Kotlin alternative - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Good {
+    fun build(): String = buildString {
+        append("hello")
+        append(" world")
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>FileInputStream constructor is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[import java.io.File
+import java.io.FileInputStream
+
+fun read(file: File) {
+    val fis = FileInputStream(file)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FileOutputStream constructor is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[import java.io.File
+import java.io.FileOutputStream
+
+fun write(file: File) {
+    val fos = FileOutputStream(file)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FileReader constructor is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[import java.io.File
+import java.io.FileReader
+
+fun read(file: File) {
+    val reader = FileReader(file)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FileWriter constructor is a violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[import java.io.File
+import java.io.FileWriter
+
+fun write(file: File) {
+    val writer = FileWriter(file)
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>File.inputStream() is the idiomatic Kotlin alternative - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.io.File
+
+fun read(file: File): ByteArray {
+    return file.inputStream().use { it.readBytes() }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Files.newInputStream(path) NIO approach - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[import java.io.File
+import java.nio.file.Files
+
+fun read(file: File): ByteArray {
+    return Files.newInputStream(file.toPath()).use { it.readBytes() }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
