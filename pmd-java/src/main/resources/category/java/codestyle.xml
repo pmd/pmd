@@ -77,7 +77,7 @@ public class Fo$o {  // not a recommended name
 Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
 
-**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule ProtectedMemberInFinalField %}, which covers all class members.
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule java/design/ProtectedMemberInFinalClass %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
@@ -114,7 +114,7 @@ Do not use protected methods in most final classes since they cannot be subclass
 only be allowed in final classes that extend other classes with protected methods (whose
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
 
-**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule ProtectedMemberInFinalField %}, which covers all class members.
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule java/design/ProtectedMemberInFinalClass %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
