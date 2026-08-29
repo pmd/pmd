@@ -26,7 +26,7 @@ public class ParserCornerCases18 {
         FileFilter java2 = f -> f.getName().endsWith(".java");
         FileFilter java3 = (f) -> f.getName().endsWith(".java");
         FileFilter java4 = (f -> f.getName().endsWith(".java"));
-        IntStream.range(0, array.length).parallel().forEach(i -> { array[i] = generator.apply(i); });
+        IntStream.range(0, array.length).parallel().forEach(i -> array[i] = generator.apply(i));
 
 
         FileFilter[] filters = new FileFilter[] {
@@ -39,11 +39,11 @@ public class ParserCornerCases18 {
         String user = doPrivileged(() -> System.getProperty("user.name"));
 
         Callable<String> c = () -> "done";
-        Runnable r = () -> { System.out.println("done"); };
-        Supplier<Runnable> sup = () -> () -> { System.out.println("hi"); };
+        Runnable r = () -> System.out.println("done");
+        Supplier<Runnable> sup = () -> () -> System.out.println("hi");
         boolean flag = 1 > 2;
         Callable<Integer> c2 = flag ? (() -> 23) : (() -> 42);
-        Object o = (Runnable) () -> { System.out.println("hi"); };
+        Object o = (Runnable) () -> System.out.println("hi");
         new ParserCornerCases18().r1.run();
 
         Comparator<String> comparer = (s1, s2) -> s1.compareToIgnoreCase(s2);
@@ -55,10 +55,10 @@ public class ParserCornerCases18 {
         // grammar/parser: don't get confused with this...
         int initialSizeGlobal = (int) (profilingContext.m_profileItems.size() * (150.0 * 0.30));
 
-        BiConsumer<String, Integer> lambda2 = (String s, Integer i) -> { i++; };
-        BiConsumer<String, Integer> lambda2a = (s, i) -> { i++; };
-        TriConsumer<String, Integer, Double> lambda3 = (String s, Integer i, Double d) -> { d += i; };
-        TriConsumer<String, Integer, Double> lambda3a = (s, i, d) -> { d += i; };
+        BiConsumer<String, Integer> lambda2 = (String s, Integer i) -> i++;
+        BiConsumer<String, Integer> lambda2a = (s, i) -> i++;
+        TriConsumer<String, Integer, Double> lambda3 = (String s, Integer i, Double d) -> d += i;
+        TriConsumer<String, Integer, Double> lambda3a = (s, i, d) -> d += i;
     }
 
     @FunctionalInterface
@@ -66,7 +66,7 @@ public class ParserCornerCases18 {
         void accept(A a, B b, C c);
     }
 
-    Runnable r1 = () -> { System.out.println(this); };
+    Runnable r1 = () -> System.out.println(this);
 
     public Runnable toDoLater() {
         return () -> {
