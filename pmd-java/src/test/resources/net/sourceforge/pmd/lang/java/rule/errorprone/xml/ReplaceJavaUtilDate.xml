@@ -59,4 +59,89 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>bad, pattern variable of type java.util.Date</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    void bar(Object o) {
+        if (o instanceof Date d) {
+            System.out.println(d);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, pattern variable of type java.sql.Timestamp</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object o) {
+        if (o instanceof java.sql.Timestamp ts) {
+            System.out.println(ts);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, pattern variable in a switch case label</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    String bar(Object o) {
+        return switch (o) {
+            case Date d -> d.toString();
+            default -> "";
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, record deconstruction pattern with components of type java.util.Date</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    record Range(Date from, Date to) { }
+
+    void bar(Object o) {
+        if (o instanceof Range(Date from, Date to)) {
+            System.out.println(from);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, pattern variable not of type java.util.Date</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDateTime;
+
+public class Foo {
+    void bar(Object o) {
+        if (o instanceof LocalDateTime ldt) {
+            System.out.println(ldt);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
