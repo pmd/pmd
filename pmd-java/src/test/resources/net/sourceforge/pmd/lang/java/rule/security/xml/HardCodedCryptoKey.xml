@@ -139,4 +139,42 @@ class CryptoBaseTest implements HardCodedCryptoKeyTest.Constants {
 
         </code>
     </test-code>
+
+    <test-code>
+        <description>[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key #7008</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class GoodCase {
+    public void test() {
+        String keyString =
+            System.getProperty("test.key", "secretKey");
+        SecretKeySpec keySpec =
+            new SecretKeySpec(keyString.getBytes(), "AES");// [should not be flagged]
+    }
+
+    public void testOneArgOverload() {
+        String keyString = System.getProperty("test.key");
+        SecretKeySpec keySpec = new SecretKeySpec(keyString.getBytes(), "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Hard coded crypto key from bare array initializer, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+    void encrypt() {
+        byte[] key = { 0, 1, 2, 3, 4, 5, 6, 7 };
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+    
 </test-data>

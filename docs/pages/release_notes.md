@@ -26,6 +26,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 
+* java-security
+  * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key
+
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
