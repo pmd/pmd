@@ -239,7 +239,7 @@ RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRu
 
     <rule name="SampleRuleWithLotsOfLinks"
           language="java"
-          since="7.27.0"
+          since="7.28.0"
           message="Message"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
         <description>

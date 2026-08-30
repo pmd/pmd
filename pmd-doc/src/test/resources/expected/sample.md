@@ -628,7 +628,7 @@ This rule is for testing enum properties
 
 ## SampleRuleWithLotsOfLinks
 
-**Since:** PMD 7.27.0
+**Since:** PMD 7.28.0
 
 **Priority:** Medium (3)
 
