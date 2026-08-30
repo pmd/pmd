@@ -27,12 +27,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RuleTagChecker {
-    private static final Logger LOG = LoggerFactory.getLogger(DeadLinksChecker.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RuleTagChecker.class);
 
     private static final String QUOTE = "\"";
     private static final Pattern RULE_TAG = Pattern.compile("\\{%\\s*rule\\s+(\"?[^\"%\\}\\s]+\"?)\\s*");
     private static final Pattern RULE_REFERENCE = Pattern.compile("\"?(\\w+)\\/(\\w+)\\/(\\w+)\"?");
     private static final Pattern RULE_SIMPLE_REFERENCE = Pattern.compile("\"?(\\w+)\"?");
+    private static final String GROUP_LANGUAGE = "language";
+    private static final String GROUP_CATEGORY = "category";
+    private static final Pattern RULE_DOC_FILENAME = Pattern.compile("^.*rules[/\\\\](?<" + GROUP_LANGUAGE + ">\\w+)[/\\\\](?<" + GROUP_CATEGORY + ">\\w+)\\.md$");
 
     private final Path pagesDirectory;
     private final List<String> issues = new ArrayList<>();
@@ -66,6 +69,16 @@ public class RuleTagChecker {
         }
 
         LOG.debug("Checking {}", file);
+
+        Matcher filenameMatcher = RULE_DOC_FILENAME.matcher(file.toString());
+        String language = null;
+        String category = null;
+        if (filenameMatcher.matches()) {
+            language = filenameMatcher.group(GROUP_LANGUAGE);
+            category = filenameMatcher.group(GROUP_CATEGORY);
+            LOG.debug("Language: {} Category: {}", language, category);
+        }
+
         int lineNo = 0;
         for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) {
             lineNo++;
@@ -78,28 +91,40 @@ public class RuleTagChecker {
                 } else if (ruleReference.startsWith(QUOTE) && !ruleReference.endsWith(QUOTE)
                         || !ruleReference.startsWith(QUOTE) && ruleReference.endsWith(QUOTE)) {
                     addIssue(file, lineNo, "Rule tag for " + ruleReference + " has a missing quote");
-                } else if (!ruleReferenceTargetExists(ruleReference)) {
+                } else if (!ruleReferenceTargetExists(ruleReference, language, category)) {
                     addIssue(file, lineNo, "Rule " + ruleReference + " is not found");
                 }
             }
         }
     }
 
-    private boolean ruleReferenceTargetExists(String ruleReference) {
+    private boolean ruleReferenceTargetExists(String ruleReference, String currentLanguage, String currentCategory) {
         Matcher ruleRefMatcher = RULE_REFERENCE.matcher(ruleReference);
         Matcher simpleRefMatcher = RULE_SIMPLE_REFERENCE.matcher(ruleReference);
-        if (ruleRefMatcher.matches()) {
-            String language = ruleRefMatcher.group(1);
-            String category = ruleRefMatcher.group(2);
-            String rule = ruleRefMatcher.group(3);
 
+        String language = null;
+        String category = null;
+        String rule = null;
+
+        if (ruleRefMatcher.matches()) {
+            language = ruleRefMatcher.group(1);
+            category = ruleRefMatcher.group(2);
+            rule = ruleRefMatcher.group(3);
+        } else if (simpleRefMatcher.matches()) {
+            language = currentLanguage;
+            category = currentCategory;
+            rule = simpleRefMatcher.group(1);
+        }
+
+        if (rule != null && language != null && category != null) {
             Path ruleDocPage = pagesDirectory.resolve("pmd/rules/" + language + "/" + category.toLowerCase(Locale.ROOT) + ".md");
             Set<String> rules = getRules(ruleDocPage);
             return rules.contains(rule);
-        } else if (simpleRefMatcher.matches()) {
-            // can't check - would need to know the current language + category
-            return true;
         }
+
+        // can't check - would need to know the current language + category
+        LOG.warn("Cannot verify rule reference '{}' for rule {} (originating in language: {} category: {})",
+                ruleReference, rule, currentLanguage, currentCategory);
         return false;
     }
 
