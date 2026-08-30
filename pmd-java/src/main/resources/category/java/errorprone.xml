@@ -2805,6 +2805,7 @@ deprecated there as well in favour of `java.time` API.
                 //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
                 //FormalParameter[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
                 //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //RecordComponent[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
                 //TypePattern[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
                 //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Calendar')]]
                 ]]></value>
@@ -2869,6 +2870,7 @@ deprecated there as well in favour of `java.time` API.
                 //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
                 //FormalParameter[ClassType[pmd-java:typeIs('java.util.Date')]] |
                 //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //RecordComponent[ClassType[pmd-java:typeIs('java.util.Date')]] |
                 //TypePattern[ClassType[pmd-java:typeIs('java.util.Date')]] |
                 //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Date')]]
                 ]]></value>

@@ -117,6 +117,31 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>bad, record component of type java.util.Calendar</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar;
+
+public class Foo {
+    record Period(Calendar start, Calendar end) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, record component not of type java.util.Calendar</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDate;
+
+public class Foo {
+    record Period(LocalDate start, LocalDate end) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>ok, pattern variable not of type java.util.Calendar</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

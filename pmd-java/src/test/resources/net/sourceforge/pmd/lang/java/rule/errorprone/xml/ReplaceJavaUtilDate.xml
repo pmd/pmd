@@ -78,14 +78,14 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>bad, pattern variable of type java.sql.Timestamp</description>
+        <description>bad, pattern variable declared with a fully qualified type name</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar(Object o) {
-        if (o instanceof java.sql.Timestamp ts) {
-            System.out.println(ts);
+        if (o instanceof java.util.Date d) {
+            System.out.println(d);
         }
     }
 }
@@ -111,20 +111,45 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>bad, record deconstruction pattern with components of type java.util.Date</description>
+        <description>bad, type pattern nested in a record deconstruction pattern</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    record Box(Object value) { }
+
+    void bar(Object o) {
+        if (o instanceof Box(Date d)) {
+            System.out.println(d);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, record component of type java.util.Date</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>7,7</expected-linenumbers>
+        <expected-linenumbers>4,4</expected-linenumbers>
         <code><![CDATA[
 import java.util.Date;
 
 public class Foo {
     record Range(Date from, Date to) { }
+}
+        ]]></code>
+    </test-code>
 
-    void bar(Object o) {
-        if (o instanceof Range(Date from, Date to)) {
-            System.out.println(from);
-        }
-    }
+    <test-code>
+        <description>ok, record component not of type java.util.Date</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDate;
+
+public class Foo {
+    record Range(LocalDate from, LocalDate to) { }
 }
         ]]></code>
     </test-code>
