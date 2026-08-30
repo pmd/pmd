@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.contains;
 import java.nio.file.FileSystems;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,10 @@ class RuleTagCheckerTest {
         RuleTagChecker checker = new RuleTagChecker(FileSystems.getDefault().getPath("src/test/resources/ruletagchecker"));
         List<String> issues = checker.check();
 
-        issues.sort(Comparator.naturalOrder());
+        issues = issues.stream()
+                        .map(s -> s.replace('\\', '/')) // convert windows paths
+                        .sorted()
+                        .collect(Collectors.toList());
 
         assertThat(issues, contains(
                 "pmd/rules/java/codestyle.md: 8: Rule NotExistingRule is not found",
