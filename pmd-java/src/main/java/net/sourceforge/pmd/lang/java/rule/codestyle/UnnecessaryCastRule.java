@@ -110,8 +110,8 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // If we remove the cast, even if it might compile,
             // the object will not implement SubItf anymore.
         } else if (isCastRequiredForMemberAccess(castExpr, operandType)) {
-            // Package-private members are not inherited by subclasses in
-            // another package, so the cast is required to select the member.
+            // Package-private members are not accessible on a subtype in
+            // a different package, so the cast is required to select the member.
             return null;
         } else if (isCastUnnecessary(castExpr, context, coercionType, operandType)) {
             reportCast(castExpr, data);
@@ -291,10 +291,9 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
     /**
      * Whether this cast is required because it selects a package-private
-     * member that is not inherited by the operand type. Subclasses in a
-     * different package do not inherit package-private methods/fields, so
-     * {@code ((Super) sub).packagePrivate()} cannot be rewritten as
-     * {@code sub.packagePrivate()}.
+     * member that is not accessible on the operand type. When the operand
+     * type is in a different package, {@code ((Super) sub).packagePrivate()}
+     * cannot be rewritten as {@code sub.packagePrivate()}.
      *
      * @see <a href="https://github.com/pmd/pmd/issues/5732">#5732</a>
      */
@@ -319,8 +318,9 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Public/protected members are inherited; package-private members are
-     * only members of types in the same package as the declaration.
+     * Public/protected members are accessible regardless of package;
+     * package-private members are only accessible on types in the same
+     * package as the declaration.
      */
     private static boolean isPackagePrivateMemberAccessibleOn(JAccessibleElementSymbol member,
                                                               JTypeMirror operandType) {
@@ -328,11 +328,11 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         if (access != 0) {
             return true;
         }
-        if (!(operandType instanceof JClassType) || TypeOps.isUnresolvedOrNull(operandType)) {
+        if (!(operandType instanceof JClassType)) {
             return true;
         }
         JClassSymbol operandSym = ((JClassType) operandType).getSymbol();
-        return operandSym != null && member.getPackageName().equals(operandSym.getPackageName());
+        return member.getPackageName().equals(operandSym.getPackageName());
     }
 
     private static @Nullable ASTLambdaExpression getLambdaParent(ASTCastExpression castExpr) {
