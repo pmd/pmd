@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
@@ -341,6 +342,16 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
+     * Returns true, if an auxClasspath is configured.
+     *
+     * @return true, if an auxClasspath is configured.
+     * @since 7.28.0
+     */
+    public boolean hasAuxClasspath() {
+        return auxClasspath != null;
+    }
+
+    /**
      * Gets the currently set auxClasspath.
      *
      * @return the configured auxClasspath. Might be {@code null}.
@@ -348,7 +359,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @see #prependAuxClasspath(String)
      * @since 7.27.0
      */
-    public String getAuxClasspath() {
+    public @Nullable String getAuxClasspath() {
         if (classLoader != null) {
             throw new IllegalStateException("Can't mix setClasspath with getAuxClasspath!");
         }
