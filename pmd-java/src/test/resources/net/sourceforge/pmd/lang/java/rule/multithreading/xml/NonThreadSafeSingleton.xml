@@ -323,7 +323,7 @@ public class Singleton {
 
     <test-code>
         <description>#6780 checkNonStaticMethods - skip non-static method via violationSuppressXPath</description>
-        <rule-property name="violationSuppressXPath">.[ancestor::MethodDeclaration[@Static = false()]]</rule-property>
+        <rule-property name="violationSuppressXPath">.[ancestor-or-self::MethodDeclaration[1][@Static = false()]]</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Singleton {
