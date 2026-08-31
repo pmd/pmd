@@ -32,7 +32,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR = booleanProperty(
             "checkNonStaticMethods")
-                    .desc("deprecated! This property is ignored and has no effect - non-static methods are "
+                    .desc(DEPRECATED_RULE_PROPERTY_MARKER + "This property is ignored and has no effect - non-static methods are "
                             + "always checked now (see https://github.com/pmd/pmd/issues/6780). This property "
                             + "will be removed in PMD 8.0.0.")
                     .defaultValue(true).build();
