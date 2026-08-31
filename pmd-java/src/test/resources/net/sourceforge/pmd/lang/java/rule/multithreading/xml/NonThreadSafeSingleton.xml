@@ -212,7 +212,45 @@ class Tester {
 }
 ]]></code>
     </test-code>
-<test-code>
+
+    <test-code>
+        <description>Ternary lazy init is a check-then-act race #6747</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
+        <code><![CDATA[
+class LazyInitTernary {
+    private static Object foo;
+    private static Object bar;
+
+    public static Object getFoo() {
+        foo = foo == null ? new Object() : foo;
+        return foo;
+    }
+
+    public static Object getBar() {
+        bar = bar == null ? new Object() : bar;
+        return bar;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ternary without null check is OK #6747</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class LazyInitTernaryNoNullCheck {
+    private static Object foo;
+    private static boolean ready;
+    public static Object getFoo() {
+        foo = ready ? new Object() : foo;
+        return foo;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#6780 non-static getInstance is flagged by default (checkNonStaticMethods=true)</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

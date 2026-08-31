@@ -32,4 +32,19 @@ class SymbolTableResolverTest extends BaseParserTest {
             assertNotNull(type.getReferencedSym());
         }
     }
+
+    @Test
+    void recordComponentTypeShouldBeResolvedBeforeAnonymousClassInference() {
+        ASTCompilationUnit compilationUnit = java.withDefaultVersion("16").parse(
+                "public class J {\n"
+                        + "    record Actor(String userView) {}\n"
+                        + "    static Object convert(Object a, Object b) { return null; }\n"
+                        + "    Object make(Actor actor) { return convert(actor.userView(), new Object() {}); }\n"
+                        + "}");
+        ASTRecordDeclaration record = compilationUnit.descendants(ASTRecordDeclaration.class)
+                .crossFindBoundaries().firstOrThrow();
+        ASTRecordComponent component = record.getRecordComponents()
+                .children(ASTRecordComponent.class).firstOrThrow();
+        assertNotNull(((ASTClassType) component.getTypeNode()).getReferencedSym());
+    }
 }

@@ -6,3 +6,4 @@ _pdf
 vendor/
 .bundle/
 assets/*.zip
+.ruby-version

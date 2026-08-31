@@ -973,6 +973,7 @@ h4 code {
 .alert {
     margin-bottom: 10px;
     margin-top: 10px;
+    display: block;
 }
 
 a.accordion-toggle {

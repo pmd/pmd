@@ -353,4 +353,45 @@ class CtorInferenceTest : ProcessorTestSpec({
             ctorCall.methodType.symbol shouldBe ctorSymbol
         }
     }
+
+    parserTest("Interdependent ivars are resolved simultaneously (#5441)") {
+        // The inference context for `build` ends up with the bounds
+        //     'a { 'a <: String, 'a <: 'b }        ('a is K1)
+        //     'b { 'b <: Object, 'b >: 'a }        ('b is CacheLoader's K)
+        // 'a and 'b are interdependent, so per JLS 18.4 their instantiations
+        // must both be computed from this bound set before either is
+        // incorporated. 'b then has no *proper* lower bound and resolves to
+        // Object, exactly like javac. Resolving 'a first would make `'b >: 'a`
+        // proper and wrongly instantiate 'b to String.
+        val (acu, _) = parser.parseWithTypeInferenceSpy(
+            """
+            class Test {
+                interface CacheLoader<K, V> {}
+
+                interface CacheBuilder<K, V> {
+                    <K1 extends K, V1 extends V> Cache<K1, V1> build(CacheLoader<? super K1, V1> loader);
+                }
+
+                interface Cache<K, V> {}
+
+                static class ConcreteCacheLoader<K, V> implements CacheLoader<K, V> {}
+
+                static <K, V> CacheBuilder<K, V> newCacheBuilder(String id) { return null; }
+
+                static void test() {
+                    var cache = Test.<String, Integer>newCacheBuilder("test")
+                                    .build(new ConcreteCacheLoader<>());
+                }
+            }
+            """
+        )
+
+        val (_, _, _, t_Cache, t_ConcreteCacheLoader) = acu.declaredTypeSignatures()
+        val ctorCall = acu.firstCtorCall()
+
+        ctorCall.withTypeDsl {
+            ctorCall shouldHaveType t_ConcreteCacheLoader[ts.OBJECT, int.box()]
+            acu.varId("cache") shouldHaveType t_Cache[ts.STRING, int.box()]
+        }
+    }
 })

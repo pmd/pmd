@@ -26,7 +26,7 @@ protected constructor in order to prevent instantiation than make the class misl
                 <value>
 <![CDATA[
 //ClassDeclaration
-    [@Abstract = true() and @Interface = false()]
+    [@Abstract = true() and @Interface = false() and not(ExtendsList)]
     [ClassBody[not(ConstructorDeclaration | MethodDeclaration)]]
     [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
          or pmd-java:hasAnnotation('lombok.AllArgsConstructor')
@@ -839,6 +839,38 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="InstantiableUtilityClass"
+          language="java"
+          since="0.3"
+          message="All members are static. Consider adding a private no-args constructor to prevent instantiation."
+          class="net.sourceforge.pmd.lang.java.rule.design.InstantiableUtilityClassRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#instantiableutilityclass">
+        <description>
+            A class is a utility class, if and only if it fulfills ALL the following criteria:
+            * ALL member functions, member variables, nested classes, and initializers are static.
+            * The class has at least one member function, member variable, or nested class that is not private.
+            * The class is a concrete class (neither abstract nor an interface).
+            * The class has no superclasses and implements no interfaces.
+            * The class has no main method.
+
+            Utility classes should not be instantiable. Make sure that the only constructor is a
+            private no-args constructor to enforce this.
+
+            (Note, that this rule was known as UseSingleton before PMD 5.1.0 and as UseUtilityClass before PMD 7.27.0).
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class MaybeAUtility {
+    public static final int SOME_CONST = 42;
+
+    public static void foo() {}
+    public static void bar() {}
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="InvalidJavaBean"
           language="java"
           since="6.52.0"
@@ -1146,6 +1178,53 @@ public class Foo {
         List buz = new ArrayList();
     } while (a && j++ < 30);
   }
+}
+ ]]>
+        </example>
+    </rule>
+
+    <rule name="ProtectedMemberInFinalClass"
+          language="java"
+          since="7.27.0"
+          message="Avoid protected members in a final class. Change to private or package access."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#protectedmemberinfinalclass">
+        <description>
+            Do not use protected members in final classes since they cannot be subclassed. This does
+            not apply to methods that override a protected method from a superclass, since visibility cannot be decreased .
+            Clarify your intent by using private or package access modifiers instead.
+
+            This replaced the old rules "AvoidProtectedFieldInFinalClass" and "AvoidProtectedMethodInFinalClassNotExtending" in PMD 7.27.0
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration[@Final=true()]/ClassBody/
+(
+  FieldDeclaration |
+  EnumDeclaration |
+  RecordDeclaration |
+  ClassDeclaration |
+  AnnotationTypeDeclaration |
+  ConstructorDeclaration |
+  MethodDeclaration[ @Override=false() ]
+)[@Visibility="protected"]
+ ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public final class Foo {
+  private int bar() {}
+  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
+  protected int field; // This should be a private or package visible field
+  protected enum InnerEnum {} // Same for enums ...
+  protected class InnerClass {} // ... classes ...
+  protected record InnerRecord {} // ... record ...
+  protected @interface InnerAnnotation {} // ... and annotations
 }
  ]]>
         </example>
@@ -1570,36 +1649,6 @@ public class MyClass {
         </example>
     </rule>
 
-    <rule name="UseUtilityClass"
-          language="java"
-          since="0.3"
-          message="All members are static. Consider adding a private no-args constructor to prevent instantiation."
-          class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#useutilityclass">
-        <description>
-A class is a utility class, if and only if it fulfills ALL the following criteria:
-* ALL member functions, member variables, nested classes, and initializers are static.
-* The class has at least one member function, member variable, or nested class that is not private.
-* The class is a concrete class (neither abstract nor an interface).
-* The class has no superclasses and implements no interfaces.
-* The class has no main method.
-
-Utility classes should not be instantiable. Make sure that the only constructor is a
-private no-args constructor to enforce this.
-
-(Note, that this rule was known before PMD 5.1.0 as UseSingleton).
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class MaybeAUtility {
-    public static final int SOME_CONST = 42;
-
-    public static void foo() {}
-    public static void bar() {}
-}
-]]>
-        </example>
-    </rule>
+    <rule name="UseUtilityClass" deprecated="true" ref="InstantiableUtilityClass" />
 
 </ruleset>

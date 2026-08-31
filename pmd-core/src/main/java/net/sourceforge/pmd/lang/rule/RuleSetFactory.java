@@ -331,6 +331,7 @@ final class RuleSetFactory {
             String ref = REF.getAttributeOrThrow(ruleNode, err);
             RuleSetReferenceId refId = parseReferenceAndWarn(ref, REF.getAttributeNode(ruleNode), err);
             if (refId != null) {
+                refId = RuleSetReferenceId.resolveSibling(ruleSetReferenceId, refId);
                 if (refId.isAllRules()) {
                     parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, refId, rulesetReferences, err);
                 } else {
@@ -535,9 +536,11 @@ final class RuleSetFactory {
 
         if (referencedRule == null) {
             throw err.at(ruleNode).error(
-                "Unable to find referenced rule {0}"
-                    + "; perhaps the rule name is misspelled?",
-                otherRuleSetReferenceId.getRuleName());
+                "Unable to find rule ''{0}'' in ruleset ''{1}'' (PMD {2})."
+                    + " Check the spelling and whether the rule is available in this PMD version.",
+                otherRuleSetReferenceId.getRuleName(),
+                otherRuleSetReferenceId.getRuleSetFileName(),
+                PMDVersion.VERSION);
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {

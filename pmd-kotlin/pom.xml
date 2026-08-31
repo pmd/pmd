@@ -7,12 +7,13 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.27.0-SNAPSHOT</version>
+        <version>7.28.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
         <antlr4.visitor>true</antlr4.visitor>
+        <kotlin.type.mapper.version>0.6.1</kotlin.type.mapper.version>
     </properties>
 
     <build>
@@ -67,7 +68,11 @@
                 <configuration>
                     <parameter>
                         <excludes combine.children="append">
+                            <exclude>net.sourceforge.pmd.lang.kotlin.ast.internal</exclude>
+                            <exclude>net.sourceforge.pmd.lang.kotlin.internal</exclude>
                             <exclude>net.sourceforge.pmd.lang.kotlin.rule.xpath.internal</exclude>
+                            <exclude>net.sourceforge.pmd.lang.kotlin.rule.internal</exclude>
+                            <exclude>net.sourceforge.pmd.lang.kotlin.types.internal</exclude>
                         </excludes>
                     </parameter>
                 </configuration>
@@ -83,6 +88,16 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>nl.stokpop.typemapper</groupId>
+            <artifactId>kotlin-type-mapper-model</artifactId>
+            <version>${kotlin.type.mapper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.stokpop.typemapper</groupId>
+            <artifactId>kotlin-type-mapper-analyzer</artifactId>
+            <version>${kotlin.type.mapper.version}</version>
         </dependency>
 
         <dependency>

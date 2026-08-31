@@ -138,9 +138,11 @@ public class Foo {
 import java.math.*;
 public class Foo {
     public void foo() {
-        BigInteger bi = new BigInteger(5);
-        bar(bi.add(new BigInteger(5)));
+        BigInteger bi = new BigInteger("5");
+        bar(bi.add(new BigInteger("5")));
     }
+
+    private void bar(BigInteger bi) {};
 }
         ]]></code>
     </test-code>
@@ -257,6 +259,8 @@ public class Foo {
         BigInteger temp = BigInteger.valueOf((long) startMonth).add(dMonths);
         setMonth(temp.subtract(BigInteger.ONE).mod(TWELVE).intValue() + 1);
     }
+
+    private void setMonth(int x) {}
 }
         ]]></code>
     </test-code>
@@ -398,7 +402,7 @@ class Tester {
     void periodExamples() {
         Period period = Period.ofMonths(1);
         period.minusDays(1); // violation
-        period = period.plusWeeks(1); // ok
+        period = period.plusMonths(1); // ok
     }
 }
 ]]></code>

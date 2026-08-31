@@ -9,16 +9,22 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.util.AuxClasspathLoader;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * @author Clément Fournier
@@ -38,20 +44,24 @@ class ClassLoadingChildFirstTest {
      * </p>
      */
     @Test
-    void testClassLoading() {
+    void testClassLoading() throws IOException {
         Path file = Paths.get("src/test/resources",
                 getClass().getPackage().getName().replace('.', '/'),
                 "custom_java_lang.jar");
+        Path jrtFsJar = AuxClasspathUtil.getPlatformClasspath();
+        String classpath = AuxClasspathUtil.toRawClasspath(Arrays.asList(file, jrtFsJar));
 
-        PMDConfiguration config = new PMDConfiguration();
-        config.prependAuxClasspath(file.toAbsolutePath().toString());
+        JavaLanguageProperties languageProperties = (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
+        languageProperties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
 
-        TypeSystem typeSystem = TypeSystem.usingClassLoaderClasspath(config.getClassLoader());
+        try (AuxClasspathLoader auxClasspathLoader = AuxClasspathLoader.create(classpath)) {
+            TypeSystem typeSystem = TypeSystem.usingClasspath(name -> auxClasspathLoader.findResource(name));
+            JClassType voidClass = typeSystem.BOXED_VOID;
+            List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
+            assertThat(declaredMethods, hasSize(1));
+            assertThat(declaredMethods.get(0), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
 
-        JClassType voidClass = typeSystem.BOXED_VOID;
-        List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
-        assertThat(declaredMethods, hasSize(1));
-        assertThat(declaredMethods.get(0), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
+        }
     }
 
 }

@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
@@ -76,6 +77,12 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
             || node.isEnumConstant()
             || node.isRecordComponent()
             || node.getParent() instanceof ASTFormalParameter);
+    }
+
+    @Override
+    public Void visit(ASTPackageDeclaration node, AstSymFactory data) {
+        data.setPackageSymbol(node);
+        return null;
     }
 
     @Override

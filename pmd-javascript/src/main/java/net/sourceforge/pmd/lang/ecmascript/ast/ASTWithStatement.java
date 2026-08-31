@@ -17,10 +17,10 @@ public final class ASTWithStatement extends AbstractEcmascriptNode<WithStatement
     }
 
     public EcmascriptNode<?> getExpression() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public EcmascriptNode<?> getStatement() {
-        return (EcmascriptNode<?>) getChild(1);
+        return getChild(1);
     }
 }
