@@ -567,12 +567,45 @@ public final class DataflowPass {
             SpanInfo cur = before;
             cur = linkConditional(cur, orExpr.getLeftOperand(), thenState, elseState, false);
             thenState.absorb(cur);
-            cur = linkConditional(cur, orExpr.getRightOperand(), thenState, elseState, false);
-            thenState.absorb(cur);
+            // If the left operand is a compile-time constant that already
+            // decides the value of the condition, the right operand is
+            // never evaluated (JLS 15.23.2, 15.24.2), so its assignments
+            // may not kill anything. Note that a CT constant cannot have
+            // side effects.
+            Object leftValue = orExpr.getLeftOperand().getConstValue();
+            boolean leftDecides = orExpr.getOperator() == BinaryOp.CONDITIONAL_OR
+                                  ? Boolean.TRUE.equals(leftValue)
+                                  : Boolean.FALSE.equals(leftValue);
+            if (leftDecides) {
+                recordReachingDefsInDeadOperand(cur, orExpr.getRightOperand());
+            } else {
+                cur = linkConditional(cur, orExpr.getRightOperand(), thenState, elseState, false);
+                thenState.absorb(cur);
 
-            elseState.absorb(cur);
+                elseState.absorb(cur);
+            }
 
             return cur;
+        }
+
+        /**
+         * Records the reaching definitions of the references of an operand
+         * that is never evaluated, using the state that reaches it. The
+         * operand has no effect on the surrounding flow state, but rules
+         * that query reaching definitions (e.g. LawOfDemeter) expect them
+         * to be recorded: the fallback of {@link DataflowResult#getReachingDefinitions}
+         * only supports final fields and blank locals.
+         */
+        private void recordReachingDefsInDeadOperand(SpanInfo before, ASTExpression expr) {
+            expr.descendantsOrSelf().crossFindBoundaries()
+                .filterIs(ASTNamedReferenceExpr.class)
+                .forEach(ref -> {
+                    JVariableSymbol sym = ref.getReferencedSym();
+                    VarLocalInfo info = sym == null ? null : before.symtable.get(sym);
+                    if (info != null) {
+                        SpanInfo.updateReachingDefs(ref, sym, info);
+                    }
+                });
         }
 
         @Override
