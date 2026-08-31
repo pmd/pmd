@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
@@ -30,32 +31,36 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
-            return data;
+            return null;
         }
-        check(node, data);
-        return data;
+        check(node, ctx);
+        return null;
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
-            return data;
+            return null;
         }
         if (node.getBody() != null
             && !node.hasModifiers(JModifier.DEFAULT)
             && !JavaRuleUtil.isSerializationReadObject(node)
             && !node.isOverride()) {
-            check(node, data);
+            check(node, ctx);
         }
-        return data;
+        return null;
     }
 
-    private void check(ASTExecutableDeclaration node, Object data) {
+    private void check(ASTExecutableDeclaration node, RuleContext ctx) {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
             ASTVariableId varId = formal.getVarId();
             if (JavaAstUtils.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
-                asCtx(data).addViolation(varId, node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName());
+                ctx.addViolation(varId, node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName());
             }
         }
     }

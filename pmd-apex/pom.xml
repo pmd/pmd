@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.27.0-SNAPSHOT</version>
+        <version>7.28.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -96,17 +96,17 @@
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-parser</artifactId>
-            <version>5.1.0</version>
+            <version>5.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.adangel</groupId>
             <artifactId>summit-ast</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-ls_2.13</artifactId>
-            <version>6.1.0</version>
+            <version>6.2.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>

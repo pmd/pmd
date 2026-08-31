@@ -13,7 +13,7 @@ abstract class AbstractFunctionCallNode<T extends FunctionCall> extends Abstract
     }
 
     public EcmascriptNode<?> getTarget() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public int getNumArguments() {
@@ -21,7 +21,7 @@ abstract class AbstractFunctionCallNode<T extends FunctionCall> extends Abstract
     }
 
     public EcmascriptNode<?> getArgument(int index) {
-        return (EcmascriptNode<?>) getChild(index + 1);
+        return getChild(index + 1);
     }
 
     public boolean hasArguments() {

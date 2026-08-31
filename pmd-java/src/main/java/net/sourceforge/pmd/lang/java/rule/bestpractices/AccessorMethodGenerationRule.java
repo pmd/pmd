@@ -38,13 +38,17 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldAccess node, Object data) {
-        checkMemberAccessIfConstValueIsNull(node, (RuleContext) data, node.getReferencedSym());
+        RuleContext ctx = (RuleContext) data;
+
+        checkMemberAccessIfConstValueIsNull(node, ctx, node.getReferencedSym());
         return null;
     }
 
     @Override
     public Object visit(ASTVariableAccess node, Object data) {
-        checkMemberAccessIfConstValueIsNull(node, (RuleContext) data, node.getReferencedSym());
+        RuleContext ctx = (RuleContext) data;
+
+        checkMemberAccessIfConstValueIsNull(node, ctx, node.getReferencedSym());
         return null;
     }
 
@@ -56,7 +60,9 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol());
+        RuleContext ctx = (RuleContext) data;
+
+        checkMemberAccess(ctx, node, node.getMethodType().getSymbol());
         return null;
     }
 

@@ -23,78 +23,17 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
-#### Updated Apex Support
-The Apex language support has been bumped to version 67.0 (Summer '26). It supports the new
-[Multiline String](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&release=262&type=5) literals.
-
-#### Kotlin type-aware analysis
-Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
-Resolved type names, return types, and annotation FQNs are available through
-{%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %} for use in Java-based rules.
-
-Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
-
-### 🌟️ New and Changed Rules
-#### Renamed Rules
-* The rule {%rule java/design/InstantiableUtilityClass %} (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
-  The old name still works but is deprecated.
-
-#### Changed Rules
-* The Java rule [`CommentRequired`](https://docs.pmd-code.org/pmd-doc-7.27.0-SNAPSHOT/pmd_rules_java_documentation.html#commentrequired)
-  has a new property `packageMethodCommentRequirement`. It controls whether Javadoc comments are required (or
-  unwanted) for package-private methods and constructors. Previously, only `public` and `protected` methods could
-  be configured (via `publicMethodCommentRequirement` and `protectedMethodCommentRequirement`). The new property
-  defaults to `Ignored`, so existing rule configurations are unaffected.
-  This was implemented in [#6880](https://github.com/pmd/pmd/pull/6880).
 
 ### 🐛️ Fixed Issues
-* apex
-    * [#6478](https://github.com/pmd/pmd/issues/6478): \[apex] Parser error when using CALENDAR_YEAR() in SOQL
-    * [#6887](https://github.com/pmd/pmd/issues/6887): \[apex] ParseException on Summer '26 multiline string literals ('''...''')
-* chore
-    * [#6837](https://github.com/pmd/pmd/issues/6837): chore: Input 'app-id' has been deprecated with message: Use 'client-id' instead
-* core
-    * [#1995](https://github.com/pmd/pmd/issues/1995): \[core] PMD should display number of rules violated or errors found
-    * [#4952](https://github.com/pmd/pmd/issues/4952): \[doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader
-    * [#4953](https://github.com/pmd/pmd/issues/4953): \[core] Deprecate PMDConfiguration#setClassloader and #getClassloader
-    * [#6865](https://github.com/pmd/pmd/issues/6865): \[core] Include the running PMD version in the "Unable to find referenced rule" error
-* java
-    * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
-    * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
-* java-bestpractices
-    * [#5514](https://github.com/pmd/pmd/issues/5514): \[java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements
-    * [#5670](https://github.com/pmd/pmd/issues/5670): \[java] ExhaustiveSwitchHasDefault issue with final fields not initialized in constructor
 * java-codestyle
-    * [#6709](https://github.com/pmd/pmd/issues/6709): \[java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver
-    * [#6846](https://github.com/pmd/pmd/issues/6846): \[java] VariableDeclarationUsageDistance: False positive with variables grouped at the top of a block
-    * [#6867](https://github.com/pmd/pmd/issues/6867): \[java] UnnecessaryFullyQualifiedName: ContextedAssertionError: This should be unreachable: unknown constant ScopeInfo: MODULE_IMPORT
+    * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-design
     * [#6694](https://github.com/pmd/pmd/issues/6694): \[java] SimplifyBooleanReturns triggers inconsistently depending on redundant parentheses in return expression
-    * [#6714](https://github.com/pmd/pmd/issues/6714): \[java] Rename UseUtilityClass to InstantiableUtilityClass
-    * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
-    * [#6881](https://github.com/pmd/pmd/issues/6881): \[java] CognitiveComplexity does not count switch expressions
 * java-errorprone
-    * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
-* kotlin
-    * [#6795](https://github.com/pmd/pmd/issues/6795): \[kotlin] Add kotlin-type-mapper infrastructure
-    * [#6891](https://github.com/pmd/pmd/issues/6891): \[kotlin] AnnotationFqnAnnotator: @<!-- -->TypeName not set on UnescapedAnnotation nodes
+    * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate is suppressed by using pattern variable
+
 
 ### 🚨️ API Changes
-
-#### Deprecations
-* core
-    * {%jdoc !!core::PMDConfiguration#getClassLoader() %} and {%jdoc !!core::PMDConfiguration#setClassLoader(java.lang.ClassLoader) %} are deprecated.
-      Use {%jdoc core::PMDConfiguration#prependAuxClasspath(String) %} or {%jdoc core::PMDConfiguration#setAuxClasspath(String) %} to
-      configure the auxClasspath for analyzing Java code.  
-      Note: In order to read back the currently configured auxClasspath, use {%jdoc core::PMDConfiguration#getAuxClasspath() %} and not the
-      deprecated `getClassLoader()` anymore.  
-      Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
-      By just configuring the auxClasspath, PMD internally can deal with that.
-
-#### Experimental API
-* kotlin
-    * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the initial API to access type information
-      on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTTopLevelDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -70,7 +71,7 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
 
     static final List<ViolationSuppressor> ALL_JAVA_SUPPRESSORS = listOf(new JavaAnnotationSuppressor());
 
-    private JavaAnnotationSuppressor() {
+    JavaAnnotationSuppressor() {
         super(ASTAnnotation.class);
     }
 
@@ -79,6 +80,17 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
     protected NodeStream<ASTAnnotation> getAnnotations(Node n) {
         if (n instanceof Annotatable) {
             return ((Annotatable) n).getDeclaredAnnotations();
+        }
+        // When the element is not annotatable itself, but a top-level node - e.g. an import declaration
+        // then check for annotations on the first annotatable node the follows...
+        if (n instanceof ASTTopLevelDeclaration) {
+            Node nextSibling = n.getNextSibling();
+            while (nextSibling != null) {
+                if (nextSibling instanceof Annotatable) {
+                    return ((Annotatable) nextSibling).getDeclaredAnnotations();
+                }
+                nextSibling = nextSibling.getNextSibling();
+            }
         }
         return NodeStream.empty();
     }
@@ -111,17 +123,6 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
             return a.getParent().getParent();
         }
         return null;
-    }
-
-    @SuppressWarnings("unused")
-    public static void foo1(int i) {
-        i = 2;
-        foo2(i);
-    }
-
-    @SuppressWarnings("unused")
-    private static void foo2(int i) {
-        System.out.println("i = " + i);
     }
 
     private static OptionalBool hasUnusedWarning(JavaNode node) {

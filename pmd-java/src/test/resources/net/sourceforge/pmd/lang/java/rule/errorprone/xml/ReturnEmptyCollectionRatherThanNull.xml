@@ -271,4 +271,409 @@ public class Example {
 ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: False negative when returning ternary-wrapped null #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+public class ReturnNullAfter {
+    public List<String> getList() {
+        return (true ? null : null);   // violation
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Either branch of a conditional may evaluate to null #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+public class ReturnNullAfter {
+    public List<String> getList(boolean cond) {
+        return cond ? null : new ArrayList<>();   // violation: then-branch evaluates to null
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null in the else-branch of a conditional #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+public class Foo {
+    public List<String> getList(boolean cond) {
+        return cond ? new ArrayList<>() : null;   // violation: else-branch evaluates to null
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null value leaf in a nested conditional #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+public class Foo {
+    public List<String> getList(boolean a, boolean b) {
+        return a ? (b ? null : new ArrayList<>()) : new ArrayList<>();   // violation
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null only in the condition of a conditional is not returned #6744</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.Collections;
+public class Foo {
+    public List<String> getList(String x, List<String> list) {
+        return x == null ? Collections.emptyList() : list;   // no violation: null is only in the condition
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Conditional with no null value branch #6744</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+public class Foo {
+    public List<String> getList(boolean cond) {
+        return cond ? new ArrayList<>() : new LinkedList<>();   // no violation
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Cast of a null literal #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public List<String> getList() {
+        return (List<String>) null;   // violation
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Parentheses around a null literal #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public List<String> getList() {
+        return ((null));   // violation
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null produced by a switch expression arrow branch #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+public class Foo {
+    public List<String> getList(int x) {
+        return switch (x) {
+            case 1 -> null;
+            default -> new ArrayList<>();
+        };
+    }
+}
+]]></code>
+        <source-type>java 17</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null produced by a switch expression yield statement #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+public class Foo {
+    public List<String> getList(int x) {
+        return switch (x) {
+            case 1 -> {
+                yield null;
+            }
+            default -> new ArrayList<>();
+        };
+    }
+}
+]]></code>
+        <source-type>java 17</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Switch expression whose value branches are all non-null #6744</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+public class Foo {
+    public List<String> getList() {
+        Integer selector = null;
+        return switch (selector) {
+            case 1 -> new ArrayList<>();
+            default -> new LinkedList<>();
+        };
+    }
+}
+]]></code>
+        <source-type>java 17</source-type>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Parameter, field and method call results are not null sources #6744</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    private List<String> field;
+    public List<String> fromParam(List<String> p) {
+        return p;   // no violation: parameter has no explicit null source
+    }
+    public List<String> fromField() {
+        return field;   // no violation: field has no explicit null source
+    }
+    public Map<String, String> fromUnknown() {
+        return Collections.emptyMap();   // no violation: method call result is unknown
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null array element is not a null array reference #6744</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String[] getArray() {
+        return new String[] { null };   // no violation: the array reference is non-null
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null returned from a lambda is not attributed to the enclosing method #3721</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.util.function.Supplier;
+public class Foo {
+    public List<String> outer() {
+        Supplier<List<String>> s = () -> {
+            return null;   // no violation: this returns from the lambda, not from outer()
+        };
+        return s.get();   // no violation: method call result is unknown
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null returned from an anonymous class method that returns a collection #3721</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+import java.util.concurrent.Callable;
+public class Foo {
+    public void outer() {
+        Callable<List<String>> c = new Callable<List<String>>() {
+            public List<String> call() {
+                return null;   // violation: call() returns List
+            }
+        };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Each violating return is reported independently #6744</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    public List<String> getList(boolean a, boolean b) {
+        if (a) {
+            return a ? null : null;   // violation
+        }
+        return b ? new ArrayList<>() : null;   // violation
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Assignment expression whose value is null #6744</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    public List<String> getList() {
+        List<String> result;
+        return result = null;   // violation: the assigned value is null
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null returned from a method whose type is not array, Collection or Map #6744</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String getString() {
+        return null;   // no violation: String is not array, Collection or Map
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null assigned to a local that is later returned #3880</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+public class Foo {
+    public boolean flag;
+    public List<String> get() {
+        List<String> res = null;
+        if (flag) {
+            res = new ArrayList<>();
+            res.add("");
+        }
+        return res;   // violation: res can be null
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Null array assigned to a local that is returned #6695</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public int[] getNumbers(boolean empty) {
+        if (empty) {
+            int[] result = null;
+            return result;   // violation: result is null
+        }
+        return new int[] { 1, 2, 3 };
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Local initialized to null and returned directly #6695</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    public List<String> get() {
+        List<String> result = null;
+        return result;   // violation
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Local assigned a null value branch then returned #3880</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+public class Foo {
+    public List<String> get(boolean cond) {
+        List<String> result = cond ? null : new ArrayList<>();
+        return result;   // violation: a reaching definition has a null value branch
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: A local that can be null is returned through a null guard #6695</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+public class Foo {
+    public List<String> get(boolean cond) {
+        List<String> result = null;
+        if (cond) {
+            result = new ArrayList<>();
+        }
+        return result != null ? result : new ArrayList<>();   // no violation: the returned value is guarded
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Local initialized to a non-null value and returned #3880</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+public class Foo {
+    public List<String> get() {
+        List<String> result = new ArrayList<>();
+        return result;   // no violation: result is non-null
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ReturnEmptyCollectionRatherThanNull: Local initialized from a method call is an unknown value #3880</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collections;
+import java.util.List;
+public class Foo {
+    public List<String> get() {
+        List<String> result = Collections.emptyList();
+        return result;   // no violation: the method call result is unknown
+    }
+}
+]]></code>
+    </test-code>
+
 </test-data>
