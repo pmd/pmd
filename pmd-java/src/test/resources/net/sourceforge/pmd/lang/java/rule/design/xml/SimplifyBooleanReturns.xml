@@ -142,15 +142,11 @@ public class SimplifyBooleanReturns {
     </test-code>
 
     <test-code>
-        <description>report if expr would need parens</description>
-        <expected-problems>5</expected-problems>
-        <expected-linenumbers>3,8,13,18,23</expected-linenumbers>
+        <description>does not report if expr would need parens</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
         <expected-messages>
-            <message>This if statement can be replaced by `return {condition} &amp;&amp; ({thenBranch});`</message>
-            <message>This if statement can be replaced by `return !({condition}) || {thenBranch};`</message>
             <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
-            <message>This if statement can be replaced by `return ({condition}) &amp;&amp; {thenBranch};`</message>
-            <message>This if statement can be replaced by `return !({condition}) &amp;&amp; {elseBranch};`</message>
         </expected-messages>
         <code><![CDATA[
             public class Foo {
@@ -316,15 +312,11 @@ class Tester {
 
     <test-code>
         <description> [java] Issue #6694 - inconsistent triggering of rule with and without parentheses </description>
-        <expected-problems>2</expected-problems>
-        <expected-messages>
-            <message>This if statement can be replaced by `return {condition} &amp;&amp; ({thenBranch});`</message>
-            <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class FactoryChecker {
 
-                // NEW BEHAVIOUR - triggers rule when it previously didn't
+                // Rule did not trigger both before and after the change
                 public boolean isFactoryMethodA(String qualifier, String name) {
                     if (qualifier != null) {
                         return typeEndsWith(qualifier, "Factory")
@@ -333,7 +325,7 @@ class Tester {
                     return false;
                 }
 
-                // Triggers rule both before and after the change
+                // NEW BEHAVIOUR - Rule no longer triggers here though it previously did
                 public boolean isFactoryMethodB(String qualifier, String name) {
                     if (qualifier != null) {
                         return (typeEndsWith(qualifier, "Factory")

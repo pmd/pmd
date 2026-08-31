@@ -202,8 +202,11 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
             final ASTExpression qualifier = ((QualifiableExpression) it).getQualifier();
 
             // for array access, we also care about the index expression
-            return !(it instanceof ASTArrayAccess && !isDirectAccess(((ASTArrayAccess) it).getIndexExpression()))
-                    && (qualifier == null || qualifier instanceof ASTTypeExpression || isDirectAccess(qualifier));
+            if (it instanceof ASTArrayAccess && !isDirectAccess(((ASTArrayAccess) it).getIndexExpression())) {
+                return false;
+            }
+
+            return qualifier == null || qualifier instanceof ASTTypeExpression || isDirectAccess(qualifier);
         }
 
         return true;

@@ -333,9 +333,10 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         }
 
         private boolean hasWrongBooleanGetterName() {
-            return getter != null
-                && (TypeTestUtil.isA(Boolean.class, declaratorId) || TypeTestUtil.isA(Boolean.TYPE, declaratorId))
-                && !getter.getName().startsWith("is");
+            if (getter != null && (TypeTestUtil.isA(Boolean.class, declaratorId) || TypeTestUtil.isA(Boolean.TYPE, declaratorId))) {
+                return !getter.getName().startsWith("is");
+            }
+            return false;
         }
 
         private boolean hasWrongTypeGetterAndSetter() {

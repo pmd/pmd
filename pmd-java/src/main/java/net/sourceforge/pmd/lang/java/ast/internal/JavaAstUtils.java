@@ -904,7 +904,10 @@ public final class JavaAstUtils {
      * and we assume it is correct.
      */
     public static boolean isTotalSwitch(ASTSwitchLike switchLike) {
-        return switchLike instanceof ASTSwitchExpression || switchLike.hasDefaultCase() || switchLike.isExhaustive();
+        if (switchLike instanceof ASTSwitchExpression || switchLike.hasDefaultCase()) {
+            return true;
+        }
+        return switchLike.isExhaustive();
     }
 
 }

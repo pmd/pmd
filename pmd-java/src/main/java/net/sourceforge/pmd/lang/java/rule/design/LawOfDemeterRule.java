@@ -159,10 +159,13 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
         int degree = foreignDegree(expr);
         if (isReportedDegree(degree) && isUsedAsGetter(expr)) {
-            return !(expr.getParent() instanceof ASTVariableDeclarator)
+            if (expr.getParent() instanceof ASTVariableDeclarator) {
                 // Stored in local var, don't report if some usages escape.
                 // In that case, usage sites with non-escaping usage will be reported.
-                || isAllowedStore(((ASTVariableDeclarator) expr.getParent()).getVarId());
+                return isAllowedStore(((ASTVariableDeclarator) expr.getParent()).getVarId());
+            } else {
+                return true;
+            }
         }
         // Reported degree may be higher if LHS is a local var with the reported degree.
         // If some usages of that local escape, the local hasn't been reported. Those usages
@@ -260,13 +263,15 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
     private boolean isPureDataContainer(JTypeMirror type) {
         JTypeDeclSymbol symbol = type.getSymbol();
-        return symbol instanceof JClassSymbol
-            && ("java.util".equals(symbol.getPackageName()) // collection, map, iterator, properties, etc
+        if (symbol instanceof JClassSymbol) {
+            return "java.util".equals(symbol.getPackageName()) // collection, map, iterator, properties, etc
                 || TypeTestUtil.isA(Stream.class, type)
                 || TypeTestUtil.isA(Class.class, type)
                 || TypeTestUtil.isA(org.w3c.dom.NodeList.class, type)
                 || TypeTestUtil.isA(org.w3c.dom.NamedNodeMap.class, type)
-                || type.isArray());
+                || type.isArray();
+        }
+        return false;
     }
 
 
@@ -331,10 +336,12 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
     private boolean isFactoryMethod(ASTMethodCall expr) {
         ASTExpression qualifier = expr.getQualifier();
-        return qualifier != null
-            && (typeEndsWith(qualifier, "Factory")
+        if (qualifier != null) {
+            return typeEndsWith(qualifier, "Factory")
                 || nameEndsWith(qualifier, "Factory")
-                || nameIs(qualifier, "factory"));
+                || nameIs(qualifier, "factory");
+        }
+        return false;
     }
 
     private boolean nameEndsWith(ASTExpression expr, String suffix) {
