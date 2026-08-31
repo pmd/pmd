@@ -207,15 +207,11 @@ public class SimplifyBooleanReturns {
     </test-code>
     <test-code>
         <description>expr already has parens</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Foo {
                 public boolean foo(Object foo, boolean a, boolean b) {
-                    if (foo instanceof Foo) { // foo instanceof Foo && (a || b)
+                    if (foo instanceof Foo) { // foo instanceof Foo && (a || b) - parens are required so not triggered
                         return (a || b);
                     } else {
                         return false;
@@ -267,13 +263,12 @@ public class SimplifyBooleanReturns {
     </test-code>
 
     <test-code>
-        <description>[java] SimplifyBooleanReturns should consider literal expression #3852</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <description>[java] SimplifyBooleanReturns should consider literal expression #3852, reverted in #6694</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Tester {
     public boolean foo() {
-        if (true) {  // should report a warning in this if-else statement
+        if (true) {  // should no longer report a warning in this if-else statement
             return (true || false);
         } else {
             return false;
