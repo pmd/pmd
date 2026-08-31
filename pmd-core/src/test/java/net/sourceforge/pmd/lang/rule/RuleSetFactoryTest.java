@@ -47,7 +47,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertEquals("dummyRuleset.xml", rs.getFileName());
 
         rs = new RuleSetLoader().loadFromResource(TEST_RULESET_1);
-        assertEquals(rs.getFileName(), TEST_RULESET_1, "wrong RuleSet file name");
+        assertEquals(TEST_RULESET_1, rs.getFileName(), "wrong RuleSet file name");
     }
 
     /**
@@ -803,7 +803,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertTrue(r instanceof RuleReference, "Rule Reference");
         assertFalse(r.isDeprecated(), "Not deprecated");
         assertTrue(((RuleReference) r).getRule().isDeprecated(), "Original Rule Deprecated");
-        assertEquals(r.getName(), DEPRECATED_RULE_NAME, "Rule name");
+        assertEquals(DEPRECATED_RULE_NAME, r.getName(), "Rule name");
     }
 
     @Test

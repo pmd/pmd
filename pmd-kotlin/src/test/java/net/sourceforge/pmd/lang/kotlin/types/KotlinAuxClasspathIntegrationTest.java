@@ -43,7 +43,11 @@ class KotlinAuxClasspathIntegrationTest {
 
     @Test
     void annotationFqNameUnresolvedWithoutAuxClasspath() {
-        KtKotlinFile root = PARSER.parse(SNIPPET);
+        KotlinParsingHelper parser = PARSER.withLanguageProperties(bundle -> {
+            bundle.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, "");
+            return kotlin.Unit.INSTANCE;
+        });
+        KtKotlinFile root = parser.parse(SNIPPET);
         assertTrue(KotlinNodeTypeData.isTypeInfoAvailable(root));
         KtFunctionDeclaration fn = firstFunctionNamed(root, "annotated");
         assertNotNull(fn);

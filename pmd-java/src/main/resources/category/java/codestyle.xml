@@ -69,12 +69,15 @@ public class Fo$o {  // not a recommended name
     <rule name="AvoidProtectedFieldInFinalClass"
           language="java"
           since="2.1"
+          deprecated="true"
           message="Avoid protected fields in a final class.  Change to private or package access."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass">
         <description>
 Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule java/design/ProtectedMemberInFinalClass %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
@@ -102,6 +105,7 @@ public final class Bar {
     <rule name="AvoidProtectedMethodInFinalClassNotExtending"
           language="java"
           since="5.1"
+          deprecated="true"
           message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending">
@@ -109,6 +113,8 @@ public final class Bar {
 Do not use protected methods in most final classes since they cannot be subclassed. This should
 only be allowed in final classes that extend other classes with protected methods (whose
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule java/design/ProtectedMemberInFinalClass %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
@@ -1321,7 +1327,6 @@ public int getLength(String[] strings) {
 ]]>
         </example>
     </rule>
-
     <rule name="RemoteInterfaceNamingConvention"
           language="java"
           since="4.0"
@@ -1908,7 +1913,7 @@ class C extends A implements J { // Unnecessary to declare that C implements J, 
         <description>
 Avoid the creation of unnecessary local variables.
 
-This rule has been deprecated since 7.17.0. Use the new rule
+**Deprecated:** This rule has been deprecated since 7.17.0. Use the new rule
 {%rule VariableCanBeInlined %} instead, which additionally covers throw statements.
         </description>
         <priority>3</priority>
