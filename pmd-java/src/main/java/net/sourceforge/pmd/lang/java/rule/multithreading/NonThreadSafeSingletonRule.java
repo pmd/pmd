@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.DEPRECATED_RULE_PROPERTY_MARKER;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +39,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                     .defaultValue(true).build();
     private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_FIELDS_DESCRIPTOR = booleanProperty(
             "checkNonStaticFields")
-                    .desc("Check for non-static fields.")
+                    .desc("Check only static fields (false), or check additionally for non-static fields (true).")
                     .defaultValue(false).build();
 
     private Set<String> fields = new HashSet<>();

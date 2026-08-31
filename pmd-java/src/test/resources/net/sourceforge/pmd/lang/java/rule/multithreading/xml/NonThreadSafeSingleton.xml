@@ -253,6 +253,7 @@ class LazyInitTernaryNoNullCheck {
     <test-code>
         <description>#6780 non-static getInstance is flagged by default (checkNonStaticMethods=true)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Singleton {
     private static Singleton instance;
@@ -268,9 +269,44 @@ public class Singleton {
     </test-code>
 
     <test-code>
+        <description>#6780 non-static getInstance is flagged by default (checkNonStaticMethods=true), field declaration at bottom</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    public Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+    private static Singleton instance;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6780 non-static getInstance is not flagged by for a non-static field by default (checkNonStaticMethods=true)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private Singleton instance; // not static!
+
+    public Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#6780 checkNonStaticMethods is deprecated and ignored - non-static getInstance is still flagged even when set to false</description>
         <rule-property name="checkNonStaticMethods">false</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 public class Singleton {
     private static Singleton instance;
@@ -283,5 +319,100 @@ public class Singleton {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6780 checkNonStaticMethods - skip non-static method via violationSuppressXPath</description>
+        <rule-property name="violationSuppressXPath">.[ancestor::MethodDeclaration[@Static = false()]]</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance;
+
+    public Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>checkNonStaticFields - default=false</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    private Singleton instance;
+    public Singleton getInstance() {
+        if (instance == null) { // no violation, instance is a non-static field
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    private static Singleton staticInstance;
+    public Singleton getStaticInstance() {
+        if (staticInstance == null) { // violation, staticInstance is a static field
+            staticInstance = new Singleton();
+        }
+        return staticInstance;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>checkNonStaticFields - false: non-static fields are ignored</description>
+        <rule-property name="checkNonStaticFields">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    private Singleton instance;
+    public Singleton getInstance() {
+        if (instance == null) { // no violation, instance is a non-static field
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    private static Singleton staticInstance;
+    public Singleton getStaticInstance() {
+        if (staticInstance == null) { // violation, staticInstance is a static field
+            staticInstance = new Singleton();
+        }
+        return staticInstance;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>checkNonStaticFields - true: non-static fields are considered</description>
+        <rule-property name="checkNonStaticFields">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,12</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    private Singleton instance;
+    public Singleton getInstance() {
+        if (instance == null) { // violation, instance is a non-static field
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    private static Singleton staticInstance;
+    public Singleton getStaticInstance() {
+        if (staticInstance == null) { // violation, staticInstance is a static field
+            staticInstance = new Singleton();
+        }
+        return staticInstance;
+    }
+}
+]]></code>
     </test-code>
 </test-data>
