@@ -389,26 +389,52 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#nonthreadsafesingleton">
         <description>
-Non-thread safe singletons can result in bad state changes. Eliminate
-static singletons if possible by instantiating the object directly. Static
-singletons are usually not needed as only a single instance exists anyway.
-Other possible fixes are to synchronize the entire method or to use an
-[initialize-on-demand holder class](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom).
+Creating singletons in a non-thread safe way leads to subtle, hard to reproduce concurrency issues:
+A singleton might sometimes be created more than once (so it is not really a singleton anymore)
+or calling code from a different thread might not see the singleton at all, or might see a non-null
+reference to an object that is not fully constructed yet.
 
-Refrain from using the double-checked locking pattern. The Java Memory Model doesn't
-guarantee it to work unless the variable is declared as `volatile`, adding an unneeded
-performance penalty. [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html)
+See Effective Java, 3rd edition, item 78: "Synchronize access to shared mutable data".
 
-See Effective Java, item 48.
+The rule property `checkNonStaticFields` is `false` by default, so that only
+static fields are considered. This is the usual way to implement singletons. The rule finds methods
+(regardless of whether they are static or non-static) that write to static fields after a null-check.
+
+If the property is set to `true`, then additionally non-static fields are considered. This allows to
+find lazy loading of instance fields.
+
+Possible fixes for static singleton fields:
+
+*   Avoid lazy initialization if possible and instantiate the object directly, e.g.
+    `private static final Foo INSTANCE = new Foo();`. Lazy initialization is an optimization you should only
+    use if you have measured a performance gain (see Effective Java, 3rd edition, item 83: "Use lazy initialization
+    judiciously").
+*   Synchronize the entire method; for static fields, it must be a `static synchronized` method.
+*   Use an [initialize-on-demand holder class](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom).
+    This is safe because the JVM initializes the holder class only once, on first access.
+*   Use an enum with a single item (see Effective Java, 3rd edition, item 3: "Enforce the singleton property with
+    a private constructor or an enum type"). This is not possible, if the singleton has to extend a class other
+    than `Enum` (interfaces are possible).
+*   Use `AtomicReference` with `compareAndSet` if a duplicate computation is acceptable.
+
+Possible fixes for lazily initialized instance fields:
+
+*   Synchronize the entire method.
+*   Use `AtomicReference` with `compareAndSet` if a duplicate computation is acceptable.
+*   Use the double-checked locking pattern. The field must be declared `volatile`; without it,
+    the Java Memory Model doesn't guarantee that other threads see a fully constructed object.
+    Note that this only works on Java 5 and later.
+    (also possible for static fields, though the holder idiom is usually preferable)
+    [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html)
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 private static Foo foo = null;
 
-//multiple simultaneous callers may see partially initialized objects
-public static Foo getFoo() {
-    if (foo==null) {
+// multiple simultaneous callers may see partially initialized objects
+public static Foo getInstance() {
+    if (foo == null) {
         foo = new Foo();
     }
     return foo;
