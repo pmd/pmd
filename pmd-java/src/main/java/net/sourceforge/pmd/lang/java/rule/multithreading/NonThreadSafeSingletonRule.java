@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.DEPRECATED_RULE_PROPERTY_MARKER;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -42,12 +43,10 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                     .desc("Check only static fields (false), or check additionally for non-static fields (true).")
                     .defaultValue(false).build();
 
-    private Set<String> fields = new HashSet<>();
-
     private boolean checkNonStaticFields = true;
 
     public NonThreadSafeSingletonRule() {
-        super(ASTFieldDeclaration.class, ASTMethodDeclaration.class);
+        super(ASTMethodDeclaration.class);
         definePropertyDescriptor(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
         definePropertyDescriptor(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
     }
@@ -55,19 +54,17 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
     @Override
     public void start(RuleContext ctx) {
-        fields.clear();
         checkNonStaticFields = getProperty(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
     }
 
 
-    @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        if (checkNonStaticFields || node.hasModifiers(JModifier.STATIC)) {
-            for (ASTVariableId varId : node.getVarIds()) {
-                fields.add(varId.getName());
-            }
+    private boolean shouldConsiderField(@Nullable ASTVariableId varId) {
+        if (varId == null) {
+            return false;
         }
-        return data;
+
+        ASTFieldDeclaration fieldDeclaration = varId.ancestors(ASTFieldDeclaration.class).firstOrThrow();
+        return checkNonStaticFields || fieldDeclaration.hasModifiers(JModifier.STATIC);
     }
 
 
@@ -98,15 +95,15 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
         //   field = field == null ? new T() : field;
         // which is not an ASTIfStatement and was previously missed.
         for (ASTAssignmentExpression assignment : node.descendants(ASTAssignmentExpression.class).toList()) {
-            String fieldName = fieldWriteName(assignment);
-            if (fieldName == null) {
+            ASTVariableId fieldVarId = fieldWriteName(assignment);
+            if (fieldVarId == null) {
                 continue;
             }
             if (!(assignment.getRightOperand() instanceof ASTConditionalExpression)) {
                 continue;
             }
             ASTConditionalExpression ternary = (ASTConditionalExpression) assignment.getRightOperand();
-            if (!isNullCheckOnField(ternary.getCondition(), fieldName)) {
+            if (!isNullCheckOnField(ternary.getCondition(), fieldVarId)) {
                 continue;
             }
             asCtx(data).addViolation(assignment);
@@ -116,30 +113,36 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
 
     /**
-     * Returns whether {@code condition} is a null-check on a tracked singleton field.
+     * Returns whether {@code condition} is a null-check on a considered singleton field.
      * If {@code targetField} is non-null, the checked field must equal it (used by the
      * ternary case, where the same field is both read in the condition and written);
-     * otherwise any tracked field matches (used by the if case, which keeps pmd's
-     * long-standing conservative behavior). Centralizing this lets the if and ternary
-     * cases share identical condition-check logic.
+     * otherwise any considered field matches (used by the if case, which keeps pmd's
+     * long-standing conservative behavior).
      */
-    private boolean isNullCheckOnField(ASTExpression condition, String targetField) {
+    private boolean isNullCheckOnField(ASTExpression condition, ASTVariableId targetField) {
         if (condition.descendants(ASTNullLiteral.class).isEmpty()) {
             return false;
         }
         ASTNamedReferenceExpr ref = condition.descendants(ASTNamedReferenceExpr.class).first();
-        return ref != null
-                && (targetField != null ? targetField.equals(ref.getName()) : fields.contains(ref.getName()));
+
+        if (ref != null) {
+            JVariableSymbol symbol = ref.getReferencedSym();
+            if (symbol instanceof JFieldSymbol) {
+                ASTVariableId fieldVarId = symbol.tryGetNode();
+                return targetField == null ? shouldConsiderField(fieldVarId) : targetField.equals(fieldVarId);
+            }
+        }
+        return false;
     }
 
 
     /**
-     * Returns the name of the monitored field written by {@code assignment}, or {@code null}
+     * Returns the variable id of the field written by {@code assignment}, or {@code null}
      * if {@code assignment} is not a non-synchronized write to one of the tracked singleton
      * fields. Shared by the if-statement and ternary check-then-act detection so both cases
      * apply identical field-write criteria and cannot drift apart.
      */
-    private String fieldWriteName(ASTAssignmentExpression assignment) {
+    private ASTVariableId fieldWriteName(ASTAssignmentExpression assignment) {
         if (assignment.ancestors(ASTSynchronizedStatement.class).nonEmpty()) {
             return null;
         }
@@ -148,10 +151,15 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             return null;
         }
         ASTNamedReferenceExpr ref = (ASTNamedReferenceExpr) left;
-        if (!(ref.getReferencedSym() instanceof JFieldSymbol)) {
+        JVariableSymbol symbol = ref.getReferencedSym();
+        if (!(symbol instanceof JFieldSymbol)) {
             return null;
         }
-        String name = ref.getName();
-        return fields.contains(name) ? name : null;
+        ASTVariableId variableId = symbol.tryGetNode();
+        if (!shouldConsiderField(variableId)) {
+            return null;
+        }
+
+        return variableId;
     }
 }

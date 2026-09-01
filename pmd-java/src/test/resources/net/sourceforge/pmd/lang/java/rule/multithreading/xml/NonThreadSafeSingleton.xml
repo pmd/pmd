@@ -415,4 +415,24 @@ public class Singleton {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with shadowing field name</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Outer {
+    private static String field;
+
+    public static class Inner {
+        private String field;
+        public String getField() {
+            if (field == null) { // field is defined on line 5 and is _not_ static
+                field = "foo";
+            }
+            return field;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
