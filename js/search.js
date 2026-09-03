@@ -3816,7 +3816,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Avoid Using Volatile",
   "url": "pmd_rules_java_multithreading.html#avoidusingvolatile",
-  "summary": "Use of the keyword 'volatile' is generally used to fine tune a Java application, and..."
+  "summary": "The `volatile` modifier is an extremely low-level concurrency tool (like `notify` and `wait`). It makes..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/multithreading.md",
