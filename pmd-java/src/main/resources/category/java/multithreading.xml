@@ -268,9 +268,6 @@ and a comment explaining why.
         <example>
 <![CDATA[
 public class Data {
-  private volatile String var1; // not suggested
-  private          String var2; // preferred
-public class Data {
  private volatile String         var1; // not suggested
  private AtomicReference<String> var2; // preferred
 }
