@@ -15,6 +15,26 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>hex literal with lowercase long suffix</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    long bad = 0xABCDEFl;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>underscore separated literal with lowercase long suffix</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    long bad = 1_000_000l;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>uppercase long suffix</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
