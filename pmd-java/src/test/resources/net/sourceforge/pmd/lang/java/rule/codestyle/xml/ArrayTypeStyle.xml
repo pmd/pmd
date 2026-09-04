@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>c-style array declarations are flagged in fields and methods</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,5</expected-linenumbers>
+        <code><![CDATA[
+class Numbers {
+    double doubles[]; // bad
+    int[] ints; // good
+
+    double getDoubles()[] { // bad
+        return new double[] { 1.0 };
+    }
+
+    int[] getInts() { // good
+        return new int[] { 1 };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>java-style array declarations are accepted</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Numbers {
+    int[] ints;
+    double[] getDoubles() { return new double[0]; }
+
+    int[] getInts() {
+        return new int[] { 1 };
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>
