@@ -2205,6 +2205,31 @@ public class Foo extends TestCase {
         </example>
     </rule>
 
+    <rule name="LongLiteralEndingWithLowercaseL"
+          language="java"
+          since="7.28.0"
+          message="Use uppercase ''L'' to indicate long literals"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#longliteralendingwithlowercasel">
+        <description>
+Use uppercase `L` for long literals to avoid confusion with the digit `1`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//NumericLiteral[matches(@Image, '.*l$')]
+]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Longs {
+  long bad = 1l; // bad, may be confusing with some fonts
+  long good = 1L; // good
+}
+        ]]></example>
+    </rule>
+
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="java"
           since="1.5"
