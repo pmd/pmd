@@ -15,11 +15,14 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>hex literal with lowercase long suffix</description>
-        <expected-problems>1</expected-problems>
+        <description>non-decimal literal with lowercase long suffix</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
-    long bad = 0xABCDEFl;
+    long hexBad = 0xABCDEFl;
+    long binaryBad = 0b1l;
+    long octalBad = 01l;
 }
         ]]></code>
     </test-code>
