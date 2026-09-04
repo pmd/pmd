@@ -135,6 +135,23 @@ public class Foo {
       </example>
     </rule>
 
+    <rule name="MultipleNewlinesRule"
+          language="java"
+          since="0.4"
+          message="Not an actual rule."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#multiplenewlines">
+        <description>
+            <![CDATA[
+Indented CDATA description
+            ]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            ...
+        </example>
+    </rule>
+
     <rule name="JumbledIncrementer"
           language="java"
           since="1.0"
