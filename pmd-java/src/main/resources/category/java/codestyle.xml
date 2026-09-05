@@ -987,6 +987,85 @@ public class Bar {
         </example>
     </rule>
 
+    <rule name="LocalVariableDeclarationShouldBeAtStartOfBlock"
+          language="java"
+          since="7.27.0"
+          message="The variable `{0}` comes before `{1}` when ordered by {2}"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlockRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock">
+        <description>
+**Note**: This rule goes against virtually all Java style guidelines. For an alternative see {% rule VariableDeclarationUsageDistance %}.
+
+This rule reports variables that are declared and initialized on the same line or that are not declared at the start of their block.
+It is also able to report variables which are out of order based on the sortBy property.
+This rule exists in order to make it easy to see the type of any given variable at a glance and not have declarations hidden
+in amongst other code or long initialization assignments.
+
+It ignores initializations that exist within statement initializers such as for loop, foreach loop and try-with-resources initializers.
+For the purposes of this rule a case in a `switch` statement counts as block.
+By default `super(...)` and `this(...)` must be placed below the declarations in java versions which support it.
+Sorting by type places inferred declarations with `var` last.
+Variables of the same type are then sorted by name.
+In all cases when sorting by type the only consideration is the initial type of the line (`int a[]` is `int` whereas `int[] a` is `int[]`).
+Sorted order is determined by the first declaration on each line.
+
+requireBeforeThisSuper can be set to false (required in older versions of Java which do not allow flexible constructor bodies).
+This will allow `super(...)` and `this(...)` calls to be placed before declarations.
+sortBy allows you to enforce that the local variable declarations are ordered by either type or name.
+caseSensitiveSorting places uppercase values before their lowercase counterparts when true.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Bar {
+    public void foo1 () {
+        int localVariable1; // correct, variables are declared at the start of the block and not initialized
+        int localVariable2;
+
+        localVariable1 = 1; // correct, once all variables are declared they can be initialized and used
+        localVariable2 = 2;
+    }
+
+    public void foo2 () {
+        int localVariable1;
+        localVariable1 = 1;
+
+        int localVariable2; // incorrect, variable2 is declared after others are initialized
+        localVariable2 = 2;
+    }
+
+    public void foo3 () {
+        int localVariable1 = 1; // incorrect, variables should be declared first and initialized later
+
+        int localVariable2; // correct, because 1 is initialized in its declaration the fault lies in that line, not here
+        localVariable2 = 2;
+    }
+
+    // requireBeforeThisSuper set to true
+    public Bar () {
+        super()
+        int localVariable1; // incorrect, super has been called above the variable declarations
+        localVariable1 = 1;
+    }
+
+    public void foo4 () {
+        int localVariable1;
+        localVariable1 = 1;
+
+        var localVariable2 = 2; // correct, inferred types must be initialized when declared so are not flagged
+    }
+
+    // sortBy set to TYPE
+    public void foo5() {
+        String x;
+        int b; // incorrect, int comes before String when case-insensitive
+        int a; // incorrect, variables of the same type are sorted by name and a comes before b
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="LocalVariableNamingConventions"
           language="java"
           since="6.6.0"
