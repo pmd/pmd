@@ -2218,7 +2218,7 @@ Use uppercase `L` for long literals to avoid confusion with the digit `1`.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-        //NumericLiteral[@LongLiteral = true() and ends-with(@Image, 'l')]
+        //NumericLiteral[@LongLiteral = true() and ends-with(@LiteralText, 'l')]
 ]]></value>
             </property>
         </properties>
