@@ -5,7 +5,7 @@ permalink: pmd_rules_java_sample.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../rulesets/ruledoctest/sample.xml
-keywords: Sample, DeprecatedSample, JumbledIncrementer, MovedRule, OverrideBothEqualsAndHashcode, RenamedRule1, RenamedRule2, RenamedRule3, RenamedRule4, SampleRuleWithEnumProperties, SampleRuleWithLotsOfLinks, XSSInDocumentation
+keywords: Sample, DeprecatedSample, JumbledIncrementer, MovedRule, MultipleNewlinesRule, OverrideBothEqualsAndHashcode, RenamedRule1, RenamedRule2, RenamedRule3, RenamedRule4, SampleRuleWithEnumProperties, SampleRuleWithLotsOfLinks, XSSInDocumentation
 rules:
   DeprecatedSample: |
     Just some description of a deprecated rule.
@@ -24,6 +24,8 @@ rules:
     
     The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_sample2.html#jumbledincrementer)
     
+  MultipleNewlinesRule: |
+    Indented CDATA description
   OverrideBothEqualsAndHashcode: |
     Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
     Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
@@ -233,6 +235,30 @@ Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even 
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/sample.xml/MovedRule" />
+```
+
+## MultipleNewlinesRule
+
+**Since:** PMD 0.4
+
+**Priority:** Medium (3)
+
+Indented CDATA description
+
+**This rule is defined by the following XPath expression:**
+``` xpath
+
+```
+
+**Example(s):**
+
+``` java
+{%raw%}...{%endraw%}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/sample.xml/MultipleNewlinesRule" />
 ```
 
 ## OverrideBothEqualsAndHashcode
