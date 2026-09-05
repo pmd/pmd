@@ -87,7 +87,7 @@ public class RuleTagChecker {
                         addIssue(file, lineNo, "Rule " + ruleReference + " is not found");
                     }
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 throw new ParseException(file, lineNo, e);
             }
         }
