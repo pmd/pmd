@@ -628,9 +628,9 @@ public class RuleDocGenerator {
         if (description == null || description.isEmpty()) {
             return "";
         }
-        // can't just trim the description, spaces in first non-empty line matter
+        // can't just trim the description, spaces in first non-blank line matter
         // leading blank lines may break the docs front matter
-        String stripped = description.replaceFirst("(?s)^\\s*\\n", "");
+        String stripped = description.replaceFirst("^\\s*\\n", "");
         stripped = StringUtils.stripEnd(stripped, "\n\r ");
 
         int indentation = 0;
