@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class ArrayTypeStyleTest extends PmdRuleTst {
+class CStyleArrayDeclarationTest extends PmdRuleTst {
     // no additional unit tests
 }

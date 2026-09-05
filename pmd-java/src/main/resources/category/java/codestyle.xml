@@ -9,12 +9,12 @@
         Rules which enforce a specific coding style.
     </description>
 
-    <rule name="ArrayTypeStyle"
+    <rule name="CStyleArrayDeclaration"
           language="java"
           since="7.28.0"
           message="Use Java-style array declarations instead of C-style array declarations"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#arraytypestyle">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#cstylearraydeclaration">
         <description>
 <![CDATA[
 Use Java-style declarations for arrays, where the brackets follow the type, e.g. `int[] numbers` instead of `int numbers[]`.
