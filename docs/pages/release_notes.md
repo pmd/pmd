@@ -24,6 +24,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+*   The new java rule  {% rule java/errorprone/TypeNameMismatch %} finds types that are not defined in a .java file
+    with the same name. Enforcing a match between source file name and type name makes it easier to 
+    find source code for given type.
+
+
 ### 🐛️ Fixed Issues
 * java-codestyle
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
