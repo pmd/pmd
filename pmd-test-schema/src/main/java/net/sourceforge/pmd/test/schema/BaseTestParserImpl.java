@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.test.schema;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,6 +41,63 @@ import com.github.oowekyala.ooxml.messages.XmlPositioner;
  * @author Clément Fournier
  */
 class BaseTestParserImpl {
+    private static final List<String> RULES_WITH_MULTILINE_LOCATION = Arrays.asList(
+        "apex:ApexCRUDViolation",
+        "apex:ApexDoc",
+        "apex:ApexUnitTestClassShouldHaveAsserts",
+        "apex:ApexUnitTestClassShouldHaveRunAs",
+        "apex:ApexUnitTestMethodShouldHaveIsTestAnnotation",
+        "apex:ApexUnitTestShouldNotUseSeeAllDataTrue",
+        "apex:AvoidDeeplyNestedIfStmts",
+        "apex:AvoidGlobalModifier",
+        "apex:AvoidLogicInTrigger",
+        "apex:CognitiveComplexity",
+        "apex:EmptyCatchBlock",
+        "apex:EmptyIfStmt",
+        "apex:ExcessiveClassLength",
+        "apex:ExcessivePublicCount",
+        "apex:FieldDeclarationsShouldBeAtStart",
+        "apex:FieldNamingConventions",
+        "apex:QueueableWithoutFinalizer",
+        "apex:TestMethodsMustBeInTestClasses",
+        "apex:TooManyFields",
+        "apex:TypeShadowsBuiltInNamespace",
+        "ecmascript:UnnecessaryBlock",
+        "html:UseAltAttributeForImages",
+        "java:AvoidArrayLoops",
+        "java:AvoidRethrowingException",
+        "java:CommentSize",
+        "java:ControlStatementBraces",
+        "java:CouplingBetweenObjects",
+        "java:DanglingJavadoc",
+        "java:DoNotThrowExceptionInFinally",
+        "java:DoNotUseThreads",
+        "java:DontUseFloatTypeForLoopIndices",
+        "java:EmptyControlStatement",
+        "java:ExceptionAsFlowControl",
+        "java:ExcessiveParameterList",
+        "java:ExhaustiveSwitchHasDefault",
+        "java:ForLoopCanBeForeach",
+        "java:IdenticalCatchBranches",
+        "java:JumbledIncrementer",
+        "java:LabeledStatement",
+        "java:NonCaseLabelInSwitch",
+        "java:NonThreadSafeSingleton",
+        "java:PreserveStackTrace",
+        "java:SimplifyBooleanReturns",
+        "java:SwitchDensity",
+        "java:TooFewBranchesForSwitch",
+        "java:TooManyFields",
+        "java:TooManyMethods",
+        "java:UnnecessaryCast",
+        "java:UnusedLabel",
+        "java:UseTryWithResources",
+        "java:UselessParentheses",
+        "java:WhileLoopWithLiteralBoolean",
+        "kotlin:OverrideBothEqualsAndHashcode",
+        "modelica:ClassStartNameEqualsEndName",
+        "plsql:CodeFormat"
+    );
 
     static class ParserV1 extends BaseTestParserImpl {
 
@@ -181,7 +239,11 @@ class BaseTestParserImpl {
                         expectedLineNumbers.add(Integer.valueOf(beginAndEnd[0].trim()));
                         expectedEndLineNumbers.add(Integer.valueOf(beginAndEnd[1].trim()));
                     } else {
-                        expectedLineNumbers.add(Integer.valueOf(num.trim()));
+                        Integer singleLine = Integer.valueOf(num.trim());
+                        expectedLineNumbers.add(singleLine);
+                        if (!RULES_WITH_MULTILINE_LOCATION.contains(descriptor.getRule().toString())) {
+                            expectedEndLineNumbers.add(singleLine);
+                        }
                     }
                 }
             }
