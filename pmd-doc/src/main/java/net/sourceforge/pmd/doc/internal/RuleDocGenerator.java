@@ -323,7 +323,7 @@ public class RuleDocGenerator {
     }
 
     /**
-     * Shortens and escapes (for markdown) some special characters. Otherwise the shortened text
+     * Shortens and escapes (for Markdown) some special characters. Otherwise the shortened text
      * could contain some unfinished sequences.
      * @param rule
      * @return
@@ -336,7 +336,9 @@ public class RuleDocGenerator {
                         .replaceAll("\n+|\r+", " ")
                         .replaceAll("\\|", "\\\\|")
                         .replaceAll("`", "'")
-                        .replaceAll("\\*", "")),
+                        .replaceAll("\\*", "")
+                        .replaceAll("\\[([^\\]]+)\\]\\([^\\)]*\\)", "$1")  // Markdown links
+                ),
                 100));
         return EscapeUtils.preserveRuleTagQuotes(htmlEscaped);
     }

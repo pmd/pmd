@@ -236,4 +236,17 @@ RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRu
         <description>This rule is for testing enum properties</description>
         <priority>3</priority>
     </rule>
+
+    <rule name="SampleRuleWithLotsOfLinks"
+          language="java"
+          since="7.28.0"
+          message="Message"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>
+<![CDATA[
+This [Rule](http://some.host/somelink) is for [Testing](https://yet.another.link/) links
+]]>
+        </description>
+        <priority>3</priority>
+    </rule>
 </ruleset>

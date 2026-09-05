@@ -19,7 +19,7 @@ class RuleTagCheckerTest {
         RuleTagChecker checker = new RuleTagChecker(FileSystems.getDefault().getPath("src/test/resources/ruletagchecker"));
         List<String> issues = checker.check();
 
-        assertEquals(7, issues.size());
+        assertEquals(8, issues.size());
         assertEquals("ruletag-examples.md: 9: Rule tag for \"java/bestpractices/AvoidPrintStackTrace\" is not closed properly",
                 issues.get(0));
         assertEquals("ruletag-examples.md:12: Rule \"java/notexistingcategory/AvoidPrintStackTrace\" is not found",
@@ -32,5 +32,6 @@ class RuleTagCheckerTest {
                 issues.get(4));
         assertEquals("ruletag-examples.md:21: Rule tag for \"OtherRule has a missing quote", issues.get(5));
         assertEquals("ruletag-examples.md:22: Rule tag for OtherRule\" has a missing quote", issues.get(6));
+        assertEquals("ruletag-examples.md:25: Rule tag for \"OtherRule\" is not closed properly", issues.get(7));
     }
 }

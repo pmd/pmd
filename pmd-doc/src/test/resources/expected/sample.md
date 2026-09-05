@@ -5,7 +5,7 @@ permalink: pmd_rules_java_sample.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../rulesets/ruledoctest/sample.xml
-keywords: Sample, DeprecatedSample, JumbledIncrementer, MovedRule, OverrideBothEqualsAndHashcode, RenamedRule1, RenamedRule2, RenamedRule3, RenamedRule4, SampleRuleWithEnumProperties, XSSInDocumentation
+keywords: Sample, DeprecatedSample, JumbledIncrementer, MovedRule, OverrideBothEqualsAndHashcode, RenamedRule1, RenamedRule2, RenamedRule3, RenamedRule4, SampleRuleWithEnumProperties, SampleRuleWithLotsOfLinks, XSSInDocumentation
 rules:
   DeprecatedSample: |
     Just some description of a deprecated rule.
@@ -56,6 +56,8 @@ rules:
     
   SampleRuleWithEnumProperties: |
     This rule is for testing enum properties
+  SampleRuleWithLotsOfLinks: |
+    This [Rule](http://some.host/somelink) is for [Testing](https://yet.another.link/) links
   XSSInDocumentation: |
     &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.
     Sometimes they should be escaped, sometimes not:
@@ -622,6 +624,24 @@ This rule is for testing enum properties
         <property name="enumListProperty" value="" />
     </properties>
 </rule>
+```
+
+## SampleRuleWithLotsOfLinks
+
+**Since:** PMD 7.28.0
+
+**Priority:** Medium (3)
+
+This [Rule](http://some.host/somelink) is for [Testing](https://yet.another.link/) links
+
+**This rule is defined by the following XPath expression:**
+``` xpath
+
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/sample.xml/SampleRuleWithLotsOfLinks" />
 ```
 
 ## XSSInDocumentation
