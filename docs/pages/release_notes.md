@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java
+    * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
 * java-codestyle
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-errorprone
@@ -44,4 +46,3 @@ This is a {{ site.pmd.release_type }} release.
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
-
