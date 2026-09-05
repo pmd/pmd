@@ -871,6 +871,36 @@ public class MaybeAUtility {
         </example>
     </rule>
 
+    <rule name="InternalApiUsage"
+          language="java"
+          since="1.8"
+          message="Do not use internal APIs. {0} ''{1}'' is restricted to {2}."
+          class="net.sourceforge.pmd.lang.java.rule.design.InternalApiUsageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#internalapiusage">
+        <description>
+Some APIs are designed to be used only by the library or package that defines them, and using them from other code
+could cause incorrect behavior if the library class changes.
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    void bar() {
+        new Bar().setSecret(0);
+    }
+}
+
+class Bar {
+    private int secret;
+    @VisibleForTesting
+    setSecret(int secret) {
+        this.secret = secret;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="InvalidJavaBean"
           language="java"
           since="6.52.0"

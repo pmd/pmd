@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.AnnotationUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -320,11 +321,15 @@ public interface SymbolicValue {
          * otherwise it uses {@link #valueEquals(Object)} to compare elements.
          */
         public boolean containsValue(Object value) {
+            return anyMatch(it -> SymbolicValueHelper.equalsModuloWrapper(it, value));
+        }
+
+        public boolean anyMatch(Predicate<SymbolicValue> check) {
             if (primArray != null) {
                 // todo I don't know how to code that without switching on the type
                 throw new NotImplementedException("not implemented: containsValue with a primitive array");
             } else if (elements != null) {
-                return elements.stream().anyMatch(it -> SymbolicValueHelper.equalsModuloWrapper(it, value));
+                return elements.stream().anyMatch(check);
             }
             return false;
         }
