@@ -7,7 +7,10 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +24,7 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
 /**
@@ -29,7 +33,23 @@ import net.sourceforge.pmd.test.PmdRuleTst;
 class TypeNameMismatchTest extends PmdRuleTst {
 
     @Test
-    void runTestFromString() {
+    void packageAndClassNameMatch() {
+        assertViolationsFoCodeInFile(Collections.emptyList(),
+                "package foo.bar; class Foo {}",
+                "foo/bar/Foo.java"
+        );
+    }
+
+    @Test
+    void packageAndClassNameMismatch() {
+        assertViolationsFoCodeInFile(Arrays.asList("File path does not match package foo.baz",
+                        "Top-level type Bar should be defined in a file called Bar.java"),
+                "package foo.baz; class Bar {}",
+                "foo/bar/Baz.java"
+        );
+    }
+
+    private void assertViolationsFoCodeInFile(List<String> messages, String code, String filename) {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setIgnoreIncrementalAnalysis(true);
         final List<Rule> rules = new ArrayList<>(getRules());
@@ -40,12 +60,13 @@ class TypeNameMismatchTest extends PmdRuleTst {
         // Java-specific configuration
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            pmd.files().addFile(TextFile.forCharSeq("class Foo {}", FileId.fromPathLikeString("Foo.java"), languageVersion));
+            pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString(filename), languageVersion));
 
             pmd.addRuleSet(RuleSet.forSingleRule(rules.get(0)));
             pmd.addListener(GlobalAnalysisListener.exceptionThrower());
             Report report = pmd.performAnalysisAndCollectReport();
-            assertEquals(0, report.getViolations().size());
+            assertEquals(messages, report.getViolations().stream()
+                    .map(RuleViolation::getDescription).collect(Collectors.toList()));
         }
     }
 }
