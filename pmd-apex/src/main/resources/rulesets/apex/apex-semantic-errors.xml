@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset name="Apex Semantic Errors"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+  <description>
+    Reports Apex Language Server semantic and type errors.
+  </description>
+
+  <rule name="ApexSemanticErrors"
+        language="apex"
+        since="7.27.0"
+        message="{0}"
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.ApexSemanticErrorsRule"
+        externalInfoUrl="https://docs.pmd-code.org/latest/pmd_rules_apex_errorprone.html#apexsemanticerrors">
+    <description>
+      Reports semantic and type errors found by Apex Language Server against local Salesforce project metadata.
+    </description>
+    <priority>1</priority>
+  </rule>
+</ruleset>
