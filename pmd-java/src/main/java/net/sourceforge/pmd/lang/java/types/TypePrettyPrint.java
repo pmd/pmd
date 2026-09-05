@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.OptionalBool;
 
@@ -26,7 +26,6 @@ import net.sourceforge.pmd.util.OptionalBool;
 public final class TypePrettyPrint {
 
     private TypePrettyPrint() {
-
     }
 
     public static @NonNull String prettyPrint(@NonNull JTypeVisitable t) {
@@ -38,8 +37,12 @@ public final class TypePrettyPrint {
     }
 
     public static String prettyPrint(@NonNull JTypeVisitable t, TypePrettyPrinter prettyPrinter) {
-        t.acceptVisitor(PrettyPrintVisitor.INSTANCE, prettyPrinter);
+        t.acceptVisitor(DefaultVisitor.INSTANCE, prettyPrinter);
         return prettyPrinter.consumeResult();
+    }
+
+    static final class DefaultVisitor extends PrettyPrintVisitor<TypePrettyPrinter> {
+        static final DefaultVisitor INSTANCE = new DefaultVisitor();
     }
 
     /**
@@ -47,27 +50,29 @@ public final class TypePrettyPrint {
      */
     public static class TypePrettyPrinter {
 
-        private final StringBuilder sb = new StringBuilder();
+        protected final StringBuilder sb = new StringBuilder();
 
-        private boolean printMethodHeader = true;
-        private boolean printMethodReturnType = true;
-        private OptionalBool printTypeVarBounds = UNKNOWN;
-        private boolean qualifyTvars = false;
-        private boolean qualifyNames = true;
-        private boolean isVarargs = false;
-        private boolean printTypeAnnotations = true;
-        private boolean qualifyAnnotations = false;
+        protected boolean printMethodHeader = true;
+        protected boolean printMethodReturnType = true;
+        protected OptionalBool printTypeVarBounds = UNKNOWN;
+        protected boolean qualifyTvars = false;
+        protected boolean qualifyNames = true;
+        protected boolean isVarargs = false;
+        protected boolean printTypeAnnotations = true;
+        protected boolean qualifyAnnotations = false;
 
-        /** Create a new pretty printer with the default configuration. */
+        /**
+         * Create a new pretty printer with the default configuration.
+         */
         public TypePrettyPrinter() {
             // default
         }
 
-        StringBuilder append(char o) {
+        public StringBuilder append(char o) {
             return sb.append(o);
         }
 
-        StringBuilder append(String o) {
+        public StringBuilder append(String o) {
             return sb.append(o);
         }
 
@@ -135,7 +140,7 @@ public final class TypePrettyPrint {
             return this;
         }
 
-        String consumeResult() {
+        public String consumeResult() {
             // The pretty printer might be reused by another call,
             // delete the buffer.
             String result = sb.toString();
@@ -143,30 +148,28 @@ public final class TypePrettyPrint {
             return result;
         }
 
-        private void printTypeAnnotations(PSet<SymAnnot> annots) {
+        protected void printTypeAnnotations(PSet<SymbolicValue.SymAnnot> annots) {
             if (this.printTypeAnnotations) {
-                for (SymAnnot annot : annots) {
+                for (SymbolicValue.SymAnnot annot : annots) {
                     String name = this.qualifyAnnotations ? annot.getBinaryName()
-                                                          : annot.getSimpleName();
+                        : annot.getSimpleName();
                     append('@').append(name).append(' ');
                 }
             }
         }
     }
 
-    private static final class PrettyPrintVisitor implements JTypeVisitor<Void, TypePrettyPrinter> {
-
-        static final PrettyPrintVisitor INSTANCE = new PrettyPrintVisitor();
+    public static class PrettyPrintVisitor<P extends TypePrettyPrinter> implements JTypeVisitor<Void, P> {
 
         @Override
-        public Void visit(JTypeMirror t, TypePrettyPrinter sb) {
+        public Void visit(JTypeMirror t, P sb) {
             sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append(t.toString());
             return null;
         }
 
         @Override
-        public Void visitClass(JClassType t, TypePrettyPrinter sb) {
+        public Void visitClass(JClassType t, P sb) {
 
             JClassType enclosing = t.getEnclosingType();
             boolean isAnon = t.getSymbol().isAnonymousClass();
@@ -184,11 +187,8 @@ public final class TypePrettyPrint {
                 sb.append('*'); // a small marker to spot them
             }
 
-            if (enclosing != null && !isAnon || !sb.qualifyNames) {
-                sb.append(t.getSymbol().getSimpleName());
-            } else {
-                sb.append(t.getSymbol().getBinaryName());
-            }
+            appendClassName(t, sb, enclosing, isAnon);
+
             List<JTypeMirror> targs = t.getTypeArgs();
             if (t.isRaw() || targs.isEmpty()) {
                 return null;
@@ -201,8 +201,16 @@ public final class TypePrettyPrint {
             return null;
         }
 
+        protected void appendClassName(JClassType t, P sb, JClassType enclosing, boolean isAnon) {
+            if (enclosing != null && !isAnon || !sb.qualifyNames) {
+                sb.append(t.getSymbol().getSimpleName());
+            } else {
+                sb.append(t.getSymbol().getBinaryName());
+            }
+        }
+
         @Override
-        public Void visitWildcard(JWildcardType t, TypePrettyPrinter sb) {
+        public Void visitWildcard(JWildcardType t, P sb) {
             sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append("?");
             if (t.isUnbounded()) {
@@ -216,14 +224,14 @@ public final class TypePrettyPrint {
         }
 
         @Override
-        public Void visitPrimitive(JPrimitiveType t, TypePrettyPrinter sb) {
+        public Void visitPrimitive(JPrimitiveType t, P sb) {
             sb.printTypeAnnotations(t.getTypeAnnotations());
             sb.append(t.getSimpleName());
             return null;
         }
 
         @Override
-        public Void visitTypeVar(JTypeVar t, TypePrettyPrinter sb) {
+        public Void visitTypeVar(JTypeVar t, P sb) {
             if (t instanceof CaptureMatcher) {
                 sb.append(t.toString());
                 return null;
@@ -258,7 +266,7 @@ public final class TypePrettyPrint {
          * Formats {@link Arrays#asList(Object[])} as {@code <T> asList(T...) -> List<T>}
          */
         @Override
-        public Void visitMethodType(JMethodSig t, TypePrettyPrinter sb) {
+        public Void visitMethodType(JMethodSig t, P sb) {
             if (sb.printMethodHeader) {
                 t.getDeclaringType().acceptVisitor(this, sb);
                 sb.append(".");
@@ -285,12 +293,12 @@ public final class TypePrettyPrint {
         }
 
         @Override
-        public Void visitIntersection(JIntersectionType t, TypePrettyPrinter sb) {
+        public Void visitIntersection(JIntersectionType t, P sb) {
             return join(sb, t.getComponents(), " & ", "", "");
         }
 
         @Override
-        public Void visitArray(JArrayType t, TypePrettyPrinter sb) {
+        public Void visitArray(JArrayType t, P sb) {
             JTypeMirror component = t.getComponentType();
             if (component instanceof JIntersectionType) {
                 sb.append("(");
@@ -310,26 +318,25 @@ public final class TypePrettyPrint {
         }
 
         @Override
-        public Void visitNullType(JTypeMirror t, TypePrettyPrinter sb) {
+        public Void visitNullType(JTypeMirror t, P sb) {
             sb.append("null");
             return null;
         }
 
         @Override
-        public Void visitInferenceVar(InferenceVar t, TypePrettyPrinter sb) {
+        public Void visitInferenceVar(InferenceVar t, P sb) {
             sb.append(t.getName());
             return null;
         }
 
-        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> ts, String delim, String prefix, String suffix) {
+        protected Void join(P sb, List<? extends JTypeMirror> ts, String delim, String prefix, String suffix) {
             return join(sb, ts, delim, prefix, suffix, false);
         }
 
-        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> types, String delim, String prefix, String suffix, boolean isVarargs) {
+        protected Void join(P sb, List<? extends JTypeMirror> types, String delim, String prefix, String suffix, boolean isVarargs) {
             sb.isVarargs = false;
-            boolean empty = types.isEmpty();
             sb.append(prefix);
-            if (!empty) {
+            if (!types.isEmpty()) {
                 for (int i = 0; i < types.size() - 1; i++) {
                     types.get(i).acceptVisitor(this, sb);
                     sb.append(delim);
@@ -343,6 +350,4 @@ public final class TypePrettyPrint {
             return null;
         }
     }
-
-
 }
