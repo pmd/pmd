@@ -1540,6 +1540,40 @@ import static Yoko; // Too much !
         </example>
     </rule>
 
+    <rule name="TypeNameMismatch"
+          language="java"
+          since="7.28.0"
+          message="Top-level type {0} should be defined in a file called {0}.java"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.TypeNameMismatchRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#typenamemismatch">
+        <description>
+<![CDATA[
+Each top-level type should be defined in its own file with a matching name.
+]]>
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+// content of Foo.java
+
+class Bar { // violation, should be defined in Bar.java
+
+}
+]]>
+        </example>
+        <example>
+<![CDATA[
+// content of Baz.java
+class Baz {
+  class Foo { } // OK, nested classes are allowed
+}
+
+class Bar { // violation, second top level class should be in its own file
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="TypeParameterNamingConventions"
           language="java"
           since="7.17.0"
