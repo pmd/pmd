@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LinguisticNamingRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
@@ -79,70 +80,72 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (!hasIgnoredAnnotation(node)) {
             String nameOfMethod = node.getName();
 
             if (getProperty(CHECK_BOOLEAN_METHODS)) {
-                checkBooleanMethods(node, data, nameOfMethod);
+                checkBooleanMethods(node, ctx, nameOfMethod);
             }
 
             if (getProperty(CHECK_SETTERS)) {
-                checkSetters(node, data, nameOfMethod);
+                checkSetters(node, ctx, nameOfMethod);
             }
 
             if (getProperty(CHECK_GETTERS)) {
-                checkGetters(node, data, nameOfMethod);
+                checkGetters(node, ctx, nameOfMethod);
             }
 
             if (getProperty(CHECK_PREFIXED_TRANSFORM_METHODS)) {
-                checkPrefixedTransformMethods(node, data, nameOfMethod);
+                checkPrefixedTransformMethods(node, ctx, nameOfMethod);
             }
 
             if (getProperty(CHECK_TRANSFORM_METHODS)) {
-                checkTransformMethods(node, data, nameOfMethod);
+                checkTransformMethods(node, ctx, nameOfMethod);
             }
         }
-        return data;
+        return null;
     }
 
     private boolean hasIgnoredAnnotation(Annotatable node) {
         return node.isAnyAnnotationPresent(getProperty(IGNORED_ANNOTS));
     }
 
-    private void checkPrefixedTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
+    private void checkPrefixedTransformMethods(ASTMethodDeclaration node, RuleContext ctx, String nameOfMethod) {
         List<String> prefixes = getProperty(TRANSFORM_METHOD_NAMES_PROPERTY);
         String[] splitMethodName = StringUtils.splitByCharacterTypeCamelCase(nameOfMethod);
         if (node.isVoid() && splitMethodName.length > 0
                 && prefixes.contains(splitMethodName[0].toLowerCase(Locale.ROOT))) {
             // "To" or any other configured prefix found
-            asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
-                                                nameOfMethod);
+            ctx.addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
+                                        nameOfMethod);
         }
     }
 
-    private void checkTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
+    private void checkTransformMethods(ASTMethodDeclaration node, RuleContext ctx, String nameOfMethod) {
         for (String infix : getProperty(TRANSFORM_METHOD_NAMES_PROPERTY)) {
             if (node.isVoid() && containsCamelCaseWord(nameOfMethod, StringUtils.capitalize(infix))) {
                 // "To" or any other configured infix in the middle somewhere
-                asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
-                                                    nameOfMethod);
+                ctx.addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
+                                            nameOfMethod);
                 // the first violation is sufficient - it is still the same method we are analyzing here
                 break;
             }
         }
     }
 
-    private void checkGetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
+    private void checkGetters(ASTMethodDeclaration node, RuleContext ctx, String nameOfMethod) {
         if (startsWithCamelCaseWord(nameOfMethod, "get") && node.isVoid()) {
-            asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The getter ''{0}'' should not return void linguistically",
-                                                nameOfMethod);
+            ctx.addViolationWithMessage(node, "Linguistics Antipattern - The getter ''{0}'' should not return void linguistically",
+                                        nameOfMethod);
         }
     }
 
-    private void checkSetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
+    private void checkSetters(ASTMethodDeclaration node, RuleContext ctx, String nameOfMethod) {
         if (startsWithCamelCaseWord(nameOfMethod, "set") && !node.isVoid() && returnsEnclosingType(node)) {
-            asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
-                                                nameOfMethod);
+            ctx.addViolationWithMessage(node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
+                                        nameOfMethod);
         }
     }
 
@@ -156,56 +159,58 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
                 || TypeTestUtil.isA("java.util.function.Predicate", node);
     }
 
-    private void checkBooleanMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
+    private void checkBooleanMethods(ASTMethodDeclaration node, RuleContext ctx, String nameOfMethod) {
         ASTType t = node.getResultTypeNode();
         if (!t.isVoid()) {
             for (String prefix : getProperty(BOOLEAN_METHOD_PREFIXES_PROPERTY)) {
                 if (startsWithCamelCaseWord(nameOfMethod, prefix) && !isBooleanType(t)) {
-                    asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
-                                                        nameOfMethod, PrettyPrintingUtil.prettyPrintType(t));
+                    ctx.addViolationWithMessage(node, "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
+                                                nameOfMethod, PrettyPrintingUtil.prettyPrintType(t));
                 }
             }
         }
     }
 
-    private void checkField(ASTType typeNode, ASTVariableDeclarator node, Object data) {
+    private void checkField(ASTType typeNode, ASTVariableDeclarator node, RuleContext ctx) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
             if (startsWithCamelCaseWord(node.getName(), prefix) && !isBooleanType(typeNode)) {
-                asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The field ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                                                    node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
+                ctx.addViolationWithMessage(node, "Linguistics Antipattern - The field ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
+                                            node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
             }
         }
     }
 
-    private void checkVariable(ASTType typeNode, ASTVariableDeclarator node, Object data) {
+    private void checkVariable(ASTType typeNode, ASTVariableDeclarator node, RuleContext ctx) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
             if (startsWithCamelCaseWord(node.getName(), prefix) && !isBooleanType(typeNode)) {
-                asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The variable ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                                                    node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
+                ctx.addViolationWithMessage(node, "Linguistics Antipattern - The variable ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
+                                            node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
             }
         }
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTType type = node.getTypeNode();
         if (type != null && getProperty(CHECK_FIELDS)) {
             for (ASTVariableDeclarator field : node.children(ASTVariableDeclarator.class)) {
-                checkField(type, field, data);
+                checkField(type, field, ctx);
             }
         }
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTType type = node.getTypeNode();
         if (type != null && getProperty(CHECK_VARIABLES)) {
             for (ASTVariableDeclarator variable : node.children(ASTVariableDeclarator.class)) {
-                checkVariable(type, variable, data);
+                checkVariable(type, variable, ctx);
             }
         }
-        return data;
+        return null;
     }
 
 }

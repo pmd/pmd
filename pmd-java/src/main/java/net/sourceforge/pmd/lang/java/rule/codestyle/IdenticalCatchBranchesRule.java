@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.OptionalBool;
 
 
@@ -119,6 +120,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTTryStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
 
         List<ASTCatchClause> catchStatements = node.getCatchClauses().toList();
         Set<List<ASTCatchClause>> equivClasses = equivalenceClasses(catchStatements);
@@ -130,12 +132,12 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
                 // By convention, lower catch blocks are collapsed into the highest one
                 // The first node of the equivalence class is thus the block that should be transformed
                 for (int i = 1; i < identicalStmts.size(); i++) {
-                    asCtx(data).addViolation(identicalStmts.get(i), identicalBranchName);
+                    ctx.addViolation(identicalStmts.get(i), identicalBranchName);
                 }
             }
         }
 
-        return data;
+        return null;
     }
 
 }
