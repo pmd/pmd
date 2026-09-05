@@ -2224,9 +2224,9 @@ Use uppercase `L` for long literals to avoid confusion with the digit `1`.
         </properties>
         <example><![CDATA[
 class Longs {
-  long bad       = 432l;
-  long lookslike = 4321;
-  long good      = 432L;
+  long bad       = 432l; // violation
+  long looksLike = 4321;
+  long good      = 432L; // OK, clearly distinct
 }
         ]]></example>
     </rule>
