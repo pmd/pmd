@@ -1347,4 +1347,29 @@ class MyObjectProvider {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Usages in a short-circuited condition operand have known reaching definitions #5940</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    static class Holder {
+        Object getItem() { return null; }
+    }
+
+    static boolean f2(Object o) { return false; }
+
+    public void example(Bar b) {
+        Holder h = new Holder();
+        if (true || f2(h.getItem())) {
+            f2(h);
+        }
+        b.getC().doIt();
+    }
+}
+class C { void doIt() {} }
+class Bar { C getC() {} }
+        ]]></code>
+    </test-code>
 </test-data>
