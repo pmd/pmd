@@ -4,17 +4,24 @@ L1
     [html]                                  1         7
     [\n]                                    7         7
 L2
-    [head]                                  1         6
+    [head]                                  1         7
     [\n]                                    7         7
 L3
-    [script]                                1         5
-    [\n(function(e, t) {\n    function([    32        37
+    [script]                                1         9
+    [\nhtml5Clone:i.createElement("nav"[    32        67
+L4
+    [#comment]                              68        74
+    [",r.innerHTML="]                       75        89
+    [table]                                 90        132
+    [tr]                                    97        124
+    [td]                                    101       109
+    [td]                                    110       119
+    [t]                                     114       114
+    ["\n]                                   133       134
+L5
+    [\n]                                    10        10
+L6
+    [\n]                                    8         8
 L7
-    [#comment]                              38        2
-L8
-    [",\n        };\n    };\n}();\n]        3         5
-L11
-    [\n]                                    6         6
-    [\n]                                    7         7
     [\n]                                    8         8
 EOF
