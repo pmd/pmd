@@ -30,4 +30,12 @@ class HtmlCpdLexerTest extends CpdTextComparisonTest {
     void metaTag() {
         doTest("MetaTag");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/6135">Issue 6135</a>
+     */
+    @Test
+    void unescapedTagInScript() {
+        doTest("UnescapedTagInScript");
+    }
 }
