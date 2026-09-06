@@ -20,3 +20,6 @@ This is a rule tag, that references a rule in the same category: {% rule OtherRu
 This is a rule tag, that references a rule in the same category: {% rule "OtherRule" %} (correct).
 This is a rule tag, that references a rule in the same category: {% rule "OtherRule %} (missing quote).
 This is a rule tag, that references a rule in the same category: {% rule OtherRule" %} (missing quote).
+
+The next line ends in exactly the right spot to trigger a StringIndexOutOfBoundsException.
+This is a rule tag, that references a rule in the same category: {% rule "OtherRule"

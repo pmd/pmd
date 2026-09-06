@@ -38,7 +38,8 @@ class RuleTagCheckerTest {
                 "pmd/rules/java/design.md:19: Rule OtherRule is not found",
                 "pmd/rules/java/design.md:20: Rule \"OtherRule\" is not found",
                 "pmd/rules/java/design.md:21: Rule tag for \"OtherRule has a missing quote",
-                "pmd/rules/java/design.md:22: Rule tag for OtherRule\" has a missing quote"
+                "pmd/rules/java/design.md:22: Rule tag for OtherRule\" has a missing quote",
+                "pmd/rules/java/design.md:25: Rule tag for \"OtherRule\" is not closed properly"
         ));
     }
 }
