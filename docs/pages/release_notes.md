@@ -25,6 +25,9 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🌟️ New and Changed Rules
+#### New Rules
+*   The new java rule  {% rule java/errorprone/LongLiteralEndingWithLowercaseL %} finds long literals ending with l.
+    That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
 #### Changed Rules
 *   The property `checkNonStaticMethods` of the rule {% rule java/multithreading/NonThreadSafeSingleton %} is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
@@ -41,8 +44,10 @@ This is a {{ site.pmd.release_type }} release.
 * java-codestyle
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-errorprone
+    * [#6693](https://github.com/pmd/pmd/issues/6693): \[java] CloneMethodMustImplementCloneable fires inconsistently between inline `throw new` and throw-via-local forms
     * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate is suppressed by using pattern variable
 * java-multithreading
+    * [#6297](https://github.com/pmd/pmd/issues/6297): \[java] AvoidUsingVolatile: Update documentation
     * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods 
 
 ### 🚨️ API Changes
