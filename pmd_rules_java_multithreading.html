@@ -2453,17 +2453,47 @@ or <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.ht
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Non-thread safe singletons can result in bad state changes. Eliminate
-static singletons if possible by instantiating the object directly. Static
-singletons are usually not needed as only a single instance exists anyway.
-Other possible fixes are to synchronize the entire method or to use an
-<a href="https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">initialize-on-demand holder class</a>.</p>
+<p>Creating singletons in a non-thread safe way leads to subtle, hard to reproduce concurrency issues:
+A singleton might sometimes be created more than once (so it is not really a singleton anymore)
+or calling code from a different thread might not see the singleton at all, or might see a non-null
+reference to an object that is not fully constructed yet.</p>
 
-<p>Refrain from using the double-checked locking pattern. The Java Memory Model doesn’t
-guarantee it to work unless the variable is declared as <code class="language-plaintext highlighter-rouge">volatile</code>, adding an unneeded
-performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html">Reference</a></p>
+<p>See Effective Java, 3rd edition, item 78: "Synchronize access to shared mutable data".</p>
 
-<p>See Effective Java, item 48.</p>
+<p>The rule property <code class="language-plaintext highlighter-rouge">checkNonStaticFields</code> is <code class="language-plaintext highlighter-rouge">false</code> by default, so that only
+static fields are considered. This is the usual way to implement singletons. The rule finds methods
+(regardless of whether they are static or non-static) that write to static fields after a null-check.</p>
+
+<p>If the property is set to <code class="language-plaintext highlighter-rouge">true</code>, then additionally non-static fields are considered. This allows to
+find lazy loading of instance fields.</p>
+
+<p>Possible fixes for static singleton fields:</p>
+
+<ul>
+  <li>Avoid lazy initialization if possible and instantiate the object directly, e.g.
+<code class="language-plaintext highlighter-rouge">private static final Foo INSTANCE = new Foo();</code>. Lazy initialization is an optimization you should only
+use if you have measured a performance gain (see Effective Java, 3rd edition, item 83: “Use lazy initialization
+judiciously”).</li>
+  <li>Synchronize the entire method; for static fields, it must be a <code class="language-plaintext highlighter-rouge">static synchronized</code> method.</li>
+  <li>Use an <a href="https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">initialize-on-demand holder class</a>.
+This is safe because the JVM initializes the holder class only once, on first access.</li>
+  <li>Use an enum with a single item (see Effective Java, 3rd edition, item 3: "Enforce the singleton property with
+a private constructor or an enum type”). This is not possible, if the singleton has to extend a class other
+than <code class="language-plaintext highlighter-rouge">Enum</code> (interfaces are possible).</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">AtomicReference</code> with <code class="language-plaintext highlighter-rouge">compareAndSet</code> if a duplicate computation is acceptable.</li>
+</ul>
+
+<p>Possible fixes for lazily initialized instance fields:</p>
+
+<ul>
+  <li>Synchronize the entire method.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">AtomicReference</code> with <code class="language-plaintext highlighter-rouge">compareAndSet</code> if a duplicate computation is acceptable.</li>
+  <li>Use the double-checked locking pattern. The field must be declared <code class="language-plaintext highlighter-rouge">volatile</code>; without it,
+the Java Memory Model doesn’t guarantee that other threads see a fully constructed object.
+Note that this only works on Java 5 and later.
+(also possible for static fields, though the holder idiom is usually preferable)
+<a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html">Reference</a></li>
+</ul>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/NonThreadSafeSingletonRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.NonThreadSafeSingletonRule</a></p>
 
@@ -2471,9 +2501,9 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 
-<span class="c1">//multiple simultaneous callers may see partially initialized objects</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">foo</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">// multiple simultaneous callers may see partially initialized objects</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="nc">Foo</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">foo</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span>
     <span class="o">}</span>
     <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
@@ -2494,12 +2524,12 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
     <tr>
       <td>checkNonStaticMethods</td>
       <td>true</td>
-      <td>Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> This property is ignored and has no effect - non-static methods are always checked now (see https://github.com/pmd/pmd/issues/6780). This property will be removed in PMD 8.0.0.</td>
     </tr>
     <tr>
       <td>checkNonStaticFields</td>
       <td>false</td>
-      <td>Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.</td>
+      <td>Check only static fields (false), or check additionally for non-static fields (true).</td>
     </tr>
   </tbody>
 </table>
@@ -2511,7 +2541,6 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/NonThreadSafeSingleton"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkNonStaticMethods"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkNonStaticFields"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>

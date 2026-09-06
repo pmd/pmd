@@ -3856,7 +3856,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Non Thread Safe Singleton",
   "url": "pmd_rules_java_multithreading.html#nonthreadsafesingleton",
-  "summary": "Non-thread safe singletons can result in bad state changes. Eliminate static singletons if possible by..."
+  "summary": "Creating singletons in a non-thread safe way leads to subtle, hard to reproduce concurrency issues:..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/multithreading.md",

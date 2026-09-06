@@ -2067,7 +2067,19 @@
 <h4 id="new-rules">New Rules</h4>
 <ul>
   <li>The new java rule  <a href="pmd_rules_java_errorprone.html#longliteralendingwithlowercasel"><code class="language-plaintext highlighter-rouge">LongLiteralEndingWithLowercaseL</code></a> finds long literals ending with l.
-That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.</li>
+That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
+    <h4 id="changed-rules">Changed Rules</h4>
+  </li>
+  <li>The property <code class="language-plaintext highlighter-rouge">checkNonStaticMethods</code> of the rule <a href="pmd_rules_java_multithreading.html#nonthreadsafesingleton"><code class="language-plaintext highlighter-rouge">NonThreadSafeSingleton</code></a> is now
+deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
+The rule now always reports both static and non-static methods; previously it reported only static methods
+by default.<br />
+This may result in additional violations being reported.<br />
+If you want to suppress violations for non-static methods, you can use
+<a href="pmd_userdocs_suppressing_warnings.html#the-property-violationsuppressxpath">suppression via XPath</a>, e.g.
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"violationSuppressXPath"</span> <span class="na">value=</span><span class="s">".[ancestor-or-self::MethodDeclaration[1][@Static = false()]]"</span> <span class="nt">/&gt;</span>
+</code></pre></div>    </div>
+  </li>
 </ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
@@ -2086,6 +2098,7 @@ That helps to avoid confusion between numbers ending with 1 and l. Capital L sho
   <li>java-multithreading
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6297">#6297</a>: [java] AvoidUsingVolatile: Update documentation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6780">#6780</a>: [java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods</li>
     </ul>
   </li>
 </ul>
