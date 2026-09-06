@@ -1,6 +1,6 @@
 ---
 title: Sample Page with rule tags
-permalink: rule_tag_samples.html
+permalink: design.html
 ---
 
 This is a link to the rule AvoidPrintStackTrace: {% rule "java/bestpractices/AvoidPrintStackTrace" %}.
