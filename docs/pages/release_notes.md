@@ -30,7 +30,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
     * [#6693](https://github.com/pmd/pmd/issues/6693): \[java] CloneMethodMustImplementCloneable fires inconsistently between inline `throw new` and throw-via-local forms
     * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate is suppressed by using pattern variable
-
+* java-multithreading
+    * [#6297](https://github.com/pmd/pmd/issues/6297): \[java] AvoidUsingVolatile: Update documentation
 
 ### 🚨️ API Changes
 
