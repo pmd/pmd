@@ -1892,6 +1892,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "TypeNameMismatch (Java, Best Practices)",
+  "tags": "",
+  "keywords": "Type Name Mismatch",
+  "url": "pmd_rules_java_bestpractices.html#typenamemismatch",
+  "summary": "Each top-level type should be defined in its own file with a matching name."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
   "title": "UnitTestAssertionsShouldIncludeMessage (Java, Best Practices)",
   "tags": "",
   "keywords": "Unit Test Assertions Should Include Message",

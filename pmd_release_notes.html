@@ -2067,7 +2067,10 @@
 <h4 id="new-rules">New Rules</h4>
 <ul>
   <li>The new java rule  <a href="pmd_rules_java_errorprone.html#longliteralendingwithlowercasel"><code class="language-plaintext highlighter-rouge">LongLiteralEndingWithLowercaseL</code></a> finds long literals ending with l.
-That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
+That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.</li>
+  <li>The new java rule  <a href="pmd_rules_java_bestpractices.html#typenamemismatch"><code class="language-plaintext highlighter-rouge">TypeNameMismatch</code></a> finds types that are not defined in a .java file
+with the same name. Enforcing a match between source file name and type name makes it easier to
+find source code for given type.
     <h4 id="changed-rules">Changed Rules</h4>
   </li>
   <li>The property <code class="language-plaintext highlighter-rouge">checkNonStaticMethods</code> of the rule <a href="pmd_rules_java_multithreading.html#nonthreadsafesingleton"><code class="language-plaintext highlighter-rouge">NonThreadSafeSingleton</code></a> is now

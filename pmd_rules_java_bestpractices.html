@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AssertStatementInTest, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, EnumComparison, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitJupiterTestShouldBePackagePrivate, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AssertStatementInTest, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, EnumComparison, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitJupiterTestShouldBePackagePrivate, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, TypeNameMismatch, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -4287,6 +4287,38 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/SystemPrintln"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="typenamemismatch">TypeNameMismatch</h2>
+
+<p><strong>Since:</strong> PMD 7.28.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Each top-level type should be defined in its own file with a matching name.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/TypeNameMismatchRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.TypeNameMismatchRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// content of Foo.java</span>
+
+<span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span> <span class="c1">// violation, should be defined in Bar.java</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// content of Baz.java</span>
+<span class="kd">class</span> <span class="nc">Baz</span> <span class="o">{</span>
+  <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// OK, nested classes are allowed</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span> <span class="c1">// violation, second top level class should be in its own file</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/TypeNameMismatch"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="unittestassertionsshouldincludemessage">UnitTestAssertionsShouldIncludeMessage</h2>

@@ -25,6 +25,9 @@ This is a minor release.
 #### New Rules
 *   The new java rule  [`LongLiteralEndingWithLowercaseL`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_errorprone.html#longliteralendingwithlowercasel) finds long literals ending with l.
     That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
+*   The new java rule  [`TypeNameMismatch`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_bestpractices.html#typenamemismatch) finds types that are not defined in a .java file
+    with the same name. Enforcing a match between source file name and type name makes it easier to
+    find source code for given type.
 #### Changed Rules
 *   The property `checkNonStaticMethods` of the rule [`NonThreadSafeSingleton`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_multithreading.html#nonthreadsafesingleton) is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
