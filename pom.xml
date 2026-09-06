@@ -94,7 +94,7 @@
         <checkstyle.version>14.0.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
-        <ant.version>1.10.17</ant.version>
+        <ant.version>1.10.18</ant.version>
         <javadoc.plugin.version>3.12.0</javadoc.plugin.version>
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
