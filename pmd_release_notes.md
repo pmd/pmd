@@ -10,6 +10,8 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
 * [✨️ Merged pull requests](#merged-pull-requests)
@@ -17,6 +19,11 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+
+### 🌟️ New and Changed Rules
+#### New Rules
+*   The new java rule  [`LongLiteralEndingWithLowercaseL`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_errorprone.html#longliteralendingwithlowercasel) finds long literals ending with l.
+    That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
 
 ### 🐛️ Fixed Issues
 * java-codestyle

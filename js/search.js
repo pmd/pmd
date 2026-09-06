@@ -3452,6 +3452,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",
+  "title": "LongLiteralEndingWithLowercaseL (Java, Error Prone)",
+  "tags": "",
+  "keywords": "Long Literal Ending With LowercaseL",
+  "url": "pmd_rules_java_errorprone.html#longliteralendingwithlowercasel",
+  "summary": "Use uppercase `L` for long literals to avoid confusion with the digit `1`."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/errorprone.md",
   "title": "MethodWithSameNameAsEnclosingClass (Java, Error Prone)",
   "tags": "",
   "keywords": "Method With Same Name As Enclosing Class",
