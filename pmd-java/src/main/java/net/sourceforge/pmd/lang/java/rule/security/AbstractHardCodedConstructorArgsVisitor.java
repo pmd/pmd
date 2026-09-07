@@ -68,6 +68,11 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             ASTExpression expr = ((ASTMethodCall) firstArgumentExpression).getQualifier();
             if (expr instanceof ASTVariableAccess) {
                 varAccess = (ASTVariableAccess) expr;
+            } else if (expr instanceof ASTMethodCall && SYSTEM_GET_PROPERTY.matchesCall((ASTMethodCall) expr)) {
+                // e.g. new SecretKeySpec(System.getProperty("k", "d").getBytes(), "AES")
+                // the value comes from an external system property at runtime;
+                // any string literal arguments are not necessarily the key
+                return;
             }
         } else if (firstArgumentExpression instanceof ASTVariableAccess) {
             // check for named variable
