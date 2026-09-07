@@ -15,6 +15,8 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public final class ASTLabeledStatement extends AbstractStatement {
 
+    private String label;
+
     ASTLabeledStatement(int id) {
         super(id);
     }
@@ -25,11 +27,17 @@ public final class ASTLabeledStatement extends AbstractStatement {
         return visitor.visit(this, data);
     }
 
+    @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.label = image;
+    }
+
     /**
      * Returns the name of the label.
      */
     public String getLabel() {
-        return getImage();
+        return label;
     }
 
     /**
