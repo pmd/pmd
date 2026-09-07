@@ -84,9 +84,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           server-id: central
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          server-username-env-var: MAVEN_USERNAME
+          server-password-env-var: MAVEN_PASSWORD
+          gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
         with:

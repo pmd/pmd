@@ -24,6 +24,25 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+*   The new java rule  {% rule java/errorprone/LongLiteralEndingWithLowercaseL %} finds long literals ending with l.
+    That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
+*   The new java rule  {% rule java/bestpractices/TypeNameMismatch %} finds types that are not defined in a .java file
+    with the same name. Enforcing a match between source file name and type name makes it easier to
+    find source code for given type.
+#### Changed Rules
+*   The property `checkNonStaticMethods` of the rule {% rule java/multithreading/NonThreadSafeSingleton %} is now
+    deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
+    The rule now always reports both static and non-static methods; previously it reported only static methods
+    by default.  
+    This may result in additional violations being reported.  
+    If you want to suppress violations for non-static methods, you can use
+    [suppression via XPath]({{ baseurl }}pmd_userdocs_suppressing_warnings.html#the-property-violationsuppressxpath), e.g.
+    ```xml
+    <property name="violationSuppressXPath" value=".[ancestor-or-self::MethodDeclaration[1][@Static = false()]]" />
+    ```
+
 ### 🐛️ Fixed Issues
 * java-security
     * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key
