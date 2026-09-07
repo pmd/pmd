@@ -34,7 +34,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#6297](https://github.com/pmd/pmd/issues/6297): \[java] AvoidUsingVolatile: Update documentation
     * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods 
 * java-security
-    * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated a hard-coded key
+    * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key
 
 ### 🚨️ API Changes
 
