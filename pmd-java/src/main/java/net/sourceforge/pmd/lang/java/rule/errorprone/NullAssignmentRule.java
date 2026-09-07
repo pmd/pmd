@@ -81,11 +81,12 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isFirstAssignmentToBlankLocal(ASTAssignmentExpression assignment) {
-        boolean isLocalVarAssignment = Optional.ofNullable(tryGetLeftOperandSymbol(assignment))
+        boolean isBlankLocalVarAssignment = Optional.ofNullable(tryGetLeftOperandSymbol(assignment))
                 .map(JVariableSymbol::tryGetNode)
+                .filter(varId -> varId.getInitializer() == null)
                 .map(ASTVariableId::isLocalVariable)
                 .orElse(false);
-        if (!isLocalVarAssignment) {
+        if (!isBlankLocalVarAssignment) {
             return false;
         }
         ReachingDefinitionSet reaching = DataflowPass.getDataflowResult(assignment.getRoot())
