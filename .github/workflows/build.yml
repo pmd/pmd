@@ -38,7 +38,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
             -Dmaven.repo.local=.m2/repository \
-            verify -PfastSkip -DskipTests -Dcyclonedx.skip=false \
+            verify -PfastSkip -DskipTests -DskipITs -Dcyclonedx.skip=false \
             deploy:deploy -DaltDeploymentRepository="dogfood::file://$(pwd)/target/staging"
       - name: Cleanup local repository
         run: |
@@ -112,7 +112,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
-              verify -DskipTests
+              verify -DskipTests -DskipITs
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
           name: javadocs-artifact
@@ -262,6 +262,7 @@ jobs:
             verify \
             -PfastSkip,dogfood \
             -DskipTests \
+            -DskipITs \
             -Dpmd.skip=false \
             -Dcpd.skip=false
           echo "::endgroup::"
@@ -300,7 +301,7 @@ jobs:
             -Dmaven.repo.local=.m2/repository \
             verify \
             -Pgenerate-rule-docs,fastSkip \
-            -DskipTests -Dassembly.skipAssembly=true
+            -DskipTests -DskipITs -Dassembly.skipAssembly=true
       - name: Set up Ruby 4
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b #v1.321.0
         with:
