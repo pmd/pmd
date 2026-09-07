@@ -2278,7 +2278,7 @@ Foo[] x = { ... }; //Equivalent to above line
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
+   some $num in tokenize(@LiteralText, "[dDfFlLeE+\-]")
    satisfies not(
                   ( contains($num, ".")
                     and string-length(substring-before($num, ".")) <= $acceptableDecimalLength
