@@ -2073,7 +2073,7 @@ You can get a OpenJDK distribution from e.g. <a href="https://adoptium.net/">Ado
     <p>To make sure your Maven environment is correctly setup, we’ll build pmd once:</p>
 
     <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>pmd
-./mvnw clean verify <span class="nt">-DskipTests</span>
+./mvnw clean verify <span class="nt">-DskipTests</span> <span class="nt">-DskipITs</span>
 </code></pre></div>    </div>
 
     <p>This will help with Maven IDE integration. It may take some time, because it will download all dependencies,
