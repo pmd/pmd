@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.branchJustThrows;
 import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.defaultBranchIsNecessary;
 import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.formatMissingCases;
+import static net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule.missingCases;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -140,6 +141,54 @@ class ExhaustiveSwitchHasDefaultTest extends PmdRuleTst {
             ASTSwitchLike switchLike = root.descendants(ASTSwitchStatement.class).first();
 
             assertFalse(defaultBranchIsNecessary(switchLike));
+        }
+    }
+
+    @Nested
+    class MissingCases {
+        @Test
+        @DisplayName("Enum switch lists constants only handled by default")
+        void testEnumMissingConstant() {
+            ASTCompilationUnit root = java.parse("public class Foo { enum State { NEW, ACTIVE, DONE, VOID } static String apply(State state) { return switch (state) { case ACTIVE -> \"active\"; case DONE -> \"done\"; case VOID -> \"void\"; default -> \"x\"; }; } }");
+            ASTSwitchLike switchLike = root.descendants(ASTSwitchLike.class).first();
+
+            assertEquals(Collections.singletonList("NEW"), missingCases(switchLike));
+        }
+
+        @Test
+        @DisplayName("Multiple missing enum constants are sorted")
+        void testEnumMissingConstantsAreSorted() {
+            ASTCompilationUnit root = java.parse("public class Foo { enum State { NEW, ACTIVE, DONE, VOID } void apply(State state) { switch (state) { case ACTIVE -> System.out.println(\"a\"); default -> System.out.println(\"x\"); } } }");
+            ASTSwitchLike switchLike = root.descendants(ASTSwitchLike.class).first();
+
+            assertEquals(Arrays.asList("DONE", "NEW", "VOID"), missingCases(switchLike));
+        }
+
+        @Test
+        @DisplayName("Sealed type switch lists uncovered permitted subtypes")
+        void testSealedMissingSubtype() {
+            ASTCompilationUnit root = java.parse("sealed interface Foo { final class A implements Foo {} record B() implements Foo {} default void doSomething(Foo foo) { switch (foo) { case A a -> System.out.println(\"a\"); default -> System.out.println(\"x\"); } } }");
+            ASTSwitchLike switchLike = root.descendants(ASTSwitchLike.class).first();
+
+            assertEquals(Collections.singletonList("B"), missingCases(switchLike));
+        }
+
+        @Test
+        @DisplayName("Fully covered enum has no missing cases")
+        void testAllCovered() {
+            ASTCompilationUnit root = java.parse("public class Foo { enum MyEnum { A, B } void doSomething(MyEnum e) { switch(e) { case A -> System.out.println(\"a\"); case B -> System.out.println(\"b\"); default -> System.out.println(\"x\"); } } }");
+            ASTSwitchLike switchLike = root.descendants(ASTSwitchLike.class).first();
+
+            assertEquals(Collections.emptyList(), missingCases(switchLike));
+        }
+
+        @Test
+        @DisplayName("Non-enum, non-sealed selector has no named missing cases")
+        void testNonClassSelector() {
+            ASTCompilationUnit root = java.parse("public class Foo { void doSomething(int i) { switch(i) { case 1 -> System.out.println(\"a\"); default -> System.out.println(\"x\"); } } }");
+            ASTSwitchLike switchLike = root.descendants(ASTSwitchLike.class).first();
+
+            assertEquals(Collections.emptyList(), missingCases(switchLike));
         }
     }
 
