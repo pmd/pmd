@@ -29,10 +29,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-errorprone
     * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate is suppressed by using pattern variable
-
-
 * java-security
-  * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key
+    * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key
 
 ### 🚨️ API Changes
 
