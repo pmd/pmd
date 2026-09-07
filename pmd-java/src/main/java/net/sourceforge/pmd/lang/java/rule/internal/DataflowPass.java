@@ -881,12 +881,12 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTContinueStatement node, SpanInfo data) {
-            return data.global.continueTargets.doBreak(data, node.getImage());
+            return data.global.continueTargets.doBreak(data, node.getLabel());
         }
 
         @Override
         public SpanInfo visit(ASTBreakStatement node, SpanInfo data) {
-            return processBreakableStmt(node, data, () -> data.global.breakTargets.doBreak(data, node.getImage()));
+            return processBreakableStmt(node, data, () -> data.global.breakTargets.doBreak(data, node.getLabel()));
         }
 
         @Override

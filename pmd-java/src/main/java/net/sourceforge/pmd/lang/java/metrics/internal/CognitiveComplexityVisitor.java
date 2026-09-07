@@ -174,7 +174,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     public Void visit(ASTContinueStatement node, State state) {
 
         // hack to detect if there is a label
-        boolean hasLabel = node.getImage() != null;
+        boolean hasLabel = node.getLabel() != null;
 
         if (hasLabel) {
             state.fundamentalComplexity();
@@ -186,7 +186,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     public Void visit(ASTBreakStatement node, State state) {
 
         // hack to detect if there is a label
-        boolean hasLabel = node.getImage() != null;
+        boolean hasLabel = node.getLabel() != null;
 
         if (hasLabel) {
             state.fundamentalComplexity();
