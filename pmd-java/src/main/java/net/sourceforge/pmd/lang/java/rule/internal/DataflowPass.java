@@ -573,10 +573,9 @@ public final class DataflowPass {
             // may not kill anything. Note that a CT constant cannot have
             // side effects.
             Object leftValue = orExpr.getLeftOperand().getConstValue();
-            boolean leftDecides = orExpr.getOperator() == BinaryOp.CONDITIONAL_OR
-                                  ? Boolean.TRUE.equals(leftValue)
-                                  : Boolean.FALSE.equals(leftValue);
-            if (leftDecides) {
+            if ((orExpr.getOperator() == BinaryOp.CONDITIONAL_OR && Boolean.TRUE.equals(leftValue))
+                    || (orExpr.getOperator() == BinaryOp.CONDITIONAL_AND && Boolean.FALSE.equals(leftValue))
+            ) {
                 recordReachingDefsInDeadOperand(cur, orExpr.getRightOperand());
             } else {
                 cur = linkConditional(cur, orExpr.getRightOperand(), thenState, elseState, false);
