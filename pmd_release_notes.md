@@ -43,6 +43,8 @@ This is a minor release.
     ```
 
 ### 🐛️ Fixed Issues
+* java-bestpractices
+    * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
 * java-codestyle
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-errorprone
