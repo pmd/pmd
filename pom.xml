@@ -90,16 +90,16 @@
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.5.6</surefire.version>
-        <checkstyle.version>14.0.0</checkstyle.version>
+        <surefire.version>3.6.0</surefire.version>
+        <checkstyle.version>14.1.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
-        <ant.version>1.10.17</ant.version>
+        <ant.version>1.10.18</ant.version>
         <javadoc.plugin.version>3.12.0</javadoc.plugin.version>
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.10</saxon.version>
-        <byte.buddy.version>1.18.12</byte.buddy.version>
+        <byte.buddy.version>1.18.13</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -272,7 +272,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.15.0</version>
+                    <version>3.16.0</version>
                     <configuration>
                         <release>${java.version}</release>
                         <failOnWarning>true</failOnWarning>
@@ -701,7 +701,7 @@
                 <plugin>
                     <groupId>com.github.siom79.japicmp</groupId>
                     <artifactId>japicmp-maven-plugin</artifactId>
-                    <version>0.26.1</version>
+                    <version>0.26.2</version>
                     <configuration>
                         <parameter>
                             <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
@@ -924,7 +924,7 @@
             <dependency>
                 <groupId>me.tongfei</groupId>
                 <artifactId>progressbar</artifactId>
-                <version>0.9.5</version>
+                <version>0.10.2</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -999,7 +999,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -1185,7 +1185,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.36.0</version>
+                <version>4.36.1</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit6 needs.

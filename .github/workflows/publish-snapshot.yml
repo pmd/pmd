@@ -110,6 +110,7 @@ jobs:
             -Dmaven.repo.local=.m2/repository \
             deploy \
             -DskipTests \
+            -DskipITs \
             -PfastSkip,sign,pmd-release \
             -Dcyclonedx.skip=false \
             -Dmaven.javadoc.skip=false \
