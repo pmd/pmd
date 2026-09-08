@@ -2070,7 +2070,9 @@
 That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.</li>
   <li>The new java rule  <a href="pmd_rules_java_bestpractices.html#typenamemismatch"><code class="language-plaintext highlighter-rouge">TypeNameMismatch</code></a> finds types that are not defined in a .java file
 with the same name. Enforcing a match between source file name and type name makes it easier to
-find source code for given type.
+find source code for given type.</li>
+  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#cstylearraydeclaration"><code class="language-plaintext highlighter-rouge">CStyleArrayDeclaration</code></a> finds C-style declarations of arrays (e.g. <code class="language-plaintext highlighter-rouge">int numbers[]</code>).
+That helps you use Java-style declarations (e.g. <code class="language-plaintext highlighter-rouge">int[] numbers</code>) consistently throughout the codebase.
     <h4 id="changed-rules">Changed Rules</h4>
   </li>
   <li>The property <code class="language-plaintext highlighter-rouge">checkNonStaticMethods</code> of the rule <a href="pmd_rules_java_multithreading.html#nonthreadsafesingleton"><code class="language-plaintext highlighter-rouge">NonThreadSafeSingleton</code></a> is now
@@ -2146,7 +2148,7 @@ If you want to suppress violations for non-static methods, you can use
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 7, 2026 <br />
+             Site last generated: Sep 8, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

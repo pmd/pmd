@@ -2156,6 +2156,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/codestyle.md",
+  "title": "CStyleArrayDeclaration (Java, Code Style)",
+  "tags": "",
+  "keywords": "C Style Array Declaration",
+  "url": "pmd_rules_java_codestyle.html#cstylearraydeclaration",
+  "summary": "Use Java-style declarations for arrays, where the brackets follow the type, e.g. `int[] numbers` instead..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/codestyle.md",
   "title": "EmptyControlStatement (Java, Code Style)",
   "tags": "",
   "keywords": "Empty Control Statement",

@@ -28,6 +28,8 @@ This is a minor release.
 *   The new java rule  [`TypeNameMismatch`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_bestpractices.html#typenamemismatch) finds types that are not defined in a .java file
     with the same name. Enforcing a match between source file name and type name makes it easier to
     find source code for given type.
+*   The new Java rule [`CStyleArrayDeclaration`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_codestyle.html#cstylearraydeclaration) finds C-style declarations of arrays (e.g. `int numbers[]`).
+    That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
 #### Changed Rules
 *   The property `checkNonStaticMethods` of the rule [`NonThreadSafeSingleton`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_multithreading.html#nonthreadsafesingleton) is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.

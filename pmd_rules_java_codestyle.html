@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBlock, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined, VariableDeclarationUsageDistance">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, CStyleArrayDeclaration, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBlock, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined, VariableDeclarationUsageDistance">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -2706,6 +2706,40 @@ and IfElseStmtMustUseBraces.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowEmptyLoop"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="cstylearraydeclaration">CStyleArrayDeclaration</h2>
+
+<p><strong>Since:</strong> PMD 7.28.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Use Java-style declarations for arrays, where the brackets follow the type, e.g. <code class="language-plaintext highlighter-rouge">int[] numbers</code> instead of <code class="language-plaintext highlighter-rouge">int numbers[]</code>.
+This applies to fields, local variables, parameters, and methods returning arrays.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableId</span><span class="p">[</span><span class="nt">ArrayDimensions</span><span class="p">]</span><span class="w">
+</span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="nt">ArrayDimensions</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Numbers</span> <span class="o">{</span>
+    <span class="kt">double</span> <span class="n">doubles</span><span class="o">[];</span> <span class="c1">// bad</span>
+    <span class="kt">int</span><span class="o">[]</span> <span class="n">ints</span><span class="o">;</span> <span class="c1">// good</span>
+
+    <span class="kt">double</span> <span class="nf">getDoubles</span><span class="o">()[]</span> <span class="o">{</span> <span class="c1">// bad</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="kt">double</span><span class="o">[]</span> <span class="o">{</span> <span class="mf">1.0</span> <span class="o">};</span>
+    <span class="o">}</span>
+
+    <span class="kt">int</span><span class="o">[]</span> <span class="nf">getInts</span><span class="o">()</span> <span class="o">{</span> <span class="c1">// good</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span> <span class="mi">1</span> <span class="o">};</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/CStyleArrayDeclaration"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="emptycontrolstatement">EmptyControlStatement</h2>
@@ -5602,7 +5636,7 @@ reported just because of each other.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 7, 2026 <br />
+             Site last generated: Sep 8, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
