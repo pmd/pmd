@@ -5,20 +5,19 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>c-style array declarations are flagged in fields and methods</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>2,5</expected-linenumbers>
+        <description>c-style array declarations are flagged</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,4,8,9</expected-linenumbers>
         <code><![CDATA[
 class Numbers {
-    double doubles[]; // bad
-    int[] ints; // good
+    double doubles[];
 
-    double getDoubles()[] { // bad
+    double getDoubles()[] {
         return new double[] { 1.0 };
     }
 
-    int[] getInts() { // good
-        return new int[] { 1 };
+    void foo(int args[]) {
+        int copy[] = args;
     }
 }
         ]]></code>
@@ -29,11 +28,11 @@ class Numbers {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Numbers {
-    int[] ints;
+    double[] doubles;
     double[] getDoubles() { return new double[0]; }
 
-    int[] getInts() {
-        return new int[] { 1 };
+    void foo(int[] args) {
+        int[] copy = args;
     }
 }
         ]]></code>
