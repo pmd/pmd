@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.util.*
+import java.util.function.Consumer
 import java.util.function.Supplier
 import java.util.function.ToIntFunction
 import java.util.stream.Collector
@@ -19,6 +20,32 @@ import java.util.stream.Collectors
  * @author Clément Fournier
  */
 class CaptureInferenceTest : ProcessorTestSpec({
+
+    parserTest("Capture wildcard in intersection upper bound #7054") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Reproducer {
+                interface Marker { }
+
+                static <C extends Iterable<?> & Marker> void visit(C values) {
+                    values.forEach(value -> { });
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+        spy.shouldBeOk {
+            val captured = captureMatcher(`?`)
+            call.methodType.shouldMatchMethod(
+                named = "forEach",
+                declaredIn = Iterable::class[captured],
+                withFormals = listOf(Consumer::class[`?` `super` captured]),
+                returning = void
+            )
+            acu.varId("value") shouldHaveType ts.OBJECT
+        }
+    }
 
     parserTest("Test capture incompatibility recovery") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
