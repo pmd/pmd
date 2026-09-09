@@ -60,12 +60,7 @@ class LineNumbers {
         } else if (n instanceof ASTHtmlElement && hasCloseElement) {
             nextIndex += 2 + n.getXPathNodeName().length() + 1; // </nodename>
         } else if (n instanceof ASTHtmlComment) {
-            // A synthetic Jsoup comment isn't backed by a real <!--...--> sequence
-            // It runs from '<' to the next bare '>' instead
-            boolean isRealComment = htmlString.startsWith("<!--", nextIndex);
-            String closeMarker = isRealComment ? "-->" : ">";
-            int closeIndex = htmlString.indexOf(closeMarker, nextIndex);
-            nextIndex = closeIndex < 0 ? htmlString.length() : closeIndex + closeMarker.length();
+            nextIndex = endOfComent(nextIndex);
         } else if (n instanceof ASTHtmlTextNode) {
             nextIndex += textLength;
         } else if (n instanceof ASTHtmlCDataNode) {
@@ -88,6 +83,17 @@ class LineNumbers {
     private int indexOfComment(int fromIndex) {
         int idx = htmlString.indexOf("<!--", fromIndex);
         return idx < 0 ? fromIndex : idx;
+    }
+
+    /**
+    /* A synthetic Jsoup comment isn't backed by a real <!--...--> sequence
+    /* It runs from '<' to the next bare '>' instead
+     */
+    private int endOfComent(int nextIndex) {
+        boolean isRealComment = htmlString.startsWith("<!--", nextIndex);
+        String closeMarker = isRealComment ? "-->" : ">";
+        int closeIndex = htmlString.indexOf(closeMarker, nextIndex);
+        return closeIndex < 0 ? htmlString.length() : closeIndex + closeMarker.length();
     }
 
     private void setBeginLocation(AbstractHtmlNode<?> n, int index) {
