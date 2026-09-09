@@ -24,7 +24,7 @@ last_updated: May 2026 (7.25.0)
 
    ```shell
    cd pmd
-   ./mvnw clean verify -DskipTests
+   ./mvnw clean verify -DskipTests -DskipITs
    ```
 
    This will help with Maven IDE integration. It may take some time, because it will download all dependencies,

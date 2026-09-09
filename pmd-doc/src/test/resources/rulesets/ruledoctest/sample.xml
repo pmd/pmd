@@ -135,6 +135,23 @@ public class Foo {
       </example>
     </rule>
 
+    <rule name="MultipleNewlinesRule"
+          language="java"
+          since="0.4"
+          message="Not an actual rule."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#multiplenewlines">
+        <description>
+            <![CDATA[
+Indented CDATA description
+            ]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            ...
+        </example>
+    </rule>
+
     <rule name="JumbledIncrementer"
           language="java"
           since="1.0"
@@ -234,6 +251,19 @@ RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRu
           message="Message"
           class="net.sourceforge.pmd.doc.internal.SampleRuleWithEnumPropertiesRule">
         <description>This rule is for testing enum properties</description>
+        <priority>3</priority>
+    </rule>
+
+    <rule name="SampleRuleWithLotsOfLinks"
+          language="java"
+          since="7.28.0"
+          message="Message"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>
+<![CDATA[
+This [Rule](http://some.host/somelink) is for [Testing](https://yet.another.link/) links
+]]>
+        </description>
         <priority>3</priority>
     </rule>
 </ruleset>

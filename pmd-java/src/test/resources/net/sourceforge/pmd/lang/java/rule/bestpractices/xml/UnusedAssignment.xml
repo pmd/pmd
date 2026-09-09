@@ -4093,4 +4093,250 @@ public class TreeNode {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] Assignment in short-circuited condition operand is never evaluated #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok2 = true;
+        if (false && (ok2 = false)) {
+            return;
+        }
+        System.out.println(ok2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment after a negated constant operand is never evaluated #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if (!true && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in short-circuited || operand is never evaluated #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if (true || (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment after a non-literal constant false operand is never evaluated #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if (1 == 2 && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Parenthesized constant operand still short-circuits #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if ((false) && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Constant chain operand short-circuits the rest of the condition #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if (false && true && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Short-circuit inside a non-constant disjunction #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process(boolean flag) {
+        boolean ok = true;
+        if (flag || false && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in short-circuited loop condition is never evaluated #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        while (false && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in short-circuited ternary condition is never evaluated #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int process() {
+        int x = 1;
+        int y = false && (x = 2) == 2 ? 1 : 2;
+        return x + y;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Constant field operand short-circuits the condition #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static final boolean DEBUG = false;
+
+    public void process() {
+        boolean ok = true;
+        if (DEBUG && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in evaluated || operand kills the initializer #5940</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if (false || (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in evaluated &amp;&amp; operand kills the initializer #5940</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if (true && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Constant false disjunction operand does not short-circuit #5940</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        boolean ok = true;
+        if (false && true || (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Field assignment in short-circuited condition operand is never evaluated #5940</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int f;
+
+    public Foo() {
+        this.f = 1;
+        if (false && (this.f = 2) == 2) {
+            return;
+        }
+        System.out.println(this.f);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Initializer whose only read is in a short-circuited condition operand, with reportUnusedVariables #5940</description>
+        <rule-property name="reportUnusedVariables">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void process() {
+        int x = 1;
+        if (false && x > 0) {
+            return;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
