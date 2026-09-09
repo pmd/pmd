@@ -47,6 +47,66 @@ class CaptureInferenceTest : ProcessorTestSpec({
         }
     }
 
+    listOf(
+        "C extends Iterable<? extends Number> & Marker",
+        "C extends Iterable<? super Integer> & Marker",
+        "C extends Base & Iterable<? extends Number> & Marker",
+        "B extends Iterable<? extends Number> & Marker, C extends B"
+    ).forEach { typeParameters ->
+        parserTest("Capture intersection members <$typeParameters> #7054") {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                class Reproducer {
+                    static class Base { }
+                    interface Marker { }
+
+                    static <$typeParameters> void visit(C values) {
+                        values.forEach(value -> { });
+                    }
+                }
+                """.trimIndent()
+            )
+
+            spy.shouldBeOk {
+                val isLowerBound = "? super" in typeParameters
+                val wildcard = if (isLowerBound) `?` `super` Integer::class.raw else `?` extends Number::class.raw
+                val captured = captureMatcher(wildcard)
+                acu.firstMethodCall().methodType.shouldMatchMethod(
+                    named = "forEach",
+                    declaredIn = Iterable::class[captured],
+                    withFormals = listOf(Consumer::class[`?` `super` captured]),
+                    returning = void
+                )
+                acu.varId("value") shouldHaveType if (isLowerBound) ts.OBJECT else Number::class.raw
+            }
+        }
+    }
+
+    parserTest("Capture wildcard in intersection cast #7054") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Reproducer {
+                interface Marker { }
+
+                static void visit(Object values) {
+                    ((Iterable<?> & Marker) values).forEach(value -> { });
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldBeOk {
+            val captured = captureMatcher(`?`)
+            acu.firstMethodCall().methodType.shouldMatchMethod(
+                named = "forEach",
+                declaredIn = Iterable::class[captured],
+                withFormals = listOf(Consumer::class[`?` `super` captured]),
+                returning = void
+            )
+            acu.varId("value") shouldHaveType ts.OBJECT
+        }
+    }
+
     parserTest("Test capture incompatibility recovery") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
