@@ -47,7 +47,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
  * //classDeclaration[pmd-kotlin:hasAnnotation('org.springframework.stereotype.Service')]
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
 

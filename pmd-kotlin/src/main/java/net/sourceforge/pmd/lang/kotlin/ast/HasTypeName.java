@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
  * Marks {@link AttributeView} subclasses that expose a {@code @TypeName} XPath attribute.
  * Only node types that actually carry a resolved type name implement this interface.
  *
- * @since 7.27.0
+ * @since 7.28.0
  * @experimental See {@link AttributeView}.
  */
 @Experimental

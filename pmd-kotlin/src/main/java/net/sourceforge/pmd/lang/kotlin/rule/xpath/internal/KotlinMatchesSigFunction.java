@@ -63,7 +63,7 @@ import nl.stokpop.typemapper.model.SignatureMatcherKt;
  * //PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.regex.Pattern#compile(_)')]
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
 

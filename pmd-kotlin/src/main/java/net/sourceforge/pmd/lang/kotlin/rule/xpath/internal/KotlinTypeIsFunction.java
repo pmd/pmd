@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
  * //ForStatement[pmd-kotlin:typeIs('kotlin.String')]                         -- loop variable type
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinTypeIsFunction extends BaseKotlinXPathFunction {
 

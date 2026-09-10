@@ -11,7 +11,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 
 /**
- * @since 7.27.0
+ * @since 7.28.0
  * @experimental See {@link AttributeView}.
  */
 @Experimental

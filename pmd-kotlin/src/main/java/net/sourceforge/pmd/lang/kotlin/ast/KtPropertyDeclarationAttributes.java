@@ -10,7 +10,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 
 /**
- * @since 7.27.0
+ * @since 7.28.0
  * @experimental See {@link AttributeView}.
  */
 @Experimental

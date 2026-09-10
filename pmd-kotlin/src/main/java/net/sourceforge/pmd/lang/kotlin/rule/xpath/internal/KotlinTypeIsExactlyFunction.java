@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
  * //FunctionDeclaration[pmd-kotlin:typeIsExactly('kotlin.String')]
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinTypeIsExactlyFunction extends BaseKotlinXPathFunction {
 

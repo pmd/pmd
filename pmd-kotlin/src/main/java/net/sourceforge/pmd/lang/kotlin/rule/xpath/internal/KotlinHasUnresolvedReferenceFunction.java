@@ -40,7 +40,7 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  * //PropertyDeclaration[pmd-kotlin:hasUnresolvedReference()]
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinHasUnresolvedReferenceFunction extends BaseKotlinXPathFunction {
 

@@ -50,7 +50,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
  * //FunctionDeclaration[pmd-kotlin:modifiers() = ('override', 'suspend')]
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinModifiersFunction extends BaseKotlinXPathFunction {
 

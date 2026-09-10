@@ -22,7 +22,7 @@ import net.sourceforge.pmd.reporting.Report;
 /**
  * Shared helpers for Kotlin XPath function tests.
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 abstract class BaseKotlinXPathFunctionTest {
 
