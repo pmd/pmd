@@ -69,7 +69,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
     void setComments(List<JavaComment> comments, boolean markdownJavadocSupported) {
         List<JavaComment> result = new ArrayList<>();
 
-        // collapses single line markdown comments into consecutive JavadocComments,
+        // collapses consecutive single line markdown comments into one JavadocComment,
         // but only if markdown javadoc (JEP 467) is supported, i.e. since Java 23.
         // Before that, /// comments are ordinary single line comments.
         List<JavaComment> currentMarkdownBlock = null;
