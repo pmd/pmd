@@ -74,7 +74,7 @@ class JavaCommentTest extends BaseParserTest {
                           + "class Foo {}\n";
 
         // before Java 23 (JEP 467), /// comments are ordinary single line comments
-        ASTCompilationUnit unit = java.withDefaultVersion("21").parse(source);
+        ASTCompilationUnit unit = java.withDefaultVersion("22").parse(source);
         assertEquals(2, unit.getComments().size());
         assertFalse(unit.getComments().stream().anyMatch(JavadocComment.class::isInstance));
         assertNull(unit.getTypeDeclarations().first().getJavadocComment());
