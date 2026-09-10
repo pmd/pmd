@@ -90,7 +90,7 @@
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.5.6</surefire.version>
+        <surefire.version>3.6.0</surefire.version>
         <checkstyle.version>14.1.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
@@ -989,7 +989,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>5.1.1</version>
+                <version>5.1.2</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>

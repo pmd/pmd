@@ -123,6 +123,54 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
+        <description>[java] Hardcoded key constructed from char array #7007</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+    void encrypt() {
+        String key = new String(new char[] {'h', 'a', 'r', 'd', 'c', 'o', 'd', 'e', 'd', 'K', 'e', 'y'});
+        byte[] bytes = key.getBytes();
+        SecretKeySpec keySpec = new SecretKeySpec(bytes, "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Dynamic char array converted to String, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+    void encrypt(String input) {
+        char[] chars = input.toCharArray();
+        String key = new String(chars);
+        SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Dynamic element in char array converted to String, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+    void encrypt(String input) {
+        String key = new String(new char[] {'h', input.charAt(0)});
+        SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>[java] Hardcoded constant in parent interface #6191</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
