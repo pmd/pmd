@@ -26,6 +26,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
+*   The new Java rule {% rule java/bestpractices/OnDemandImport %} reports on-demand imports, also known as wildcard imports.
+    By default, static imports from JUnit and TestNG are allowed. The allowed static and type import packages
+    can be configured with `allowStaticImportsFrom` and `allowTypeImportsFrom`.
 *   The new java rule  {% rule java/errorprone/LongLiteralEndingWithLowercaseL %} finds long literals ending with l.
     That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
 *   The new java rule  {% rule java/bestpractices/TypeNameMismatch %} finds types that are not defined in a .java file
