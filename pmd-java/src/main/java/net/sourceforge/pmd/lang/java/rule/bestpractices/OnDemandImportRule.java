@@ -47,14 +47,20 @@ public final class OnDemandImportRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAllowed(String importedName, boolean isStatic) {
-        List<String> allowedPackages = getProperty(isStatic
-                ? ALLOW_STATIC_IMPORTS_FROM
-                : ALLOW_TYPE_IMPORTS_FROM);
-        for (String allowedPackage : allowedPackages) {
-            if ("*".equals(allowedPackage)
-                    || importedName.equals(allowedPackage)
-                    || isStatic && importedName.startsWith(allowedPackage + ".")) {
-                return true;
+        if (isStatic) {
+            for (String allowedPackage : getProperty(ALLOW_STATIC_IMPORTS_FROM)) {
+                if ("*".equals(allowedPackage)
+                        || importedName.equals(allowedPackage)
+                        || importedName.startsWith(allowedPackage + ".")) {
+                    return true;
+                }
+            }
+        } else {
+            for (String allowedPackage : getProperty(ALLOW_TYPE_IMPORTS_FROM)) {
+                if ("*".equals(allowedPackage)
+                        || importedName.equals(allowedPackage)) {
+                    return true;
+                }
             }
         }
         return false;
