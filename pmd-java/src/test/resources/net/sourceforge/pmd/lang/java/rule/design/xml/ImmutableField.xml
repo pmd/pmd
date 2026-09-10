@@ -978,4 +978,57 @@ public class NotSoImmutableField {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6925 [java] ImmutableField: false positive on picocli @Option with default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDate;
+import picocli.CommandLine.Option;
+
+public class Demo {
+    @Option(
+            names = "--ref-date",
+            description = "Reference date (yyyy-MM-dd) for calculating"
+    )
+    private LocalDate refDate = LocalDate.now().withDayOfMonth(1);
+
+    public void something() {
+        System.out.println(refDate);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6925 [java] ImmutableField: false positive on picocli @Parameters with default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import picocli.CommandLine.Parameters;
+
+public class Demo {
+    @Parameters(index = "0", description = "Input file", defaultValue = "input.txt")
+    private String inputFile = "input.txt";
+
+    public String getInputFile() {
+        return inputFile;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6925 [java] ImmutableField still reports plain private fields without picocli</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class Demo {
+    private String inputFile = "input.txt";
+
+    public String getInputFile() {
+        return inputFile;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

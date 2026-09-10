@@ -143,4 +143,62 @@ class UnconditionalIfStatementBug {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6435 false-negative if (!false)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (!false) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6435 false-negative if (!true)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (!true) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6435 boolean literal with multiple logical negations</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        if (!!true) {}
+        if (!!!false) {}
+        if (!!!!!!!!true) {}
+        if (!((!!false))) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6435 no false-positive for negated non-constant boolean</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar(boolean b) {
+        if (!b) {}
+        if (!!b) {}
+        if (b) {
+            boolean nested = !!!true;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

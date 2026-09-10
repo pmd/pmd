@@ -51,13 +51,15 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_bestpractices.html#noclassattribute">
         <description>
 Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
+The "class" attribute is allowed on `jsp:useBean`.
         </description>
         <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//Attribute[ upper-case(@Name)="CLASS" ]
+//Element[ upper-case(@Name)!="JSP:USEBEAN" ]
+    /Attribute[ upper-case(@Name)="CLASS" ]
 ]]>
                 </value>
             </property>

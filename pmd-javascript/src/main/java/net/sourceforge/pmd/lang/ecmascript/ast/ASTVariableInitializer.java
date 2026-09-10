@@ -17,12 +17,12 @@ public final class ASTVariableInitializer extends AbstractEcmascriptNode<Variabl
     }
 
     public EcmascriptNode<?> getTarget() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public EcmascriptNode<?> getInitializer() {
         if (getNumChildren() > 0) {
-            return (EcmascriptNode<?>) getChild(1);
+            return getChild(1);
         } else {
             return null;
         }

@@ -154,7 +154,7 @@ public final class RuleSetLoader {
 
         ResourceLoader oldLoader = this.resourceLoader;
         try {
-            loadResourcesWith(new ResourceLoader() {
+            loadResourcesWith(new ResourceLoader(oldLoader.getClassLoader()) {
                 @Override
                 public @NonNull InputStream loadResourceAsStream(String name) throws IOException {
                     if (Objects.equals(name, filename)) {

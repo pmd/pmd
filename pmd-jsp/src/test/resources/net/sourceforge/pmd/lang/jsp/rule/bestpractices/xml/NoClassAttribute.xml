@@ -17,6 +17,15 @@
     </test-code>
 
     <test-code>
+        <description>A class attribute on jsp:useBean is allowed.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<jsp:useBean id="data" class="jdbc.JdbcBean"/>
+<jsp:usebean id="data" class="jdbc.JdbcBean"/>
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>No scriptlets.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

@@ -79,7 +79,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         if (isIntegral) {
             is64bits = lastChar == 'l' || lastChar == 'L';
             longValue = parseIntegralValue(image);
-            doubleValue = (double) longValue;
+            doubleValue = longValue;
         } else {
             is64bits = !(lastChar == 'f' || lastChar == 'F');
             doubleValue = Double.parseDouble(StringUtils.remove(image.toString(), '_'));

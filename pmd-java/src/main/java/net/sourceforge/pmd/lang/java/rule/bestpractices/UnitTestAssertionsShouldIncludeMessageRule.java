@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnitTestAssertionsShouldIncludeMessageRule extends AbstractJavaRulechainRule {
 
@@ -34,9 +35,11 @@ public class UnitTestAssertionsShouldIncludeMessageRule extends AbstractJavaRule
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (TestFrameworksUtil.isCallOnAssertionContainer(node)) {
             if (checks.anyMatch(node)) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         }
         return null;

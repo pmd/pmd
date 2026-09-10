@@ -28,7 +28,7 @@ class LineNumbers {
         if (n instanceof ASTHtmlDocument) {
             nextIndex = index;
         } else if (n instanceof ASTHtmlComment) {
-            nextIndex = htmlString.indexOf("<!--", nextIndex);
+            nextIndex = indexOfComment(nextIndex);
         } else if (n instanceof ASTHtmlElement) {
             nextIndex = htmlString.indexOf("<" + n.getXPathNodeName(), nextIndex);
             nodeLength = htmlString.indexOf(">", nextIndex) - nextIndex + 1;
@@ -60,8 +60,7 @@ class LineNumbers {
         } else if (n instanceof ASTHtmlElement && hasCloseElement) {
             nextIndex += 2 + n.getXPathNodeName().length() + 1; // </nodename>
         } else if (n instanceof ASTHtmlComment) {
-            nextIndex += 4 + 3; // <!-- and -->
-            nextIndex += ((ASTHtmlComment) n).getData().length();
+            nextIndex = endOfComent(nextIndex);
         } else if (n instanceof ASTHtmlTextNode) {
             nextIndex += textLength;
         } else if (n instanceof ASTHtmlCDataNode) {
@@ -74,6 +73,27 @@ class LineNumbers {
 
         setEndLocation(n, nextIndex - 1);
         return nextIndex;
+    }
+
+    /**
+     * Jsoup adds synthetic comment nodes when encountering malformed input.
+     * Due to this, there might be a comment node present that's not backed by any actual text content.
+     * This method handles the index lookup for these cases safely by returning {@code fromIndex} instead of {@code -1}.
+     */
+    private int indexOfComment(int fromIndex) {
+        int idx = htmlString.indexOf("<!--", fromIndex);
+        return idx < 0 ? fromIndex : idx;
+    }
+
+    /**
+    /* A synthetic Jsoup comment isn't backed by a real <!--...--> sequence
+    /* It runs from '<' to the next bare '>' instead
+     */
+    private int endOfComent(int nextIndex) {
+        boolean isRealComment = htmlString.startsWith("<!--", nextIndex);
+        String closeMarker = isRealComment ? "-->" : ">";
+        int closeIndex = htmlString.indexOf(closeMarker, nextIndex);
+        return closeIndex < 0 ? htmlString.length() : closeIndex + closeMarker.length();
     }
 
     private void setBeginLocation(AbstractHtmlNode<?> n, int index) {

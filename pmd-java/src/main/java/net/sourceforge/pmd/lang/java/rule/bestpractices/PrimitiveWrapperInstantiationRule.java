@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule {
 
@@ -26,6 +27,8 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ASTClassType type = node.firstChild(ASTClassType.class);
         if (type == null) {
             return data;
@@ -38,12 +41,12 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
                 || TypeTestUtil.isA(Short.class, type)
                 || TypeTestUtil.isA(Byte.class, type)
                 || TypeTestUtil.isA(Character.class, type)) {
-            asCtx(data).addViolation(node, type.getSimpleName());
+            ctx.addViolation(node, type.getSimpleName());
         } else if (TypeTestUtil.isA(Boolean.class, type)) {
-            checkArguments(node.getArguments(), node, data);
+            checkArguments(node.getArguments(), node, ctx);
         }
 
-        return data;
+        return null;
     }
 
     /**
@@ -51,14 +54,16 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
      */
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (BOOLEAN_VALUEOF_MATCHER.matchesCall(node)) {
-            checkArguments(node.getArguments(), node, data);
+            checkArguments(node.getArguments(), node, ctx);
         }
 
-        return data;
+        return null;
     }
 
-    private void checkArguments(ASTArgumentList arguments, JavaNode node, Object data) {
+    private void checkArguments(ASTArgumentList arguments, JavaNode node, RuleContext ctx) {
         if (arguments == null || arguments.size() != 1) {
             return;
         }
@@ -70,21 +75,21 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
         ASTBooleanLiteral boolLiteral = getFirstArgBooleanLiteralOrNull(arguments);
         if (stringLiteral != null) {
             if ("\"true\"".equals(stringLiteral.getImage())) {
-                asCtx(data).addViolationWithMessage(node, messagePart + "(\"true\")`, prefer `Boolean.TRUE`");
+                ctx.addViolationWithMessage(node, messagePart + "(\"true\")`, prefer `Boolean.TRUE`");
             } else if ("\"false\"".equals(stringLiteral.getImage())) {
-                asCtx(data).addViolationWithMessage(node, messagePart + "(\"false\")`, prefer `Boolean.FALSE`");
+                ctx.addViolationWithMessage(node, messagePart + "(\"false\")`, prefer `Boolean.FALSE`");
             } else {
-                asCtx(data).addViolationWithMessage(node, messagePart + "(\"...\")`, prefer `Boolean.valueOf`");
+                ctx.addViolationWithMessage(node, messagePart + "(\"...\")`, prefer `Boolean.valueOf`");
             }
         } else if (boolLiteral != null) {
             if (boolLiteral.isTrue()) {
-                asCtx(data).addViolationWithMessage(node, messagePart + "(true)`, prefer `Boolean.TRUE`");
+                ctx.addViolationWithMessage(node, messagePart + "(true)`, prefer `Boolean.TRUE`");
             } else {
-                asCtx(data).addViolationWithMessage(node, messagePart + "(false)`, prefer `Boolean.FALSE`");
+                ctx.addViolationWithMessage(node, messagePart + "(false)`, prefer `Boolean.FALSE`");
             }
         } else if (isNewBoolean) {
             // any argument with "new Boolean", might be a variable access
-            asCtx(data).addViolationWithMessage(node, messagePart + "(...)`, prefer `Boolean.valueOf`");
+            ctx.addViolationWithMessage(node, messagePart + "(...)`, prefer `Boolean.valueOf`");
         }
     }
 

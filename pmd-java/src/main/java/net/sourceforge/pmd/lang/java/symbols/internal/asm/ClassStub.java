@@ -48,6 +48,8 @@ import net.sourceforge.pmd.util.OptionalBool;
 final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     static final int UNKNOWN_ARITY = 0;
+    private static final int VISIBILITY_MASK = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE;
+    private static final int NO_INNER_CLASS_VISIBILITY = -1;
 
     private final AsmSymbolResolver resolver;
 
@@ -56,6 +58,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     // all the following are lazy and depend on the parse lock
 
     private int accessFlags;
+    private int innerClassVisibility = NO_INNER_CLASS_VISIBILITY;
 
     private EnclosingInfo enclosingInfo;
     private LazyClassSignature signature;
@@ -197,23 +200,36 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             Also ACC_SUPER conflicts with ACC_SYNCHRONIZED, which
             Modifier.toString would reflect.
 
-            Since the differences are disjoint we can just OR the two
-            sets of flags.
+            The non-visibility differences are disjoint, so they can be
+            combined with OR. Visibility needs to be merged separately:
+            Bytecode processors (e.g. Android Proguard/R8) may produce
+            conflicting InnerClasses entries (widening access modifiers to
+            allow easier optimizations), and class stubs can be
+            populated in different orders.
          */
-        final int visibilityMask = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE;
-        int myAccess = this.accessFlags;
         if (fromClassInfo) {
             // we don't care about ACC_SUPER and it conflicts
             // with ACC_SYNCHRONIZED
             accessFlags = accessFlags & ~Opcodes.ACC_SUPER;
-        } else if ((myAccess & Opcodes.ACC_PUBLIC) != 0
-            && (accessFlags & visibilityMask) != Opcodes.ACC_PUBLIC) {
-            // ClassInfo mentions ACC_PUBLIC even if the real
-            // visibility is protected or private
-            // We remove the public to avoid a "public protected" or "public private" combination
-            myAccess = myAccess & ~Opcodes.ACC_PUBLIC;
+            if (innerClassVisibility != NO_INNER_CLASS_VISIBILITY) {
+                // InnerClasses contains the source-level visibility, even
+                // when it arrived before the ClassInfo for this class.
+                accessFlags = accessFlags & ~VISIBILITY_MASK;
+            }
+        } else {
+            int newVisibility = normalizeVisibility(accessFlags);
+            if (innerClassVisibility == NO_INNER_CLASS_VISIBILITY) {
+                innerClassVisibility = newVisibility;
+            } else {
+                innerClassVisibility = mostRestrictiveVisibility(innerClassVisibility, newVisibility);
+            }
+
+            // Replace any visibility read from ClassInfo or another
+            // InnerClasses entry, instead of accumulating incompatible flags.
+            this.accessFlags = this.accessFlags & ~VISIBILITY_MASK;
+            accessFlags = (accessFlags & ~VISIBILITY_MASK) | innerClassVisibility;
         }
-        this.accessFlags = myAccess | accessFlags;
+        this.accessFlags = this.accessFlags | accessFlags;
 
         // setModifiers is called multiple times: once from ClassFile structure (fromClassInfo==true)
         // and additionally from InnerClasses attribute (fromClassInfo==false)
@@ -227,6 +243,29 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 this.recordComponents = new ArrayList<>();
             }
         }
+    }
+
+    private static int normalizeVisibility(int accessFlags) {
+        int visibility = accessFlags & VISIBILITY_MASK;
+        if ((visibility & Opcodes.ACC_PRIVATE) != 0) {
+            return Opcodes.ACC_PRIVATE;
+        } else if (visibility == 0) {
+            return 0; // package-private
+        } else if ((visibility & Opcodes.ACC_PROTECTED) != 0) {
+            return Opcodes.ACC_PROTECTED;
+        }
+        return Opcodes.ACC_PUBLIC;
+    }
+
+    private static int mostRestrictiveVisibility(int first, int second) {
+        if (first == Opcodes.ACC_PRIVATE || second == Opcodes.ACC_PRIVATE) {
+            return Opcodes.ACC_PRIVATE;
+        } else if (first == 0 || second == 0) {
+            return 0; // package-private
+        } else if (first == Opcodes.ACC_PROTECTED || second == Opcodes.ACC_PROTECTED) {
+            return Opcodes.ACC_PROTECTED;
+        }
+        return Opcodes.ACC_PUBLIC;
     }
 
     void setEnclosingInfo(ClassStub outer, boolean localOrAnon, @Nullable String methodName, @Nullable String methodDescriptor) {

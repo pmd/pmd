@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import static java.util.Objects.requireNonNull;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -187,6 +190,20 @@ public class RuleSetReferenceId {
                 ruleName = null;
             }
         }
+    }
+
+    /**
+     * Resolves {@code ref} against the directory of {@code parent}, if that yields an existing file.
+     * Otherwise, it is returned unchanged, to be resolved as usual (CWD, URL, classpath).
+     */
+    public static RuleSetReferenceId resolveSibling(RuleSetReferenceId parent, RuleSetReferenceId ref) {
+        // isAbsolute() checks ruleSetReference != null and getRuleSetFileName() just returns ruleSetReference, so it can't return null
+        File parentDir = parent.isAbsolute() ? new File(requireNonNull(parent.getRuleSetFileName())).getParentFile() : null;
+        if (parentDir == null || !ref.isAbsolute() || new File(requireNonNull(ref.getRuleSetFileName())).isAbsolute()) {
+            return ref;
+        }
+        File sibling = new File(parentDir, ref.getRuleSetFileName());
+        return sibling.isFile() ? new RuleSetReferenceId(sibling.getPath(), ref.getRuleName()) : ref;
     }
 
     public @Nullable RuleSetReferenceId getParentRulesetIfThisIsARule() {

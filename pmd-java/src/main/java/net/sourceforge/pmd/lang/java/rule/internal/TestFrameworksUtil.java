@@ -110,9 +110,8 @@ public final class TestFrameworksUtil {
             );
 
     public static final List<EqualMethod> EQUAL_METHODS = Arrays.asList(
-        // JUnit Jupiter: expected, actual, [message]
-        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_)", 1, 0),
-        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_,_,_)", 1, 0),
+        // JUnit Jupiter: expected, actual, [delta], [message]
+        new EqualMethod("org.junit.jupiter.api.Assertions#assertEquals(_*)", 1, 0),
         // JUnit 3 and 4, Spring: [message], expected, actual
         new EqualMethod("org.junit.Assert#assertEquals(_,_)", 1, 0),
         new EqualMethod("org.junit.Assert#assertEquals(java.lang.String,_,_)", 2, 1),

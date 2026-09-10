@@ -60,9 +60,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
 
     @Override
     public Object visit(ASTForeachStatement loopStmt, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ForeachReassignOption behavior = getProperty(FOREACH_REASSIGN);
         if (behavior == ForeachReassignOption.ALLOW) {
-            return data;
+            return null;
         }
         ASTVariableId loopVar = loopStmt.getVarId();
         boolean ignoreNext = behavior == ForeachReassignOption.FIRST_ONLY;
@@ -72,7 +74,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     ignoreNext = false;
                     continue;
                 }
-                asCtx(data).addViolation(usage, loopVar.getName());
+                ctx.addViolation(usage, loopVar.getName());
             } else {
                 ignoreNext = false;
             }
@@ -82,9 +84,11 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
 
     @Override
     public Object visit(ASTForStatement loopStmt, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ForReassignOption behavior = getProperty(FOR_REASSIGN);
         if (behavior == ForReassignOption.ALLOW) {
-            return data;
+            return null;
         }
         NodeStream<ASTVariableId> loopVars = JavaAstUtils.getLoopVariables(loopStmt);
         if (behavior == ForReassignOption.DENY) {
@@ -95,7 +99,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                         if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
                             continue;
                         }
-                        asCtx(data).addViolation(usage, loopVar.getName());
+                        ctx.addViolation(usage, loopVar.getName());
                     }
                 }
             }
@@ -208,7 +212,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                 .filter(it -> loopVarNames.contains(it.getName()))
                 .filter(it -> onlyConsiderWrite ? it.getAccessType() == AccessType.WRITE && !isSimpleSkipOperation(it)
                                                 : JavaAstUtils.isVarAccessReadAndWrite(it))
-                .forEach(it -> asCtx(ruleCtx).addViolation(it, it.getName()));
+                .forEach(it -> ruleCtx.addViolation(it, it.getName()));
         }
 
         private boolean isSimpleSkipOperation(ASTNamedReferenceExpr expr) {

@@ -59,4 +59,114 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>bad, pattern variable of type java.util.Date</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    void bar(Object o) {
+        if (o instanceof Date d) {
+            System.out.println(d);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, pattern variable declared with a fully qualified type name</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar(Object o) {
+        if (o instanceof java.util.Date d) {
+            System.out.println(d);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, pattern variable in a switch case label</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    String bar(Object o) {
+        return switch (o) {
+            case Date d -> d.toString();
+            default -> "";
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, type pattern nested in a record deconstruction pattern</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    record Box(Object value) { }
+
+    void bar(Object o) {
+        if (o instanceof Box(Date d)) {
+            System.out.println(d);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, record component of type java.util.Date</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    record Range(Date from, Date to) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, record component not of type java.util.Date</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDate;
+
+public class Foo {
+    record Range(LocalDate from, LocalDate to) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, pattern variable not of type java.util.Date</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDateTime;
+
+public class Foo {
+    void bar(Object o) {
+        if (o instanceof LocalDateTime ldt) {
+            System.out.println(ldt);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
