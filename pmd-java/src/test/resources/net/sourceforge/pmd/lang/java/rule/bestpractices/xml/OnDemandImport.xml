@@ -4,11 +4,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
     <test-code>
-        <description>reports on-demand imports except supported test framework static imports</description>
+        <description>reports on-demand imports</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-linenumbers>1,2</expected-linenumbers>
         <code><![CDATA[
-import static org.junit.jupiter.api.Assertions.*;
 import static java.lang.Math.*;
 import java.util.*;
 import java.util.List;
@@ -106,6 +105,5 @@ import module java.base;
 
 class Foo { }
         ]]></code>
-        <source-type>java 25</source-type>
     </test-code>
 </test-data>

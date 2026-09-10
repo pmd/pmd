@@ -13,6 +13,9 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 
+/**
+ * @since 7.28.0
+ */
 public final class OnDemandImportRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<List<String>> ALLOW_STATIC_IMPORTS_FROM =
@@ -36,17 +39,17 @@ public final class OnDemandImportRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         if (node.isImportOnDemand()) {
-            List<String> allowedPackages = getProperty(node.isStatic()
-                    ? ALLOW_STATIC_IMPORTS_FROM
-                    : ALLOW_TYPE_IMPORTS_FROM);
-            if (!isAllowed(node.getImportedName(), allowedPackages, node.isStatic())) {
+            if (!isAllowed(node.getImportedName(), node.isStatic())) {
                 ((RuleContext) data).addViolation(node);
             }
         }
         return null;
     }
 
-    private static boolean isAllowed(String importedName, List<String> allowedPackages, boolean isStatic) {
+    private boolean isAllowed(String importedName, boolean isStatic) {
+        List<String> allowedPackages = getProperty(isStatic
+                ? ALLOW_STATIC_IMPORTS_FROM
+                : ALLOW_TYPE_IMPORTS_FROM);
         for (String allowedPackage : allowedPackages) {
             if ("*".equals(allowedPackage)
                     || importedName.equals(allowedPackage)
