@@ -1812,6 +1812,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "OnDemandImport (Java, Best Practices)",
+  "tags": "",
+  "keywords": "On Demand Import",
+  "url": "pmd_rules_java_bestpractices.html#ondemandimport",
+  "summary": "On-demand imports (also called wildcard imports) should be used sparingly. By default, this rule allows..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
   "title": "OneDeclarationPerLine (Java, Best Practices)",
   "tags": "",
   "keywords": "One Declaration Per Line",
