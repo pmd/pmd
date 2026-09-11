@@ -158,7 +158,7 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             }
 
             for (CallSiteAst call : sites) {
-                boolean callSiteMatch = matchesCallSite(call, beginCol, endCol, singleLine,
+                boolean callSiteMatch = matchesCallSite(call, beginLine, beginCol, endCol, singleLine,
                         suffixBeginLines, nestedRanges);
                 boolean sigMatch = callSiteMatch && SignatureMatcherKt.matchesSigPolymorphic(call, sig, ctx::isSubtypeOf);
                 if (sigMatch) {
@@ -169,11 +169,19 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
         }
 
         private static boolean matchesCallSite(CallSiteAst call,
-                                               int beginCol, int endCol,
+                                               int beginLine, int beginCol, int endCol,
                                                boolean singleLine,
                                                Set<Integer> suffixBeginLines,
                                                List<int[]> nestedRanges) {
             if (singleLine) {
+                // callSitesInRange() falls back to the +/-1 line-tolerant lookup when the
+                // node's own line has no recorded call site (e.g. an unresolved receiver
+                // type produces no CallSiteAst at all). Reject any call site that didn't
+                // actually come from this node's own line so it can't be wrongly matched
+                // via that fallback.
+                if (call.getLine() != beginLine) {
+                    return false;
+                }
                 int col = call.getColumn();
                 if (col < beginCol || col > endCol) {
                     return false;
