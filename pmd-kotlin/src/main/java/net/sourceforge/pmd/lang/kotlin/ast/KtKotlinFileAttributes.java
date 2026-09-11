@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
  * classpath was available or analysis failed. Use {@code [@TypeInfoAvailable]} as a
  * truthy check, or {@code [not(@TypeInfoAvailable)]} to detect the no-type-info case.
  *
- * @since 7.27.0
+ * @since 7.28.0
  * @experimental See {@link AttributeView}.
  */
 @Experimental

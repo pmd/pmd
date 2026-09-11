@@ -49,7 +49,7 @@ Resolved type names, return types, and annotation FQNs are available through
 {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %} for use in Java-based rules.
 
 #### Kotlin XPath functions and type attributes
-Type data is now accessible in XPath rules via new attributes and helper functions (see [Kotlin XPath rule support](pmd_languages_kotlin.html#xpath-rule-support)):
+Type data is now accessible in XPath rules via new attributes and helper functions (see [Kotlin XPath rule support]({{ baseurl }}pmd_languages_kotlin.html#xpath-rule-support)):
 
 * **Attributes**: `@TypeName`, `@ReturnTypeName`, `@AnnotationFqNames`, `@Modifiers`, `@Identifier`
   are exposed on declaration nodes (property, function, class, parameter, catch, for-loop, delegation specifier,
@@ -154,13 +154,27 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 * kotlin
     * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the initial API to access type information
       on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
+    * `KotlinNodeTypeData.getTypeName(KotlinNode)` and `KotlinNodeTypeData.getReturnTypeName(KotlinNode)`
+      have been renamed to {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData#getType(KotlinNode) %}
+      and {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData#getReturnType(KotlinNode) %}, and
+      now return {%jdoc kotlin::lang.kotlin.types.KotlinTypeName %} instead of `String`.
+      The corresponding {%jdoc kotlin::lang.kotlin.types.InternalApiBridge %} setters
+      `setTypeName`/`setReturnTypeName` were renamed to `setType`/`setReturnType` the same way.
+      This is a breaking change to this experimental API.
     * {%jdoc kotlin::lang.kotlin.ast.HasTypeName %}: Marker interface for Kotlin AST nodes that expose
       a `@TypeName` XPath attribute.
     * New XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly`, `pmd-kotlin:hasAnnotation`,
       `pmd-kotlin:modifiers`, `pmd-kotlin:matchesSig`, `pmd-kotlin:isNullable`, `pmd-kotlin:hasUnresolvedReference`
       in package `net.sourceforge.pmd.lang.kotlin.rule.xpath.internal`.
-    * New AST attribute view classes in package `net.sourceforge.pmd.lang.kotlin.ast` (e.g.
-      `KtFunctionDeclarationAttributes`, `KtPropertyDeclarationAttributes`, etc.).
+    * New AST attribute view classes in package `net.sourceforge.pmd.lang.kotlin.ast`:
+      {%jdoc kotlin::lang.kotlin.ast.KtCatchBlockAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtDelegationSpecifierAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtForStatementAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtFunctionValueParameterAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtKotlinFileAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtPropertyDeclarationAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtSingleAnnotationAttributes %}, and
+      {%jdoc kotlin::lang.kotlin.ast.KtUnescapedAnnotationAttributes %}.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
