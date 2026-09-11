@@ -13,6 +13,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPostfixUnaryExpression;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPostfixUnarySuffix;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
@@ -109,7 +111,7 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             if (contextNode == null) {
                 return false;
             }
-            if (!"PostfixUnaryExpression".equals(contextNode.getXPathNodeName())) {
+            if (!(contextNode instanceof KtPostfixUnaryExpression)) {
                 return false;
             }
             String sig = (String) arguments[0];
@@ -132,7 +134,7 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             if (!singleLine) {
                 suffixBeginLines = new HashSet<>();
                 for (Node child : contextNode.children()) {
-                    if ("PostfixUnarySuffix".equals(child.getXPathNodeName())) {
+                    if (child instanceof KtPostfixUnarySuffix) {
                         suffixBeginLines.add(child.getBeginLine());
                     }
                 }
@@ -151,7 +153,7 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             if (singleLine) {
                 nestedRanges = new ArrayList<>();
                 for (Node desc : contextNode.descendants().toList()) {
-                    if ("PostfixUnaryExpression".equals(desc.getXPathNodeName())) {
+                    if (desc instanceof KtPostfixUnaryExpression) {
                         nestedRanges.add(new int[]{desc.getBeginColumn(), desc.getEndColumn()});
                     }
                 }

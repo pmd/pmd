@@ -59,7 +59,6 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
     public static final KotlinHasAnnotationFunction INSTANCE = new KotlinHasAnnotationFunction();
 
     private static final Logger LOG = LoggerFactory.getLogger(KotlinHasAnnotationFunction.class);
-    private static final String UNESCAPED_ANNOTATION = "UnescapedAnnotation";
 
     private KotlinHasAnnotationFunction() {
         super("hasAnnotation");
@@ -133,7 +132,7 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
         if (isBodyBoundary(xpathName)) {
             return false;
         }
-        if (UNESCAPED_ANNOTATION.equals(xpathName)) {
+        if (node instanceof KtUnescapedAnnotation) {
             KotlinTypeName type = KotlinNodeTypeData.getType(node);
             if (type != null) {
                 String fqName = type.getFqName();
