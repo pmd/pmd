@@ -84,7 +84,7 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
         assertNoErrors(report);
         assertFalse(report.getViolations().isEmpty(),
                 "Expected hasAnnotation('Service') to match @org.springframework.stereotype.Service");
-        assertNoViolationAtLine(report, 7, "UserEntity must not match hasAnnotation('Service')");
+        assertNoViolationAtLine(report, 6, "UserEntity must not match hasAnnotation('Service')");
     }
 
     @Test

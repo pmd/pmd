@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -81,7 +83,11 @@ abstract class BaseKotlinXPathFunctionTest {
         if (resource == null) {
             throw new IllegalStateException("Cannot find resource: " + path);
         }
-        return new File(resource.getFile());
+        try {
+            return Paths.get(resource.toURI()).toFile();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Invalid resource URI: " + resource, e);
+        }
     }
 
     protected static void assertNoErrors(Report report) {

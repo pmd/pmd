@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.kotlin.ast.internal;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignableExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignment;
@@ -36,29 +34,6 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 public final class KotlinAstUtil {
 
     private KotlinAstUtil() { /* utility class */ }
-
-    /**
-     * Concatenates the text of all {@link KtSimpleIdentifier} direct children of
-     * {@code identifierNode} with dots (e.g. a {@code KtIdentifier} for
-     * {@code "com.example.Foo"} → {@code "com.example.Foo"}).
-     * Returns {@code null} if the node is {@code null} or has no identifier children.
-     */
-    public static @Nullable String dottedTextOf(KotlinNode identifierNode) {
-        if (identifierNode == null) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (KtSimpleIdentifier part : identifierNode.children(KtSimpleIdentifier.class)) {
-            String partText = textOf(part);
-            if (partText != null) {
-                if (sb.length() > 0) {
-                    sb.append('.');
-                }
-                sb.append(partText);
-            }
-        }
-        return sb.length() > 0 ? sb.toString() : null;
-    }
 
     /**
      * Returns the text of the first terminal-node child of a {@link KtSimpleIdentifier},
