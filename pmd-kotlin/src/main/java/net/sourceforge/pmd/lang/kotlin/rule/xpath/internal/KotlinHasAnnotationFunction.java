@@ -29,16 +29,21 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
  * <ol>
  *   <li>If kotlin-type-mapper resolved the annotation FQN, the {@code @TypeName}
  *       attribute on child {@code UnescapedAnnotation} nodes is used for an exact
- *       FQN or simple-name match.</li>
- *   <li>Falls back to KotlinNodeTypeData on the declaration node.</li>
- *   <li>Falls back to the annotation name <em>as written in source</em> (via text region),
- *       which always works for simple names regardless of whether type resolution ran.</li>
+ *       FQN match, or a simple-name match when {@code className} itself is a simple
+ *       name (no dots).</li>
+ *   <li>Falls back to KotlinNodeTypeData on the declaration node, with the same
+ *       FQN-or-simple-name rule.</li>
+ *   <li>Falls back to the annotation name <em>as written in source</em> (via text region);
+ *       only used when {@code className} is a simple name, since source text alone
+ *       cannot confirm a FQN match without type resolution.</li>
  * </ol>
  *
  * <p>Both a fully-qualified name (e.g. {@code 'javax.persistence.Column'}) and a
- * simple name (e.g. {@code 'Column'}) are accepted. Without FQN resolution, a query
- * for {@code 'javax.persistence.Column'} still matches {@code @Column} because the
- * simple-name suffix is compared.
+ * simple name (e.g. {@code 'Column'}) are accepted. A simple-name query matches any
+ * annotation whose simple name is the same, regardless of package. A fully-qualified
+ * query only matches when the annotation's FQN was actually resolved (or written out
+ * in source) and equals {@code className} exactly -- it never matches a different
+ * package sharing the same simple name.</p>
  *
  * <p>Example XPath:
  * <pre>{@code
@@ -99,7 +104,7 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
         private static boolean matchesAnnotationFqNames(
                 KotlinNode declNode, String className, String simpleName) {
             for (String fqn : KotlinNodeTypeData.getAnnotationFqNames(declNode)) {
-                if (fqn.equals(className) || simpleNameOf(fqn).equals(simpleName)) {
+                if (fqn.equals(className) || (!className.contains(".") && simpleNameOf(fqn).equals(simpleName))) {
                     return true;
                 }
             }
@@ -132,7 +137,7 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
             KotlinTypeName type = KotlinNodeTypeData.getType(node);
             if (type != null) {
                 String fqName = type.getFqName();
-                return fqName.equals(className) || simpleNameOf(fqName).equals(simpleName);
+                return fqName.equals(className) || (!className.contains(".") && simpleNameOf(fqName).equals(simpleName));
             }
             return false; // no FQN resolved for this annotation
         }

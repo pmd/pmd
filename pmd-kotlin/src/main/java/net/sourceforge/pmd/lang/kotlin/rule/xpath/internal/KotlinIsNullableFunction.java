@@ -87,9 +87,14 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
 
             if (contextNode instanceof KotlinNode) {
                 KotlinNode kotlinNode = (KotlinNode) contextNode;
-                if (isNullable(KotlinNodeTypeData.getType(kotlinNode))
-                        || isNullable(KotlinNodeTypeData.getReturnType(kotlinNode))) {
-                    return true;
+                KotlinTypeName type = KotlinNodeTypeData.getType(kotlinNode);
+                KotlinTypeName returnType = KotlinNodeTypeData.getReturnType(kotlinNode);
+                if (type != null || returnType != null) {
+                    // Trust the resolved type annotation set by KotlinTypeAnnotationVisitor and
+                    // do not fall through to the line index: another declaration sharing the
+                    // node's line (e.g. "val a: String = ""; val b: String? = null") must not
+                    // leak its nullability into this node's result.
+                    return isNullable(type) || isNullable(returnType);
                 }
             }
 
@@ -99,11 +104,21 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
             int line = contextNode.getBeginLine();
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, line);
             for (DeclarationAst decl : decls) {
+                if (!columnsOverlap(contextNode, decl)) {
+                    continue;
+                }
                 if (isNullableTypeAst(decl.getType()) || isNullableTypeAst(decl.getReturnType())) {
                     return true;
                 }
             }
             return false;
+        }
+
+        private static boolean columnsOverlap(Node node, DeclarationAst decl) {
+            // No end-column data (older kotlin-type-mapper JSON schema) -- can't compare;
+            // fall back to allowing the match, same as before this guard existed.
+            return decl.getEndColumn() <= 0
+                    || (decl.getColumn() <= node.getEndColumn() && decl.getEndColumn() >= node.getBeginColumn());
         }
     }
 }

@@ -86,4 +86,17 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
                 "Expected hasAnnotation('Service') to match @org.springframework.stereotype.Service");
         assertNoViolationAtLine(report, 7, "UserEntity must not match hasAnnotation('Service')");
     }
+
+    @Test
+    void hasAnnotationDoesNotMatchWrongFqnJunit() {
+        // With auxClasspath configured, org.junit.jupiter.api.Test resolves to its real FQN,
+        // so a query for a different FQN sharing only the simple name ('Test') must NOT match.
+        Report report = runXPath(
+                "//FunctionDeclaration[pmd-kotlin:hasAnnotation('com.other.Test')]",
+                getResource(RESOURCE_DIR + "/TestCaseExample.kt"),
+                true);
+        assertNoErrors(report);
+        assertTrue(report.getViolations().isEmpty(),
+                "hasAnnotation('com.other.Test') must not match @org.junit.jupiter.api.Test");
+    }
 }
