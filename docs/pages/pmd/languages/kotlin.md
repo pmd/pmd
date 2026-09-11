@@ -53,7 +53,6 @@ and the kotlin-type-mapper analysis has resolved the types:
 | `@TypeName` | `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
 | `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name (including generic type arguments and nullable marker) |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
-| `@Modifiers` | `ClassDeclaration`, `FunctionDeclaration`, `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CompanionObject` | Space-separated modifier keywords (e.g. `"override suspend"`). For arbitrary nodes use the `pmd-kotlin:modifiers()` function. |
 | `@Mutable` | `PropertyDeclaration` | `true` for `var`, `false` for `val`. Always present. |
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
 | `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
@@ -67,7 +66,8 @@ A type-info attribute is **absent** (not present with a null value) whenever its
 
 > **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name). Modifiers like
 > `private`, `lateinit`, or `const` are on the parent `PropertyDeclaration` node.
-> Use `//PropertyDeclaration[@Modifiers = 'private']` rather than querying `VariableDeclaration`.
+> Use `//PropertyDeclaration[pmd-kotlin:modifiers() = 'private']` rather than querying
+> `VariableDeclaration`.
 
 > **Note:** Boolean attributes like `@Mutable` require XPath's `true()` / `false()` functions:
 > `//PropertyDeclaration[@Mutable=false()]` (immutable `val` declarations).
@@ -185,8 +185,10 @@ if (node instanceof HasTypeName) {
 }
 
 // Get modifiers on declaration nodes implementing HasModifiers
+// (Java-only API: not exposed as @Modifiers XPath attribute; use
+// pmd-kotlin:modifiers() from XPath instead)
 if (node instanceof HasModifiers) {
-    String mods = ((HasModifiers) node).getModifiers(); // e.g. "override suspend"
+    List<String> mods = ((HasModifiers) node).getModifiers(); // e.g. ["override", "suspend"]
 }
 
 // Static helpers on KotlinNodeTypeData (work on any KotlinNode)

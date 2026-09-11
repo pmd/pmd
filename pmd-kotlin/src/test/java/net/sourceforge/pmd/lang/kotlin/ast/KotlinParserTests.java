@@ -10,11 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -150,15 +151,16 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                 "abstract class Base { open suspend fun doWork() {} }");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        assertEquals("open suspend", func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+        assertEquals(Arrays.asList("open", "suspend"),
+                func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
     }
 
     @Test
-    void modifiersAttributeNullWhenNoModifiers() {
+    void modifiersAttributeEmptyWhenNoModifiers() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun plain() {}");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        assertNull(func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+        assertTrue(func.attributes(KtFunctionDeclarationAttributes.class).getModifiers().isEmpty());
     }
 
     @Test
@@ -186,8 +188,8 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
 
         // Both class and function declarations expose non-null AnnotationFqNames attribute,
         // even when empty. KotlinInnerNode omits only null-valued attributes.
-        assertTrue(hasAnnotationFqNamesXPathAttribute(func));
-        assertTrue(hasAnnotationFqNamesXPathAttribute(clazz));
+        assertTrue(hasXPathAttribute(func, "AnnotationFqNames"));
+        assertTrue(hasXPathAttribute(clazz, "AnnotationFqNames"));
     }
 
     @Test
@@ -226,7 +228,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
         KtClassParameter param = file.descendants(KtClassParameter.class)
                 .filter(p -> {
                     KtClassParameterAttributes attrs = p.attributes(KtClassParameterAttributes.class);
-                    return attrs != null && "override".equals(attrs.getModifiers());
+                    return attrs != null && attrs.getModifiers().contains("override");
                 }).first();
         assertNotNull(param, "Expected a ClassParameter with 'override' modifier");
     }
@@ -246,7 +248,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                 "class Foo {\n    private lateinit var name: String\n}");
         KotlinParser.KtPropertyDeclaration prop =
                 file.descendants(KotlinParser.KtPropertyDeclaration.class).first();
-        assertEquals("private lateinit",
+        assertEquals(Arrays.asList("private", "lateinit"),
                 prop.attributes(KtPropertyDeclarationAttributes.class).getModifiers());
     }
 
@@ -256,7 +258,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                 "fun spread(vararg items: String) {}");
         KotlinParser.KtFunctionValueParameter param =
                 file.descendants(KotlinParser.KtFunctionValueParameter.class).first();
-        assertEquals("vararg",
+        assertEquals(Collections.singletonList("vararg"),
                 param.attributes(KtFunctionValueParameterAttributes.class).getModifiers());
     }
 
@@ -280,11 +282,11 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
         });
     }
 
-    private static boolean hasAnnotationFqNamesXPathAttribute(KotlinNode node) {
+    private static boolean hasXPathAttribute(KotlinNode node, String name) {
         Iterator<Attribute> it = node.getXPathAttributesIterator();
         while (it.hasNext()) {
             Attribute attr = it.next();
-            if ("AnnotationFqNames".equals(attr.getName())) {
+            if (name.equals(attr.getName())) {
                 return true;
             }
         }
