@@ -56,7 +56,6 @@ and the kotlin-type-mapper analysis has resolved the types:
 | `@Modifiers` | `ClassDeclaration`, `FunctionDeclaration`, `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CompanionObject` | Space-separated modifier keywords (e.g. `"override suspend"`). For arbitrary nodes use the `pmd-kotlin:modifiers()` function. |
 | `@Mutable` | `PropertyDeclaration` | `true` for `var`, `false` for `val`. Always present. |
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
-| `@TypeInfoAvailable` | `KotlinFile` (root) | Present (and `true`) when kotlin-type-mapper analysis ran; absent otherwise. Use `[@TypeInfoAvailable]` as a truthy test. |
 | `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
@@ -74,31 +73,22 @@ A type-info attribute is **absent** (not present with a null value) whenever its
 > `//PropertyDeclaration[@Mutable=false()]` (immutable `val` declarations).
 > Using `false` without parentheses matches a node name, not a boolean value.
 
-#### Absent value: unknown vs unresolved vs genuinely none
+#### Absent value: unresolved vs genuinely none
 
-An absent attribute is ambiguous on its own — the type could be unresolved, or genuinely not present,
-or the analysis may not have run. Note that a configured `auxClasspath` does not guarantee every type
-resolves (incomplete classpath, generated/preprocessed code, missing annotation processors, etc.).
-Two existing signals disambiguate the three cases:
+An absent attribute is ambiguous on its own — the type could be unresolved, or genuinely not
+present. Note that a configured `auxClasspath` does not guarantee every type resolves (incomplete
+classpath, generated/preprocessed code, missing annotation processors, etc.).
+`pmd-kotlin:hasUnresolvedReference()` — whether the node has an unresolved reference (the Kotlin
+analog of pmd-java's `isUnresolved()`) — disambiguates the two cases:
 
-* `@TypeInfoAvailable` on the `KotlinFile` root — whether kotlin-type-mapper analysis ran at all.
-* `pmd-kotlin:hasUnresolvedReference()` — whether the node has an unresolved reference (the Kotlin
-  analog of pmd-java's `isUnresolved()`).
-
-| Root `@TypeInfoAvailable` | `hasUnresolvedReference()` | Attribute absent means |
-|---------------------------|----------------------------|------------------------|
-| absent | – | **unknown** — analysis did not run (no usable `auxClasspath`) |
-| present | true | **unresolved** — analysis ran but the type could not be resolved |
-| present | false | **genuinely none** — analysis ran and resolved; there is no such value |
+| `hasUnresolvedReference()` | Attribute absent means |
+|-----------------------------|------------------------|
+| true | **unresolved** — analysis ran but the type could not be resolved |
+| false | **genuinely none** — analysis ran and resolved; there is no such value |
 
 ```xml
 <!-- property definitely without a resolvable declared type (not merely unresolved) -->
-//PropertyDeclaration[not(@TypeName)
-    and not(pmd-kotlin:hasUnresolvedReference())
-    and ancestor::KotlinFile/@TypeInfoAvailable]
-
-<!-- files where type resolution was unavailable -->
-//KotlinFile[not(@TypeInfoAvailable)]
+//PropertyDeclaration[not(@TypeName) and not(pmd-kotlin:hasUnresolvedReference())]
 ```
 
 ### XPath functions
@@ -203,10 +193,6 @@ if (node instanceof HasModifiers) {
 KotlinTypeName type = KotlinNodeTypeData.getType(node);
 KotlinTypeName returnType = KotlinNodeTypeData.getReturnType(node);
 List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(node);
-
-// Check if type analysis ran (on root node)
-KtKotlinFile root = (KtKotlinFile) node.getRoot();
-boolean available = KotlinNodeTypeData.isTypeInfoAvailable(root);
 ```
 
 All type getters return `null` when type analysis has not run or the type could not be resolved.

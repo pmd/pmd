@@ -39,11 +39,6 @@ public final class InternalApiBridge {
         KotlinNodeTypeData.setAnnotationFqNames(node, fqnList);
     }
 
-    /** @see KotlinNodeTypeData#setTypeInfoAvailable(KtKotlinFile) */
-    public static void setTypeInfoAvailable(KtKotlinFile rootNode) {
-        KotlinNodeTypeData.setTypeInfoAvailable(rootNode);
-    }
-
     /** @see KotlinNodeTypeData#setAnalysisContext(KtKotlinFile, KotlinTypeAnalysisContext) */
     public static void setAnalysisContext(KtKotlinFile rootNode, KotlinTypeAnalysisContext ctx) {
         KotlinNodeTypeData.setAnalysisContext(rootNode, ctx);

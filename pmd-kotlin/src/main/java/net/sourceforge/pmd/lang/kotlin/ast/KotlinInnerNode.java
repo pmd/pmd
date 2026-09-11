@@ -116,10 +116,10 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
             Attribute attr = source.next();
             // Dedup by name; skip null-valued attributes. This implements deliberate
             // optional-attribute absence: the type-aware views (@TypeName, @ReturnTypeName,
-            // @AnnotationFqNames, @TypeInfoAvailable, ...) return null when the value does not
-            // apply, so the attribute is absent from XPath rather than present-with-null.
-            // Rules distinguish "unknown" (root has no @TypeInfoAvailable), "unresolved"
-            // (pmd-kotlin:hasUnresolvedReference()), and "genuinely none" — see the Kotlin docs.
+            // @AnnotationFqNames, ...) return null when the value does not apply, so the
+            // attribute is absent from XPath rather than present-with-null. Rules distinguish
+            // "unresolved" (pmd-kotlin:hasUnresolvedReference()) from "genuinely none" — see
+            // the Kotlin docs.
             if (attr.getValue() != null && names.add(attr.getName())) {
                 result.add(attr);
             }
