@@ -126,6 +126,15 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
     }
 
     @Test
+    void typeIsExactlyMatchesNullableType() {
+        // typeIsExactly must ignore the nullable marker: String? still matches 'kotlin.String'.
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/StringEquivalence.kt");
+        Report report = runXPath("//PropertyDeclaration[pmd-kotlin:typeIsExactly('kotlin.String')]", kotlinFile);
+        assertNoErrors(report);
+        assertViolationAtLine(report, 10, "Expected violation at line 10 (nickname: String?)");
+    }
+
+    @Test
     void typeIsOnClassParameterMatches() {
         File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/PrimaryCtorParams.kt");
         Report report = runXPath("//ClassParameter[pmd-kotlin:typeIs('kotlin.String')]", kotlinFile);
