@@ -201,4 +201,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7060 Final local flags support conditional compilation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void test() {
+        final boolean enabled = true;
+        if (enabled) {
+            // Named constants allow conditional compilation.
+        }
+        final boolean disabled = false;
+        if (!disabled) {
+            // The same exclusion applies to negated constants.
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

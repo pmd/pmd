@@ -52,9 +52,10 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAllowedExpression(ASTExpression e) {
-        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral
-                || e instanceof ASTTypeExpression
-                || e.isCompileTimeConstant() && !isNonEmptyArray(e)) {
+        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression) {
+            return true;
+        }
+        if (e.isCompileTimeConstant() && !isNonEmptyArray(e) && !referencesInstanceField(e)) {
             return true;
         } else if (e instanceof ASTFieldAccess
                 && "length".equals(((ASTFieldAccess) e).getName())
@@ -88,6 +89,14 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
 
     private boolean isNonEmptyArray(ASTExpression e) {
         return e instanceof ASTArrayInitializer && e.getNumChildren() > 0;
+    }
+
+    private boolean referencesInstanceField(ASTExpression e) {
+        // A constant expression may still contain a name that cannot be used in a static context.
+        return e.descendantsOrSelf().filterIs(ASTVariableAccess.class).any(ref -> {
+            JVariableSymbol symbol = ref.getReferencedSym();
+            return symbol instanceof JFieldSymbol && !((JFieldSymbol) symbol).isStatic();
+        });
     }
 
     private boolean isUsedForSynchronization(ASTVariableId field) {

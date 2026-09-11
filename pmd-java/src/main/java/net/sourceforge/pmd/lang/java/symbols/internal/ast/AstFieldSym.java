@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
 
@@ -36,11 +37,18 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
 
     @Override
     public @Nullable Object getConstValue() {
-        if (node.hasModifiers(JModifier.STATIC, JModifier.FINAL)) {
-            ASTExpression init = node.getInitializer();
-            return init == null ? null : init.getConstValue();
+        if (!node.hasModifiers(JModifier.STATIC, JModifier.FINAL)) {
+            return null;
         }
-        return null;
+
+        ASTExpression initializer = node.getInitializer();
+        Object value = initializer == null ? null : initializer.getConstValue();
+        if (value == null) {
+            return null;
+        }
+
+        JTypeMirror type = getTypeMirror(Substitution.EMPTY);
+        return (type.isPrimitive() || TypeTestUtil.isExactlyA(String.class, type)) ? value : null;
     }
 
     @Override
