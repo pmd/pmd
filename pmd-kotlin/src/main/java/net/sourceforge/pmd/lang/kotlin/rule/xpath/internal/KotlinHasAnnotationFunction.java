@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
@@ -191,21 +191,15 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
     /**
      * Returns the annotation type name as written in source (e.g. {@code "Column"}
      * or {@code "javax.persistence.Column"}) from the {@code KtUserType} inside the
-     * given {@code UnescapedAnnotation} node.  Returns {@code null} on failure.
+     * given {@code UnescapedAnnotation} node. Returns {@code null} only if the source
+     * text cannot be sliced (unexpected; defensive fallback).
+     *
+     * @throws IllegalStateException if {@code annNode} has neither a direct
+     *     {@code KtUserType} nor a {@code KtConstructorInvocation} containing one —
+     *     see {@link KotlinAstUtil#findUserTypeInAnnotation(KtUnescapedAnnotation)}.
      */
     static @Nullable String getAnnotationSourceText(KtUnescapedAnnotation annNode) {
-        // unescapedAnnotation : constructorInvocation | userType
-        // constructorInvocation : userType valueArguments
-        KtUserType userType = annNode.firstChild(KtUserType.class);
-        if (userType == null) {
-            KtConstructorInvocation ctor = annNode.firstChild(KtConstructorInvocation.class);
-            if (ctor != null) {
-                userType = ctor.firstChild(KtUserType.class);
-            }
-        }
-        if (userType == null) {
-            return null;
-        }
+        KtUserType userType = KotlinAstUtil.findUserTypeInAnnotation(annNode);
         try {
             return userType.getTextDocument()
                     .sliceOriginalText(userType.getTextRegion())

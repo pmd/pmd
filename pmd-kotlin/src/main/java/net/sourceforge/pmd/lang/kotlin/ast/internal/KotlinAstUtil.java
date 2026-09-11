@@ -7,10 +7,13 @@ package net.sourceforge.pmd.lang.kotlin.ast.internal;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignableExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignment;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDirectlyAssignableExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionBody;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
@@ -23,6 +26,8 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPrimaryExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinTerminalNode;
 
@@ -182,5 +187,44 @@ public final class KotlinAstUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the first direct child of {@code node} that is a {@code KtUserType},
+     * or {@code null} if none is found. Used to find the base type of a constructor
+     * invocation, delegation specifier, or annotation.
+     */
+    public static @Nullable KtUserType firstUserTypeChild(KotlinNode node) {
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            if (node.getChild(i) instanceof KtUserType) {
+                return (KtUserType) node.getChild(i);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds the {@code KtUserType} node written for an annotation's type, whether the
+     * annotation is a bare type reference ({@code @Foo}) or a constructor invocation
+     * ({@code @Foo(bar)}).
+     *
+     * @throws IllegalStateException if the node has neither shape, which would mean the
+     *     AST contradicts the {@code unescapedAnnotation} grammar rule
+     *     ({@code constructorInvocation | userType})
+     */
+    public static KtUserType findUserTypeInAnnotation(KtUnescapedAnnotation annNode) {
+        KtUserType userType = annNode.firstChild(KtUserType.class);
+        if (userType != null) {
+            return userType;
+        }
+        KtConstructorInvocation ctor = annNode.firstChild(KtConstructorInvocation.class);
+        KtUserType ctorUserType = ctor != null ? firstUserTypeChild(ctor) : null;
+        if (ctorUserType != null) {
+            return ctorUserType;
+        }
+        throw new IllegalStateException(
+                "KtUnescapedAnnotation has neither a KtUserType nor a KtConstructorInvocation "
+                        + "containing one; this contradicts the unescapedAnnotation grammar rule "
+                        + "(node: " + annNode.getClass().getSimpleName() + ")");
     }
 }
