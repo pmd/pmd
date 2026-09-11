@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -15,12 +16,18 @@ import org.junit.jupiter.api.Test;
 
 class AbstractJjtreeNodeTest {
 
+    @Test
+    void testDummy() {
+        // only necessary because junit cannot handle classes with only nested tests.
+        assertTrue(true);
+    }
+
     @Nested
     class InsertChild {
 
-        FooNode subject;
-        FooNode child0;
-        FooNode child1;
+        private FooNode subject;
+        private FooNode child0;
+        private FooNode child1;
 
         @BeforeEach
         void setup() {
