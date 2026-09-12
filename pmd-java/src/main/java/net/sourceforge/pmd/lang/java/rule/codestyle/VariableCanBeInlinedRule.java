@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.DEPRECATED_RULE_PROPERTY_MARKER;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -25,7 +26,11 @@ public class VariableCanBeInlinedRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters")
             .defaultValue(true)
-            .desc("If set to false this rule no longer requires the variable declaration and return/throw statement to be on consecutive lines. Any variable that is used solely in a return/throw statement will be reported.")
+            .desc(DEPRECATED_RULE_PROPERTY_MARKER + "Setting this to false relaxes the rule to report any variable "
+                    + "that is used solely in a return/throw statement, under the assumption that the statements "
+                    + "between the declaration and the return have no side effects. That assumption is unsafe and "
+                    + "following the suggestion could introduce an application bug (#3124). The property will be "
+                    + "removed; statement order will then always be considered.")
             .build();
 
     public VariableCanBeInlinedRule() {
