@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -46,14 +48,22 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
         return data;
     }
 
+    /**
+     * A method body "just throws CloneNotSupportedException" if it never
+     * returns a value and every {@code throw} it contains (however it is
+     * reached, e.g. via a local variable, a logging call beforehand, or a
+     * try/catch) throws only {@link CloneNotSupportedException}. A body with
+     * no throw statement at all doesn't count - it doesn't actually disable
+     * cloning. Nested classes and lambdas are not considered, as their
+     * control flow is independent of the enclosing method's.
+     */
     private static boolean justThrowsCloneNotSupported(ASTBlock body) {
-        return body.size() == 1
-                && body.getChild(0)
-                   .asStream()
-                   .filterIs(ASTThrowStatement.class)
-                   .map(ASTThrowStatement::getExpr)
-                   .filter(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it))
-                   .nonEmpty();
+        if (body.descendants(ASTReturnStatement.class).nonEmpty()) {
+            return false;
+        }
+        DescendantNodeStream<ASTThrowStatement> throwStatements = body.descendants(ASTThrowStatement.class);
+        return throwStatements.nonEmpty()
+            && throwStatements.all(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it.getExpr()));
     }
 
 }

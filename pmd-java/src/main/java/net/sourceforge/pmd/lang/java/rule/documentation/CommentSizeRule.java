@@ -8,8 +8,10 @@ import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -42,7 +44,17 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
 
+        // Comments that make up the file header (e.g. a license/copyright header)
+        // appear before the first declaration and are not subject to the limits,
+        // see #6270.
+        TextPos2d firstCodePos = firstCodeTokenStart(cUnit);
+
         for (JavaComment comment : cUnit.getComments()) {
+            if (firstCodePos != null
+                && comment.getReportLocation().getEndPos().compareTo(firstCodePos) <= 0) {
+                continue;
+            }
+
             if (hasTooManyLines(comment)) {
                 asCtx(data).addViolationWithPosition(
                     comment.getToken(),
@@ -55,6 +67,19 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
         }
 
         return null;
+    }
+
+    /**
+     * Start position of the first code token of the compilation unit, or {@code null}
+     * if the file has no declaration. Any comment ending before this position is
+     * considered part of the file header.
+     */
+    private static TextPos2d firstCodeTokenStart(ASTCompilationUnit cUnit) {
+        if (cUnit.getNumChildren() == 0) {
+            return null;
+        }
+        JavaNode firstDecl = cUnit.getChild(0);
+        return firstDecl.getFirstToken().getReportLocation().getStartPos();
     }
 
     private static boolean hasRealText(Chars line) {

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Rule that verifies, that the return values of next(), first(), last(), etc.
@@ -30,23 +31,25 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (isResultSetMethod(node) && !isCheckedIndirectly(node)) {
-            asCtx(data).addViolation(node);
+            ctx.addViolation(node);
         }
         return super.visit(node, data);
     }

@@ -54,6 +54,7 @@ strat = "strat"
 ois = "ois"
 parms = "parms"
 opps = "opps"
+oout = "oout"
 
 [default.extend-identifiers]
 # public APIs

@@ -17,10 +17,10 @@ public final class ASTArrayComprehensionLoop extends AbstractEcmascriptNode<Arra
     }
 
     public EcmascriptNode<?> getIterator() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public EcmascriptNode<?> getIteratedObject() {
-        return (EcmascriptNode<?>) getChild(1);
+        return getChild(1);
     }
 }

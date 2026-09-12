@@ -19,6 +19,7 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.XOR;
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExprWithOperator;
 
+import java.lang.reflect.Modifier;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -27,7 +28,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -38,6 +41,10 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
@@ -102,6 +109,10 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // Eg `SuperItf obj = (SubItf) ()-> {};`
             // If we remove the cast, even if it might compile,
             // the object will not implement SubItf anymore.
+        } else if (isCastRequiredForMemberAccess(castExpr, operandType)) {
+            // Package-private members are not accessible on a subtype in
+            // a different package, so the cast is required to select the member.
+            return null;
         } else if (isCastUnnecessary(castExpr, context, coercionType, operandType)) {
             reportCast(castExpr, data);
         } else if (castExpr.getParent() instanceof ASTMethodCall
@@ -118,7 +129,18 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             .anyMatch(fp -> isTypeExpression(fp.getTypeMirror(Substitution.EMPTY)));
         if (!generic) {
             JTypeMirror declaringType = methodType.getDeclaringType();
-            if (!isTypeExpression(methodType.getSymbol().getReturnType(Substitution.EMPTY))) {
+            JTypeMirror returnType = methodType.getSymbol().getReturnType(Substitution.EMPTY);
+            if (isTypeExpression(returnType)) {
+                // A raw cast changes a generic return type (e.g. PropertySerializer<T>
+                // becomes the raw type). That can be required for a chained call
+                // such as serializer().toString(value) on PropertyDescriptor<?>.
+                JTypeMirror coercionType = castExpr.getCastType().getTypeMirror();
+                ExprContext methodCtx = ((ASTMethodCall) castExpr.getParent()).getConversionContext();
+                if (coercionType.isRaw()
+                    && (methodCtx.isMissing() || methodCtx.hasKind(ExprContextKind.INVOCATION))) {
+                    return;
+                }
+            } else {
                 // declaring type of List<T>::size is List<T>, but since the return type
                 // is not generic, it's enough to check that operand is a List
                 declaringType = declaringType.getErasure();
@@ -134,7 +156,10 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isCastUnnecessary(ASTCastExpression castExpr, @NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType) {
-        if (operandType.equals(coercionType)) {
+        if (isCastNarrowingEnclosingType(castExpr, coercionType)) {
+            // e.g. (Outer<S, ?>.Inner) outer.new Inner() when outer is Outer<? super S, ?>
+            return false;
+        } else if (operandType.equals(coercionType)) {
             return true;
         } else if (context.isMissing()) {
             // then we have fewer violation conditions
@@ -162,6 +187,32 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
      */
     private boolean isCastToRawType(JTypeMirror coercionType, JTypeMirror operandType) {
         return coercionType.isRaw() && !operandType.isRaw();
+    }
+
+    /**
+     * Whether this cast changes the enclosing type arguments of a
+     * qualified inner-class instance creation. The type of
+     * {@code outer.new Inner()} is determined by {@code outer}, so a
+     * cast to {@code Outer<S>.Inner} is required when {@code outer} is
+     * e.g. {@code Outer<? super S>} - even if type resolution reports
+     * the same type for the operand and the cast.
+     */
+    private static boolean isCastNarrowingEnclosingType(ASTCastExpression castExpr, JTypeMirror coercionType) {
+        ASTExpression operand = castExpr.getOperand();
+        if (!(operand instanceof ASTConstructorCall) || !(coercionType instanceof JClassType)) {
+            return false;
+        }
+        ASTConstructorCall ctor = (ASTConstructorCall) operand;
+        if (!ctor.isQualifiedInstanceCreation()) {
+            return false;
+        }
+        ASTExpression qualifier = ctor.getQualifier();
+        JClassType castEnclosing = ((JClassType) coercionType).getEnclosingType();
+        if (qualifier == null || castEnclosing == null) {
+            return false;
+        }
+        JTypeMirror qualifierType = qualifier.getTypeMirror();
+        return !TypeOps.isUnresolvedOrNull(qualifierType) && !qualifierType.isSubtypeOf(castEnclosing);
     }
 
     private void reportCast(ASTCastExpression castExpr, Object data) {
@@ -235,6 +286,53 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
         }
         return false;
+    }
+
+
+    /**
+     * Whether this cast is required because it selects a package-private
+     * member that is not accessible on the operand type. When the operand
+     * type is in a different package, {@code ((Super) sub).packagePrivate()}
+     * cannot be rewritten as {@code sub.packagePrivate()}.
+     *
+     * @see <a href="https://github.com/pmd/pmd/issues/5732">#5732</a>
+     */
+    private boolean isCastRequiredForMemberAccess(ASTCastExpression castExpr, JTypeMirror operandType) {
+        JavaNode parent = castExpr.getParent();
+        if (parent instanceof ASTMethodCall) {
+            ASTMethodCall call = (ASTMethodCall) parent;
+            if (call.getQualifier() != castExpr || call.getOverloadSelectionInfo().isFailed()) {
+                return false;
+            }
+            return !isPackagePrivateMemberAccessibleOn(call.getMethodType().getSymbol(), operandType);
+        }
+        if (parent instanceof ASTFieldAccess) {
+            ASTFieldAccess access = (ASTFieldAccess) parent;
+            if (access.getQualifier() != castExpr) {
+                return false;
+            }
+            JFieldSymbol field = access.getReferencedSym();
+            return field != null && !isPackagePrivateMemberAccessibleOn(field, operandType);
+        }
+        return false;
+    }
+
+    /**
+     * Public/protected members are accessible regardless of package;
+     * package-private members are only accessible on types in the same
+     * package as the declaration.
+     */
+    private static boolean isPackagePrivateMemberAccessibleOn(JAccessibleElementSymbol member,
+                                                              JTypeMirror operandType) {
+        int access = member.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
+        if (access != 0) {
+            return true;
+        }
+        if (!(operandType instanceof JClassType)) {
+            return true;
+        }
+        JClassSymbol operandSym = ((JClassType) operandType).getSymbol();
+        return member.getPackageName().equals(operandSym.getPackageName());
     }
 
     private static @Nullable ASTLambdaExpression getLambdaParent(ASTCastExpression castExpr) {

@@ -159,12 +159,15 @@ public abstract class AbstractPropertySource implements PropertySource {
         }
         AbstractPropertySource that = (AbstractPropertySource) o;
 
-        if (!Objects.equals(propertyDescriptors, that.propertyDescriptors)) {
-            return false;
-        }
+        return Objects.equals(propertyDescriptors, that.propertyDescriptors)
+                && Objects.equals(toStringMap(), that.toStringMap());
+    }
 
-        // Convert the values to strings for comparisons. This is needed at least for RegexProperties,
-        // as java.util.regex.Pattern doesn't implement equals().
+    /*
+     * Convert the values to strings for comparisons. This is needed at least for RegexProperties,
+     * as java.util.regex.Pattern doesn't implement equals().
+     */
+    private Map<String, String> toStringMap() {
         Map<String, String> propertiesWithValues = new HashMap<>();
         propertyDescriptors.forEach(propertyDescriptor -> {
             Object value = propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
@@ -172,14 +175,7 @@ public abstract class AbstractPropertySource implements PropertySource {
             String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
             propertiesWithValues.put(propertyDescriptor.name(), valueString);
         });
-        Map<String, String> thatPropertiesWithValues = new HashMap<>();
-        that.propertyDescriptors.forEach(propertyDescriptor -> {
-            Object value = that.propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
-            @SuppressWarnings({"unchecked", "rawtypes"})
-            String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
-            thatPropertiesWithValues.put(propertyDescriptor.name(), valueString);
-        });
-        return Objects.equals(propertiesWithValues, thatPropertiesWithValues);
+        return propertiesWithValues;
     }
 
     @Override

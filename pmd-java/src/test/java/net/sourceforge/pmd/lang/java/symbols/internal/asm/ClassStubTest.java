@@ -16,12 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -37,6 +40,9 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 class ClassStubTest {
+    private static final String R8_OUTER_INTERNAL_NAME = "testdata/R8Outer";
+    private static final String R8_INNER_INTERNAL_NAME = R8_OUTER_INTERNAL_NAME + "$Inner";
+
     // while parsing the annotation type, ClassStub's parseLock.ensureParsed()
     // is called multiple times, reentering the parselock while the status is
     // still BEING_PARSED.
@@ -140,6 +146,22 @@ class ClassStubTest {
         assertThat(innerOfObj, hasProperty("modifiers", equalTo(Modifier.PRIVATE | Modifier.STATIC)));
     }
 
+    @Test
+    void testLoadR8InnerClassWithConflictingVisibility() {
+        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();
+        Loader loader = new Loader.StreamLoader(R8_INNER_INTERNAL_NAME,
+                                                new ByteArrayInputStream(r8InnerClass()));
+        ClassStub inner = new ClassStub(resolver, R8_INNER_INTERNAL_NAME, loader,
+                                        ClassStub.UNKNOWN_ARITY);
+
+        // Simulate the outer class being parsed first. Parsing the inner stub then adds
+        // public from both its ClassInfo and its own InnerClasses entry.
+        inner.setModifiers(Opcodes.ACC_PRIVATE, false);
+
+        assertEquals(Modifier.PRIVATE, inner.getModifiers());
+    }
+
 
     @Test
     void testLoadAnonClassFromEnum() {
@@ -195,6 +217,15 @@ class ClassStubTest {
 
     private static @NonNull JClassSymbol loadScalaClass(TypeSystem typeSystem, String simpleName) {
         return loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.scalaclasses", simpleName, typeSystem);
+    }
+
+    private static byte[] r8InnerClass() {
+        ClassWriter writer = new ClassWriter(0);
+        writer.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER,
+                     R8_INNER_INTERNAL_NAME, null, "java/lang/Object", null);
+        writer.visitInnerClass(R8_INNER_INTERNAL_NAME, R8_OUTER_INTERNAL_NAME, "Inner", Opcodes.ACC_PUBLIC);
+        writer.visitEnd();
+        return writer.toByteArray();
     }
 
     private static @NonNull JClassSymbol loadTestDataClass(TypeSystem typeSystem, String simpleName) {

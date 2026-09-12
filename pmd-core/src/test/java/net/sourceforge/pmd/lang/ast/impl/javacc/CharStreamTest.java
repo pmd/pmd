@@ -29,8 +29,8 @@ class CharStreamTest {
 
         assertThrows(EOFException.class, stream::readChar);
 
-        assertEquals(stream.getStartOffset(), 0);
-        assertEquals(stream.getEndOffset(), 0);
+        assertEquals(0, stream.getStartOffset());
+        assertEquals(0, stream.getEndOffset());
     }
 
     @Test

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -563,20 +564,35 @@ final class InferenceContext {
 
     /**
      * Tries to solve as much of varsToSolve as possible using some reduction steps.
-     * Returns the set of solved variables during this step.
+     * Returns true if at least one variable was instantiated.
      */
     private boolean solveBatchProgressed(Set<InferenceVar> varsToSolve, List<ReductionStep> wave) {
+        // The variables of a batch are interdependent, so the JLS (18.4)
+        // mandates that their instantiations all be *computed* from the same
+        // bound set, and only then incorporated. Solving them one after the
+        // other would be incorrect: instantiating the first variable may turn
+        // an improper bound of the second one (a bound mentioning an inference
+        // variable) into a proper one, and the resolution rules would then use
+        // that bound instead of the one the JLS prescribes.
+        Map<InferenceVar, JTypeMirror> instantiations = new LinkedHashMap<>();
         for (InferenceVar ivar : intersect(varsToSolve, freeVars)) {
             for (ReductionStep step : wave) {
                 if (step.accepts(ivar, this)) {
-                    ivar.setInst(step.solve(ivar, this));
-                    onVarInstantiated(ivar);
-                    return true;
+                    instantiations.put(ivar, step.solve(ivar, this));
+                    break;
                 }
             }
         }
 
-        return false;
+        if (instantiations.isEmpty()) {
+            return false;
+        }
+
+        instantiations.forEach((ivar, inst) -> {
+            ivar.setInst(inst);
+            onVarInstantiated(ivar);
+        });
+        return true;
     }
 
     public boolean isEmpty() {

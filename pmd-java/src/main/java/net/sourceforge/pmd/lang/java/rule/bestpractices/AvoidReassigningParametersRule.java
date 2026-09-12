@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
 
@@ -21,23 +22,27 @@ public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        lookForViolations(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        lookForViolations(node, ctx);
+        return null;
     }
 
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        lookForViolations(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        lookForViolations(node, ctx);
+        return null;
     }
 
-    private void lookForViolations(ASTExecutableDeclaration node, Object data) {
+    private void lookForViolations(ASTExecutableDeclaration node, RuleContext ctx) {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
             ASTVariableId varId = formal.getVarId();
             for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
                 if (usage.getAccessType() == AccessType.WRITE) {
-                    asCtx(data).addViolation(usage, varId.getName());
+                    ctx.addViolation(usage, varId.getName());
                     // only the first assignment should be reported
                     break;
                 }

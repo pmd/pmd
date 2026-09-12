@@ -22,7 +22,7 @@ public final class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
 
     public EcmascriptNode<?> getExpression() {
         if (!isDefault()) {
-            return (EcmascriptNode<?>) getChild(0);
+            return getChild(0);
         } else {
             return null;
         }
@@ -37,6 +37,6 @@ public final class ASTSwitchCase extends AbstractEcmascriptNode<SwitchCase> {
         if (!isDefault()) {
             statementIndex++;
         }
-        return (EcmascriptNode<?>) getChild(statementIndex);
+        return getChild(statementIndex);
     }
 }

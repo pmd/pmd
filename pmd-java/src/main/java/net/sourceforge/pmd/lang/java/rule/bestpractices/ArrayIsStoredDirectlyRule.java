@@ -39,14 +39,18 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        checkAssignments((RuleContext) data, node);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        checkAssignments(ctx, node);
+        return null;
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        checkAssignments((RuleContext) data, node);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+
+        checkAssignments(ctx, node);
+        return null;
     }
 
     private void checkAssignments(RuleContext context, ASTExecutableDeclaration method) {

@@ -331,6 +331,7 @@ final class RuleSetFactory {
             String ref = REF.getAttributeOrThrow(ruleNode, err);
             RuleSetReferenceId refId = parseReferenceAndWarn(ref, REF.getAttributeNode(ruleNode), err);
             if (refId != null) {
+                refId = RuleSetReferenceId.resolveSibling(ruleSetReferenceId, refId);
                 if (refId.isAllRules()) {
                     parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, refId, rulesetReferences, err);
                 } else {

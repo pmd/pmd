@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JPackageSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -71,6 +72,11 @@ public class SymbolToStrings {
         @Override
         public StringBuilder visitSymbol(JElementSymbol sym, StringBuilder builder) {
             throw new IllegalStateException("Unknown symbol " + sym.getClass());
+        }
+
+        @Override
+        public StringBuilder visitPackage(JPackageSymbol sym, StringBuilder param) {
+            return withImpl(param, "package", sym.getSimpleName());
         }
 
         @Override

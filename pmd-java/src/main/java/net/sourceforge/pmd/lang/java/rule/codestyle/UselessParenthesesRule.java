@@ -140,10 +140,10 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
         if (inner instanceof ASTConditionalExpression) {
 
             // a ? (b ? c : d) : e    necessary
-            // a ? b : (c ? d : e)    associative
+            // a ? b : (c ? d : e)    clarifying (parentheses are associative, but clarify the else-branch)
             // (a ? b : c) ? d : e    necessary
             if (outer instanceof ASTConditionalExpression) {
-                return inner.getIndexInParent() == 2 ? NEVER  // last child
+                return inner.getIndexInParent() == 2 ? CLARIFYING  // last child
                                                      : ALWAYS;
             } else {
                 return necessaryIf(!(outer instanceof ASTAssignmentExpression));

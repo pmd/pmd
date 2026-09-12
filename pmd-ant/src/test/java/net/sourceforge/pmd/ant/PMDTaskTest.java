@@ -82,6 +82,17 @@ class PMDTaskTest extends AbstractAntTest {
         }
     }
 
+    /** Gradle uses PMD's Ant integration, this is a test for <a href="https://github.com/gradle/gradle/issues/24885">gradle/gradle#24885</a> */
+    @Test
+    void testRelativeRulesetReference() throws IOException {
+        executeTarget("testRelativeRulesetReference");
+
+        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-relative-ruleset.txt"))) {
+            assertThat(IOUtil.readToString(in, StandardCharsets.UTF_8),
+                       containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
+        }
+    }
+
     @Test
     void testXmlFormatter() throws IOException {
         executeTarget("testXmlFormatter");
