@@ -37,6 +37,20 @@ This is a {{ site.pmd.release_type }} release.
 *   The new Java rule {% rule java/codestyle/CStyleArrayDeclaration %} finds C-style declarations of arrays (e.g. `int numbers[]`).
     That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
 #### Changed Rules
+*   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
+    whose constant classification previously depended on a boxed static final field. Direct static field references
+    are still reported.
+*   The Java rule {% rule java/errorprone/UnconditionalIfStatement %} now excludes final local boolean constants,
+    consistently with its existing exclusion of named compile-time constants used for conditional compilation.
+*   The Java rule {% rule java/errorprone/UnusedNullCheckInEquals %} now recognizes final local String constants
+    and unqualified instance String constants as non-null receivers, avoiding unnecessary reports.
+*   The Java rule {% rule java/bestpractices/AvoidReassigningLoopVariables %}, with `forReassign=skip`, now accepts
+    a final local constant equal to one as the increment of a conditional skip.
+*   The Java rule {% rule java/bestpractices/UnusedAssignment %} now recognizes final local boolean constants
+    when analyzing short-circuit conditions, avoiding false positives caused by assignments that cannot execute.
+*   The Java rule {% rule java/bestpractices/LiteralsFirstInComparisons %} now recognizes final local String constants
+    and unqualified references to non-static final String constants. This may add violations when such a constant
+    is the argument of a comparison, or remove them when it is already the receiver.
 *   The property `checkNonStaticMethods` of the rule {% rule java/multithreading/NonThreadSafeSingleton %} is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
     The rule now always reports both static and non-static methods; previously it reported only static methods
@@ -53,6 +67,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
     * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
+    * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
 * java-bestpractices
     * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
 * java-codestyle
@@ -72,6 +87,12 @@ This is a {{ site.pmd.release_type }} release.
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
 
 ### 🚨️ API Changes
+
+*   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
+    including local variables and unqualified instance fields. Numeric references are converted to their declared type.
+    Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
+    These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
+    `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
