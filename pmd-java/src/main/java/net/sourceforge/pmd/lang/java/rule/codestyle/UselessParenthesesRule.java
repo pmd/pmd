@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 
@@ -66,15 +67,16 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node instanceof ASTExpression) {
-            checkExpr((ASTExpression) node, data);
+            checkExpr((ASTExpression) node, ctx);
         } else {
             throw new IllegalArgumentException("Expected an expression, got " + node);
         }
         return null;
     }
 
-    private void checkExpr(ASTExpression e, Object data) {
+    private void checkExpr(ASTExpression e, RuleContext ctx) {
         if (!e.isParenthesized()) {
             return;
         }
@@ -91,8 +93,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
             if (snippet.length() > MAX_SNIPPET_LENGTH) {
                 snippet = snippet.subSequence(0, MAX_SNIPPET_LENGTH - dots.length()) + dots;
             }
-            asCtx(data).addViolationWithMessage(e, template,
-                snippet);
+            ctx.addViolationWithMessage(e, template, snippet);
 
         }
     }

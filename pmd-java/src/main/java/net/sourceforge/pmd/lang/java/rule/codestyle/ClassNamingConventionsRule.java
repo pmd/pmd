@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -54,42 +55,46 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
 
         if (isTestClass(node)) {
-            checkMatches(node, testClassRegex, data);
+            checkMatches(node, testClassRegex, ctx);
         } else if (JavaRuleUtil.isUtilityClass(node)) {
-            checkMatches(node, utilityClassRegex, data);
+            checkMatches(node, utilityClassRegex, ctx);
         } else if (node.isInterface()) {
-            checkMatches(node, interfaceRegex, data);
+            checkMatches(node, interfaceRegex, ctx);
         } else {
             // at this point, node must be a class and cannot be an interface anymore
             if (node.isAbstract()) {
-                checkMatches(node, abstractClassRegex, data);
+                checkMatches(node, abstractClassRegex, ctx);
             } else {
-                checkMatches(node, classRegex, data);
+                checkMatches(node, classRegex, ctx);
             }
         }
 
-        return data;
+        return null;
     }
 
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-        checkMatches(node, enumerationRegex, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkMatches(node, enumerationRegex, ctx);
+        return null;
     }
 
     @Override
     public Object visit(ASTRecordDeclaration node, Object data) {
-        checkMatches(node, classRegex, data); // property?
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkMatches(node, classRegex, ctx); // property?
+        return null;
     }
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
-        checkMatches(node, annotationRegex, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkMatches(node, annotationRegex, ctx);
+        return null;
     }
 
 

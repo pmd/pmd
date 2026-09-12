@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class MethodNamingConventionsRule extends AbstractNamingConventionRule<ASTMethodDeclaration> {
@@ -43,30 +44,31 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
 
         if (node.isOverride()) {
-            return data;
+            return null;
         }
 
         if (node.hasModifiers(JModifier.NATIVE)) {
-            checkMatches(node, nativeRegex, data);
+            checkMatches(node, nativeRegex, ctx);
         } else if (node.isStatic()) {
-            checkMatches(node, staticRegex, data);
+            checkMatches(node, staticRegex, ctx);
         } else if (TestFrameworksUtil.isJUnit5Method(node)) {
             PropertyDescriptor<Pattern> junitJupiterRegexToUse =
                     (isPropertyOverridden(junitJupiterRegex) || !isPropertyOverridden(junit5Regex))
                             ? junitJupiterRegex
                             : junit5Regex;
-            checkMatches(node, junitJupiterRegexToUse, data);
+            checkMatches(node, junitJupiterRegexToUse, ctx);
         } else if (TestFrameworksUtil.isJUnit4Method(node)) {
-            checkMatches(node, junit4Regex, data);
+            checkMatches(node, junit4Regex, ctx);
         } else if (TestFrameworksUtil.isJUnit3Method(node)) {
-            checkMatches(node, junit3Regex, data);
+            checkMatches(node, junit3Regex, ctx);
         } else {
-            checkMatches(node, instanceRegex, data);
+            checkMatches(node, instanceRegex, ctx);
         }
 
-        return data;
+        return null;
     }
 
 
