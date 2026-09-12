@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.util.*
+import java.util.function.Consumer
 import java.util.function.Supplier
 import java.util.function.ToIntFunction
 import java.util.stream.Collector
@@ -19,6 +20,92 @@ import java.util.stream.Collectors
  * @author Clément Fournier
  */
 class CaptureInferenceTest : ProcessorTestSpec({
+
+    parserTest("Capture wildcard in intersection upper bound #7054") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Reproducer {
+                interface Marker { }
+
+                static <C extends Iterable<?> & Marker> void visit(C values) {
+                    values.forEach(value -> { });
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+        spy.shouldBeOk {
+            val captured = captureMatcher(`?`)
+            call.methodType.shouldMatchMethod(
+                named = "forEach",
+                declaredIn = Iterable::class[captured],
+                withFormals = listOf(Consumer::class[`?` `super` captured]),
+                returning = void
+            )
+            acu.varId("value") shouldHaveType ts.OBJECT
+        }
+    }
+
+    listOf(
+        "C extends Iterable<? extends Number> & Marker",
+        "C extends Iterable<? super Integer> & Marker",
+        "C extends Base & Iterable<? extends Number> & Marker",
+        "B extends Iterable<? extends Number> & Marker, C extends B"
+    ).forEach { typeParameters ->
+        parserTest("Capture intersection members <$typeParameters> #7054") {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+                class Reproducer {
+                    static class Base { }
+                    interface Marker { }
+
+                    static <$typeParameters> void visit(C values) {
+                        values.forEach(value -> { });
+                    }
+                }
+                """.trimIndent()
+            )
+
+            spy.shouldBeOk {
+                val isLowerBound = "? super" in typeParameters
+                val wildcard = if (isLowerBound) `?` `super` Integer::class.raw else `?` extends Number::class.raw
+                val captured = captureMatcher(wildcard)
+                acu.firstMethodCall().methodType.shouldMatchMethod(
+                    named = "forEach",
+                    declaredIn = Iterable::class[captured],
+                    withFormals = listOf(Consumer::class[`?` `super` captured]),
+                    returning = void
+                )
+                acu.varId("value") shouldHaveType if (isLowerBound) ts.OBJECT else Number::class.raw
+            }
+        }
+    }
+
+    parserTest("Capture wildcard in intersection cast #7054") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Reproducer {
+                interface Marker { }
+
+                static void visit(Object values) {
+                    ((Iterable<?> & Marker) values).forEach(value -> { });
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldBeOk {
+            val captured = captureMatcher(`?`)
+            acu.firstMethodCall().methodType.shouldMatchMethod(
+                named = "forEach",
+                declaredIn = Iterable::class[captured],
+                withFormals = listOf(Consumer::class[`?` `super` captured]),
+                returning = void
+            )
+            acu.varId("value") shouldHaveType ts.OBJECT
+        }
+    }
 
     parserTest("Test capture incompatibility recovery") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
