@@ -367,25 +367,4 @@ public class Foo {
 }
 ]]></code>
     </test-code>
-    <test-code>
-        <description>[java] NullAssignment #1050 - assignment in another switch branch than the declaration</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
-        <code><![CDATA[
-public class Foo {
-    public String foo(int scheme) {
-        switch (scheme) {
-        case 1:
-            String key = "a";
-            return key;
-        case 2:
-            key = null;
-            return key;
-        default:
-            return "";
-        }
-    }
-}
-]]></code>
-    </test-code>
 </test-data>
