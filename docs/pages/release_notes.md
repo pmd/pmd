@@ -69,6 +69,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods
 * java-security
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
+    * [#7015](https://github.com/pmd/pmd/issues/7015): \[java] InsecureCryptoIv: False negative for unchanged default-initialized arrays
 
 ### 🚨️ API Changes
 
