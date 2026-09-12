@@ -1181,13 +1181,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- transitive dependency through org.scalameta:trees_2.13 -->
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>4.36.1</version>
-            </dependency>
-
             <!-- Make sure to use the correct version that JUnit6 needs.
                  Kotest might bring a different version.
                  see junit.version -->
