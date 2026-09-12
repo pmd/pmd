@@ -1362,11 +1362,11 @@ public boolean isBarEqualTo(int x) {
     <rule name="SimplifyConditional"
           language="java"
           since="3.1"
-          message="No need to check for null before an instanceof"
+          message="No need to check for null in the same expression as an instanceof"
           class="net.sourceforge.pmd.lang.java.rule.design.SimplifyConditionalRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
         <description>
-No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+No need to check for null in the same expression as an instanceof; the instanceof keyword returns false when given a null argument.
         </description>
         <priority>3</priority>
         <example>

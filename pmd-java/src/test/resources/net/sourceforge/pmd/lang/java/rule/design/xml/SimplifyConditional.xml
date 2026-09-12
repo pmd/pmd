@@ -8,7 +8,7 @@
         <description>failure case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -153,7 +153,7 @@ public class Foo {
         <description>#6513 null check separated from instanceof by a &amp;&amp; chain</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -168,7 +168,7 @@ public class Foo {
         <description>#6513 null check separated from !(instanceof) by a || chain</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -228,7 +228,7 @@ public class Foo {
         <description>#6513 null check after the instanceof in a &amp;&amp; chain is redundant</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -243,7 +243,7 @@ public class Foo {
         <description>#6513 operand using the subject after the instanceof is guarded by it, the null check at the end can be dropped</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -258,7 +258,7 @@ public class Foo {
         <description>#6513 operand using the subject after the instanceof is guarded by it, the null check before the instanceof can be dropped</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -321,8 +321,8 @@ public class Foo {
         <description>#6513 several redundant null checks on the same subject in one chain are each reported</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -337,7 +337,7 @@ public class Foo {
         <description>#6513 a negated instanceof on the subject in between cannot throw, the null check can be dropped</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>No need to check for null before an instanceof</message>
+            <message>No need to check for null in the same expression as an instanceof</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
