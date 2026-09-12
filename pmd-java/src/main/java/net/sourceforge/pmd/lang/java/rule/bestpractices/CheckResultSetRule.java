@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -48,7 +50,7 @@ public class CheckResultSetRule extends AbstractJavaRule {
     public Object visit(ASTMethodCall node, Object data) {
         RuleContext ctx = (RuleContext) data;
 
-        if (isResultSetMethod(node) && !isCheckedIndirectly(node)) {
+        if (isResultSetMethod(node) && !isInConditionOfTernary(node) && !isCheckedIndirectly(node)) {
             ctx.addViolation(node);
         }
         return super.visit(node, data);
@@ -57,6 +59,18 @@ public class CheckResultSetRule extends AbstractJavaRule {
     private boolean isResultSetMethod(ASTMethodCall node) {
         return METHODS.contains(node.getMethodName())
             && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
+    }
+
+    private boolean isInConditionOfTernary(ASTMethodCall node) {
+        JavaNode child = node;
+        for (JavaNode parent : node.ancestors().takeWhile(n -> !(n instanceof ReturnScopeNode))) {
+            if (parent instanceof ASTConditionalExpression
+                && ((ASTConditionalExpression) parent).getCondition() == child) {
+                return true;
+            }
+            child = parent;
+        }
+        return false;
     }
 
     private boolean isCheckedIndirectly(ASTMethodCall node) {
