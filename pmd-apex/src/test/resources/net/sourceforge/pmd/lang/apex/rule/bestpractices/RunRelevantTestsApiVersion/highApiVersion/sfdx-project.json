@@ -1,0 +1,9 @@
+{
+  "packageDirectories": [
+    {
+      "path": "src",
+      "default": true
+    }
+  ],
+  "namespace": "test_ns"
+}
