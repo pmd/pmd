@@ -18,7 +18,7 @@ class AbstractJjtreeNodeTest {
 
     @Test
     void testDummy() {
-        // only necessary because junit cannot handle classes with only nested tests.
+        // Without this, the test will fail?!
         assertTrue(true);
     }
 
