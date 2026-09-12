@@ -278,7 +278,7 @@ public class DeadLinksChecker {
             while (captionMatcher.find()) {
                 final String anchor = captionMatcher.group(1)
                                                     .toLowerCase(Locale.ROOT)
-                                                    .replaceAll("'|\\.", "") // remove all apostrophes and dots
+                                                    .replaceAll("['.`]", "") // remove all apostrophes and dots
                                                     .replaceAll("[^a-z0-9_]+", "-"); // replace all non-alphanumeric characters with dashes
 
                 htmlPages.add(pageUrl + "#" + anchor);

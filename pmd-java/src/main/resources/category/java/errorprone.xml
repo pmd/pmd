@@ -2205,6 +2205,32 @@ public class Foo extends TestCase {
         </example>
     </rule>
 
+    <rule name="LongLiteralEndingWithLowercaseL"
+          language="java"
+          since="7.28.0"
+          message="Use uppercase ''L'' to indicate long literals"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#longliteralendingwithlowercasel">
+        <description>
+Use uppercase `L` for long literals to avoid confusion with the digit `1`.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+        //NumericLiteral[@LongLiteral = true() and ends-with(@LiteralText, 'l')]
+]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Longs {
+  long bad       = 432l; // violation
+  long looksLike = 4321;
+  long good      = 432L; // OK, clearly distinct
+}
+        ]]></example>
+    </rule>
+
     <rule name="MethodWithSameNameAsEnclosingClass"
           language="java"
           since="1.5"
@@ -2805,6 +2831,8 @@ deprecated there as well in favour of `java.time` API.
                 //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
                 //FormalParameter[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
                 //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //RecordComponent[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //TypePattern[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
                 //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Calendar')]]
                 ]]></value>
             </property>
@@ -2868,6 +2896,8 @@ deprecated there as well in favour of `java.time` API.
                 //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
                 //FormalParameter[ClassType[pmd-java:typeIs('java.util.Date')]] |
                 //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //RecordComponent[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //TypePattern[ClassType[pmd-java:typeIs('java.util.Date')]] |
                 //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Date')]]
                 ]]></value>
             </property>
