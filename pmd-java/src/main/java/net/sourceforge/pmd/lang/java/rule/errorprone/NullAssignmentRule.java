@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import java.util.Optional;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -13,8 +15,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 public class NullAssignmentRule extends AbstractJavaRulechainRule {
@@ -27,7 +32,7 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     public Object visit(ASTNullLiteral node, Object data) {
         if (node.getParent() instanceof ASTAssignmentExpression) {
             ASTAssignmentExpression assignment = (ASTAssignmentExpression) node.getParent();
-            if (isAssignmentToFinal(assignment)) {
+            if (isAssignmentToFinal(assignment) || isFirstAssignmentToBlankLocal(assignment)) {
                 return data;
             }
             if (assignment.getRightOperand() == node) {
@@ -73,6 +78,21 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
         return isThenOrElse
                 && isAssignment
                 && !isInitializer;
+    }
+
+    private boolean isFirstAssignmentToBlankLocal(ASTAssignmentExpression assignment) {
+        boolean isBlankLocalVarAssignment = Optional.ofNullable(tryGetLeftOperandSymbol(assignment))
+                .map(JVariableSymbol::tryGetNode)
+                .filter(varId -> varId.getInitializer() == null)
+                .map(ASTVariableId::isLocalVariable)
+                .orElse(false);
+        if (!isBlankLocalVarAssignment) {
+            return false;
+        }
+        ReachingDefinitionSet reaching = DataflowPass.getDataflowResult(assignment.getRoot())
+                        .getReachingDefinitions((ASTNamedReferenceExpr) assignment.getLeftOperand());
+        // nothing was assigned yet on any path, so this assignment is the first one
+        return !reaching.isNotFullyKnown() && reaching.getReaching().isEmpty();
     }
 
     private @Nullable JVariableSymbol tryGetLeftOperandSymbol(ASTAssignmentExpression expression) {
