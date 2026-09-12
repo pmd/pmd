@@ -89,9 +89,9 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     public Object visit(ASTEnumConstant node, Object data) {
         // This inlines checkMatches because there's no variable declarator id
 
-        if (!getProperty(enumConstantRegex).matcher(node.getImage()).matches()) {
+        if (!getProperty(enumConstantRegex).matcher(node.getName()).matches()) {
             asCtx(data).addViolation(node, "enum constant",
-                                     node.getImage(),
+                                     node.getName(),
                                      getProperty(enumConstantRegex).toString());
         }
 
