@@ -211,19 +211,32 @@ public class GoodCase {
     </test-code>
 
     <test-code>
-        <description>Hard coded crypto key from bare array initializer, bad</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+    <description>[java] HardCodedCryptoKey: System.getProperty() nested as decode argument #7008</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+import java.util.Base64;
 import javax.crypto.spec.SecretKeySpec;
-
-public class Foo {
-    void encrypt() {
-        byte[] key = { 0, 1, 2, 3, 4, 5, 6, 7 };
-        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+public class GoodCase {
+    public void test() {
+        SecretKeySpec keySpec =
+            new SecretKeySpec(Base64.getDecoder().decode(System.getProperty("aes.key")), "AES");// [should not be flagged]
     }
 }
-        ]]></code>
-    </test-code>
+    ]]></code>
+</test-code>
+<test-code>
+    <description>[java] HardCodedCryptoKey: System.getProperty() with multi-level chain #7008</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+public class GoodCase {
+    public void test() {
+        SecretKeySpec keySpec =
+            new SecretKeySpec(System.getProperty("k").trim().getBytes(), "AES");// [should not be flagged]
+    }
+}
+    ]]></code>
+</test-code>
 
     <test-code>
     <description>[java] HardCodedCryptoKey: System.getProperty() call chained directly as the qualifier of .getBytes(), two-arg overload #7008</description>

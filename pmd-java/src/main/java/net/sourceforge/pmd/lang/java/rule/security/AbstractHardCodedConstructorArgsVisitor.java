@@ -32,6 +32,11 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
     private static final InvocationMatcher SYSTEM_GET_PROPERTY =
             InvocationMatcher.parse("java.lang.System#getProperty(_*)");
 
+    private static boolean derivesFromSystemGetProperty(ASTExpression expr) {
+        return (expr instanceof ASTMethodCall && SYSTEM_GET_PROPERTY.matchesCall((ASTMethodCall) expr))
+            || expr.descendants(ASTMethodCall.class).any(SYSTEM_GET_PROPERTY::matchesCall);
+    }
+
     private final Class<?> type;
 
     AbstractHardCodedConstructorArgsVisitor(Class<?> constructorType) {
@@ -62,17 +67,18 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         }
 
         ASTVariableAccess varAccess = null;
-
         if (firstArgumentExpression instanceof ASTMethodCall) {
+            if (derivesFromSystemGetProperty(firstArgumentExpression)) {
+                // e.g. new SecretKeySpec(System.getProperty("k").trim().getBytes(), "AES")
+                // or   new SecretKeySpec(Base64.getDecoder().decode(System.getProperty("k")), "AES")
+                // the value comes from an external system property at runtime;
+                // any string literal arguments are not necessarily the key
+                return;
+            }
             // check for method call on a named variable
             ASTExpression expr = ((ASTMethodCall) firstArgumentExpression).getQualifier();
             if (expr instanceof ASTVariableAccess) {
                 varAccess = (ASTVariableAccess) expr;
-            } else if (expr instanceof ASTMethodCall && SYSTEM_GET_PROPERTY.matchesCall((ASTMethodCall) expr)) {
-                // e.g. new SecretKeySpec(System.getProperty("k", "d").getBytes(), "AES")
-                // the value comes from an external system property at runtime;
-                // any string literal arguments are not necessarily the key
-                return;
             }
         } else if (firstArgumentExpression instanceof ASTVariableAccess) {
             // check for named variable
@@ -108,10 +114,6 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         } else if (firstArgumentExpression instanceof ASTArrayInitializer) {
             // hard coded array
             asCtx(data).addViolation(firstArgumentExpression);
-        } else if (firstArgumentExpression instanceof ASTMethodCall
-                && SYSTEM_GET_PROPERTY.matchesCall((ASTMethodCall) firstArgumentExpression)) {
-            // value comes from an external system property at runtime;
-            // any string literal arguments are not necessarily the key
         } else {
             // string literal
             addViolationForStringLiteral(data, firstArgumentExpression);
