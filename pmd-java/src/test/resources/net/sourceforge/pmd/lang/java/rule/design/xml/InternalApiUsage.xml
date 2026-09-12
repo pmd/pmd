@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Internal method from library</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use internal APIs. Method 'removeInternal' is restricted to defining library.</message>
+            <message>Do not use internal APIs. Class 'PackageUtils' is restricted to defining library.</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.platform.launcher.TestPlan;
+import org.junit.platform.commons.util.PackageUtils;
+
+public class Foo {
+  public void foo() {
+    new TestPlan().removeInternal(null); // @API(status = INTERNAL, since = "6.1")
+    PackageUtils.getAttribute(String.class, "foo"); // @API(status = INTERNAL, since = "1.0")
+  }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Internal method from the same unit</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Sibling {
+    @API(status = INTERNAL)
+    static void internal() {}
+}
+
+public class Foo {
+  public void foo() {
+    new Sibling.internal();
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Internal method from same library</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.design.internalapiusage.Internal;
+
+public class Foo {
+  public void foo() {
+    Internal.internal();
+    ClassLevelInternal.internal();
+  }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Internal methods with consumers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use internal APIs. Method 'internalForOtherPackage' is restricted to specific packages.</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.internalapiusage;
+
+public class Foo {
+  void bar() {
+    Internal.internalForThisPackage();
+    Internal.internalForOtherPackage();
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>VisibleForTesting from the same unit</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  class Child {
+      @VisibleForTesting
+      static void internal() {}
+  }
+ public void foo() {
+    new Child().internal();
+ }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>VisibleForTesting from different class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use internal APIs. Method 'visibleForTesting' is restricted to tests.</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.internalapiusage;
+
+public class Foo {
+  public void foo() {
+    Internal.visibleForTesting();
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestOnly from the same unit</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use internal APIs. Method 'testOnly' is restricted to tests.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+  class Child {
+      @TestOnly
+      static void testOnly() {}
+  }
+ public void foo() {
+    new Child().testOnly();
+ }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestOnly from different class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use internal APIs. Method 'testOnly' is restricted to tests.</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.internalapiusage;
+
+public class Foo {
+  public void foo() {
+    Internal.testOnly();
+  }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>VisibleForTesting, TestOnly from a test class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.design.internalapiusage;
+
+import org.junit.jupiter.api.Test;
+
+public class Foo {
+  @Test
+  void theTest() {
+    Internal.visibleForTesting();
+    Internal.testOnly();
+  }
+  void helper() {
+    Internal.testOnly();
+  }
+}
+        ]]></code>
+    </test-code>
+</test-data>
