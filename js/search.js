@@ -2888,7 +2888,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Simplify Conditional",
   "url": "pmd_rules_java_design.html#simplifyconditional",
-  "summary": "No need to check for null before an instanceof; the instanceof keyword returns false when..."
+  "summary": "No need to check for null in the same expression as an instanceof; the instanceof..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/design.md",
