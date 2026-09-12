@@ -16,9 +16,26 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulechainRule {
+
+    /**
+     * Matches calls to {@code System.getProperty(String)} and
+     * {@code System.getProperty(String, String)}. Any string literal
+     * arguments to such a call (the property name, or the default value
+     * used when the property is absent) are not necessarily the actual
+     * value used at runtime, since that value may come from an external
+     * system property. So these should not be reported as hard-coded.
+     */
+    private static final InvocationMatcher SYSTEM_GET_PROPERTY =
+            InvocationMatcher.parse("java.lang.System#getProperty(_*)");
+
+    private static boolean derivesFromSystemGetProperty(ASTExpression expr) {
+        return (expr instanceof ASTMethodCall && SYSTEM_GET_PROPERTY.matchesCall((ASTMethodCall) expr))
+            || expr.descendants(ASTMethodCall.class).any(SYSTEM_GET_PROPERTY::matchesCall);
+    }
 
     private final Class<?> type;
 
@@ -50,8 +67,14 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         }
 
         ASTVariableAccess varAccess = null;
-
         if (firstArgumentExpression instanceof ASTMethodCall) {
+            if (derivesFromSystemGetProperty(firstArgumentExpression)) {
+                // e.g. new SecretKeySpec(System.getProperty("k").trim().getBytes(), "AES")
+                // or   new SecretKeySpec(Base64.getDecoder().decode(System.getProperty("k")), "AES")
+                // the value comes from an external system property at runtime;
+                // any string literal arguments are not necessarily the key
+                return;
+            }
             // check for method call on a named variable
             ASTExpression expr = ((ASTMethodCall) firstArgumentExpression).getQualifier();
             if (expr instanceof ASTVariableAccess) {
