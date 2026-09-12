@@ -60,10 +60,26 @@ public abstract class AttributeView<T extends KotlinNode> implements Node {
             result = new KtClassParameterAttributes((KotlinParser.KtClassParameter) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtFunctionDeclaration) {
             result = new KtFunctionDeclarationAttributes((KotlinParser.KtFunctionDeclaration) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtPropertyDeclaration) {
+            result = new KtPropertyDeclarationAttributes((KotlinParser.KtPropertyDeclaration) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtVariableDeclaration) {
             result = new KtVariableDeclarationAttributes((KotlinParser.KtVariableDeclaration) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtCompanionObject) {
             result = new KtCompanionObjectAttributes((KotlinParser.KtCompanionObject) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtCatchBlock) {
+            result = new KtCatchBlockAttributes((KotlinParser.KtCatchBlock) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtForStatement) {
+            result = new KtForStatementAttributes((KotlinParser.KtForStatement) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtFunctionValueParameter) {
+            result = new KtFunctionValueParameterAttributes((KotlinParser.KtFunctionValueParameter) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtUnescapedAnnotation) {
+            result = new KtUnescapedAnnotationAttributes((KotlinParser.KtUnescapedAnnotation) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtSingleAnnotation) {
+            result = new KtSingleAnnotationAttributes((KotlinParser.KtSingleAnnotation) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtDelegationSpecifier) {
+            result = new KtDelegationSpecifierAttributes((KotlinParser.KtDelegationSpecifier) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtKotlinFile) {
+            result = new KtKotlinFileAttributes((KotlinParser.KtKotlinFile) kotlinNode);
         } else {
             result = null;
         }

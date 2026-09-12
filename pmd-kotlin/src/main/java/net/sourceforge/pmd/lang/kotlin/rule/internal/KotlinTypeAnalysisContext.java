@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,10 +30,8 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  * (absolute file path, line number) for fast lookup during XPath function evaluation.
  *
  * <p>Note: kotlin-type-mapper records the <em>concrete expanded type</em> in all call-site
- * fields -- type alias names are not preserved.
- * Call-site receiver/return queries ({@code callsOnReceiver}, {@code callsReturning}) and
- * type alias query support ({@code resolveTypeAlias}, {@code ...ExpandingAlias} variants)
- * are planned for a future release.
+ * fields -- type alias names are not preserved. Use {@code TypedAst.expandAlias()} from
+ * kotlin-type-mapper to resolve aliases before querying.
  *
  * @since 7.27.0
  * @experimental
@@ -236,11 +235,14 @@ public final class KotlinTypeAnalysisContext {
         return TypedAstHierarchyQueriesKt.isSubtypeOfUpward(typedAst, expectedType, actualType);
     }
 
+    // Fail fast: if getCanonicalPath() fails the file is inaccessible and
+    // analysis would produce wrong index keys later anyway (PR #6795 review).
     private static String canonicalize(String path) {
         try {
             return new File(path).getCanonicalPath();
         } catch (IOException e) {
-            return new File(path).getAbsolutePath();
+            throw new UncheckedIOException(
+                    "Cannot canonicalize path: " + path + " — file may not be accessible", e);
         }
     }
 }

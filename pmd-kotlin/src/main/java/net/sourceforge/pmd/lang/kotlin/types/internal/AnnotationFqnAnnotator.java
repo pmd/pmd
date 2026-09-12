@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
@@ -74,12 +75,12 @@ final class AnnotationFqnAnnotator {
                 fqn = simpleToFqn.get(writtenName); // handles fully-qualified written name
             }
             if (fqn != null) {
-                InternalApiBridge.setTypeName(annNode, fqn);
+                InternalApiBridge.setType(annNode, KotlinTypeName.ofFqName(fqn));
                 // Also set on the parent SingleAnnotation so users can query
                 // //SingleAnnotation[@TypeName='org.example.Foo'] directly.
                 KotlinNode parent = annNode.getParent();
                 if (parent instanceof KtSingleAnnotation) {
-                    InternalApiBridge.setTypeName(parent, fqn);
+                    InternalApiBridge.setType(parent, KotlinTypeName.ofFqName(fqn));
                 }
             }
         }
@@ -122,15 +123,14 @@ final class AnnotationFqnAnnotator {
 
     /** Finds the {@code KtUserType} directly inside a {@code KtUnescapedAnnotation}. */
     private static KtUserType findUserType(KtUnescapedAnnotation annNode) {
-        for (int i = 0; i < annNode.getNumChildren(); i++) {
-            KotlinNode child = annNode.getChild(i);
-            if (child instanceof KtUserType) {
-                return (KtUserType) child;
-            }
-            if (child instanceof KtConstructorInvocation) {
-                return KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation((KtConstructorInvocation) child);
-            }
+        // unescapedAnnotation : constructorInvocation | userType
+        KtUserType userType = annNode.firstChild(KtUserType.class);
+        if (userType != null) {
+            return userType;
         }
-        return null;
+        KtConstructorInvocation ctor = annNode.firstChild(KtConstructorInvocation.class);
+        return ctor != null
+                ? KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation(ctor)
+                : null;
     }
 }

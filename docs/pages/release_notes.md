@@ -24,6 +24,20 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+#### Kotlin XPath functions and type attributes
+Type data is now accessible in XPath rules via new attributes and helper functions (see [Kotlin XPath rule support](pmd_languages_kotlin.html#xpath-rule-support)):
+
+* **Attributes**: `@TypeName`, `@ReturnTypeName`, `@AnnotationFqNames`, `@Modifiers`, `@Identifier`
+  are exposed on declaration nodes (property, function, class, parameter, catch, for-loop, delegation specifier,
+  annotation nodes).
+* **`pmd-kotlin:typeIs(typeName)`**: matches if the node's type is `typeName` or a subtype.
+* **`pmd-kotlin:typeIsExactly(typeName)`**: matches the exact declared type only (no subtypes).
+* **`pmd-kotlin:hasAnnotation(name)`**: matches if the node has an annotation with the given simple or FQN.
+* **`pmd-kotlin:modifiers()`**: returns the modifier keywords of a declaration as a sequence.
+* **`pmd-kotlin:isNullable()`**: returns `true` if the node's declared type is nullable (has `?`).
+* **`pmd-kotlin:hasUnresolvedReference()`**: returns `true` if the node contains an unresolved reference.
+* **`pmd-kotlin:matchesSig(signature)`**: matches call sites by method signature pattern (supports wildcards).
+
 ### 🌟️ New and Changed Rules
 #### New Rules
 *   The new Java rule {% rule java/bestpractices/OnDemandImport %} reports on-demand imports, also known as wildcard imports.
@@ -70,8 +84,19 @@ This is a {{ site.pmd.release_type }} release.
     * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods
 * java-security
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
+* kotlin
+    * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add XPath functions and type attributes for type-aware XPath rules
 
 ### 🚨️ API Changes
+#### Experimental API
+* kotlin
+    * {%jdoc kotlin::lang.kotlin.ast.HasTypeName %}: Marker interface for Kotlin AST nodes that expose
+      a `@TypeName` XPath attribute.
+    * New XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly`, `pmd-kotlin:hasAnnotation`,
+      `pmd-kotlin:modifiers`, `pmd-kotlin:matchesSig`, `pmd-kotlin:isNullable`, `pmd-kotlin:hasUnresolvedReference`
+      in package `net.sourceforge.pmd.lang.kotlin.rule.xpath.internal`.
+    * New AST attribute view classes in package `net.sourceforge.pmd.lang.kotlin.ast` (e.g.
+      `KtFunctionDeclarationAttributes`, `KtPropertyDeclarationAttributes`, etc.).
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
