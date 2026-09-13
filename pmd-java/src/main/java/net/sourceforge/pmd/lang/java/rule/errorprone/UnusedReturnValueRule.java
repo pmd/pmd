@@ -26,7 +26,7 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
     private static final String CHECK_RETURN_VALUE_ANNOTATION = "CheckReturnValue";
     private static final String CAN_IGNORE_RETURN_VALUE_ANNOTATION = "CanIgnoreReturnValue";
 
-    private static final InvocationMatcher.CompoundInvocationMatcher METHODS_RETURNINING_NUMBER_OF_BYTES_READ = InvocationMatcher.parseAll(
+    private static final InvocationMatcher.CompoundInvocationMatcher METHODS_RETURNING_NUMBER_OF_BYTES_READ = InvocationMatcher.parseAll(
             "java.io.InputStream#skip(long)",
             "java.io.InputStream#read(byte[])",
             "java.io.InputStream#read(byte[],int,int)"
@@ -59,7 +59,7 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
         return !MOCKITO_VERIFY.matchesCall(call.getQualifier())
                 && (isCheckReturnValueAnnotated(call)
                     || JavaRuleUtil.isKnownPure(call)
-                    || METHODS_RETURNINING_NUMBER_OF_BYTES_READ.anyMatch(call));
+                    || METHODS_RETURNING_NUMBER_OF_BYTES_READ.anyMatch(call));
     }
 
     // visible for testing
