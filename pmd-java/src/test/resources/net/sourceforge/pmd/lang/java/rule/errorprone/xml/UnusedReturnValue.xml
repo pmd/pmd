@@ -790,4 +790,39 @@ class Foo
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7068 UnusedReturnValue FP on Mockito.verify(mock).pureMethod()</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import org.mockito.Mockito;
+
+public class Foo {
+    void foo(List<?> mock) {
+        // verification API: the return value of size() is intentionally unused
+        Mockito.verify(mock).size();
+        Mockito.verify(mock, Mockito.times(1)).isEmpty();
+        // still a real unused pure call
+        mock.size();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7068 UnusedReturnValue FP on static-imported Mockito.verify</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import static org.mockito.Mockito.verify;
+
+public class Foo {
+    void foo(List<?> mock) {
+        verify(mock).size();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

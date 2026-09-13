@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -32,6 +33,8 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
             "java.io.InputStream#read(byte[],int,int)"
     );
 
+    private static final InvocationMatcher MOCKITO_VERIFY = InvocationMatcher.parse("org.mockito.Mockito#verify(_*)");
+
     public UnusedReturnValueRule() {
         super(ASTMethodCall.class);
     }
@@ -54,9 +57,15 @@ public class UnusedReturnValueRule extends AbstractJavaRulechainRule {
     }
 
     private boolean shouldCheckResult(ASTMethodCall call) {
-        return isCheckReturnValueAnnotated(call)
-                || JavaRuleUtil.isKnownPure(call)
-                || METHODS_RETURNINING_NUMBER_OF_BYTES_READ.anyMatch(call);
+        return !isCalledOnMockitoVerify(call)
+                && (isCheckReturnValueAnnotated(call)
+                    || JavaRuleUtil.isKnownPure(call)
+                    || METHODS_RETURNINING_NUMBER_OF_BYTES_READ.anyMatch(call));
+    }
+
+    private boolean isCalledOnMockitoVerify(ASTMethodCall call) {
+        ASTExpression qualifier = call.getQualifier();
+        return qualifier instanceof ASTMethodCall && MOCKITO_VERIFY.matchesCall((ASTMethodCall) qualifier);
     }
 
     // visible for testing
