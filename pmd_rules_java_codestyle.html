@@ -5497,21 +5497,13 @@ It is often simpler and cleaner to return or throw the value directly.</p>
     <tr>
       <td>statementOrderMatters</td>
       <td>true</td>
-      <td>If set to false this rule no longer requires the variable declaration and return/throw statement to be on consecutive lines. Any variable that is used solely in a return/throw statement will be reported.</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Setting this to false relaxes the rule to report any variable that is used solely in a return/throw statement, under the assumption that the statements between the declaration and the return have no side effects. That assumption is unsafe and following the suggestion could introduce an application bug (#3124). The property will be removed in PMD 8.0.0; statement order will then always be considered.</td>
     </tr>
   </tbody>
 </table>
 
 <p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/VariableCanBeInlined"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p><strong>Use this rule and customize it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/VariableCanBeInlined"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"statementOrderMatters"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;/properties&gt;</span>
-<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="variabledeclarationusagedistance">VariableDeclarationUsageDistance</h2>

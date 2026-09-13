@@ -2088,6 +2088,8 @@ If you want to suppress violations for non-static methods, you can use
     <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"violationSuppressXPath"</span> <span class="na">value=</span><span class="s">".[ancestor-or-self::MethodDeclaration[1][@Static = false()]]"</span> <span class="nt">/&gt;</span>
 </code></pre></div>    </div>
   </li>
+  <li>The property <code class="language-plaintext highlighter-rouge">statementOrderMatters</code> of the rule <a href="pmd_rules_java_codestyle.html#variablecanbeinlined"><code class="language-plaintext highlighter-rouge">VariableCanBeInlined</code></a> is now deprecated.
+Setting it to false only risks false negatives, therefore, the property will be removed in PMD 8.0.0.</li>
 </ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
@@ -2109,6 +2111,7 @@ If you want to suppress violations for non-static methods, you can use
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3124">#3124</a>: [java] UnnecessaryLocalBeforeReturn/VariableCanBeInlined - remove property statementOrderMatters</li>
       <li><a href="https://github.com/pmd/pmd/issues/5732">#5732</a>: [java] UnnecessaryCast false positive with package private methods</li>
     </ul>
   </li>
