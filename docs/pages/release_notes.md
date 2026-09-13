@@ -54,7 +54,11 @@ This is a {{ site.pmd.release_type }} release.
 * java
     * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
 * java-bestpractices
+    * [#5031](https://github.com/pmd/pmd/issues/5031): \[java] CheckResultSet: False positive with ResultSet.next() in a while loop
+    * [#5209](https://github.com/pmd/pmd/issues/5209): \[java] CheckResultSet: False positive with guava preconditions
     * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
+    * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] CheckResultSet: False positive for rs.next() ? x : y
+    * [#7070](https://github.com/pmd/pmd/issues/7070): \[java] CheckResultSet: False negative caused by unrelated
 * java-codestyle
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-design
