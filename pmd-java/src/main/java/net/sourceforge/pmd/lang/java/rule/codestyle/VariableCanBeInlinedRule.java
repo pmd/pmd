@@ -30,7 +30,7 @@ public class VariableCanBeInlinedRule extends AbstractJavaRulechainRule {
                     + "that is used solely in a return/throw statement, under the assumption that the statements "
                     + "between the declaration and the return have no side effects. That assumption is unsafe and "
                     + "following the suggestion could introduce an application bug (#3124). The property will be "
-                    + "removed; statement order will then always be considered.")
+                    + "removed in PMD 8.0.0; statement order will then always be considered.")
             .build();
 
     public VariableCanBeInlinedRule() {
