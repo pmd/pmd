@@ -41,6 +41,19 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#insecurecryptoiv">
         <description>
 Do not use hard coded initialization vector in cryptographic operations. Please use a randomly generated IV.
+
+The rule also detects default-initialized byte arrays with a positive constant
+length, such as `new byte[16]`. For local variables, this check is limited to
+straight-line code in the same block. It does not report when the array may have
+been modified or passed elsewhere before the `IvParameterSpec` construction.
+This check applies to `IvParameterSpec` itself. Named and anonymous subclasses
+are excluded because they may transform their arguments or override `getIV()`.
+Empty arrays are excluded.
+
+Default-initialized arrays are reported at each constructor call that copies the
+unchanged array, rather than at the allocation. Put `// NOPMD` on that constructor
+call's line to suppress such a report. Existing checks for explicit hard-coded
+values continue to report at the value's source.
         </description>
         <priority>3</priority>
         <example>
