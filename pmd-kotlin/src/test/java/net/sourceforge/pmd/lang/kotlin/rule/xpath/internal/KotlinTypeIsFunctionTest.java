@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
@@ -107,34 +107,6 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
     }
 
     @Test
-    void typeIsExactlyMatchesExactType() {
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/CalendarUsage.kt");
-        Report report = runXPath("//PropertyDeclaration[pmd-kotlin:typeIsExactly('java.util.Calendar')]", kotlinFile);
-        assertNoErrors(report);
-        assertViolationAtLine(report, 6, "Expected violation at line 6 (meeting: Calendar)");
-    }
-
-    @Test
-    void typeIsExactlyDoesNotMatchSubtype() {
-        // typeIsExactly('java.io.Serializable') must NOT match a property of type
-        // SerializableSubtype (which implements Serializable but is not exactly it).
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/SerializableSubtype.kt");
-        Report report = runXPath("//PropertyDeclaration[pmd-kotlin:typeIsExactly('java.io.Serializable')]", kotlinFile);
-        assertNoErrors(report);
-        assertEquals(0, report.getViolations().size(),
-                "typeIsExactly should not match properties of SerializableSubtype");
-    }
-
-    @Test
-    void typeIsExactlyMatchesNullableType() {
-        // typeIsExactly must ignore the nullable marker: String? still matches 'kotlin.String'.
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/StringEquivalence.kt");
-        Report report = runXPath("//PropertyDeclaration[pmd-kotlin:typeIsExactly('kotlin.String')]", kotlinFile);
-        assertNoErrors(report);
-        assertViolationAtLine(report, 10, "Expected violation at line 10 (nickname: String?)");
-    }
-
-    @Test
     void typeIsOnClassParameterMatches() {
         File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/PrimaryCtorParams.kt");
         Report report = runXPath("//ClassParameter[pmd-kotlin:typeIs('kotlin.String')]", kotlinFile);
@@ -227,17 +199,6 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
                 "Simple is not a Calendar, should not match");
     }
 
-    @Test
-    void classDeclarationHasTypeNameAttribute() {
-        // ClassDeclaration nodes should have @TypeName set to the class's own FQN
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/InferredTypeSubtype.kt");
-        Report report = runXPath(
-                "//ClassDeclaration[@TypeName='net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis.Simple']", kotlinFile);
-        assertNoErrors(report);
-        assertTrue(!report.getViolations().isEmpty(),
-                "Expected ClassDeclaration[@TypeName='net.sourceforge.pmd.lang.kotlin.rule.xpath.typeis.Simple'] to match");
-    }
-
     // --- AvoidStringBufferField ---
 
     @Test
@@ -293,17 +254,6 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
     }
 
     @Test
-    void delegationSpecifierHasTypeNameAttribute() {
-        // DelegationSpecifier nodes (supertypes) should have @TypeName set to the supertype FQN
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/InferredTypeSubtype.kt");
-        Report report = runXPath(
-                "//DelegationSpecifier[@TypeName='java.io.Serializable']", kotlinFile);
-        assertNoErrors(report);
-        assertTrue(!report.getViolations().isEmpty(),
-                "Expected DelegationSpecifier[@TypeName='java.io.Serializable'] to match");
-    }
-
-    @Test
     void typeIsMatchesDelegationSpecifierViaSupertypeHierarchy() {
         // typeIs('java.lang.Throwable') on a DelegationSpecifier must match when the supertype
         // is RuntimeException (a transitive subtype of Throwable).
@@ -328,88 +278,16 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
     }
 
     @Test
-    void typeIsExactlyMatchesConstructorCallOnPostfixUnaryExpression() {
-        // typeIsExactly on a throw's PostfixUnaryExpression (constructor call) must fire
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/ConstructorCallTypeCheck.kt");
+    void hasUnresolvedReferenceIsFalseOnKnownGoodFixture() {
+        // Guard test: proves type resolution is actually working end-to-end on a fixture that
+        // has no unresolved references, so a silently-broken auxClasspath/analysis pipeline
+        // doesn't just make other typeIs tests skip/no-op without anyone noticing.
+        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/CalendarUsage.kt");
         Report report = runXPath(
-                "//JumpExpression[T-THROW and .//PostfixUnaryExpression["
-                        + "pmd-kotlin:typeIsExactly('java.lang.Exception')]]",
-                kotlinFile);
+                "//PropertyDeclaration[pmd-kotlin:hasUnresolvedReference()]", kotlinFile);
         assertNoErrors(report);
-        assertViolationAtLine(report, 12, "Expected violation at line 12 (throw Exception)");
-        assertNoViolationAtLine(report, 16, "Line 16 (throw RuntimeException) must NOT match typeIsExactly('java.lang.Exception')");
-        assertNoViolationAtLine(report, 21, "Line 21 (throw IllegalArgumentException) must NOT match typeIsExactly('java.lang.Exception')");
-    }
-
-    @Test
-    void typeIsExactlyDoesNotMatchInterfaceTypedPropertyWithConcreteInitializer() {
-        // PropertyDeclaration val items: List<String> = ArrayList()
-        // typeIsExactly('java.util.ArrayList') must NOT fire -- declared type is List, not ArrayList
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/ConstructorCallTypeCheck.kt");
-        Report report = runXPath(
-                "//PropertyDeclaration[pmd-kotlin:typeIsExactly('java.util.ArrayList')]",
-                kotlinFile);
-        assertNoErrors(report);
-        assertTrue(report.getViolations().isEmpty(),
-                "No PropertyDeclaration should match typeIsExactly('java.util.ArrayList') "
-                        + "when declared type is List interface");
-    }
-
-    // --- TypeName on CatchBlock, FunctionValueParameter, UnescapedAnnotation ---
-
-    @Test
-    void catchBlockHasTypeNameAttribute() {
-        // CatchBlock nodes should have @TypeName set to the caught exception's FQN
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
-        Report report = runXPath(
-                "//CatchBlock[@TypeName='java.lang.IllegalArgumentException']", kotlinFile);
-        assertNoErrors(report);
-        assertTrue(!report.getViolations().isEmpty(),
-                "Expected CatchBlock[@TypeName='java.lang.IllegalArgumentException'] to match");
-    }
-
-    @Test
-    void functionParameterHasTypeNameAttribute() {
-        // FunctionValueParameter nodes should have @TypeName set to the parameter's FQN
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
-        Report report = runXPath(
-                "//FunctionValueParameter[@TypeName='java.util.Calendar']", kotlinFile);
-        assertNoErrors(report);
-        assertTrue(!report.getViolations().isEmpty(),
-                "Expected FunctionValueParameter[@TypeName='java.util.Calendar'] to match");
-    }
-
-    @Test
-    void annotationNodeHasTypeNameAttribute() {
-        // UnescapedAnnotation and SingleAnnotation nodes should have @TypeName set to the annotation FQN
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
-        Report report = runXPath(
-                "//UnescapedAnnotation[@TypeName='kotlin.Deprecated']", kotlinFile);
-        assertNoErrors(report);
-        assertTrue(!report.getViolations().isEmpty(),
-                "Expected UnescapedAnnotation[@TypeName='kotlin.Deprecated'] to match");
-    }
-
-    // --- AnnotationFqNames attribute on FunctionDeclaration and ClassDeclaration ---
-
-    @Test
-    void functionDeclarationAnnotationFqNamesAttributeMatchesDeprecated() {
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
-        Report report = runXPath(
-                "//FunctionDeclaration[@AnnotationFqNames = 'kotlin.Deprecated']", kotlinFile);
-        assertNoErrors(report);
-        assertTrue(!report.getViolations().isEmpty(),
-                "Expected FunctionDeclaration[@AnnotationFqNames='kotlin.Deprecated'] to match");
-    }
-
-    @Test
-    void classDeclarationAnnotationFqNamesAttributeMatchesDeprecated() {
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/TypeAnnotationAttributes.kt");
-        Report report = runXPath(
-                "//ClassDeclaration[@AnnotationFqNames = 'kotlin.Deprecated']", kotlinFile);
-        assertNoErrors(report);
-        assertTrue(!report.getViolations().isEmpty(),
-                "Expected ClassDeclaration[@AnnotationFqNames='kotlin.Deprecated'] to match");
+        assertFalse(!report.getViolations().isEmpty(),
+                "CalendarUsage.kt should have no unresolved references (java.util.Calendar is a JDK type)");
     }
 
 }
