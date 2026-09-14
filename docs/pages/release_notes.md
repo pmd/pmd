@@ -107,49 +107,9 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 * java-security
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
 * kotlin
-    * [#6795](https://github.com/pmd/pmd/issues/6795): \[kotlin] Add kotlin-type-mapper infrastructure
-    * [#6891](https://github.com/pmd/pmd/issues/6891): \[kotlin] AnnotationFqnAnnotator: @<!-- -->TypeName not set on UnescapedAnnotation nodes
     * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add XPath functions and type attributes for type-aware XPath rules
-* miscellaneous
-    * [#1995](https://github.com/pmd/pmd/issues/1995): \[core] PMD should display number of rules violated or errors found
-    * [#2527](https://github.com/pmd/pmd/issues/2527): \[doc] CPD: Invalid link to String Tiling Algorithm
-    * [#4952](https://github.com/pmd/pmd/issues/4952): \[doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader
-    * [#4953](https://github.com/pmd/pmd/issues/4953): \[core] Deprecate PMDConfiguration#setClassloader and #getClassloader
-    * [#6837](https://github.com/pmd/pmd/issues/6837): \[ci] chore: actions/create-github-app-token: Input 'app-id' has been deprecated with message: Use 'client-id' instead
-    * [#6865](https://github.com/pmd/pmd/issues/6865): \[core] Include the running PMD version in the "Unable to find referenced rule" error
-    * [#6913](https://github.com/pmd/pmd/issues/6913): \[core] RuleSetLoader#loadFromString ignores previously configured Resource/ClassLoader
-    * [#6952](https://github.com/pmd/pmd/issues/6952): \[core] Ruleset references are not resolved relative to the referencing ruleset
 
 ### 🚨️ API Changes
-#### Deprecations
-* core
-    * {%jdoc !!core::PMDConfiguration#getClassLoader() %} and {%jdoc !!core::PMDConfiguration#setClassLoader(java.lang.ClassLoader) %} are deprecated.
-      Use {%jdoc core::PMDConfiguration#prependAuxClasspath(String) %} or {%jdoc core::PMDConfiguration#setAuxClasspath(String) %} to
-      configure the auxClasspath for analyzing Java code.  
-      Note: In order to read back the currently configured auxClasspath, use {%jdoc core::PMDConfiguration#getAuxClasspath() %} and not the
-      deprecated `getClassLoader()` anymore.  
-      Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
-      By just configuring the auxClasspath, PMD internally can deal with that.
-* core
-    * {%jdoc !!core::lang.JvmLanguagePropertyBundle.setClassLoader(ClassLoader) %} and
-      {%jdoc !!core::lang.JvmLanguagePropertyBundle.getAnalysisClassLoader() %} are deprecated. Use the language property
-      {%jdoc !!core::lang.JvmLanguagePropertyBundle#AUX_CLASSPATH %} instead via `getProperty()` and `setProperty()`. This language property
-      is now set correctly when providing the auxClasspath via CLI parameter `--aux-classpath`.
-    * The internal class `net.sourceforge.pmd.internal.util.ClasspathClassLoader` has been explicitly marked as deprecated.
-      Using ClassLoaders directly is discouraged. Use {%jdoc !!core::PMDConfiguration#setAuxClasspath(String) %} instead.
-* java
-    * {%jdoc !!java::lang.java.types.TypeSystem#usingClassLoaderClasspath(java.lang.ClassLoader) %} is deprecated. Using
-      ClassLoaders directly is discouraged. Use {%jdoc java::lang.java.types.TypeSystem#usingClasspath(java::lang.java.symbols.internal.asm.Classpath) %}
-      instead.
-
-#### Experimental API
-* core
-    * The new {%jdoc core::util.AuxClasspathLoader %} is a replacement for the deprecated `ClasspathClassLoader`.
-      It deals with a typical classpath to load classes need for Java's type resolution. It has the static method
-      `enableReuse(int)` which enables caching of AuxClasspathLoader instances. This is useful for unit tests
-      or IDE plugins, when PMD is executed multiple times within one JVM instance. Don't forget to call
-      `disableReuse()` when you're done to close all cached instances.
-
 #### Experimental API
 * kotlin
     * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the initial API to access type information
@@ -171,7 +131,6 @@ Type data is now accessible in XPath rules via new attributes and helper functio
       {%jdoc kotlin::lang.kotlin.ast.KtDelegationSpecifierAttributes %},
       {%jdoc kotlin::lang.kotlin.ast.KtForStatementAttributes %},
       {%jdoc kotlin::lang.kotlin.ast.KtFunctionValueParameterAttributes %},
-      {%jdoc kotlin::lang.kotlin.ast.KtKotlinFileAttributes %},
       {%jdoc kotlin::lang.kotlin.ast.KtPropertyDeclarationAttributes %},
       {%jdoc kotlin::lang.kotlin.ast.KtSingleAnnotationAttributes %}, and
       {%jdoc kotlin::lang.kotlin.ast.KtUnescapedAnnotationAttributes %}.
