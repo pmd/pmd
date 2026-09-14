@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -110,5 +114,23 @@ abstract class BaseKotlinXPathFunctionTest {
     protected static void assertNoViolationAt(Report report, int line, int column, String message) {
         assertTrue(report.getViolations().stream()
                 .noneMatch(v -> v.getBeginLine() == line && v.getBeginColumn() == column), message);
+    }
+
+    /**
+     * Asserts that the report's violations occur at exactly {@code expectedLines}, one violation
+     * per listed line number (order doesn't matter, but count does: a duplicate expected line
+     * requires two violations on that line). Use this instead of combining several
+     * {@link #assertViolationAtLine}/{@link #assertNoViolationAtLine} calls when you need to
+     * rule out unexpected violations on lines you didn't think to check.
+     */
+    protected static void assertViolationsOnlyAtLines(Report report, String message, int... expectedLines) {
+        List<Integer> actual = report.getViolations().stream()
+                .map(v -> v.getBeginLine())
+                .sorted()
+                .collect(Collectors.toList());
+        List<Integer> expected = Arrays.stream(expectedLines).boxed()
+                .sorted()
+                .collect(Collectors.toList());
+        assertEquals(expected, actual, message);
     }
 }
