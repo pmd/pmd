@@ -76,15 +76,6 @@ class KotlinNodeTypeDataTest {
         assertTrue(names.contains("kotlin.Deprecated"));
     }
 
-    // --- typeInfoAvailable ---
-
-    @Test
-    void typeInfoAvailableTrueAfterSet() {
-        KtKotlinFile root = parse("val x = 1");
-        KotlinNodeTypeData.setTypeInfoAvailable(root);
-        assertTrue(KotlinNodeTypeData.isTypeInfoAvailable(root));
-    }
-
     // --- InternalApiBridge (public setters) ---
 
     @Test
@@ -93,12 +84,5 @@ class KotlinNodeTypeDataTest {
         InternalApiBridge.setType(root, KotlinTypeName.ofFqName("java.util.List"));
         KotlinTypeName type = KotlinNodeTypeData.getType(root);
         assertEquals("java.util.List", type.getFqName());
-    }
-
-    @Test
-    void internalApiBridgeSetTypeInfoAvailable() {
-        KtKotlinFile root = parse("val x = 1");
-        InternalApiBridge.setTypeInfoAvailable(root);
-        assertTrue(KotlinNodeTypeData.isTypeInfoAvailable(root));
     }
 }

@@ -68,4 +68,15 @@ class KotlinIsNullableFunctionTest extends BaseKotlinXPathFunctionTest {
         assertNoErrors(report);
         assertNoViolationAtLine(report, 21, "Did not expect violation at line 21 (input: String)");
     }
+
+    @Test
+    void isNullableMultipleDeclarations() {
+        Report report = runXPath("//PropertyDeclaration[pmd-kotlin:isNullable()]",
+                getResource(RESOURCE_DIR + "/NullableTypes.kt"));
+        assertNoErrors(report);
+        assertNoViolationAt(report, 24, 5,
+                "Did not expect violation for nonNullFirst (String) sharing a line with a nullable declaration");
+        assertViolationAt(report, 24, 36,
+                "Expected violation for nullableSecond (String?) sharing a line with a non-nullable declaration");
+    }
 }

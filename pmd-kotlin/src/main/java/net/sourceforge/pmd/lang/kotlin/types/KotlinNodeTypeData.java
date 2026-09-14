@@ -39,9 +39,6 @@ public final class KotlinNodeTypeData {
     private static final SimpleDataKey<List<String>> ANNOTATION_NAMES_KEY =
             DataMap.simpleDataKey("kotlin.annotationNames");
 
-    private static final SimpleDataKey<Boolean> TYPE_INFO_AVAILABLE_KEY =
-            DataMap.simpleDataKey("kotlin.typeInfoAvailable");
-
     private static final SimpleDataKey<KotlinTypeAnalysisContext> ANALYSIS_CONTEXT_KEY =
             DataMap.simpleDataKey("kotlin.analysisContext");
 
@@ -97,23 +94,6 @@ public final class KotlinNodeTypeData {
      */
     static void setAnnotationFqNames(KotlinNode node, List<String> annotationFqNames) {
         node.getUserMap().set(ANNOTATION_NAMES_KEY, annotationFqNames);
-    }
-
-    /**
-     * Returns {@code true} when the kotlin-type-mapper pre-analysis ran successfully
-     * for the file represented by this root node, {@code false} otherwise.
-     */
-    public static boolean isTypeInfoAvailable(KtKotlinFile rootNode) {
-        Boolean value = rootNode.getUserMap().get(TYPE_INFO_AVAILABLE_KEY);
-        return Boolean.TRUE.equals(value);
-    }
-
-    /**
-     * Marks a root node as having completed type analysis.
-     * Called via {@link InternalApiBridge}.
-     */
-    static void setTypeInfoAvailable(KtKotlinFile rootNode) {
-        rootNode.getUserMap().set(TYPE_INFO_AVAILABLE_KEY, Boolean.TRUE);
     }
 
     /**

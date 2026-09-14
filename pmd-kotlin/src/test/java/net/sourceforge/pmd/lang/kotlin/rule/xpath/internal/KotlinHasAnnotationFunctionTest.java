@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -22,9 +21,9 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
                 "//PropertyDeclaration[pmd-kotlin:hasAnnotation('Column')]",
                 getResource(RESOURCE_DIR + "/AnnotatedEntities.kt"));
         assertNoErrors(report);
-        assertViolationAtLine(report, 11, "Expected @Column on name property (line 11)");
-        assertViolationAtLine(report, 14, "Expected @Column on email property (line 14)");
-        assertNoViolationAtLine(report, 17, "Did not expect @Column on id (line 17)");
+        assertViolationsOnlyAtLines(report,
+                "Expected @Column only on name (line 11) and email (line 14), not id (line 17) or elsewhere",
+                11, 14);
     }
 
     @Test
@@ -33,8 +32,9 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
                 "//FunctionDeclaration[pmd-kotlin:hasAnnotation('kotlin.Deprecated')]",
                 getResource(RESOURCE_DIR + "/AnnotatedEntities.kt"));
         assertNoErrors(report);
-        assertViolationAtLine(report, 20, "FQN match should find kotlin.Deprecated on oldMethod (line 20)");
-        assertNoViolationAtLine(report, 22, "normalMethod (line 22) has no annotation");
+        assertViolationsOnlyAtLines(report,
+                "FQN match should find kotlin.Deprecated only on oldMethod (line 20), not normalMethod (line 22)",
+                20);
     }
 
     @Test
@@ -43,8 +43,9 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
                 "//FunctionDeclaration[pmd-kotlin:hasAnnotation('Deprecated')]",
                 getResource(RESOURCE_DIR + "/AnnotatedEntities.kt"));
         assertNoErrors(report);
-        assertViolationAtLine(report, 20, "Expected @Deprecated on oldMethod (line 20)");
-        assertNoViolationAtLine(report, 22, "Did not expect @Deprecated on normalMethod (line 22)");
+        assertViolationsOnlyAtLines(report,
+                "Expected @Deprecated only on oldMethod (line 20), not normalMethod (line 22)",
+                20);
     }
 
     @Test
@@ -72,8 +73,8 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
                 "//PropertyDeclaration[pmd-kotlin:hasAnnotation('com.other.Column')]",
                 getResource(RESOURCE_DIR + "/AnnotatedEntities.kt"));
         assertNoErrors(report);
-        assertNoViolationAtLine(report, 11,
-                "Should not match com.other.Column when actual annotation is javax.persistence.Column");
+        assertViolationsOnlyAtLines(report,
+                "Should not match com.other.Column anywhere when actual annotation is javax.persistence.Column");
     }
 
     @Test
@@ -82,8 +83,38 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
                 "//ClassDeclaration[pmd-kotlin:hasAnnotation('Service')]",
                 getResource(RESOURCE_DIR + "/AnnotatedEntities.kt"));
         assertNoErrors(report);
-        assertFalse(report.getViolations().isEmpty(),
-                "Expected hasAnnotation('Service') to match @org.springframework.stereotype.Service");
-        assertNoViolationAtLine(report, 7, "UserEntity must not match hasAnnotation('Service')");
+        assertViolationsOnlyAtLines(report,
+                "Expected hasAnnotation('Service') to match only FqnAnnotatedService (line 26), not UserEntity",
+                26);
+    }
+
+    @Test
+    void hasAnnotationDoesNotMatchWrongFqnJunit() {
+        // With auxClasspath configured, org.junit.jupiter.api.Test resolves to its real FQN,
+        // so a query for a different FQN sharing only the simple name ('Test') must NOT match.
+        Report report = runXPath(
+                "//FunctionDeclaration[pmd-kotlin:hasAnnotation('com.other.Test')]",
+                getResource(RESOURCE_DIR + "/TestCaseExample.kt"),
+                true);
+        assertNoErrors(report);
+        assertTrue(report.getViolations().isEmpty(),
+                "hasAnnotation('com.other.Test') must not match @org.junit.jupiter.api.Test");
+    }
+
+    @Test
+    void hasAnnotationDoesNotMatchNestedDeclarationAnnotation() {
+        // outer() has no annotation of its own; nested() does. The isBodyBoundary guard
+        // must stop the recursive search at outer()'s FunctionBody, so outer() must not
+        // wrongly inherit nested()'s @Deprecated.
+        Report report = runXPath(
+                "//FunctionDeclaration[pmd-kotlin:hasAnnotation('Deprecated')]",
+                "fun outer() {\n"
+                        + "    @Deprecated\n"
+                        + "    fun nested() {}\n"
+                        + "}\n");
+        assertNoErrors(report);
+        assertViolationsOnlyAtLines(report,
+                "Only nested() (line 3) must match; outer() (line 1) must not inherit its annotation",
+                3);
     }
 }

@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 /**
- * @since 7.27.0
+ * @since 7.28.0
  * @experimental See {@link AttributeView}.
  */
 @Experimental
@@ -22,22 +23,29 @@ public class KtFunctionValueParameterAttributes extends AttributeView<KotlinPars
 
     /**
      * Returns the parameter modifier keywords ({@code vararg}, {@code noinline},
-     * {@code crossinline}) as a space-separated string, or {@code null} if none.
+     * {@code crossinline}), in source order, or an empty list if none.
      *
      * <p>Note: FunctionValueParameter uses {@code parameterModifiers} in the grammar
      * (not {@code modifiers}), so this is a custom implementation rather than
      * using the {@link HasModifiers} interface.
+     *
+     * <p>Java-rule API only: not exposed as an XPath attribute (space-separated
+     * strings are fragile to match reliably). Use {@code pmd-kotlin:modifiers()}
+     * from XPath instead.
      */
-    public @Nullable String getModifiers() {
+    @NoAttribute
+    public List<String> getModifiers() {
         KotlinParser.KtParameterModifiers mods = node.firstChild(KotlinParser.KtParameterModifiers.class);
         if (mods == null) {
-            return null;
+            return Collections.emptyList();
         }
-        String result = mods.children(KotlinParser.KtParameterModifier.class)
-                .descendants(KotlinTerminalNode.class)
-                .toStream()
-                .map(KotlinTerminalNode::getText)
-                .collect(Collectors.joining(" "));
-        return !result.isEmpty() ? result : null;
+        List<String> result = new ArrayList<>();
+        for (KotlinParser.KtParameterModifier modifier : mods.children(KotlinParser.KtParameterModifier.class)) {
+            KotlinTerminalNode terminal = modifier.descendants(KotlinTerminalNode.class).first();
+            if (terminal != null) {
+                result.add(terminal.getText());
+            }
+        }
+        return result;
     }
 }

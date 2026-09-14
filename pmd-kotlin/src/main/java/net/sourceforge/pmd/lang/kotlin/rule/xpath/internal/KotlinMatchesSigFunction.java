@@ -13,6 +13,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPostfixUnaryExpression;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPostfixUnarySuffix;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
@@ -63,7 +65,7 @@ import nl.stokpop.typemapper.model.SignatureMatcherKt;
  * //PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.regex.Pattern#compile(_)')]
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
 
@@ -109,7 +111,7 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             if (contextNode == null) {
                 return false;
             }
-            if (!"PostfixUnaryExpression".equals(contextNode.getXPathNodeName())) {
+            if (!(contextNode instanceof KtPostfixUnaryExpression)) {
                 return false;
             }
             String sig = (String) arguments[0];
@@ -132,7 +134,7 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             if (!singleLine) {
                 suffixBeginLines = new HashSet<>();
                 for (Node child : contextNode.children()) {
-                    if ("PostfixUnarySuffix".equals(child.getXPathNodeName())) {
+                    if (child instanceof KtPostfixUnarySuffix) {
                         suffixBeginLines.add(child.getBeginLine());
                     }
                 }
@@ -151,14 +153,14 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
             if (singleLine) {
                 nestedRanges = new ArrayList<>();
                 for (Node desc : contextNode.descendants().toList()) {
-                    if ("PostfixUnaryExpression".equals(desc.getXPathNodeName())) {
+                    if (desc instanceof KtPostfixUnaryExpression) {
                         nestedRanges.add(new int[]{desc.getBeginColumn(), desc.getEndColumn()});
                     }
                 }
             }
 
             for (CallSiteAst call : sites) {
-                boolean callSiteMatch = matchesCallSite(call, beginCol, endCol, singleLine,
+                boolean callSiteMatch = matchesCallSite(call, beginLine, beginCol, endCol, singleLine,
                         suffixBeginLines, nestedRanges);
                 boolean sigMatch = callSiteMatch && SignatureMatcherKt.matchesSigPolymorphic(call, sig, ctx::isSubtypeOf);
                 if (sigMatch) {
@@ -169,11 +171,19 @@ public final class KotlinMatchesSigFunction extends BaseKotlinXPathFunction {
         }
 
         private static boolean matchesCallSite(CallSiteAst call,
-                                               int beginCol, int endCol,
+                                               int beginLine, int beginCol, int endCol,
                                                boolean singleLine,
                                                Set<Integer> suffixBeginLines,
                                                List<int[]> nestedRanges) {
             if (singleLine) {
+                // callSitesInRange() falls back to the +/-1 line-tolerant lookup when the
+                // node's own line has no recorded call site (e.g. an unresolved receiver
+                // type produces no CallSiteAst at all). Reject any call site that didn't
+                // actually come from this node's own line so it can't be wrongly matched
+                // via that fallback.
+                if (call.getLine() != beginLine) {
+                    return false;
+                }
                 int col = call.getColumn();
                 if (col < beginCol || col > endCol) {
                     return false;

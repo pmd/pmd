@@ -25,10 +25,10 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  *
  * <p>For star imports ({@code import com.example.*}), the Kotlin compiler does not
  * report an unresolved reference at the import line itself even when the package is
- * missing. This function handles that case by checking whether the package name
- * extracted from the star import is present in the known-package index (derived from
- * the type-hierarchy classpath scan). If the package is unknown the function returns
- * {@code true}.
+ * missing, since there is no single named symbol to fail to resolve. This function
+ * does not currently detect that case (it would require checking whether the
+ * package name is present in a known-package index derived from the classpath scan;
+ * this is tracked as a follow-up, not yet implemented).
  *
  * <p>Use this function in a rule like {@code UnresolvedType} to warn users that
  * type information is incomplete, which may cause other rules to produce false
@@ -40,7 +40,7 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  * //PropertyDeclaration[pmd-kotlin:hasUnresolvedReference()]
  * }</pre>
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 public final class KotlinHasUnresolvedReferenceFunction extends BaseKotlinXPathFunction {
 

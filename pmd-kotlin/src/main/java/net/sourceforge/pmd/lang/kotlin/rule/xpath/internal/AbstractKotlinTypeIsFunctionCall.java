@@ -23,7 +23,7 @@ import nl.stokpop.typemapper.model.TypeAst;
 /**
  * Base class for {@code pmd-kotlin:typeIs} and {@code pmd-kotlin:typeIsExactly}.
  *
- * @since 7.27.0
+ * @since 7.28.0
  */
 abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefinition.FunctionCall {
 

@@ -83,7 +83,7 @@
    |  |        |  |              |  |  +- T-NL[@Text = "\n"]
    |  |        |  |              |  +- Statement[]
    |  |        |  |              |     +- Declaration[]
-   |  |        |  |              |        +- PropertyDeclaration[@AnnotationFqNames = (), @Mutable = false, @TypeName = "kotlin.Int"]
+   |  |        |  |              |        +- PropertyDeclaration[@AnnotationFqNames = (), @Mutable = false, @TypeName = "kotlin.String"]
    |  |        |  |              |           +- T-VAL[@Text = "val"]
    |  |        |  |              |           +- VariableDeclaration[@Identifier = "requestedData"]
    |  |        |  |              |           |  +- SimpleIdentifier[]

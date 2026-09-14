@@ -19,4 +19,7 @@ class NullableTypes {
 
     // non-nullable parameter -- isNullable() should return false
     fun transform(input: String) {}
+
+    // two declarations on one line -- isNullable() must not leak from one to the other
+    val nonNullFirst: String = ""; val nullableSecond: String? = null
 }

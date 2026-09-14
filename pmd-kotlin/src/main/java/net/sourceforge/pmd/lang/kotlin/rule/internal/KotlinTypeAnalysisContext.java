@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.annotation.Experimental;
 
 import nl.stokpop.typemapper.model.CallSiteAst;
@@ -40,6 +43,8 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  */
 @Experimental
 public final class KotlinTypeAnalysisContext {
+
+    private static final Logger LOG = LoggerFactory.getLogger(KotlinTypeAnalysisContext.class);
 
     private static final KotlinTypeAnalysisContext EMPTY = new KotlinTypeAnalysisContext(
             null,
@@ -89,9 +94,21 @@ public final class KotlinTypeAnalysisContext {
             // Disk: canonical abs path (PMD passes the same paths it gets from the FS).
             // In-memory (fromSources, single-file, tests): relativePath == the key the caller
             // used in the sources map, which is also the key PMD looks up with.
-            String key = diskBased
-                    ? canonicalize(ast.resolveAbsolutePath(file))
-                    : file.getRelativePath();
+            String key;
+            if (diskBased) {
+                try {
+                    key = canonicalize(ast.resolveAbsolutePath(file));
+                } catch (UncheckedIOException e) {
+                    // A single inaccessible file must not abort analysis of the whole run
+                    // (including other Kotlin files and other languages in the same PMD
+                    // run). Report loudly and skip only this file -- it gets no type info,
+                    // same as if it were never analyzed.
+                    LOG.error("Skipping type info for {}: {}", file.getRelativePath(), e.getMessage(), e);
+                    continue;
+                }
+            } else {
+                key = file.getRelativePath();
+            }
             if (!seenKeys.add(key)) {
                 throw new IllegalStateException(
                         "kotlin-type-mapper index clash: two files resolve to the same key \""

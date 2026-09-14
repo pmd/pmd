@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.kotlin.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,9 +54,9 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
                 }
             }
             if (attributeView instanceof HasModifiers) {
-                String mods = ((HasModifiers) attributeView).getModifiers();
-                if (mods != null) {
-                    return new Attribute(node, "Modifiers", mods);
+                List<String> mods = ((HasModifiers) attributeView).getModifiers();
+                if (!mods.isEmpty()) {
+                    return new Attribute(node, "Modifiers", String.join(" ", mods));
                 }
             }
 
@@ -81,12 +81,11 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
         KotlinNode kotlinNode = (KotlinNode) node;
         AttributeView<?> attributeView = AttributeView.create(kotlinNode);
 
-        String mods = attributeView instanceof HasModifiers
+        List<String> mods = attributeView instanceof HasModifiers
                 ? ((HasModifiers) attributeView).getModifiers()
-                : null;
-        if (mods != null) {
-            String formatted = Arrays.stream(mods.split(" "))
-                    .collect(Collectors.joining(", ", "(", ")"));
+                : Collections.emptyList();
+        if (!mods.isEmpty()) {
+            String formatted = mods.stream().collect(Collectors.joining(", ", "(", ")"));
             info.add(new AdditionalInfo("pmd-kotlin:modifiers(): " + formatted));
         }
 

@@ -183,4 +183,33 @@ class KotlinMatchesSigFunctionTest extends BaseKotlinXPathFunctionTest {
         assertEquals(1, report.getViolations().stream().filter(v -> v.getBeginLine() == 6).count(),
                 "Line 6 (FQN ctor java.util.Date()) should match java.util.Date#<init>(*)");
     }
+
+    @Test
+    void matchesSigDoesNotMatchAdjacentLineCallSite() {
+        // un.size (line 5) has an unresolved receiver (Widget from an unavailable jar), so no
+        // call site is recorded for its own line. it.size (line 6) resolves to List#size() at
+        // the same column. matchesSig must not let the +/-1 line-tolerance fallback in
+        // KotlinTypeAnalysisContext leak line 6's call site onto line 5's expression just
+        // because their columns happen to coincide.
+        Report report = runXPath(
+                "//PostfixUnaryExpression[pmd-kotlin:matchesSig('kotlin.collections.List#size()')]",
+                getResource(RESOURCE_DIR + "/AdjacentLineUsage.kt"));
+        assertNoErrors(report);
+        assertNoViolationAtLine(report, 5, "un.size has an unresolved receiver -- must not match via line 6's call site");
+        assertViolationAtLine(report, 6, "Expected violation at line 6 (it.size on a resolved List)");
+    }
+
+    @Test
+    void matchesSigDistinguishesTwoResolvedCallsOnOneLine() {
+        // list1.size (col 17) and str.length (col 30) are both resolved call sites on the
+        // same line -- no +/-1 line fallback is involved here (both lines have real
+        // entries). Confirms the column filter picks only the intended call, not just
+        // "any call site on this line", when two distinct resolved calls share a line.
+        Report report = runXPath(
+                "//PostfixUnaryExpression[pmd-kotlin:matchesSig('kotlin.collections.List#size()')]",
+                getResource(RESOURCE_DIR + "/TwoResolvedCallsSameLine.kt"));
+        assertNoErrors(report);
+        assertViolationAt(report, 4, 17, "Expected match at list1.size (col 17)");
+        assertNoViolationAt(report, 4, 30, "str.length (col 30) must not match List#size()");
+    }
 }

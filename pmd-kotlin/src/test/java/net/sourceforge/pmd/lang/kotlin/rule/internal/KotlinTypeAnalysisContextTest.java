@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +22,9 @@ import org.junit.jupiter.api.Test;
 
 import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
 import nl.stokpop.typemapper.model.CallSiteAst;
+import nl.stokpop.typemapper.model.DeclarationAst;
+import nl.stokpop.typemapper.model.DeclarationKind;
+import nl.stokpop.typemapper.model.FileAst;
 import nl.stokpop.typemapper.model.TypedAst;
 
 class KotlinTypeAnalysisContextTest {
@@ -188,5 +195,53 @@ class KotlinTypeAnalysisContextTest {
                 "callsOnReceiver by alias name must return empty (ktm stores expanded type)");
         assertFalse(ctx.callsOnReceiverExpandingAlias("MyList").isEmpty(),
                 "callsOnReceiverExpandingAlias must find calls by expanding the alias");
+    }
+
+    @Test
+    void fromSkipsFileWhoseAbsolutePathCannotBeCanonicalized() {
+        // One file has a relativePath too long for getCanonicalPath() to resolve
+        // (throws IOException: File name too long) -- from() must not let this abort
+        // building the whole index; it must skip only that file and keep the other.
+        DeclarationAst goodDecl = new DeclarationAst(
+                DeclarationKind.PROPERTY, "x", "pkg.x", "pkg",
+                null, null, Collections.emptyList(), Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList(),
+                1, 1, 0, 0, Collections.emptyList());
+        FileAst goodFile = new FileAst(
+                "Good.kt", "pkg", Collections.singletonList(goodDecl),
+                Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
+        String tooLongName = repeat("a", 5000) + ".kt";
+        FileAst badFile = new FileAst(
+                tooLongName, "pkg", Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
+        TypedAst ast = new TypedAst(
+                "2.0", "test", "/tmp/does-not-need-to-exist",
+                Arrays.asList(goodFile, badFile), Collections.emptyMap());
+
+        // from() logs the skip at ERROR level (by design, see production code comment) --
+        // capture stderr around the call so the expected log line doesn't show up as build
+        // noise, while still asserting it was actually emitted.
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(capturedErr, true));
+        KotlinTypeAnalysisContext result;
+        try {
+            result = assertDoesNotThrow(() -> KotlinTypeAnalysisContext.from(ast));
+        } finally {
+            System.setErr(originalErr);
+        }
+
+        assertEquals(1, result.declarationsAt("/tmp/does-not-need-to-exist/Good.kt", 1).size());
+        String logged = capturedErr.toString();
+        assertTrue(logged.contains("Skipping type info for"),
+                "Expected the skip to be logged at ERROR level, got: " + logged);
+    }
+
+    private static String repeat(String s, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(s);
+        }
+        return sb.toString();
     }
 }

@@ -52,7 +52,6 @@ class KotlinAuxClasspathIntegrationTest {
             return kotlin.Unit.INSTANCE;
         });
         KtKotlinFile root = parser.parse(SNIPPET);
-        assertTrue(KotlinNodeTypeData.isTypeInfoAvailable(root));
         KtFunctionDeclaration fn = firstFunctionNamed(root, "annotated");
         assertNotNull(fn);
         List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(fn);
@@ -73,7 +72,6 @@ class KotlinAuxClasspathIntegrationTest {
         });
 
         KtKotlinFile root = parser.parse(SNIPPET);
-        assertTrue(KotlinNodeTypeData.isTypeInfoAvailable(root));
         KtFunctionDeclaration fn = firstFunctionNamed(root, "annotated");
         assertNotNull(fn);
         List<String> annotations = KotlinNodeTypeData.getAnnotationFqNames(fn);

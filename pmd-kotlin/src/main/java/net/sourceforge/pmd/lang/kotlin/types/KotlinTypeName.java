@@ -16,7 +16,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <p>Instances are immutable and created during the pre-analysis pass.
  *
- * @since 7.27.0
+ * @since 7.28.0
  * @experimental
  */
 @Experimental
