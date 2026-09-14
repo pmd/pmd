@@ -41,23 +41,31 @@ which is bundled with PMD.
 
 ## XPath rule support
 
-Kotlin now provides XPath-queryable attributes and helper functions for type-aware rules.
+Kotlin provides XPath-queryable attributes and helper functions for type-aware rules.
 
 ### Type-info attributes
 
-The following attributes are available on declaration nodes when `auxClasspath` is configured
-and the kotlin-type-mapper analysis has resolved the types:
+The following attributes depend on type resolution: they are only available when `auxClasspath`
+is configured and the kotlin-type-mapper analysis has resolved the types.
 
 | Attribute | Nodes | Meaning |
 |-----------|-------|---------|
 | `@TypeName` | `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
 | `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name (including generic type arguments and nullable marker) |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
-| `@Mutable` | `PropertyDeclaration` | `true` for `var`, `false` for `val`. Always present. |
-| `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
-| `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
+
+### General attributes
+
+These attributes are structural: they come directly from the parsed source and don't depend on
+type resolution, so they're always present regardless of `auxClasspath`.
+
+| Attribute | Nodes | Meaning |
+|-----------|-------|---------|
+| `@Mutable` | `PropertyDeclaration` | `true` for `var`, `false` for `val`. |
+| `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
+| `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
 
 > **Note:** `@TypeName` and `@ReturnTypeName` use fully-qualified names for generic type arguments:
 > `kotlin.collections.List<kotlin.String>?`, not `List<String>?`. When comparing in XPath, use
@@ -91,75 +99,18 @@ analog of pmd-java's `isUnresolved()`) — disambiguates the two cases:
 //PropertyDeclaration[not(@TypeName) and not(pmd-kotlin:hasUnresolvedReference())]
 ```
 
+> **Limitation:** `hasUnresolvedReference()` only checks the context node's *begin line* and
+> only returns a boolean — it does not tell you *which* symbol failed to resolve, and it won't
+> see an unresolved reference on a different line of a multi-line declaration. Exposing the
+> unresolved reference name(s) is tracked as a possible follow-up function.
+
 ### XPath functions
 
-The following XPath 2.0 functions are available in the `pmd-kotlin` namespace:
-
-**`pmd-kotlin:typeIs(typeName)`** — Returns `true` if the context node's resolved type is `typeName`
-or a subtype of it (uses the type hierarchy from kotlin-type-mapper).
-Works on `PropertyDeclaration`, `FunctionDeclaration`, `ClassParameter`, `FunctionValueParameter`,
-`CatchBlock`, `ForStatement`, and `DelegationSpecifier` nodes.
-Both Kotlin names (`kotlin.String`) and Java names (`java.lang.String`) are accepted.
-Generic type arguments are ignored for comparison — `typeIs('kotlin.collections.List')` matches
-`List<String>`, `List<Int>`, etc.
-
-```xml
-<rule ...>
-  <properties>
-    <property name="xpath"><![CDATA[
-      //PropertyDeclaration[pmd-kotlin:typeIs('java.util.Calendar')]
-    ]]></property>
-  </properties>
-</rule>
-```
-
-**`pmd-kotlin:typeIsExactly(typeName)`** — Like `typeIs`, but only matches the exact declared type,
-not subtypes. Generic type arguments are also ignored for comparison.
-
-**`pmd-kotlin:hasAnnotation(name)`** — Returns `true` if the context node is annotated with
-an annotation whose simple name or fully-qualified name matches `name`.
-Works on `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, and `ClassParameter`.
-
-```xml
-//ClassDeclaration[pmd-kotlin:hasAnnotation('Entity')]
-//FunctionDeclaration[pmd-kotlin:hasAnnotation('kotlin.Deprecated')]
-```
-
-**`pmd-kotlin:modifiers()`** — Returns a sequence of modifier keyword strings for the context node.
-Use the XPath `=` operator (which tests sequence membership) to check for a specific modifier.
-
-```xml
-//FunctionDeclaration[pmd-kotlin:modifiers() = 'suspend']
-//ClassDeclaration[pmd-kotlin:modifiers() = ('internal', 'abstract')]
-```
-
-**`pmd-kotlin:isNullable()`** — Returns `true` if the context node's declared type is nullable
-(i.e. has a `?` suffix in the Kotlin source). Works on `PropertyDeclaration`, `FunctionDeclaration`,
-`ClassParameter`, `FunctionValueParameter`, `CatchBlock`, and `ForStatement` nodes.
-
-```xml
-//PropertyDeclaration[pmd-kotlin:isNullable()]
-//FunctionDeclaration[pmd-kotlin:isNullable()]
-```
-
-**`pmd-kotlin:hasUnresolvedReference()`** — Returns `true` if the context node contains an
-unresolved reference (i.e. a symbol that kotlin-type-mapper could not resolve). Useful for
-filtering out false positives in rules that depend on fully-resolved types.
-
-```xml
-//PostfixUnaryExpression[not(pmd-kotlin:hasUnresolvedReference())]
-```
-
-**`pmd-kotlin:matchesSig(signature)`** — Returns `true` if the context node represents a call site
-whose method signature matches `signature`. Signature format: `ReceiverType#methodName(paramType, ...)`
-with `_` as wildcard for receiver or any single parameter type, and `*` as wildcard for any
-parameter list (any number of parameters).
-
-```xml
-//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.Calendar#getInstance()')]
-//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.regex.Pattern#compile(_)')]
-//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.Throwable#printStackTrace(*)')]
-```
+There are a number of XPath functions available in the `pmd-kotlin` namespace, e.g.
+`typeIs()`, `isNullable()`, `hasAnnotation()`, and more. For the full list with descriptions,
+parameters, and examples, see the
+[PMD extension functions]({{ baseurl }}pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions)
+page.
 
 ### Java-based rules
 
