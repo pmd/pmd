@@ -225,12 +225,13 @@ public final class KotlinTypeAnalysisContext {
             return byLine;
         }
         if (absFilePath == null) {
-            return null;
+            return Collections.emptyMap();
         }
         try {
-            return index.get(canonicalize(absFilePath));
+            Map<Integer, List<T>> canonicalByLine = index.get(canonicalize(absFilePath));
+            return canonicalByLine != null ? canonicalByLine : Collections.emptyMap();
         } catch (UncheckedIOException e) {
-            return null;
+            return Collections.emptyMap();
         }
     }
 
