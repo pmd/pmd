@@ -36,6 +36,14 @@ or a semicolon (`;`) under Windows. This property can be provided on the CLI wit
 
 Not providing the correct auxClasspath might result in false positives or negatives for some rules, that depend on resolved types.
 
+> **Note for rule testing (rule test XML, PMD Designer):** these typically analyze one isolated
+> Kotlin snippet/file at a time with no `auxClasspath` configured. In that setup, cross-package
+> `import`-based type resolution to another **Kotlin source file** does not work yet -- only
+> same-package cross-file resolution and same-file resolution do. If a test snippet imports a
+> type from a different package, resolve it either by putting both types in the same package, or
+> by configuring `auxClasspath` to include the type as a **compiled class** (a jar, or another
+> module's `target/classes`), which resolves correctly regardless of package.
+
 Type resolution for Kotlin is powered by [kotlin-type-mapper](https://github.com/stokpop/kotlin-type-mapper),
 which is bundled with PMD.
 
