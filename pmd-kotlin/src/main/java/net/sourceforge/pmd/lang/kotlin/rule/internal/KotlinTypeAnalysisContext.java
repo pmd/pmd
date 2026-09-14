@@ -46,7 +46,7 @@ public final class KotlinTypeAnalysisContext {
 
     private static final KotlinTypeAnalysisContext EMPTY = new KotlinTypeAnalysisContext(
             null,
-            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
+            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), false);
 
     /** Map from absolute file path -> line -> list of call sites on that line. */
     private final Map<String, Map<Integer, List<CallSiteAst>>> callIndex;
@@ -62,16 +62,19 @@ public final class KotlinTypeAnalysisContext {
      * Used to delegate hierarchy queries ({@link #isSubtypeOf}) to ktm's built-in logic.
      */
     private final TypedAst typedAst;
+    private final boolean canonicalizedPathKeys;
 
     private KotlinTypeAnalysisContext(
             TypedAst typedAst,
             Map<String, Map<Integer, List<CallSiteAst>>> callIndex,
             Map<String, Map<Integer, List<DeclarationAst>>> declIndex,
-            Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex) {
+            Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex,
+            boolean canonicalizedPathKeys) {
         this.typedAst = typedAst;
         this.callIndex = callIndex;
         this.declIndex = declIndex;
         this.unresolvedIndex = unresolvedIndex;
+        this.canonicalizedPathKeys = canonicalizedPathKeys;
     }
 
     /** Returns a no-op context (all lookups return empty lists). */
@@ -122,7 +125,7 @@ public final class KotlinTypeAnalysisContext {
                 addToIndex(unresolvedIdx, key, unresolved.getLine(), unresolved);
             }
         }
-        return new KotlinTypeAnalysisContext(ast, callIdx, declIdx, unresolvedIdx);
+        return new KotlinTypeAnalysisContext(ast, callIdx, declIdx, unresolvedIdx, diskBased);
     }
 
     private static <T> void addToIndex(Map<String, Map<Integer, List<T>>> idx,
@@ -189,7 +192,7 @@ public final class KotlinTypeAnalysisContext {
         return lookupByLine(unresolvedIndex, absFilePath, line);
     }
 
-    private static <T> List<T> lookupByLine(
+    private <T> List<T> lookupByLine(
             Map<String, Map<Integer, List<T>>> index, String absFilePath, int line) {
         Map<Integer, List<T>> byLine = resolveByLineMap(index, absFilePath);
         if (byLine == null) {
@@ -215,9 +218,20 @@ public final class KotlinTypeAnalysisContext {
         return result;
     }
 
-    private static <T> Map<Integer, List<T>> resolveByLineMap(
+    private <T> Map<Integer, List<T>> resolveByLineMap(
             Map<String, Map<Integer, List<T>>> index, String absFilePath) {
-        return index.get(absFilePath);
+        Map<Integer, List<T>> byLine = index.get(absFilePath);
+        if (byLine != null || !canonicalizedPathKeys) {
+            return byLine;
+        }
+        if (absFilePath == null) {
+            return null;
+        }
+        try {
+            return index.get(canonicalize(absFilePath));
+        } catch (UncheckedIOException e) {
+            return null;
+        }
     }
 
     /**

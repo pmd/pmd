@@ -146,4 +146,22 @@ class KotlinTypeAnalysisContextTest {
                 "Expected the skip to be logged at ERROR level, got: " + logged);
     }
 
+    @Test
+    void nullLookupPathReturnsEmptyAlsoForDiskBasedContext() {
+        DeclarationAst goodDecl = new DeclarationAst(
+                DeclarationKind.PROPERTY, "x", "pkg.x", "pkg",
+                null, null, Collections.emptyList(), Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList(),
+                1, 1, 0, 0, Collections.emptyList());
+        FileAst goodFile = new FileAst(
+                "Good.kt", "pkg", Collections.singletonList(goodDecl),
+                Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
+        TypedAst ast = new TypedAst(
+                "2.0", "test", "/tmp/does-not-need-to-exist",
+                Collections.singletonList(goodFile), Collections.emptyMap());
+
+        KotlinTypeAnalysisContext result = KotlinTypeAnalysisContext.from(ast);
+        assertEquals(0, result.declarationsAt(null, 1).size());
+    }
+
 }
