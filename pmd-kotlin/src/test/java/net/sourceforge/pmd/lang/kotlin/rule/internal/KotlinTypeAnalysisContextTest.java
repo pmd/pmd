@@ -10,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -123,9 +125,23 @@ class KotlinTypeAnalysisContextTest {
                 "2.0", "test", "/tmp/does-not-need-to-exist",
                 Arrays.asList(goodFile, badFile), Collections.emptyMap());
 
-        KotlinTypeAnalysisContext result = assertDoesNotThrow(() -> KotlinTypeAnalysisContext.from(ast));
+        // from() logs the skip at ERROR level (by design, see production code comment) --
+        // capture stderr around the call so the expected log line doesn't show up as build
+        // noise, while still asserting it was actually emitted.
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(capturedErr, true));
+        KotlinTypeAnalysisContext result;
+        try {
+            result = assertDoesNotThrow(() -> KotlinTypeAnalysisContext.from(ast));
+        } finally {
+            System.setErr(originalErr);
+        }
 
         assertEquals(1, result.declarationsAt("/tmp/does-not-need-to-exist/Good.kt", 1).size());
+        String logged = capturedErr.toString();
+        assertTrue(logged.contains("Skipping type info for"),
+                "Expected the skip to be logged at ERROR level, got: " + logged);
     }
 
     private static String repeat(String s, int n) {
