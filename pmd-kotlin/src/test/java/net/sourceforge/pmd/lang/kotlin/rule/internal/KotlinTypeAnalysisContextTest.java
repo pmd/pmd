@@ -106,9 +106,11 @@ class KotlinTypeAnalysisContextTest {
 
     @Test
     void fromSkipsFileWhoseAbsolutePathCannotBeCanonicalized() {
-        // One file has a relativePath too long for getCanonicalPath() to resolve
-        // (throws IOException: File name too long) -- from() must not let this abort
-        // building the whole index; it must skip only that file and keep the other.
+        // One file has a relativePath that getCanonicalPath() can never resolve (embedded
+        // NUL byte -- rejected uniformly by the JDK on every OS/filesystem, unlike a
+        // too-long name whose failure depends on OS/filesystem-specific path limits) --
+        // from() must not let this abort building the whole index; it must skip only that
+        // file and keep the other.
         DeclarationAst goodDecl = new DeclarationAst(
                 DeclarationKind.PROPERTY, "x", "pkg.x", "pkg",
                 null, null, Collections.emptyList(), Collections.emptyList(),
@@ -117,9 +119,9 @@ class KotlinTypeAnalysisContextTest {
         FileAst goodFile = new FileAst(
                 "Good.kt", "pkg", Collections.singletonList(goodDecl),
                 Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
-        String tooLongName = repeat("a", 5000) + ".kt";
+        String unresolvableName = "Bad\u0000.kt";
         FileAst badFile = new FileAst(
-                tooLongName, "pkg", Collections.emptyList(),
+                unresolvableName, "pkg", Collections.emptyList(),
                 Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
         TypedAst ast = new TypedAst(
                 "2.0", "test", "/tmp/does-not-need-to-exist",
@@ -142,14 +144,6 @@ class KotlinTypeAnalysisContextTest {
         String logged = capturedErr.toString();
         assertTrue(logged.contains("Skipping type info for"),
                 "Expected the skip to be logged at ERROR level, got: " + logged);
-    }
-
-    private static String repeat(String s, int n) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            sb.append(s);
-        }
-        return sb.toString();
     }
 
 }
