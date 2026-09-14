@@ -99,4 +99,20 @@ class KotlinHasAnnotationFunctionTest extends BaseKotlinXPathFunctionTest {
         assertTrue(report.getViolations().isEmpty(),
                 "hasAnnotation('com.other.Test') must not match @org.junit.jupiter.api.Test");
     }
+
+    @Test
+    void hasAnnotationDoesNotMatchNestedDeclarationAnnotation() {
+        // outer() has no annotation of its own; nested() does. The isBodyBoundary guard
+        // must stop the recursive search at outer()'s FunctionBody, so outer() must not
+        // wrongly inherit nested()'s @Deprecated.
+        Report report = runXPath(
+                "//FunctionDeclaration[pmd-kotlin:hasAnnotation('Deprecated')]",
+                "fun outer() {\n"
+                        + "    @Deprecated\n"
+                        + "    fun nested() {}\n"
+                        + "}\n");
+        assertNoErrors(report);
+        assertNoViolationAtLine(report, 1, "outer() must not match a nested declaration's annotation");
+        assertViolationAtLine(report, 3, "nested() itself must still match its own annotation");
+    }
 }

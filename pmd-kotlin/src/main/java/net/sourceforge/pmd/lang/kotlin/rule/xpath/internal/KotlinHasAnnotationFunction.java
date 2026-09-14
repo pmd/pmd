@@ -4,12 +4,20 @@
 
 package net.sourceforge.pmd.lang.kotlin.rule.xpath.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtStatement;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
@@ -112,80 +120,88 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
     }
 
     /**
-     * Walks children of {@code declNode} (stopping at body boundaries) looking for
-     * {@code UnescapedAnnotation} nodes whose {@code @TypeName} (FQN set by
-     * kotlin-type-mapper) matches {@code className} or its simple-name suffix.
+     * Returns the annotations declared directly on {@code declNode}: its (optional)
+     * {@code Modifiers} child's {@code Annotation} children, each unwrapped down to
+     * their {@code UnescapedAnnotation} node(s) ({@code SingleAnnotation} has one,
+     * {@code MultiAnnotation} has one or more). This shape ({@code declNode ->
+     * Modifiers -> Annotation -> SingleAnnotation|MultiAnnotation ->
+     * UnescapedAnnotation}) is fixed by the grammar for every kind of declaration
+     * that carries modifiers, so no recursive search or body-boundary guard is
+     * needed: nested declarations (e.g. a local function in a {@code FunctionBody})
+     * have their own {@code Modifiers} child and are never reached from here.
+     *
+     * <p>For a <em>local</em> declaration (one nested inside a function body), the
+     * grammar instead attaches the annotation to the enclosing {@code Statement} as
+     * a preceding sibling ({@code statement : (label | annotation)* (declaration |
+     * ...)}), so {@link #annotationsOnEnclosingStatement} is also checked.
+     */
+    static List<KtUnescapedAnnotation> directAnnotationsOf(KotlinNode declNode) {
+        List<KtUnescapedAnnotation> result = new ArrayList<>();
+        KtModifiers modifiers = declNode.firstChild(KtModifiers.class);
+        if (modifiers != null) {
+            collectUnescapedAnnotations(modifiers.children(KtAnnotation.class), result);
+        }
+        collectUnescapedAnnotations(annotationsOnEnclosingStatement(declNode), result);
+        return result;
+    }
+
+    private static void collectUnescapedAnnotations(
+            Iterable<KtAnnotation> annotations, List<KtUnescapedAnnotation> result) {
+        for (KtAnnotation annotation : annotations) {
+            for (KtUnescapedAnnotation ann : annotation.descendants(KtUnescapedAnnotation.class)) {
+                result.add(ann);
+            }
+        }
+    }
+
+    /**
+     * For a local declaration ({@code declNode -> Declaration -> Statement}), returns
+     * the {@code Statement}'s {@code Annotation} children (its preceding siblings).
+     * Returns an empty list for member/top-level declarations, which aren't wrapped
+     * this way.
+     */
+    private static List<KtAnnotation> annotationsOnEnclosingStatement(KotlinNode declNode) {
+        Node parent = declNode.getParent();
+        if (!(parent instanceof KtDeclaration) || !(parent.getParent() instanceof KtStatement)) {
+            return Collections.emptyList();
+        }
+        return ((KotlinNode) parent.getParent()).children(KtAnnotation.class).toList();
+    }
+
+    /**
+     * Looks among {@code declNode}'s direct annotations (see {@link #directAnnotationsOf})
+     * for one whose {@code @TypeName} (FQN set by kotlin-type-mapper) matches
+     * {@code className} or its simple-name suffix.
      */
     private static boolean checkAnnotationChildrenByTypeName(
             KotlinNode declNode, String className, String simpleName) {
-        for (KotlinNode child : declNode.children()) {
-            if (annotationNodeMatchesByTypeName(child, className, simpleName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean annotationNodeMatchesByTypeName(
-            KotlinNode node, String className, String simpleName) {
-        String xpathName = node.getXPathNodeName();
-        if (isBodyBoundary(xpathName)) {
-            return false;
-        }
-        if (node instanceof KtUnescapedAnnotation) {
-            KotlinTypeName type = KotlinNodeTypeData.getType(node);
+        for (KtUnescapedAnnotation ann : directAnnotationsOf(declNode)) {
+            KotlinTypeName type = KotlinNodeTypeData.getType(ann);
             if (type != null) {
                 String fqName = type.getFqName();
-                return fqName.equals(className) || (!className.contains(".") && simpleNameOf(fqName).equals(simpleName));
-            }
-            return false; // no FQN resolved for this annotation
-        }
-        for (KotlinNode child : node.children()) {
-            if (annotationNodeMatchesByTypeName(child, className, simpleName)) {
-                return true;
+                if (fqName.equals(className) || (!className.contains(".") && simpleNameOf(fqName).equals(simpleName))) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     /**
-     * Walks children of {@code declNode} (stopping at body boundaries) looking for
-     * {@code UnescapedAnnotation} nodes and reads the annotation name as written in
-     * source using the text region. Matches on exact text, simple-name suffix, or
-     * the simple-name of the written text matching the simple-name of {@code className}.
+     * Looks among {@code declNode}'s direct annotations (see {@link #directAnnotationsOf})
+     * for one whose name <em>as written in source</em> (via text region) matches
+     * {@code className} or its simple-name suffix.
      */
     private static boolean checkAnnotationChildrenBySourceText(
             KotlinNode declNode, String className, String simpleName) {
-        for (KotlinNode child : declNode.children()) {
-            if (annotationNodeMatchesBySourceText(child, className, simpleName)) {
+        for (KtUnescapedAnnotation ann : directAnnotationsOf(declNode)) {
+            String writtenName = getAnnotationSourceText(ann);
+            if (writtenName != null
+                    && (writtenName.equals(className) || simpleNameOf(writtenName).equals(simpleName))) {
                 return true;
             }
         }
         return false;
-    }
-
-    private static boolean annotationNodeMatchesBySourceText(
-            KotlinNode node, String className, String simpleName) {
-        String xpathName = node.getXPathNodeName();
-        if (isBodyBoundary(xpathName)) {
-            return false;
-        }
-        if (node instanceof KtUnescapedAnnotation) {
-            String writtenName = getAnnotationSourceText((KtUnescapedAnnotation) node);
-            return writtenName != null
-                    && (writtenName.equals(className) || simpleNameOf(writtenName).equals(simpleName));
-        }
-        for (KotlinNode child : node.children()) {
-            if (annotationNodeMatchesBySourceText(child, className, simpleName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean isBodyBoundary(String xpathName) {
-        return "FunctionBody".equals(xpathName) || "ClassBody".equals(xpathName)
-                || "Block".equals(xpathName);
     }
 
     /**
