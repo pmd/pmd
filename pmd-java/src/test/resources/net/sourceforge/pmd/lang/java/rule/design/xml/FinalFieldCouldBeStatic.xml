@@ -430,6 +430,33 @@ class MyConstants {
 ]]></code>
     </test-code>
     <test-code>
+        <description>#7060 Instance field references prevent an initializer from becoming static</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class MyConstants {
+    private final int base = 8; // Only this initializer is independent of the instance.
+    private final int direct = base;
+    private final byte cast = (byte) base;
+    private final int conditional = true ? base : 0;
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>#7060 Casts and conditionals using boxed fields are not constant expressions</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class MyConstants {
+    private static final Integer BOXED = 8;
+    private final int direct = BOXED; // Direct static field references are still reported.
+    private final int cast = (int) BOXED;
+    private final int conditional = true ? BOXED : 0;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>Distinct error messages for the same line</description>
         <expected-problems>2</expected-problems>
         <expected-messages>

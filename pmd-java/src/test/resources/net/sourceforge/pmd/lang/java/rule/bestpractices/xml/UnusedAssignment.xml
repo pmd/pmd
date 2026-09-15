@@ -4339,4 +4339,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7060 Assignments skipped by a constant flag do not overwrite earlier values</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void test() {
+        final boolean enabled = false;
+        boolean ok = true;
+        // The assignment cannot execute, so println still reads the initial value.
+        if (enabled && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

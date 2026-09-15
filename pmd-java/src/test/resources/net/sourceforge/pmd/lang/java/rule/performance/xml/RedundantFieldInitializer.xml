@@ -1515,4 +1515,19 @@ class Impl {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7060 Named constants remain excluded from redundant initializer checks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    final int zero = 0;
+    final boolean disabled = false;
+
+    int count = zero; // Named references are deliberately excluded by the rule.
+    int nonDefault = zero + 1;
+    boolean enabled = disabled;
+}
+        ]]></code>
+    </test-code>
 </test-data>
