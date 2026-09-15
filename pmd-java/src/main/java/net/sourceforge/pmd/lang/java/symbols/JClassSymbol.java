@@ -416,4 +416,8 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
         return visitor.visitClass(this, param);
     }
+
+    default boolean isExternal() {
+        return false;
+    }
 }
