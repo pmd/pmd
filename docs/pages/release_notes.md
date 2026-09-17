@@ -79,6 +79,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 * java-documentation
     * [#6450](https://github.com/pmd/pmd/issues/6450): \[java] DanglingJavadoc: False positive on /// comments for Java < 23
 * java-errorprone
+    * [#1050](https://github.com/pmd/pmd/issues/1050): \[java] NullAssignment: False positive inside if statement for first assignment
     * [#6693](https://github.com/pmd/pmd/issues/6693): \[java] CloneMethodMustImplementCloneable fires inconsistently between inline `throw new` and throw-via-local forms
     * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate is suppressed by using pattern variable
     * [#7068](https://github.com/pmd/pmd/issues/7068): \[java] UnusedReturnValue reports calls made on Mockito.verify(mock)
@@ -87,6 +88,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods
 * java-security
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
+    * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key
 * kotlin
     * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add XPath functions and type attributes for type-aware XPath rules
 
