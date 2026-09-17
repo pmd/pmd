@@ -2099,8 +2099,200 @@ or a semicolon (<code class="language-plaintext highlighter-rouge">;</code>) und
 
 <p>Not providing the correct auxClasspath might result in false positives or negatives for some rules, that depend on resolved types.</p>
 
+<blockquote>
+  <p><strong>Note for rule testing (rule test XML, PMD Designer):</strong> these typically analyze one isolated
+Kotlin snippet/file at a time with no <code class="language-plaintext highlighter-rouge">auxClasspath</code> configured. In that setup, cross-package
+<code class="language-plaintext highlighter-rouge">import</code>-based type resolution to another <strong>Kotlin source file</strong> does not work yet – only
+same-package cross-file resolution and same-file resolution do. If a test snippet imports a
+type from a different package, resolve it either by putting both types in the same package, or
+by configuring <code class="language-plaintext highlighter-rouge">auxClasspath</code> to include the type as a <strong>compiled class</strong> (a jar, or another
+module’s <code class="language-plaintext highlighter-rouge">target/classes</code>), which resolves correctly regardless of package.</p>
+</blockquote>
+
 <p>Type resolution for Kotlin is powered by <a href="https://github.com/stokpop/kotlin-type-mapper">kotlin-type-mapper</a>,
 which is bundled with PMD.</p>
+
+<h2 id="xpath-rule-support">XPath rule support</h2>
+
+<p>Kotlin provides XPath-queryable attributes and helper functions for type-aware rules.</p>
+
+<h3 id="type-info-attributes">Type-info attributes</h3>
+
+<p>The following attributes depend on type resolution: they are only available when <code class="language-plaintext highlighter-rouge">auxClasspath</code>
+is configured and the kotlin-type-mapper analysis has resolved the types.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Nodes</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@TypeName</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PropertyDeclaration</code>, <code class="language-plaintext highlighter-rouge">ClassParameter</code>, <code class="language-plaintext highlighter-rouge">FunctionValueParameter</code>, <code class="language-plaintext highlighter-rouge">CatchBlock</code>, <code class="language-plaintext highlighter-rouge">ForStatement</code>, <code class="language-plaintext highlighter-rouge">ClassDeclaration</code>, <code class="language-plaintext highlighter-rouge">DelegationSpecifier</code>, <code class="language-plaintext highlighter-rouge">UnescapedAnnotation</code>, <code class="language-plaintext highlighter-rouge">SingleAnnotation</code></td>
+      <td>Fully-qualified type name (including generic type arguments and nullable marker, e.g. <code class="language-plaintext highlighter-rouge">kotlin.collections.List&lt;kotlin.String&gt;?</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@ReturnTypeName</code></td>
+      <td><code class="language-plaintext highlighter-rouge">FunctionDeclaration</code></td>
+      <td>Fully-qualified return type name (including generic type arguments and nullable marker)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@AnnotationFqNames</code></td>
+      <td><code class="language-plaintext highlighter-rouge">FunctionDeclaration</code>, <code class="language-plaintext highlighter-rouge">ClassDeclaration</code>, <code class="language-plaintext highlighter-rouge">PropertyDeclaration</code>, <code class="language-plaintext highlighter-rouge">ClassParameter</code></td>
+      <td>Sequence of FQNs of all annotations on the declaration</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>A type-info attribute is <strong>absent</strong> (not present with a null value) whenever its value is unavailable.</p>
+
+<h3 id="general-attributes">General attributes</h3>
+
+<p>These attributes are structural: they come directly from the parsed source and don’t depend on
+type resolution, so they’re always present regardless of <code class="language-plaintext highlighter-rouge">auxClasspath</code>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Nodes</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@Mutable</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PropertyDeclaration</code></td>
+      <td><code class="language-plaintext highlighter-rouge">true</code> for <code class="language-plaintext highlighter-rouge">var</code>, <code class="language-plaintext highlighter-rouge">false</code> for <code class="language-plaintext highlighter-rouge">val</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@Identifier</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ClassDeclaration</code>, <code class="language-plaintext highlighter-rouge">FunctionDeclaration</code>, <code class="language-plaintext highlighter-rouge">ClassParameter</code>, <code class="language-plaintext highlighter-rouge">CompanionObject</code>, <code class="language-plaintext highlighter-rouge">VariableDeclaration</code>, <code class="language-plaintext highlighter-rouge">ImportAlias</code></td>
+      <td>Simple name of the declared identifier</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@Name</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ImportHeader</code></td>
+      <td>Fully-qualified imported name (e.g. <code class="language-plaintext highlighter-rouge">kotlin.collections.listOf</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">@TypeName</code> and <code class="language-plaintext highlighter-rouge">@ReturnTypeName</code> use fully-qualified names for generic type arguments:
+<code class="language-plaintext highlighter-rouge">kotlin.collections.List&lt;kotlin.String&gt;?</code>, not <code class="language-plaintext highlighter-rouge">List&lt;String&gt;?</code>. When comparing in XPath, use
+the full FQN form: <code class="language-plaintext highlighter-rouge">@TypeName = 'kotlin.collections.List&lt;kotlin.String&gt;'</code>. For type checks that
+ignore generics, prefer <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs()</code> or <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIsExactly()</code>.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> carries only <code class="language-plaintext highlighter-rouge">@Identifier</code> (the variable name). Modifiers like
+<code class="language-plaintext highlighter-rouge">private</code>, <code class="language-plaintext highlighter-rouge">lateinit</code>, or <code class="language-plaintext highlighter-rouge">const</code> are on the parent <code class="language-plaintext highlighter-rouge">PropertyDeclaration</code> node.
+Use <code class="language-plaintext highlighter-rouge">//PropertyDeclaration[pmd-kotlin:modifiers() = 'private']</code> rather than querying
+<code class="language-plaintext highlighter-rouge">VariableDeclaration</code>.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Note:</strong> Boolean attributes like <code class="language-plaintext highlighter-rouge">@Mutable</code> require XPath’s <code class="language-plaintext highlighter-rouge">true()</code> / <code class="language-plaintext highlighter-rouge">false()</code> functions:
+<code class="language-plaintext highlighter-rouge">//PropertyDeclaration[@Mutable=false()]</code> (immutable <code class="language-plaintext highlighter-rouge">val</code> declarations).
+Using <code class="language-plaintext highlighter-rouge">false</code> without parentheses matches a node name, not a boolean value.</p>
+</blockquote>
+
+<h4 id="absent-value-unresolved-vs-genuinely-none">Absent value: unresolved vs genuinely none</h4>
+
+<p>An absent attribute is ambiguous on its own — the type could be unresolved, or genuinely not
+present. Note that a configured <code class="language-plaintext highlighter-rouge">auxClasspath</code> does not guarantee every type resolves (incomplete
+classpath, generated/preprocessed code, missing annotation processors, etc.).
+<code class="language-plaintext highlighter-rouge">pmd-kotlin:hasUnresolvedReference()</code> — whether the node has an unresolved reference (the Kotlin
+analog of pmd-java’s <code class="language-plaintext highlighter-rouge">isUnresolved()</code>) — disambiguates the two cases:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><code class="language-plaintext highlighter-rouge">hasUnresolvedReference()</code></th>
+      <th>Attribute absent means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>true</td>
+      <td><strong>unresolved</strong> — analysis ran but the type could not be resolved</td>
+    </tr>
+    <tr>
+      <td>false</td>
+      <td><strong>genuinely none</strong> — analysis ran and resolved; there is no such value</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(: property definitely without a resolvable declared type (not merely unresolved) :)</span><span class="w">
+</span><span class="o">//</span><span class="nt">PropertyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="na">@TypeName</span><span class="p">)</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-kotlin:</span><span class="nf">hasUnresolvedReference</span><span class="p">())]</span><span class="w">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p><strong>Limitation:</strong> <code class="language-plaintext highlighter-rouge">hasUnresolvedReference()</code> only checks the context node’s <em>begin line</em> and
+only returns a boolean — it does not tell you <em>which</em> symbol failed to resolve, and it won’t
+see an unresolved reference on a different line of a multi-line declaration. Exposing the
+unresolved reference name(s) is tracked as a possible follow-up function.</p>
+</blockquote>
+
+<h3 id="xpath-functions">XPath functions</h3>
+
+<p>There are a number of XPath functions available in the <code class="language-plaintext highlighter-rouge">pmd-kotlin</code> namespace, e.g.
+<code class="language-plaintext highlighter-rouge">typeIs()</code>, <code class="language-plaintext highlighter-rouge">isNullable()</code>, <code class="language-plaintext highlighter-rouge">hasAnnotation()</code>, and more. For the full list with descriptions,
+parameters, and examples, see the
+<a href="pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions">PMD extension functions</a>
+page.</p>
+
+<h3 id="java-based-rules">Java-based rules</h3>
+
+<p>The same type information is accessible from Java-based rules via public interfaces and
+<code class="language-plaintext highlighter-rouge">KotlinNodeTypeData</code>:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">net.sourceforge.pmd.lang.kotlin.ast.HasTypeName</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.lang.kotlin.ast.HasModifiers</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName</span><span class="o">;</span>
+
+<span class="c1">// Check type on a node that implements HasTypeName</span>
+<span class="c1">// (PropertyDeclaration, FunctionDeclaration, ClassParameter, etc.)</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">node</span> <span class="k">instanceof</span> <span class="nc">HasTypeName</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">KotlinTypeName</span> <span class="n">type</span> <span class="o">=</span> <span class="o">((</span><span class="nc">HasTypeName</span><span class="o">)</span> <span class="n">node</span><span class="o">).</span><span class="na">getType</span><span class="o">();</span> <span class="c1">// null if unresolved</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">type</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">fqName</span> <span class="o">=</span> <span class="n">type</span><span class="o">.</span><span class="na">getFqName</span><span class="o">();</span>       <span class="c1">// e.g. "kotlin.collections.List"</span>
+        <span class="kt">boolean</span> <span class="n">nullable</span> <span class="o">=</span> <span class="n">type</span><span class="o">.</span><span class="na">isNullable</span><span class="o">();</span>    <span class="c1">// true if declared as nullable (?)</span>
+        <span class="nc">String</span> <span class="n">display</span> <span class="o">=</span> <span class="n">type</span><span class="o">.</span><span class="na">toDisplayString</span><span class="o">();</span> <span class="c1">// e.g. "kotlin.collections.List&lt;kotlin.String&gt;?"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Get modifiers on declaration nodes implementing HasModifiers</span>
+<span class="c1">// (Java-only API: not exposed as @Modifiers XPath attribute; use</span>
+<span class="c1">// pmd-kotlin:modifiers() from XPath instead)</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">node</span> <span class="k">instanceof</span> <span class="nc">HasModifiers</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">mods</span> <span class="o">=</span> <span class="o">((</span><span class="nc">HasModifiers</span><span class="o">)</span> <span class="n">node</span><span class="o">).</span><span class="na">getModifiers</span><span class="o">();</span> <span class="c1">// e.g. ["override", "suspend"]</span>
+<span class="o">}</span>
+
+<span class="c1">// Static helpers on KotlinNodeTypeData (work on any KotlinNode)</span>
+<span class="nc">KotlinTypeName</span> <span class="n">type</span> <span class="o">=</span> <span class="nc">KotlinNodeTypeData</span><span class="o">.</span><span class="na">getType</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+<span class="nc">KotlinTypeName</span> <span class="n">returnType</span> <span class="o">=</span> <span class="nc">KotlinNodeTypeData</span><span class="o">.</span><span class="na">getReturnType</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">annotations</span> <span class="o">=</span> <span class="nc">KotlinNodeTypeData</span><span class="o">.</span><span class="na">getAnnotationFqNames</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>All type getters return <code class="language-plaintext highlighter-rouge">null</code> when type analysis has not run or the type could not be resolved.
+The <code class="language-plaintext highlighter-rouge">KotlinTypeName</code> class provides structured access to the FQ name, nullability, resolution
+status, and full display string (including generic type arguments).</p>
+
+<blockquote>
+  <p><strong>Note:</strong> Unlike pmd-java’s <code class="language-plaintext highlighter-rouge">TypeNode.getTypeMirror()</code> which returns rich <code class="language-plaintext highlighter-rouge">JTypeMirror</code> objects
+(never null, using <code class="language-plaintext highlighter-rouge">UNKNOWN</code> for unresolved types), pmd-kotlin exposes <code class="language-plaintext highlighter-rouge">KotlinTypeName</code> with
+string-based type names — reflecting the simpler output of kotlin-type-mapper.
+A richer type model may be added in a future version.</p>
+</blockquote>
 
 <h2 id="language-properties">Language Properties</h2>
 
@@ -2151,7 +2343,7 @@ which is bundled with PMD.</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2026 (7.26.0)<br /> Site last generated: Sep 16, 2026 <br />
+            June 2026 (7.26.0)<br /> Site last generated: Sep 17, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

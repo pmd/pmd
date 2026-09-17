@@ -3159,6 +3159,495 @@ Column numbers are 1-based. The end column is exclusive.
 
 </div>
 
+<!-- Generates the documentation of XPath functions from file docs/_data/xpath_funs.yml -->
+
+<h3 id="kotlin">Kotlin</h3>
+
+<p>Functions available for the Kotlin language are in the namespace <code>pmd-kotlin</code>. See also <a href="pmd_languages_kotlin.html#xpath-rule-support">Kotlin support</a>.</p>
+
+<div class="table-responsive">
+    <table width="100%">
+
+        <thead>
+        <tr>
+            <th>Function name</th>
+            <th>Description (click for details)</th>
+            <th></th>
+        </tr>
+        </thead>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-kotlin-typeIs" data-target="#pmd-kotlin-typeIs-expand" class="accordion-toggle">
+
+            <td>typeIs</td>
+            <td>Tests a node's resolved type</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-kotlin-typeIs-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-kotlin-typeIs">
+                            <span class="fun-ns">pmd-kotlin:</span><span class="fun-name">typeIs</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node's resolved type is the given type, or a subtype of it, using the type hierarchy provided by kotlin-type-mapper. Both Kotlin names (e.g. <code>kotlin.String</code>) and Java names (e.g. <code>java.lang.String</code>) are accepted. Generic type arguments are ignored for comparison.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>Works on PropertyDeclaration, FunctionDeclaration, ClassParameter, FunctionValueParameter, CatchBlock, ForStatement, and DelegationSpecifier nodes. Requires <code>auxClasspath</code> for type resolution.</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">typeName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>A Kotlin or Java qualified type name</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//PropertyDeclaration[pmd-kotlin:typeIs('java.util.Calendar')]</code></dt>
+                                        <dd>Matches property declarations whose type is Calendar or a subtype of it</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-kotlin-typeIsExactly" data-target="#pmd-kotlin-typeIsExactly-expand" class="accordion-toggle">
+
+            <td>typeIsExactly</td>
+            <td>Tests a node's resolved type, ignoring subtypes</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-kotlin-typeIsExactly-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-kotlin-typeIsExactly">
+                            <span class="fun-ns">pmd-kotlin:</span><span class="fun-name">typeIsExactly</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Like typeIs, but only matches the exact declared type, not subtypes. Generic type arguments are ignored for comparison.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>Requires <code>auxClasspath</code> for type resolution.</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">typeName</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>A Kotlin or Java qualified type name</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//PropertyDeclaration[pmd-kotlin:typeIsExactly('kotlin.collections.List')]</code></dt>
+                                        <dd>Matches property declarations of type List exactly (but not e.g. ArrayList)</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-kotlin-hasAnnotation" data-target="#pmd-kotlin-hasAnnotation-expand" class="accordion-toggle">
+
+            <td>hasAnnotation</td>
+            <td>Tests whether an annotation is present on the node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-kotlin-hasAnnotation-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-kotlin-hasAnnotation">
+                            <span class="fun-ns">pmd-kotlin:</span><span class="fun-name">hasAnnotation</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node is annotated with an annotation whose simple name or fully-qualified name matches the given name.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>Works on FunctionDeclaration, ClassDeclaration, PropertyDeclaration, and ClassParameter.</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">name</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>Simple or fully-qualified name of an annotation type</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//ClassDeclaration[pmd-kotlin:hasAnnotation('Entity')]</code></dt>
+                                        <dd>Matches class declarations annotated with @Entity</dd>
+                                        
+                                        <dt><code>//FunctionDeclaration[pmd-kotlin:hasAnnotation('kotlin.Deprecated')]</code></dt>
+                                        <dd>Matches function declarations annotated with @Deprecated</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-kotlin-modifiers" data-target="#pmd-kotlin-modifiers-expand" class="accordion-toggle">
+
+            <td>modifiers</td>
+            <td>Produce the modifiers of a node</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-kotlin-modifiers-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-kotlin-modifiers">
+                            <span class="fun-ns">pmd-kotlin:</span><span class="fun-name">modifiers</span><span class="fun-ns">() as xs:string*</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns a sequence of modifier keyword strings for the context node. Use the XPath <code>=</code> operator (which tests sequence membership) to check for a specific modifier.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd></dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//FunctionDeclaration[pmd-kotlin:modifiers() = 'suspend']</code></dt>
+                                        <dd>Matches function declarations with a 'suspend' modifier</dd>
+                                        
+                                        <dt><code>//ClassDeclaration[pmd-kotlin:modifiers() = ('internal', 'abstract')]</code></dt>
+                                        <dd>Matches class declarations with an 'internal' OR an 'abstract' modifier</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-kotlin-isNullable" data-target="#pmd-kotlin-isNullable-expand" class="accordion-toggle">
+
+            <td>isNullable</td>
+            <td>Tests whether a node's declared type is nullable</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-kotlin-isNullable-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-kotlin-isNullable">
+                            <span class="fun-ns">pmd-kotlin:</span><span class="fun-name">isNullable</span><span class="fun-ns">() as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node's declared type is nullable (i.e. has a <code>?</code> suffix in the Kotlin source).</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>Works on PropertyDeclaration, FunctionDeclaration, ClassParameter, FunctionValueParameter, CatchBlock, and ForStatement nodes. Requires <code>auxClasspath</code> for type resolution.</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//PropertyDeclaration[pmd-kotlin:isNullable()]</code></dt>
+                                        <dd>Matches property declarations with a nullable type</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-kotlin-hasUnresolvedReference" data-target="#pmd-kotlin-hasUnresolvedReference-expand" class="accordion-toggle">
+
+            <td>hasUnresolvedReference</td>
+            <td>Tests whether the node's line has an unresolved reference</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-kotlin-hasUnresolvedReference-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-kotlin-hasUnresolvedReference">
+                            <span class="fun-ns">pmd-kotlin:</span><span class="fun-name">hasUnresolvedReference</span><span class="fun-ns">() as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node contains an unresolved reference on its begin line (i.e. a symbol that kotlin-type-mapper could not resolve). Useful for filtering out false positives in rules that depend on fully-resolved types.</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>Only reports presence/absence, not which symbol is unresolved; only checks the context node's begin line, not other lines of a multi-line declaration.</dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//PostfixUnaryExpression[not(pmd-kotlin:hasUnresolvedReference())]</code></dt>
+                                        <dd>Matches postfix unary expressions whose type could be fully resolved</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+        
+
+        <tr data-toggle="collapse" id="pmd-kotlin-matchesSig" data-target="#pmd-kotlin-matchesSig-expand" class="accordion-toggle">
+
+            <td>matchesSig</td>
+            <td>Matches the signature called by a call site</td>
+            <td>
+                <button type="button" class="btn btn-link"><i class="fas fa-ellipsis-h"></i></button>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="pmd-kotlin-matchesSig-expand">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="pmd-kotlin-matchesSig">
+                            <span class="fun-ns">pmd-kotlin:</span><span class="fun-name">matchesSig</span><span class="fun-ns">(xs:string) as xs:boolean</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>Returns true if the context node represents a call site whose method signature matches the given signature. Signature format: <code>ReceiverType#methodName(paramType, ...)</code> with <code>_</code> as wildcard for the receiver or any single parameter type, and <code>*</code> as wildcard for any parameter list (any number of parameters).</dd>
+                                
+                                <dt>Remarks</dt>
+                                <dd>Requires <code>auxClasspath</code> for type resolution.</dd>
+
+                                
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <dl>
+                                        
+                                        <dt>
+                                            <span class="param-name">sig</span>
+                                            <span class="param-type"> as xs:string</span>
+                                        </dt>
+                                        <dd>A signature in the format described above</dd>
+                                        
+                                    </dl>
+                                </dd>
+
+                                
+
+                                
+
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <dl class="code-examples">
+                                        
+                                        <dt><code>//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.Calendar#getInstance()')]</code></dt>
+                                        <dd>Matches calls to the static method Calendar.getInstance()</dd>
+                                        
+                                        <dt><code>//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.Throwable#printStackTrace(*)')]</code></dt>
+                                        <dd>Matches calls to printStackTrace with any number of parameters</dd>
+                                        
+                                    </dl>
+                                </dd>
+                                
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+
+        
+
+    </table>
+
+</div>
+
 
 
     <div class="tags">
@@ -3201,7 +3690,7 @@ Column numbers are 1-based. The end column is exclusive.
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2024 (7.2.0)<br /> Site last generated: Sep 16, 2026 <br />
+            April 2024 (7.2.0)<br /> Site last generated: Sep 17, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

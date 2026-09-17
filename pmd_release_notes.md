@@ -10,16 +10,31 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Kotlin XPath functions and type attributes](#kotlin-xpath-functions-and-type-attributes)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
+    * [Experimental API](#experimental-api)
 * [✨️ Merged pull requests](#merged-pull-requests)
 * [📦️ Dependency updates](#dependency-updates)
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+#### Kotlin XPath functions and type attributes
+Type data is now accessible in XPath rules via new attributes and helper functions (see [Kotlin XPath rule support](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_languages_kotlin.html#xpath-rule-support)):
+
+* **Attributes**: `@TypeName`, `@ReturnTypeName`, `@AnnotationFqNames`, `@Modifiers`, `@Identifier`
+  are exposed on declaration nodes (property, function, class, parameter, catch, for-loop, delegation specifier,
+  annotation nodes).
+* **`pmd-kotlin:typeIs(typeName)`**: matches if the node's type is `typeName` or a subtype.
+* **`pmd-kotlin:typeIsExactly(typeName)`**: matches the exact declared type only (no subtypes).
+* **`pmd-kotlin:hasAnnotation(name)`**: matches if the node has an annotation with the given simple or FQN.
+* **`pmd-kotlin:modifiers()`**: returns the modifier keywords of a declaration as a sequence.
+* **`pmd-kotlin:isNullable()`**: returns `true` if the node's declared type is nullable (has `?`).
+* **`pmd-kotlin:hasUnresolvedReference()`**: returns `true` if the node contains an unresolved reference.
+* **`pmd-kotlin:matchesSig(signature)`**: matches call sites by method signature pattern (supports wildcards).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
@@ -73,8 +88,34 @@ This is a minor release.
 * java-security
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
     * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key
+* kotlin
+    * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add XPath functions and type attributes for type-aware XPath rules
 
 ### 🚨️ API Changes
+#### Experimental API
+* kotlin
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#"><code>KotlinNodeTypeData</code></a>: Provides the initial API to access type information
+      on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
+    * `KotlinNodeTypeData.getTypeName(KotlinNode)` and `KotlinNodeTypeData.getReturnTypeName(KotlinNode)`
+      have been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#getType(KotlinNode)"><code>getType</code></a>
+      and <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#getReturnType(KotlinNode)"><code>getReturnType</code></a>, and
+      now return <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinTypeName.html#"><code>KotlinTypeName</code></a> instead of `String`.
+      The corresponding <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/InternalApiBridge.html#"><code>InternalApiBridge</code></a> setters
+      `setTypeName`/`setReturnTypeName` were renamed to `setType`/`setReturnType` the same way.
+      This is a breaking change to this experimental API.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasTypeName.html#"><code>HasTypeName</code></a>: Marker interface for Kotlin AST nodes that expose
+      a `@TypeName` XPath attribute.
+    * New XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly`, `pmd-kotlin:hasAnnotation`,
+      `pmd-kotlin:modifiers`, `pmd-kotlin:matchesSig`, `pmd-kotlin:isNullable`, `pmd-kotlin:hasUnresolvedReference`
+      in package `net.sourceforge.pmd.lang.kotlin.rule.xpath.internal`.
+    * New AST attribute view classes in package `net.sourceforge.pmd.lang.kotlin.ast`:
+      <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtCatchBlockAttributes.html#"><code>KtCatchBlockAttributes</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtDelegationSpecifierAttributes.html#"><code>KtDelegationSpecifierAttributes</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtForStatementAttributes.html#"><code>KtForStatementAttributes</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtFunctionValueParameterAttributes.html#"><code>KtFunctionValueParameterAttributes</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtPropertyDeclarationAttributes.html#"><code>KtPropertyDeclarationAttributes</code></a>,
+      <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtSingleAnnotationAttributes.html#"><code>KtSingleAnnotationAttributes</code></a>, and
+      <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtUnescapedAnnotationAttributes.html#"><code>KtUnescapedAnnotationAttributes</code></a>.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
