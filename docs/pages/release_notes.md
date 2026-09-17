@@ -23,31 +23,6 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
-#### Java 27 Support
-This release of PMD brings support for Java 27.
-
-There are no new standard language features.
-
-There is one preview language feature:
-* [JEP 532: Primitive Types in Patterns, instanceof, and switch (Fifth Preview)](https://openjdk.org/jeps/532)
-
-In order to analyze a project with PMD that uses these preview language features,
-you'll need to select the new language version `27-preview`:
-
-    pmd check --use-version java-27-preview ...
-
-Note: Support for Java 25 preview language features have been removed. The version "25-preview"
-is no longer available.
-
-#### Updated Apex Support
-The Apex language support has been bumped to version 67.0 (Summer '26). It supports the new
-[Multiline String](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&release=262&type=5) literals.
-
-#### Kotlin type-aware analysis
-Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
-Resolved type names, return types, and annotation FQNs are available through
-{%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %} for use in Java-based rules.
-
 #### Kotlin XPath functions and type attributes
 Type data is now accessible in XPath rules via new attributes and helper functions (see [Kotlin XPath rule support]({{ baseurl }}pmd_languages_kotlin.html#xpath-rule-support)):
 
@@ -109,7 +84,6 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#7068](https://github.com/pmd/pmd/issues/7068): \[java] UnusedReturnValue reports calls made on Mockito.verify(mock)
 * java-multithreading
     * [#6297](https://github.com/pmd/pmd/issues/6297): \[java] AvoidUsingVolatile: Update documentation
-    * [#6747](https://github.com/pmd/pmd/issues/6747): \[java] NonThreadSafeSingleton: False negative with ternary conditional operator
     * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods
 * java-security
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])

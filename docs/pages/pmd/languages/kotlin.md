@@ -102,8 +102,8 @@ analog of pmd-java's `isUnresolved()`) — disambiguates the two cases:
 | true | **unresolved** — analysis ran but the type could not be resolved |
 | false | **genuinely none** — analysis ran and resolved; there is no such value |
 
-```xml
-<!-- property definitely without a resolvable declared type (not merely unresolved) -->
+```xpath
+(: property definitely without a resolvable declared type (not merely unresolved) :)
 //PropertyDeclaration[not(@TypeName) and not(pmd-kotlin:hasUnresolvedReference())]
 ```
 
