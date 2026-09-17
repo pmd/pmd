@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr, QualifiableExpression {
 
     private FieldSig typedSym;
+    private String fieldName;
 
 
     ASTFieldAccess(int id) {
@@ -55,10 +56,15 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         return (ASTExpression) getChild(0);
     }
 
+    @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.fieldName = image;
+    }
 
     @Override
     public String getName() {
-        return getImage();
+        return fieldName;
     }
 
     @Override

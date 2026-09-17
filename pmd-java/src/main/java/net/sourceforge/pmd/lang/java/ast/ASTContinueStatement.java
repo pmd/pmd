@@ -25,6 +25,8 @@ public final class ASTContinueStatement extends AbstractStatement {
     private static final Function<Object, ASTLoopStatement> CONTINUE_TARGET_MAPPER =
         NodeStream.asInstanceOf(ASTLoopStatement.class);
 
+    private String label;
+
     ASTContinueStatement(int id) {
         super(id);
     }
@@ -35,12 +37,17 @@ public final class ASTContinueStatement extends AbstractStatement {
         return visitor.visit(this, data);
     }
 
+    @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.label = image;
+    }
 
     /**
      * Returns the label, or null if there is none.
      */
     public @Nullable String getLabel() {
-        return getImage();
+        return label;
     }
 
     /**
