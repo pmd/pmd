@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
@@ -65,8 +63,6 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
 
     public static final KotlinHasAnnotationFunction INSTANCE = new KotlinHasAnnotationFunction();
-
-    private static final Logger LOG = LoggerFactory.getLogger(KotlinHasAnnotationFunction.class);
 
     private KotlinHasAnnotationFunction() {
         super("hasAnnotation");
@@ -196,8 +192,7 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
             KotlinNode declNode, String className, String simpleName) {
         for (KtUnescapedAnnotation ann : directAnnotationsOf(declNode)) {
             String writtenName = getAnnotationSourceText(ann);
-            if (writtenName != null
-                    && (writtenName.equals(className) || simpleNameOf(writtenName).equals(simpleName))) {
+            if (writtenName.equals(className) || simpleNameOf(writtenName).equals(simpleName)) {
                 return true;
             }
         }
@@ -207,23 +202,17 @@ public final class KotlinHasAnnotationFunction extends BaseKotlinXPathFunction {
     /**
      * Returns the annotation type name as written in source (e.g. {@code "Column"}
      * or {@code "javax.persistence.Column"}) from the {@code KtUserType} inside the
-     * given {@code UnescapedAnnotation} node. Returns {@code null} only if the source
-     * text cannot be sliced (unexpected; defensive fallback).
+     * given {@code UnescapedAnnotation} node.
      *
      * @throws IllegalStateException if {@code annNode} has neither a direct
      *     {@code KtUserType} nor a {@code KtConstructorInvocation} containing one —
      *     see {@link KotlinAstUtil#findUserTypeInAnnotation(KtUnescapedAnnotation)}.
      */
-    static @Nullable String getAnnotationSourceText(KtUnescapedAnnotation annNode) {
+    static String getAnnotationSourceText(KtUnescapedAnnotation annNode) {
         KtUserType userType = KotlinAstUtil.findUserTypeInAnnotation(annNode);
-        try {
-            return userType.getTextDocument()
-                    .sliceOriginalText(userType.getTextRegion())
-                    .toString();
-        } catch (IndexOutOfBoundsException e) {
-            LOG.debug("Could not slice source text for annotation node", e);
-            return null;
-        }
+        return userType.getTextDocument()
+                .sliceOriginalText(userType.getTextRegion())
+                .toString();
     }
 
     /** Returns the last dot-separated segment, e.g. {@code "Column"} from {@code "javax.persistence.Column"}. */
