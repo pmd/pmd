@@ -64,6 +64,8 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     Setting it to false only risks false negatives, therefore, the property will be removed in PMD 8.0.0.
 
 ### 🐛️ Fixed Issues
+* go
+    * [#6235](https://github.com/pmd/pmd/issues/6235): \[go] Go tokenizer doesn't recognize tilde syntax for generics
 * html
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
