@@ -346,6 +346,8 @@ Your project also needs to be compiled first which happens in the target "compil
 
 You can run pmd then with `ant pmd`.
 
+See also <https://github.com/pmd/pmd-examples/tree/main/ant/simple-project>.
+
 #### Getting verbose output
 
     [tom@hal bin]$ ant -v pmd

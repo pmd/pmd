@@ -113,6 +113,8 @@ If this happens, a warning "Adding current platform ... Please add the correct j
 is logged. To disable this warning, set the environment variable `PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS=true`
 when you are sure, that you are using the correct version anyway.
 
+For examples, refer to [Gradle Integration](pmd_userdocs_tools_gradle.html) and [Ant Integration](pmd_userdocs_tools_ant.html).
+
 Not providing the correct auxClasspath might result in false positives or negatives for some rules,
 such as {% rule java/bestpractices/MissingOverride %}.
 This rule needs to figure out, whether a method is defined already in the super class or interface. E.g. the method
