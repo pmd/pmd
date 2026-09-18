@@ -35,7 +35,9 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
     git merge main
     ```
 
-    {%include note.html content="If there are merge conflicts, you'll need to deal with them here." %}
+    <div markdown="1" class="alert alert-info" role="alert">
+    <i class="fas fa-info-circle"></i> **Note:** If there are merge conflicts, you'll need to deal with them here.
+    </div>
 
 4.  Update the [release notes](https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md):
     
@@ -117,8 +119,10 @@ PMD version 7.26.0, so that we can create a bugfix release 7.26.1.
     git cherrypick commit-hash-you-want-to-packport
     ```
 
-    {%include note.html content="At this point, that you will need to fix conflicts / backport the changes for the older
-    PMD version. At least in the release notes (see above for details), maybe also in the code." %}
+    <div markdown="1" class="alert alert-info" role="alert">
+    <i class="fas fa-info-circle"></i> **Note:** At this point, that you will need to fix conflicts / backport the changes for the older
+    PMD version. At least in the release notes (see above for details), maybe also in the code.
+    </div>
 
 3.  Run the complete build, then push:
 
