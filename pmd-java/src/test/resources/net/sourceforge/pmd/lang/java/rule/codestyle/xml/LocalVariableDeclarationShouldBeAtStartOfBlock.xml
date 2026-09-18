@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+
+    <test-code>
+        <description>Standard correct case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+                public void foo1 () {
+                    int localVariable1;
+                    int localVariable2;
+
+                    localVariable1 = 1;
+                    localVariable2 = 2;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>All variables should be declared before any initialisation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable2` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable1;
+                        localVariable1 = 1;
+
+                        int localVariable2; // incorrect, variable2 is declared after others are initialized
+                        localVariable2 = 2;
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Variables should not be declared and initialized on the same line</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable1` is declared with initialization</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable1 = 1; // incorrect, variables should be declared first and initialized later
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple variables declared and initialized on the same line should all cause violations</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,3</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `b` is declared with initialization</message>
+            <message>Local variable `c` is declared with initialization</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int a, b = 1, c = 2; // incorrect, only b and c
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>When a declaration has multiple violations they should all be flagged</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,6</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `b` is declared with initialization</message>
+            <message>Local variable `b` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int a;
+                        a = 1;
+
+                        int b = 1; // incorrect, declared with initialization and not at start of block
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Variable declaration and initialization should be separated and all declarations should happen before initialization</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable1` is declared with initialization</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable1 = 1; // incorrect, variable1 is initialized on the same line as it is declared
+
+                        int localVariable2; // correct, the issue here lies only with variable1, once that initialization is separated the method is correct
+                        localVariable2 = 2;
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Multiple variables declared on the same line should trigger only with the initialized variable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable4` is declared with initialization</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable1, localVariable2; // correct
+
+                        int localVariable3, localVariable4 = 2; // incorrect, should flag 4
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>When requireBeforeThisSuper is true declarations should come before super(...) and this(...) calls</description>
+        <rule-property name="requireBeforeThisSuper">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable1` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        super();
+                        int localVariable1; // incorrect, super has been called above the variable declarations
+                        localVariable1 = 1;
+                    }
+                }
+            ]]></code>
+        <source-type>java 25</source-type>
+    </test-code>
+
+    <test-code>
+        <description>When requireBeforeThisSuper is true but java version is wrong it should not trigger</description>
+        <rule-property name="requireBeforeThisSuper">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        super();
+                        int localVariable1; // incorrect, super has been called above the variable declarations
+                        localVariable1 = 1;
+                    }
+                }
+            ]]></code>
+        <source-type>java 24</source-type>
+    </test-code>
+
+    <test-code>
+        <description>When requireBeforeThisSuper is true it should be able to deal with preview versions of java</description>
+        <rule-property name="requireBeforeThisSuper">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable1` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        super();
+                        int localVariable1; // incorrect, super has been called above the variable declarations
+                        localVariable1 = 1;
+                    }
+                }
+            ]]></code>
+        <source-type>java 25-preview</source-type>
+    </test-code>
+
+
+    <test-code>
+        <description>When requireBeforeThisSuper is false declarations can come after super(...) and this(...) calls</description>
+        <rule-property name="requireBeforeThisSuper">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        this();
+                        int localVariable1;
+                        localVariable1 = 1;
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Rule should not be triggered on declarations with var</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    int localVariable1;
+                    localVariable1 = 1;
+
+                    var localVariable2 = 2; // correct, var declarations must happen with initialization
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Rule should not be triggered on fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+
+                public int field1 = 1; // should not trigger
+
+                public void foo () {}
+
+                public int field2 = 2; // should not trigger
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Rule should not be triggered in statement initialisers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>17</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable3` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+
+                public void foo () {
+                    int localVariable1;
+                    localVariable1 = 1;
+
+                    for (int i = 0; i < 10; i++) {
+                        int localVariable2;
+                        localVariable2 = 2;
+                    }
+
+                    for (int i: new int[5]) {}
+
+                    try (int a = 1) {}
+                    catch (FileNotFoundException e) {}
+                    
+                    int localVariable3; // incorrect, should be at top
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Switch statements should allow variables to be declared at start of case scope</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>14,18,18,23</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `b` is not declared at start of block</message>
+            <message>Local variable `b` is declared with initialization</message>
+            <message>Local variable `b` is not declared at start of block</message>
+            <message>Local variable `b` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+               private void foo()
+               {
+                    int localVariable1;
+                    localVariable1 = 1;
+
+                    switch (localVariable1) {
+                        case 1:
+                            int a; // correct
+                            a = 1;
+                        case 2:
+                            int a; // correct
+                            a = 2;
+                            int b; // incorrect
+                        case 3: {
+                            int a; // correct
+                            a = 3;
+                            int b = 3; // incorrect
+                        }
+                        default:
+                            int a; // correct
+                            a = 4;
+                            int b; // incorrect
+                    }
+               }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Issue #6882: Provided failure case</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `encoded` is declared with initialization</message>
+            <message>Local variable `decoded` is declared with initialization</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+               private String getPassword()
+               {
+                  byte[] encoded = GlobalConfigMap.
+                     getInstance().
+                     getVault().
+                     secret("database.password").
+                     getValue();
+
+                  byte[] decoded = Base64.
+                     getDecoder().
+                     decode(encoded);
+
+                  return new String(decoded, StandardCharsets.UTF_8);
+               }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Issue #6882: Provided success case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+               private String getPassword()
+               {
+                  byte[] decoded;
+                  byte[] encoded;
+
+                  encoded = GlobalConfigMap.
+                     getInstance().
+                     getVault().
+                     secret("database.password").
+                     getValue();
+
+                  decoded = Base64.
+                     getDecoder().
+                     decode(encoded);
+
+                  return new String(decoded, StandardCharsets.UTF_8);
+               }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to name</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariableA` comes before `localVariableB` when ordered by name</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariableB;
+                        int localVariableA; // incorrect, variable A comes before variable B lexicographically
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to name and is case sensitive</description>
+        <rule-property name="sortBy">name</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable_B` comes before `localVariable_a` when ordered by name</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable_a;
+                        int localVariable_B; // incorrect, B comes before a with a case-sensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should ignore casing when caseSensitiveSorting is false</description>
+        <rule-property name="sortBy">name</rule-property>
+        <rule-property name="caseSensitiveSorting">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a_var` comes before `B_var` when ordered by name</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    int B_var;
+                    int a_var; // incorrect, 'a' comes before 'B' in a case-insensitive sort
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to type</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable2` comes before `localVariable1` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        String localVariable1;
+                        int localVariable2; // incorrect, int comes before String with a case-insensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations should be ordered lexicographically when sortBy is set to type and is case sensitive</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable2` comes before `localVariable1` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable1;
+                        String localVariable2; // incorrect, String comes before int with a case-sensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations of the same type should be ordered by name</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable1` comes before `localVariable2` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        String localVariable2;
+                        String localVariable1; // incorrect, variables of the same type should be ordered by name
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Variables should be sorted by type and then by name</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="caseSensitiveSorting">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable1` comes before `localVariable2` when ordered by type</message>
+            <message>The variable `localVariable3` comes before `localVariable1` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable2;
+                        int localVariable1; // incorrect, variables of the same type should be sorted according to name
+                        String localVariable3; // incorrect, String comes before int with a case-sensitive sort
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Type inference with var should come last</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable3` comes before `localVariable1` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int localVariable2;
+                        var localVariable1 = 1;
+                        XCustomType localVariable3; // incorrect, X comes after v but var should always come last
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Explicit constructor calls should not affect ordering</description>
+        <rule-property name="sortBy">type</rule-property>
+        <rule-property name="requireBeforeThisSuper">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `localVariable2` comes before `localVariable1` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        super();
+                        int localVariable1;
+                    }
+
+                    public Bar(int a) {
+                        String localVariable1;
+                        this();
+                        int localVariable2; // incorrect, int should be before string
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>With multiple declarations on one line only the first variable name should be considered</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>3,4,5,5,7,8,8,8</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `d` is declared with initialization</message>
+            <message>Local variable `e` is declared with initialization</message>
+            <message>Local variable `b` is declared with initialization</message>
+            <message>The variable `b` comes before `c` when ordered by name</message>
+            <message>Local variable `p` is declared with initialization</message>
+            <message>Local variable `l` is declared with initialization</message>
+            <message>The variable `l` comes before `p` when ordered by name</message>
+            <message>Local variable `z` is declared with initialization</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () { // all initializations are incorrect as well as sorting issues
+                        int a, d = 2;
+                        int c, e = 1;
+                        int b = 3, f; // incorrect, b comes before c
+
+                        int p = 2, y;
+                        int l = 3, z = 4; // incorrect, l comes before p
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>With multiple declarations on one line only the first variable type should be considered</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `b` comes before `a` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public void foo () {
+                        int[] a;
+                        int b, c[]; // incorrect, int comes before int[]
+                    }
+
+                    public void foo2 () {
+                        int a[], b;
+                        int c; // correct, only the overall type is considered
+                    }
+                }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations at the start of nested blocks should be ordered</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by name</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo (boolean flag) {
+                    if (flag) {
+                        int b;
+                        int a; // incorrect, a should come before b in this block
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations inside switch statement blocks should be ordered</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `first` comes before `second` when ordered by name</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo (int value) {
+                    switch (value) {
+                        case 1:
+                            int second;
+                            int first; // incorrect, first comes before second
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Declarations after statements are not at the top of the block and should be ignored by sorter</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `a` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    int z;
+                    System.out.println("Doing some work");
+                    int a; // incorrect placement flags but not sorting
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Fields declared after a method are not considered at the top of the block</description>
+        <rule-property name="sortBy">name</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+                int z = 1;
+
+                public void doSomething() {
+                }
+
+                int a = 2; // correct, field is declared after a method so it is ignored
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Modifiers like final should not affect type sorting</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    final String b;
+                    final int a; // incorrect, 'int' comes before 'String' despite 'final'
+                }
+            }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Multiple var declarations should be sorted by name when sorting by type</description>
+        <rule-property name="sortBy">type</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The variable `a` comes before `b` when ordered by type</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+                public void foo () {
+                    int x;
+                    var b = "hello";
+                    var a = 123; // incorrect, both are 'var', so 'a' must come before 'b'
+                }
+            }
+        ]]></code>
+    </test-code>
+
+</test-data>
