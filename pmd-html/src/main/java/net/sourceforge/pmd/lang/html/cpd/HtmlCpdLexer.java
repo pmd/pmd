@@ -7,15 +7,19 @@ package net.sourceforge.pmd.lang.html.cpd;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.html.HtmlLanguageModule;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlDocument;
+import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlTextNode;
 import net.sourceforge.pmd.lang.html.ast.HtmlNode;
 import net.sourceforge.pmd.lang.html.ast.HtmlParser;
@@ -49,16 +53,36 @@ public class HtmlCpdLexer implements CpdLexer {
     }
 
     private void traverse(HtmlNode node, TokenFactory tokenEntries) {
+        recordToken(node, tokenEntries, null);
+
+        for (HtmlNode child : node.children()) {
+            FileLocation endLocation = child instanceof ASTHtmlElement ? child.getReportLocation() : null;
+            traverse(child, tokenEntries, endLocation);
+        }
+    }
+
+    private void traverse(HtmlNode node, TokenFactory tokenEntries, @Nullable FileLocation endLocation) {
+        recordToken(node, tokenEntries, endLocation);
+
+        for (int i = 0; i < node.getNumChildren(); i++) {
+            HtmlNode child = node.getChild(i);
+            traverse(child, tokenEntries, i == node.getNumChildren() - 1 ? endLocation : null);
+        }
+    }
+
+    private void recordToken(HtmlNode node, TokenFactory tokenEntries, @Nullable FileLocation endLocation) {
         String image = node.getXPathNodeName();
 
         if (node instanceof ASTHtmlTextNode) {
             image = ((ASTHtmlTextNode) node).getWholeText();
         }
 
-        tokenEntries.recordToken(image, node.getReportLocation());
-
-        for (HtmlNode child : node.children()) {
-            traverse(child, tokenEntries);
+        FileLocation location = node.getReportLocation();
+        if (node.getNumChildren() == 0 && endLocation != null) {
+            tokenEntries.recordToken(image, location.getStartLine(), location.getStartColumn(),
+                                     endLocation.getEndLine(), endLocation.getEndColumn());
+        } else {
+            tokenEntries.recordToken(image, location);
         }
     }
 }
