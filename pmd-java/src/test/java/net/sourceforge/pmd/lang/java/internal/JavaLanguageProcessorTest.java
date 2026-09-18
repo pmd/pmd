@@ -62,6 +62,11 @@ class JavaLanguageProcessorTest {
         assertThat(log, containsString("Adding current platform"));
     }
 
+    /**
+     * This test creates a new AuxClasspathLoader instances for the cache.
+     * Need to increase the cache reuse.
+     * @throws Exception
+     */
     @Test
     void emptyClasspathWithoutJrtFs() throws Exception {
         String log = SystemLambda.tapSystemErr(() -> assertPlatformClassesFound(""));
@@ -69,7 +74,8 @@ class JavaLanguageProcessorTest {
     }
 
     /**
-     * AuxClasspathLoader uses a static cache. Check that we don't create new
+     * AuxClasspathLoader uses a static cache. Verify that we use the same classpath
+     * as JavaParsingHelper so that we don't create additional new
      * instances the lead to cache eviction and other failing tests.
      *
      * @see net.sourceforge.pmd.lang.java.JavaParsingHelper#TEST_AUX_CLASSPATH_LOADER
