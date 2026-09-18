@@ -1228,10 +1228,17 @@
                     <artifactId>mockito-core</artifactId>
                     <scope>test</scope>
                 </dependency>
+                <dependency>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy-agent</artifactId>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
             <properties>
-                <!-- see https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3 -->
-                <extraArgLine>-javaagent:${org.mockito:mockito-core:jar}</extraArgLine>
+                <!-- See https://openjdk.org/jeps/451 JEP 451: Prepare to Disallow the Dynamic Loading of Agents -->
+                <!-- WARNING: Dynamic loading of agents will be disallowed by default in a future release -->
+                <!-- Adding mockito und byte-buddy-agent (for uk.org.webcompere:system-stubs-jupiter) explicitly in tests -->
+                <extraArgLine>-javaagent:${org.mockito:mockito-core:jar} -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</extraArgLine>
             </properties>
         </profile>
 
