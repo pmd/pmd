@@ -55,7 +55,7 @@ pmd {
 ```
 
 {% capture note-gradle-for-pmd-7 %}
-Note: For PMD 7, at least Gradle 8.6 is needed. See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502).
+For PMD 7, at least Gradle 8.6 is needed. See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502).
 {% endcapture %}
 {% include note.html content=note-gradle-for-pmd-7 %}
 
@@ -63,7 +63,8 @@ Note: For PMD 7, at least Gradle 8.6 is needed. See [Support for PMD 7.0](https:
 
 Gradle by default adds all project dependencies to the aux classpath. Since PMD 7.27.0, you'll get a warning
 if the platform classes will be resolved by the running JVM. To avoid this, explicitly add the platform
-classpath to PMD's aux classpath:
+classpath of the correct Java version to PMD's aux classpath. The example is using the toolchains feature
+of Gradle:
 
 ```
 java {
