@@ -49,6 +49,42 @@ public class Foo {
 ]]>
     </example>
   </rule>
+
+  <rule name="ApexSemanticErrors"
+        language="apex"
+        since="7.27.0"
+        message="{0}"
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.ApexSemanticErrorsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#apexsemanticerrors">
+    <description><![CDATA[
+Reports semantic and type errors produced by the
+[Apex Language Server](https://github.com/apex-dev-tools/apex-ls) multifile analysis. Set the
+`PMD_APEX_ROOT_DIRECTORY` environment variable to the directory containing `sfdx-project.json`.
+
+The rule reports only Apex-LS issues whose `isError()` value is true. It preserves each diagnostic's
+message and source range. Syntax, Error, and Missing diagnostics are supported; Warning and Unused
+diagnostics are ignored.
+
+| Scenario | Apex-LS support |
+|----------|-----------------|
+| Local variable and return type mismatches | Supported |
+| Invalid method arguments and missing Apex types | Supported |
+| Valid references between local Apex classes | Supported |
+| Custom SObject field metadata and field type mismatches | Supported |
+| Unknown standard-object fields when no local field extends the object | Supported |
+| Unknown standard-object fields after any local custom field extends the object | Not reported by Apex-LS because the extended standard object is marked incomplete |
+
+The rule does not connect to an org, download schema, or supplement Apex-LS with its own semantic checker.
+    ]]></description>
+    <priority>1</priority>
+    <example><![CDATA[
+public class Example {
+    public static Integer invalidReturnType() {
+        return 'not an Integer'; // ApexSemanticErrors
+    }
+}
+]]></example>
+  </rule>
   
   <rule name="AvoidDirectAccessTriggerMap"
         language="apex"
