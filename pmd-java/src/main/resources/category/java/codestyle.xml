@@ -2120,7 +2120,7 @@ was made possible for anonymous class constructors.
           minimumLanguageVersion="10"
           since="7.0.0"
           message="Use Explicit Types"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UseExplicitTypesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useexplicittypes">
         <description>
 Java 10 introduced the `var` keyword. This reduces the amount of code written because java can infer the type
@@ -2140,23 +2140,6 @@ is completely optional).
 See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/projects/amber/guides/lvti-style-guide).
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
-            <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
-            <property name="allowCasts" type="Boolean" value="false" description="Allow when variables are directly initialized with a the result of a cast"/>
-            <property name="allowLoopVariable" type="Boolean" value="false" description="Allow when variables are used as loop variables in enhanced for loops"/>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//LocalVariableDeclaration[@TypeInferred = true()]
-    [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
-    [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
-    [not(VariableDeclarator[CastExpression]) or $allowCasts = false()]
-    [not(parent::ForeachStatement) or $allowLoopVariable = false()]
-]]>
-                </value>
-            </property>
-        </properties>
     </rule>
 
     <rule name="UselessParentheses"
