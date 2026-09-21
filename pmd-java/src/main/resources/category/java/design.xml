@@ -871,6 +871,48 @@ public class MaybeAUtility {
         </example>
     </rule>
 
+    <rule name="InternalApiUsage"
+          language="java"
+          since="1.8"
+          message="Do not use internal APIs. {0} ''{1}'' is restricted to {2}."
+          class="net.sourceforge.pmd.lang.java.rule.design.InternalApiUsageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#internalapiusage">
+        <description>
+Some APIs are designed to be used only by the library or package that defines them, and using them from other code
+could cause incorrect behavior if the library class changes. By default, this rule reports usages of methods
+
+* annotated by `@VisibleForTesting` (any annotation with this simple name is accepted),
+  unless they are used from a test class or the declaring class
+* annotated by `@TestOnly`, unless they are called from a test class
+* annotated by `@org.apiguardian.api.API(status=INTERNAL)` or `org.jetbrains.annotations.ApiStatus.Internal`,
+  unless they are declared in the analyzed library
+
+In this context classes are considered to belong to the analyzed library, if the first three components of their
+package name match. This behavior can be overridden using the `ownPackages` property that may list
+packages which are considered to belong to the analyzed library.
+It is also possible to define which API statuses should be reported, the `reportedStatuses` property can be set
+to report APIs with experimental, internal, deprecated or overrides-only status.
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    void bar() {
+        new Bar().setSecret(0);
+    }
+}
+
+class Bar {
+    private int secret;
+    @VisibleForTesting
+    setSecret(int secret) {
+        this.secret = secret;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="InvalidJavaBean"
           language="java"
           since="6.52.0"
