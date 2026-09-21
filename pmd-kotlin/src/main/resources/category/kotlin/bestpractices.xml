@@ -61,4 +61,80 @@ fun compute2(input: Int): Int {
         </example>
     </rule>
 
+    <rule name="LooseCoupling"
+          since="7.28.0"
+          language="kotlin"
+          message="Avoid using implementation types (e.g. ArrayList, HashMap); use the corresponding interface (List/Set/Map, or the Mutable* variant) instead"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#loosecoupling">
+        <description>
+Excessive coupling to implementation types (e.g., `HashMap`) limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, declare properties,
+parameters, and return types using a more general type (e.g., `Map`).
+
+Note that Kotlin's `List` / `Map` / `Set` are read-only interfaces, distinct from the mutable
+`MutableList` / `MutableMap` / `MutableSet`. If the value needs to be mutated after declaration
+(e.g. `put`, `add`, `remove`), prefer the `Mutable*` interface over the read-only one.
+
+This rule reports uses of concrete collection/map types. User-defined types that should be treated
+the same as interfaces can be configured with the property `allowedTypes`. Local variables are not
+reported, since their type is not part of the API surface.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="allowedTypes" type="List[String]"
+                      description="Exceptions to the rule: types that should be treated the same as interfaces even though they are concrete implementation types.">
+                <value>java.util.Properties</value>
+            </property>
+            <property name="xpath">
+                <value><![CDATA[
+                    (
+                        //PropertyDeclaration[not(ancestor::FunctionBody or ancestor::AnonymousInitializer or ancestor::SecondaryConstructor)]
+                        | //ClassParameter
+                        | //FunctionValueParameter[ancestor::FunctionDeclaration]
+                        | //FunctionDeclaration
+                    )
+                        [not(pmd-kotlin:modifiers() = 'override')]
+                        [
+                            pmd-kotlin:typeIs('java.util.ArrayList')
+                            or pmd-kotlin:typeIs('java.util.LinkedList')
+                            or pmd-kotlin:typeIs('java.util.Vector')
+                            or pmd-kotlin:typeIs('java.util.Stack')
+                            or pmd-kotlin:typeIs('java.util.HashMap')
+                            or pmd-kotlin:typeIs('java.util.Hashtable')
+                            or pmd-kotlin:typeIs('java.util.LinkedHashMap')
+                            or pmd-kotlin:typeIs('java.util.TreeMap')
+                            or pmd-kotlin:typeIs('java.util.HashSet')
+                            or pmd-kotlin:typeIs('java.util.LinkedHashSet')
+                            or pmd-kotlin:typeIs('java.util.TreeSet')
+                        ]
+                        [not(some $t in $allowedTypes satisfies pmd-kotlin:typeIsExactly($t))]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class Example {
+    // violation - concrete type used for a property
+    private val subscriptions: ArrayList<String> = ArrayList()
+
+    // violation - concrete return type
+    private fun sortedItems(): LinkedHashMap<String, Int> {
+        return LinkedHashMap()
+    }
+
+    // preferred approach
+    private val subscriptions2: MutableList<String> = mutableListOf()
+    private fun sortedItems2(): Map<String, Int> {
+        return linkedMapOf()
+    }
+
+    fun local() {
+        val local: ArrayList<String> = ArrayList()  // no violation - local variable
+    }
+}
+]]>
+        </example>
+    </rule>
+
 </ruleset>
