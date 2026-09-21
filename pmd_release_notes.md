@@ -48,6 +48,9 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     find source code for given type.
 *   The new Java rule [`CStyleArrayDeclaration`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_codestyle.html#cstylearraydeclaration) finds C-style declarations of arrays (e.g. `int numbers[]`).
     That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
+*   The new Apex rule [`ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunrelevanttestsannotation) finds unit tests
+    that do not use the new `@IsTest(critical=true)` or `@IsTest(testFor='...')` annotation parameters for tests.
+    These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.
 #### Changed Rules
 *   The property `checkNonStaticMethods` of the rule [`NonThreadSafeSingleton`](https://docs.pmd-code.org/pmd-doc-7.28.0-SNAPSHOT/pmd_rules_java_multithreading.html#nonthreadsafesingleton) is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
@@ -63,6 +66,8 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     Setting it to false only risks false negatives, therefore, the property will be removed in PMD 8.0.0.
 
 ### 🐛️ Fixed Issues
+* apex-bestpractices
+    * [#6988](https://github.com/pmd/pmd/issues/6988): \[apex] New rule: Detect usage of @<!-- -->IsTest(critical=true) / @<!-- -->IsTest(testFor='...') annotations (RunRelevantTests, Beta, API 66.0+)
 * html
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java

@@ -660,6 +660,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/apex/bestpractices.md",
+  "title": "ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation (Apex, Best Practices)",
+  "tags": "",
+  "keywords": "Apex Unit Test Class Should Have Run Relevant Tests Annotation",
+  "url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunrelevanttestsannotation",
+  "summary": "Apex unit test classes should declare either `@IsTest(critical=true)` or `@IsTest(testFor='...')` (Beta, Salesforce API v66.0+), used..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/apex/bestpractices.md",
   "title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
   "tags": "",
   "keywords": "Apex Unit Test Method Should Have Is Test Annotation",

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestClassShouldHaveRunAs, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidFutureAnnotation, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, QueueableWithoutFinalizer, UnusedLocalVariable">
+<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestClassShouldHaveRunAs, ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidFutureAnnotation, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, QueueableWithoutFinalizer, UnusedLocalVariable">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2183,6 +2183,57 @@ user running it.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveRunAs"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="apexunittestclassshouldhaverunrelevanttestsannotation">ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation</h2>
+
+<p><strong>Since:</strong> PMD 7.28.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Apex unit test classes should declare either <code class="language-plaintext highlighter-rouge">@IsTest(critical=true)</code> or <code class="language-plaintext highlighter-rouge">@IsTest(testFor='...')</code> (Beta, Salesforce
+API v66.0+), used together with the <code class="language-plaintext highlighter-rouge">RunRelevantTests</code> deployment test level. Without one of these modifiers, a test
+class relies entirely on Salesforce’s automatic dependency detection to decide whether it runs during a
+<code class="language-plaintext highlighter-rouge">RunRelevantTests</code> deployment. For test classes covering critical paths, or classes that exercise code reached only
+through dynamic mechanisms (e.g. <code class="language-plaintext highlighter-rouge">Type.forName</code>, metadata-driven routing/dispatch), automatic detection can miss the
+dependency, and the test class may silently be skipped during a deployment even though the code it protects changed.</p>
+
+<p>Classes whose <code class="language-plaintext highlighter-rouge">meta.xml</code> declares an API version older than 66.0 are not flagged, since these modifiers aren’t
+available to them. Classes whose API version couldn’t be determined are still flagged.</p>
+
+<p>See more here: <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_isTest.htm">IsTest Annotation</a></p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@isTest</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">OpportunityEODTest</span> <span class="o">{</span> <span class="c1">// not good, no 'critical' or 'testFor' modifier</span>
+    <span class="nd">@isTest</span>
+    <span class="kd">static</span> <span class="kt">void</span> <span class="nf">validatesOrgWideBehavior</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@isTest</span><span class="o">(</span><span class="n">critical</span><span class="o">=</span><span class="kc">true</span><span class="o">)</span> <span class="c1">// good, explicitly marked as always relevant</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">OpportunityEODTest</span> <span class="o">{</span>
+    <span class="nd">@isTest</span>
+    <span class="kd">static</span> <span class="kt">void</span> <span class="nf">validatesOrgWideBehavior</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@isTest</span><span class="o">(</span><span class="n">testFor</span><span class="o">=</span><span class="err">'</span><span class="nl">ApexClass:</span><span class="nc">InvoiceEngine</span><span class="o">,</span> <span class="nl">ApexTrigger:</span><span class="nc">InvoiceTrigger</span><span class="err">'</span><span class="o">)</span> <span class="c1">// good, explicitly tied to its dependencies</span>
+<span class="kd">private</span> <span class="kd">class</span> <span class="nc">InvoiceDynamicFlowTests</span> <span class="o">{</span>
+    <span class="nd">@isTest</span>
+    <span class="kd">static</span> <span class="kt">void</span> <span class="nf">validatesDynamicInvocationPath</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="apexunittestmethodshouldhaveistestannotation">ApexUnitTestMethodShouldHaveIsTestAnnotation</h2>
 
 <p><strong>Since:</strong> PMD 6.13.0</p>
@@ -2543,7 +2594,7 @@ Without attaching a Finalizer, there is no way of designing error recovery actio
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 18, 2026 <br />
+             Site last generated: Sep 21, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
