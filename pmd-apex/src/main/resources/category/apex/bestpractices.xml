@@ -104,7 +104,7 @@ private class TestRunAs {
 
     <rule name="ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation"
           language="apex"
-          since="7.27.0"
+          since="7.28.0"
           message="Apex unit test classes should have either the 'critical' or the 'testFor' modifier of the @IsTest annotation"
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunRelevantTestsAnnotationRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunrelevanttestsannotation">

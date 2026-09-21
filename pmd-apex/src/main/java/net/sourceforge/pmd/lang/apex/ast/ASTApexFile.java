@@ -115,7 +115,7 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
      * element. Callers should treat an empty result as "unknown", not as "low
      * version".
      *
-     * @since 7.27.0
+     * @since 7.28.0
      */
     public @NonNull Optional<Double> getApiVersion() {
         if (apiVersion == null) {
