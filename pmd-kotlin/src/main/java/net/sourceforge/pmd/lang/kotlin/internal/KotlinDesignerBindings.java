@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.kotlin.internal;
 
+import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.AttributeView;
 import net.sourceforge.pmd.lang.kotlin.ast.HasModifiers;
@@ -43,9 +45,9 @@ public final class KotlinDesignerBindings extends DefaultDesignerBindings {
             }
         }
         if (attributeView instanceof HasModifiers) {
-            String mods = ((HasModifiers) attributeView).getModifiers();
-            if (mods != null) {
-                return new Attribute(node, "Modifiers", mods);
+            List<String> mods = ((HasModifiers) attributeView).getModifiers();
+            if (!mods.isEmpty()) {
+                return new Attribute(node, "Modifiers", String.join(" ", mods));
             }
         }
         return super.getMainAttribute(node);

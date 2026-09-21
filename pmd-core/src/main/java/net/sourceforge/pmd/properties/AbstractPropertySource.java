@@ -171,7 +171,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         Map<String, String> propertiesWithValues = new HashMap<>();
         propertyDescriptors.forEach(propertyDescriptor -> {
             Object value = propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
-            @SuppressWarnings({"unchecked", "rawtypes", "PMD.UnnecessaryCast"})
+            @SuppressWarnings({"unchecked", "rawtypes"})
             String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
             propertiesWithValues.put(propertyDescriptor.name(), valueString);
         });

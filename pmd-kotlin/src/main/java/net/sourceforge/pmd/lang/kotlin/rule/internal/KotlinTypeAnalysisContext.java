@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -29,10 +33,8 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
  * (absolute file path, line number) for fast lookup during XPath function evaluation.
  *
  * <p>Note: kotlin-type-mapper records the <em>concrete expanded type</em> in all call-site
- * fields -- type alias names are not preserved.
- * Call-site receiver/return queries ({@code callsOnReceiver}, {@code callsReturning}) and
- * type alias query support ({@code resolveTypeAlias}, {@code ...ExpandingAlias} variants)
- * are planned for a future release.
+ * fields -- type alias names are not preserved. Use {@code TypedAst.expandAlias()} from
+ * kotlin-type-mapper to resolve aliases before querying.
  *
  * @since 7.27.0
  * @experimental
@@ -40,9 +42,11 @@ import nl.stokpop.typemapper.model.UnresolvedReferenceAst;
 @Experimental
 public final class KotlinTypeAnalysisContext {
 
+    private static final Logger LOG = LoggerFactory.getLogger(KotlinTypeAnalysisContext.class);
+
     private static final KotlinTypeAnalysisContext EMPTY = new KotlinTypeAnalysisContext(
             null,
-            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
+            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), false);
 
     /** Map from absolute file path -> line -> list of call sites on that line. */
     private final Map<String, Map<Integer, List<CallSiteAst>>> callIndex;
@@ -58,16 +62,19 @@ public final class KotlinTypeAnalysisContext {
      * Used to delegate hierarchy queries ({@link #isSubtypeOf}) to ktm's built-in logic.
      */
     private final TypedAst typedAst;
+    private final boolean canonicalizedPathKeys;
 
     private KotlinTypeAnalysisContext(
             TypedAst typedAst,
             Map<String, Map<Integer, List<CallSiteAst>>> callIndex,
             Map<String, Map<Integer, List<DeclarationAst>>> declIndex,
-            Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex) {
+            Map<String, Map<Integer, List<UnresolvedReferenceAst>>> unresolvedIndex,
+            boolean canonicalizedPathKeys) {
         this.typedAst = typedAst;
         this.callIndex = callIndex;
         this.declIndex = declIndex;
         this.unresolvedIndex = unresolvedIndex;
+        this.canonicalizedPathKeys = canonicalizedPathKeys;
     }
 
     /** Returns a no-op context (all lookups return empty lists). */
@@ -88,9 +95,21 @@ public final class KotlinTypeAnalysisContext {
             // Disk: canonical abs path (PMD passes the same paths it gets from the FS).
             // In-memory (fromSources, single-file, tests): relativePath == the key the caller
             // used in the sources map, which is also the key PMD looks up with.
-            String key = diskBased
-                    ? canonicalize(ast.resolveAbsolutePath(file))
-                    : file.getRelativePath();
+            String key;
+            if (diskBased) {
+                try {
+                    key = canonicalize(ast.resolveAbsolutePath(file));
+                } catch (UncheckedIOException e) {
+                    // A single inaccessible file must not abort analysis of the whole run
+                    // (including other Kotlin files and other languages in the same PMD
+                    // run). Report loudly and skip only this file -- it gets no type info,
+                    // same as if it were never analyzed.
+                    LOG.error("Skipping type info for {}: {}", file.getRelativePath(), e.getMessage(), e);
+                    continue;
+                }
+            } else {
+                key = file.getRelativePath();
+            }
             if (!seenKeys.add(key)) {
                 throw new IllegalStateException(
                         "kotlin-type-mapper index clash: two files resolve to the same key \""
@@ -106,7 +125,7 @@ public final class KotlinTypeAnalysisContext {
                 addToIndex(unresolvedIdx, key, unresolved.getLine(), unresolved);
             }
         }
-        return new KotlinTypeAnalysisContext(ast, callIdx, declIdx, unresolvedIdx);
+        return new KotlinTypeAnalysisContext(ast, callIdx, declIdx, unresolvedIdx, diskBased);
     }
 
     private static <T> void addToIndex(Map<String, Map<Integer, List<T>>> idx,
@@ -173,7 +192,7 @@ public final class KotlinTypeAnalysisContext {
         return lookupByLine(unresolvedIndex, absFilePath, line);
     }
 
-    private static <T> List<T> lookupByLine(
+    private <T> List<T> lookupByLine(
             Map<String, Map<Integer, List<T>>> index, String absFilePath, int line) {
         Map<Integer, List<T>> byLine = resolveByLineMap(index, absFilePath);
         if (byLine == null) {
@@ -199,9 +218,21 @@ public final class KotlinTypeAnalysisContext {
         return result;
     }
 
-    private static <T> Map<Integer, List<T>> resolveByLineMap(
+    private <T> Map<Integer, List<T>> resolveByLineMap(
             Map<String, Map<Integer, List<T>>> index, String absFilePath) {
-        return index.get(absFilePath);
+        Map<Integer, List<T>> byLine = index.get(absFilePath);
+        if (byLine != null || !canonicalizedPathKeys) {
+            return byLine;
+        }
+        if (absFilePath == null) {
+            return Collections.emptyMap();
+        }
+        try {
+            Map<Integer, List<T>> canonicalByLine = index.get(canonicalize(absFilePath));
+            return canonicalByLine != null ? canonicalByLine : Collections.emptyMap();
+        } catch (UncheckedIOException e) {
+            return Collections.emptyMap();
+        }
     }
 
     /**
@@ -236,11 +267,14 @@ public final class KotlinTypeAnalysisContext {
         return TypedAstHierarchyQueriesKt.isSubtypeOfUpward(typedAst, expectedType, actualType);
     }
 
+    // Fail fast: if getCanonicalPath() fails the file is inaccessible and
+    // analysis would produce wrong index keys later anyway (PR #6795 review).
     private static String canonicalize(String path) {
         try {
             return new File(path).getCanonicalPath();
         } catch (IOException e) {
-            return new File(path).getAbsolutePath();
+            throw new UncheckedIOException(
+                    "Cannot canonicalize path: " + path + " — file may not be accessible", e);
         }
     }
 }

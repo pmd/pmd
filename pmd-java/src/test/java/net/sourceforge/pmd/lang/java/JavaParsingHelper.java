@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getPlatformClasspath;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath;
+import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -21,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
@@ -35,6 +36,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.VerboseLogger;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import net.sourceforge.pmd.util.AuxClasspathLoader;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -49,12 +51,14 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      */
     public static final TypeSystem TEST_TYPE_SYSTEM;
 
+    /**
+     * The AuxClasspathLoader instance used by {@link #TEST_TYPE_SYSTEM}
+     */
+    public static final AuxClasspathLoader TEST_AUX_CLASSPATH_LOADER;
+
     static {
-        try {
-            TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(new ClasspathClassLoader("", JavaParsingHelper.class.getClassLoader()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        TEST_AUX_CLASSPATH_LOADER = AuxClasspathLoader.create(toRawClasspath(getRuntimeClasspath(), getPlatformClasspath()));
+        TEST_TYPE_SYSTEM = TypeSystem.usingClasspath(TEST_AUX_CLASSPATH_LOADER::findResource);
     }
 
     /** This runs all processing stages when parsing. */

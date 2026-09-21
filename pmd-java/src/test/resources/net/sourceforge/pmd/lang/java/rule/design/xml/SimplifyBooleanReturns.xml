@@ -142,7 +142,7 @@ public class SimplifyBooleanReturns {
     </test-code>
 
     <test-code>
-        <description>don't report if expr would need paren</description>
+        <description>does not report if expr would need parens</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>13</expected-linenumbers>
         <expected-messages>
@@ -172,9 +172,9 @@ public class SimplifyBooleanReturns {
                         return false;
                     }
                     if (foo instanceof Foo) { // !(foo instanceof Foo) && a;
-                        return a;
+                        return false;
                     } else {
-                        return true;
+                        return a;
                     }
                 }
             }
@@ -207,15 +207,11 @@ public class SimplifyBooleanReturns {
     </test-code>
     <test-code>
         <description>expr already has parens</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Foo {
                 public boolean foo(Object foo, boolean a, boolean b) {
-                    if (foo instanceof Foo) { // foo instanceof Foo && (a || b)
+                    if (foo instanceof Foo) { // foo instanceof Foo && (a || b) - parens are required so not triggered
                         return (a || b);
                     } else {
                         return false;
@@ -267,13 +263,12 @@ public class SimplifyBooleanReturns {
     </test-code>
 
     <test-code>
-        <description>[java] SimplifyBooleanReturns should consider literal expression #3852</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <description>[java] SimplifyBooleanReturns should consider literal expression #3852, reverted in #6694</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Tester {
     public boolean foo() {
-        if (true) {  // should report a warning in this if-else statement
+        if (true) {  // should no longer report a warning in this if-else statement
             return (true || false);
         } else {
             return false;
@@ -306,6 +301,36 @@ class Tester {
                     }
                     return Objects.equals(stringA, stringB);
                 }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description> [java] Issue #6694 - inconsistent triggering of rule with and without parentheses </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class FactoryChecker {
+
+                // Rule did not trigger both before and after the change
+                public boolean isFactoryMethodA(String qualifier, String name) {
+                    if (qualifier != null) {
+                        return typeEndsWith(qualifier, "Factory")
+                            || nameEndsWith(name);
+                    }
+                    return false;
+                }
+
+                // NEW BEHAVIOUR - Rule no longer triggers here though it previously did
+                public boolean isFactoryMethodB(String qualifier, String name) {
+                    if (qualifier != null) {
+                        return (typeEndsWith(qualifier, "Factory")
+                            || nameEndsWith(name));
+                    }
+                    return false;
+                }
+
+                private boolean typeEndsWith(String q, String suffix) { return q != null && q.endsWith(suffix); }
+                private boolean nameEndsWith(String n) { return n != null && n.endsWith("Factory"); }
             }
             ]]></code>
     </test-code>

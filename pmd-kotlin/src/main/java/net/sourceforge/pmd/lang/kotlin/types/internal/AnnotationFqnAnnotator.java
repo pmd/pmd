@@ -11,12 +11,13 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAnnotation;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtModifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 import nl.stokpop.typemapper.model.AnnotationAst;
@@ -65,21 +66,18 @@ final class AnnotationFqnAnnotator {
         List<KtUnescapedAnnotation> annNodes = collectAnnotationNodes(declNode);
         for (KtUnescapedAnnotation annNode : annNodes) {
             String writtenName = getAnnotationWrittenName(annNode);
-            if (writtenName == null) {
-                continue;
-            }
             // Try exact FQN match first, then simple-name match
             String fqn = simpleToFqn.get(KotlinTypeAnnotationVisitor.simpleNameOf(writtenName));
             if (fqn == null) {
                 fqn = simpleToFqn.get(writtenName); // handles fully-qualified written name
             }
             if (fqn != null) {
-                InternalApiBridge.setTypeName(annNode, fqn);
+                InternalApiBridge.setType(annNode, KotlinTypeName.ofFqName(fqn));
                 // Also set on the parent SingleAnnotation so users can query
                 // //SingleAnnotation[@TypeName='org.example.Foo'] directly.
                 KotlinNode parent = annNode.getParent();
                 if (parent instanceof KtSingleAnnotation) {
-                    InternalApiBridge.setTypeName(parent, fqn);
+                    InternalApiBridge.setType(parent, KotlinTypeName.ofFqName(fqn));
                 }
             }
         }
@@ -102,13 +100,14 @@ final class AnnotationFqnAnnotator {
      * Extracts the annotation name as written in source from a
      * {@code KtUnescapedAnnotation} node, using the text region of the contained
      * {@code KtUserType} node. Returns e.g. {@code "Column"} or
-     * {@code "javax.persistence.Column"}, or {@code null} on failure.
+     * {@code "javax.persistence.Column"}.
+     *
+     * @throws IllegalStateException if {@code annNode} has neither a direct
+     *     {@code KtUserType} nor a {@code KtConstructorInvocation} containing one —
+     *     see {@link KotlinAstUtil#findUserTypeInAnnotation(KtUnescapedAnnotation)}.
      */
     private static String getAnnotationWrittenName(KtUnescapedAnnotation annNode) {
-        KtUserType userType = findUserType(annNode);
-        if (userType == null) {
-            return null;
-        }
+        KtUserType userType = KotlinAstUtil.findUserTypeInAnnotation(annNode);
         try {
             return userType.getTextDocument()
                     .sliceOriginalText(userType.getTextRegion())
@@ -118,19 +117,5 @@ final class AnnotationFqnAnnotator {
                     .addContextValue("annotation node", annNode)
                     .addContextValue("userType node", userType);
         }
-    }
-
-    /** Finds the {@code KtUserType} directly inside a {@code KtUnescapedAnnotation}. */
-    private static KtUserType findUserType(KtUnescapedAnnotation annNode) {
-        for (int i = 0; i < annNode.getNumChildren(); i++) {
-            KotlinNode child = annNode.getChild(i);
-            if (child instanceof KtUserType) {
-                return (KtUserType) child;
-            }
-            if (child instanceof KtConstructorInvocation) {
-                return KotlinTypeAnnotationVisitor.findUserTypeInConstructorInvocation((KtConstructorInvocation) child);
-            }
-        }
-        return null;
     }
 }

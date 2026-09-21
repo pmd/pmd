@@ -32,4 +32,156 @@ public class SomeEJB implements EJBLocalHome, EJBObject {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>@Stateless annotated EJB should be detected (javax.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import javax.ejb.Stateless;
+
+@Stateless
+public class MyStatelessBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@Stateful annotated EJB should be detected (javax.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import javax.ejb.Stateful;
+
+@Stateful
+public class MyStatefulBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@Singleton annotated EJB should be detected (jakarta.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import jakarta.ejb.Singleton;
+
+@Singleton
+public class MySingletonBean {
+    private static String BAD_STATIC_FIELD = "x";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@MessageDriven annotated EJB should be detected (javax.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import javax.ejb.MessageDriven;
+
+@MessageDriven
+public class MyMessageDrivenBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@MessageDriven annotated EJB should be detected (jakarta.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import jakarta.ejb.MessageDriven;
+
+@MessageDriven
+public class MyJakartaMessageDrivenBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Annotated EJB with final static or instance fields is fine</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.ejb.Stateless;
+
+@Stateless
+public class GoodStatelessBean {
+    private static final int GOOD_STATIC_FINAL = 1;
+    private int instanceField;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>javax.inject.Singleton (CDI) is not an EJB and should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.inject.Singleton;
+
+@Singleton
+public class CdiSingletonBean {
+    private static int NOT_AN_EJB_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@Stateless annotated EJB should be detected (jakarta.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import jakarta.ejb.Stateless;
+
+@Stateless
+public class MyJakartaStatelessBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@Stateful annotated EJB should be detected (jakarta.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import jakarta.ejb.Stateful;
+
+@Stateful
+public class MyJakartaStatefulBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@Singleton annotated EJB should be detected (javax.ejb)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import javax.ejb.Singleton;
+
+@Singleton
+public class MyJavaxSingletonBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class implementing a jakarta.ejb interface should be detected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import jakarta.ejb.SessionBean;
+
+public class MyJakartaSessionBean implements SessionBean {
+    private static int BAD_STATIC_FIELD;
+}
+        ]]></code>
+    </test-code>
 </test-data>

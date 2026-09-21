@@ -521,7 +521,7 @@ public final class JavaResolvers {
             return isAccessibleIn(nestRoot, accessPackageName, sym, isSubtype(access, sym.getEnclosingClass()));
         };
 
-        @SuppressWarnings({"unchecked", "PMD.UnnecessaryCast"})
+        @SuppressWarnings("unchecked")
         ShadowChainBuilder<S, ?>.ResolverBuilder builder = (ShadowChainBuilder<S, ?>.ResolverBuilder) classes.new ResolverBuilder();
 
         for (JClassType next : DIRECT_STRICT_SUPERTYPES.iterable(c)) {
