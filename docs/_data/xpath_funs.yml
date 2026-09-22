@@ -240,3 +240,115 @@ langs:
             outcome: "Matches calls to any method with 2 `int` parameters (!= argument)"
           - code: '//ConstructorCall[pmd-java:matchesSig("java.util.ArrayList#new(int)")]'
             outcome: "Matches constructors calls of ArrayList with a single int parameter"
+
+  - name: "Kotlin"
+    ns: "pmd-kotlin"
+    header: "Functions available for the Kotlin language are in the namespace `pmd-kotlin`.
+             See also [Kotlin support]({{ baseurl }}pmd_languages_kotlin.html#xpath-rule-support)."
+    funs:
+      - name: typeIs
+        returnType: "xs:boolean"
+        shortDescription: "Tests a node's resolved type"
+        description: "Returns true if the context node's resolved type is the given type, or a subtype of it,
+                      using the type hierarchy provided by kotlin-type-mapper. Both Kotlin names
+                      (e.g. `kotlin.String`) and Java names (e.g. `java.lang.String`) are accepted.
+                      Generic type arguments are ignored for comparison."
+        notes: "Works on PropertyDeclaration, FunctionDeclaration, ClassParameter, FunctionValueParameter,
+                CatchBlock, ForStatement, and DelegationSpecifier nodes. Requires `auxClasspath` for
+                type resolution."
+        parameters:
+          - name: typeName
+            type: "xs:string"
+            description: "A Kotlin or Java qualified type name"
+        examples:
+          - code: "//PropertyDeclaration[pmd-kotlin:typeIs('java.util.Calendar')]"
+            outcome: "Matches property declarations whose type is Calendar or a subtype of it"
+
+      - name: typeIsExactly
+        returnType: "xs:boolean"
+        shortDescription: "Tests a node's resolved type, ignoring subtypes"
+        description: "Like typeIs, but only matches the exact declared type, not subtypes.
+                      Generic type arguments are ignored for comparison."
+        notes: "Requires `auxClasspath` for type resolution."
+        parameters:
+          - name: typeName
+            type: "xs:string"
+            description: "A Kotlin or Java qualified type name"
+        examples:
+          - code: "//PropertyDeclaration[pmd-kotlin:typeIsExactly('kotlin.collections.List')]"
+            outcome: "Matches property declarations of type List exactly (but not e.g. ArrayList)"
+
+      - name: hasAnnotation
+        returnType: "xs:boolean"
+        shortDescription: "Tests whether an annotation is present on the node"
+        description: "Returns true if the context node is annotated with an annotation whose
+                      simple name or fully-qualified name matches the given name."
+        notes: "Works on FunctionDeclaration, ClassDeclaration, PropertyDeclaration, and ClassParameter."
+        parameters:
+          - name: name
+            type: "xs:string"
+            description: "Simple or fully-qualified name of an annotation type"
+        examples:
+          - code: "//ClassDeclaration[pmd-kotlin:hasAnnotation('Entity')]"
+            outcome: "Matches class declarations annotated with @Entity"
+          - code: "//FunctionDeclaration[pmd-kotlin:hasAnnotation('kotlin.Deprecated')]"
+            outcome: "Matches function declarations annotated with @Deprecated"
+
+      - name: modifiers
+        returnType: "xs:string*"
+        shortDescription: "Produce the modifiers of a node"
+        description: "Returns a sequence of modifier keyword strings for the context node.
+                      Use the XPath `=` operator (which tests sequence membership) to check
+                      for a specific modifier."
+        parameters:
+        examples:
+          - code: "//FunctionDeclaration[pmd-kotlin:modifiers() = 'suspend']"
+            outcome: "Matches function declarations with a 'suspend' modifier"
+          - code: "//ClassDeclaration[pmd-kotlin:modifiers() = ('internal', 'abstract')]"
+            outcome: "Matches class declarations with an 'internal' OR an 'abstract' modifier"
+
+      - name: isNullable
+        returnType: "xs:boolean"
+        shortDescription: "Tests whether a node's declared type is nullable"
+        description: "Returns true if the context node's declared type is nullable
+                      (i.e. has a `?` suffix in the Kotlin source)."
+        notes: "Works on PropertyDeclaration, FunctionDeclaration, ClassParameter,
+                FunctionValueParameter, CatchBlock, and ForStatement nodes. Requires
+                `auxClasspath` for type resolution."
+        parameters:
+        examples:
+          - code: "//PropertyDeclaration[pmd-kotlin:isNullable()]"
+            outcome: "Matches property declarations with a nullable type"
+
+      - name: hasUnresolvedReference
+        returnType: "xs:boolean"
+        shortDescription: "Tests whether the node's line has an unresolved reference"
+        description: "Returns true if the context node contains an unresolved reference on its
+                      begin line (i.e. a symbol that kotlin-type-mapper could not resolve).
+                      Useful for filtering out false positives in rules that depend on
+                      fully-resolved types."
+        notes: "Only reports presence/absence, not which symbol is unresolved; only checks
+                the context node's begin line, not other lines of a multi-line declaration."
+        parameters:
+        examples:
+          - code: "//PostfixUnaryExpression[not(pmd-kotlin:hasUnresolvedReference())]"
+            outcome: "Matches postfix unary expressions whose type could be fully resolved"
+
+      - name: matchesSig
+        returnType: "xs:boolean"
+        shortDescription: "Matches the signature called by a call site"
+        description: "Returns true if the context node represents a call site whose method
+                      signature matches the given signature. Signature format:
+                      `ReceiverType#methodName(paramType, ...)` with `_` as wildcard for the
+                      receiver or any single parameter type, and `*` as wildcard for any
+                      parameter list (any number of parameters)."
+        notes: "Requires `auxClasspath` for type resolution."
+        parameters:
+          - name: sig
+            type: "xs:string"
+            description: "A signature in the format described above"
+        examples:
+          - code: "//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.util.Calendar#getInstance()')]"
+            outcome: "Matches calls to the static method Calendar.getInstance()"
+          - code: "//PostfixUnaryExpression[pmd-kotlin:matchesSig('java.lang.Throwable#printStackTrace(*)')]"
+            outcome: "Matches calls to printStackTrace with any number of parameters"

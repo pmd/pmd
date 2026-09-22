@@ -36,6 +36,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Checks usages of explicit type arguments in a constructor call that
@@ -68,6 +69,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall ctorCall, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ASTClassType newTypeNode = ctorCall.getTypeNode();
         JTypeMirror newType = newTypeNode.getTypeMirror();
 
@@ -92,7 +95,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             JavaNode reportNode = targs == null ? newTypeNode : targs;
             String message = targs == null ? RAW_TYPE_MESSAGE : REPLACE_TYPE_ARGS_MESSAGE;
             String replaceWith = produceSuggestedExprImage(ctorCall);
-            asCtx(data).addViolationWithMessage(reportNode, message, replaceWith);
+            ctx.addViolationWithMessage(reportNode, message, replaceWith);
         }
         return null;
     }

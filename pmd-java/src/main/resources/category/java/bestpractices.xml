@@ -1154,6 +1154,32 @@ class Foo {{
         </example>
     </rule>
 
+    <rule name="OnDemandImport"
+          language="java"
+          since="7.28.0"
+          message="Avoid on-demand imports"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.OnDemandImportRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#ondemandimport">
+        <description>
+On-demand imports (also called wildcard imports) should be used sparingly. By default, this rule allows
+static on-demand imports from JUnit and TestNG, and reports all type on-demand imports.
+
+Entries in `allowStaticImportsFrom` may name either a declaring type or a package containing declaring types.
+For example, `org.junit` allows `org.junit.Assert.*`, but not `org.junitx.Assert.*`. Entries in
+`allowTypeImportsFrom` match packages exactly, so `java.util` does not allow `java.util.concurrent.*`.
+Use `*` in either property to allow all on-demand imports of that kind.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+import static org.junit.jupiter.api.Assertions.*; // allowed by default
+import static java.lang.Math.*;                   // violation
+import java.util.*;                               // violation
+import java.util.List;                            // OK
+]]>
+        </example>
+    </rule>
+
     <rule name="OneDeclarationPerLine"
           language="java"
           since="5.0"
