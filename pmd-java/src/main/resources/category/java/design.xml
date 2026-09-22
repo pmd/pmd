@@ -873,7 +873,7 @@ public class MaybeAUtility {
 
     <rule name="InternalApiUsage"
           language="java"
-          since="1.8"
+          since="7.28.0"
           message="Do not use internal APIs. {0} ''{1}'' is restricted to {2}."
           class="net.sourceforge.pmd.lang.java.rule.design.InternalApiUsageRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#internalapiusage">

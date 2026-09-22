@@ -324,6 +324,9 @@ public interface SymbolicValue {
             return anyMatch(it -> SymbolicValueHelper.equalsModuloWrapper(it, value));
         }
 
+        /**
+         * @since 7.28.0
+         */
         public boolean anyMatch(Predicate<SymbolicValue> check) {
             if (primArray != null) {
                 // todo I don't know how to code that without switching on the type

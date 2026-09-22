@@ -30,6 +30,9 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 
+/**
+ * @since 7.28.0
+ */
 public class InternalApiUsageRule extends AbstractJavaRulechainRule {
 
     public enum ApiStatus {
