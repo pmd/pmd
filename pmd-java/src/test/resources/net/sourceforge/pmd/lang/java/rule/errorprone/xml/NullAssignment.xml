@@ -322,4 +322,49 @@ public class Foo {
 
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] NullAssignment: False positive inside if statement for first assignment #1050</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String foo(boolean a, boolean b) {
+        String key;
+        if (a) {
+            key = "a";
+        } else if (b) {
+            key = "b";
+        } else {
+            key = null; // first assignment, ok
+        }
+        return key;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] NullAssignment #1050 - a reassignment is still reported</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,14</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public String foo(boolean a) {
+        String key;
+        if (a) {
+            key = "a";
+        }
+        key = null; // may be a reassignment
+        return key;
+    }
+
+    public String bar(boolean a) {
+        String key;
+        while (a) {
+            key = null; // may be a reassignment in a later iteration
+            a = key != null;
+        }
+        return "";
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

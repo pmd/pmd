@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+   <test-code>
+      <description>Problematic apex unit test - no critical or testFor modifier</description>
+      <expected-problems>1</expected-problems>
+      <code>
+         <![CDATA[
+@isTest
+private class OpportunityEODTest {
+
+   @isTest
+   static void validatesOrgWideBehavior() {
+      System.assert(true);
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>Apex unit test class using critical=true</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+@isTest(critical=true)
+private class OpportunityEODTest {
+
+   @isTest
+   static void validatesOrgWideBehavior() {
+      System.assert(true);
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>Apex unit test class using critical=true with extra annotation</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+@Deprecated
+@isTest(critical=true)
+private class OpportunityEODTest {
+
+   @isTest
+   static void validatesOrgWideBehavior() {
+      System.assert(true);
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>Apex unit test class using testFor</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+@isTest(testFor='ApexClass:InvoiceEngine, ApexTrigger:InvoiceTrigger')
+private class InvoiceDynamicFlowTests {
+
+   @isTest
+   static void validatesDynamicInvocationPath() {
+      System.assert(true);
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>Modifier names are matched case-insensitively, so CRITICAL=true still counts as 'critical'</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+@isTest(CRITICAL=true)
+private class OpportunityEODTest {
+
+   @isTest
+   static void validatesOrgWideBehavior() {
+      System.assert(true);
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>Apex unit test class explicitly setting critical=false is still flagged</description>
+      <expected-problems>1</expected-problems>
+      <code>
+         <![CDATA[
+@isTest(critical=false)
+private class OpportunityEODTest {
+
+   @isTest
+   static void validatesOrgWideBehavior() {
+      System.assert(true);
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>Apex unit test class combined with seeAllData, missing critical/testFor</description>
+      <expected-problems>1</expected-problems>
+      <code>
+         <![CDATA[
+@isTest(seeAllData=false)
+private class OpportunityEODTest {
+
+   @isTest
+   static void validatesOrgWideBehavior() {
+      System.assert(true);
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>Not a test class - not flagged</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+private class OpportunityEOD {
+
+   static void run() {
+      System.debug('running');
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+</test-data>
