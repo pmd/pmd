@@ -64,7 +64,7 @@ fun compute2(input: Int): Int {
     <rule name="LooseCoupling"
           since="7.28.0"
           language="kotlin"
-          message="Avoid using implementation types (e.g. ArrayList, HashMap); use the corresponding interface (List/Set/Map, or the Mutable* variant) instead"
+          message="Avoid using implementation types (e.g. ArrayList, HashMap); use the corresponding interface (e.g. List, Map) instead"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_bestpractices.html#loosecoupling">
         <description>
@@ -73,12 +73,17 @@ implementations in the future as requirements change. Whenever available, declar
 parameters, and return types using a more general type (e.g., `Map`).
 
 Note that Kotlin's `List` / `Map` / `Set` are read-only interfaces, distinct from the mutable
-`MutableList` / `MutableMap` / `MutableSet`. If the value needs to be mutated after declaration
-(e.g. `put`, `add`, `remove`), prefer the `Mutable*` interface over the read-only one.
+`MutableList` / `MutableMap` / `MutableSet`. Prefer the read-only interface by default; only fall
+back to the `Mutable*` variant when the value genuinely needs to be mutated after declaration
+(e.g. `put`, `add`, `remove`).
 
-This rule reports uses of concrete collection/map types. User-defined types that should be treated
-the same as interfaces can be configured with the property `allowedTypes`. Local variables are not
-reported, since their type is not part of the API surface.
+This rule reports uses of concrete collection/map types. It currently checks a fixed list of
+common JDK implementation types (e.g. `ArrayList`, `HashMap`, `TreeSet`); unlike the Java version
+of this rule, it does not yet generically detect *any* concrete `Collection`/`Map` implementation,
+since that would require a dedicated type-introspection XPath function (see
+https://github.com/pmd/pmd/issues/7091). User-defined types that should be treated the same as
+interfaces can be configured with the property `allowedTypes`. Local variables are not reported,
+since their type is not part of the API surface.
         </description>
         <priority>3</priority>
         <properties>
