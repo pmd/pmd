@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - name: Spell Check Repo
-        uses: crate-ci/typos@d43b6c087ac471e2ea7b8af622ff15f05c0c365b #v1.50.1
+        uses: crate-ci/typos@512fc24f32f44ab01972217aaaf3dc86ec234d53 #v1.50.2
         # note: don't fail the build on typos, just annotate them
         # so that publish-pull-requests job still runs.
         continue-on-error: true
