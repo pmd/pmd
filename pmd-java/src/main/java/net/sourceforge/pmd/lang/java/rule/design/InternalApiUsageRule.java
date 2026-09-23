@@ -12,20 +12,28 @@ import java.util.Locale;
 
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -63,7 +71,12 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
     private String basePackage = "";
 
     public InternalApiUsageRule() {
-        super(ASTPackageDeclaration.class, ASTMethodCall.class, ASTConstructorCall.class);
+        super(
+                ASTPackageDeclaration.class,
+                ASTMethodCall.class,
+                ASTConstructorCall.class,
+                ASTFieldAccess.class,
+                ASTVariableAccess.class);
         definePropertyDescriptor(OWN_PACKAGES);
         definePropertyDescriptor(REPORTED_STATUSES);
     }
@@ -88,33 +101,68 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall node, Object data) {
         RuleContext ctx = asCtx(data);
-        visitCall(node, node.getMethodType(), ctx, "Method");
+        visitCall(node, ctx, "Method");
         return null;
     }
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         RuleContext ctx = asCtx(data);
-        visitCall(node, node.getMethodType(), ctx, "Constructor");
+        visitCall(node, ctx, "Constructor");
         return null;
     }
 
-    private void visitCall(ASTExpression node, JMethodSig methodType, RuleContext data, String nodeType) {
+    @Override
+    public Object visit(ASTFieldAccess node, Object data) {
+        RuleContext ctx = asCtx(data);
+        visitFieldOrVariable(node, node.getReferencedSym(), ctx);
+        return null;
+    }
+
+    @Override
+    public Object visit(ASTVariableAccess node, Object data) {
+        JVariableSymbol variableSymbol = node.getReferencedSym();
+        if (variableSymbol instanceof JFieldSymbol) {
+            RuleContext ctx = asCtx(data);
+            visitFieldOrVariable(node, (JFieldSymbol) variableSymbol, ctx);
+        }
+        return null;
+    }
+
+    private void visitFieldOrVariable(ASTAssignableExpr.ASTNamedReferenceExpr node, JFieldSymbol fieldSymbol, RuleContext ctx) {
+        ASTClassDeclaration parentClass = node.ancestors(ASTClassDeclaration.class).first();
+        JVariableSig signature = node.getSignature();
+        if (signature != null) {
+            JTypeMirror declaringType = signature.getDeclaringType();
+            boolean sameUnit = areInSameEnclosingType(declaringType, parentClass);
+            checkAnnotationsWithParent(ctx, node, "Field", fieldSymbol, node.getName(),
+                    signature.getDeclaringType(), sameUnit);
+        }
+    }
+
+    private void visitCall(InvocationNode node, RuleContext data, String nodeType) {
+        JMethodSig methodType = node.getMethodType();
         ASTClassDeclaration parentClass = node.ancestors(ASTClassDeclaration.class).first();
         JTypeMirror declaringType = methodType.getDeclaringType();
-        boolean sameUnit = parentClass != null && declaringType instanceof JClassType
-                && getEnclosingTypes((JClassType) declaringType, parentClass.getTypeMirror());
+        boolean sameUnit = areInSameEnclosingType(declaringType, parentClass);
         JExecutableSymbol methodSymbol = methodType.getSymbol();
         String methodName = methodType.getName();
-        checkAnnotations(data, node, nodeType, methodSymbol, methodName, declaringType, sameUnit);
+        checkAnnotationsWithParent(data, node, nodeType, methodSymbol, methodName, declaringType, sameUnit);
+    }
+
+    private void checkAnnotationsWithParent(RuleContext ctx, TypeNode node, String nodeType,
+                                  JAccessibleElementSymbol methodSymbol, String methodName,
+                                  JTypeMirror declaringType,
+                                  boolean sameUnit) {
+        checkAnnotations(ctx, node, nodeType, methodSymbol, methodName, declaringType, sameUnit);
         JTypeDeclSymbol classSymbol = declaringType.getSymbol();
         if (classSymbol != null) {
-            checkAnnotations(data, node, "Class", classSymbol,
+            checkAnnotations(ctx, node, "Class", classSymbol,
                     classSymbol.getSimpleName(), declaringType, sameUnit);
         }
     }
 
-    private void checkAnnotations(RuleContext ctx, ASTExpression node, String nodeType,
+    private void checkAnnotations(RuleContext ctx, TypeNode node, String nodeType,
                                   JAccessibleElementSymbol methodSymbol, String methodName,
                                   JTypeMirror declaringType,
                                   boolean sameUnit) {
@@ -172,13 +220,20 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
         return !packageName.startsWith(basePackage);
     }
 
-    public boolean getEnclosingTypes(JClassType start, Object other) {
-        JClassType t = start;
+    private boolean areInSameEnclosingType(JTypeMirror start, ASTClassDeclaration other) {
+        if (!(start instanceof JClassType) || other == null) {
+            return false;
+        }
+        JClassSymbol t = ((JClassType) start).getSymbol();
+        JClassSymbol otherRoot = other.getTypeMirror().getSymbol();
+        while (otherRoot.getEnclosingClass() != null) {
+            otherRoot = otherRoot.getEnclosingClass();
+        }
         do {
-            if (t.equals(other)) {
+            if (t.equals(otherRoot)) {
                 return true;
             }
-            t = t.getEnclosingType();
+            t = t.getEnclosingClass();
         } while (t != null);
         return false;
     }

@@ -9,6 +9,12 @@ import org.jetbrains.annotations.ApiStatus;
 
 public class Internal {
 
+    @API(status = API.Status.INTERNAL)
+    public static final int INTERNAL = 1;
+
+    @API(status = API.Status.EXPERIMENTAL)
+    public static final int EXPERIMENTAL = 1;
+
     private Internal() {
         // utility class
     }

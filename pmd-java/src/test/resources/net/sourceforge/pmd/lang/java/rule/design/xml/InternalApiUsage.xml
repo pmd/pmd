@@ -24,7 +24,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Internal method from same library</description>
+        <description>Internal members from same library</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.design.internalapiusage;
@@ -34,14 +34,16 @@ public class Foo {
     Internal.internal();
     Internal.internalJB();
     ClassLevelInternal.internal();
+    System.out.println(Internal.INTERNAL);
   }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>Internal method from external library (source)</description>
-        <expected-problems>3</expected-problems>
+        <description>Internal members from external library (source)</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,9,10,11</expected-linenumbers>
         <code><![CDATA[
 package other.lib;
 
@@ -53,11 +55,34 @@ public class Foo {
     Internal.internal();
     Internal.internalJB();
     ClassLevelInternal.internal();
+    System.out.println(Internal.INTERNAL);
   }
 }
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Internal members with static imports</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <expected-messages>
+            <message>Do not use internal APIs. Method 'internal' is restricted to declaring library.</message>
+            <message>Do not use internal APIs. Field 'INTERNAL' is restricted to declaring library.</message>
+        </expected-messages>
+        <code><![CDATA[
+package other.lib;
+
+import static net.sourceforge.pmd.lang.java.rule.design.internalapiusage.Internal.INTERNAL;
+import static net.sourceforge.pmd.lang.java.rule.design.internalapiusage.Internal.internal;
+
+public class Foo {
+  public void foo() {
+    internal();
+    System.out.println(INTERNAL);
+  }
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Experimental method from external library allowed</description>
@@ -71,6 +96,27 @@ public class Foo {
   public void foo() {
     Internal.experimental();
     Internal.experimentalJB();
+    System.out.println(Internal.EXPERIMENTAL);
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Experimental method from external library forbidden</description>
+        <rule-property name="reportedStatuses">experimental</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,8,9</expected-linenumbers>
+        <code><![CDATA[
+package other.lib;
+
+import net.sourceforge.pmd.lang.java.rule.design.internalapiusage.Internal;
+
+public class Foo {
+  public void foo() {
+    Internal.experimental();
+    Internal.experimentalJB();
+    System.out.println(Internal.EXPERIMENTAL);
   }
 }
         ]]></code>
@@ -92,24 +138,7 @@ public class Foo {
     Internal.internal();
     Internal.internalJB();
     ClassLevelInternal.internal();
-  }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Experimental method from external library forbidden</description>
-        <rule-property name="reportedStatuses">experimental</rule-property>
-        <expected-problems>2</expected-problems>
-        <code><![CDATA[
-package other.lib;
-
-import net.sourceforge.pmd.lang.java.rule.design.internalapiusage.Internal;
-
-public class Foo {
-  public void foo() {
-    Internal.experimental();
-    Internal.experimentalJB();
+    System.out.println(Internal.INTERNAL);
   }
 }
         ]]></code>
@@ -171,6 +200,31 @@ public class Foo {
  public void foo() {
     new Child().internal();
  }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>VisibleForTesting constructor from the same unit</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+package other.lib;
+import com.google.common.annotations.VisibleForTesting;
+
+public final class Parent {
+
+    private void testEqualsUsing() throws Alert {
+        throw new Alert(null);
+    }
+
+    @VisibleForTesting
+    static class Alert extends Exception {
+        public Alert(String parameter) {
+            super("");
+        }
+    }
 }
         ]]></code>
     </test-code>
