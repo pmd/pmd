@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,7 +48,8 @@ import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
  * This class allows to load resources from a given classpath. Unlike a real classloader
  * like {@link URLClassLoader}, the Jar files on the classpath are not opened with JarFile and
  * their signature is not verified which saves memory. The Jar files are opened directly
- * with {@link ZipFile}.
+ * with {@link ZipFile}. Regular files that are not valid zip archives are ignored
+ * with a warning, so a native library on the classpath does not abort analysis.
  *
  * <p>This classpath loader also supports loading platform classes (e.g. {@code java.lang}) from
  * the jrt-fs filesystem. All zip files and the jrt-fs are kept open, until this classpath loader
@@ -126,6 +128,7 @@ public class AuxClasspathLoader implements AutoCloseable {
 
     private final List<Entry> auxClasspath;
     private final @GuardedBy("this") Map<Path, ZipFile> zipFiles = new HashMap<>();
+    private final @GuardedBy("this") Set<Path> invalidArchives = new HashSet<>();
 
     private final String javaHome;
     private final FileSystem fileSystem;
@@ -406,6 +409,9 @@ public class AuxClasspathLoader implements AutoCloseable {
             if (classpathEntry.isFile()) {
                 @SuppressWarnings("PMD.CloseResource") // we keep the zip file open and close all at the end, see #close
                 ZipFile jarFile = openJarFile(classpathEntry.getPath());
+                if (jarFile == null) {
+                    continue;
+                }
                 ZipEntry entry = jarFile.getEntry(name);
                 if (entry != null) {
                     try {
@@ -455,16 +461,26 @@ public class AuxClasspathLoader implements AutoCloseable {
         return null;
     }
 
-    private ZipFile openJarFile(Path path) {
+    private @Nullable ZipFile openJarFile(Path path) {
         synchronized (this) {
             ensureNotClosed();
-            return zipFiles.computeIfAbsent(path, (p) -> {
-                try {
-                    return new ZipFile(p.toFile());
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            });
+            if (invalidArchives.contains(path)) {
+                return null;
+            }
+            ZipFile existing = zipFiles.get(path);
+            if (existing != null) {
+                return existing;
+            }
+            try {
+                ZipFile zipFile = new ZipFile(path.toFile());
+                zipFiles.put(path, zipFile);
+                return zipFile;
+            } catch (IOException e) {
+                invalidArchives.add(path);
+                LOG.warn("Ignoring auxclasspath entry '{}' because it is not a valid archive: {}",
+                        path, e.getMessage());
+                return null;
+            }
         }
     }
 
@@ -495,6 +511,9 @@ public class AuxClasspathLoader implements AutoCloseable {
         for (Entry classpathEntry : auxClasspath) {
             if (classpathEntry.isFile()) {
                 ZipFile jarFile = openJarFile(classpathEntry.getPath());
+                if (jarFile == null) {
+                    continue;
+                }
                 ZipEntry entry = jarFile.getEntry(MODULE_INFO_SUFFIX);
                 if (entry != null) {
                     try {

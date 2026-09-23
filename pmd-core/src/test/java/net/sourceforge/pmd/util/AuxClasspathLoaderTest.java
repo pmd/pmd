@@ -79,6 +79,20 @@ class AuxClasspathLoaderTest {
     }
 
     @Test
+    void skipsNonArchiveClasspathEntries() throws Exception {
+        Path lib1 = createLib1();
+        Path nativeLib = tempDir.resolve("libsqlite4java-linux-amd64-1.0.392.so");
+        Files.write(nativeLib, "not a zip archive".getBytes(StandardCharsets.UTF_8));
+
+        try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
+                nativeLib + File.pathSeparator + lib1)) {
+            assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
+            assertNull(classpathLoader.findResource("does/not/exist.class"));
+            assertNull(classpathLoader.findResource("com.example/module-info.class"));
+        }
+    }
+
+    @Test
     void findWithClasspathList() throws Exception {
         Path lib1 = createLib1();
         Path lib2 = createLib2();
