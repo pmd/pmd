@@ -58,6 +58,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     that do not use the new `@IsTest(critical=true)` or `@IsTest(testFor='...')` annotation parameters for tests.
     These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.  
     Note: These annotation parameters are Beta and require Salesforce API 66.0+.
+
 #### Changed Rules
 *   The property `checkNonStaticMethods` of the rule {% rule java/multithreading/NonThreadSafeSingleton %} is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
