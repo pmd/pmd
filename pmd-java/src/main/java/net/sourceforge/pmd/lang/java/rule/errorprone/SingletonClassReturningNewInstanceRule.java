@@ -7,11 +7,15 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
@@ -43,7 +47,48 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
         return returns.children(ASTVariableAccess.class)
                 .filter(JavaAstUtils::isReferenceToLocal)
                 .filterNot(this::isDoubleAssignment)
+                .filter(this::mayHoldNewInstance)
                 .nonEmpty();
+    }
+
+    /**
+     * Whether a value assigned to the local variable is a constructor call. A local
+     * that only ever receives the value of a field, e.g. {@code Foo temp = (Foo) INSTANCE},
+     * returns the existing instance and is not a new one. See #5158.
+     */
+    private boolean mayHoldNewInstance(ASTVariableAccess variableAccess) {
+        JVariableSymbol symbol = variableAccess.getReferencedSym();
+        if (symbol == null || !(symbol.tryGetNode() instanceof ASTVariableId)) {
+            // unresolved: keep reporting, as before
+            return true;
+        }
+        ASTVariableId varId = (ASTVariableId) symbol.tryGetNode();
+        if (isNewInstance(varId.getInitializer())) {
+            return true;
+        }
+        for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
+            if (usage.getAccessType() == ASTAssignableExpr.AccessType.WRITE
+                    && usage.getParent() instanceof ASTAssignmentExpression
+                    && isNewInstance(((ASTAssignmentExpression) usage.getParent()).getRightOperand())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isNewInstance(ASTExpression expr) {
+        ASTExpression value = JavaAstUtils.peelCasts(expr);
+        if (value instanceof ASTConstructorCall) {
+            return true;
+        }
+        if (value instanceof ASTAssignmentExpression) {
+            return isNewInstance(((ASTAssignmentExpression) value).getRightOperand());
+        }
+        if (value instanceof ASTConditionalExpression) {
+            ASTConditionalExpression conditional = (ASTConditionalExpression) value;
+            return isNewInstance(conditional.getThenBranch()) || isNewInstance(conditional.getElseBranch());
+        }
+        return false;
     }
 
     private boolean isDoubleAssignment(ASTVariableAccess variableAccess) {
