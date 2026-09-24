@@ -54,6 +54,9 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     find source code for given type.
 *   The new Java rule {% rule java/codestyle/CStyleArrayDeclaration %} finds C-style declarations of arrays (e.g. `int numbers[]`).
     That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
+*   The new Java rule {% rule java/design/InternalApiUsage %} reports usages of internal or test-only APIs
+    (e.g. annotated with `@VisibleForTesting`, `@TestOnly`, `@API(status=INTERNAL)` or `@ApiStatus.Internal`)
+    from code that shouldn't depend on them.
 *   The new Apex rule {% rule apex/bestpractices/ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation %} finds unit tests
     that do not use the new `@IsTest(critical=true)` or `@IsTest(testFor='...')` annotation parameters for tests.
     These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.  
@@ -83,8 +86,10 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
     * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
+    * [#7081](https://github.com/pmd/pmd/issues/7081): \[java] NoSuchFileException when auxClasspath is given as a classpath file (file: URL)
 * java-bestpractices
     * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] UnusedAssignment: False positive when assignment is in conditional statement
+    * [#6901](https://github.com/pmd/pmd/issues/6901): \[java] MethodReturnsInternalArray: Various false negatives with local aliases and conditional expressions
     * [#7033](https://github.com/pmd/pmd/issues/7033): \[java] New rule: TypeNameMismatch
     * [#7047](https://github.com/pmd/pmd/issues/7047): \[java] New rule: OnDemandImport
 * java-codestyle
@@ -94,6 +99,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 * java-design
     * [#6513](https://github.com/pmd/pmd/issues/6513): \[java] SimplifyConditional: False negative when null check and instanceof are separated by other && conditions
     * [#6694](https://github.com/pmd/pmd/issues/6694): \[java] SimplifyBooleanReturns triggers inconsistently depending on redundant parentheses in return expression
+    * [#6889](https://github.com/pmd/pmd/issues/6889): \[java] New rule: InternalApiUsage
 * java-documentation
     * [#6450](https://github.com/pmd/pmd/issues/6450): \[java] DanglingJavadoc: False positive on /// comments for Java < 23
 * java-errorprone
