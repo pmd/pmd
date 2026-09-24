@@ -36,6 +36,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" /> -->
     <rule ref="category/java/bestpractices.xml/MissingOverride"/>
     <rule ref="category/java/bestpractices.xml/NonExhaustiveSwitch"/>
+    <!-- <rule ref="category/java/bestpractices.xml/OnDemandImport" /> -->
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
     <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/>
     <!-- <rule ref="category/java/bestpractices.xml/RelianceOnDefaultCharset"/> -->
@@ -45,6 +46,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList" /> -->
     <rule ref="category/java/bestpractices.xml/SimplifiableTestAssertion"/>
     <!-- <rule ref="category/java/bestpractices.xml/SystemPrintln" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/TypeNameMismatch" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestAssertionsShouldIncludeMessage" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestContainsTooManyAsserts" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert" /> -->
@@ -69,6 +71,7 @@
 
     <!-- NAMING CONVENTIONS -->
     <rule ref="category/java/codestyle.xml/ClassNamingConventions"/>
+    <!-- <rule ref="category/java/codestyle.xml/CStyleArrayDeclaration" /> -->
     <!--<rule ref="category/java/codestyle.xml/FieldNamingConventions" />-->
     <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
     <rule ref="category/java/codestyle.xml/LambdaCanBeMethodReference"/>
@@ -261,6 +264,7 @@
     <!-- <rule ref="category/java/errorprone.xml/JUnitSpelling" /> -->
     <!-- <rule ref="category/java/errorprone.xml/JUnitStaticSuite" /> -->
     <!-- <rule ref="category/java/errorprone.xml/LoggerIsNotStaticFinal" /> -->
+    <!-- <rule ref="category/java/errorprone.xml/LongLiteralEndingWithLowercaseL" /> -->
     <!-- <rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" /> -->
     <rule ref="category/java/errorprone.xml/MisplacedNullCheck"/>
     <!-- <rule ref="category/java/errorprone.xml/MissingSerialVersionUID" /> -->
