@@ -2,7 +2,7 @@
 title: Language configuration
 permalink: pmd_languages_configuration.html
 author: Clément Fournier
-last_updated: May 2026 (7.25.0)
+last_updated: September 2026 (7.28.0)
 tags: [languages]
 keywords: [pmd, cpd, options, command, auxclasspath, language, properties]
 summary: "Summary of language configuration options and properties"
@@ -115,6 +115,17 @@ The Java language can be configured with the following properties:
   Since: 7.12.0  
   Environment variable: `PMD_JAVA_LOMBOK`  
   Default: "true"
+
+- `disableAuxClasspathWarnings`: Starting with 7.27.0, the Java language module will log warnings about the provided
+  aux classpath when there could be any problems. Warnings are e.g. when no platform classpath ("lib/jrt-fs.jar")
+  has been provided and PMD falls back to the current runtime.
+  These warnings can be disabled with this property.
+  Note: Using an invalid aux classpath can lead to false positive or false negative violations.
+  See [Providing the auxiliary classpath](pmd_languages_java.html#providing-the-auxiliary-classpath)
+
+  Since: 7.28.0  
+  Environment variable: `PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS`  
+  Default: "false"
 
 ## Apex language properties
 

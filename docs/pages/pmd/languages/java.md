@@ -2,7 +2,7 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
-last_updated: July 2026 (7.27.0)
+last_updated: September 2026 (7.28.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 keywords: [auxclasspath, auxiliary, classpath, type resolution]
 summary: "Java-specific features and guidance"
@@ -109,6 +109,11 @@ If neither `${JAVA_HOME}/jre/lib/rt.jar` nor `${JAVA_HOME}/lib/jrt-fs.jar` is ad
 back to load the Java runtime classes **from the current runtime**, that is the runtime that was used to
 execute PMD. This might not be the correct version, e.g. you might run PMD with Java 8, but analyze code
 written for Java 21. In that case, you have to provide "jrt-fs.jar" on the auxClasspath.
+If this happens, a warning "Adding current platform ... Please add the correct jrt-fs.jar explicitly to the auxClasspath."
+is logged. To disable this warning, set the environment variable `PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS=true`
+when you are sure, that you are using the correct version anyway.
+
+For examples, refer to [Gradle Integration](pmd_userdocs_tools_gradle.html) and [Ant Integration](pmd_userdocs_tools_ant.html).
 
 Not providing the correct auxClasspath might result in false positives or negatives for some rules,
 such as {% rule java/bestpractices/MissingOverride %}.
