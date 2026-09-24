@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
+import net.sourceforge.pmd.util.log.internal.LogUtil;
 
 /**
  * This class allows to load resources from a given classpath. Unlike a real classloader
@@ -128,6 +129,8 @@ public class AuxClasspathLoader implements AutoCloseable {
         }
     }
 
+    // TODO: PMD 8: Consider PmdReporter, see also #3816
+    private final LogUtil.WarnOrDebugLogger warnOrDebugLogger;
     private final List<Entry> auxClasspath;
     private final @GuardedBy("this") Map<Path, ZipFile> zipFiles = new HashMap<>();
     private final @GuardedBy("this") Set<Path> invalidArchives = new HashSet<>();
@@ -146,7 +149,12 @@ public class AuxClasspathLoader implements AutoCloseable {
     private Map<String, ZipFile> moduleNameToZipFile;
 
     AuxClasspathLoader(String rawAuxClasspath) {
+        this(rawAuxClasspath, LogUtil.createWarnOrDebugLogger(true, ""));
+    }
+
+    AuxClasspathLoader(String rawAuxClasspath, LogUtil.WarnOrDebugLogger warnOrDebugLogger) {
         LOG.debug("Creating new AuxClasspathLoader for {}", rawAuxClasspath);
+        this.warnOrDebugLogger = Objects.requireNonNull(warnOrDebugLogger);
         this.auxClasspath = expandAuxClasspath(rawAuxClasspath);
 
         List<Path> jrtJars = new ArrayList<>();
@@ -176,9 +184,16 @@ public class AuxClasspathLoader implements AutoCloseable {
     }
 
     public static AuxClasspathLoader create(String rawAuxClasspath) {
+        return create(rawAuxClasspath, LogUtil.createWarnOrDebugLogger(true, ""));
+    }
+
+    /**
+     * @since 7.28.0
+     */
+    public static AuxClasspathLoader create(String rawAuxClasspath, LogUtil.WarnOrDebugLogger warnOrDebugLogger) {
         synchronized (LOCK) {
             if (cache == null) {
-                return new AuxClasspathLoader(rawAuxClasspath);
+                return new AuxClasspathLoader(rawAuxClasspath, warnOrDebugLogger);
             }
 
             AuxClasspathLoader cachedAuxClasspathLoader = cache.get(rawAuxClasspath);
@@ -188,7 +203,7 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
 
             LOG.debug("Creating new AuxClasspathLoader");
-            AuxClasspathLoader newAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath);
+            AuxClasspathLoader newAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath, warnOrDebugLogger);
             cache.put(rawAuxClasspath, newAuxClasspathLoader);
             return newAuxClasspathLoader;
         }
@@ -482,8 +497,7 @@ public class AuxClasspathLoader implements AutoCloseable {
 
                 // only warn about corrupt ZIP files and ignore other files (like native libs)
                 if (hasZipMagicNumber(path)) {
-                    LOG.warn("Ignoring corrupt archive on auxClasspath: {} ({})", path, e.getMessage());
-                    LOG.debug("Exception while opening {}", path, e);
+                    warnOrDebugLogger.log(LOG, "Ignoring corrupt archive on auxClasspath: {} ({})", path, e.getMessage(), e);
                 } else {
                     LOG.debug("Ignoring non-archive auxClasspath entry: {}", path, e);
                 }
