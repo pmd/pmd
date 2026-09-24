@@ -47,16 +47,17 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 *   The new Java rule {% rule java/bestpractices/OnDemandImport %} reports on-demand imports, also known as wildcard imports.
     By default, static imports from JUnit and TestNG are allowed. The allowed static and type import packages
     can be configured with `allowStaticImportsFrom` and `allowTypeImportsFrom`.
-*   The new java rule  {% rule java/errorprone/LongLiteralEndingWithLowercaseL %} finds long literals ending with l.
-    That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
-*   The new java rule  {% rule java/bestpractices/TypeNameMismatch %} finds types that are not defined in a .java file
+*   The new Java rule  {% rule java/errorprone/LongLiteralEndingWithLowercaseL %} finds long literals ending with a lowercase `l`.
+    That helps to avoid confusion between numbers ending with `1` and `l`. Uppercase `L` should be used to define long literals.
+*   The new Java rule  {% rule java/bestpractices/TypeNameMismatch %} finds types that are not defined in a .java file
     with the same name. Enforcing a match between source file name and type name makes it easier to
     find source code for given type.
 *   The new Java rule {% rule java/codestyle/CStyleArrayDeclaration %} finds C-style declarations of arrays (e.g. `int numbers[]`).
     That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
 *   The new Apex rule {% rule apex/bestpractices/ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation %} finds unit tests
     that do not use the new `@IsTest(critical=true)` or `@IsTest(testFor='...')` annotation parameters for tests.
-    These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.
+    These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.  
+    Note: These annotation parameters are Beta and require Salesforce API 66.0+.
 #### Changed Rules
 *   The property `checkNonStaticMethods` of the rule {% rule java/multithreading/NonThreadSafeSingleton %} is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
@@ -69,7 +70,8 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     <property name="violationSuppressXPath" value=".[ancestor-or-self::MethodDeclaration[1][@Static = false()]]" />
     ```
 *   The property `statementOrderMatters` of the rule {% rule java/codestyle/VariableCanBeInlined %} is now deprecated.
-    Setting it to false only risks false negatives, therefore, the property will be removed in PMD 8.0.0.
+    Setting it to `false` relaxes the rule under the unsafe assumption that intervening statements have no side
+    effects, which can lead to false positives. The property will be removed in PMD 8.0.0.
 
 ### 🐛️ Fixed Issues
 * apex-bestpractices
