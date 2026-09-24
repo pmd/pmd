@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -58,6 +59,24 @@ class JavaLanguageProcessorTest {
             }
         });
         assertThat(log, containsString("Adding current platform"));
+    }
+
+    @Test
+    void expectWarningForCorruptJar() throws Exception {
+        Path corruptJar = tempDir.resolve("corrupt.jar");
+        Files.write(corruptJar, "PK\003\004 Corrupt Jar".getBytes(StandardCharsets.US_ASCII));
+        String classpath = AuxClasspathUtil.toRawClasspath(CollectionUtil.listOf(corruptJar), AuxClasspathUtil.getPlatformClasspath());
+        JavaLanguageProperties properties =
+                (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
+        properties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
+        String log = SystemStubs.tapSystemErr(() -> {
+            try (JavaLanguageProcessor processor = new JavaLanguageProcessor(properties)) {
+                assertNotNull(processor.getTypeSystem());
+            }
+        });
+        assertThat(log, containsString("Ignoring corrupt archive on auxClasspath"));
+        assertThat(log, containsString(corruptJar.toString()));
+        assertThat(log, containsString("PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS"));
     }
 
     @Test
