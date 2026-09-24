@@ -2266,11 +2266,19 @@ page.</p>
 
 <p>It renders as:</p>
 
-<p><span class="alert alert-info" role="alert">
-<i class="fas fa-info-circle"></i>
-<strong>Note:</strong>
-This is a note.
-</span></p>
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> This is a note.</p>
+</div>
+
+<div class="alert alert-warning" role="alert">
+  <p><i class="fas fa-warning"></i> <b>Important:</b> This include tag has to be at the beginning of the line (no indentation):
+Jekyll pastes the content verbatim and only the first line gets the indentation. Further lines start at 0
+and end an ongoing list. It works, if the content is only one line.</p>
+
+  <p>If you have multiple lines, you’ll need to add the &lt;div&gt; from the included file yourself and not use include
+at all.</p>
+
+</div>
 
 <p>Other available types are:</p>
 
@@ -2350,7 +2358,7 @@ by specifying <code class="language-plaintext highlighter-rouge">-Dpmd.doc.check
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            January 2026 (7.21.0)<br /> Site last generated: Sep 24, 2026 <br />
+            September 2026 (7.28.0)<br /> Site last generated: Sep 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

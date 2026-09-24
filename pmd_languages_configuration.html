@@ -2183,6 +2183,18 @@ See <a href="https://github.com/pmd/pmd/issues/3119">issue #3119</a>.</p>
 Environment variable: <code class="language-plaintext highlighter-rouge">PMD_JAVA_LOMBOK</code><br />
 Default: “true”</p>
   </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">disableAuxClasspathWarnings</code>: Starting with 7.27.0, the Java language module will log warnings about the provided
+aux classpath when there could be any problems. Warnings are e.g. when no platform classpath (“lib/jrt-fs.jar”)
+has been provided and PMD falls back to the current runtime.
+These warnings can be disabled with this property.
+Note: Using an invalid aux classpath can lead to false positive or false negative violations.
+See <a href="pmd_languages_java.html#providing-the-auxiliary-classpath">Providing the auxiliary classpath</a></p>
+
+    <p>Since: 7.28.0<br />
+Environment variable: <code class="language-plaintext highlighter-rouge">PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS</code><br />
+Default: “false”</p>
+  </li>
 </ul>
 
 <h2 id="apex-language-properties">Apex language properties</h2>
@@ -2289,7 +2301,7 @@ Default: “30”</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            May 2026 (7.25.0)<br /> Site last generated: Sep 24, 2026 <br />
+            September 2026 (7.28.0)<br /> Site last generated: Sep 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

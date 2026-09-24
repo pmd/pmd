@@ -2217,8 +2217,10 @@ element are in the Ant documentation for <a href="https://ant.apache.org/manual/
 an example below.</p>
 
 <p><code class="language-plaintext highlighter-rouge">auxclasspath</code> nested element - extra classpath used for type resolution. Some rules make use of type resolution
-in order to avoid false positives. The <code class="language-plaintext highlighter-rouge">auxclasspath</code> is configured also with <a href="https://ant.apache.org/manual/using.html#path">path-like structures</a>. It should contain the compiled classes of the project that is being analyzed and all the compile time
-dependencies.</p>
+in order to avoid false positives. The <code class="language-plaintext highlighter-rouge">auxclasspath</code> is configured also with <a href="https://ant.apache.org/manual/using.html#path">path-like structures</a>.
+It should contain the compiled classes of the project that is being analyzed and all the compile time
+dependencies including the correct java platform classes if you are analyzing a Java project.
+See <a href="pmd_languages_java.html#providing-the-auxiliary-classpath">Providing the auxiliary classpath</a>.</p>
 
 <p><code class="language-plaintext highlighter-rouge">sourceLanguage</code> nested element - specify which language (Java, Ecmascript, XML,…)
 and the associated version (1.5, 1.6,…). This element is optional. The language is determined by file extension
@@ -2337,16 +2339,24 @@ need to be configured when defining the task:</p>
 
 <h4 id="full-example-with-auxclasspath">Full example with auxclasspath</h4>
 
-<p>Full build file example using the correct auxclasspath configuration.
-Your project needs to be compiled first which happens in the target “compile”:</p>
+<p>Full build file example using the correct auxclasspath configuration. For the platform classes, the
+Java installation from <code class="language-plaintext highlighter-rouge">JAVA17_HOME</code> (defined via an environment variable) is used.</p>
+
+<p>Your project also needs to be compiled first which happens in the target “compile”:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;project name="MyProject" default="pmd" basedir="."&gt;
+    &lt;property environment="env"/&gt;
+
     &lt;property name="src" location="src"/&gt;
     &lt;property name="build" location="build"/&gt;
+    &lt;property name="toolchain.java.home" value="${env.JAVA17_HOME}"/&gt;
+    &lt;property name="toolchain.java.version" value="17"/&gt;
+
     &lt;path id="project.dependencies"&gt;
         &lt;pathelement location="lib/third-party.jar"/&gt;
         &lt;pathelement location="lib/xyz.jar"/&gt;
     &lt;/path&gt;
+
     &lt;path id="pmd.classpath"&gt;
         &lt;fileset dir="/home/joe/pmd-bin-7.28.0-SNAPSHOT/lib"&gt;
             &lt;include name="*.jar"/&gt;
@@ -2360,18 +2370,21 @@ Your project needs to be compiled first which happens in the target “compile�
     
     &lt;target name="compile" depends="init"&gt;
         &lt;javac srcdir="${src}" destdir="${build}" classpathref="project.dependencies"
-            source="1.8" target="1.8" /&gt;
+               fork="true" executable="${toolchain.java.home}/bin/javac"
+               release="${toolchain.java.version}"
+               includeAntRuntime="false"/&gt;
     &lt;/target&gt;
     
     &lt;target name="pmd" depends="compile"&gt;
         &lt;pmd cacheLocation="${build}/pmd.cache"&gt;
+            &lt;sourceLanguage name="java" version="${toolchain.java.version}"/&gt;
             &lt;auxclasspath&gt;
                 &lt;pathelement location="${build}"/&gt;
                 &lt;path refid="project.dependencies"/&gt;
+                &lt;pathelement location="${toolchain.java.home}/lib/jrt-fs.jar" /&gt;
             &lt;/auxclasspath&gt;
             &lt;ruleset&gt;rulesets/java/quickstart.xml&lt;/ruleset&gt;
             &lt;formatter type="html" toFile="${build}/pmd_report.html"/&gt;
-            &lt;sourceLanguage name="java" version="1.8"/&gt;
             &lt;fileset dir="${src}"&gt;
                 &lt;include name="**/*.java"/&gt;
             &lt;/fileset&gt;
@@ -2385,6 +2398,8 @@ Your project needs to be compiled first which happens in the target “compile�
 </code></pre></div></div>
 
 <p>You can run pmd then with <code class="language-plaintext highlighter-rouge">ant pmd</code>.</p>
+
+<p>See also <a href="https://github.com/pmd/pmd-examples/tree/main/ant/simple-project">https://github.com/pmd/pmd-examples/tree/main/ant/simple-project</a>.</p>
 
 <h4 id="getting-verbose-output">Getting verbose output</h4>
 
@@ -2503,7 +2518,7 @@ To prevent this from happening, increase the maximum memory usable by ant using 
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2026 (7.27.0)<br /> Site last generated: Sep 24, 2026 <br />
+            September 2026 (7.28.0)<br /> Site last generated: Sep 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

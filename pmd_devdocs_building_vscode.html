@@ -2073,19 +2073,17 @@
   <li>Navigate to a test class and select “Run Test”.</li>
 </ul>
 
-<p><span class="alert alert-info" role="alert">
-<i class="fas fa-info-circle"></i>
-<strong>Note:</strong></span></p>
-
-<p>You’ll get the notification “Build failed”. You can try to ignore the error and continue, but you might end
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> 
+You’ll get the notification “Build failed”. You can try to ignore the error and continue, but you might end
 up with “Unresolved compilation problems”. See below under “Known Issues” for more information.</p>
 
-<p>PMD currently is still built for Java 8 and the VS Code plugin chooses a Java 8 runtime. For building however,
+  <p>PMD currently is still built for Java 8 and the VS Code plugin chooses a Java 8 runtime. For building however,
 we use Java 21 and also the tests require some Java 21 features. You might need to override the java version
 manually: Ctlr+Shift+P and enter “configure java runtime”. There you can override the java version for
 each project/module.</p>
 
-<p>&lt;/span&gt;</p>
+</div>
 
 <h2 id="running--debugging-pmd">Running / Debugging PMD</h2>
 
@@ -2109,22 +2107,20 @@ file”. Add the following configuration:
 File &gt; Run Without Debugging.</li>
 </ul>
 
-<p><span class="alert alert-info" role="alert">
-<i class="fas fa-info-circle"></i>
-<strong>Note:</strong></span></p>
-
-<p>If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> 
+If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
 PMD CLI as scope test, e.g.</p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
+  <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
             <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
             <span class="nt">&lt;artifactId&gt;</span>pmd-apex<span class="nt">&lt;/artifactId&gt;</span>
             <span class="nt">&lt;version&gt;</span>${project.version}<span class="nt">&lt;/version&gt;</span>
             <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
         <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div></div>
+</code></pre></div>  </div>
 
-<p>&lt;/span&gt;</p>
+</div>
 
 <h2 id="formatter-configuration">Formatter configuration</h2>
 

@@ -2091,7 +2091,7 @@ that can be added to your build configuration. Technically it is based on the <a
 
 <h3 id="upgrade-pmd-version">Upgrade PMD version</h3>
 
-<p>If you want to use a newer PMD version than the default one provided with gradle, you can do so
+<p>If you want to use a newer PMD version than the default one provided with Gradle, you can do so
 with the property <code class="language-plaintext highlighter-rouge">toolVersion</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd {
@@ -2099,21 +2099,52 @@ with the property <code class="language-plaintext highlighter-rouge">toolVersion
 }
 </code></pre></div></div>
 
-<p>Note: For PMD 7, at least gradle 8.6 is needed. See <a href="https://github.com/gradle/gradle/issues/24502">Support for PMD 7.0</a>.</p>
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> 
+For PMD 7, at least Gradle 8.6 is needed. See <a href="https://github.com/gradle/gradle/issues/24502">Support for PMD 7.0</a>.</p>
+
+</div>
+
+<h3 id="aux-classpath">Aux Classpath</h3>
+
+<p>Gradle by default adds all project dependencies to the aux classpath. Since PMD 7.27.0, you’ll get a warning
+if the platform classes will be resolved by the running JVM. To avoid this, explicitly add the platform
+classpath of the correct Java version to PMD’s aux classpath. The example is using the <a href="https://docs.gradle.org/current/userguide/toolchains.html">toolchains feature</a>
+of Gradle:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    pmdAux javaToolchains.launcherFor(java.toolchain)
+            .map { it.metadata.installationPath }
+            .map { it.files("lib/jrt-fs.jar")}
+}
+</code></pre></div></div>
+
+<p>See <a href="pmd_languages_java.html#providing-the-auxiliary-classpath">Providing the auxiliary classpath</a>.</p>
+
+<h3 id="complete-example">Complete Example</h3>
+
+<p>See <a href="https://github.com/pmd/pmd-examples/tree/main/gradle/simple-project">https://github.com/pmd/pmd-examples/tree/main/gradle/simple-project</a>.</p>
 
 <h2 id="references">References</h2>
 
 <p>Source code for Gradle’s PMD Plugin is available here:</p>
 
 <ul>
-  <li><a href="https://github.com/gradle/gradle/tree/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality">gradle/gradle code-quality</a>
+  <li><a href="https://github.com/gradle/gradle/tree/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality">gradle/gradle code-quality</a>
     <ul>
-      <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/Pmd.java">Pmd.java</a></li>
-      <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdExtension.java">PmdExtension.java</a></li>
-      <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java">PmdPlugin.java</a></li>
+      <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/Pmd.java">Pmd.java</a></li>
+      <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/PmdExtension.java">PmdExtension.java</a></li>
+      <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/PmdPlugin.java">PmdPlugin.java</a></li>
+      <li><a href="https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality-workers/src/main/java/org/gradle/api/plugins/quality/internal/PmdInvoker.java">PmdInvoker.java</a></li>
     </ul>
   </li>
-  <li>The default PMD version used by gradle: <a href="https://github.com/gradle/gradle/blob/v8.8.0/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L66">DEFAULT_PMD_VERSION</a></li>
+  <li>The default PMD version used by Gradle 9.7.1: <a href="https://github.com/gradle/gradle/blob/v9.7.1/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/PmdPlugin.java#L63">DEFAULT_PMD_VERSION</a></li>
 </ul>
 
 
@@ -2157,7 +2188,7 @@ with the property <code class="language-plaintext highlighter-rouge">toolVersion
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2024 (7.3.0)<br /> Site last generated: Sep 24, 2026 <br />
+            September 2026 (7.28.0)<br /> Site last generated: Sep 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

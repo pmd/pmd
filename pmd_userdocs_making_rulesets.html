@@ -2134,23 +2134,19 @@ category, then PMD would fail before starting the analysis.</li>
 
 <p>Here, the <code class="language-plaintext highlighter-rouge">ref</code> attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.</p>
 
-<p><span class="alert alert-info" role="alert">
-<i class="fas fa-info-circle"></i>
-<strong>Note:</strong>
-Path separators in the source file path are normalized to be the <code class="language-plaintext highlighter-rouge">/</code> character within PMD, so the same ruleset can be used on multiple platforms transparently.
-</span></p>
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> Path separators in the source file path are normalized to be the <code class="language-plaintext highlighter-rouge">/</code> character within PMD, so the same ruleset can be used on multiple platforms transparently.</p>
+</div>
 
-<p><span class="alert alert-info" role="alert">
-<i class="fas fa-info-circle"></i>
-<strong>Note:</strong>
-Referencing a complete category or ruleset means, you’ll also get automatically any
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> Referencing a complete category or ruleset means, you’ll also get automatically any
 changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
 are deprecated, then these rules are automatically deactivated. This might or
 not might be, what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
 existing rules. If you want to have
 complete control over the rules, that you are using, then it is recommended to add each rule separately via
-a single rule reference.
-</span></p>
+a single rule reference.</p>
+</div>
 
 <h3 id="filtering-the-processed-files">Filtering the processed files</h3>
 
