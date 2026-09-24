@@ -879,7 +879,7 @@ public class MaybeAUtility {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#internalapiusage">
         <description>
 Some APIs are designed to be used only by the library or package that defines them, and using them from other code
-could cause incorrect behavior if the library class changes. By default, this rule reports usages of methods
+could cause incorrect behavior if the library class changes. By default, this rule reports usages of methods and fields
 
 * annotated by `@VisibleForTesting`, unless they are used from a test class or the declaring class,
 * annotated by `@TestOnly`, unless they are called from a test class,

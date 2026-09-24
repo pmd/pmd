@@ -49,6 +49,9 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     find source code for given type.
 *   The new Java rule {% rule java/codestyle/CStyleArrayDeclaration %} finds C-style declarations of arrays (e.g. `int numbers[]`).
     That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
+*   The new Java rule {% rule java/design/InternalApiUsage %} reports usages of internal or test-only APIs
+    (e.g. annotated with `@VisibleForTesting`, `@TestOnly`, `@API(status=INTERNAL)` or `@ApiStatus.Internal`)
+    from code that shouldn't depend on them.
 *   The new Apex rule {% rule apex/bestpractices/ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation %} finds unit tests
     that do not use the new `@IsTest(critical=true)` or `@IsTest(testFor='...')` annotation parameters for tests.
     These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.
@@ -82,6 +85,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 * java-design
     * [#6513](https://github.com/pmd/pmd/issues/6513): \[java] SimplifyConditional: False negative when null check and instanceof are separated by other && conditions
     * [#6694](https://github.com/pmd/pmd/issues/6694): \[java] SimplifyBooleanReturns triggers inconsistently depending on redundant parentheses in return expression
+    * [#6889](https://github.com/pmd/pmd/issues/6889): \[java] New rule: InternalApiUsage
 * java-documentation
     * [#6450](https://github.com/pmd/pmd/issues/6450): \[java] DanglingJavadoc: False positive on /// comments for Java < 23
 * java-errorprone
