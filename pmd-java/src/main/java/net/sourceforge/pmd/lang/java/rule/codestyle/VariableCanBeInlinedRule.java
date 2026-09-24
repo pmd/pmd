@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @since 7.17.0
@@ -40,23 +41,26 @@ public class VariableCanBeInlinedRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTReturnStatement statement, Object data) {
-        checkUnnecessaryLocal(statement, statement.getExpr(), data);
+        RuleContext ctx = (RuleContext) data;
+        checkUnnecessaryLocal(statement, statement.getExpr(), ctx);
         return null;
     }
 
     @Override
     public Object visit(ASTYieldStatement statement, Object data) {
-        checkUnnecessaryLocal(statement, statement.getExpr(), data);
+        RuleContext ctx = (RuleContext) data;
+        checkUnnecessaryLocal(statement, statement.getExpr(), ctx);
         return null;
     }
 
     @Override
     public Object visit(ASTThrowStatement statement, Object data) {
-        checkUnnecessaryLocal(statement, statement.getExpr(), data);
+        RuleContext ctx = (RuleContext) data;
+        checkUnnecessaryLocal(statement, statement.getExpr(), ctx);
         return null;
     }
 
-    private void checkUnnecessaryLocal(JavaNode statement, ASTExpression expr, Object data) {
+    private void checkUnnecessaryLocal(JavaNode statement, ASTExpression expr, RuleContext ctx) {
         if (!(expr instanceof ASTVariableAccess)) {
             return;
         }
@@ -77,7 +81,7 @@ public class VariableCanBeInlinedRule extends AbstractJavaRulechainRule {
 
         if (!getProperty(STATEMENT_ORDER_MATTERS)
                 || varDecl.ancestors(ASTLocalVariableDeclaration.class).firstOrThrow().getNextSibling() == statement) {
-            asCtx(data).addViolation(varDecl, varDecl.getName());
+            ctx.addViolation(varDecl, varDecl.getName());
         }
     }
 }
