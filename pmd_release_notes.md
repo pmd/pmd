@@ -71,6 +71,8 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 ### 🐛️ Fixed Issues
 * apex-bestpractices
     * [#6988](https://github.com/pmd/pmd/issues/6988): \[apex] New rule: Detect usage of @<!-- -->IsTest(critical=true) / @<!-- -->IsTest(testFor='...') annotations (RunRelevantTests, Beta, API 66.0+)
+* cli
+    * [#7090](https://github.com/pmd/pmd/issues/7090): \[cli] Add the missing exit code 5 to the CLI help
 * html
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
