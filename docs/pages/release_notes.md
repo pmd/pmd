@@ -26,16 +26,21 @@ This is a {{ site.pmd.release_type }} release.
 #### Kotlin XPath functions and type attributes
 Type data is now accessible in XPath rules via new attributes and helper functions (see [Kotlin XPath rule support]({{ baseurl }}pmd_languages_kotlin.html#xpath-rule-support)):
 
-* **Attributes**: `@TypeName`, `@ReturnTypeName`, `@AnnotationFqNames`, `@Modifiers`, `@Identifier`
+* **Type-info Attributes**: `@TypeName`, `@ReturnTypeName`, `@AnnotationFqNames`
   are exposed on declaration nodes (property, function, class, parameter, catch, for-loop, delegation specifier,
-  annotation nodes).
-* **`pmd-kotlin:typeIs(typeName)`**: matches if the node's type is `typeName` or a subtype.
-* **`pmd-kotlin:typeIsExactly(typeName)`**: matches the exact declared type only (no subtypes).
-* **`pmd-kotlin:hasAnnotation(name)`**: matches if the node has an annotation with the given simple or FQN.
-* **`pmd-kotlin:modifiers()`**: returns the modifier keywords of a declaration as a sequence.
-* **`pmd-kotlin:isNullable()`**: returns `true` if the node's declared type is nullable (has `?`).
-* **`pmd-kotlin:hasUnresolvedReference()`**: returns `true` if the node contains an unresolved reference.
-* **`pmd-kotlin:matchesSig(signature)`**: matches call sites by method signature pattern (supports wildcards).
+  annotation nodes). These attributes depend on type resolution: they are only available when `auxClasspath`
+  is configured and the kotlin-type-mapper analysis has resolved the types.
+* **General Attributes**: `@Mutable`, `@Identifier`, `@Name`
+  are exposed on declaration and import related nodes. These attributes don't depend on type resolution, so
+  they're always present regardless of `auxClasspath`.
+* **XPath functions**:
+    * `pmd-kotlin:typeIs(typeName)`: matches if the node's type is `typeName` or a subtype.
+    * `pmd-kotlin:typeIsExactly(typeName)`: matches the exact declared type only (no subtypes).
+    * `pmd-kotlin:hasAnnotation(name)`: matches if the node has an annotation with the given simple or FQN.
+    * `pmd-kotlin:modifiers()`: returns the modifier keywords of a declaration as a sequence.
+    * `pmd-kotlin:isNullable()`: returns `true` if the node's declared type is nullable (has `?`).
+    * `pmd-kotlin:hasUnresolvedReference()`: returns `true` if the node contains an unresolved reference.
+    * `pmd-kotlin:matchesSig(signature)`: matches call sites by method signature pattern (supports wildcards).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
@@ -101,14 +106,14 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
     * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when the key comes from System.getProperty()
 * kotlin
-    * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add XPath functions and type attributes for type-aware XPath rules
+    * [#6893](https://github.com/pmd/pmd/issues/6893): \[kotlin] Add XPath functions and type attributes
 * miscellaneous
     * [#6961](https://github.com/pmd/pmd/issues/6961): \[doc] When a rule's description has a link to another rule in the exact wrong position, the doc generation crashes
 
 ### 🚨️ API Changes
 #### Experimental API
 * kotlin
-    * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the initial API to access type information
+    * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the API to access type information
       on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
     * `KotlinNodeTypeData.getTypeName(KotlinNode)` and `KotlinNodeTypeData.getReturnTypeName(KotlinNode)`
       have been renamed to {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData#getType(KotlinNode) %}
@@ -121,7 +126,6 @@ Type data is now accessible in XPath rules via new attributes and helper functio
       a `@TypeName` XPath attribute.
     * New XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly`, `pmd-kotlin:hasAnnotation`,
       `pmd-kotlin:modifiers`, `pmd-kotlin:matchesSig`, `pmd-kotlin:isNullable`, `pmd-kotlin:hasUnresolvedReference`
-      in package `net.sourceforge.pmd.lang.kotlin.rule.xpath.internal`.
     * New AST attribute view classes in package `net.sourceforge.pmd.lang.kotlin.ast`:
       {%jdoc kotlin::lang.kotlin.ast.KtCatchBlockAttributes %},
       {%jdoc kotlin::lang.kotlin.ast.KtDelegationSpecifierAttributes %},
