@@ -152,6 +152,7 @@
     <rule ref="category/java/design.xml/FinalFieldCouldBeStatic"/>
     <!-- <rule ref="category/java/design.xml/GodClass" /> -->
     <!-- <rule ref="category/java/design.xml/ImmutableField" /> -->
+    <!-- <rule ref="category/java/design.xml/InternalApiUsage" /> -->
     <rule ref="category/java/design.xml/InstantiableUtilityClass"/>
     <!-- <rule ref="category/java/design.xml/InvalidJavaBean">-->
     <!--     <properties>-->

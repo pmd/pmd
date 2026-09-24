@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @since 7.22.0
@@ -40,6 +41,8 @@ public class UnnecessaryInterfaceDeclarationRule extends AbstractJavaRulechainRu
 
     @Override
     public Object visit(ASTClassDeclaration node, Object context) {
+        RuleContext ctx = (RuleContext) context;
+
         Map<JTypeMirror, JavaNode> directSupertypes = new HashMap<>();
         ASTList<?> ext = node.children(ASTExtendsList.class).first();
         ASTList<?> impl = node.children(ASTImplementsList.class).first();
@@ -47,8 +50,8 @@ public class UnnecessaryInterfaceDeclarationRule extends AbstractJavaRulechainRu
             for (ASTClassType supertypeNode : list.children(ASTClassType.class)) {
                 JTypeMirror supertype = supertypeNode.getTypeMirror();
                 for (Map.Entry<JTypeMirror, JavaNode> supertype1 : directSupertypes.entrySet()) {
-                    checkRelated(supertypeNode, supertype, supertype1.getKey(), context);
-                    checkRelated(supertype1.getValue(), supertype1.getKey(), supertype, context);
+                    checkRelated(supertypeNode, supertype, supertype1.getKey(), ctx);
+                    checkRelated(supertype1.getValue(), supertype1.getKey(), supertype, ctx);
                 }
                 directSupertypes.put(supertype, supertypeNode);
             }
@@ -57,13 +60,13 @@ public class UnnecessaryInterfaceDeclarationRule extends AbstractJavaRulechainRu
     }
 
     private void checkRelated(JavaNode supertypeNode, JTypeMirror supertype, JTypeMirror supertype1,
-                              Object context) {
+                              RuleContext ctx) {
         List<String> allowed = getProperty(ALLOWED_INTERFACES);
         if (allowed.contains(supertype.toString())) {
             return;
         }
         if (TypeTestUtil.isA(supertype, supertype1)) {
-            asCtx(context).addViolation(supertypeNode, supertype, supertype1);
+            ctx.addViolation(supertypeNode, supertype, supertype1);
         }
     }
 }

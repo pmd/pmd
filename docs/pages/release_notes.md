@@ -49,6 +49,12 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     find source code for given type.
 *   The new Java rule {% rule java/codestyle/CStyleArrayDeclaration %} finds C-style declarations of arrays (e.g. `int numbers[]`).
     That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
+*   The new Java rule {% rule java/design/InternalApiUsage %} reports usages of internal or test-only APIs
+    (e.g. annotated with `@VisibleForTesting`, `@TestOnly`, `@API(status=INTERNAL)` or `@ApiStatus.Internal`)
+    from code that shouldn't depend on them.
+*   The new Apex rule {% rule apex/bestpractices/ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation %} finds unit tests
+    that do not use the new `@IsTest(critical=true)` or `@IsTest(testFor='...')` annotation parameters for tests.
+    These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.
 #### Changed Rules
 *   The property `checkNonStaticMethods` of the rule {% rule java/multithreading/NonThreadSafeSingleton %} is now
     deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
@@ -64,18 +70,24 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     Setting it to false only risks false negatives, therefore, the property will be removed in PMD 8.0.0.
 
 ### 🐛️ Fixed Issues
+* apex-bestpractices
+    * [#6988](https://github.com/pmd/pmd/issues/6988): \[apex] New rule: Detect usage of @<!-- -->IsTest(critical=true) / @<!-- -->IsTest(testFor='...') annotations (RunRelevantTests, Beta, API 66.0+)
 * html
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
     * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
+    * [#7056](https://github.com/pmd/pmd/issues/7056): \[java] Provide ability to disable auxClasspath warning added in 7.27.0
+    * [#7081](https://github.com/pmd/pmd/issues/7081): \[java] NoSuchFileException when auxClasspath is given as a classpath file (file: URL)
 * java-bestpractices
     * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
+    * [#6901](https://github.com/pmd/pmd/issues/6901): \[java] MethodReturnsInternalArray: Various false negatives with local aliases and conditional expressions
 * java-codestyle
     * [#3124](https://github.com/pmd/pmd/issues/3124): \[java] UnnecessaryLocalBeforeReturn/VariableCanBeInlined - remove property statementOrderMatters
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-design
     * [#6513](https://github.com/pmd/pmd/issues/6513): \[java] SimplifyConditional: False negative when null check and instanceof are separated by other && conditions
     * [#6694](https://github.com/pmd/pmd/issues/6694): \[java] SimplifyBooleanReturns triggers inconsistently depending on redundant parentheses in return expression
+    * [#6889](https://github.com/pmd/pmd/issues/6889): \[java] New rule: InternalApiUsage
 * java-documentation
     * [#6450](https://github.com/pmd/pmd/issues/6450): \[java] DanglingJavadoc: False positive on /// comments for Java < 23
 * java-errorprone
