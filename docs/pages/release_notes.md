@@ -73,6 +73,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
     * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
+    * [#7081](https://github.com/pmd/pmd/issues/7081): \[java] NoSuchFileException when auxClasspath is given as a classpath file (file: URL)
 * java-bestpractices
     * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
     * [#6901](https://github.com/pmd/pmd/issues/6901): \[java] MethodReturnsInternalArray: Various false negatives with local aliases and conditional expressions

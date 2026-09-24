@@ -25,9 +25,12 @@ public class RuleTstLauncherSession implements LauncherSessionListener {
         // Especially, we might create the instances only once and store them in static fields.
         // If the cache is too small, cache eviction takes place and closes the AuxClasspathLoader,
         // that might still be used via static fields.
-        // E.g. net.sourceforge.pmd.lang.java.JavaParsingHelper creates one,
-        // and net.sourceforge.pmd.lang.java.symbols.ClassLoadingChildFirstTest creates another one.
-        AuxClasspathLoader.enableReuse(2);
+        //
+        // New instances are created by
+        // - net.sourceforge.pmd.lang.java.JavaParsingHelper#TEST_AUX_CLASSPATH_LOADER
+        // - net.sourceforge.pmd.lang.java.symbols.ClassLoadingChildFirstTest#testClassLoading
+        // - net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessorTest#emptyClasspathWithoutJrtFs
+        AuxClasspathLoader.enableReuse(3);
     }
 
     @Override
