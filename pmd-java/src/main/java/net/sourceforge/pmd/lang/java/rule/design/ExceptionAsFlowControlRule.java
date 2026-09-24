@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -32,6 +33,12 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
         JTypeMirror thrownType = node.getExpr().getTypeMirror();
         JavaNode parent = node.getParent();
         while (!(parent instanceof ASTBodyDeclaration)) {
+            if (parent instanceof ASTLambdaExpression) {
+                // An exception thrown in a lambda body leaves the lambda, not
+                // the enclosing method: it reaches whoever invokes the lambda,
+                // which in general is not the try statement around it. See #4815.
+                return null;
+            }
             if (parent instanceof ASTCatchClause) {
                 // if the exception is thrown in a catch block, then we
                 // have to ignore the try stmt (jump past it).
