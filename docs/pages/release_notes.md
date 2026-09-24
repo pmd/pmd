@@ -72,6 +72,8 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 ### 🐛️ Fixed Issues
 * apex-bestpractices
     * [#6988](https://github.com/pmd/pmd/issues/6988): \[apex] New rule: Detect usage of @<!-- -->IsTest(critical=true) / @<!-- -->IsTest(testFor='...') annotations (RunRelevantTests, Beta, API 66.0+)
+* go
+    * [#6235](https://github.com/pmd/pmd/issues/6235): \[go] Go tokenizer doesn't recognize tilde syntax for generics
 * html
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
