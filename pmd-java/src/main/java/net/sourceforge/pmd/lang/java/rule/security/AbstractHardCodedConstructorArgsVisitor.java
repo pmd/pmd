@@ -131,11 +131,23 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
     private void addViolationForStringLiteral(Object data, ASTExpression expression) {
         ASTStringLiteral literal = expression.descendantsOrSelf()
                 .filterIs(ASTStringLiteral.class)
-                .filterNot(lit -> SYSTEM_GET_PROPERTY.matchesCall(lit.ancestors(ASTMethodCall.class).first()))
+                .filterNot(AbstractHardCodedConstructorArgsVisitor::isPropertyName)
                 .first();
         if (literal != null) {
             asCtx(data).addViolation(literal);
         }
+    }
+
+    /**
+     * Whether the literal is the property name of a {@code System.getProperty} call.
+     */
+    private static boolean isPropertyName(ASTStringLiteral literal) {
+        ASTMethodCall call = literal.ancestors(ASTMethodCall.class).first();
+        if (!SYSTEM_GET_PROPERTY.matchesCall(call)) {
+            return false;
+        }
+        ASTArgumentList arguments = call.getArguments();
+        return !arguments.isEmpty() && arguments.get(0).descendantsOrSelf().any(node -> node == literal);
     }
 
     private void validateVarUsages(Object data, ASTVariableId varDecl) {
