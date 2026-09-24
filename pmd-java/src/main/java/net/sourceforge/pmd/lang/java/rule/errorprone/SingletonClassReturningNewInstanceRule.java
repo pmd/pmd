@@ -1,4 +1,4 @@
-/*
+﻿/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -62,7 +62,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
             // unresolved: keep reporting, as before
             return true;
         }
-        ASTVariableId varId = (ASTVariableId) symbol.tryGetNode();
+        ASTVariableId varId = symbol.tryGetNode();
         if (isNewInstance(varId.getInitializer())) {
             return true;
         }
