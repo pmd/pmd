@@ -6,6 +6,9 @@ package net.sourceforge.pmd.util;
 
 import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath;
 import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,6 +41,8 @@ import org.junit.platform.suite.api.Suite;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class AuxClasspathLoaderTest {
     @TempDir
@@ -84,12 +89,32 @@ class AuxClasspathLoaderTest {
         Path nativeLib = tempDir.resolve("libsqlite4java-linux-amd64-1.0.392.so");
         Files.write(nativeLib, "not a zip archive".getBytes(StandardCharsets.UTF_8));
 
-        try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
-                nativeLib + File.pathSeparator + lib1)) {
-            assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
-            assertNull(classpathLoader.findResource("does/not/exist.class"));
-            assertNull(classpathLoader.findResource("com.example/module-info.class"));
-        }
+        String log = SystemLambda.tapSystemErr(() -> {
+            try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
+                    nativeLib + File.pathSeparator + lib1)) {
+                assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
+                assertNull(classpathLoader.findResource("does/not/exist.class"));
+                assertNull(classpathLoader.findResource("com.example/module-info.class"));
+            }
+        });
+        assertThat(log, emptyString());
+    }
+
+    @Test
+    void warnForCorruptZipFilesInClasspath() throws Exception {
+        Path lib1 = createLib1();
+        Path corruptLib2 = tempDir.resolve("corrupt.jar");
+        Files.write(corruptLib2, "PK\003\004 Corrupt ZIP".getBytes(StandardCharsets.US_ASCII));
+
+        String log = SystemLambda.tapSystemErr(() -> {
+            try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
+                    corruptLib2 + File.pathSeparator + lib1)) {
+                assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
+                assertNull(classpathLoader.findResource("does/not/exist.class"));
+            }
+        });
+        assertThat(log, containsString("Ignoring corrupt archive on auxClasspath"));
+        assertThat(log, containsString(corruptLib2.toString()));
     }
 
     @Test

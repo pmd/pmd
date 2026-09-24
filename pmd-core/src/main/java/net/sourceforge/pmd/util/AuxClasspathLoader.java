@@ -10,6 +10,8 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -477,10 +479,32 @@ public class AuxClasspathLoader implements AutoCloseable {
                 return zipFile;
             } catch (IOException e) {
                 invalidArchives.add(path);
-                LOG.warn("Ignoring auxclasspath entry '{}' because it is not a valid archive: {}",
-                        path, e.getMessage());
+
+                // only warn about corrupt ZIP files and ignore other files (like native libs)
+                if (hasZipMagicNumber(path)) {
+                    LOG.warn("Ignoring corrupt archive on auxClasspath: {} ({})", path, e.getMessage());
+                    LOG.debug("Exception while opening {}", path, e);
+                } else {
+                    LOG.debug("Ignoring non-archive auxClasspath entry: {}", path, e);
+                }
                 return null;
             }
+        }
+    }
+
+    private static boolean hasZipMagicNumber(Path path) {
+        try (InputStream in = Files.newInputStream(path)) {
+            byte[] magic = new byte[4];
+            int count = in.read(magic);
+            if (count != magic.length) {
+                return false;
+            }
+            ByteBuffer buffer = ByteBuffer.wrap(magic).order(ByteOrder.BIG_ENDIAN);
+            int magicNumber = buffer.getInt();
+            return magicNumber == 0x504B0304 // "PK\003\004" local file header
+                || magicNumber == 0x504B0506; // "PK\005\006" empty archive
+        } catch (IOException e) {
+            return false;
         }
     }
 
