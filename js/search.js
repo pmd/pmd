@@ -2788,6 +2788,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/design.md",
+  "title": "InternalApiUsage (Java, Design)",
+  "tags": "",
+  "keywords": "Internal Api Usage",
+  "url": "pmd_rules_java_design.html#internalapiusage",
+  "summary": "Some APIs are designed to be used only by the library or package that defines..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/design.md",
   "title": "InvalidJavaBean (Java, Design)",
   "tags": "",
   "keywords": "Invalid Java Bean",

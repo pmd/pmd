@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that help you discover design issues.">
-<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CognitiveComplexity, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveImports, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, InstantiableUtilityClass, InvalidJavaBean, LawOfDemeter, LogicInversion, LoosePackageCoupling, MutableStaticState, NcssCount, NPathComplexity, ProtectedMemberInFinalClass, PublicMemberInNonPublicType, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
+<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CognitiveComplexity, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveImports, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, InstantiableUtilityClass, InternalApiUsage, InvalidJavaBean, LawOfDemeter, LogicInversion, LoosePackageCoupling, MutableStaticState, NcssCount, NPathComplexity, ProtectedMemberInFinalClass, PublicMemberInNonPublicType, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
 <title>Design | PMD Source Code Analyzer</title>
 
 
@@ -3227,6 +3227,89 @@ private no-args constructor to enforce this.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/InstantiableUtilityClass"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="internalapiusage">InternalApiUsage</h2>
+
+<p><strong>Since:</strong> PMD 7.28.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Some APIs are designed to be used only by the library or package that defines them, and using them from other code
+could cause incorrect behavior if the library class changes. By default, this rule reports usages of methods and fields</p>
+
+<ul>
+  <li>annotated by <code class="language-plaintext highlighter-rouge">@VisibleForTesting</code>, unless they are used from a test class or the declaring class,</li>
+  <li>annotated by <code class="language-plaintext highlighter-rouge">@TestOnly</code>, unless they are called from a test class,</li>
+  <li>annotated by <code class="language-plaintext highlighter-rouge">@org.apiguardian.api.API(status=INTERNAL)</code> or <code class="language-plaintext highlighter-rouge">org.jetbrains.annotations.ApiStatus.Internal</code>,
+unless they are declared in the analyzed library.</li>
+</ul>
+
+<p>Annotations <code class="language-plaintext highlighter-rouge">@VisibleForTesting</code> and <code class="language-plaintext highlighter-rouge">@TestOnly</code> are matched by simple name, so they can be imported from
+any framework or defined in your own codebase.</p>
+
+<p>In the context of this rule, classes are considered to belong to the analyzed library,
+if the first three components of their package name match.
+This behavior can be overridden using the <code class="language-plaintext highlighter-rouge">ownPackages</code> property that may list
+packages which are considered to belong to the analyzed library.</p>
+
+<p>It is also possible to define which API statuses should be reported, the <code class="language-plaintext highlighter-rouge">reportedStatuses</code> property can be set
+to report APIs with experimental, internal, deprecated or (for JetBrains annotations) overrides-only status.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/InternalApiUsageRule.java">net.sourceforge.pmd.lang.java.rule.design.InternalApiUsageRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">new</span> <span class="nf">Bar</span><span class="o">().</span><span class="na">setSecret</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">secret</span><span class="o">;</span>
+    <span class="nd">@VisibleForTesting</span>
+    <span class="n">setSecret</span><span class="o">(</span><span class="kt">int</span> <span class="n">secret</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">secret</span> <span class="o">=</span> <span class="n">secret</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ownPackages</td>
+      <td> </td>
+      <td>Packages whose internal APIs may be used.</td>
+    </tr>
+    <tr>
+      <td>reportedStatuses</td>
+      <td>internal , overrideOnly</td>
+      <td>List of API statuses that should not be called<br />Zero or more of: <code class="language-plaintext highlighter-rouge">deprecated</code>, <code class="language-plaintext highlighter-rouge">experimental</code>, <code class="language-plaintext highlighter-rouge">internal</code>, <code class="language-plaintext highlighter-rouge">overrideOnly</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/InternalApiUsage"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/InternalApiUsage"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ownPackages"</span> <span class="na">value=</span><span class="s">""</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportedStatuses"</span> <span class="na">value=</span><span class="s">"internal,overrideOnly"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="invalidjavabean">InvalidJavaBean</h2>

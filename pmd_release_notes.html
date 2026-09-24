@@ -2091,6 +2091,9 @@ with the same name. Enforcing a match between source file name and type name mak
 find source code for given type.</li>
   <li>The new Java rule <a href="pmd_rules_java_codestyle.html#cstylearraydeclaration"><code class="language-plaintext highlighter-rouge">CStyleArrayDeclaration</code></a> finds C-style declarations of arrays (e.g. <code class="language-plaintext highlighter-rouge">int numbers[]</code>).
 That helps you use Java-style declarations (e.g. <code class="language-plaintext highlighter-rouge">int[] numbers</code>) consistently throughout the codebase.</li>
+  <li>The new Java rule <a href="pmd_rules_java_design.html#internalapiusage"><code class="language-plaintext highlighter-rouge">InternalApiUsage</code></a> reports usages of internal or test-only APIs
+(e.g. annotated with <code class="language-plaintext highlighter-rouge">@VisibleForTesting</code>, <code class="language-plaintext highlighter-rouge">@TestOnly</code>, <code class="language-plaintext highlighter-rouge">@API(status=INTERNAL)</code> or <code class="language-plaintext highlighter-rouge">@ApiStatus.Internal</code>)
+from code that shouldn’t depend on them.</li>
   <li>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunrelevanttestsannotation"><code class="language-plaintext highlighter-rouge">ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation</code></a> finds unit tests
 that do not use the new <code class="language-plaintext highlighter-rouge">@IsTest(critical=true)</code> or <code class="language-plaintext highlighter-rouge">@IsTest(testFor='...')</code> annotation parameters for tests.
 These parameters help to identify which tests should be executed during a <code class="language-plaintext highlighter-rouge">RunRelevantTests</code> deployment.
@@ -2125,6 +2128,7 @@ Setting it to false only risks false negatives, therefore, the property will be 
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6926">#6926</a>: [java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7081">#7081</a>: [java] NoSuchFileException when auxClasspath is given as a classpath file (file: URL)</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -2143,6 +2147,7 @@ Setting it to false only risks false negatives, therefore, the property will be 
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6513">#6513</a>: [java] SimplifyConditional: False negative when null check and instanceof are separated by other &amp;&amp; conditions</li>
       <li><a href="https://github.com/pmd/pmd/issues/6694">#6694</a>: [java] SimplifyBooleanReturns triggers inconsistently depending on redundant parentheses in return expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6889">#6889</a>: [java] New rule: InternalApiUsage</li>
     </ul>
   </li>
   <li>java-documentation
