@@ -69,18 +69,18 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 ### 🐛️ Fixed Issues
 * apex-bestpractices
     * [#6988](https://github.com/pmd/pmd/issues/6988): \[apex] New rule: Detect usage of @<!-- -->IsTest(critical=true) / @<!-- -->IsTest(testFor='...') annotations (RunRelevantTests, Beta, API 66.0+)
-* html
-    * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * core
     * [#7013](https://github.com/pmd/pmd/issues/7013): \[core] PMDConfiguration - "Can't mix setClasspath with getAuxClasspath!"
+* html
+    * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
     * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
 * java-bestpractices
-    * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
+    * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] UnusedAssignment: False positive when assignment is in conditional statement
     * [#7033](https://github.com/pmd/pmd/issues/7033): \[java] New rule: TypeNameMismatch
     * [#7047](https://github.com/pmd/pmd/issues/7047): \[java] New rule: OnDemandImport
 * java-codestyle
-    * [#3124](https://github.com/pmd/pmd/issues/3124): \[java] UnnecessaryLocalBeforeReturn/VariableCanBeInlined - remove property statementOrderMatters
+    * [#3124](https://github.com/pmd/pmd/issues/3124): \[java] UnnecessaryLocalBeforeReturn/VariableCanBeInlined: deprecate property statementOrderMatters
     * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
     * [#7026](https://github.com/pmd/pmd/issues/7026): \[java] New rule: CStyleArrayDeclaration
 * java-design
@@ -90,10 +90,10 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6450](https://github.com/pmd/pmd/issues/6450): \[java] DanglingJavadoc: False positive on /// comments for Java < 23
 * java-errorprone
     * [#1050](https://github.com/pmd/pmd/issues/1050): \[java] NullAssignment: False positive inside if statement for first assignment
-    * [#6693](https://github.com/pmd/pmd/issues/6693): \[java] CloneMethodMustImplementCloneable fires inconsistently between inline `throw new` and throw-via-local forms
-    * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate is suppressed by using pattern variable
+    * [#6693](https://github.com/pmd/pmd/issues/6693): \[java] CloneMethodMustImplementCloneable: False positive with throw-via-local
+    * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate: False negative when using pattern matching
     * [#7027](https://github.com/pmd/pmd/issues/7027): \[java] New rule: LongLiteralEndingWithLowercaseL
-    * [#7068](https://github.com/pmd/pmd/issues/7068): \[java] UnusedReturnValue reports calls made on Mockito.verify(mock)
+    * [#7068](https://github.com/pmd/pmd/issues/7068): \[java] UnusedReturnValue: False positive for calls made on Mockito.verify(mock)
 * java-multithreading
     * [#6297](https://github.com/pmd/pmd/issues/6297): \[java] AvoidUsingVolatile: Update documentation
     * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods
