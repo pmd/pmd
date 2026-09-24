@@ -23,121 +23,106 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
-#### Updated Apex Support
-The Apex language support has been bumped to version 67.0 (Summer '26). It supports the new
-[Multiline String](https://help.salesforce.com/s/articleView?id=release-notes.rn_apex_multiline_string.htm&release=262&type=5) literals.
+#### Kotlin XPath functions and type attributes
+Type data is now accessible in XPath rules via new attributes and helper functions (see [Kotlin XPath rule support]({{ baseurl }}pmd_languages_kotlin.html#xpath-rule-support)):
 
-#### Kotlin type-aware analysis
-Kotlin now supports type-aware analysis via the `auxClasspath` language property (see [#6677](https://github.com/pmd/pmd/issues/6677)).
-Resolved type names, return types, and annotation FQNs are available through
-{%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %} for use in Java-based rules.
-
-Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. This will be added in the next version.
+* **Attributes**: `@TypeName`, `@ReturnTypeName`, `@AnnotationFqNames`, `@Modifiers`, `@Identifier`
+  are exposed on declaration nodes (property, function, class, parameter, catch, for-loop, delegation specifier,
+  annotation nodes).
+* **`pmd-kotlin:typeIs(typeName)`**: matches if the node's type is `typeName` or a subtype.
+* **`pmd-kotlin:typeIsExactly(typeName)`**: matches the exact declared type only (no subtypes).
+* **`pmd-kotlin:hasAnnotation(name)`**: matches if the node has an annotation with the given simple or FQN.
+* **`pmd-kotlin:modifiers()`**: returns the modifier keywords of a declaration as a sequence.
+* **`pmd-kotlin:isNullable()`**: returns `true` if the node's declared type is nullable (has `?`).
+* **`pmd-kotlin:hasUnresolvedReference()`**: returns `true` if the node contains an unresolved reference.
+* **`pmd-kotlin:matchesSig(signature)`**: matches call sites by method signature pattern (supports wildcards).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
-* The new java rule {% rule java/errorprone/UnusedReturnValue %} finds method calls whose result is not used,
-  although ignoring the result of these method calls is likely a mistake.
-  The rule is referenced in the quickstart.xml ruleset for Java.
-
-#### Renamed Rules
-* The rule {%rule java/design/InstantiableUtilityClass %} (Java Design) was renamed from `UseUtilityClass` to better reflect the problem.
-  The old name still works but is deprecated.
-
+*   The new Java rule {% rule java/bestpractices/OnDemandImport %} reports on-demand imports, also known as wildcard imports.
+    By default, static imports from JUnit and TestNG are allowed. The allowed static and type import packages
+    can be configured with `allowStaticImportsFrom` and `allowTypeImportsFrom`.
+*   The new java rule  {% rule java/errorprone/LongLiteralEndingWithLowercaseL %} finds long literals ending with l.
+    That helps to avoid confusion between numbers ending with 1 and l. Capital L should be used to define long literals.
+*   The new java rule  {% rule java/bestpractices/TypeNameMismatch %} finds types that are not defined in a .java file
+    with the same name. Enforcing a match between source file name and type name makes it easier to
+    find source code for given type.
+*   The new Java rule {% rule java/codestyle/CStyleArrayDeclaration %} finds C-style declarations of arrays (e.g. `int numbers[]`).
+    That helps you use Java-style declarations (e.g. `int[] numbers`) consistently throughout the codebase.
+*   The new Apex rule {% rule apex/bestpractices/ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation %} finds unit tests
+    that do not use the new `@IsTest(critical=true)` or `@IsTest(testFor='...')` annotation parameters for tests.
+    These parameters help to identify which tests should be executed during a `RunRelevantTests` deployment.
 #### Changed Rules
-* The rule {% rule java/documentation/CommentRequired %} (Java Documentation)
-  has a new property `packageMethodCommentRequirement`. It controls whether Javadoc comments are required (or
-  unwanted) for package-private methods and constructors. Previously, only `public` and `protected` methods could
-  be configured (via `publicMethodCommentRequirement` and `protectedMethodCommentRequirement`). The new property
-  defaults to `Ignored`, so existing rule configurations are unaffected.
-  This was implemented in [#6880](https://github.com/pmd/pmd/pull/6880).
-* The rule {% rule java/codestyle/BooleanGetMethodName %} (Java Codestyle) has a new property
-  `includeWrappedType`. If set to true (default), the rule treats Boolean and boolean identical.
-  If set to false, the rule follows the bean convention and treats Boolean like any other object.
-
-#### Deprecated Rules
-* The java rule {% rule java/errorprone/CheckSkipResult %} has been deprecated for removal
-  in favor of the new rule {% rule java/errorprone/UnusedReturnValue %}.
-* The java rule {% rule java/errorprone/UselessPureMethodCall %} has been deprecated for removal
-  in favor of the new rule {% rule java/errorprone/UnusedReturnValue %}.
-
+*   The property `checkNonStaticMethods` of the rule {% rule java/multithreading/NonThreadSafeSingleton %} is now
+    deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
+    The rule now always reports both static and non-static methods; previously it reported only static methods
+    by default.  
+    This may result in additional violations being reported.  
+    If you want to suppress violations for non-static methods, you can use
+    [suppression via XPath]({{ baseurl }}pmd_userdocs_suppressing_warnings.html#the-property-violationsuppressxpath), e.g.
+    ```xml
+    <property name="violationSuppressXPath" value=".[ancestor-or-self::MethodDeclaration[1][@Static = false()]]" />
+    ```
+*   The property `statementOrderMatters` of the rule {% rule java/codestyle/VariableCanBeInlined %} is now deprecated.
+    Setting it to false only risks false negatives, therefore, the property will be removed in PMD 8.0.0.
 
 ### 🐛️ Fixed Issues
-* apex
-    * [#6478](https://github.com/pmd/pmd/issues/6478): \[apex] Parser error when using CALENDAR_YEAR() in SOQL
-    * [#6887](https://github.com/pmd/pmd/issues/6887): \[apex] ParseException on Summer '26 multiline string literals ('''...''')
 * apex-bestpractices
-    * [#5904](https://github.com/pmd/pmd/issues/5904): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue violation range should only be the annotation and not the entire test method
-* chore
-    * [#6837](https://github.com/pmd/pmd/issues/6837): chore: Input 'app-id' has been deprecated with message: Use 'client-id' instead
-* core
-    * [#1995](https://github.com/pmd/pmd/issues/1995): \[core] PMD should display number of rules violated or errors found
-    * [#4952](https://github.com/pmd/pmd/issues/4952): \[doc] Improve doc around PMDConfiguration#prependAuxclasspath #setClassloader
-    * [#4953](https://github.com/pmd/pmd/issues/4953): \[core] Deprecate PMDConfiguration#setClassloader and #getClassloader
-    * [#6865](https://github.com/pmd/pmd/issues/6865): \[core] Include the running PMD version in the "Unable to find referenced rule" error
-    * [#6913](https://github.com/pmd/pmd/issues/6913): \[core] RuleSetLoader#loadFromString ignores previously configured Resource/ClassLoader
-    * [#6952](https://github.com/pmd/pmd/issues/6952): \[core] Ruleset references are not resolved relative to the referencing ruleset
+    * [#6988](https://github.com/pmd/pmd/issues/6988): \[apex] New rule: Detect usage of @<!-- -->IsTest(critical=true) / @<!-- -->IsTest(testFor='...') annotations (RunRelevantTests, Beta, API 66.0+)
+* html
+    * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
-    * [#5041](https://github.com/pmd/pmd/issues/5041): \[java] Parsing failed in ParseLock#doParse(): IndexOutOfBoundsException 
-    * [#6768](https://github.com/pmd/pmd/issues/6768): \[java] Disambiguation IllegalStateException resolving a synthesized record accessor used as a call argument alongside an anonymous class
-    * [#6932](https://github.com/pmd/pmd/issues/6932): \[java] AssertionError when outer class is parsed before inner class with conflicting visibility
+    * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
 * java-bestpractices
-    * [#1237](https://github.com/pmd/pmd/issues/1237): \[java] AbstractClassWithoutAnyMethod - Only detecting empty classes 
-    * [#1287](https://github.com/pmd/pmd/issues/1287): \[java] GuardLogStatement: False positive when using negative guard conditions
-    * [#2033](https://github.com/pmd/pmd/issues/2033): \[jsp] NoClassAttribute rule is generating a false positive
-    * [#5514](https://github.com/pmd/pmd/issues/5514): \[java] ExhaustiveSwitchHasDefault fails for non-exhaustive switch statements
-    * [#5670](https://github.com/pmd/pmd/issues/5670): \[java] ExhaustiveSwitchHasDefault issue with final fields not initialized in constructor
-    * [#6200](https://github.com/pmd/pmd/issues/6200): \[java] UnusedAssignment: False positive about the ++ unary operator
-    * [#6393](https://github.com/pmd/pmd/issues/6393): \[java] UnusedPrivateMethod: False positive with overloaded private methods called with values returned from methods of an unresolved type
-    * [#6611](https://github.com/pmd/pmd/issues/6611): \[java] UnnecessaryVarargsArrayCreation: false positive when removing the array creates overload ambiguity
+    * [#5940](https://github.com/pmd/pmd/issues/5940): \[java] False positive in UnusedAssignment when assignment is in conditional statement
     * [#6901](https://github.com/pmd/pmd/issues/6901): \[java] MethodReturnsInternalArray: Various false negatives with local aliases and conditional expressions
-    * [#6965](https://github.com/pmd/pmd/issues/6965): \[java] AbstractClassWithoutAnyMethod False Positive on derived abstract class
 * java-codestyle
-    * [#5441](https://github.com/pmd/pmd/issues/5441): \[java] UseDiamondOperator: False positive with interdependent generic vars
-    * [#6958](https://github.com/pmd/pmd/issues/6958): \[java] BooleanGetMethodName should have the option to treat boolean wrapper type differently
-    * [#6274](https://github.com/pmd/pmd/issues/6274): \[java] UselessParentheses: Treat parentheses around a ternary in the else-branch as clarifying, consistent with the then-branch.
-    * [#6651](https://github.com/pmd/pmd/issues/6651): \[java] UnnecessaryImport false-positive when Javadoc {@link} references an array type
-    * [#6709](https://github.com/pmd/pmd/issues/6709): \[java] LambdaCanBeMethodReference: False positive with array creation containing constructor call in receiver
-    * [#6737](https://github.com/pmd/pmd/issues/6737): \[java] TooManyStaticImports: @<!-- -->SuppressWarnings("PMD.TooManyStaticImports") has stopped working
-    * [#6846](https://github.com/pmd/pmd/issues/6846): \[java] VariableDeclarationUsageDistance: False positive with variables grouped at the top of a block
-    * [#6867](https://github.com/pmd/pmd/issues/6867): \[java] UnnecessaryFullyQualifiedName: ContextedAssertionError: This should be unreachable: unknown constant ScopeInfo: MODULE_IMPORT
+    * [#3124](https://github.com/pmd/pmd/issues/3124): \[java] UnnecessaryLocalBeforeReturn/VariableCanBeInlined - remove property statementOrderMatters
+    * [#5732](https://github.com/pmd/pmd/issues/5732): \[java] UnnecessaryCast false positive with package private methods
 * java-design
-    * [#6714](https://github.com/pmd/pmd/issues/6714): \[java] Rename UseUtilityClass to InstantiableUtilityClass
-    * [#6844](https://github.com/pmd/pmd/issues/6844): \[java] AvoidThrowingNewInstanceOfSameException: message inconsistent with logic
-    * [#6881](https://github.com/pmd/pmd/issues/6881): \[java] CognitiveComplexity does not count switch expressions
-    * [#6925](https://github.com/pmd/pmd/issues/6925): \[java] ImmutableField: false positive on picocli annotated fields with default
+    * [#6513](https://github.com/pmd/pmd/issues/6513): \[java] SimplifyConditional: False negative when null check and instanceof are separated by other && conditions
+    * [#6694](https://github.com/pmd/pmd/issues/6694): \[java] SimplifyBooleanReturns triggers inconsistently depending on redundant parentheses in return expression
 * java-documentation
-    * [#6270](https://github.com/pmd/pmd/issues/6270): \[java] CommentSize: Skip file header comments.
+    * [#6450](https://github.com/pmd/pmd/issues/6450): \[java] DanglingJavadoc: False positive on /// comments for Java < 23
 * java-errorprone
-    * [#2840](https://github.com/pmd/pmd/issues/2840): \[java] CloseResource: False positive on mocks
-    * [#4623](https://github.com/pmd/pmd/issues/4623): \[java] CloseResource: False positive with resource being closed in method
-    * [#6435](https://github.com/pmd/pmd/issues/6435): \[java] UnconditionalIfStatement: False negative for negated boolean constant
-    * [#6547](https://github.com/pmd/pmd/issues/6547): \[java] NonSerializableClass: Report non-serializable generic element/value types of collections and maps
-    * [#6742](https://github.com/pmd/pmd/issues/6742): \[java] CloseResource: False positive when a correctly-closed resource is declared without initializer
-    * [#6826](https://github.com/pmd/pmd/issues/6826): \[java] AssertEqualsArgumentOrder: False positive for double assertEquals
-    * [#6900](https://github.com/pmd/pmd/issues/6900): \[java] DoubleCheckedLocking: False negative when the outer null check is written as !(x != null)
+    * [#1050](https://github.com/pmd/pmd/issues/1050): \[java] NullAssignment: False positive inside if statement for first assignment
+    * [#6693](https://github.com/pmd/pmd/issues/6693): \[java] CloneMethodMustImplementCloneable fires inconsistently between inline `throw new` and throw-via-local forms
+    * [#7009](https://github.com/pmd/pmd/issues/7009): \[java] ReplaceJavaUtilDate is suppressed by using pattern variable
+    * [#7068](https://github.com/pmd/pmd/issues/7068): \[java] UnusedReturnValue reports calls made on Mockito.verify(mock)
 * java-multithreading
-    * [#6747](https://github.com/pmd/pmd/issues/6747): \[java] NonThreadSafeSingleton: False negative with ternary conditional operator
+    * [#6297](https://github.com/pmd/pmd/issues/6297): \[java] AvoidUsingVolatile: Update documentation
+    * [#6780](https://github.com/pmd/pmd/issues/6780): \[java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods
+* java-security
+    * [#7007](https://github.com/pmd/pmd/issues/7007): \[java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])
+    * [#7008](https://github.com/pmd/pmd/issues/7008): \[java] HardCodedCryptoKey: False positive when the key comes from System.getProperty()
 * kotlin
-    * [#6795](https://github.com/pmd/pmd/issues/6795): \[kotlin] Add kotlin-type-mapper infrastructure
-    * [#6891](https://github.com/pmd/pmd/issues/6891): \[kotlin] AnnotationFqnAnnotator: @<!-- -->TypeName not set on UnescapedAnnotation nodes
+    * [#6677](https://github.com/pmd/pmd/issues/6677): \[kotlin] Add XPath functions and type attributes for type-aware XPath rules
 
 ### 🚨️ API Changes
-
-#### Deprecations
-* core
-    * {%jdoc !!core::PMDConfiguration#getClassLoader() %} and {%jdoc !!core::PMDConfiguration#setClassLoader(java.lang.ClassLoader) %} are deprecated.
-      Use {%jdoc core::PMDConfiguration#prependAuxClasspath(String) %} or {%jdoc core::PMDConfiguration#setAuxClasspath(String) %} to
-      configure the auxClasspath for analyzing Java code.  
-      Note: In order to read back the currently configured auxClasspath, use {%jdoc core::PMDConfiguration#getAuxClasspath() %} and not the
-      deprecated `getClassLoader()` anymore.  
-      Using ClassLoaders directly is discouraged, as it is unclear, if and when the ClassLoaders should be closed to release their resources.
-      By just configuring the auxClasspath, PMD internally can deal with that.
-
 #### Experimental API
 * kotlin
     * {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData %}: Provides the initial API to access type information
       on Kotlin AST nodes. It's part of the new Kotlin type-aware analysis.
+    * `KotlinNodeTypeData.getTypeName(KotlinNode)` and `KotlinNodeTypeData.getReturnTypeName(KotlinNode)`
+      have been renamed to {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData#getType(KotlinNode) %}
+      and {%jdoc kotlin::lang.kotlin.types.KotlinNodeTypeData#getReturnType(KotlinNode) %}, and
+      now return {%jdoc kotlin::lang.kotlin.types.KotlinTypeName %} instead of `String`.
+      The corresponding {%jdoc kotlin::lang.kotlin.types.InternalApiBridge %} setters
+      `setTypeName`/`setReturnTypeName` were renamed to `setType`/`setReturnType` the same way.
+      This is a breaking change to this experimental API.
+    * {%jdoc kotlin::lang.kotlin.ast.HasTypeName %}: Marker interface for Kotlin AST nodes that expose
+      a `@TypeName` XPath attribute.
+    * New XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly`, `pmd-kotlin:hasAnnotation`,
+      `pmd-kotlin:modifiers`, `pmd-kotlin:matchesSig`, `pmd-kotlin:isNullable`, `pmd-kotlin:hasUnresolvedReference`
+      in package `net.sourceforge.pmd.lang.kotlin.rule.xpath.internal`.
+    * New AST attribute view classes in package `net.sourceforge.pmd.lang.kotlin.ast`:
+      {%jdoc kotlin::lang.kotlin.ast.KtCatchBlockAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtDelegationSpecifierAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtForStatementAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtFunctionValueParameterAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtPropertyDeclarationAttributes %},
+      {%jdoc kotlin::lang.kotlin.ast.KtSingleAnnotationAttributes %}, and
+      {%jdoc kotlin::lang.kotlin.ast.KtUnescapedAnnotationAttributes %}.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -149,4 +134,3 @@ Note: Type data is not yet accessible in XPath rules or the PMD Rule Designer. T
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
-

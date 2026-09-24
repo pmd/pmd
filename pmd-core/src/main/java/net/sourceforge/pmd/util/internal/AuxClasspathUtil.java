@@ -15,12 +15,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,23 +73,29 @@ public final class AuxClasspathUtil {
      *
      * @see <a href="https://openjdk.org/jeps/220">JEP 220: Modular Run-Time Images</a>
      */
-    public static List<Path> getPlatformClasspath() {
+    public static Path getPlatformClasspath() {
         String javaHome = System.getProperty("java.home");
         Path jrtFsJar = Paths.get(javaHome, "lib", "jrt-fs.jar"); // Java 11+
         Path rtJar = Paths.get(javaHome, "lib", "rt.jar"); // Java 8
         if (Files.isRegularFile(jrtFsJar)) {
             LOG.debug("Found current JVM runtime classes at {}", jrtFsJar);
-            return Collections.singletonList(jrtFsJar);
+            return jrtFsJar;
         } else if (Files.isRegularFile(rtJar)) {
             LOG.debug("Found current JVM runtime classes at {}", rtJar);
-            return Collections.singletonList(rtJar);
+            return rtJar;
         }
         throw new IllegalStateException("Could not determine current jvm classpath");
     }
 
+    public static String toRawClasspath(List<Path> paths, Path... additionalPaths) {
+        List<Path> completePath = new ArrayList<>(paths);
+        completePath.addAll(Arrays.asList(additionalPaths));
+        return StringUtils.join(completePath, File.pathSeparator);
+    }
+
     /**
      * Uses the given configuration to either return the classpath entries from an externally
-     * provided classloader (soon to be deprecated functionality) or from the given auxClasspath
+     * provided classloader (deprecated functionality) or from the given auxClasspath
      * (CLI option {@code --aux-classpath}).
      *
      * @see #expandClasspath(String)
@@ -96,19 +104,23 @@ public final class AuxClasspathUtil {
         List<Path> result = new ArrayList<>();
 
         ClassLoader classLoader = configuration.getClassLoader();
-        try {
-            if (classLoader instanceof URLClassLoader) {
-                @SuppressWarnings("PMD.CloseResource") // we just need to get the URLs, don't close it here. the classloader will be needed later on...
-                URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
-                for (URL url : urlClassLoader.getURLs()) {
-                    result.add(Paths.get(url.toURI()));
+        if (!PMDConfiguration.class.getClassLoader().equals(classLoader)) {
+            try {
+                if (classLoader instanceof URLClassLoader) {
+                    @SuppressWarnings("PMD.CloseResource") // we just need to get the URLs, don't close it here. the classloader will be needed later on...
+                    URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+                    for (URL url : urlClassLoader.getURLs()) {
+                        result.add(Paths.get(url.toURI()));
+                    }
+                    return result;
                 }
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
             }
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
 
-        return result;
+        String auxClasspath = configuration.getAuxClasspath();
+        return AuxClasspathUtil.expandClasspath(auxClasspath);
     }
 
     /**

@@ -19,6 +19,10 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.reporting.Report
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil.getPlatformClasspath
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -194,6 +198,10 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val props = language.newPropertyBundle().apply {
             setLanguageVersion(params.defaultVerString ?: defaultVersion.version)
             setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
+            if (this is JvmLanguagePropertyBundle) {
+                setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH,
+                    toRawClasspath(getRuntimeClasspath(), getPlatformClasspath()))
+            }
             params.configLanguageProperties(this)
         }
         return language.createProcessor(props)

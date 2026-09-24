@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
          ref: main
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 #v5.7.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -79,14 +79,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           ref: main
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 #v5.7.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'
           server-id: central
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          server-username-env-var: MAVEN_USERNAME
+          server-password-env-var: MAVEN_PASSWORD
+          gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
         with:
@@ -110,6 +110,7 @@ jobs:
             -Dmaven.repo.local=.m2/repository \
             deploy \
             -DskipTests \
+            -DskipITs \
             -PfastSkip,sign,pmd-release \
             -Dcyclonedx.skip=false \
             -Dmaven.javadoc.skip=false \
@@ -642,14 +643,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           ref: main
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 #v5.7.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: |
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b #v1.321.0
+        uses: ruby/setup-ruby@a0102e0972be65f351c307e2d64b9314a57c8073 #v1.324.0
         with:
           ruby-version: 4
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
@@ -729,7 +730,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           ref: main
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 #v5.7.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -766,7 +767,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           ref: main
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 #v5.7.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'

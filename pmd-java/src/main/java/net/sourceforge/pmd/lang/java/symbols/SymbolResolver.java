@@ -37,9 +37,7 @@ public interface SymbolResolver {
     /**
      * @since 7.27.0
      */
-    default @Nullable AnnotableSymbol resolvePackage(@NonNull String packageName) {
-        return null;
-    }
+    @Nullable JPackageSymbol resolvePackage(@NonNull String packageName);
 
     /**
      * Resolves a class symbol from its canonical name. Periods ('.') may
@@ -101,6 +99,18 @@ public interface SymbolResolver {
                 }
                 return null;
             }
+
+            @Override
+            public @Nullable JPackageSymbol resolvePackage(@NonNull String packageName) {
+                for (SymbolResolver resolver : stack) {
+                    JPackageSymbol symbol = resolver.resolvePackage(packageName);
+                    if (symbol != null) {
+                        return symbol;
+                    }
+                }
+                return null;
+            }
+
 
             @Override
             public void logStats() {

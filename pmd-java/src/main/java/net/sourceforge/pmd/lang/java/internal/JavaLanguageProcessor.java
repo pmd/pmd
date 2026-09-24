@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
@@ -30,7 +34,9 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.util.AuxClasspathLoader;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 /**
  * @author Clément Fournier
@@ -45,10 +51,12 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
     private TypeSystem typeSystem;
+    private AuxClasspathLoader auxClasspathLoader;
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
+    public JavaLanguageProcessor(JavaLanguageProperties properties) {
         super(properties);
-        this.typeSystem = typeSystem;
+
+        initTypeSystem(properties);
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
@@ -56,9 +64,27 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         this.firstClassLombok = properties.getProperty(JavaLanguageProperties.FIRST_CLASS_LOMBOK);
     }
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties) {
-        this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
-        LOG.debug("Using analysis classloader: {}", properties.getAnalysisClassLoader());
+    private void initTypeSystem(JavaLanguageProperties properties) {
+        ClassLoader externallyConfiguredClassLoader = properties.getExternalClassLoader();
+        if (externallyConfiguredClassLoader != null) {
+            LOG.debug("Using externally configured classloader as analysis classloader: {}", externallyConfiguredClassLoader);
+            this.typeSystem = TypeSystem.usingClassLoaderClasspath(externallyConfiguredClassLoader);
+        } else {
+            String auxClasspath = properties.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
+
+            Path relativeJrtFsJar = Paths.get("lib/jrt-fs.jar");
+            Path relativeRtJar = Paths.get("lib/rt.jar");
+            if (!auxClasspath.contains(relativeJrtFsJar.toString()) && !auxClasspath.contains(relativeRtJar.toString())) {
+                Path platformClasspath = AuxClasspathUtil.getPlatformClasspath();
+                LOG.warn("Adding current platform {} to auxClasspath, which could be the wrong java version. "
+                        + "Please add the correct jrt-fs.jar explicitly to the auxClasspath.",
+                        platformClasspath);
+                auxClasspath += File.pathSeparator + platformClasspath;
+            }
+            LOG.debug("Using auxClasspath as analysis classloader: {}", auxClasspath);
+            this.auxClasspathLoader = AuxClasspathLoader.create(auxClasspath);
+            this.typeSystem = TypeSystem.usingClasspath(name -> auxClasspathLoader.findResource(name));
+        }
     }
 
     @Override
@@ -139,6 +165,9 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public void close() throws Exception {
         this.typeSystem.logStats();
+        if (this.auxClasspathLoader != null) {
+            this.auxClasspathLoader.close();
+        }
         super.close();
     }
 }

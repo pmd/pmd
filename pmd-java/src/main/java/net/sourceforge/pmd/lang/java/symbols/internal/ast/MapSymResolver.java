@@ -11,9 +11,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JPackageSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
 /**
@@ -47,7 +47,7 @@ final class MapSymResolver implements SymbolResolver {
     }
 
     @Override
-    public @Nullable AnnotableSymbol resolvePackage(@NonNull String packageName) {
+    public @Nullable JPackageSymbol resolvePackage(@NonNull String packageName) {
         return null;
     }
 

@@ -367,6 +367,11 @@ class JavaParserImpl {
     return jdkVersion >= 16;
   }
 
+  private boolean isMarkdownJavadocSupported() {
+    // Markdown documentation comments (JEP 467) are available since Java 23
+    return jdkVersion >= 23;
+  }
+
   private boolean localTypesSupported() {
     return isRecordTypeSupported();
   }
@@ -1078,7 +1083,7 @@ ASTCompilationUnit CompilationUnit() :
 
   <EOF>
   {
-     jjtThis.setComments(token_source.comments);
+     jjtThis.setComments(token_source.comments, isMarkdownJavadocSupported());
      return jjtThis;
   }
 }

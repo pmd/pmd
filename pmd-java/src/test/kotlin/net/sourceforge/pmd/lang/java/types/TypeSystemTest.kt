@@ -125,7 +125,11 @@ class TypeSystemTest : IntelliMarker, FunSpec({
     }
 
     test("Test getPackageSymbol") {
-        ts.getPackageSymbol("java.net")?.simpleName shouldBe "package-info"
+        ts.getPackageSymbol("java.net")?.simpleName shouldBe "java.net"
+    }
+
+    test("Test getPackageSymbol for unnamed (default) package") {
+        ts.getPackageSymbol("") shouldBe null
     }
 
     test("Test parameterize special types") {

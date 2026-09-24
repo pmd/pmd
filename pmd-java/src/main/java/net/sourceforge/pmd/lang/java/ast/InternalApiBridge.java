@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JPackageSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -68,6 +69,8 @@ public final class InternalApiBridge {
             ((ASTRecordComponentList) node).setSymbol((JConstructorSymbol) symbol);
         } else if (node instanceof ASTRecordComponent) {
             ((ASTRecordComponent) node).setSymbol((JRecordComponentSymbol) symbol);
+        } else if (node instanceof ASTPackageDeclaration) {
+            ((ASTPackageDeclaration) node).setSymbol((JPackageSymbol) symbol);
         } else {
             throw new AssertionError("Cannot set symbol " + symbol + " on node " + node);
         }
