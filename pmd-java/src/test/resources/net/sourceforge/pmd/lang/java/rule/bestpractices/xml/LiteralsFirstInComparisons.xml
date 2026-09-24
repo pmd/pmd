@@ -367,13 +367,28 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#575 LiteralsFirstInComparisons must not trigger if the field is not static</description>
-        <expected-problems>0</expected-problems>
+        <description>#575, #7060 An instance String constant should be the comparison receiver</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     private final String TEST_CONSTANT = "Test-Constant";
     public boolean test(String someString) {
         return someString.equals(TEST_CONSTANT);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7060 Final local String constants work on either side of a comparison</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    boolean test(String value) {
+        final String constant = "value";
+        boolean reversed = value.equals(constant); // The constant should be the receiver.
+        return reversed && constant.equals(value); // Already in the preferred order.
     }
 }
         ]]></code>

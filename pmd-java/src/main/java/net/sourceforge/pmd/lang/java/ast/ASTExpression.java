@@ -154,11 +154,12 @@ public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowR
      * <ul>
      * <li>No constant value: constant folding failed, meaning, the value of the expression is not known at compile time.
      * <li>Has compile-time constant value: there is a constant value, and it is a compile-time constant in the sense of the JLS.
-     * Such constants are inlined in class files. One restriction on them is that they only use literals or CT-constant
-     * fields (which must be static final and have a CT-constant initializer), but not final variables or non-static fields
-     * for instance.
+     * Such constants are inlined in class files. References to constant variables are allowed: these are final
+     * variables of primitive or String type initialized with a constant expression (JLS 4.12.4).
+     * They may be local variables or fields, including non-static fields.
      * <li>Has value, not compile-time constant: we could compute a constant value, but it is not CT-constant in the sense
-     * of the JLS. Maybe it uses the constant initializer of a final local variable for instance.
+     * of the JLS. For instance, the initializer of a final boxed variable may have a known value,
+     * but a reference to that variable is not a constant expression.
      * </ul>
      *
      * @since 7.12.0
