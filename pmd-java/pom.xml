@@ -244,6 +244,12 @@
         </dependency>
 
         <dependency>
+            <groupId>uk.org.webcompere</groupId>
+            <artifactId>system-stubs-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.oowekyala.treeutils</groupId>
             <artifactId>tree-matchers</artifactId>
             <scope>test</scope>

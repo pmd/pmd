@@ -74,8 +74,14 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
             if (!AuxClasspathUtil.containsPlatformClasspath(auxClasspath)) {
                 Path platformClasspath = AuxClasspathUtil.getPlatformClasspath();
-                LOG.warn("Adding current platform {} to auxClasspath, which could be the wrong java version. "
-                        + "Please add the correct jrt-fs.jar explicitly to the auxClasspath.", platformClasspath);
+                String logMessage = "Adding current platform " + platformClasspath + " to auxClasspath, which could be the wrong java version. "
+                        + "Please add the correct jrt-fs.jar explicitly to the auxClasspath. "
+                        + "See https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath";
+                if (properties.getProperty(JavaLanguageProperties.DISABLE_AUX_CLASSPATH_WARNINGS)) {
+                    LOG.debug(logMessage);
+                } else {
+                    LOG.warn("{} Set env var PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS=true to disable this warning.", logMessage);
+                }
                 auxClasspath.add(platformClasspath);
             }
             String expandedAuxClasspath = AuxClasspathUtil.toRawClasspath(auxClasspath);

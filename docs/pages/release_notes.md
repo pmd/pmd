@@ -76,6 +76,7 @@ Type data is now accessible in XPath rules via new attributes and helper functio
     * [#6135](https://github.com/pmd/pmd/issues/6135): \[html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag
 * java
     * [#6926](https://github.com/pmd/pmd/issues/6926): \[java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity
+    * [#7056](https://github.com/pmd/pmd/issues/7056): \[java] Provide ability to disable auxClasspath warning added in 7.27.0
     * [#7081](https://github.com/pmd/pmd/issues/7081): \[java] NoSuchFileException when auxClasspath is given as a classpath file (file: URL)
     * [#7101](https://github.com/pmd/pmd/issues/7101): \[java] ZipException when auxClasspath contains a non-jar file (since 7.27.0)
 * java-bestpractices
