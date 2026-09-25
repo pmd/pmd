@@ -87,6 +87,21 @@ public final class AuxClasspathUtil {
         throw new IllegalStateException("Could not determine current jvm classpath");
     }
 
+    /**
+     * Returns whether the given (already expanded) classpath entries contain the platform
+     * classpath, ie a {@code lib/jrt-fs.jar} or {@code lib/rt.jar} entry.
+     *
+     * @since 7.28.0
+     */
+    public static boolean containsPlatformClasspath(List<Path> entries) {
+        Path relativeJrtFsJar = Paths.get("lib/jrt-fs.jar");
+        Path relativeRtJar = Paths.get("lib/rt.jar");
+
+        return entries.stream()
+                .map(Path::toAbsolutePath)
+                .anyMatch(p -> p.endsWith(relativeJrtFsJar) || p.endsWith(relativeRtJar));
+    }
+
     public static String toRawClasspath(List<Path> paths, Path... additionalPaths) {
         List<Path> completePath = new ArrayList<>(paths);
         completePath.addAll(Arrays.asList(additionalPaths));
@@ -153,6 +168,7 @@ public final class AuxClasspathUtil {
                     path = Paths.get(classpath.substring(5));
                 }
 
+                // TODO: PMD 8: Use UTF-8
                 try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
                     entries.addAll(lines
                             .map(String::trim)

@@ -8050,7 +8050,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/978659?v=4",
       "profile": "https://jetmore.org/john/",
       "contributions": [
-        "doc"
+        "doc",
+        "bug"
       ]
     },
     {
@@ -8922,6 +8923,87 @@
       "name": "Taran",
       "avatar_url": "https://avatars.githubusercontent.com/u/156827032?v=4",
       "profile": "https://tarannn.me/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "JavaGuangGitHub",
+      "name": "JavaGuangGitHub",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13427127?v=4",
+      "profile": "https://github.com/JavaGuangGitHub",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "errael",
+      "name": "errael",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20450427?v=4",
+      "profile": "https://github.com/errael",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "franczakr",
+      "name": "Rafał Franczak",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30648293?v=4",
+      "profile": "https://github.com/franczakr",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "ziwen-gong",
+      "name": "ziwen-gong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/183884378?v=4",
+      "profile": "https://github.com/ziwen-gong",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "MakerYuichi",
+      "name": "MakerYuichi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/106516578?v=4",
+      "profile": "https://github.com/MakerYuichi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "NotAFlightRisk",
+      "name": "Iain",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23277273?v=4",
+      "profile": "https://github.com/NotAFlightRisk",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "kalayciburak",
+      "name": "Burak Kalaycı",
+      "avatar_url": "https://avatars.githubusercontent.com/u/61664693?v=4",
+      "profile": "https://kalayciburak.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "suhanrain",
+      "name": "suhanrain",
+      "avatar_url": "https://avatars.githubusercontent.com/u/272078604?v=4",
+      "profile": "https://github.com/suhanrain",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tanvir-ux",
+      "name": "Tanvir Alam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10319606?v=4",
+      "profile": "https://github.com/tanvir-ux",
       "contributions": [
         "code"
       ]

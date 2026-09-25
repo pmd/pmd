@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +36,7 @@ import net.sourceforge.pmd.reporting.ViolationSuppressor;
 import net.sourceforge.pmd.util.AuxClasspathLoader;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
+import net.sourceforge.pmd.util.log.internal.LogUtil;
 
 /**
  * @author Clément Fournier
@@ -70,19 +70,24 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
             LOG.debug("Using externally configured classloader as analysis classloader: {}", externallyConfiguredClassLoader);
             this.typeSystem = TypeSystem.usingClassLoaderClasspath(externallyConfiguredClassLoader);
         } else {
-            String auxClasspath = properties.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
+            String rawAuxClasspath = properties.getProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH);
+            List<Path> auxClasspath = new ArrayList<>(AuxClasspathUtil.expandClasspath(rawAuxClasspath));
 
-            Path relativeJrtFsJar = Paths.get("lib/jrt-fs.jar");
-            Path relativeRtJar = Paths.get("lib/rt.jar");
-            if (!auxClasspath.contains(relativeJrtFsJar.toString()) && !auxClasspath.contains(relativeRtJar.toString())) {
+            Boolean disableWarnings = properties.getProperty(JavaLanguageProperties.DISABLE_AUX_CLASSPATH_WARNINGS);
+            LogUtil.WarnOrDebugLogger warnOrDebugLogger = LogUtil.createWarnOrDebugLogger(!disableWarnings,
+                    "Set env var PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS=true to disable this warning.");
+            if (!AuxClasspathUtil.containsPlatformClasspath(auxClasspath)) {
                 Path platformClasspath = AuxClasspathUtil.getPlatformClasspath();
-                LOG.warn("Adding current platform {} to auxClasspath, which could be the wrong java version. "
-                        + "Please add the correct jrt-fs.jar explicitly to the auxClasspath.",
+
+                warnOrDebugLogger.log(LOG, "Adding current platform {} to auxClasspath, which could be the wrong java version. "
+                                + "Please add the correct jrt-fs.jar explicitly to the auxClasspath. "
+                                + "See https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath",
                         platformClasspath);
-                auxClasspath += File.pathSeparator + platformClasspath;
+                auxClasspath.add(platformClasspath);
             }
-            LOG.debug("Using auxClasspath as analysis classloader: {}", auxClasspath);
-            this.auxClasspathLoader = AuxClasspathLoader.create(auxClasspath);
+            String expandedAuxClasspath = AuxClasspathUtil.toRawClasspath(auxClasspath);
+            LOG.debug("Using auxClasspath as analysis classloader: {}", expandedAuxClasspath);
+            this.auxClasspathLoader = AuxClasspathLoader.create(expandedAuxClasspath, warnOrDebugLogger);
             this.typeSystem = TypeSystem.usingClasspath(name -> auxClasspathLoader.findResource(name));
         }
     }

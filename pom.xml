@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.28.0-SNAPSHOT</version>
+    <version>7.29.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -73,7 +73,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2026-08-28T11:37:11Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-09-25T07:52:15Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -99,7 +99,7 @@
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.10</saxon.version>
-        <byte.buddy.version>1.18.13</byte.buddy.version>
+        <byte.buddy.version>1.18.14</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -613,27 +613,27 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.27.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.27.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.27.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.27.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-xml</artifactId>
-                            <version>7.27.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -1069,9 +1069,9 @@
             </dependency>
 
             <dependency>
-                <groupId>com.github.stefanbirkner</groupId>
-                <artifactId>system-lambda</artifactId>
-                <version>1.2.1</version>
+                <groupId>uk.org.webcompere</groupId>
+                <artifactId>system-stubs-core</artifactId>
+                <version>2.1.8</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1082,7 +1082,7 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- byte-buddy is used by mockito.
+            <!-- byte-buddy is used by mockito-core and system-stubs-core.
                  Using a newer version than the one from mockito 4.11.0 for Java 21 compatibility
                  At least byte-buddy 1.14.3 is required for Java 21.
             -->
@@ -1221,10 +1221,17 @@
                     <artifactId>mockito-core</artifactId>
                     <scope>test</scope>
                 </dependency>
+                <dependency>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy-agent</artifactId>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
             <properties>
-                <!-- see https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3 -->
-                <extraArgLine>-javaagent:${org.mockito:mockito-core:jar}</extraArgLine>
+                <!-- See https://openjdk.org/jeps/451 JEP 451: Prepare to Disallow the Dynamic Loading of Agents -->
+                <!-- WARNING: Dynamic loading of agents will be disallowed by default in a future release -->
+                <!-- Adding mockito und byte-buddy-agent (for uk.org.webcompere:system-stubs-jupiter) explicitly in tests -->
+                <extraArgLine>-javaagent:${org.mockito:mockito-core:jar} -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</extraArgLine>
             </properties>
         </profile>
 
