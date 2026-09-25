@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.28.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.29.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.28.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.29.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.28.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-September-2026</div>
+    <li class="sidebarTitle">PMD 7.29.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 30-October-2026</div>
     
     
     
@@ -2055,195 +2055,17 @@
     </details>
 
   
-<h2 id="25-september-2026---7280-snapshot">25-September-2026 - 7.28.0-SNAPSHOT</h2>
+<h2 id="30-october-2026---7290-snapshot">30-October-2026 - 7.29.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.28.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.29.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-<h4 id="kotlin-xpath-functions-and-type-attributes">Kotlin XPath functions and type attributes</h4>
-<p>Type data is now accessible in XPath rules via new attributes and helper functions (see <a href="pmd_languages_kotlin.html#xpath-rule-support">Kotlin XPath rule support</a>):</p>
-
-<ul>
-  <li><strong>Type-info Attributes</strong>: <code class="language-plaintext highlighter-rouge">@TypeName</code>, <code class="language-plaintext highlighter-rouge">@ReturnTypeName</code>, <code class="language-plaintext highlighter-rouge">@AnnotationFqNames</code>
-are exposed on declaration nodes (property, function, class, parameter, catch, for-loop, delegation specifier,
-annotation nodes). These attributes depend on type resolution: they are only available when <code class="language-plaintext highlighter-rouge">auxClasspath</code>
-is configured and the kotlin-type-mapper analysis has resolved the types.</li>
-  <li><strong>General Attributes</strong>: <code class="language-plaintext highlighter-rouge">@Mutable</code>, <code class="language-plaintext highlighter-rouge">@Identifier</code>, <code class="language-plaintext highlighter-rouge">@Name</code>
-are exposed on declaration and import related nodes. These attributes don’t depend on type resolution, so
-they’re always present regardless of <code class="language-plaintext highlighter-rouge">auxClasspath</code>.</li>
-  <li><strong>XPath functions</strong>:
-    <ul>
-      <li><code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs(typeName)</code>: matches if the node’s type is <code class="language-plaintext highlighter-rouge">typeName</code> or a subtype.</li>
-      <li><code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIsExactly(typeName)</code>: matches the exact declared type only (no subtypes).</li>
-      <li><code class="language-plaintext highlighter-rouge">pmd-kotlin:hasAnnotation(name)</code>: matches if the node has an annotation with the given simple or FQN.</li>
-      <li><code class="language-plaintext highlighter-rouge">pmd-kotlin:modifiers()</code>: returns the modifier keywords of a declaration as a sequence.</li>
-      <li><code class="language-plaintext highlighter-rouge">pmd-kotlin:isNullable()</code>: returns <code class="language-plaintext highlighter-rouge">true</code> if the node’s declared type is nullable (has <code class="language-plaintext highlighter-rouge">?</code>).</li>
-      <li><code class="language-plaintext highlighter-rouge">pmd-kotlin:hasUnresolvedReference()</code>: returns <code class="language-plaintext highlighter-rouge">true</code> if the node contains an unresolved reference.</li>
-      <li><code class="language-plaintext highlighter-rouge">pmd-kotlin:matchesSig(signature)</code>: matches call sites by method signature pattern (supports wildcards).</li>
-    </ul>
-  </li>
-</ul>
-
-<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#ondemandimport"><code class="language-plaintext highlighter-rouge">OnDemandImport</code></a> reports on-demand imports, also known as wildcard imports.
-By default, static imports from JUnit and TestNG are allowed. The allowed static and type import packages
-can be configured with <code class="language-plaintext highlighter-rouge">allowStaticImportsFrom</code> and <code class="language-plaintext highlighter-rouge">allowTypeImportsFrom</code>.</li>
-  <li>The new Java rule  <a href="pmd_rules_java_errorprone.html#longliteralendingwithlowercasel"><code class="language-plaintext highlighter-rouge">LongLiteralEndingWithLowercaseL</code></a> finds long literals ending with a lowercase <code class="language-plaintext highlighter-rouge">l</code>.
-That helps to avoid confusion between numbers ending with <code class="language-plaintext highlighter-rouge">1</code> and <code class="language-plaintext highlighter-rouge">l</code>. Uppercase <code class="language-plaintext highlighter-rouge">L</code> should be used to define long literals.</li>
-  <li>The new Java rule  <a href="pmd_rules_java_bestpractices.html#typenamemismatch"><code class="language-plaintext highlighter-rouge">TypeNameMismatch</code></a> finds types that are not defined in a .java file
-with the same name. Enforcing a match between source file name and type name makes it easier to
-find source code for given type.</li>
-  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#cstylearraydeclaration"><code class="language-plaintext highlighter-rouge">CStyleArrayDeclaration</code></a> finds C-style declarations of arrays (e.g. <code class="language-plaintext highlighter-rouge">int numbers[]</code>).
-That helps you use Java-style declarations (e.g. <code class="language-plaintext highlighter-rouge">int[] numbers</code>) consistently throughout the codebase.</li>
-  <li>The new Java rule <a href="pmd_rules_java_design.html#internalapiusage"><code class="language-plaintext highlighter-rouge">InternalApiUsage</code></a> reports usages of internal or test-only APIs
-(e.g. annotated with <code class="language-plaintext highlighter-rouge">@VisibleForTesting</code>, <code class="language-plaintext highlighter-rouge">@TestOnly</code>, <code class="language-plaintext highlighter-rouge">@API(status=INTERNAL)</code> or <code class="language-plaintext highlighter-rouge">@ApiStatus.Internal</code>)
-from code that shouldn’t depend on them.</li>
-  <li>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunrelevanttestsannotation"><code class="language-plaintext highlighter-rouge">ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation</code></a> finds unit tests
-that do not use the new <code class="language-plaintext highlighter-rouge">@IsTest(critical=true)</code> or <code class="language-plaintext highlighter-rouge">@IsTest(testFor='...')</code> annotation parameters for tests.
-These parameters help to identify which tests should be executed during a <code class="language-plaintext highlighter-rouge">RunRelevantTests</code> deployment.<br />
-Note: These annotation parameters are Beta and require Salesforce API 66.0+.</li>
-</ul>
-
-<h4 id="changed-rules">Changed Rules</h4>
-<ul>
-  <li>The property <code class="language-plaintext highlighter-rouge">checkNonStaticMethods</code> of the rule <a href="pmd_rules_java_multithreading.html#nonthreadsafesingleton"><code class="language-plaintext highlighter-rouge">NonThreadSafeSingleton</code></a> is now
-deprecated and no longer has any effect. Its implementation did the opposite of what the documentation described.
-The rule now always reports both static and non-static methods; previously it reported only static methods
-by default.<br />
-This may result in additional violations being reported.<br />
-If you want to suppress violations for non-static methods, you can use
-<a href="pmd_userdocs_suppressing_warnings.html#the-property-violationsuppressxpath">suppression via XPath</a>, e.g.
-    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"violationSuppressXPath"</span> <span class="na">value=</span><span class="s">".[ancestor-or-self::MethodDeclaration[1][@Static = false()]]"</span> <span class="nt">/&gt;</span>
-</code></pre></div>    </div>
-  </li>
-  <li>The property <code class="language-plaintext highlighter-rouge">statementOrderMatters</code> of the rule <a href="pmd_rules_java_codestyle.html#variablecanbeinlined"><code class="language-plaintext highlighter-rouge">VariableCanBeInlined</code></a> is now deprecated.
-Setting it to <code class="language-plaintext highlighter-rouge">false</code> relaxes the rule under the unsafe assumption that intervening statements have no side
-effects, which can lead to false positives. The property will be removed in PMD 8.0.0.</li>
-</ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>apex-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6988">#6988</a>: [apex] New rule: Detect usage of @<!-- -->IsTest(critical=true) / @<!-- -->IsTest(testFor=’…’) annotations (RunRelevantTests, Beta, API 66.0+)</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7013">#7013</a>: [core] PMDConfiguration - “Can’t mix setClasspath with getAuxClasspath!”</li>
-    </ul>
-  </li>
-  <li>cli
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7090">#7090</a>: [cli] Add the missing exit code 5 to the CLI help</li>
-    </ul>
-  </li>
-  <li>html
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6135">#6135</a>: [html] HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6926">#6926</a>: [java] IllegalArgumentException (Mismatched list sizes) with inconsistent unresolved generic arity</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7056">#7056</a>: [java] Provide ability to disable auxClasspath warning added in 7.27.0</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7081">#7081</a>: [java] NoSuchFileException when auxClasspath is given as a classpath file (file: URL) (since 7.27.0)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7101">#7101</a>: [java] ZipException when auxClasspath contains a non-jar file (since 7.27.0)</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5940">#5940</a>: [java] UnusedAssignment: False positive when assignment is in conditional statement</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6901">#6901</a>: [java] MethodReturnsInternalArray: Various false negatives with local aliases and conditional expressions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7033">#7033</a>: [java] New rule: TypeNameMismatch</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7047">#7047</a>: [java] New rule: OnDemandImport</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3124">#3124</a>: [java] UnnecessaryLocalBeforeReturn/VariableCanBeInlined: deprecate property statementOrderMatters</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5732">#5732</a>: [java] UnnecessaryCast false positive with package private methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7026">#7026</a>: [java] New rule: CStyleArrayDeclaration</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6513">#6513</a>: [java] SimplifyConditional: False negative when null check and instanceof are separated by other &amp;&amp; conditions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6694">#6694</a>: [java] SimplifyBooleanReturns triggers inconsistently depending on redundant parentheses in return expression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6889">#6889</a>: [java] New rule: InternalApiUsage</li>
-    </ul>
-  </li>
-  <li>java-documentation
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6450">#6450</a>: [java] DanglingJavadoc: False positive on /// comments for Java &lt; 23</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1050">#1050</a>: [java] NullAssignment: False positive inside if statement for first assignment</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6693">#6693</a>: [java] CloneMethodMustImplementCloneable: False positive with throw-via-local</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7009">#7009</a>: [java] ReplaceJavaUtilDate: False negative when using pattern matching</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7027">#7027</a>: [java] New rule: LongLiteralEndingWithLowercaseL</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7068">#7068</a>: [java] UnusedReturnValue: False positive for calls made on Mockito.verify(mock)</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6297">#6297</a>: [java] AvoidUsingVolatile: Update documentation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6780">#6780</a>: [java] NonThreadSafeSingleton: False negative with property checkNonStaticMethods</li>
-    </ul>
-  </li>
-  <li>java-security
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7007">#7007</a>: [java] HardCodedCryptoKey: False negative when a hard-coded key is constructed via new String(char[])</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7008">#7008</a>: [java] HardCodedCryptoKey: False positive when the key comes from System.getProperty()</li>
-    </ul>
-  </li>
-  <li>kotlin
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6893">#6893</a>: [kotlin] Add XPath functions and type attributes</li>
-    </ul>
-  </li>
-  <li>miscellaneous
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6961">#6961</a>: [doc] When a rule’s description has a link to another rule in the exact wrong position, the doc generation crashes</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-<h4 id="experimental-api">Experimental API</h4>
-<ul>
-  <li>kotlin
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#"><code>KotlinNodeTypeData</code></a>: Provides the API to access type information
-on Kotlin AST nodes. It’s part of the new Kotlin type-aware analysis.</li>
-      <li><code class="language-plaintext highlighter-rouge">KotlinNodeTypeData.getTypeName(KotlinNode)</code> and <code class="language-plaintext highlighter-rouge">KotlinNodeTypeData.getReturnTypeName(KotlinNode)</code>
-have been renamed to <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#getType(KotlinNode)"><code>getType</code></a>
-and <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinNodeTypeData.html#getReturnType(KotlinNode)"><code>getReturnType</code></a>, and
-now return <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/KotlinTypeName.html#"><code>KotlinTypeName</code></a> instead of <code class="language-plaintext highlighter-rouge">String</code>.
-The corresponding <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/types/InternalApiBridge.html#"><code>InternalApiBridge</code></a> setters
-<code class="language-plaintext highlighter-rouge">setTypeName</code>/<code class="language-plaintext highlighter-rouge">setReturnTypeName</code> were renamed to <code class="language-plaintext highlighter-rouge">setType</code>/<code class="language-plaintext highlighter-rouge">setReturnType</code> the same way.
-This is a breaking change to this experimental API.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasTypeName.html#"><code>HasTypeName</code></a>: Marker interface for Kotlin AST nodes that expose
-a <code class="language-plaintext highlighter-rouge">@TypeName</code> XPath attribute.</li>
-      <li>New XPath functions <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs</code>, <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIsExactly</code>, <code class="language-plaintext highlighter-rouge">pmd-kotlin:hasAnnotation</code>,
-<code class="language-plaintext highlighter-rouge">pmd-kotlin:modifiers</code>, <code class="language-plaintext highlighter-rouge">pmd-kotlin:matchesSig</code>, <code class="language-plaintext highlighter-rouge">pmd-kotlin:isNullable</code>, <code class="language-plaintext highlighter-rouge">pmd-kotlin:hasUnresolvedReference</code></li>
-      <li>New AST attribute view classes in package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.kotlin.ast</code>:
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtCatchBlockAttributes.html#"><code>KtCatchBlockAttributes</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtDelegationSpecifierAttributes.html#"><code>KtDelegationSpecifierAttributes</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtForStatementAttributes.html#"><code>KtForStatementAttributes</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtFunctionValueParameterAttributes.html#"><code>KtFunctionValueParameterAttributes</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtPropertyDeclarationAttributes.html#"><code>KtPropertyDeclarationAttributes</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtSingleAnnotationAttributes.html#"><code>KtSingleAnnotationAttributes</code></a>, and
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.28.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtUnescapedAnnotationAttributes.html#"><code>KtUnescapedAnnotationAttributes</code></a>.</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
