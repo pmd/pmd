@@ -73,6 +73,8 @@ java {
     }
 }
 
+// Add jrt-fs.jar of the toolchain explicitly on pmdAux classpath, to avoid
+// warning "Adding current platform ... to auxClasspath, which could be the wrong java version."
 dependencies {
     pmdAux javaToolchains.launcherFor(java.toolchain)
             .map { it.metadata.installationPath }
@@ -81,6 +83,57 @@ dependencies {
 ```
 
 See [Providing the auxiliary classpath](pmd_languages_java.html#providing-the-auxiliary-classpath).
+
+### Environment Variables
+
+Environment variables are not automatically passed through to Gradle's PMD Plugin. E.g. using any
+[Language properties](pmd_languages_configuration.html) with Gradle is not straight forward, as
+PMD is called in an isolated worker process without any environment variables.
+
+The following snippets creates a subclass of Gradle's PMD task in order to provide all PMD specific
+environment variables. This task needs to be registered and the default tasks "pmdMain" and
+"pmdTest" need to be disabled.
+
+```
+abstract class PmdWithEnv extends Pmd {
+    @Input
+    abstract MapProperty<String, String> getPmdEnvironment()
+
+    @Override
+    protected void configureForkOptions(JavaForkOptions forkOptions) {
+        super.configureForkOptions(forkOptions)
+        forkOptions.environment(pmdEnvironment.get())
+    }
+}
+
+tasks.named('pmdMain') {
+    enabled = false
+}
+tasks.register('pmdMainEnv', PmdWithEnv) {
+    source = pmdMain.source
+    classpath = pmdMain.classpath
+    pmdEnvironment.convention(providers.environmentVariablesPrefixedBy('PMD_'))
+}
+
+tasks.named('pmdTest') {
+    enabled = false
+}
+tasks.register('pmdTestEnv', PmdWithEnv) {
+    source = pmdTest.source
+    classpath = pmdTest.classpath
+    pmdEnvironment.convention(providers.environmentVariablesPrefixedBy('PMD_'))
+}
+
+tasks.named('check') {
+    dependsOn tasks.withType(PmdWithEnv)
+}
+```
+
+With that configuration, you can call Gradle like that:
+
+```shell
+PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS=true ./gradlew check
+```
 
 ### Complete Example
 
