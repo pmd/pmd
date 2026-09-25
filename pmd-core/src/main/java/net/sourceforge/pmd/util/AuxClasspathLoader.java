@@ -10,6 +10,8 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -18,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,14 +43,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
+import net.sourceforge.pmd.util.log.internal.LogUtil;
 
 /**
  * This class allows to load resources from a given classpath. Unlike a real classloader
  * like {@link URLClassLoader}, the Jar files on the classpath are not opened with JarFile and
  * their signature is not verified which saves memory. The Jar files are opened directly
- * with {@link ZipFile}.
+ * with {@link ZipFile}. Regular files that are not valid zip archives are ignored
+ * with a warning, so a native library on the classpath does not abort analysis.
  *
  * <p>This classpath loader also supports loading platform classes (e.g. {@code java.lang}) from
  * the jrt-fs filesystem. All zip files and the jrt-fs are kept open, until this classpath loader
@@ -124,8 +130,11 @@ public class AuxClasspathLoader implements AutoCloseable {
         }
     }
 
+    // TODO: PMD 8: Consider PmdReporter, see also #3816
+    private final LogUtil.WarnOrDebugLogger warnOrDebugLogger;
     private final List<Entry> auxClasspath;
     private final @GuardedBy("this") Map<Path, ZipFile> zipFiles = new HashMap<>();
+    private final @GuardedBy("this") Set<Path> invalidArchives = new HashSet<>();
 
     private final String javaHome;
     private final FileSystem fileSystem;
@@ -141,7 +150,12 @@ public class AuxClasspathLoader implements AutoCloseable {
     private Map<String, ZipFile> moduleNameToZipFile;
 
     AuxClasspathLoader(String rawAuxClasspath) {
+        this(rawAuxClasspath, LogUtil.createWarnOrDebugLogger(true, ""));
+    }
+
+    AuxClasspathLoader(String rawAuxClasspath, LogUtil.WarnOrDebugLogger warnOrDebugLogger) {
         LOG.debug("Creating new AuxClasspathLoader for {}", rawAuxClasspath);
+        this.warnOrDebugLogger = Objects.requireNonNull(warnOrDebugLogger);
         this.auxClasspath = expandAuxClasspath(rawAuxClasspath);
 
         List<Path> jrtJars = new ArrayList<>();
@@ -171,9 +185,18 @@ public class AuxClasspathLoader implements AutoCloseable {
     }
 
     public static AuxClasspathLoader create(String rawAuxClasspath) {
+        return create(rawAuxClasspath, LogUtil.createWarnOrDebugLogger(true, ""));
+    }
+
+    /**
+     * @since 7.28.0
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+     */
+    @InternalApi // LogUtil.WarnOrDebugLogger is internal...
+    public static AuxClasspathLoader create(String rawAuxClasspath, LogUtil.WarnOrDebugLogger warnOrDebugLogger) {
         synchronized (LOCK) {
             if (cache == null) {
-                return new AuxClasspathLoader(rawAuxClasspath);
+                return new AuxClasspathLoader(rawAuxClasspath, warnOrDebugLogger);
             }
 
             AuxClasspathLoader cachedAuxClasspathLoader = cache.get(rawAuxClasspath);
@@ -183,7 +206,7 @@ public class AuxClasspathLoader implements AutoCloseable {
             }
 
             LOG.debug("Creating new AuxClasspathLoader");
-            AuxClasspathLoader newAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath);
+            AuxClasspathLoader newAuxClasspathLoader = new AuxClasspathLoader(rawAuxClasspath, warnOrDebugLogger);
             cache.put(rawAuxClasspath, newAuxClasspathLoader);
             return newAuxClasspathLoader;
         }
@@ -406,6 +429,9 @@ public class AuxClasspathLoader implements AutoCloseable {
             if (classpathEntry.isFile()) {
                 @SuppressWarnings("PMD.CloseResource") // we keep the zip file open and close all at the end, see #close
                 ZipFile jarFile = openJarFile(classpathEntry.getPath());
+                if (jarFile == null) {
+                    continue;
+                }
                 ZipEntry entry = jarFile.getEntry(name);
                 if (entry != null) {
                     try {
@@ -455,16 +481,47 @@ public class AuxClasspathLoader implements AutoCloseable {
         return null;
     }
 
-    private ZipFile openJarFile(Path path) {
+    private @Nullable ZipFile openJarFile(Path path) {
         synchronized (this) {
             ensureNotClosed();
-            return zipFiles.computeIfAbsent(path, (p) -> {
-                try {
-                    return new ZipFile(p.toFile());
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
+            if (invalidArchives.contains(path)) {
+                return null;
+            }
+            ZipFile existing = zipFiles.get(path);
+            if (existing != null) {
+                return existing;
+            }
+            try {
+                ZipFile zipFile = new ZipFile(path.toFile());
+                zipFiles.put(path, zipFile);
+                return zipFile;
+            } catch (IOException e) {
+                invalidArchives.add(path);
+
+                // only warn about corrupt ZIP files and ignore other files (like native libs)
+                if (hasZipMagicNumber(path)) {
+                    warnOrDebugLogger.log(LOG, "Ignoring corrupt archive on auxClasspath: {} ({})", path, e.getMessage(), e);
+                } else {
+                    LOG.debug("Ignoring non-archive auxClasspath entry: {}", path, e);
                 }
-            });
+                return null;
+            }
+        }
+    }
+
+    private static boolean hasZipMagicNumber(Path path) {
+        try (InputStream in = Files.newInputStream(path)) {
+            byte[] magic = new byte[4];
+            int count = in.read(magic);
+            if (count != magic.length) {
+                return false;
+            }
+            ByteBuffer buffer = ByteBuffer.wrap(magic).order(ByteOrder.BIG_ENDIAN);
+            int magicNumber = buffer.getInt();
+            return magicNumber == 0x504B0304 // "PK\003\004" local file header
+                || magicNumber == 0x504B0506; // "PK\005\006" empty archive
+        } catch (IOException e) {
+            return false;
         }
     }
 
@@ -495,6 +552,9 @@ public class AuxClasspathLoader implements AutoCloseable {
         for (Entry classpathEntry : auxClasspath) {
             if (classpathEntry.isFile()) {
                 ZipFile jarFile = openJarFile(classpathEntry.getPath());
+                if (jarFile == null) {
+                    continue;
+                }
                 ZipEntry entry = jarFile.getEntry(MODULE_INFO_SUFFIX);
                 if (entry != null) {
                     try {
