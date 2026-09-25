@@ -225,8 +225,9 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#1199 PMD CheckResultSet gives false positive in a do/while loop</description>
-        <expected-problems>0</expected-problems>
+        <description>#1199 PMD CheckResultSet gives false positive in a do/while loop - but the return value of results.last() IS unused</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>17</expected-linenumbers>
         <code><![CDATA[
 import java.sql.ResultSet;
 import java.util.*;
@@ -362,6 +363,22 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Result is saved in variable and then ignored</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+
+public class Foo {
+    public void bar(Statement stmt) {
+        ResultSet results = stmt.executeQuery();
+        boolean hasNext = results.next();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Result is overwritten before being checked</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
@@ -433,6 +450,130 @@ public class Foo {
                     return rs.getInt(0);
                 }
             }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7063: CheckResultSet false-positive with next() as ternary condition in a lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.sql.ResultSet;
+            import java.sql.SQLException;
+
+            class Foo {
+                interface ResultSetHandler<T> {
+                    T handle(ResultSet rs) throws SQLException;
+                }
+
+                int getCount() throws SQLException {
+                    ResultSetHandler<Integer> countHandler =
+                        (rs) -> rs.next() ? rs.getInt(1) : 0;
+                    return countHandler.handle(null);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7063: CheckResultSet false-positive with next() as ternary condition in assignments and arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.sql.ResultSet;
+            import java.sql.SQLException;
+
+            class Foo {
+                int count;
+
+                void bar(ResultSet rs, boolean flag) throws SQLException {
+                    count = rs.next() ? rs.getInt(1) : 0;
+                    count = (rs.next()) ? rs.getInt(1) : 0;
+                    count = !rs.previous() ? 0 : rs.getInt(1);
+                    System.out.println(flag && rs.first() ? rs.getInt(1) : 0);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7063: next() unchecked inside a branch of a ternary is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+            import java.sql.ResultSet;
+            import java.sql.SQLException;
+            import java.util.function.Consumer;
+
+            class Foo {
+                void bar(ResultSet rs, boolean flag) throws SQLException {
+                    Consumer<ResultSet> c = flag ? r -> {
+                        r.next();
+                    } : r -> { };
+                    c.accept(rs);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Check result set via do-while loop (#5031)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting
+{
+    public <T> List<T> toBeanList(final ResultSet resultSet, final Class<? extends T> type) throws SQLException {
+        final List<T> results = new ArrayList<>();
+        if (!resultSet.next()) {
+            return results;
+        }
+        final PropertyDescriptor[] props = this.propertyDescriptors(type);
+        final ResultSetMetaData rsmd = resultSet.getMetaData();
+        final int[] columnToProperty = this.mapColumnsToProperties(rsmd, props);
+        do {
+            results.add(this.createBean(resultSet, type, props, columnToProperty));
+        } while (resultSet.next());
+        return results;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Check result set via function call (#5209)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting
+{
+    public boolean foo() {
+        try (Connection c = createDefaultDataSource().getConnection();
+                Statement s = c.createStatement();
+                ResultSet rs = s.executeQuery("SELECT 1")) {
+            checkState(rs.next(), "expecting single row");
+            checkState(rs.getInt(1) == 1, "expecting 1 as result");
+            checkState(!rs.next(), "expecting single row");
+            return true;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>.next() is called inside unrelated if statement (#7070)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting
+{
+    public void foo(ResultSet rs, boolean cond) throws SQLException
+    {
+        if (cond) {
+            rs.next();
+        }
+    }
+}
         ]]></code>
     </test-code>
 </test-data>

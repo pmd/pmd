@@ -25,6 +25,11 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java-bestpractices
+    * [#5031](https://github.com/pmd/pmd/issues/5031): \[java] CheckResultSet: False positive with ResultSet.next() in a while loop
+    * [#5209](https://github.com/pmd/pmd/issues/5209): \[java] CheckResultSet: False positive with guava preconditions
+    * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] CheckResultSet: False positive for rs.next() ? x : y
+    * [#7070](https://github.com/pmd/pmd/issues/7070): \[java] CheckResultSet: False negative caused by unrelated
 
 ### 🚨️ API Changes
 
