@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -24,8 +25,6 @@ import net.sourceforge.pmd.lang.PlainTextLanguage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 /**
  * @author Clément Fournier
@@ -108,7 +107,7 @@ class TestSchemaParserTest {
                       + "    </test-code>\n"
                       + "</test-data>\n";
 
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleTestCollection parsed = parseFile(file);
             assertEquals(1, parsed.getTests().size());
         });
@@ -135,7 +134,7 @@ class TestSchemaParserTest {
                 + "    </test-code>\n"
                 + "</test-data>\n";
 
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             assertThrows(IllegalStateException.class, () -> parseFile(file));
         });
 
@@ -241,7 +240,7 @@ class TestSchemaParserTest {
                 + "    </test-code>\n"
                 + "</test-data>\n";
 
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             parseFile(file);
         });
 
@@ -266,7 +265,7 @@ class TestSchemaParserTest {
                 + "</test-data>\n";
 
 
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             assertThrows(IllegalStateException.class, () -> parseFile(file));
         });
 
