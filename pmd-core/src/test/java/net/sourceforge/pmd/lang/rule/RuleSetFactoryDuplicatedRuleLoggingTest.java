@@ -9,10 +9,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import org.junit.jupiter.api.Test;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
@@ -20,7 +19,7 @@ class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
     @Test
     void duplicatedRuleReferenceShouldWarn() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleSet ruleset = loadRuleSetInDir(DIR, "duplicatedRuleReference.xml");
 
             assertEquals(1, ruleset.getRules().size());
@@ -35,7 +34,7 @@ class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
     @Test
     void duplicatedRuleReferenceWithOverrideShouldNotWarn() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleSet ruleset = loadRuleSetInDir(DIR, "duplicatedRuleReferenceWithOverride.xml");
 
             assertEquals(2, ruleset.getRules().size());
@@ -49,7 +48,7 @@ class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
     @Test
     void duplicatedRuleReferenceWithOverrideBeforeShouldNotWarn() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleSet ruleset = loadRuleSetInDir(DIR, "duplicatedRuleReferenceWithOverrideBefore.xml");
             assertEquals(2, ruleset.getRules().size());
             Rule mockRule = ruleset.getRuleByName("DummyBasicMockRule");
@@ -62,7 +61,7 @@ class RuleSetFactoryDuplicatedRuleLoggingTest extends RulesetFactoryTestBase {
 
     @Test
     void multipleDuplicates() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleSet ruleset = loadRuleSetInDir(DIR, "multipleDuplicates.xml");
 
             assertEquals(2, ruleset.getRules().size());

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
@@ -15,7 +16,6 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -29,7 +29,7 @@ class SarifRendererTest extends AbstractRendererTest {
 
     @Test
     void testRendererWithASCII() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             System.setProperty("file.encoding", StandardCharsets.US_ASCII.name());
             testRenderer(StandardCharsets.UTF_8);
         });

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.Matchers.equalTo;
+import static uk.org.webcompere.systemstubs.SystemStubs.withTextFromSystemIn;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,8 +19,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
-
 class TreeExportCliTest extends BaseCliTest {
 
     @TempDir
@@ -27,7 +26,7 @@ class TreeExportCliTest extends BaseCliTest {
 
     @Test
     void testReadStandardInput() throws Exception {
-        SystemLambda.withTextFromSystemIn("(a(b))").execute(() -> {
+        withTextFromSystemIn("(a(b))").execute(() -> {
             final CliExecutionResult output = runCliSuccessfully("-i", "-f", "xml", "-PlineSeparator=LF");
 
             output.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
