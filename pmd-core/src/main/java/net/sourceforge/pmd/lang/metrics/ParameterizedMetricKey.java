@@ -64,13 +64,11 @@ final class ParameterizedMetricKey<N extends Node, R extends Number> implements 
      *
      * @return An instance of parameterized metric key corresponding to the parameters
      */
+    @SuppressWarnings("unchecked")
     public static <N extends Node, R extends Number> ParameterizedMetricKey<N, R> getInstance(Metric<N, R> key, MetricOptions options) {
         // sharing instances allows using DataMap, which uses reference identity
         ParameterizedMetricKey<N, R> tmp = new ParameterizedMetricKey<>(key, options);
         POOL.putIfAbsent(tmp, tmp);
-
-        @SuppressWarnings("unchecked")
-        ParameterizedMetricKey<N, R> result = (ParameterizedMetricKey<N, R>) POOL.get(tmp);
-        return result;
+        return (ParameterizedMetricKey<N, R>) POOL.get(tmp);
     }
 }
