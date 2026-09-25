@@ -64,7 +64,8 @@ How to read the `ref` attribute?
   7.  **Performance**: Rules that flag suboptimal code.<br/>
   8.  **Security**: Rules that flag potential security flaws."
 
-{% include tip.html content="You can discover the available rules by language and category [from this page](tag_rule_references.html)" %}
+> [!TIP]
+> You can discover the available rules by language and category [from this page](tag_rule_references.html).
 
 
 * `EmptyCatchBlock` is simply the name of the rule. If there were no rule with that name within the specified
@@ -87,15 +88,16 @@ You can also reference rules in bulk by referencing a complete category or rules
 
 Here, the `ref` attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.
 
-{% include note.html content="Path separators in the source file path are normalized to be the `/` character within PMD, so the same ruleset can be used on multiple platforms transparently." %}
+> [!NOTE]
+> Path separators in the source file path are normalized to be the `/` character within PMD, so the same ruleset can be used on multiple platforms transparently.
 
-{% include note.html content="Referencing a complete category or ruleset means, you'll also get automatically any
-changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
-are deprecated, then these rules are automatically deactivated. This might or
-not might be, what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
-existing rules. If you want to have
-complete control over the rules, that you are using, then it is recommended to add each rule separately via
-a single rule reference." %}
+> [!NOTE]
+> "Referencing a complete category or ruleset means, you'll also get automatically any
+> changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
+> are deprecated, then these rules are automatically deactivated. This might or
+> not might be what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
+> existing rules. If you want to have complete control over the rules that you are using, 
+> then it is recommended to add each rule separately via a single rule reference.
 
 ### Filtering the processed files
 
@@ -120,5 +122,6 @@ You can exclude some files from being processed by a ruleset using **exclude pat
 
 ## Sharing your ruleset
 
-{% include tip.html content="If you want to share your ruleset, you can add it to the list
-on [3rd party rulesets](pmd_userdocs_3rdpartyrulesets.html)." %}
+> [!TIP]
+> If you want to share your ruleset, you can add it to the list
+on [3rd party rulesets](pmd_userdocs_3rdpartyrulesets.html).

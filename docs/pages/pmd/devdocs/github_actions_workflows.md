@@ -8,7 +8,8 @@ author: Andreas Dangel <andreas.dangel@pmd-code.org>
 last_updated: July 2026 (7.27.0)
 ---
 
-{%include note.html content="This page is work in progress and does not yet describe all workflows."%}
+> [!NOTE]
+> This page is work in progress and does not yet describe all workflows.
 
 ## Build, Build Pull Request, Build Snapshot, Build Release
 
@@ -74,16 +75,16 @@ The jobs are:
 * After the "compile" job, a bunch of other jobs are run in parallel:
     - "verify": runs a complete `./mvnw verify` with all code checks like checkstyle, japicmp, javadoc, etc.
       but excluding unit tests (these are run in a separate job).
-      This job is only run on linux. It reuses the already compiled artifacts from the first "compile" job.
-      Since it runs javadoc, it creates the javadocs-artifact.
+      This job is only run on Linux. It reuses the already compiled artifacts from the first "compile" job.
+      Since it runs Javadoc, it creates the javadocs-artifact.
     - "verify-unittests": just runs the unit tests on Linux, Windows and MacOS. Only linux reuses the
       "compile-artifact" from the first job. For Windows/MacOS we can't reuse this due to platform specific line
       endings and timestamp issues.
     - "dogfood": runs maven-pmd-plugin on PMD with the latest changes from this very pull request. It uses the
       "staging-repository" artifact.
     - "documentation": generates the rule documentations and builds PMD's documentation page using jekyll.
-      It also executes the verification for wrong rule tags and dead links. Additional it contains the release
-      notes in markdown format, to be used for release publishing. It creates the artifact "docs-artifact".
+      It also executes the verification for wrong rule tags and dead links. Additionally, it contains the release
+      notes in Markdown format, to be used for release publishing. It creates the artifact "docs-artifact".
     - "regressiontester": runs the [pmdtester](pmd_devdocs_pmdtester.html) to produce the regression report.
       It reuses the artifact "dist-artifact" so that we don't need to build PMD again. It uses a different build
       cache as the other jobs, as this cache now contains the test projects (like Spring Framework) and their

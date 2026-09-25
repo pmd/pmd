@@ -183,4 +183,5 @@ the sequence *contains* `@Name`. That is, the above rule will report all variabl
 named `foo` or `bar`. All other XPath 2.0 [functions operating on sequences](https://www.w3.org/TR/xpath-functions/#sequence-functions)
 are supported.
 
-{%include tip.html content="You can also [define properties directly in the designer](pmd_userdocs_extending_designer_reference.html#rule-properties)" %}
+> [!TIP]
+> You can also [define properties directly in the designer](pmd_userdocs_extending_designer_reference.html#rule-properties).

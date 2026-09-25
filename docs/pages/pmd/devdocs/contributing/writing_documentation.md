@@ -160,31 +160,26 @@ For a more exhaustive list, see [Pages - Frontmatter](http://idratherbewriting.c
 
 ## Alerts and Callouts
 
-See [Alerts](http://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html).
+For alerts, you can use the GitHub-flavored Markdown admonitions like this:
 
-For example, an info-box can be created like this:
-
-    {%raw%}{% include note.html content="This is a note." %}{%endraw%}
-
+```markdown
+> [!NOTE]
+> This is a note.
+```
 It renders as:
 
-{% include note.html content="This is a note." %}
+> [!NOTE]
+> This is a note.
 
-{% include important.html content="This include tag has to be at the beginning of the line (no indentation):
-Jekyll pastes the content verbatim and only the first line gets the indentation. Further lines start at 0
-and end an ongoing list. It works, if the content is only one line.
+See [GFM Admonitions](https://github.com/Helveg/jekyll-gfm-admonitions#readme) for details.
 
-If you have multiple lines, you'll need to add the &lt;div&gt; from the included file yourself and not use include
-at all.
-" %}
+The available types are:
 
-Other available types are:
-
-*   note.html
-*   tip.html
-*   warning.html
-*   important.html
-
+*   NOTE
+*   TIP
+*   WARNING
+*   IMPORTANT
+*   CAUTION
 
 A callout is created like this:
 

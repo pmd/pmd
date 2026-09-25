@@ -12,11 +12,9 @@ summary: "Visualforce-specific features and guidance"
 
 {% include language_info.html name='Salesforce Visualforce' id='visualforce' implementation='visualforce::lang.visualforce.VfLanguageModule' supports_pmd=true supports_cpd=true since='5.6.0' %}
 
-{% capture vf_id_note %}
-The language id of Visualforce was in PMD 6 just "vf". In PMD 7, this has been changed to "visualforce". Also the
-package name of the classes has been changed from vf to "visualforce".
-{% endcapture %}
-{% include note.html content=vf_id_note %}
+> [!NOTE]
+> The language id of Visualforce was in PMD 6 just "vf". In PMD 7, this has been changed to "visualforce". Also the
+> package name of the classes has been changed from vf to "visualforce".
 
 ## Language Properties
 
@@ -40,11 +38,10 @@ This can be configured using two language properties, which can be set as enviro
     to the Visualforce directory. Default is `../objects`. Specifying an empty string will disable data type
     resolution for Custom Object fields.
 
-{% include warning.html content="
-These env vars have changed from PMD 6 to PMD 7:
-* `PMD_VF_APEXDIRECTORIES` ➡️ `PMD_VISUALFORCE_APEX_DIRECTORIES`
-* `PMD_VF_OBJECTSDIRECTORIES` ➡️ `PMD_VISUALFORCE_OBJECTS_DIRECTORIES`
-"%}
+> [!WARNING]
+>  These env vars have changed from PMD 6 to PMD 7:
+> * `PMD_VF_APEXDIRECTORIES` ➡️ `PMD_VISUALFORCE_APEX_DIRECTORIES`
+> * `PMD_VF_OBJECTSDIRECTORIES` ➡️ `PMD_VISUALFORCE_OBJECTS_DIRECTORIES`
 
 ### Sample usage
 

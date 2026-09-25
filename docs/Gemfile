@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'jekyll', '>= 4.4.1'
-gem "webrick"
-gem "csv"
+gem 'jekyll-gfm-admonitions'
+gem 'webrick'
+gem 'csv'
 gem 'liquid'
 gem 'safe_yaml'
 gem 'rouge'

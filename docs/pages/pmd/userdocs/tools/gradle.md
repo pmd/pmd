@@ -54,10 +54,8 @@ pmd {
 }
 ```
 
-{% capture note-gradle-for-pmd-7 %}
-For PMD 7, at least Gradle 8.6 is needed. See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502).
-{% endcapture %}
-{% include note.html content=note-gradle-for-pmd-7 %}
+> [!NOTE]
+> For PMD 7, at least Gradle 8.6 is needed. See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502).
 
 ### Aux Classpath
 
