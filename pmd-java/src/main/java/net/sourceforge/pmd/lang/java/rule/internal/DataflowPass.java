@@ -578,10 +578,24 @@ public final class DataflowPass {
             ) {
                 recordReachingDefsInDeadOperand(cur, orExpr.getRightOperand());
             } else {
+                // The state that reaches the right operand is also the
+                // outcome where the left operand alone decided the condition,
+                // so the right operand may be skipped on it. The operands are
+                // evaluated in the state that may alias thenState (an if
+                // without else), in which the strong updates of the right
+                // operand destroy the reaching defs of that skip outcome.
+                Map<JVariableSymbol, VarLocalInfo> skipState =
+                        orExpr.getOperator() == BinaryOp.CONDITIONAL_OR && Boolean.FALSE.equals(leftValue)
+                        || orExpr.getOperator() == BinaryOp.CONDITIONAL_AND && Boolean.TRUE.equals(leftValue)
+                        ? null : new LinkedHashMap<>(before.symtable);
                 cur = linkConditional(cur, orExpr.getRightOperand(), thenState, elseState, false);
                 thenState.absorb(cur);
 
                 elseState.absorb(cur);
+
+                if (skipState != null && thenState == before) { // NOPMD CompareObjectsWithEqual
+                    CollectionUtil.mergeMaps(before.symtable, skipState, VarLocalInfo::merge);
+                }
             }
 
             return cur;

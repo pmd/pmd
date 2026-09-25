@@ -4339,4 +4339,187 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] Assignment in a condition operand may be skipped #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        if (flag() && (ok = false)) {
+            return;
+        }
+        System.out.println(ok); // reads the initializer when flag() is false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in an evaluated || operand of an abrupt branch kills the initializer #7018</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        if (flag() || (ok = false)) {
+            return;
+        }
+        System.out.println(ok); // the fall-through implies ok was assigned
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in a condition operand with a normally completing branch #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        if (flag() && (ok = false)) {
+            System.out.println("then");
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in a condition operand with an else branch #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        if (flag() && (ok = false)) {
+            return;
+        } else {
+            System.out.println("else");
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in a loop condition operand may be skipped #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        while (flag() && (ok = false)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in a ternary condition operand may be skipped #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        int x = flag() && (ok = false) ? 1 : 2;
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in a compound condition operand may be skipped #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        if (flag() && ((ok = false) == true)) {
+            return;
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Assignment in a condition operand before a throwing branch may be skipped #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        boolean ok = true;
+        if (flag() && (ok = false)) {
+            throw new IllegalStateException();
+        }
+        System.out.println(ok);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Field assignment in a condition operand may be skipped #7018</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int f;
+
+    static boolean flag() {
+        return Math.random() < 0.5;
+    }
+
+    public void process() {
+        this.f = 1;
+        if (flag() && (this.f = 2) == 2) {
+            return;
+        }
+        System.out.println(this.f);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
