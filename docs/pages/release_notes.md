@@ -150,11 +150,86 @@ Type data is now accessible in XPath rules via new attributes and helper functio
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6864](https://github.com/pmd/pmd/pull/6864): \[java] Fix #6780: NonThreadSafeSingleton checkNonStaticMethods contradicting impl - [Subhadeep](https://github.com/dweep-js) (@dweep-js)
+* [#6885](https://github.com/pmd/pmd/pull/6885): \[java] Fix #6693: CloneMethodMustImplementCloneable false positive for local-var throw - [hexonal](https://github.com/hexonal) (@hexonal)
+* [#6893](https://github.com/pmd/pmd/pull/6893): \[kotlin] Add XPath functions and type attributes - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#6922](https://github.com/pmd/pmd/pull/6922): \[java] Fix #6694: Trigger SimplifyBooleanReturns when expressions require parentheses - [Will-6543](https://github.com/Will-6543) (@Will-6543)
+* [#6935](https://github.com/pmd/pmd/pull/6935): \[java] Fix #6926: skip file on unresolved generic arity mismatch - [Burak Kalaycı](https://github.com/kalayciburak) (@kalayciburak)
+* [#6940](https://github.com/pmd/pmd/pull/6940): \[java] Fix #6901: MethodReturnsInternalArray: Track internal array escapes through expressions - [fudian](https://github.com/fudianchn) (@fudianchn)
+* [#6946](https://github.com/pmd/pmd/pull/6946): \[java] Fix #6513: SimplifyConditional detects null check separated from instanceof by a && chain - [fudian](https://github.com/fudianchn) (@fudianchn)
+* [#6951](https://github.com/pmd/pmd/pull/6951): \[java] Fix #6450: DanglingJavadoc should ignore markdown javadoc (///) before Java 23 - [fudian](https://github.com/fudianchn) (@fudianchn)
+* [#6963](https://github.com/pmd/pmd/pull/6963): \[doc] Fix #6961: dont choke on cut off links - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#6975](https://github.com/pmd/pmd/pull/6975): \[java] Prepare deprecation of asCtx in java-codestyle (part of #4814) - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#6991](https://github.com/pmd/pmd/pull/6991): \[apex] Fix #6988: Add ApexUnitTestClassShouldHaveRunRelevantTestsAnnotation rule - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
+* [#6992](https://github.com/pmd/pmd/pull/6992): \[java] Fix #6297: Update AvoidUsingVolatile description - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#6993](https://github.com/pmd/pmd/pull/6993): \[java] Fix #5732: UnnecessaryCast false positive for package-private members - [Tanvir Alam](https://github.com/tanvir-ux) (@tanvir-ux)
+* [#6994](https://github.com/pmd/pmd/pull/6994): \[java] New rule: InternalApiUsage - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#7005](https://github.com/pmd/pmd/pull/7005): \[java] Fix rule reference from `ProtectedMemberInFinalField` to `ProtectedMemberInFinalClass` - [Piotrek Żygieło](https://github.com/pzygielo) (@pzygielo)
+* [#7010](https://github.com/pmd/pmd/pull/7010): \[java] Fix #7009: ReplaceJavaUtilDate/Calendar miss pattern variables and record components - [renechoi](https://github.com/renechoi) (@renechoi)
+* [#7011](https://github.com/pmd/pmd/pull/7011): \[doc] chore: Improve RuleTagChecker to find invalid in-ruleset references - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7012](https://github.com/pmd/pmd/pull/7012): \[java] Fix #7008: HardCodedCryptoKey: False positive when a default value of System.getProperty() is treated as a hard-coded key - [MakerYuichi](https://github.com/MakerYuichi) (@MakerYuichi)
+* [#7016](https://github.com/pmd/pmd/pull/7016): \[java] Fix #5940: UnusedAssignment FP when constant operand short-circuits the condition - [fudian](https://github.com/fudianchn) (@fudianchn)
+* [#7019](https://github.com/pmd/pmd/pull/7019): \[core] Fix #7013: Only access PMDConfiguration.auxClasspath if it is actually set. - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7025](https://github.com/pmd/pmd/pull/7025): \[ci] gh-actions: Update environment variables for setup-java 6.0.0 - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7028](https://github.com/pmd/pmd/pull/7028): \[html] Fix #6135: HtmlCpdLexer giving IndexOutOfBoundsException when script contains unescaped closing tag - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#7029](https://github.com/pmd/pmd/pull/7029): \[java] Fix #7007: HardCodedCryptoKey detection for String(char\[]) - [suhanrain](https://github.com/suhanrain) (@suhanrain)
+* [#7030](https://github.com/pmd/pmd/pull/7030): \[java] Fix #7027: New rule: LongLiteralEndingWithLowercaseL - [Copilot](https://github.com/Copilot) (@Copilot)
+* [#7031](https://github.com/pmd/pmd/pull/7031): \[java] New rule: CStyleArrayDeclaration - [Copilot](https://github.com/Copilot) (@Copilot)
+* [#7032](https://github.com/pmd/pmd/pull/7032): \[doc] Strip rule description when generating docs - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#7034](https://github.com/pmd/pmd/pull/7034): \[java] New rule: TypeNameMismatch - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#7035](https://github.com/pmd/pmd/pull/7035): \[java] Fix #1050: NullAssignment false positive inside if statement for first assignment - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#7052](https://github.com/pmd/pmd/pull/7052): \[java] New rule: OnDemandImport - [suhanrain](https://github.com/suhanrain) (@suhanrain)
+* [#7061](https://github.com/pmd/pmd/pull/7061): \[core] Fix off-by-one error in AbstractJjtreeNode.fitTokensToChildren() - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7064](https://github.com/pmd/pmd/pull/7064): chore: Remove protobuf-java from <dependencyManagement> - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7065](https://github.com/pmd/pmd/pull/7065): \[java] Fix #3124: Deprecate statementOrderMatters property of VariableCanBeInlined - [fudian](https://github.com/fudianchn) (@fudianchn)
+* [#7069](https://github.com/pmd/pmd/pull/7069): \[java] Fix #7068: UnusedReturnValue false positive after Mockito.verify - [Burak Kalaycı](https://github.com/kalayciburak) (@kalayciburak)
+* [#7084](https://github.com/pmd/pmd/pull/7084): \[java] Followup for #7008 (HardCodedCryptoKey): Fix FN when hard-coded fallback value is present - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#7085](https://github.com/pmd/pmd/pull/7085): \[java] Fix #7081: Exception when auxClasspath is a file URL - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7086](https://github.com/pmd/pmd/pull/7086): \[java] Fix #7056: Add JavaLanguageProperty to disable auxClasspath warnings - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7089](https://github.com/pmd/pmd/pull/7089): \[doc] TOC highlighting improvements - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#7090](https://github.com/pmd/pmd/pull/7090): \[cli] Add the missing exit code 5 to the CLI help - [Iain](https://github.com/NotAFlightRisk) (@NotAFlightRisk)
+* [#7102](https://github.com/pmd/pmd/pull/7102): \[java] Fix #7101: Skip non-archive files on the auxclasspath - [Burak Kalaycı](https://github.com/kalayciburak) (@kalayciburak)
+* [#7106](https://github.com/pmd/pmd/pull/7106): \[doc] Update release notes for 7.28.0 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7111](https://github.com/pmd/pmd/pull/7111): \[doc] Add gradle environment vars example - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5421](https://github.com/pmd/pmd/pull/5421): chore(deps): bump me.tongfei:progressbar from 0.9.5 to 0.10.2
+* [#7004](https://github.com/pmd/pmd/pull/7004): Bump PMD from 7.26.0 to 7.27.0
+* [#7021](https://github.com/pmd/pmd/pull/7021): chore(deps): bump org.apache.groovy:groovy from 5.1.0 to 5.1.1
+* [#7022](https://github.com/pmd/pmd/pull/7022): chore(deps): bump crate-ci/typos from 1.49.0 to 1.50.0
+* [#7023](https://github.com/pmd/pmd/pull/7023): chore(deps): bump actions/setup-java from 5.7.0 to 6.0.0
+* [#7024](https://github.com/pmd/pmd/pull/7024): chore(deps): bump org.jsoup:jsoup from 1.23.1 to 1.23.2
+* [#7037](https://github.com/pmd/pmd/pull/7037): chore(deps-dev): bump byte.buddy.version from 1.18.12 to 1.18.13
+* [#7038](https://github.com/pmd/pmd/pull/7038): chore(deps-dev): bump org.projectlombok:lombok from 1.18.46 to 1.18.48
+* [#7039](https://github.com/pmd/pmd/pull/7039): chore(deps-dev): bump ant.version from 1.10.17 to 1.10.18
+* [#7040](https://github.com/pmd/pmd/pull/7040): chore(deps): bump surefire.version from 3.5.6 to 3.6.0
+* [#7041](https://github.com/pmd/pmd/pull/7041): chore(deps): bump org.yaml:snakeyaml from 2.6 to 2.7
+* [#7042](https://github.com/pmd/pmd/pull/7042): chore(deps-dev): bump io.github.git-commit-id:git-commit-id-maven-plugin from 10.0.0 to 10.0.1
+* [#7043](https://github.com/pmd/pmd/pull/7043): chore(deps): bump com.puppycrawl.tools:checkstyle from 14.0.0 to 14.1.0
+* [#7044](https://github.com/pmd/pmd/pull/7044): chore(deps): bump com.google.protobuf:protobuf-java from 4.36.0 to 4.36.1
+* [#7045](https://github.com/pmd/pmd/pull/7045): chore(deps): bump org.apache.maven.plugins:maven-compiler-plugin from 3.15.0 to 3.16.0
+* [#7046](https://github.com/pmd/pmd/pull/7046): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.26.1 to 0.26.2
+* [#7049](https://github.com/pmd/pmd/pull/7049): chore(deps): bump crate-ci/typos from 1.50.0 to 1.50.1
+* [#7051](https://github.com/pmd/pmd/pull/7051): chore(deps): bump org.apache.groovy:groovy from 5.1.1 to 5.1.2
+* [#7058](https://github.com/pmd/pmd/pull/7058): chore(deps-dev): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.7.0.6970 to 5.8.0.7211
+* [#7074](https://github.com/pmd/pmd/pull/7074): chore(deps-dev): bump org.codehaus.mojo:versions-maven-plugin from 2.21.0 to 2.22.0
+* [#7075](https://github.com/pmd/pmd/pull/7075): chore(deps-dev): bump org.apache.maven.plugins:maven-install-plugin from 3.1.4 to 3.2.0
+* [#7076](https://github.com/pmd/pmd/pull/7076): chore(deps): bump scalameta.version from 4.17.3 to 4.17.4
+* [#7077](https://github.com/pmd/pmd/pull/7077): chore(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.6.3 to 3.6.4
+* [#7078](https://github.com/pmd/pmd/pull/7078): chore(deps): bump org.codehaus.mojo:extra-enforcer-rules from 1.12.0 to 1.12.1
+* [#7079](https://github.com/pmd/pmd/pull/7079): chore(deps-dev): bump org.apache.maven.plugins:maven-deploy-plugin from 3.1.4 to 3.2.0
+* [#7080](https://github.com/pmd/pmd/pull/7080): chore(deps): bump org.codehaus.mojo:build-helper-maven-plugin from 3.6.1 to 3.6.2
+* [#7082](https://github.com/pmd/pmd/pull/7082): chore(deps): bump actions/setup-java from 6.0.0 to 6.0.1
+* [#7096](https://github.com/pmd/pmd/pull/7096): chore(deps-dev): bump byte.buddy.version from 1.18.13 to 1.18.14
+* [#7095](https://github.com/pmd/pmd/pull/7095): chore(deps): bump crate-ci/typos from 1.50.1 to 1.50.2
+* [#7097](https://github.com/pmd/pmd/pull/7097): chore(deps): bump bigdecimal from 4.1.2 to 4.1.3 in /docs
+* [#7098](https://github.com/pmd/pmd/pull/7098): chore(deps): bump ruby/setup-ruby from 1.321.0 to 1.324.0
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 74 commits
+* 69 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
