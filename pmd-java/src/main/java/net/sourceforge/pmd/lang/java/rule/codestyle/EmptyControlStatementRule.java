@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
 
@@ -52,93 +53,104 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFinallyClause node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getBody())) {
-            asCtx(data).addViolationWithMessage(node, "Empty finally clause");
+            ctx.addViolationWithMessage(node, "Empty finally clause");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTSynchronizedStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getBody())) {
-            asCtx(data).addViolationWithMessage(node, "Empty synchronized statement");
+            ctx.addViolationWithMessage(node, "Empty synchronized statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.getNumChildren() == 1) {
-            asCtx(data).addViolationWithMessage(node, "Empty switch statement");
+            ctx.addViolationWithMessage(node, "Empty switch statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTBlock node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node) && node.getParent() instanceof ASTBlock) {
-            asCtx(data).addViolationWithMessage(node, "Empty block");
+            ctx.addViolationWithMessage(node, "Empty block");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getThenBranch())) {
-            asCtx(data).addViolationWithMessage(node, "Empty if statement");
+            ctx.addViolationWithMessage(node, "Empty if statement");
         }
         if (node.hasElse() && isEmpty(node.getElseBranch())) {
-            asCtx(data).addViolationWithMessage(node.getElseBranch(), "Empty else statement");
+            ctx.addViolationWithMessage(node.getElseBranch(), "Empty else statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getBody())) {
-            asCtx(data).addViolationWithMessage(node, "Empty while statement");
+            ctx.addViolationWithMessage(node, "Empty while statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTForStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getBody())) {
-            asCtx(data).addViolationWithMessage(node, "Empty for statement");
+            ctx.addViolationWithMessage(node, "Empty for statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTForeachStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (JavaRuleUtil.isExplicitUnusedVarName(node.getVarId().getName())) {
             // allow `for (ignored : iterable) {}`
             return null;
         }
         if (isEmpty(node.getBody())) {
-            asCtx(data).addViolationWithMessage(node, "Empty foreach statement");
+            ctx.addViolationWithMessage(node, "Empty foreach statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTDoStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getBody())) {
-            asCtx(data).addViolationWithMessage(node, "Empty do..while statement");
+            ctx.addViolationWithMessage(node, "Empty do..while statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTInitializer node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getBody())) {
-            asCtx(data).addViolationWithMessage(node, "Empty initializer statement");
+            ctx.addViolationWithMessage(node, "Empty initializer statement");
         }
         return null;
     }
 
     @Override
     public Object visit(ASTTryStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isEmpty(node.getBody())) {
             // all resources must be explicitly ignored
             boolean hasResource = false;
@@ -153,7 +165,7 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
                         if (isSimpleExpression(init)) {
                             // The expression is simple enough, it should be just written this.close() or var.close(),
                             // so we report this case
-                            asCtx(data).addViolationWithMessage(node, "Empty try-with-resources statement. Should be written {0}.close()", PrettyPrintingUtil.prettyPrint(init));
+                            ctx.addViolationWithMessage(node, "Empty try-with-resources statement. Should be written {0}.close()", PrettyPrintingUtil.prettyPrint(init));
                             return null;
                         }
                         // Otherwise the expression is more complex and this is allowed, in order
@@ -169,14 +181,14 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
                     }
                     String name = varId.getName();
                     if (!JavaRuleUtil.isExplicitUnusedVarName(name)) {
-                        asCtx(data).addViolationWithMessage(node, "Empty try-with-resources statement. Rename the resource to `ignored`, `unused` or `_` (Java 22+).");
+                        ctx.addViolationWithMessage(node, "Empty try-with-resources statement. Rename the resource to `ignored`, `unused` or `_` (Java 22+).");
                         return null;
                     }
                 }
             }
 
             if (!hasResource) {
-                asCtx(data).addViolationWithMessage(node, "Empty try body");
+                ctx.addViolationWithMessage(node, "Empty try body");
             }
         }
         return null;

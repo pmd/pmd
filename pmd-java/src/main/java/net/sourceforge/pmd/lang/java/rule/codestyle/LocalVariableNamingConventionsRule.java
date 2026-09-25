@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -38,18 +39,20 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
     @Override
     public Object visit(ASTVariableId node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.isUnnamed()) {
             // unnamed variables do not have to match the regexes.
             return null;
         }
 
         if (node.isExceptionBlockParameter()) {
-            checkMatches(node, exceptionBlockParameterRegex, data);
+            checkMatches(node, exceptionBlockParameterRegex, ctx);
         } else if (node.isLocalVariable()) {
-            checkMatches(node, node.isFinal() ? finalVarRegex : localVarRegex, data);
+            checkMatches(node, node.isFinal() ? finalVarRegex : localVarRegex, ctx);
         }
 
-        return data;
+        return null;
     }
 
 

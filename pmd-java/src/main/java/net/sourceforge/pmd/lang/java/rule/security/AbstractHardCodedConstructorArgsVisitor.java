@@ -16,9 +16,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulechainRule {
+
+    private static final InvocationMatcher SYSTEM_GET_PROPERTY =
+            InvocationMatcher.parse("java.lang.System#getProperty(_*)");
 
     private final Class<?> type;
 
@@ -50,7 +54,6 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         }
 
         ASTVariableAccess varAccess = null;
-
         if (firstArgumentExpression instanceof ASTMethodCall) {
             // check for method call on a named variable
             ASTExpression expr = ((ASTMethodCall) firstArgumentExpression).getQualifier();
@@ -127,10 +130,24 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
 
     private void addViolationForStringLiteral(Object data, ASTExpression expression) {
         ASTStringLiteral literal = expression.descendantsOrSelf()
-                .filterIs(ASTStringLiteral.class).first();
+                .filterIs(ASTStringLiteral.class)
+                .filterNot(AbstractHardCodedConstructorArgsVisitor::isPropertyName)
+                .first();
         if (literal != null) {
             asCtx(data).addViolation(literal);
         }
+    }
+
+    /**
+     * Whether the literal is the property name of a {@code System.getProperty} call.
+     */
+    private static boolean isPropertyName(ASTStringLiteral literal) {
+        ASTMethodCall call = literal.ancestors(ASTMethodCall.class).first();
+        if (!SYSTEM_GET_PROPERTY.matchesCall(call)) {
+            return false;
+        }
+        ASTArgumentList arguments = call.getArguments();
+        return !arguments.isEmpty() && arguments.get(0).descendantsOrSelf().any(node -> node == literal);
     }
 
     private void validateVarUsages(Object data, ASTVariableId varDecl) {

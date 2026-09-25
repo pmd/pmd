@@ -187,4 +187,105 @@ class CryptoBaseTest implements HardCodedCryptoKeyTest.Constants {
 
         </code>
     </test-code>
+
+    <test-code>
+        <description>[java] HardCodedCryptoKey: False positive when the key comes from System.getProperty() #7008</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class GoodCase {
+    public void testOneArgOverload() {
+        String keyString = System.getProperty("test.key");
+        SecretKeySpec keySpec = new SecretKeySpec(keyString.getBytes(), "AES");
+    }
+
+    public void getPropertyCallInConstructor() {
+        String key = new String(System.getProperty("aes.key"));
+        SecretKeySpec keySpec =  new SecretKeySpec(key.getBytes(), "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] HardCodedCryptoKey: System.getProperty() fallback should be flagged #7008</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Base64;
+import javax.crypto.spec.SecretKeySpec;
+public class Foo {
+    public void bar() {
+        String keyString = System.getProperty("test.key", "secretKey");
+        SecretKeySpec keySpec = new SecretKeySpec(keyString.getBytes(), "AES");// [should be flagged, because it could be the default value "secretKey"]
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] HardCodedCryptoKey: System.getProperty() nested as decode argument #7008</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Base64;
+import javax.crypto.spec.SecretKeySpec;
+public class GoodCase {
+    public void test() {
+        SecretKeySpec keySpec =
+            new SecretKeySpec(Base64.getDecoder().decode(System.getProperty("aes.key")), "AES");// [should not be flagged]
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] HardCodedCryptoKey: System.getProperty() with multi-level chain #7008</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+public class GoodCase {
+    public void test() {
+        SecretKeySpec keySpec =
+            new SecretKeySpec(System.getProperty("k").trim().getBytes(), "AES");// [should not be flagged]
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] HardCodedCryptoKey: System.getProperty() call chained directly as the qualifier of .getBytes() #7008</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+public class GoodCase {
+    public void test() {
+        SecretKeySpec keySpec =
+            new SecretKeySpec(System.getProperty("test.key").getBytes(), "AES");// [should not be flagged]
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] HardCodedCryptoKey: a hard coded key is still reported when a System.getProperty() call appears elsewhere in the same expression #7008</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,11</expected-linenumbers>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class BadCase {
+    public void concatenatedWithProperty() {
+        SecretKeySpec keySpec =
+            new SecretKeySpec(("hardcodedPrefix" + System.getProperty("suffix")).getBytes(), "AES");
+    }
+
+    public void propertyUsedOnlyAsCharset() throws Exception {
+        SecretKeySpec keySpec =
+            new SecretKeySpec("hardcodedKey".getBytes(System.getProperty("file.encoding")), "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

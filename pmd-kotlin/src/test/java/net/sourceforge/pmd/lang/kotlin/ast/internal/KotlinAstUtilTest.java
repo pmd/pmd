@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.kotlin.ast.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
@@ -20,6 +21,8 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtLambdaLiteral;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPrimaryExpression;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
 
 class KotlinAstUtilTest {
@@ -116,5 +119,47 @@ class KotlinAstUtilTest {
                 "fun foo() { var x = 0; x = 1 }");
         KtAssignment assignment = file.descendants(KtAssignment.class).first();
         assertEquals("x", KotlinAstUtil.getLhsVarName(assignment));
+    }
+
+    @Test
+    void findUserTypeInAnnotationFindsDirectUserType() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "@Deprecated val x = 1");
+        KtUnescapedAnnotation ann = file.descendants(KtUnescapedAnnotation.class).first();
+        KtUserType userType = KotlinAstUtil.findUserTypeInAnnotation(ann);
+        assertEquals("Deprecated",
+                userType.getTextDocument().sliceOriginalText(userType.getTextRegion()).toString());
+    }
+
+    @Test
+    void findUserTypeInAnnotationFindsUserTypeInConstructorInvocation() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "@Deprecated(\"old\") val x = 1");
+        KtUnescapedAnnotation ann = file.descendants(KtUnescapedAnnotation.class).first();
+        KtUserType userType = KotlinAstUtil.findUserTypeInAnnotation(ann);
+        assertEquals("Deprecated",
+                userType.getTextDocument().sliceOriginalText(userType.getTextRegion()).toString());
+    }
+
+    @Test
+    void findUserTypeInAnnotationThrowsWhenNeitherShapeIsPresent() {
+        // grammar-violating node: no children at all, so neither a direct
+        // KtUserType nor a KtConstructorInvocation can be found
+        KtUnescapedAnnotation malformed = new KtUnescapedAnnotation(null, 0);
+        assertThrows(IllegalStateException.class,
+                () -> KotlinAstUtil.findUserTypeInAnnotation(malformed));
+    }
+
+    @Test
+    void firstUserTypeChildReturnsNullWhenAbsent() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("val x = 1");
+        assertNull(KotlinAstUtil.firstUserTypeChild(file));
+    }
+
+    @Test
+    void firstUserTypeChildFindsUserTypeChild() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("val x: Foo = bar()");
+        KtUserType userType = file.descendants(KtUserType.class).first();
+        assertEquals(userType, KotlinAstUtil.firstUserTypeChild(userType.getParent()));
     }
 }

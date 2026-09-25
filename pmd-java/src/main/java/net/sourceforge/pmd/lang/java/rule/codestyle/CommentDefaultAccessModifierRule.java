@@ -86,50 +86,57 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (shouldReportNonTopLevel(decl)) {
-            report((RuleContext) data, decl, "method", PrettyPrintingUtil.displaySignature(decl));
+            report(ctx, decl, "method", PrettyPrintingUtil.displaySignature(decl));
         }
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(final ASTFieldDeclaration decl, final Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (shouldReportNonTopLevel(decl)) {
-            report((RuleContext) data, decl, "field", decl.getVarIds().firstOrThrow().getName());
+            report(ctx, decl, "field", decl.getVarIds().firstOrThrow().getName());
         }
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(final ASTConstructorDeclaration decl, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (shouldReportNonTopLevel(decl)) {
-            report((RuleContext) data, decl, "constructor", PrettyPrintingUtil.displaySignature(decl));
+            report(ctx, decl, "constructor", PrettyPrintingUtil.displaySignature(decl));
         }
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(final ASTAnnotationTypeDeclaration decl, final Object data) {
-        checkTypeDecl(decl, (RuleContext) data, "annotation");
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkTypeDecl(decl, ctx, "annotation");
+        return null;
     }
 
     @Override
     public Object visit(final ASTEnumDeclaration decl, final Object data) {
-        checkTypeDecl(decl, (RuleContext) data, "enum");
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkTypeDecl(decl, ctx, "enum");
+        return null;
     }
 
     @Override
     public Object visit(final ASTRecordDeclaration decl, final Object data) {
-        checkTypeDecl(decl, (RuleContext) data, "record");
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkTypeDecl(decl, ctx, "record");
+        return null;
     }
 
     @Override
     public Object visit(final ASTClassDeclaration decl, final Object data) {
-        checkTypeDecl(decl, (RuleContext) data, "class");
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkTypeDecl(decl, ctx, "class");
+        return null;
     }
 
     private void checkTypeDecl(ASTTypeDeclaration decl, RuleContext ctx, String typeKind) {
