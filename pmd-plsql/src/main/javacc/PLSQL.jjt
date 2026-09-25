@@ -1673,6 +1673,12 @@ ASTCompoundCondition CompoundCondition() :
    // this might be a expression list
    LOOKAHEAD("(" SqlExpression() ",") Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
+   // (expr) <op> ... is a comparison whose left operand is parenthesized.
+   // LOOKAHEAD(1) on "(" would otherwise treat it as a parenthesized condition
+   // and then fail when the comparison operator sits outside the parentheses.
+   LOOKAHEAD("(" SqlExpression() ")" ComparisonOp())
+     ComparisonCondition() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+ |
    LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
     Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*

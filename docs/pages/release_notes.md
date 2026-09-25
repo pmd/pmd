@@ -26,6 +26,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 
+*   [#6609](https://github.com/pmd/pmd/issues/6609): \[plsql] Parse exception when comparing a parenthesized arithmetic expression in a WHERE clause
+
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
