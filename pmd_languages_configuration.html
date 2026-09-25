@@ -2186,7 +2186,7 @@ Default: “true”</p>
   <li>
     <p><code class="language-plaintext highlighter-rouge">disableAuxClasspathWarnings</code>: Starting with 7.27.0, the Java language module will log warnings about the provided
 aux classpath when there could be any problems. Warnings are e.g. when no platform classpath (“lib/jrt-fs.jar”)
-has been provided and PMD falls back to the current runtime.
+has been provided and PMD falls back to the current runtime or when corrupt archive files are detected.
 These warnings can be disabled with this property.
 Note: Using an invalid aux classpath can lead to false positive or false negative violations.
 See <a href="pmd_languages_java.html#providing-the-auxiliary-classpath">Providing the auxiliary classpath</a></p>
@@ -2301,7 +2301,7 @@ Default: “30”</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            September 2026 (7.28.0)<br /> Site last generated: Sep 24, 2026 <br />
+            September 2026 (7.28.0)<br /> Site last generated: Sep 25, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2118,6 +2118,8 @@ of Gradle:</p>
     }
 }
 
+// Add jrt-fs.jar of the toolchain explicitly on pmdAux classpath, to avoid
+// warning "Adding current platform ... to auxClasspath, which could be the wrong java version."
 dependencies {
     pmdAux javaToolchains.launcherFor(java.toolchain)
             .map { it.metadata.installationPath }
@@ -2126,6 +2128,55 @@ dependencies {
 </code></pre></div></div>
 
 <p>See <a href="pmd_languages_java.html#providing-the-auxiliary-classpath">Providing the auxiliary classpath</a>.</p>
+
+<h3 id="environment-variables">Environment Variables</h3>
+
+<p>Environment variables are not automatically passed through to Gradle’s PMD Plugin. E.g. using any
+<a href="pmd_languages_configuration.html">Language properties</a> with Gradle is not straight forward, as
+PMD is called in an isolated worker process without any environment variables.</p>
+
+<p>The following snippets creates a subclass of Gradle’s PMD task in order to provide all PMD specific
+environment variables. This task needs to be registered and the default tasks “pmdMain” and
+“pmdTest” need to be disabled.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>abstract class PmdWithEnv extends Pmd {
+    @Input
+    abstract MapProperty&lt;String, String&gt; getPmdEnvironment()
+
+    @Override
+    protected void configureForkOptions(JavaForkOptions forkOptions) {
+        super.configureForkOptions(forkOptions)
+        forkOptions.environment(pmdEnvironment.get())
+    }
+}
+
+tasks.named('pmdMain') {
+    enabled = false
+}
+tasks.register('pmdMainEnv', PmdWithEnv) {
+    source = pmdMain.source
+    classpath = pmdMain.classpath
+    pmdEnvironment.convention(providers.environmentVariablesPrefixedBy('PMD_'))
+}
+
+tasks.named('pmdTest') {
+    enabled = false
+}
+tasks.register('pmdTestEnv', PmdWithEnv) {
+    source = pmdTest.source
+    classpath = pmdTest.classpath
+    pmdEnvironment.convention(providers.environmentVariablesPrefixedBy('PMD_'))
+}
+
+tasks.named('check') {
+    dependsOn tasks.withType(PmdWithEnv)
+}
+</code></pre></div></div>
+
+<p>With that configuration, you can call Gradle like that:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS</span><span class="o">=</span><span class="nb">true</span> ./gradlew check
+</code></pre></div></div>
 
 <h3 id="complete-example">Complete Example</h3>
 
@@ -2188,7 +2239,7 @@ dependencies {
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            September 2026 (7.28.0)<br /> Site last generated: Sep 24, 2026 <br />
+            September 2026 (7.28.0)<br /> Site last generated: Sep 25, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

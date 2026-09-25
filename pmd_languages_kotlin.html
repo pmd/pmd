@@ -2150,6 +2150,13 @@ is configured and the kotlin-type-mapper analysis has resolved the types.</p>
 
 <p>A type-info attribute is <strong>absent</strong> (not present with a null value) whenever its value is unavailable.</p>
 
+<blockquote>
+  <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">@TypeName</code> and <code class="language-plaintext highlighter-rouge">@ReturnTypeName</code> use fully-qualified names for generic type arguments:
+<code class="language-plaintext highlighter-rouge">kotlin.collections.List&lt;kotlin.String&gt;?</code>, not <code class="language-plaintext highlighter-rouge">List&lt;String&gt;?</code>. When comparing in XPath, use
+the full FQN form: <code class="language-plaintext highlighter-rouge">@TypeName = 'kotlin.collections.List&lt;kotlin.String&gt;'</code>. For type checks that
+ignore generics, prefer <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs()</code> or <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIsExactly()</code>.</p>
+</blockquote>
+
 <h3 id="general-attributes">General attributes</h3>
 
 <p>These attributes are structural: they come directly from the parsed source and don’t depend on
@@ -2181,13 +2188,6 @@ type resolution, so they’re always present regardless of <code class="language
     </tr>
   </tbody>
 </table>
-
-<blockquote>
-  <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">@TypeName</code> and <code class="language-plaintext highlighter-rouge">@ReturnTypeName</code> use fully-qualified names for generic type arguments:
-<code class="language-plaintext highlighter-rouge">kotlin.collections.List&lt;kotlin.String&gt;?</code>, not <code class="language-plaintext highlighter-rouge">List&lt;String&gt;?</code>. When comparing in XPath, use
-the full FQN form: <code class="language-plaintext highlighter-rouge">@TypeName = 'kotlin.collections.List&lt;kotlin.String&gt;'</code>. For type checks that
-ignore generics, prefer <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs()</code> or <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIsExactly()</code>.</p>
-</blockquote>
 
 <blockquote>
   <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> carries only <code class="language-plaintext highlighter-rouge">@Identifier</code> (the variable name). Modifiers like
@@ -2343,7 +2343,7 @@ A richer type model may be added in a future version.</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2026 (7.26.0)<br /> Site last generated: Sep 24, 2026 <br />
+            June 2026 (7.26.0)<br /> Site last generated: Sep 25, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
