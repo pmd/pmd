@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.internal.LogUtil;
@@ -189,7 +190,9 @@ public class AuxClasspathLoader implements AutoCloseable {
 
     /**
      * @since 7.28.0
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
+    @InternalApi // LogUtil.WarnOrDebugLogger is internal...
     public static AuxClasspathLoader create(String rawAuxClasspath, LogUtil.WarnOrDebugLogger warnOrDebugLogger) {
         synchronized (LOCK) {
             if (cache == null) {
