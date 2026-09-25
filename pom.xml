@@ -1069,15 +1069,8 @@
             </dependency>
 
             <dependency>
-                <groupId>com.github.stefanbirkner</groupId>
-                <artifactId>system-lambda</artifactId>
-                <version>1.2.1</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>uk.org.webcompere</groupId>
-                <artifactId>system-stubs-jupiter</artifactId>
+                <artifactId>system-stubs-core</artifactId>
                 <version>2.1.8</version>
                 <scope>test</scope>
             </dependency>
@@ -1089,7 +1082,7 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- byte-buddy is used by mockito.
+            <!-- byte-buddy is used by mockito-core and system-stubs-core.
                  Using a newer version than the one from mockito 4.11.0 for Java 21 compatibility
                  At least byte-buddy 1.14.3 is required for Java 21.
             -->

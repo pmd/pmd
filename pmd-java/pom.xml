@@ -238,14 +238,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.stefanbirkner</groupId>
-            <artifactId>system-lambda</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>uk.org.webcompere</groupId>
-            <artifactId>system-stubs-jupiter</artifactId>
+            <artifactId>system-stubs-core</artifactId>
             <scope>test</scope>
         </dependency>
 
