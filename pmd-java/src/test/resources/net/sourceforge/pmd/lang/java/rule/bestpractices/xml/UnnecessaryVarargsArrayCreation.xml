@@ -143,4 +143,40 @@
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#5069 Array is required: explicit constructor invocation would select another constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                public Test() {
+                    // this("prefix") would call Test(String), which delegates back here.
+                    this(new String[] {"prefix"});
+                }
+                public Test(String otherPrefix) {
+                    this("prefix", otherPrefix);
+                }
+                private Test(String... prefixes) {
+                    for (String str : prefixes) {
+                        System.out.println(str);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5069 Explicit constructor invocation with no competing constructor: still unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public class Test {
+                public Test() {
+                    this(new String[] {"a", "b"});
+                }
+                private Test(String... prefixes) {
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

@@ -6,7 +6,7 @@ author: >
     David Dixon-Peugh <dpeugh@users.sourceforge.net>,
     Tom Copeland <tom@infoether.com>,
     Xavier Le Vourch <xlv@users.sourceforge.net>
-last_updated: July 2026 (7.27.0)
+last_updated: September 2026 (7.28.0)
 ---
 
 ## PMD
@@ -172,8 +172,10 @@ element are in the Ant documentation for [path-like structures](https://ant.apac
 an example below.
 
 `auxclasspath` nested element - extra classpath used for type resolution. Some rules make use of type resolution
-in order to avoid false positives. The `auxclasspath` is configured also with [path-like structures](https://ant.apache.org/manual/using.html#path). It should contain the compiled classes of the project that is being analyzed and all the compile time
-dependencies.
+in order to avoid false positives. The `auxclasspath` is configured also with [path-like structures](https://ant.apache.org/manual/using.html#path).
+It should contain the compiled classes of the project that is being analyzed and all the compile time
+dependencies including the correct java platform classes if you are analyzing a Java project.
+See [Providing the auxiliary classpath](pmd_languages_java.html#providing-the-auxiliary-classpath).
 
 `sourceLanguage` nested element - specify which language (Java, Ecmascript, XML,...)
 and the associated version (1.5, 1.6,...). This element is optional. The language is determined by file extension
@@ -285,16 +287,24 @@ need to be configured when defining the task:
 
 #### Full example with auxclasspath
 
-Full build file example using the correct auxclasspath configuration.
-Your project needs to be compiled first which happens in the target "compile":
+Full build file example using the correct auxclasspath configuration. For the platform classes, the
+Java installation from `JAVA17_HOME` (defined via an environment variable) is used.
+
+Your project also needs to be compiled first which happens in the target "compile":
 
     <project name="MyProject" default="pmd" basedir=".">
+        <property environment="env"/>
+
         <property name="src" location="src"/>
         <property name="build" location="build"/>
+        <property name="toolchain.java.home" value="${env.JAVA17_HOME}"/>
+        <property name="toolchain.java.version" value="17"/>
+
         <path id="project.dependencies">
             <pathelement location="lib/third-party.jar"/>
             <pathelement location="lib/xyz.jar"/>
         </path>
+
         <path id="pmd.classpath">
             <fileset dir="/home/joe/pmd-bin-{{site.pmd.version}}/lib">
                 <include name="*.jar"/>
@@ -308,18 +318,21 @@ Your project needs to be compiled first which happens in the target "compile":
         
         <target name="compile" depends="init">
             <javac srcdir="${src}" destdir="${build}" classpathref="project.dependencies"
-                source="1.8" target="1.8" />
+                   fork="true" executable="${toolchain.java.home}/bin/javac"
+                   release="${toolchain.java.version}"
+                   includeAntRuntime="false"/>
         </target>
         
         <target name="pmd" depends="compile">
             <pmd cacheLocation="${build}/pmd.cache">
+                <sourceLanguage name="java" version="${toolchain.java.version}"/>
                 <auxclasspath>
                     <pathelement location="${build}"/>
                     <path refid="project.dependencies"/>
+                    <pathelement location="${toolchain.java.home}/lib/jrt-fs.jar" />
                 </auxclasspath>
                 <ruleset>rulesets/java/quickstart.xml</ruleset>
                 <formatter type="html" toFile="${build}/pmd_report.html"/>
-                <sourceLanguage name="java" version="1.8"/>
                 <fileset dir="${src}">
                     <include name="**/*.java"/>
                 </fileset>
@@ -332,6 +345,8 @@ Your project needs to be compiled first which happens in the target "compile":
     </project>
 
 You can run pmd then with `ant pmd`.
+
+See also <https://github.com/pmd/pmd-examples/tree/main/ant/simple-project>.
 
 #### Getting verbose output
 

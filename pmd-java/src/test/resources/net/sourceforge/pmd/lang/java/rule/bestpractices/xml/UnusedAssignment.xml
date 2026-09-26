@@ -4339,4 +4339,51 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false positive when an assert may overwrite the variable #5159</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Object get() {
+        boolean assertionsAreEnabled = false;
+        assert assertionsAreEnabled = true;
+        if (assertionsAreEnabled) {
+            return "checked";
+        }
+        return "unchecked";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] An assignment in an assert detail message is conditional too #5159</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String get(int n) {
+        String reason = "none";
+        assert n > 0 : reason = "negative";
+        return reason;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] A value overwritten after an assert is still unused #5159</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public int get(int n) {
+        int x = n;
+        assert n > 0;
+        x = 2;
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

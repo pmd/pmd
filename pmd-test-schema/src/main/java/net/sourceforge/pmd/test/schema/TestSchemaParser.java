@@ -61,7 +61,7 @@ public class TestSchemaParser {
 
             ErrorHandler() {
                 // note: need to explicitly specify the writer here, so that in unit tests
-                // System.err can be swapped out and in with SystemLambda.tapSystemErr
+                // System.err can be swapped out and in with SystemStubs.tapSystemErr
                 super(System.err);
             }
 

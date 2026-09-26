@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -20,13 +21,11 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
-
 class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
     void testFullMessage() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> assertCannotParse(
+        String log = tapSystemErr(() -> assertCannotParse(
             rulesetXml(
                 dummyRule(
                     priority("not a priority")
@@ -48,7 +47,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
         String ruleset = "net/sourceforge/pmd/lang/rule/TestRuleset1.xml";
         String missingRule = "ThisRuleDoesNotExist";
 
-        String log = SystemLambda.tapSystemErr(() -> assertCannotParse(
+        String log = tapSystemErr(() -> assertCannotParse(
             rulesetXml(ruleRef(ruleset + "/" + missingRule))
         ));
 
@@ -62,7 +61,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
     void testPropertyConstraintFailure() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> assertCannotParse(
+        String log = tapSystemErr(() -> assertCannotParse(
             rulesetXml(
                 dummyRule(
                     attrs -> attrs.put(SchemaConstants.CLASS, MockRule.class.getName()),
@@ -81,7 +80,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
     void testPropertyValueAsAttributeAndTag() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> assertEquals(1, loadFirstRule(
+        String log = tapSystemErr(() -> assertEquals(1, loadFirstRule(
                 rulesetXml(
                         dummyRule(
                                 attrs -> attrs.put(SchemaConstants.CLASS, MockRule.class.getName()),
@@ -103,7 +102,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
     void testStringMultiPropertyDelimiterDeprecated() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             Rule r = loadFirstRule(
                     rulesetXml(
                             dummyRule(
@@ -142,7 +141,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
                     )
             ).getBytes(StandardCharsets.UTF_8));
 
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleSetLoadException exception = assertCannotParse(
                     rulesetXml(
                             ruleRef(childRuleset.toString())
@@ -162,7 +161,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
     void deprecatedPropertyUsed() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> assertEquals("a", loadFirstRule(
+        String log = tapSystemErr(() -> assertEquals("a", loadFirstRule(
                 rulesetXml(
                         dummyRule(
                                 attrs -> attrs.put(SchemaConstants.CLASS, MockRuleWithDeprecatedProperties.class.getName()),
@@ -183,7 +182,7 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
 
     @Test
     void enumPropertyWithDeprecatedValueUsed() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> assertEquals(MockRuleWithDeprecatedProperties.SampleEnum.VALUE_A, loadFirstRule(
+        String log = tapSystemErr(() -> assertEquals(MockRuleWithDeprecatedProperties.SampleEnum.VALUE_A, loadFirstRule(
                 rulesetXml(
                         dummyRule(
                                 attrs -> attrs.put(SchemaConstants.CLASS, MockRuleWithDeprecatedProperties.class.getName()),
