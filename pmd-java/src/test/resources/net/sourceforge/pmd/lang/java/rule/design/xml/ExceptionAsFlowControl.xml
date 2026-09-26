@@ -71,6 +71,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Catch block for subtype</description>
         <expected-problems>1</expected-problems>
@@ -95,9 +96,9 @@ public class Foo {{
 }}
 class TopE extends Exception { }
 class SubE extends TopE { }
-
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#4434 simple propagation</description>
         <expected-problems>0</expected-problems>
@@ -132,8 +133,9 @@ class SubE extends TopE { }
                 public InvalidCacheLoadException(String msg) { super(msg);}
             }
 
-            ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#4434 simple propagation, 2nd case</description>
         <expected-problems>0</expected-problems>
@@ -161,8 +163,7 @@ class SubE extends TopE { }
             class InvalidCacheLoadException extends RuntimeException {
                 public InvalidCacheLoadException(String msg) { super(msg);}
             }
-
-            ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -192,7 +193,7 @@ class SubE extends TopE { }
 
                 void unsafeDoPublish() throws IOException { }
             }
-            ]]></code>
+        ]]></code>
     </test-code>
 
     <test-code>
@@ -216,6 +217,6 @@ class SubE extends TopE { }
                     }
                 }
             }
-            ]]></code>
+        ]]></code>
     </test-code>
 </test-data>
