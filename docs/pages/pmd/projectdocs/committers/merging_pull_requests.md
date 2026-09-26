@@ -35,8 +35,7 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
     git merge main
     ```
 
-    > [!NOTE]
-    > If there are merge conflicts, you'll need to deal with them here.
+    > **🛈 Note:** If there are merge conflicts, you'll need to deal with them here.
 
 4.  Update the [release notes](https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md):
     
@@ -111,15 +110,14 @@ PMD version 7.26.0, so that we can create a bugfix release 7.26.1.
     git pull
     ```
 
-2.  Cherrypick the already merged PR from main branch into the maintenance branch:
+2.  Cherry-pick the already merged PR from main branch into the maintenance branch:
 
     ```
     git checkout backport-pr-124-to-7.26.x             # creates a new temporary branch
-    git cherrypick commit-hash-you-want-to-packport
+    git cherry-pick commit-hash-you-want-to-packport
     ```
 
-    > [!NOTE]
-    > At this point, that you will need to fix conflicts / backport the changes for the older
+    > **🛈 Note:** At this point, that you will need to fix conflicts / backport the changes for the older
     > PMD version. At least in the release notes (see above for details), maybe also in the code.
 
 3.  Run the complete build, then push:
