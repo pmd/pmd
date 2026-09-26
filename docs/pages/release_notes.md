@@ -30,6 +30,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
 
+*   [#6609](https://github.com/pmd/pmd/issues/6609): \[plsql] Parse exception when comparing a parenthesized arithmetic expression in a WHERE clause
+
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
