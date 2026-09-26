@@ -22,9 +22,16 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
     public static final String VALUE_ATTR = "value";
 
     private boolean isShorthand;
+    private String name;
 
     ASTMemberValuePair(int id) {
         super(id);
+    }
+
+    @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.name = image;
     }
 
     /**
@@ -32,7 +39,7 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
      * This returns {@code "value"} if this is a shorthand declaration.
      */
     public String getName() {
-        return getImage();
+        return name;
     }
 
     /**

@@ -25,7 +25,6 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
 
     void setIdentToken(JavaccToken identToken) {
         this.identToken = identToken;
-        setImage(identToken.getImage());
     }
 
     @Override
@@ -60,6 +59,6 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
 
     @Override
     public String getName() {
-        return super.getImage();
+        return identToken.getImage();
     }
 }
