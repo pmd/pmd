@@ -8,8 +8,10 @@ last_updated: May 2026 (7.25.0)
 
 ## Compiling PMD
 
-{% capture noteText %}You will need {{ site.pmd.java_build_version }} to build PMD, even though running PMD only requires Java {{ site.pmd.java_run_version }}.{% endcapture %}
-{% include note.html content=noteText %}
+> [!NOTE]
+> You will need {{ site.pmd.java_build_version }} to build PMD, 
+> even though running PMD only requires Java {{ site.pmd.java_run_version }}.
+
 
 You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:
 

@@ -17,15 +17,13 @@ with which the behavior can be modified, then these different cases can also be 
 And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
 by an additional test case, so that the bug is not accidentally reintroduced later on.
 
-{% capture note %}
-This page describes how PMD tests its own rules internally. This approach can also be used
-outside PMD to test custom rules and rulesets, though alternative methods are available.
-
-One alternative is **test-pmd-tool**, which tests PMD XPath rules for coverage using their own examples
-as unit tests. Written in TypeScript, it only requires PMD to be in the PATH to execute a ruleset.
-For more information, see <https://github.com/starch-uk/test-pmd-tool>.
-{% endcapture %}
-{% include note.html content=note %}
+> [!NOTE]
+> This page describes how PMD tests its own rules internally. This approach can also be used
+> outside PMD to test custom rules and rulesets, though alternative methods are available.
+>
+> One alternative is **test-pmd-tool**, which tests PMD XPath rules for coverage using their own examples
+> as unit tests. Written in TypeScript, it only requires PMD to be in the PATH to execute a ruleset.
+> For more information, see <https://github.com/starch-uk/test-pmd-tool>.
 
 ## How it works
 
@@ -74,13 +72,15 @@ In general, the class name and file name pattern for the test class and data is 
 
 Note: Language Id is the id defined by the language module, see {% jdoc core::lang.Language#getId() %}.
 
-{%include tip.html content="This convention allows you to quickly find the test cases for a given rule:
+> [!TIP]
+> This convention allows you to quickly find the test cases for a given rule:
 Just search in the project for a file `<Rule Name>.xml`. Search for a class `<Rule Name>Test` to find the
 unit test class for the given rule. And if the rule is a Java-based rule, the search for `<Rule Name>Rule`
-finds the rule implementation class." %}
+finds the rule implementation class.
 
-{%include note.html content="If you want to use the test framework with a different package structure,
-see [Using the test framework externally](#using-the-test-framework-externally)." %}
+> [!NOTE]
+> If you want to use the test framework with a different package structure,
+> see [Using the test framework externally](#using-the-test-framework-externally).
 
 ## Simple example
 
@@ -99,8 +99,8 @@ class AbstractClassWithoutAbstractMethodTest extends PmdRuleTst {
 }
 ```
 
-{%include note.html content="You can also add additionally standard JUnit test methods annotated with `@Test` to
-this test class." %}
+> [!NOTE]
+> You can also add additionally standard JUnit test methods annotated with `@Test` to this test class.
 
 ### Test Data: AvoidBranchingStatementAsLastInLoop.xml
 
@@ -142,7 +142,8 @@ The root element is `<test-data>`. It can contain one or more `<test-code>` and 
 Each `<test-code>` element defines a single test case. `<code-fragment>` elements are used to share code snippets
 between different test cases.
 
-{%include note.html content="The XML schema is available at [rule-tests.xsd](https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_1.xsd)." %}
+> [!NOTE]
+> The XML schema is available at [rule-tests.xsd](https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_1.xsd).
 
 ### `<test-code>` attributes
 
@@ -251,10 +252,11 @@ public class ConsistentReturn {
 </test-data>
 ```
 
-{% include note.html content="For better readability, the indentation should be 4 for spaces and no tabs.
-Each test-code should be separated by a blank line. CDATA
-sections are only required for the code snippets which should be formatted with indentation for
-better readability. The description can be written directly without a CDATA section." %}
+> [!NOTE]
+> For better readability, the indentation should be 4 for spaces and no tabs.
+> Each test-code should be separated by a blank line. CDATA
+> sections are only required for the code snippets which should be formatted with indentation for
+> better readability. The description can be written directly without a CDATA section.
 
 ## Using the test framework externally
 

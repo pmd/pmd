@@ -239,9 +239,9 @@ have more control over this, there are two annotations that can be used for AST 
   When used directly on an individual method, then only this method will be filtered out.
   That way methods can be added in AST nodes, that should only be used in Java rules, e.g. as auxiliary methods.
 
-{% include note.html content="
-Not all getters are available for XPath rules. It depends on the result type.
-Especially **Lists** or Collections in general are **not supported**." %}
+> [!NOTE]
+> Not all getters are available for XPath rules. It depends on the result type.
+Especially **Lists** or Collections in general are **not supported**.
 
 Only the following Java result types are supported:
 * String
@@ -290,12 +290,10 @@ can be made available on the AST nodes via extra methods, e.g. `getSymbolTable()
 Currently only Java provides an implementation for symbol table,
 see [Java-specific features and guidance](pmd_languages_java.html).
 
-{% capture deprecated_symbols_api_note %}
-With PMD 7.0.0 the symbol table and type resolution implementation has been
-rewritten from scratch. There is still an old API for symbol table support, that is used by PLSQL,
-see {% jdoc_package core::lang.symboltable %}. This has been deprecated and should not be used.
-{% endcapture %}
-{% include note.html content=deprecated_symbols_api_note %}
+> [!NOTE]
+> With PMD 7.0.0 the symbol table and type resolution implementation has been
+> rewritten from scratch. There is still an old API for symbol table support, that is used by PLSQL,
+> see {% jdoc_package core::lang.symboltable %}. This has been deprecated and should not be used.
 
 ### Type resolution
 

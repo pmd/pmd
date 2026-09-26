@@ -90,15 +90,13 @@ The public key is available under the identity `releases@pmd-code.org` at
 * <https://keyserver.ubuntu.com/pks/lookup?search=2EFA+55D0+785C+31F9+56F2++F87E+A0B5+CA1A+4E08+6838&fingerprint=on&op=index>
 * <https://keys.openpgp.org/search?q=releases%40pmd-code.org>
 
-{%capture note%}
-The key `1E04 6C19 ED28 73D8 C08A  F7B8 A063 2691 B78E 3422` is in use since 7.10.0 for signing artifacts
-in Maven Central and since 7.11.0 to sign the binary distribution files.
-
-Before that, we used a different key for signing maven artifacts. We had to revoke the key because
-the passphrase was compromised. See [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
-for more information.
-{%endcapture%}
-{%include note.html content=note%}
+> [!NOTE]
+> The key `1E04 6C19 ED28 73D8 C08A  F7B8 A063 2691 B78E 3422` is in use since 7.10.0 for signing artifacts
+> in Maven Central and since 7.11.0 to sign the binary distribution files.
+>
+> Before that, we used a different key for signing maven artifacts. We had to revoke the key because
+> the passphrase was compromised. See [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
+> for more information.
 
 ## Maven Central
 

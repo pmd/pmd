@@ -13,8 +13,9 @@ author: Tom Copeland <tomcopeland@users.sourceforge.net>
 {% jdoc_nspace :jast java::lang.java.ast %}
 {% jdoc_nspace :jrule java::lang.java.rule %}
 
-{% include note.html content="Ideally most of what is written in this document would be directly
-in the Javadocs of the relevant classes. This is not the case yet." %}
+> [!NOTE]
+> Ideally most of what is written in this document would be directly
+> in the Javadocs of the relevant classes. This is not the case yet.
 
 This page covers the specifics of writing a rule in Java. The basic development
 process is very similar to the process for XPath rules, which is described in
@@ -26,7 +27,8 @@ your rule as you add test cases.
 In this page we'll talk about rules for the Java language, but the process is
 very similar for other languages.
 
-{% include note.html content="[Please find an index of language-specific documentation here](tag_languages.html)" %}
+> [!NOTE]
+> Please see [an index of language-specific documentation](tag_languages.html).
 
 ## Basics
 

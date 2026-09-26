@@ -30,13 +30,11 @@ last_updated: May 2026 (7.25.0)
    This will help with Maven IDE integration. It may take some time, because it will download all dependencies,
    so go brew some coffee to get ready for the steps to come.
 
-{%capture notetext%}
-This only clones the last ten commits and not the whole PMD repository. This makes it faster, as much less data needs
-to be downloaded. However, the history is incomplete. If you want to browse/annotate the source with the complete
-commit history locally, either clone the repo without the "depth" option or convert it to a "full" clone using
-`git fetch --unshallow`.
-{%endcapture%}
-{%include note.html content=notetext %}
+> [!NOTE]
+> This only clones the last ten commits and not the whole PMD repository. This makes it faster, as much less data needs
+> to be downloaded. However, the history is incomplete. If you want to browse/annotate the source with the complete
+> commit history locally, either clone the repo without the "depth" option or convert it to a "full" clone using
+> `git fetch --unshallow`.
 
 ## Reproducible Builds
 

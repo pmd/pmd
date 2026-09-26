@@ -8,7 +8,8 @@ last_updated: November 2025 (7.19.0)
 
 ## Automated Code Review
 
-{% include note.html content="The tools are listed in alphabetical order without rating." %}
+> [!NOTE]
+> The tools are listed in alphabetical order without rating.
 
 ### Blue Cave
 

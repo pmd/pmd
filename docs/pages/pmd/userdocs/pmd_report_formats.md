@@ -18,7 +18,9 @@ The header of the sections below are used to select the format on the command li
 arguments to the `--format` option. When a format accepts *properties*,
 those can be specified with the `--property` / `-P` option on the command-line.
 
-{% include note.html content="Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set and if the format supports showing suppressed violations. Currently only html, summaryhtml and xml show suppressed violations." %}
+> [!NOTE]
+> Suppressed violations are only reported, if the CLI parameter `--show-suppressed` is set and if the format supports 
+> showing suppressed violations. Currently only `html`, `summaryhtml` and `xml` show suppressed violations.
 
 ## sarif
 
@@ -122,7 +124,8 @@ normal source file extensions (e.g. ".java") with ".html", so that the generated
 
 IntelliJ IDEA integration.
 
-{% include warning.html content="This format can only be used as described in [Tools: IntelliJ IDEA External Tool](pmd_userdocs_tools_ide_plugins.html#intellij-idea-external-tool)." %}
+> [!WARNING]
+> This format can only be used as described in [Tools: IntelliJ IDEA External Tool](pmd_userdocs_tools_ide_plugins.html#intellij-idea-external-tool).
 
 It has two ways of calling:
 
