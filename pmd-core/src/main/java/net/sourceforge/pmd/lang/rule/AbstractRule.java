@@ -342,4 +342,9 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         // method only has a default implementation in the interface.
         return super.dysfunctionReason();
     }
+
+    @Override
+    public String toString() {
+        return getLanguage() + ":" + getName();
+    }
 }
