@@ -219,4 +219,118 @@ class SubE extends TopE { }
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Iterable.forEach calls the lambda argument itself, so the exception is caught</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void checkForLeaks() throws InterruptedException {
+                    while (true) {
+                        try {
+                            this.created.forEach(info -> {
+                                if (!info.isEmpty()) {
+                                    throw failureOf(info);
+                                }
+                            });
+                            break;
+                        } catch (AssertionError ex) {
+                            Thread.sleep(50);
+                        }
+                    }
+                }
+
+                private static AssertionError failureOf(String info) {
+                    return new AssertionError(info);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Iterable.forEach, but that exception type is not caught here</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void check(boolean flag) {
+                    try {
+                        this.created.forEach(info -> {
+                            if (flag) {
+                                throw new AssertionError(info);
+                            }
+                        });
+                    } catch (IllegalStateException ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Stream.map, an intermediate operation that is evaluated inside the try, so the exception is caught</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>15</expected-linenumbers>
+        <expected-messages>
+            <message>Exception thrown at line 11 is caught in this block.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void check(boolean flag) {
+                    try {
+                        this.created.stream().map(info -> {
+                            if (flag) {
+                                throw new AssertionError(info);
+                            }
+                            return info;
+                        }).findFirst();
+                    } catch (AssertionError ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Stream.map, but that exception type is not caught here</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void check(boolean flag) {
+                    try {
+                        this.created.stream().map(info -> {
+                            if (flag) {
+                                throw new AssertionError(info);
+                            }
+                            return info;
+                        }).findFirst();
+                    } catch (IllegalStateException ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

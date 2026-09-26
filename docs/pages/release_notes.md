@@ -40,6 +40,9 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/bestpractices/LiteralsFirstInComparisons %} now recognizes final local String constants
     and unqualified references to non-static final String constants. This may add violations when such a constant
     is the argument of a comparison, or remove them when it is already the receiver.
+*   The Java rule {% rule java/design/ExceptionAsFlowControl %} now reports exceptions thrown inside a lambda
+    that the method it is passed to calls itself, such as `Iterable.forEach` or a `Stream` operation that
+    takes a lambda. Exceptions thrown inside any other lambda are still not reported.
 
 ### 🐛️ Fixed Issues
 * java
@@ -48,6 +51,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
+    * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
 
 ### 🚨️ API Changes
 
