@@ -364,7 +364,7 @@ L60
     [(]                                     38        39
     ["$]                                    39        41
     [key]                                   41        44
-    [is already in the tree"]               45        68
+    [ is already in the tree"]              44        68
     [)]                                     68        69
     [\n]                                    69        70
 L61
@@ -442,7 +442,7 @@ L72
     [(]                                     38        39
     ["$]                                    39        41
     [key]                                   41        44
-    [is not in the tree"]                   45        64
+    [ is not in the tree"]                  44        64
     [)]                                     64        65
     [\n]                                    65        66
 L73

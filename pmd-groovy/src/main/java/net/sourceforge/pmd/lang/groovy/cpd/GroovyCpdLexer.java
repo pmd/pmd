@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.groovy.cpd;
 
 import java.io.IOException;
 
-import org.apache.groovy.parser.antlr4.GroovyLexer;
+import org.apache.groovy.parser.antlr4.GroovyLangLexer;
 
 import net.sourceforge.pmd.cpd.impl.CpdLexerBase;
 import net.sourceforge.pmd.lang.TokenManager;
@@ -27,6 +27,9 @@ public class GroovyCpdLexer extends CpdLexerBase<GroovyToken> {
     @Override
     protected final TokenManager<GroovyToken> makeLexerImpl(TextDocument doc) throws IOException {
         CharStream charStream = CharStreams.fromReader(doc.newReader(), doc.getFileId().getAbsolutePath());
-        return new GroovyTokenManager(new GroovyLexer(charStream), doc);
+        // GroovyLangLexer is the lexer the Groovy compiler itself uses. The plain
+        // GroovyLexer relies on it to roll back one char at the end of a GString
+        // value (e.g. "$i"), without that it fails on valid code (#7100).
+        return new GroovyTokenManager(new GroovyLangLexer(charStream), doc);
     }
 }
