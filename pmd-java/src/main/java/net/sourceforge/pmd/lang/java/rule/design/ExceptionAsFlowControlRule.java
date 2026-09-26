@@ -32,13 +32,12 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
     public Object visit(ASTThrowStatement node, Object data) {
         JTypeMirror thrownType = node.getExpr().getTypeMirror();
         JavaNode parent = node.getParent();
-        while (!(parent instanceof ASTBodyDeclaration)) {
-            if (parent instanceof ASTLambdaExpression) {
+        while (!(parent instanceof ASTBodyDeclaration)
                 // An exception thrown in a lambda body leaves the lambda, not
                 // the enclosing method: it reaches whoever invokes the lambda,
                 // which in general is not the try statement around it. See #4815.
-                return null;
-            }
+                && !(parent instanceof ASTLambdaExpression)
+        ) {
             if (parent instanceof ASTCatchClause) {
                 // if the exception is thrown in a catch block, then we
                 // have to ignore the try stmt (jump past it).
