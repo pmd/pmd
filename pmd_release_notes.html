@@ -2063,8 +2063,32 @@
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
+<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
+<h4 id="changed-rules">Changed Rules</h4>
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_design.html#finalfieldcouldbestatic"><code class="language-plaintext highlighter-rouge">FinalFieldCouldBeStatic</code></a> no longer reports casts or conditional expressions
+whose constant classification previously depended on a boxed static final field. Direct static field references
+are still reported.</li>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#unconditionalifstatement"><code class="language-plaintext highlighter-rouge">UnconditionalIfStatement</code></a> now excludes final local boolean constants,
+consistently with its existing exclusion of named compile-time constants used for conditional compilation.</li>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#unusednullcheckinequals"><code class="language-plaintext highlighter-rouge">UnusedNullCheckInEquals</code></a> now recognizes final local String constants
+and unqualified instance String constants as non-null receivers, avoiding unnecessary reports.</li>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#avoidreassigningloopvariables"><code class="language-plaintext highlighter-rouge">AvoidReassigningLoopVariables</code></a>, with <code class="language-plaintext highlighter-rouge">forReassign=skip</code>, now accepts
+a final local constant equal to one as the increment of a conditional skip.</li>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a> now recognizes final local boolean constants
+when analyzing short-circuit conditions, avoiding false positives caused by assignments that cannot execute.</li>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a> now recognizes final local String constants
+and unqualified references to non-static final String constants. This may add violations when such a constant
+is the argument of a comparison, or remove them when it is already the receiver.</li>
+</ul>
+
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/7060">#7060</a>: [java] getConstValue() returns null for constant expressions referencing final local variables</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5159">#5159</a>: [java] UnusedAssignment false positive when using assert</li>
@@ -2078,6 +2102,14 @@
 </ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
+
+<ul>
+  <li>Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
+including local variables and unqualified instance fields. Numeric references are converted to their declared type.
+Boxed fields and field accesses qualified by expressions (such as <code class="language-plaintext highlighter-rouge">this.CONSTANT</code>) are not compile-time constants.
+These changes affect <code class="language-plaintext highlighter-rouge">ASTExpression.getConstValue()</code>, <code class="language-plaintext highlighter-rouge">isCompileTimeConstant()</code>, and the XPath attribute
+<code class="language-plaintext highlighter-rouge">@CompileTimeConstant</code>; custom Java and XPath rules relying on them may report different results.</li>
+</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2117,7 +2149,7 @@
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 26, 2026 <br />
+             Site last generated: Sep 27, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
