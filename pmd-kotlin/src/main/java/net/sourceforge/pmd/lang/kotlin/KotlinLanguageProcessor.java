@@ -59,7 +59,17 @@ public class KotlinLanguageProcessor extends BatchLanguageProcessor<KotlinLangua
 
     @Override
     public @NonNull AutoCloseable launchAnalysis(@NonNull AnalysisTask task) {
-        typeAwareness.prepare(task.getFiles(), getLanguage());
+        try {
+            typeAwareness.prepare(task.getFiles(), getLanguage());
+        } catch (RuntimeException e) {
+            // A failure anywhere in kotlin-type-mapper (e.g. an unexpected compiler
+            // crash) must not abort analysis of this run's other files, or of other
+            // languages in the same PMD run (see BatchLanguageProcessor callers).
+            // Fall back gracefully as documented on this class: proceed without type
+            // attributes rather than losing the whole run.
+            task.getMessageReporter().errorEx(
+                    "Kotlin type analysis failed; proceeding without type information", e);
+        }
         return super.launchAnalysis(task);
     }
 

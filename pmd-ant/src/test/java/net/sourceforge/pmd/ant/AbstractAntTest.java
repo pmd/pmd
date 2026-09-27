@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.ant;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.restoreSystemProperties;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.io.File;
 import java.io.PrintStream;

@@ -10,10 +10,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,6 +26,8 @@ import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCompanionObject;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtImportHeader;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
@@ -58,7 +62,7 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
 
     @Test
     void multipleErrorsShouldBeCollectedAsSuppressedExceptions() {
-        String badCode = "package nl.stokpop\n"
+        String badCode = "package net.sourceforge.pmd.lang.kotlin.ast\n"
                 + "\n"
                 + "fun xor1(a: Int, b: Int) = (a ^ b)\n"
                 + "fun xor2(a: Int, b: Int) = (a ^ b)\n"
@@ -147,15 +151,45 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
                 "abstract class Base { open suspend fun doWork() {} }");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        assertEquals("open suspend", func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+        assertEquals(Arrays.asList("open", "suspend"),
+                func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
     }
 
     @Test
-    void modifiersAttributeNullWhenNoModifiers() {
+    void modifiersAttributeEmptyWhenNoModifiers() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun plain() {}");
         KtFunctionDeclaration func =
                 file.descendants(KtFunctionDeclaration.class).first();
-        assertNull(func.attributes(KtFunctionDeclarationAttributes.class).getModifiers());
+        assertTrue(func.attributes(KtFunctionDeclarationAttributes.class).getModifiers().isEmpty());
+    }
+
+    @Test
+    void annotationFqNamesAttributeEmptyListWhenFunctionHasNoAnnotations() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("fun plain() {}");
+        KtFunctionDeclaration func =
+                file.descendants(KtFunctionDeclaration.class).first();
+        List<String> annotationNames = func.attributes(KtFunctionDeclarationAttributes.class).getAnnotationFqNames();
+        assertTrue(annotationNames.isEmpty());
+    }
+
+    @Test
+    void annotationFqNamesAttributeEmptyListWhenClassHasNoAnnotations() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class Plain");
+        KtClassDeclaration clazz = file.descendants(KtClassDeclaration.class).first();
+        List<String> annotationNames = clazz.attributes(KtClassDeclarationAttributes.class).getAnnotationFqNames();
+        assertTrue(annotationNames.isEmpty());
+    }
+
+    @Test
+    void annotationFqNamesXpathAttributePresentWhenEmptyForBothFunctionAndClass() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class C\nfun plain() {}");
+        KtClassDeclaration clazz = file.descendants(KtClassDeclaration.class).first();
+        KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
+
+        // Both class and function declarations expose non-null AnnotationFqNames attribute,
+        // even when empty. KotlinInnerNode omits only null-valued attributes.
+        assertTrue(hasXPathAttribute(func, "AnnotationFqNames"));
+        assertTrue(hasXPathAttribute(clazz, "AnnotationFqNames"));
     }
 
     @Test
@@ -187,6 +221,48 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     @Test
+    void modifiersAttributeOnClassParameter() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "open class Base(open val name: String)\n"
+                + "class Foo(override val name: String) : Base(name)");
+        KtClassParameter param = file.descendants(KtClassParameter.class)
+                .filter(p -> {
+                    KtClassParameterAttributes attrs = p.attributes(KtClassParameterAttributes.class);
+                    return attrs != null && attrs.getModifiers().contains("override");
+                }).first();
+        assertNotNull(param, "Expected a ClassParameter with 'override' modifier");
+    }
+
+    @Test
+    void identifierAttributeOnCompanionObject() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "class Foo {\n    companion object MyCompanion { }\n}");
+        KtCompanionObject companion = file.descendants(KtCompanionObject.class).first();
+        assertEquals("MyCompanion",
+                companion.attributes(KtCompanionObjectAttributes.class).getIdentifier());
+    }
+
+    @Test
+    void modifiersAttributeOnPropertyDeclaration() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "class Foo {\n    private lateinit var name: String\n}");
+        KotlinParser.KtPropertyDeclaration prop =
+                file.descendants(KotlinParser.KtPropertyDeclaration.class).first();
+        assertEquals(Arrays.asList("private", "lateinit"),
+                prop.attributes(KtPropertyDeclarationAttributes.class).getModifiers());
+    }
+
+    @Test
+    void modifiersAttributeOnFunctionValueParameter() {
+        KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
+                "fun spread(vararg items: String) {}");
+        KotlinParser.KtFunctionValueParameter param =
+                file.descendants(KotlinParser.KtFunctionValueParameter.class).first();
+        assertEquals(Collections.singletonList("vararg"),
+                param.attributes(KtFunctionValueParameterAttributes.class).getModifiers());
+    }
+
+    @Test
     void xpathAttributesHaveNoDuplicates() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse(
                 "import com.example.Foo\nfun greet(name: String) {}");
@@ -204,6 +280,17 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
             assertEquals(names.stream().distinct().count(), names.size(),
                     "Duplicate XPath attributes on " + node.getXPathNodeName() + ": " + names);
         });
+    }
+
+    private static boolean hasXPathAttribute(KotlinNode node, String name) {
+        Iterator<Attribute> it = node.getXPathAttributesIterator();
+        while (it.hasNext()) {
+            Attribute attr = it.next();
+            if (name.equals(attr.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

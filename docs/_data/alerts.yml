@@ -11,5 +11,4 @@ callout_success: '<div class="bs-callout bs-callout-success">'
 callout_info: '<div class="bs-callout bs-callout-info">'
 callout_warning: '<div class="bs-callout bs-callout-warning">'
 
-hr_faded: '<hr class="faded"/>'
 hr_shaded: '<hr class="shaded"/>'

@@ -497,4 +497,487 @@ public class Outer {
 }
         ]]></code>
     </test-code>
+
+    <!-- The following tests cover #6901: the rule now follows the provenance of
+         array-valued return expressions through local variables, value-producing
+         branches, exact local helpers, and generic call inputs connected to the
+         returned type. See the class Javadoc in MethodReturnsInternalArrayRule. -->
+
+    <test-code>
+        <description>#6901 issue reproducer: array escapes through Collections.singletonList(data).get(0)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Collections;
+
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return Collections.singletonList(data).get(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 review: equivalent escape through List.of(data).get(1)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return List.of(data, data).get(1);
+    }
+}
+        ]]></code>
+        <source-type>java 9</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#6901 review: equivalent escape through a generic Tuple.of(data).getLeft()</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return Tuple.of(data, data).getLeft();
+    }
+
+    static class Tuple<L, R> {
+        private final L left;
+        private final R right;
+        Tuple(L left, R right) { this.left = left; this.right = right; }
+        static <L, R> Tuple<L, R> of(L left, R right) { return new Tuple<>(left, right); }
+        L getLeft() { return left; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 local alias: byte[] result = data; return result;</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        byte[] result = data;
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 wrapper stored in a local before access: List values = singletonList(data); return values.get(0)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Collections;
+import java.util.List;
+
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        List<byte[]> values = Collections.singletonList(data);
+        return values.get(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 branch merge: any path carrying the internal array escapes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+    private boolean flag;
+
+    public byte[] getData() {
+        byte[] result;
+        if (flag) {
+            result = data;
+        } else {
+            result = new byte[0];
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 conditional value branch: flag ? data : new byte[0] escapes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+    private boolean flag;
+
+    public byte[] getData() {
+        return flag ? data : new byte[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 multidimensional array element: return data[0] from byte[][] data</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[][] data;
+
+    public byte[] getData() {
+        return data[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 constructor wrapper: return new Holder&lt;byte[]&gt;(data).get()</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return new Holder<byte[]>(data).get();
+    }
+
+    static class Holder<T> {
+        private final T value;
+        Holder(T value) { this.value = value; }
+        T get() { return value; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 new outer array stores the internal array: return new Object[] { data }</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public Object[] getData() {
+        return new Object[] { data };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 foreach variable: for (byte[] value : singletonList(data)) { return value; }</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Collections;
+
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        for (byte[] value : Collections.singletonList(data)) {
+            return value;
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 cast chain: return (byte[]) (Object) data</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return (byte[]) (Object) data;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape: wrapper holds a local fresh array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collections;
+
+public class Foo {
+    public byte[] getData() {
+        byte[] local = new byte[0];
+        return Collections.singletonList(local).get(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape: all reaching paths are overwritten with a fresh array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        byte[] result = data;
+        result = new byte[0];
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 freshness barrier: array clone()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return data.clone();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 freshness barrier: Arrays.copyOf</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return Arrays.copyOf(data, data.length);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 freshness barrier: Arrays.copyOfRange</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return Arrays.copyOfRange(data, 0, data.length);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape: internal array used only in the condition of a ternary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return data == null ? new byte[0] : new byte[1];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape: internal array used only as the length of a fresh array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return new byte[data.length];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape and no recursion: local self-assignment cycle without a source</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public byte[] getData() {
+        byte[] result = null;
+        result = result;
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape and no recursion: mutually aliased locals cycle without a source</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public byte[] getData(boolean flag) {
+        byte[] x;
+        byte[] y;
+        if (flag) {
+            x = new byte[0];
+            y = x;
+        } else {
+            y = new byte[0];
+            x = y;
+        }
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 may-analysis: a mutually aliased cycle still reports when one path carries the internal array</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData(boolean flag) {
+        byte[] x;
+        byte[] y;
+        if (flag) {
+            x = data;
+            y = x;
+        } else {
+            y = new byte[0];
+            x = y;
+        }
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape: a return inside a nested lambda is not attributed to the enclosing method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Supplier;
+
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        Supplier<byte[]> s = () -> { return data; };
+        return new byte[0];
+    }
+}
+        ]]></code>
+        <source-type>java 8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#6901 interprocedural flow: a private helper returns its internal array argument</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    private static byte[] identity(byte[] input) {
+        return input;
+    }
+
+    public byte[] getData() {
+        return identity(data);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape: a private helper returns a clone of its argument</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    private static byte[] copy(byte[] input) {
+        return input.clone();
+    }
+
+    public byte[] getData() {
+        return copy(data);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 no escape: a non-generic external transformation is not assumed to return its argument</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return ArrayUtil.copy(data);
+    }
+}
+
+class ArrayUtil {
+    static byte[] copy(byte[] input) {
+        return input.clone();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6901 generic identity: a type variable carries the array from argument to result</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private byte[] data;
+
+    public byte[] getData() {
+        return Identity.keep(data);
+    }
+}
+
+class Identity {
+    static <T> T keep(T value) {
+        return value;
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

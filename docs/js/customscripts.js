@@ -152,27 +152,36 @@ $(window).resize(function () {
 // based on https://github.com/laolusrael/scroll-spy/blob/master/scroll-spy.js and
 // using https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 (function() {
-let observer = new IntersectionObserver((entries, observer) => {
+const onscreen = new Set();
+let observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
-            let id = entry.target.getAttribute('id');
-            let linkSelector = `#toc a[href='#${id}']`;
-            let nowActiveLink = document.querySelector(linkSelector);
-
-            if (nowActiveLink != null){
-                let curActiveLink = document.querySelector('#toc a.active');
-                if (curActiveLink) {
-                    if (curActiveLink.getAttribute('href') != '#' + id) {
-                        curActiveLink.classList.remove('active');
-                    }
-                }
-                if (!nowActiveLink.classList.contains('active')) {
-                    nowActiveLink.classList.add('active');
-                    nowActiveLink.scrollIntoView({ block: "center" });
-                }
-            }
+            onscreen.add(entry.target);
+        } else {
+            onscreen.delete(entry.target);
         }
     });
+    let sortedOnscreen = [...onscreen].sort((el1, el2) => 3 - el1.compareDocumentPosition(el2));
+    let firstVisible = sortedOnscreen[0];
+    if (!firstVisible) {
+        return;
+    }
+    let id = firstVisible.getAttribute('id');
+    let linkSelector = `#toc a[href='#${id}']`;
+    let nowActiveLink = document.querySelector(linkSelector);
+
+    if (nowActiveLink != null){
+        let curActiveLink = document.querySelector('#toc a.active');
+        if (curActiveLink) {
+            if (curActiveLink.getAttribute('href') != '#' + id) {
+                curActiveLink.classList.remove('active');
+            }
+        }
+        if (!nowActiveLink.classList.contains('active') && !nowActiveLink.closest("#inline-toc-details")) {
+            nowActiveLink.classList.add('active');
+            nowActiveLink.scrollIntoView({ block: "center" });
+        }
+    }
 });
 
 document.querySelectorAll('h2,h3,h4,h5').forEach(el => {

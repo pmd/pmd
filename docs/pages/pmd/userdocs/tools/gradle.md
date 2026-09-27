@@ -2,7 +2,7 @@
 title: Gradle
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_gradle.html
-last_updated: June 2024 (7.3.0)
+last_updated: September 2026 (7.28.0)
 ---
 
 The [Gradle Build Tool](https://gradle.org/) provides a [PMD Plugin](https://docs.gradle.org/current/userguide/pmd_plugin.html)
@@ -45,7 +45,7 @@ More configuration options are documented on [PMD Extension](https://docs.gradle
 
 ### Upgrade PMD version
 
-If you want to use a newer PMD version than the default one provided with gradle, you can do so
+If you want to use a newer PMD version than the default one provided with Gradle, you can do so
 with the property `toolVersion`:
 
 ```
@@ -54,14 +54,98 @@ pmd {
 }
 ```
 
-Note: For PMD 7, at least gradle 8.6 is needed. See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502).
+{% capture note-gradle-for-pmd-7 %}
+For PMD 7, at least Gradle 8.6 is needed. See [Support for PMD 7.0](https://github.com/gradle/gradle/issues/24502).
+{% endcapture %}
+{% include note.html content=note-gradle-for-pmd-7 %}
+
+### Aux Classpath
+
+Gradle by default adds all project dependencies to the aux classpath. Since PMD 7.27.0, you'll get a warning
+if the platform classes will be resolved by the running JVM. To avoid this, explicitly add the platform
+classpath of the correct Java version to PMD's aux classpath. The example is using the [toolchains feature](https://docs.gradle.org/current/userguide/toolchains.html)
+of Gradle:
+
+```
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+// Add jrt-fs.jar of the toolchain explicitly on pmdAux classpath, to avoid
+// warning "Adding current platform ... to auxClasspath, which could be the wrong java version."
+dependencies {
+    pmdAux javaToolchains.launcherFor(java.toolchain)
+            .map { it.metadata.installationPath }
+            .map { it.files("lib/jrt-fs.jar")}
+}
+```
+
+See [Providing the auxiliary classpath](pmd_languages_java.html#providing-the-auxiliary-classpath).
+
+### Environment Variables
+
+Environment variables are not automatically passed through to Gradle's PMD Plugin. E.g. using any
+[Language properties](pmd_languages_configuration.html) with Gradle is not straight forward, as
+PMD is called in an isolated worker process without any environment variables.
+
+The following snippets creates a subclass of Gradle's PMD task in order to provide all PMD specific
+environment variables. This task needs to be registered and the default tasks "pmdMain" and
+"pmdTest" need to be disabled.
+
+```
+abstract class PmdWithEnv extends Pmd {
+    @Input
+    abstract MapProperty<String, String> getPmdEnvironment()
+
+    @Override
+    protected void configureForkOptions(JavaForkOptions forkOptions) {
+        super.configureForkOptions(forkOptions)
+        forkOptions.environment(pmdEnvironment.get())
+    }
+}
+
+tasks.named('pmdMain') {
+    enabled = false
+}
+tasks.register('pmdMainEnv', PmdWithEnv) {
+    source = pmdMain.source
+    classpath = pmdMain.classpath
+    pmdEnvironment.convention(providers.environmentVariablesPrefixedBy('PMD_'))
+}
+
+tasks.named('pmdTest') {
+    enabled = false
+}
+tasks.register('pmdTestEnv', PmdWithEnv) {
+    source = pmdTest.source
+    classpath = pmdTest.classpath
+    pmdEnvironment.convention(providers.environmentVariablesPrefixedBy('PMD_'))
+}
+
+tasks.named('check') {
+    dependsOn tasks.withType(PmdWithEnv)
+}
+```
+
+With that configuration, you can call Gradle like that:
+
+```shell
+PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS=true ./gradlew check
+```
+
+### Complete Example
+
+See <https://github.com/pmd/pmd-examples/tree/main/gradle/simple-project>.
 
 ## References
 
 Source code for Gradle's PMD Plugin is available here:
 
-*   [gradle/gradle code-quality](https://github.com/gradle/gradle/tree/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality)
-    *   [Pmd.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/Pmd.java)
-    *   [PmdExtension.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdExtension.java)
-    *   [PmdPlugin.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java)
-*   The default PMD version used by gradle: [DEFAULT_PMD_VERSION](https://github.com/gradle/gradle/blob/v8.8.0/platforms/jvm/code-quality/src/main/groovy/org/gradle/api/plugins/quality/PmdPlugin.java#L66)
+*   [gradle/gradle code-quality](https://github.com/gradle/gradle/tree/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality)
+    *   [Pmd.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/Pmd.java)
+    *   [PmdExtension.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/PmdExtension.java)
+    *   [PmdPlugin.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/PmdPlugin.java)
+    *   [PmdInvoker.java](https://github.com/gradle/gradle/blob/master/platforms/jvm/code-quality-workers/src/main/java/org/gradle/api/plugins/quality/internal/PmdInvoker.java)
+*   The default PMD version used by Gradle 9.7.1: [DEFAULT_PMD_VERSION](https://github.com/gradle/gradle/blob/v9.7.1/platforms/jvm/code-quality/src/main/java/org/gradle/api/plugins/quality/PmdPlugin.java#L63)
