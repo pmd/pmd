@@ -216,4 +216,23 @@ class LexerUtils {
 class StdJDBCDelegate {}
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7060 Local and instance String constants are safe equals receivers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    final String text = "x";
+
+    boolean local(String val) {
+        final String text = "x";
+        return val != null && text.equals(val); // The receiver cannot be null.
+    }
+
+    boolean field(String val) {
+        return val != null && text.equals(val);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
