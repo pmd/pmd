@@ -435,4 +435,18 @@ public class Outer {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7120 NPE (record with null check)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+record Foo(Bar field) {
+    void baz() {
+        if (field == null) {
+            field.toString();
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
