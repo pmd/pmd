@@ -48,6 +48,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
+* java-multithreading
+    * [#7120](https://github.com/pmd/pmd/issues/7120): \[java] NoSuchElementException thrown when evaluating NonThreadSafeSingleton on a record that null checks its own fields
 
 ### 🚨️ API Changes
 
