@@ -55,7 +55,7 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
             PropertyFactory.booleanProperty("disableAuxClasspathWarnings")
                     .desc("Starting with 7.27.0, the Java language module will log warnings about the provided aux classpath,"
                             + "when there could be any problems. Warnings are e.g. when no platform classpath (\"lib/jrt-fs.jar\") "
-                            + "has been provided and PMD falls back to the current runtime. "
+                            + "has been provided and PMD falls back to the current runtime or when corrupt archive files are detected. "
                             + "These warnings can be disabled with this property. "
                             + "Note: Using an invalid aux classpath can lead to false positive or false negative violations. "
                             + "See https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath")

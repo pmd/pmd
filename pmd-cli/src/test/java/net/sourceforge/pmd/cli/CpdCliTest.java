@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -31,8 +32,6 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.internal.util.IOUtil;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class CpdCliTest extends BaseCliTest {
 
@@ -212,7 +211,7 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void testEncodingOption() throws Exception {
 
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             // set the default encoding under Windows
             System.setProperty("file.encoding", "Cp1252");
 

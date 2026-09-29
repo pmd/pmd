@@ -30,7 +30,8 @@ public class RuleTstLauncherSession implements LauncherSessionListener {
         // - net.sourceforge.pmd.lang.java.JavaParsingHelper#TEST_AUX_CLASSPATH_LOADER
         // - net.sourceforge.pmd.lang.java.symbols.ClassLoadingChildFirstTest#testClassLoading
         // - net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessorTest#emptyClasspathWithoutJrtFs
-        AuxClasspathLoader.enableReuse(3);
+        // - net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessorTest#expectWarningForCorruptJar
+        AuxClasspathLoader.enableReuse(4);
     }
 
     @Override

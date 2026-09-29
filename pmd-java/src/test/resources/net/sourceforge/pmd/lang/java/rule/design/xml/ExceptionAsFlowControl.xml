@@ -71,6 +71,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Catch block for subtype</description>
         <expected-problems>1</expected-problems>
@@ -95,9 +96,9 @@ public class Foo {{
 }}
 class TopE extends Exception { }
 class SubE extends TopE { }
-
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#4434 simple propagation</description>
         <expected-problems>0</expected-problems>
@@ -132,8 +133,9 @@ class SubE extends TopE { }
                 public InvalidCacheLoadException(String msg) { super(msg);}
             }
 
-            ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#4434 simple propagation, 2nd case</description>
         <expected-problems>0</expected-problems>
@@ -161,7 +163,60 @@ class SubE extends TopE { }
             class InvalidCacheLoadException extends RuntimeException {
                 public InvalidCacheLoadException(String msg) { super(msg);}
             }
+        ]]></code>
+    </test-code>
 
-            ]]></code>
+    <test-code>
+        <description>#4815 Exception thrown in a lambda body is not caught by the try around the lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+            import java.io.UncheckedIOException;
+            import java.util.concurrent.ExecutorService;
+
+            public class Foo {
+                private ExecutorService es;
+
+                void doPublish() {
+                    try {
+                        es.execute(() -> {
+                            try {
+                                unsafeDoPublish();
+                            } catch (IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
+                        });
+                    } catch (RuntimeException e) {
+                        System.err.println("could not submit: " + e);
+                    }
+                }
+
+                void unsafeDoPublish() throws IOException { }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4815 A throw outside the lambda is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.concurrent.ExecutorService;
+
+            public class Foo {
+                private ExecutorService es;
+
+                void doPublish(boolean ok) {
+                    try {
+                        es.execute(() -> { });
+                        if (!ok) {
+                            throw new IllegalStateException();
+                        }
+                    } catch (RuntimeException e) {
+                        System.err.println("failed: " + e);
+                    }
+                }
+            }
+        ]]></code>
     </test-code>
 </test-data>

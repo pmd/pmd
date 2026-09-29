@@ -11,10 +11,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
+import static uk.org.webcompere.systemstubs.SystemStubs.withEnvironmentVariable;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -22,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
@@ -35,12 +37,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
-import uk.org.webcompere.systemstubs.SystemStubs;
-import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
-import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
-
-@ExtendWith(SystemStubsExtension.class)
 class JavaLanguageProcessorTest {
 
     @TempDir
@@ -52,7 +48,7 @@ class JavaLanguageProcessorTest {
         JavaLanguageProperties properties =
                 (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
         properties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
-        String log = SystemStubs.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             try (JavaLanguageProcessor processor = new JavaLanguageProcessor(properties)) {
                 assertNotNull(processor.getTypeSystem());
             }
@@ -61,16 +57,34 @@ class JavaLanguageProcessorTest {
     }
 
     @Test
+    void expectWarningForCorruptJar() throws Exception {
+        Path corruptJar = tempDir.resolve("corrupt.jar");
+        Files.write(corruptJar, "PK\003\004 Corrupt Jar".getBytes(StandardCharsets.US_ASCII));
+        String classpath = AuxClasspathUtil.toRawClasspath(CollectionUtil.listOf(corruptJar), AuxClasspathUtil.getPlatformClasspath());
+        JavaLanguageProperties properties =
+                (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
+        properties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
+        String log = tapSystemErr(() -> {
+            try (JavaLanguageProcessor processor = new JavaLanguageProcessor(properties)) {
+                assertNotNull(processor.getTypeSystem());
+            }
+        });
+        assertThat(log, containsString("Ignoring corrupt archive on auxClasspath"));
+        assertThat(log, containsString(corruptJar.toString()));
+        assertThat(log, containsString("PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS"));
+    }
+
+    @Test
     void classpathListWithJrtFs() throws Exception {
         String auxClasspath = writeClasspathFile("classpath-with-jrtfs.txt", true);
-        String log = SystemLambda.tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
+        String log = tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
         assertTrue(log.isEmpty(), "unexpected output: " + log);
     }
 
     @Test
     void classpathListWithoutJrtFs() throws Exception {
         String auxClasspath = writeClasspathFile("classpath-without-jrtfs.txt", false);
-        String log = SystemLambda.tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
+        String log = tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
         assertThat(log, containsString("Adding current platform"));
     }
 
@@ -81,7 +95,7 @@ class JavaLanguageProcessorTest {
                 (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
         properties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
         properties.setProperty(JavaLanguageProperties.DISABLE_AUX_CLASSPATH_WARNINGS, true);
-        String log = SystemStubs.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             try (JavaLanguageProcessor processor = new JavaLanguageProcessor(properties)) {
                 assertNotNull(processor.getTypeSystem());
             }
@@ -90,39 +104,40 @@ class JavaLanguageProcessorTest {
     }
 
     @Test
-    void expectNoAuxClasspathWarningViaEnvironmentVariable(EnvironmentVariables environment) throws Exception {
-        environment.set("PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS", "true");
+    void expectNoAuxClasspathWarningViaEnvironmentVariable() throws Exception {
+        withEnvironmentVariable("PMD_JAVA_DISABLE_AUX_CLASSPATH_WARNINGS", "true")
+                .execute(() -> {
+                    String classpath = AuxClasspathUtil.toRawClasspath(AuxClasspathUtil.getRuntimeClasspath());
+                    JavaLanguageModule javaLanguageModule = JavaLanguageModule.getInstance();
+                    JavaLanguageProperties properties = (JavaLanguageProperties) javaLanguageModule.newPropertyBundle();
+                    properties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
 
-        String classpath = AuxClasspathUtil.toRawClasspath(AuxClasspathUtil.getRuntimeClasspath());
-        JavaLanguageModule javaLanguageModule = JavaLanguageModule.getInstance();
-        JavaLanguageProperties properties = (JavaLanguageProperties) javaLanguageModule.newPropertyBundle();
-        properties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, classpath);
-
-        try (LanguageProcessorRegistry registry =
-                     LanguageProcessorRegistry.create(LanguageRegistry.singleton(javaLanguageModule),
-                CollectionUtil.mapOf(javaLanguageModule, properties),
-                PmdReporter.quiet())) {
-            String log = SystemStubs.tapSystemErr(() -> {
-                try (JavaLanguageProcessor processor =
-                             (JavaLanguageProcessor) registry.getProcessor(javaLanguageModule)) {
-                    assertNotNull(processor.getTypeSystem());
-                }
-            });
-            assertThat(log, is(emptyString()));
-        }
+                    try (LanguageProcessorRegistry registry =
+                                 LanguageProcessorRegistry.create(LanguageRegistry.singleton(javaLanguageModule),
+                                         CollectionUtil.mapOf(javaLanguageModule, properties),
+                                         PmdReporter.quiet())) {
+                        String log = tapSystemErr(() -> {
+                            try (JavaLanguageProcessor processor =
+                                         (JavaLanguageProcessor) registry.getProcessor(javaLanguageModule)) {
+                                assertNotNull(processor.getTypeSystem());
+                            }
+                        });
+                        assertThat(log, is(emptyString()));
+                    }
+                });
     }
 
     @Test
     void auxClasspathWithJrtFs() throws Exception {
         String auxClasspath = createRawClasspath(true);
-        String log = SystemLambda.tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
+        String log = tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
         assertTrue(log.isEmpty(), "unexpected output: " + log);
     }
 
     @Test
     void auxClasspathWithoutJrtFs() throws Exception {
         String auxClasspath = createRawClasspath(false);
-        String log = SystemLambda.tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
+        String log = tapSystemErr(() -> assertPlatformClassesFound(auxClasspath));
         assertThat(log, containsString("Adding current platform"));
     }
 
@@ -133,7 +148,7 @@ class JavaLanguageProcessorTest {
      */
     @Test
     void emptyClasspathWithoutJrtFs() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> assertPlatformClassesFound(""));
+        String log = tapSystemErr(() -> assertPlatformClassesFound(""));
         assertThat(log, containsString("Adding current platform"));
     }
 

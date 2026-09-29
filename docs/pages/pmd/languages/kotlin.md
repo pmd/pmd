@@ -64,6 +64,11 @@ is configured and the kotlin-type-mapper analysis has resolved the types.
 
 A type-info attribute is **absent** (not present with a null value) whenever its value is unavailable.
 
+> **Note:** `@TypeName` and `@ReturnTypeName` use fully-qualified names for generic type arguments:
+> `kotlin.collections.List<kotlin.String>?`, not `List<String>?`. When comparing in XPath, use
+> the full FQN form: `@TypeName = 'kotlin.collections.List<kotlin.String>'`. For type checks that
+> ignore generics, prefer `pmd-kotlin:typeIs()` or `pmd-kotlin:typeIsExactly()`.
+
 ### General attributes
 
 These attributes are structural: they come directly from the parsed source and don't depend on
@@ -74,11 +79,6 @@ type resolution, so they're always present regardless of `auxClasspath`.
 | `@Mutable` | `PropertyDeclaration` | `true` for `var`, `false` for `val`. |
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
 | `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
-
-> **Note:** `@TypeName` and `@ReturnTypeName` use fully-qualified names for generic type arguments:
-> `kotlin.collections.List<kotlin.String>?`, not `List<String>?`. When comparing in XPath, use
-> the full FQN form: `@TypeName = 'kotlin.collections.List<kotlin.String>'`. For type checks that
-> ignore generics, prefer `pmd-kotlin:typeIs()` or `pmd-kotlin:typeIsExactly()`.
 
 > **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name). Modifiers like
 > `private`, `lateinit`, or `const` are on the parent `PropertyDeclaration` node.
