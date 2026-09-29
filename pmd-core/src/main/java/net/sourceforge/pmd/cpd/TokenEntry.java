@@ -32,6 +32,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
 
     TokenEntry(int imageId, FileId fileId, int beginLine, int beginColumn, int endLine, int endColumn, int index) {
         assert isOk(beginLine) && isOk(beginColumn) && isOk(endLine) && isOk(endColumn) : "Coordinates are 1-based";
+        assert beginLine < endLine || (beginLine == endLine && beginColumn <= endColumn) : "begin position can't be before end position";
         assert imageId != EOF;
         this.fileId = fileId;
         this.beginLine = beginLine;
