@@ -9,8 +9,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Range;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 
 
@@ -47,6 +51,22 @@ public class ASTHtmlElement extends AbstractHtmlNode<Element> {
                 .map(Attribute::getValue)
                 .map(String::valueOf)
                 .orElse(null);
+    }
+
+    /**
+     * Returns the source range of the explicit closing tag, or {@code null}
+     * if this element has no source-backed closing tag.
+     *
+     * @return The closing tag's source range, or {@code null}
+     * @internalApi
+     */
+    @InternalApi
+    public @Nullable TextRegion getClosingTagRegion() {
+        Range range = node.endSourceRange();
+        if (!range.isTracked() || range.isImplicit()) {
+            return null;
+        }
+        return TextRegion.fromBothOffsets(range.startPos(), range.endPos());
     }
 
     @Override
