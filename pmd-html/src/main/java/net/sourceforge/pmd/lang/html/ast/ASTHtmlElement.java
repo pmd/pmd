@@ -54,6 +54,18 @@ public class ASTHtmlElement extends AbstractHtmlNode<Element> {
     }
 
     /**
+     * Returns the source range of the opening tag, or {@code null} if this
+     * element has no source-backed opening tag.
+     *
+     * @return The opening tag's source range, or {@code null}
+     * @internalApi
+     */
+    @InternalApi
+    public @Nullable TextRegion getOpeningTagRegion() {
+        return toTextRegion(node.sourceRange());
+    }
+
+    /**
      * Returns the source range of the explicit closing tag, or {@code null}
      * if this element has no source-backed closing tag.
      *
@@ -62,7 +74,10 @@ public class ASTHtmlElement extends AbstractHtmlNode<Element> {
      */
     @InternalApi
     public @Nullable TextRegion getClosingTagRegion() {
-        Range range = node.endSourceRange();
+        return toTextRegion(node.endSourceRange());
+    }
+
+    private static @Nullable TextRegion toTextRegion(Range range) {
         if (!range.isTracked() || range.isImplicit()) {
             return null;
         }

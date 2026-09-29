@@ -4,7 +4,7 @@ L1
     [#doctype]                              1         15
     [\n]                                    16        16
 L2
-    [html]                                  1         7
+    [html]                                  1         17
     [\n]                                    17        17
 L3
     [head]                                  1         7

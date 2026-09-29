@@ -79,6 +79,9 @@ class HtmlCpdLexerTest extends CpdTextComparisonTest {
 
         assertEquals(Arrays.asList("#document", "html", "body", "div", "x", "/div", "/body", "/html"),
                      images);
+        assertLocation(entries.get(1), 1, 1, 1, 7);
+        assertLocation(entries.get(2), 1, 7, 1, 13);
+        assertLocation(entries.get(3), 1, 13, 1, 18);
         assertLocation(entries.get(5), 1, 19, 1, 25);
         assertLocation(entries.get(6), 1, 25, 1, 32);
         assertLocation(entries.get(7), 1, 32, 1, 39);
