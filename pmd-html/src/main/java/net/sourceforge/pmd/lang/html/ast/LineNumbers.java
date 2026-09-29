@@ -24,14 +24,26 @@ class LineNumbers {
         int nextIndex = index;
         int nodeLength = 0;
         int textLength = 0;
+        boolean selfClosingElement = false;
+        boolean sourceBackedElement = false;
 
         if (n instanceof ASTHtmlDocument) {
             nextIndex = index;
         } else if (n instanceof ASTHtmlComment) {
             nextIndex = indexOfComment(nextIndex);
         } else if (n instanceof ASTHtmlElement) {
-            nextIndex = htmlString.indexOf("<" + n.getXPathNodeName(), nextIndex);
-            nodeLength = htmlString.indexOf(">", nextIndex) - nextIndex + 1;
+            int openingElementStart = indexOfOpeningElement(n.getXPathNodeName(), nextIndex);
+            if (openingElementStart >= 0) {
+                sourceBackedElement = true;
+                nextIndex = openingElementStart;
+                int openingElementEnd = endOfOpeningElement(nextIndex);
+                nodeLength = openingElementEnd - nextIndex;
+                int lastContentIndex = openingElementEnd - 2;
+                while (lastContentIndex >= nextIndex && isHtmlWhitespace(htmlString.charAt(lastContentIndex))) {
+                    lastContentIndex--;
+                }
+                selfClosingElement = lastContentIndex >= nextIndex && htmlString.charAt(lastContentIndex) == '/';
+            }
         } else if (n instanceof ASTHtmlCDataNode) {
             nextIndex = htmlString.indexOf("<![CDATA[", nextIndex);
         } else if (n instanceof ASTHtmlXmlDeclaration) {
@@ -50,15 +62,15 @@ class LineNumbers {
             nextIndex = determineLocation((AbstractHtmlNode<?>) child, nextIndex);
         }
 
-        // explicitly closing element, eg. </a>
-        boolean hasCloseElement = n instanceof ASTHtmlElement
-                // nextIndex is up to the closing tag at this point
-                && htmlString.startsWith("</" + n.getXPathNodeName() + ">", nextIndex);
+        // nextIndex is up to the closing tag at this point
+        int closeElementEnd = n instanceof ASTHtmlElement && sourceBackedElement && !selfClosingElement
+                ? endOfClosingElement(n.getXPathNodeName(), nextIndex)
+                : -1;
 
         if (n instanceof ASTHtmlDocument) {
             nextIndex = htmlString.length();
-        } else if (n instanceof ASTHtmlElement && hasCloseElement) {
-            nextIndex += 2 + n.getXPathNodeName().length() + 1; // </nodename>
+        } else if (closeElementEnd >= 0) {
+            nextIndex = closeElementEnd;
         } else if (n instanceof ASTHtmlComment) {
             nextIndex = endOfComment(nextIndex);
         } else if (n instanceof ASTHtmlTextNode) {
@@ -71,8 +83,77 @@ class LineNumbers {
             nextIndex = htmlString.indexOf(">", nextIndex) + 1;
         }
 
-        setEndLocation(n, nextIndex - 1);
+        setEndLocation(n, Math.max(index, nextIndex - 1));
         return nextIndex;
+    }
+
+    private int indexOfOpeningElement(String name, int fromIndex) {
+        int candidate = htmlString.indexOf("<", fromIndex);
+        while (candidate >= 0) {
+            int nameStart = candidate + 1;
+            int nameEnd = nameStart + name.length();
+            if (nameEnd <= htmlString.length() && matchesName(name, nameStart)
+                    && (nameEnd == htmlString.length() || isTagNameBoundary(htmlString.charAt(nameEnd)))) {
+                return candidate;
+            }
+            candidate = htmlString.indexOf("<", candidate + 1);
+        }
+        return -1;
+    }
+
+    private int endOfOpeningElement(int fromIndex) {
+        char quote = 0;
+        for (int i = fromIndex; i < htmlString.length(); i++) {
+            char current = htmlString.charAt(i);
+            if (quote != 0) {
+                if (current == quote) {
+                    quote = 0;
+                }
+            } else if (current == '\'' || current == '"') {
+                quote = current;
+            } else if (current == '>') {
+                return i + 1;
+            }
+        }
+        return htmlString.length();
+    }
+
+    private int endOfClosingElement(String name, int fromIndex) {
+        if (!htmlString.startsWith("</", fromIndex)) {
+            return -1;
+        }
+
+        int nameStart = fromIndex + 2;
+        if (nameStart + name.length() > htmlString.length()) {
+            return -1;
+        }
+
+        if (!matchesName(name, nameStart)) {
+            return -1;
+        }
+
+        int end = nameStart + name.length();
+        while (end < htmlString.length() && isHtmlWhitespace(htmlString.charAt(end))) {
+            end++;
+        }
+        return end < htmlString.length() && htmlString.charAt(end) == '>' ? end + 1 : -1;
+    }
+
+    private boolean isHtmlWhitespace(char c) {
+        return c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r';
+    }
+
+    private boolean isTagNameBoundary(char c) {
+        return isHtmlWhitespace(c) || c == '/' || c == '>';
+    }
+
+    private boolean matchesName(String name, int nameStart) {
+        for (int i = 0; i < name.length(); i++) {
+            if (Character.toLowerCase(htmlString.charAt(nameStart + i)) != Character.toLowerCase(name.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
