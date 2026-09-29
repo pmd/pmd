@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.groovy.ast.impl.antlr4;
 
 import org.apache.groovy.parser.antlr4.GroovyLexer;
+import org.apache.groovy.parser.antlr4.GroovySyntaxError;
 
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.LexException;
@@ -15,6 +16,7 @@ import groovyjarjarantlr4.v4.runtime.ANTLRErrorListener;
 import groovyjarjarantlr4.v4.runtime.Lexer;
 import groovyjarjarantlr4.v4.runtime.RecognitionException;
 import groovyjarjarantlr4.v4.runtime.Recognizer;
+import groovyjarjarantlr4.v4.runtime.Token;
 
 /**
  * A Groovy specific token manager.
@@ -58,13 +60,23 @@ public class GroovyTokenManager implements TokenManager<GroovyToken> {
             previousComment = null;
         }
         
-        final GroovyToken currentToken = new GroovyToken(lexer.nextToken(), previousComment, textDoc);
+        final GroovyToken currentToken = new GroovyToken(nextAntlrToken(), previousComment, textDoc);
         if (previousToken != null) {
             previousToken.next = currentToken;
         }
         previousToken = currentToken;
 
         return currentToken;
+    }
+
+    private Token nextAntlrToken() {
+        try {
+            return lexer.nextToken();
+        } catch (GroovySyntaxError e) {
+            // The Groovy lexer reports some errors by throwing GroovySyntaxError
+            // (an AssertionError) instead of notifying the error listeners.
+            throw new LexException(e.getLine(), e.getColumn(), textDoc.getFileId(), e.getMessage(), e);
+        }
     }
 
     private void resetListeners() {
