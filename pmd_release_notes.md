@@ -38,6 +38,8 @@ This is a minor release.
     is the argument of a comparison, or remove them when it is already the receiver.
 
 ### 🐛️ Fixed Issues
+* groovy
+    * [#7110](https://github.com/pmd/pmd/issues/7110): \[groovy] Fix #7100: CPD fails on GStrings ending in an interpolated variable
 * java
     * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
 * java-bestpractices
