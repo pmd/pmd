@@ -6,14 +6,22 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.Rule;
@@ -22,6 +30,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Renderer to basic HTML format.
@@ -30,6 +39,9 @@ import net.sourceforge.pmd.reporting.RuleViolation;
  * XSLT transformation + stylesheet. No need to hard-code HTML markup here.
  */
 public class HTMLRenderer extends AbstractIncrementingRenderer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HTMLRenderer.class);
+
+    private static final Set<String> ALLOWED_SCHEMES = CollectionUtil.setOf("http", "https");
 
     public static final String NAME = "html";
 
@@ -77,7 +89,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
      * Write the body of the main body of the HTML content.
      */
     public void renderBody(PrintWriter writer, Report report) throws IOException {
-        linkPrefix = getProperty(LINK_PREFIX);
+        linkPrefix = safeUrl(getProperty(LINK_PREFIX));
         linePrefix = getProperty(LINE_PREFIX).orElse(null);
         replaceHtmlExtension = getProperty(HTML_EXTENSION);
 
@@ -97,7 +109,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        linkPrefix = getProperty(LINK_PREFIX);
+        linkPrefix = safeUrl(getProperty(LINK_PREFIX));
         linePrefix = getProperty(LINE_PREFIX).orElse(null);
         replaceHtmlExtension = getProperty(HTML_EXTENSION);
 
@@ -147,10 +159,9 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
             String d = escape(rv.getDescription());
 
-            String infoUrl = rv.getRule().getExternalInfoUrl();
+            String infoUrl = safeUrl(rv.getRule().getExternalInfoUrl());
             if (StringUtils.isNotBlank(infoUrl)) {
-                URI uri = URI.create(infoUrl);
-                d = "<a href=\"" + uri + "\">" + d + "</a>";
+                d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
             }
             buf.append("<td width=\"*\">")
                .append(d)
@@ -163,14 +174,53 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
     }
 
+    /**
+     * Converts the given URL to be safe for using as the value of a href attribute.
+     *
+     * @param raw the URL to convert
+     * @return the safe URL or an empty string if the URL is invalid
+     */
+    private static String safeUrl(String raw) {
+        if (raw == null || raw.isEmpty()) {
+            return "";
+        }
+        URI uri;
+        try {
+            uri = new URI(raw); // rejects spaces, tabs, control chars, quotes
+        } catch (URISyntaxException e) {
+            LOGGER.debug("Ignoring invalid URL: {}", raw, e);
+            return "";
+        }
+
+        String scheme = uri.getScheme();
+        if (scheme == null && uri.getRawAuthority() == null) {
+            // relative reference: allow paths, but not "//host/..."
+            return uri.toASCIIString();
+        }
+
+        if (scheme == null
+                || !ALLOWED_SCHEMES.contains(scheme.toLowerCase(Locale.ROOT))
+                || uri.getHost() == null) {   // e.g. "https:foo" (opaque)
+            LOGGER.debug("Ignoring URL due to invalid scheme: {}", raw);
+            return "";
+        }
+        return uri.toASCIIString();
+    }
+
     private String renderFileNameEscaped(FileId fileId, int beginLine) {
-        return maybeWrap(escape(determineFileName(fileId)),
-                linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine);
+        String actualLineSelector = linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine;
+        String actualLineSelectorEncoded = null;
+        try {
+            actualLineSelectorEncoded = URLEncoder.encode(actualLineSelector, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return maybeWrap(escape(determineFileName(fileId)), actualLineSelectorEncoded);
     }
 
     private String renderRuleNameEscaped(Rule rule) {
         String name = escape(rule.getName());
-        String infoUrl = rule.getExternalInfoUrl();
+        String infoUrl = safeUrl(rule.getExternalInfoUrl());
         if (StringUtils.isNotBlank(infoUrl)) {
             return "<a href=\"" + infoUrl + "\">" + name + "</a>";
         }
