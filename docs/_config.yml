@@ -65,6 +65,8 @@ feedback_disable: true
 # feedback_link: "http://helpy.io/"
 # if you uncomment the previous line, it changes where the feedback link points to
 
+plugins:
+  - jekyll-gfm-admonitions
 
 # filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 markdown: kramdown

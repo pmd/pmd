@@ -20,7 +20,10 @@ sidebar: pmd_sidebar
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
     * For Linux / Unix: [InfoZip](http://infozip.sourceforge.net/)
 
-{% include note.html content="For executing the Designer (`pmd designer`) using [OpenJDK](https://jdk.java.net) or Java 11+, you need additionally [JavaFX](https://gluonhq.com/products/javafx/). Download it, extract it and set the environment variable JAVAFX_HOME pointing at that directory." %}
+> [!NOTE]
+> For executing the Designer (`pmd designer`) using [OpenJDK](https://jdk.java.net) or Java 11+, you need 
+> additionally [JavaFX](https://gluonhq.com/products/javafx/). Download it, extract it and set the environment 
+> variable `JAVAFX_HOME` pointing at that directory.
 
 
 ### Installation
@@ -67,10 +70,10 @@ modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifi
 * `<source> …`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
 sources. Alternatively You can use the `-d` or `--dir` flag, which is equivalent.
 
-{% include note.html
-   content="PMD includes a quickstart ruleset for some languages (currently, Java)
-   as base configurations, which you can reference as e.g. `rulesets/java/quickstart.xml`. You're strongly
-   encouraged to [create your own ruleset](pmd_userdocs_making_rulesets.html) from the start though." %}
+> [!NOTE]
+> PMD includes a quickstart ruleset for some languages (currently, Java)
+> as base configurations, which you can reference as e.g. `rulesets/java/quickstart.xml`. You're strongly
+> encouraged to [create your own ruleset](pmd_userdocs_making_rulesets.html) from the start though.
 
 Additionally, the following options, are specified most of the time even though they're not required:
 * `-f <format>`: report format. PMD supports many report formats out of the box. You may want to start with the basic
@@ -79,7 +82,8 @@ Additionally, the following options, are specified most of the time even though 
   Setting this up correctly allows PMD to do much deeper analysis using reflection. Some rules, such as [MissingOverride](pmd_rules_java_bestpractices.html#missingoverride),
   require it to function properly.
 
-{%include tip.html content="A full CLI reference, including report formats, is available under [PMD CLI Reference](pmd_userdocs_cli_reference.html)" %}
+> [!TIP]
+> A full CLI reference, including report formats, is available under [PMD CLI Reference](pmd_userdocs_cli_reference.html).
 
 
 
@@ -106,9 +110,9 @@ Additionally, the following options, are specified most of the time even though 
 
 ## Running CPD via command line
 
-{% include note.html
-   content="CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
-            For the full list, see [Supported Languages](pmd_userdocs_cpd.html#supported-languages)." %}
+> [!NOTE]
+> CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
+> For the full list, see [Supported Languages](pmd_userdocs_cpd.html#supported-languages).
 
 Like for PMD, CPD is started on Unix by `pmd cpd` and on Windows by `pmd.bat cpd`, and it requires one option and a list of sources:
 
@@ -116,9 +120,9 @@ Like for PMD, CPD is started on Unix by `pmd cpd` and on Windows by `pmd.bat cpd
 * `<source> …`: path to the sources to analyse. This can be a file name, a directory, or a jar or zip file containing the
 sources. Alternatively You can use the `-d` or `--dir` flag, which is equivalent.
 
-{% include tip.html
-   content="CPD's command-line reference, Ant task usage, and many examples are documented in the
-            [CPD documentation page](pmd_userdocs_cpd.html)" %}
+> [!TIP]
+> CPD's command-line reference, Ant task usage, and many examples are documented 
+> in the [CPD documentation page](pmd_userdocs_cpd.html)
 
 ### Sample usage
 

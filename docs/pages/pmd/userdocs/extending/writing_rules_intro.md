@@ -144,9 +144,10 @@ Example for XPath rule:
 ```
 
 
-{% include note.html content="Since PMD 7, the `language` attribute is required on all `rule`
-    elements that declare a new rule. In PMD 6, this was optional, as the base rule classes sometimes set
-    the language implicitly in their constructor." %}
+> [!NOTE]
+> Since PMD 7, the `language` attribute is required on all `rule`
+> elements that declare a new rule. In PMD 6, this was optional, as the base rule classes sometimes set
+> the language implicitly in their constructor.
 
 ## Resource index
 
