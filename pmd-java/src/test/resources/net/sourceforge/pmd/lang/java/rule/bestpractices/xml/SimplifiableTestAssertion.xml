@@ -594,7 +594,11 @@ public class Foo {
 
     <test-code>
         <description>JUnit Test contains assertEquals with Boxed booleans as param</description>
-        <expected-problems>0</expected-problems>
+        <!-- JUnit 4 takes the message first, so this compares two different strings and always fails -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using fail</message>
+        </expected-messages>
         <code><![CDATA[
             import org.junit.Test;
 
@@ -719,6 +723,155 @@ public class A {
         public void test() {
             assertTrue(a.equals(b));  // should report a warning in this line
         }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assertTrue with != null may use assertNotNull</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNotNull</message>
+        </expected-messages>
+        <code><![CDATA[
+import junit.framework.TestCase;
+
+public class Foo extends TestCase {
+    Object a;
+    public void test1() {
+        assertTrue(a != null);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7119 assertEquals and assertNotEquals with null</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,9,10,11</expected-linenumbers>
+        <expected-messages>
+            <message>Assertion may be simplified using assertNull</message>
+            <message>Assertion may be simplified using assertNull</message>
+            <message>Assertion may be simplified using assertNotNull</message>
+            <message>Assertion may be simplified using assertNotNull</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class Foo {
+    Object a;
+    @Test
+    public void test() {
+        assertEquals(null, a);
+        assertEquals("a should be null", a, null);
+        assertNotEquals(null, a);
+        assertNotEquals("a should not be null", null, a);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7119 assertEquals with different constants always fails</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>9,10,11</expected-linenumbers>
+        <expected-messages>
+            <message>Assertion may be simplified using fail</message>
+            <message>Assertion may be simplified using fail</message>
+            <message>Assertion may be simplified using fail</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class Foo {
+    static final String NAME = "foo";
+
+    @Test
+    public void test() {
+        assertEquals(true, false);
+        assertEquals("numbers differ", 1, 2);
+        assertEquals("bar", NAME);
+
+        assertEquals("foo", NAME); // same value
+        assertEquals(1, 1L); // passes, compared as long
+        assertEquals(1.0, 2.0, 1.5); // passes within the delta
+        assertEquals(1, 2, 1.5); // passes within the delta
+        assertNotEquals(1, 2);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7119 assertTrue with instanceof may use assertInstanceOf in JUnit 5</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <expected-messages>
+            <message>Assertion may be simplified using assertInstanceOf</message>
+            <message>Assertion may be simplified using assertInstanceOf</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Foo {
+    Object a;
+    @Test
+    void test() {
+        assertTrue(a instanceof String);
+        assertTrue(a instanceof String, "a should be a String");
+        assertFalse(a instanceof String);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7119 JUnit 4 has no assertInstanceOf</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.assertTrue;
+
+public class Foo {
+    Object a;
+    @Test
+    public void test() {
+        assertTrue(a instanceof String);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7119 JUnit 5 takes the message last</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>9,10,11,12,13</expected-linenumbers>
+        <expected-messages>
+            <message>Assertion may be simplified using assertTrue</message>
+            <message>Assertion may be simplified using assertNull</message>
+            <message>Assertion may be simplified using fail</message>
+            <message>Assertion may be simplified using assertNull</message>
+            <message>Assertion may be simplified using assertTrue</message>
+        </expected-messages>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class Foo {
+    boolean a;
+    Object b;
+    @Test
+    void test() {
+        assertEquals(true, a, "a should be true");
+        assertEquals(null, b, () -> "b should be null");
+        assertEquals(1, 2, "numbers differ");
+        assertTrue(b == null, "b should be null");
+        assertFalse(!a, () -> "a should be true");
+        assertTrue(() -> !a);
     }
 }
 ]]></code>
