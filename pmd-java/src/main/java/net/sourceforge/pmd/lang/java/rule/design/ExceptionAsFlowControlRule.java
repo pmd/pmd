@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -18,9 +14,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
@@ -39,41 +34,41 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
      * lambda argument are in the list as well, since an intermediate operation is
      * evaluated by the terminal operation of the same pipeline.
      */
-    private static final Set<String> CALLS_THE_LAMBDA_ARGUMENT = new HashSet<>(Arrays.asList(
-        "java.lang.Iterable#forEach",
-        "java.util.Iterator#forEachRemaining",
-        "java.util.Map#forEach",
-        "java.util.Optional#ifPresent",
-        "java.util.Optional#ifPresentOrElse",
-        "java.util.stream.Stream#allMatch",
-        "java.util.stream.Stream#anyMatch",
-        "java.util.stream.Stream#collect",
-        "java.util.stream.Stream#dropWhile",
-        "java.util.stream.Stream#filter",
-        "java.util.stream.Stream#flatMap",
-        "java.util.stream.Stream#flatMapToDouble",
-        "java.util.stream.Stream#flatMapToInt",
-        "java.util.stream.Stream#flatMapToLong",
-        "java.util.stream.Stream#forEach",
-        "java.util.stream.Stream#forEachOrdered",
-        "java.util.stream.Stream#generate",
-        "java.util.stream.Stream#iterate",
-        "java.util.stream.Stream#map",
-        "java.util.stream.Stream#mapMulti",
-        "java.util.stream.Stream#mapMultiToDouble",
-        "java.util.stream.Stream#mapMultiToInt",
-        "java.util.stream.Stream#mapMultiToLong",
-        "java.util.stream.Stream#mapToDouble",
-        "java.util.stream.Stream#mapToInt",
-        "java.util.stream.Stream#mapToLong",
-        "java.util.stream.Stream#max",
-        "java.util.stream.Stream#min",
-        "java.util.stream.Stream#noneMatch",
-        "java.util.stream.Stream#peek",
-        "java.util.stream.Stream#reduce",
-        "java.util.stream.Stream#sorted",
-        "java.util.stream.Stream#takeWhile"
-    ));
+    private static final CompoundInvocationMatcher CALLS_THE_LAMBDA_ARGUMENT = InvocationMatcher.parseAll(
+        "java.lang.Iterable#forEach(_*)",
+        "java.util.Iterator#forEachRemaining(_*)",
+        "java.util.Map#forEach(_*)",
+        "java.util.Optional#ifPresent(_*)",
+        "java.util.Optional#ifPresentOrElse(_*)",
+        "java.util.stream.Stream#allMatch(_*)",
+        "java.util.stream.Stream#anyMatch(_*)",
+        "java.util.stream.Stream#collect(_*)",
+        "java.util.stream.Stream#dropWhile(_*)",
+        "java.util.stream.Stream#filter(_*)",
+        "java.util.stream.Stream#flatMap(_*)",
+        "java.util.stream.Stream#flatMapToDouble(_*)",
+        "java.util.stream.Stream#flatMapToInt(_*)",
+        "java.util.stream.Stream#flatMapToLong(_*)",
+        "java.util.stream.Stream#forEach(_*)",
+        "java.util.stream.Stream#forEachOrdered(_*)",
+        "java.util.stream.Stream#generate(_*)",
+        "java.util.stream.Stream#iterate(_*)",
+        "java.util.stream.Stream#map(_*)",
+        "java.util.stream.Stream#mapMulti(_*)",
+        "java.util.stream.Stream#mapMultiToDouble(_*)",
+        "java.util.stream.Stream#mapMultiToInt(_*)",
+        "java.util.stream.Stream#mapMultiToLong(_*)",
+        "java.util.stream.Stream#mapToDouble(_*)",
+        "java.util.stream.Stream#mapToInt(_*)",
+        "java.util.stream.Stream#mapToLong(_*)",
+        "java.util.stream.Stream#max(_*)",
+        "java.util.stream.Stream#min(_*)",
+        "java.util.stream.Stream#noneMatch(_*)",
+        "java.util.stream.Stream#peek(_*)",
+        "java.util.stream.Stream#reduce(_*)",
+        "java.util.stream.Stream#sorted(_*)",
+        "java.util.stream.Stream#takeWhile(_*)"
+    );
 
     // TODO tests:
     //   - catch a supertype of the exception (unless this is unwanted)
@@ -128,10 +123,7 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
         if (!(argumentList instanceof ASTArgumentList) || !(argumentList.getParent() instanceof ASTMethodCall)) {
             return false;
         }
-        JMethodSig method = ((ASTMethodCall) argumentList.getParent()).getMethodType();
-        JTypeDeclSymbol declaringType = method.getDeclaringType().getSymbol();
-        return declaringType instanceof JClassSymbol
-            && CALLS_THE_LAMBDA_ARGUMENT.contains(((JClassSymbol) declaringType).getBinaryName() + "#" + method.getName());
+        return CALLS_THE_LAMBDA_ARGUMENT.anyMatch(argumentList.getParent());
     }
 
 }

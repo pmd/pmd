@@ -40,9 +40,6 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/bestpractices/LiteralsFirstInComparisons %} now recognizes final local String constants
     and unqualified references to non-static final String constants. This may add violations when such a constant
     is the argument of a comparison, or remove them when it is already the receiver.
-*   The Java rule {% rule java/design/ExceptionAsFlowControl %} now reports exceptions thrown inside a lambda
-    that the method it is passed to calls itself, such as `Iterable.forEach` or a `Stream` operation that
-    takes a lambda. Exceptions thrown inside any other lambda are still not reported.
 
 ### 🐛️ Fixed Issues
 * java
