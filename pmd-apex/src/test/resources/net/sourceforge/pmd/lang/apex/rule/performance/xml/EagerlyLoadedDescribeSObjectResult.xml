@@ -141,4 +141,61 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Correct describer option check with Schema.SObjectDescribeOptions.DEFERRED</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(Schema.SObjectDescribeOptions.DEFERRED).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Correct describer option check using Schema class with Schema.SObjectDescribeOptions.DEFERRED</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Schema.describeSObjects(new List<String>{'Account'}, Schema.SObjectDescribeOptions.DEFERRED)[0].isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default describer option check allowing Schema.SObjectDescribeOptions.DEFAULT</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(Schema.SObjectDescribeOptions.DEFAULT).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Default describer option check restricting Schema.SObjectDescribeOptions.DEFAULT</description>
+        <rule-property name="noDefault">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.SObjectType.getDescribe(Schema.SObjectDescribeOptions.DEFAULT).isCreateable()) {
+            insert accounts;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
