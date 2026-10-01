@@ -28,7 +28,9 @@ public final class TextRange2d implements Comparable<TextRange2d> {
         this.endLine = endLine;
         this.endCol = endCol;
         assert startCol >= 1 && startLine >= 1 && endLine >= 1 && endCol >= 1
-            : "Not a valid range " + toDisplayStringWithColon();
+            : "Not a valid range " + toDisplayStringWithColon() + " (values are 1-based)";
+        assert startLine < endLine || (startLine == endLine && startCol <= endCol)
+            : "Not a valid range " + toDisplayStringWithColon() + " (start must not be after end)";
     }
 
 
