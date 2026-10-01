@@ -204,17 +204,19 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        checkForResources(node, data);
-        return super.visit(node, data);
+        RuleContext ctx = (RuleContext) data;
+        checkForResources(node, ctx);
+        return super.visit(node, ctx);
     }
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        checkForResources(node, data);
-        return super.visit(node, data);
+        RuleContext ctx = (RuleContext) data;
+        checkForResources(node, ctx);
+        return super.visit(node, ctx);
     }
 
-    private void checkForResources(ASTExecutableDeclaration methodOrConstructor, Object data) {
+    private void checkForResources(ASTExecutableDeclaration methodOrConstructor, RuleContext ctx) {
         reportedVarNames.clear();
         Map<ASTVariableId, TypeNode> resVars = getResourceVariables(methodOrConstructor);
         for (Map.Entry<ASTVariableId, TypeNode> resVarEntry : resVars.entrySet()) {
@@ -224,17 +226,17 @@ public class CloseResourceRule extends AbstractJavaRule {
 
             if (isWrappingResourceSpecifiedInTry(resVar)) {
                 reportedVarNames.add(resVar.getName());
-                asCtx(data).addViolationWithMessage(resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE,
-                                                    resVar.getName());
+                ctx.addViolationWithMessage(resVar, WRAPPING_TRY_WITH_RES_VAR_MESSAGE,
+                                            resVar.getName());
             } else if (shouldVarOfTypeBeClosedInMethod(resVar, resVarType, methodOrConstructor)) {
                 reportedVarNames.add(resVar.getName());
-                addCloseResourceViolation(resVar, runtimeType, data);
+                addCloseResourceViolation(resVar, runtimeType, ctx);
             } else if (isNotAllowedResourceType(resVarType)) {
                 ASTExpressionStatement reassigningStatement = getFirstReassigningStatementBeforeBeingClosed(resVar, methodOrConstructor);
                 if (reassigningStatement != null) {
                     reportedVarNames.add(resVar.getName());
-                    asCtx(data).addViolationWithMessage(reassigningStatement, REASSIGN_BEFORE_CLOSED_MESSAGE,
-                                                        resVar.getName());
+                    ctx.addViolationWithMessage(reassigningStatement, REASSIGN_BEFORE_CLOSED_MESSAGE,
+                                                resVar.getName());
                 }
             }
         }
@@ -823,9 +825,9 @@ public class CloseResourceRule extends AbstractJavaRule {
                 .nonEmpty();
     }
 
-    private void addCloseResourceViolation(ASTVariableId id, TypeNode type, Object data) {
+    private void addCloseResourceViolation(ASTVariableId id, TypeNode type, RuleContext ctx) {
         String resTypeName = getResourceTypeName(id, type);
-        asCtx(data).addViolation(id, resTypeName);
+        ctx.addViolation(id, resTypeName);
     }
 
     private String getResourceTypeName(ASTVariableId varId, TypeNode type) {
@@ -852,6 +854,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!getProperty(DETECT_CLOSE_NOT_IN_FINALLY)) {
             return super.visit(node, data);
         }
@@ -859,8 +862,8 @@ public class CloseResourceRule extends AbstractJavaRule {
         if (isCloseTargetMethodCall(node) && node.getQualifier() instanceof ASTVariableAccess) {
             ASTVariableAccess closedVar = (ASTVariableAccess) node.getQualifier();
             if (isNotInFinallyBlock(closedVar) && !reportedVarNames.contains(closedVar.getName())) {
-                asCtx(data).addViolationWithMessage(closedVar, CLOSE_IN_FINALLY_BLOCK_MESSAGE,
-                                                    closedVar.getName());
+                ctx.addViolationWithMessage(closedVar, CLOSE_IN_FINALLY_BLOCK_MESSAGE,
+                                            closedVar.getName());
             }
         }
 
