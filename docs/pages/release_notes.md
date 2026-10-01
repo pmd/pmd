@@ -47,7 +47,11 @@ This is a {{ site.pmd.release_type }} release.
 * java
     * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
 * java-bestpractices
+    * [#5031](https://github.com/pmd/pmd/issues/5031): \[java] CheckResultSet: False positive with ResultSet.next() in a while loop
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
+    * [#5209](https://github.com/pmd/pmd/issues/5209): \[java] CheckResultSet: False positive with guava preconditions
+    * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] CheckResultSet: False positive for rs.next() ? x : y
+    * [#7070](https://github.com/pmd/pmd/issues/7070): \[java] CheckResultSet: False negative caused by unrelated
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
