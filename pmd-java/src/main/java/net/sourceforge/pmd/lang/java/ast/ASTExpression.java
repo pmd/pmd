@@ -181,13 +181,6 @@ public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowR
             return new ConstResult(true, Objects.requireNonNull(result));
         }
 
-        static @NonNull ConstResult ctConstIfNotNull(@Nullable Object result) {
-            if (result == null) {
-                return NO_CONST_VALUE;
-            }
-            return new ConstResult(true, Objects.requireNonNull(result));
-        }
-
         /**
          * If true, this value is a compile-time constant in the sense of the JLS. See class description.
          */
