@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,8 +37,6 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class XMLRendererTest extends AbstractRendererTest {
 
@@ -141,7 +140,7 @@ class XMLRendererTest extends AbstractRendererTest {
 
     @Test
     void testCorrectCharset() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             System.setProperty("file.encoding", StandardCharsets.ISO_8859_1.name());
 
             Renderer renderer = getRenderer();

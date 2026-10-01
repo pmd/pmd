@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -39,18 +40,20 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
     @Override
     public Object visit(ASTVariableId node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.isUnnamed()) {
             // unnamed variables do not have to match the regexes.
             return null;
         }
 
         if (node.isLambdaParameter()) {
-            checkMatches(node, node.isTypeInferred() ? lambdaParamRegex : explicitLambdaParamRegex, data);
+            checkMatches(node, node.isTypeInferred() ? lambdaParamRegex : explicitLambdaParamRegex, ctx);
         } else if (node.isFormalParameter()) {
-            checkMatches(node, node.isFinal() ? finalFormalParamRegex : formalParamRegex, data);
+            checkMatches(node, node.isFinal() ? finalFormalParamRegex : formalParamRegex, ctx);
         }
 
-        return data;
+        return null;
     }
 
 

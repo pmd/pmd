@@ -48,11 +48,26 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
                        .defaultValue(true)
                        .build();
 
+    /**
+     * @since 7.28.0
+     */
+    public static final PropertyDescriptor<Boolean> DISABLE_AUX_CLASSPATH_WARNINGS =
+            PropertyFactory.booleanProperty("disableAuxClasspathWarnings")
+                    .desc("Starting with 7.27.0, the Java language module will log warnings about the provided aux classpath,"
+                            + "when there could be any problems. Warnings are e.g. when no platform classpath (\"lib/jrt-fs.jar\") "
+                            + "has been provided and PMD falls back to the current runtime or when corrupt archive files are detected. "
+                            + "These warnings can be disabled with this property. "
+                            + "Note: Using an invalid aux classpath can lead to false positive or false negative violations. "
+                            + "See https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath")
+                    .defaultValue(false)
+                    .build();
+
     public JavaLanguageProperties() {
         super(JavaLanguageModule.getInstance());
         definePropertyDescriptor(INTERNAL_INFERENCE_LOGGING_VERBOSITY);
         definePropertyDescriptor(INTERNAL_DO_STRICT_TYPERES);
         definePropertyDescriptor(FIRST_CLASS_LOMBOK);
+        definePropertyDescriptor(DISABLE_AUX_CLASSPATH_WARNINGS);
         definePropertyDescriptor(CpdLanguageProperties.CPD_IGNORE_METADATA);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);

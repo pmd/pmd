@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 /**
  * Checks for types whose name does not match the name of the file they are defined in.
+ *
+ * @since 7.28.0
  */
 public class TypeNameMismatchRule extends AbstractJavaRulechainRule {
 

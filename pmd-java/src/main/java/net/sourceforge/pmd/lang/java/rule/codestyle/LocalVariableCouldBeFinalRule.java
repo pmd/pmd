@@ -30,13 +30,14 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
         RuleContext ctx = (RuleContext) data;
 
         if (node.isFinal()) { // also for implicit finals, like resources, or lombok.val
-            return ctx;
+            return null;
         }
         if (getProperty(IGNORE_FOR_EACH) && node.getParent() instanceof ASTForeachStatement) {
-            return ctx;
+            return null;
         }
         if (node.getParent() instanceof ASTForInit) {
-            return specialCaseForInit(node, ctx);
+            specialCaseForInit(node, ctx);
+            return null;
         }
         for (ASTVariableId vid : node.getVarIds()) {
             if (!JavaAstUtils.isNeverUsed(vid) && JavaAstUtils.isEffectivelyFinal(vid)) {
@@ -46,7 +47,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private RuleContext specialCaseForInit(ASTLocalVariableDeclaration node, RuleContext ctx) {
+    private void specialCaseForInit(ASTLocalVariableDeclaration node, RuleContext ctx) {
         // See https://github.com/pmd/pmd/issues/1619 for why this is necessary
         if (node.getVarIds().all(JavaAstUtils::isEffectivelyFinal)) {
             // All variables declared in this ASTLocalVariableDeclaration need to be
@@ -58,7 +59,6 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
                 }
             }
         }
-        return ctx;
     }
 
 }

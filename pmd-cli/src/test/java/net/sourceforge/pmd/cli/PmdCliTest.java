@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.io.File;
 import java.io.FilterOutputStream;
@@ -49,8 +50,6 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.reporting.RuleContext;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PmdCliTest extends BaseCliTest {
 
@@ -183,7 +182,7 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         // restoring system properties: --debug might change logging properties
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS, "--report-file", reportFile.toString(), "--debug");
         });
 
@@ -196,7 +195,7 @@ class PmdCliTest extends BaseCliTest {
     void testExcludeFile() throws Exception {
 
         // restoring system properties: --debug might change logging properties
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             runCli(OK,
                     "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--exclude", srcDir.toString(), "--debug")
                     .verify(r -> {
@@ -247,7 +246,7 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void testRelativeFileInputs() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             // change working directory
             System.setProperty("user.dir", srcDir.toString());
             runCli(VIOLATIONS_FOUND, "--dir", ".", "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS)

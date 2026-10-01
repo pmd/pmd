@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cli;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -26,8 +27,6 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.opentest4j.AssertionFailedError;
 
 import net.sourceforge.pmd.cli.internal.CliExitCode;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 abstract class BaseCliTest {
 
@@ -64,7 +63,7 @@ abstract class BaseCliTest {
             System.setOut(new PrintStream(out));
             System.setErr(new PrintStream(err));
             // restoring system properties: --debug might change logging properties
-            SystemLambda.restoreSystemProperties(
+            restoreSystemProperties(
                 () -> {
                     int actualExitCode = PmdCli.mainWithoutExit(argList.toArray(new String[0]));
                     exitCode.set(CliExitCode.fromInt(actualExitCode));
