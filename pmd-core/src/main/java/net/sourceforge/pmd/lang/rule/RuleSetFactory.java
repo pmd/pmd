@@ -193,7 +193,7 @@ final class RuleSetFactory {
                     } else {
                         message = err.errCount + " XML validation errors occurred";
                     }
-                    throw new RuleSetLoadException(ruleSetReferenceId, message);
+                    throw new RuleSetLoadException(ruleSetReferenceId, message + "\n" + String.join("\n", err.errorMessages));
                 }
                 return ruleSet;
             } catch (Exception | Error e) {
@@ -679,6 +679,7 @@ final class RuleSetFactory {
         implements PmdXmlReporter {
 
         private final PmdReporter pmdReporter;
+        private final List<String> errorMessages = new ArrayList<>();
         private int errCount;
 
         PmdXmlReporterImpl(PmdReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
@@ -736,6 +737,9 @@ final class RuleSetFactory {
                             .withSeverity(severity)
                             .withCause(cause);
                     String fullMessage = ooxml.getFormatter().formatSpec(ooxml, spec, positioner);
+                    if (severity == XmlSeverity.ERROR) {
+                        errorMessages.add(fullMessage);
+                    }
                     XmlException ex = new XmlException(spec, fullMessage);
                     ooxml.getPrinter().accept(ex); // spec of newException is also to log.
                     return ex;
