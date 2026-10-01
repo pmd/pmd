@@ -62,14 +62,15 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        boolean flag = true;
-        flag &= !getProperty(ALLOW_LITERALS) || node.children(ASTVariableDeclarator.class).descendants(ASTLiteral.class).isEmpty();
-        flag &= !getProperty(ALLOW_CTORS) || node.children(ASTVariableDeclarator.class).children(ASTConstructorCall.class).isEmpty();
-        flag &= !getProperty(ALLOW_CASTS) || node.children(ASTVariableDeclarator.class).children(ASTCastExpression.class).isEmpty();
-        flag &= !getProperty(ALLOW_LOOP_VARIABLE) || !(node.getParent() instanceof ASTForeachStatement);
+        boolean flag = (!getProperty(ALLOW_LITERALS) || node.children(ASTVariableDeclarator.class).descendants(ASTLiteral.class).isEmpty())
+            && (!getProperty(ALLOW_CTORS) || node.children(ASTVariableDeclarator.class).children(ASTConstructorCall.class).isEmpty())
+            && (!getProperty(ALLOW_CASTS) || node.children(ASTVariableDeclarator.class).children(ASTCastExpression.class).isEmpty())
+            && (!getProperty(ALLOW_LOOP_VARIABLE) || !(node.getParent() instanceof ASTForeachStatement));
 
-        JTypeMirror typeMirror = node.getVarIds().first().getTypeMirror();
-        flag &= typeMirror.toString().length() < getProperty(ALLOW_LONG_TYPE_NAMES);
+        if (flag) {
+            JTypeMirror typeMirror = node.getVarIds().first().getTypeMirror();
+            flag = typeMirror.toString().length() < getProperty(ALLOW_LONG_TYPE_NAMES);
+        }
 
         if (flag) {
             RuleContext ruleContext = (RuleContext) data;
