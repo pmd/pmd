@@ -77,6 +77,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.getEnclosingType().isFinal() || JavaAstUtils.hasAnyAnnotation(node.getEnclosingType(), MAKE_FIELD_FINAL_CLASS_ANNOT)) {
             return null; // then cannot be overridden
         }
@@ -88,7 +89,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 String message = unsafeMethod.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
                 String lastMethod = PrettyPrintingUtil.prettyPrintOverload(unsafetyReason.getLast());
                 String stack = unsafetyReason.stream().map(PrettyPrintingUtil::prettyPrintOverload).collect(Collectors.joining(", "));
-                asCtx(data).addViolationWithMessage(call, message, lastMethod, stack);
+                ctx.addViolationWithMessage(call, message, lastMethod, stack);
             }
         }
         return null;

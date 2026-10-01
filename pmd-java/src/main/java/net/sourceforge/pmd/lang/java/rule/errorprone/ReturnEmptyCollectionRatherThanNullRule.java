@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * For methods that return an array, a {@link Collection} or a {@link Map}, this rule reports
@@ -45,25 +46,27 @@ public class ReturnEmptyCollectionRatherThanNullRule extends AbstractJavaRulecha
 
     @Override
     public Object visit(ASTReturnStatement returnStmt, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ReturnScopeNode target = JavaAstUtils.getReturnTarget(returnStmt);
         if (!(target instanceof ASTMethodDeclaration)) {
-            return data;
+            return null;
         }
 
         ASTMethodDeclaration method = (ASTMethodDeclaration) target;
         if (!returnsArrayOrCollection(method)) {
-            return data;
+            return null;
         }
 
         ASTExpression expression = returnStmt.getExpr();
         if (expression == null) {
-            return data;
+            return null;
         }
 
         if (mayReturnExplicitNull(expression) || reachesExplicitNullThroughLocal(expression)) {
-            asCtx(data).addViolation(returnStmt);
+            ctx.addViolation(returnStmt);
         }
-        return data;
+        return null;
     }
 
     private static boolean returnsArrayOrCollection(ASTMethodDeclaration method) {
