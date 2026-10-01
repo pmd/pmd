@@ -73,17 +73,24 @@ public class Foo {
 
     <test-code>
         <description>should be flagged</description>
+        <rule-property name="allowLongTypeNames">32</rule-property>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>5,6,7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The declared type 'String' is not long enough (&lt;32) to justify the use of var</message>
+            <message>The declared type 'int' is not long enough (&lt;32) to justify the use of var</message>
+            <message>The declared type 'List&lt;Object&gt;' is not long enough (&lt;32) to justify the use of var</message>
+            <message>The declared type 'DemoGeneric&lt;DemoGeneric&lt;Demo1&gt;&gt;' is not long enough (&lt;32) to justify the use of var</message>
+        </expected-messages>
         <code><![CDATA[
 import java.util.Arrays;
 
 public class Foo {
     public void bar() {
-        var msg = "Hello world";
-        var flag = 0x2;
-        var DEFAULT_LIST = Arrays.asList();
-        var x1 = new DemoGeneric<DemoGeneric<Demo1>>(); // length: 31
+        var msg = "Hello world"; // line 5
+        var flag = 0x2; // line 6
+        var DEFAULT_LIST = Arrays.asList(); // line 7
+        var x1 = new DemoGeneric<DemoGeneric<Demo1>>(); // line 8, length 31
     }
 
     static class DemoGeneric<T> {
@@ -93,6 +100,41 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>java.util.ArrayList without import</description>
+        <rule-property name="allowLongTypeNames">32</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The declared type 'java.util.ArrayList&lt;String&gt;' is not long enough (&lt;32) to justify the use of var</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        var list = new java.util.ArrayList<String>();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>java.util.ArrayList with import</description>
+        <rule-property name="allowLongTypeNames">32</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The declared type 'ArrayList&lt;String&gt;' is not long enough (&lt;32) to justify the use of var</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo {
+    public void bar() {
+        var list = new ArrayList<String>();
+    }
+}
+]]></code>
     </test-code>
 
     <test-code>

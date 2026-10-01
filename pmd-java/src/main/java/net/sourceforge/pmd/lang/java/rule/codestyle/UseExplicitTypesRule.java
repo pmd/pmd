@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -58,23 +59,48 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!node.isTypeInferred()) {
             return null;
         }
 
-        boolean flag = (!getProperty(ALLOW_LITERALS) || node.children(ASTVariableDeclarator.class).descendants(ASTLiteral.class).isEmpty())
-            && (!getProperty(ALLOW_CTORS) || node.children(ASTVariableDeclarator.class).children(ASTConstructorCall.class).isEmpty())
-            && (!getProperty(ALLOW_CASTS) || node.children(ASTVariableDeclarator.class).children(ASTCastExpression.class).isEmpty())
-            && (!getProperty(ALLOW_LOOP_VARIABLE) || !(node.getParent() instanceof ASTForeachStatement));
-
-        if (flag) {
-            JTypeMirror typeMirror = node.getVarIds().first().getTypeMirror();
-            flag = typeMirror.toString().length() < getProperty(ALLOW_LONG_TYPE_NAMES);
+        if (getProperty(ALLOW_LITERALS) && node.children(ASTVariableDeclarator.class).descendants(ASTLiteral.class).nonEmpty()) {
+            return null;
+        }
+        if (getProperty(ALLOW_CTORS) && node.children(ASTVariableDeclarator.class).children(ASTConstructorCall.class).nonEmpty()) {
+            return null;
+        }
+        if (getProperty(ALLOW_CASTS) && node.children(ASTVariableDeclarator.class).children(ASTCastExpression.class).nonEmpty()) {
+            return null;
+        }
+        if (getProperty(ALLOW_LOOP_VARIABLE) && node.getParent() instanceof ASTForeachStatement) {
+            return null;
         }
 
-        if (flag) {
-            RuleContext ruleContext = (RuleContext) data;
-            ruleContext.addViolation(node);
+        int requiredLongTypeNamesLength = getProperty(ALLOW_LONG_TYPE_NAMES);
+
+        JTypeMirror typeMirror = node.getVarIds().first().getTypeMirror();
+        String typeName = typeMirror.toString();
+
+        // for ctor calls, just take the type verbatim
+        ASTClassType ctorType = node.descendants(ASTVariableDeclarator.class)
+                .children(ASTConstructorCall.class)
+                .descendants(ASTClassType.class)
+                .first();
+        if (ctorType != null) {
+            typeName = ctorType.getText().toString();
+        }
+
+        boolean allowLongTypeNames = requiredLongTypeNamesLength < Integer.MAX_VALUE;
+        if (allowLongTypeNames && typeName.length() >= requiredLongTypeNamesLength) {
+            return null;
+        }
+
+        if (allowLongTypeNames) {
+            ctx.addViolationWithMessage(node, "The declared type ''{0}'' is not long enough (<{1}) to justify the use of var",
+                    typeName, requiredLongTypeNamesLength);
+        } else {
+            ctx.addViolation(node);
         }
 
         return null;
