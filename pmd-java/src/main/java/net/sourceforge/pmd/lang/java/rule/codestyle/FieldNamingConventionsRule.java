@@ -94,9 +94,9 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         // This inlines checkMatches because there's no variable declarator id
 
-        if (!getProperty(enumConstantRegex).matcher(node.getImage()).matches()) {
+        if (!getProperty(enumConstantRegex).matcher(node.getName()).matches()) {
             ctx.addViolation(node, "enum constant",
-                             node.getImage(),
+                             node.getName(),
                              getProperty(enumConstantRegex).toString());
         }
 

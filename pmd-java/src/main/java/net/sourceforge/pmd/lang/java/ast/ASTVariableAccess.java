@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
 public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr {
 
     private JVariableSig typedSym;
+    private String name;
 
     /**
      * Constructor promoting an ambiguous name to a variable reference.
@@ -52,8 +53,14 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
     }
 
     @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.name = image;
+    }
+
+    @Override
     public String getName() {
-        return getImage();
+        return name;
     }
 
 

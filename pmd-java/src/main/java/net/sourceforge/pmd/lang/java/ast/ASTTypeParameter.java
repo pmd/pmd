@@ -28,15 +28,24 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
  */
 public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeParameterSymbol> implements Annotatable {
 
+    private String name;
+
     ASTTypeParameter(int id) {
         super(id);
+    }
+
+
+    @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.name = image;
     }
 
     /**
      * Returns the name of the type variable introduced by this declaration.
      */
     public String getName() {
-        return getImage();
+        return name;
     }
 
 
