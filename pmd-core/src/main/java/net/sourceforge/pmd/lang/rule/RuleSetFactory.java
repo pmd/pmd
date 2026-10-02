@@ -184,14 +184,14 @@ final class RuleSetFactory {
                 RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue()).withFileName(ruleSetReferenceId.getRuleSetFileName());
 
                 RuleSet ruleSet = parseRulesetNode(ruleSetReferenceId, withDeprecatedRuleReferences, parsed, ruleSetBuilder, err);
-                if (err.errCount > 0) {
+                if (!err.errorMessages.isEmpty()) {
                     // note this makes us jump to the catch branch
                     // these might have been non-fatal errors
                     String message;
-                    if (err.errCount == 1) {
+                    if (err.errorMessages.size() == 1) {
                         message = "An XML validation error occurred";
                     } else {
-                        message = err.errCount + " XML validation errors occurred";
+                        message = err.errorMessages.size() + " XML validation errors occurred";
                     }
                     throw new RuleSetLoadException(ruleSetReferenceId, message + "\n" + String.join("\n", err.errorMessages));
                 }
@@ -241,8 +241,8 @@ final class RuleSetFactory {
                 try {
                     parseRuleNode(ruleSetReferenceId, builder, node, withDeprecatedRuleReferences, rulesetReferences, err);
                 } catch (XmlException ignored) {
-                    // already reported (it's an XmlException), error count
-                    // was incremented so parent method will throw RuleSetLoadException.
+                    // already reported (it's an XmlException) and recorded, so the parent method
+                    // will throw RuleSetLoadException.
                 }
             } else {
                 err.at(node).error(XmlErrorMessages.ERR__UNEXPECTED_ELEMENT_IN,
@@ -680,7 +680,6 @@ final class RuleSetFactory {
 
         private final PmdReporter pmdReporter;
         private final List<String> errorMessages = new ArrayList<>();
-        private int errCount;
 
         PmdXmlReporterImpl(PmdReporter pmdReporter, OoxmlFacade ooxml, XmlPositioner positioner) {
             super(ooxml, positioner);
@@ -719,7 +718,6 @@ final class RuleSetFactory {
                         severity = XmlSeverity.WARNING;
                         break;
                     case ERROR:
-                        errCount++;
                         severity = XmlSeverity.ERROR;
                         break;
                     default:
