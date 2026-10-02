@@ -103,8 +103,7 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
                 .collect(Collectors.toList());
         SimpleNameVisitor visitor = new SimpleNameVisitor(enclosingTypeSymbols);
 
-        StringBuilder sb = new StringBuilder();
-        typeMirror.acceptVisitor(visitor, sb);
+        StringBuilder sb = typeMirror.acceptVisitor(visitor, new StringBuilder());
         String typeName = sb.toString();
 
         boolean allowLongTypeNames = requiredLongTypeNamesLength < Integer.MAX_VALUE;
@@ -122,20 +121,20 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private static class SimpleNameVisitor implements JTypeVisitor<Void, StringBuilder> {
+    static class SimpleNameVisitor implements JTypeVisitor<StringBuilder, StringBuilder> {
         private final List<JClassSymbol> enclosingTypeSymbols;
 
-        private SimpleNameVisitor(List<JClassSymbol> enclosingTypeSymbols) {
+        SimpleNameVisitor(List<JClassSymbol> enclosingTypeSymbols) {
             this.enclosingTypeSymbols = enclosingTypeSymbols;
         }
 
         @Override
-        public Void visit(JTypeMirror t, StringBuilder stringBuilder) {
-            return null;
+        public StringBuilder visit(JTypeMirror t, StringBuilder sb) {
+            return sb;
         }
 
         @Override
-        public Void visitClass(JClassType classType, StringBuilder sb) {
+        public StringBuilder visitClass(JClassType classType, StringBuilder sb) {
             JClassSymbol symbol = classType.getSymbol();
             JClassSymbol enclosingClass = symbol.getEnclosingClass();
             if (enclosingClass != null && !enclosingTypeSymbols.contains(enclosingClass)) {
@@ -155,23 +154,23 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
                 }
                 sb.append(">");
             }
-            return null;
+            return sb;
         }
 
         @Override
-        public Void visitPrimitive(JPrimitiveType t, StringBuilder sb) {
+        public StringBuilder visitPrimitive(JPrimitiveType t, StringBuilder sb) {
             sb.append(t.getSimpleName());
-            return null;
+            return sb;
         }
 
         @Override
-        public Void visitTypeVar(JTypeVar t, StringBuilder sb) {
+        public StringBuilder visitTypeVar(JTypeVar t, StringBuilder sb) {
             sb.append(t.getName());
-            return null;
+            return sb;
         }
 
         @Override
-        public Void visitWildcard(JWildcardType wildcardType, StringBuilder sb) {
+        public StringBuilder visitWildcard(JWildcardType wildcardType, StringBuilder sb) {
             sb.append("?");
             if (wildcardType.isUpperBound()) {
                 sb.append(" extends ");
@@ -179,7 +178,7 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
                 sb.append(" super ");
             }
             wildcardType.getBound().acceptVisitor(this, sb);
-            return null;
+            return sb;
         }
     }
 }
