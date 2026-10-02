@@ -2134,12 +2134,47 @@ It may make sense to use `var` when the type is inherently clear upon reading th
 (ie: assignment to either a literal value or a constructor call). Those use cases
 can be enabled through properties.
 
-Notice that lambda parameters are allowed, as they are already inferred  by default (the `var` keyword
+It may also make sense to use `var` when writing the explicit type would be cumbersome. Use the
+parameter `allowLongTypeNames` to control the minimum length when the explicit type can be omitted.
+Note that this might remove useful information and makes reading the code without an IDE more difficult.
+
+Notice that lambda parameters are allowed, as they are already inferred by default (the `var` keyword
 is completely optional).
 
 See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/projects/amber/guides/lvti-style-guide).
         </description>
         <priority>3</priority>
+        <example>
+<![CDATA[
+import java.util.function.Function;
+import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
+
+public class Foo {
+    public void bar() {
+        var s = "a"; // violation - unless allowLiterals=true
+        String s2 = "a"; // no violation - explicit type
+        var f = getFoo(); // violation
+        var f = new Foo(); // violation - unless allowCtors=true
+
+        var f = (Integer) getFoo(); // violation - unless allowCasts=true
+
+        List<String> strings = Arrays.asList("a", "b", "c");
+        for (var str : strings) { // violation - unless allowLoopVariable=true
+            System.out.println(str);
+        }
+
+        var map = new HashMap<String, String>(); // violation - unless allowCtors=true
+        var entries = map.entrySet(); // violation - unless allowLongTypeNames=20
+    }
+
+    private String getFoo() {
+        return "a";
+    }
+}
+]]>
+        </example>
     </rule>
 
     <rule name="UselessParentheses"
