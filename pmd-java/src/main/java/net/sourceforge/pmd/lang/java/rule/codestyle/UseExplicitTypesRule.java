@@ -61,8 +61,9 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
             .build();
     private static final PropertyDescriptor<Integer> ALLOW_LONG_TYPE_NAMES = PropertyFactory
             .intProperty("allowLongTypeNames")
-            .desc("Allow when the type name would be longer than ...")
-            .defaultValue(Integer.MAX_VALUE)
+            .desc("Allow when the explicit type name would be longer than the configured length. "
+                    + "If the allowed length is 0, then no types are allowed regardless of the length.")
+            .defaultValue(0)
             .build();
 
     public UseExplicitTypesRule() {
@@ -111,7 +112,7 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
         StringBuilder sb = typeMirror.acceptVisitor(visitor, new StringBuilder());
         String typeName = sb.toString();
 
-        boolean allowLongTypeNames = requiredLongTypeNamesLength < Integer.MAX_VALUE;
+        boolean allowLongTypeNames = requiredLongTypeNamesLength > 0;
         if (allowLongTypeNames && typeName.length() >= requiredLongTypeNamesLength) {
             return null;
         }
