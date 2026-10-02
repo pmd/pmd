@@ -48,6 +48,9 @@ This is a {{ site.pmd.release_type }} release.
     * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
 * java-bestpractices
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
+* java-codestyle
+    * [#7134](https://github.com/pmd/pmd/issues/7134): \[java] UnnecessaryBoxing: False negative when another overload takes an unrelated reference type
+    * [#7135](https://github.com/pmd/pmd/issues/7135): \[java] UnnecessaryBoxing: False positive when removing the conversion selects a more specific primitive overload
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
