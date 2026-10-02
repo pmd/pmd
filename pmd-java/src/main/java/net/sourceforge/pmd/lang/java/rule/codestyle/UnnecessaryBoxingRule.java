@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +34,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -256,9 +258,9 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             || !selection.ithFormalParam(argIndex).isPrimitive()) {
             return false;
         }
-        // Loose invocation accepts the boxed value wherever it accepts the unboxed one (JLS 5.3), so without the
-        // unboxing the same overloads are applicable in each phase. Only the variable arity ones are skipped below:
-        // one applicable by fixed arity means that the selection of the variable arity method is not reliable.
+        // For a plain unboxing like intValue() on an Integer, loose invocation accepts the boxed value for the same
+        // parameter types as the unboxed one (JLS 5.3). Without the unboxing, the second and third phases then find
+        // the same methods (JLS 15.12.2.3, 15.12.2.4), so a selected variable arity method stays selected.
         boolean pureUnboxing = boxedType.unbox().equals(conversionExpr.getTypeMirror());
         
         // The argument types as they would be without the unboxing
@@ -323,11 +325,21 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
                     ? outer.selectInner(classType.getSymbol(), classType.getSymbol().getTypeParameters())
                     : classType.getGenericTypeDeclaration();
             }
-            // An anonymous class may call a protected constructor of its superclass (JLS 6.6.2.2)
-            JClassSymbol accessSite = invocation instanceof ASTConstructorCall && ((ASTConstructorCall) invocation).isAnonymousClass()
+            // Outside its package, a protected constructor is accessible to super(...) and to an anonymous class, but not
+            // to an ordinary class instance creation (JLS 6.6.2.2)
+            boolean isAnonymous = invocation instanceof ASTConstructorCall && ((ASTConstructorCall) invocation).isAnonymousClass();
+            JClassSymbol accessSite = isAnonymous
                 ? ((ASTConstructorCall) invocation).getAnonymousClassDeclaration().getSymbol()
                 : site;
-            return TypeOps.filterAccessible(classType.getConstructors(), accessSite);
+            List<JMethodSig> constructors = new ArrayList<>();
+            for (JMethodSig constructor : TypeOps.filterAccessible(classType.getConstructors(), accessSite)) {
+                JExecutableSymbol symbol = constructor.getSymbol();
+                if (!(invocation instanceof ASTConstructorCall) || isAnonymous || !Modifier.isProtected(symbol.getModifiers())
+                    || symbol.getEnclosingClass().getPackageName().equals(site.getPackageName())) {
+                    constructors.add(constructor);
+                }
+            }
+            return constructors;
         }
         if (!(invocation instanceof ASTMethodCall)) {
             return Collections.emptyList();
@@ -340,18 +352,73 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
                 : qualifier.getTypeMirror();
             // Instance methods are candidates for a type name qualifier too, selecting one is an error (JLS 15.12.3)
             JTypeMirror memberSource = TypeOps.getMemberSource(qualifierType);
-            return withoutInheritedInterfaceStatics(
-                TypeOps.getMethodsOf(memberSource, call.getMethodName(), false, site), memberSource);
+            List<JMethodSig> methods = new ArrayList<>();
+            for (JMethodSig m : withoutInheritedInterfaceStatics(
+                getAccessibleMethods(memberSource, call.getMethodName(), enclosingType), memberSource)) {
+                if (isAccessibleThrough(m, qualifier, memberSource, enclosingType)) {
+                    methods.add(m);
+                }
+            }
+            return methods;
         }
         // The innermost enclosing type that has a member method with that name, otherwise a static import
         for (ASTTypeDeclaration type = enclosingType; type != null; type = type.getEnclosingType()) {
             List<JMethodSig> methods = withoutInheritedInterfaceStatics(
-                TypeOps.getMethodsOf(type.getTypeMirror(), call.getMethodName(), false, site), type.getTypeMirror());
+                getAccessibleMethods(type.getTypeMirror(), call.getMethodName(), enclosingType), type.getTypeMirror());
             if (!methods.isEmpty()) {
                 return methods;
             }
         }
         return call.getSymbolTable().methods().resolve(call.getMethodName());
+    }
+
+    /**
+     * Returns the member methods of the type with that name that are accessible from the call (JLS 6.6). Code
+     * nested in a subclass may use the protected members of its superclasses, so each enclosing class is
+     * an access site (JLS 6.6.2).
+     */
+    private static List<JMethodSig> getAccessibleMethods(JTypeMirror type, String name, ASTTypeDeclaration enclosingType) {
+        List<JMethodSig> methods = new ArrayList<>();
+        for (ASTTypeDeclaration site = enclosingType; site != null; site = site.getEnclosingType()) {
+            for (JMethodSig m : TypeOps.getMethodsOf(type, name, false, site.getSymbol())) {
+                if (methods.stream().noneMatch(it -> it.getSymbol().equals(m.getSymbol()))) {
+                    methods.add(m);
+                }
+            }
+        }
+        return methods;
+    }
+
+    /**
+     * Whether the method may be called on the qualifier. Outside its package, a protected instance method may
+     * only be called on an expression whose type is an enclosing subclass or a subclass of it (JLS 6.6.2.1).
+     */
+    private static boolean isAccessibleThrough(JMethodSig method, ASTExpression qualifier, JTypeMirror qualifierType,
+                                               ASTTypeDeclaration enclosingType) {
+        JExecutableSymbol symbol = method.getSymbol();
+        JClassSymbol declaringClass = symbol.getEnclosingClass();
+        if (!Modifier.isProtected(symbol.getModifiers()) || method.isStatic()
+            || qualifier instanceof ASTSuperExpression || qualifier instanceof ASTTypeExpression
+            || declaringClass.getPackageName().equals(enclosingType.getSymbol().getPackageName())
+            || !(qualifierType.getSymbol() instanceof JClassSymbol)) {
+            return true;
+        }
+        JClassSymbol qualifierClass = (JClassSymbol) qualifierType.getSymbol();
+        for (ASTTypeDeclaration site = enclosingType; site != null; site = site.getEnclosingType()) {
+            if (isSubclass(site.getSymbol(), declaringClass) && isSubclass(qualifierClass, site.getSymbol())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSubclass(JClassSymbol sub, JClassSymbol cls) {
+        for (JClassSymbol c = sub; c != null; c = c.getSuperclass()) {
+            if (c.equals(cls)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Static methods of an interface are not inherited (JLS 8.4.8, 9.4.1). */
@@ -633,7 +700,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         return referenced.getReturnType().isVoid()
             && !referenced.isVarargs()
             && !referenced.isGeneric()
-            && TypeOps.getMethodsOf(TypeOps.getMemberSource(searchType), methodRef.getMethodName(), false, site.getSymbol()).size() == 1;
+            && getAccessibleMethods(TypeOps.getMemberSource(searchType), methodRef.getMethodName(), site).size() == 1;
     }
 
     /**

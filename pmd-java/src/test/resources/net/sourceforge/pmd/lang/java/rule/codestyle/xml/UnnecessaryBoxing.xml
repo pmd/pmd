@@ -1228,19 +1228,35 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Protected constructor of a class in another package - unboxing should be flagged unless an anonymous subclass may use it</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <description>Protected members of a class in another package - unboxing should be flagged unless a protected overload is accessible</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,14,15</expected-linenumbers>
         <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+            <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
         </expected-messages>
         <code><![CDATA[
-            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryboxing.ProtectedConstructor;
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryboxing.ProtectedMembers;
 
             class Example {
                 void test(Integer value) {
-                    new ProtectedConstructor(value.intValue()); // ProtectedConstructor(Object) is not accessible here
-                    new ProtectedConstructor(value.intValue()) { }; // ProtectedConstructor(Object) would be selected without intValue()
+                    new ProtectedMembers(value.intValue()); // ProtectedMembers(Object) is not accessible here
+                    new ProtectedMembers(value.intValue()) { }; // ProtectedMembers(Object) would be selected without intValue()
+                }
+            }
+            class Sub extends ProtectedMembers {
+                Sub(Integer value) {
+                    super(value.intValue()); // ProtectedMembers(Object) would be selected without intValue()
+                }
+                void test(ProtectedMembers other, Integer value) {
+                    new ProtectedMembers(value.intValue()); // a protected constructor is not accessible to new outside its package
+                    other.m(value.intValue()); // m(Object) cannot be called on a ProtectedMembers here
+                }
+                class Inner {
+                    void test(Sub sub, Integer value) {
+                        sub.m(value.intValue()); // m(Object) would be selected without intValue()
+                    }
                 }
             }
         ]]></code>
