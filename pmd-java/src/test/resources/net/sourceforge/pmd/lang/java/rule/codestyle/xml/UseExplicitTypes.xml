@@ -120,18 +120,20 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>java.util.ArrayList with import</description>
+        <description>java.util.ArrayList with import and type annotations</description>
         <rule-property name="allowLongTypeNames">32</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>The explicit type 'ArrayList&lt;String&gt;' is not long enough (&lt; 32) to justify the use of var</message>
+            <message>The explicit type 'ArrayList&lt;@Nullable String&gt;' is not long enough (&lt; 32) to justify the use of var</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.ArrayList;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 public class Foo {
     public void bar() {
-        var list = new ArrayList<String>();
+        var list = new ArrayList<@Nullable String>();
     }
 }
 ]]></code>

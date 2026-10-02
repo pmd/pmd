@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
@@ -19,12 +21,15 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.JTypeVisitable;
 import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
+import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -121,9 +126,23 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
         return null;
     }
 
+    /**
+     * This type visitor is very similar to {@link TypePrettyPrint#prettyPrintWithSimpleNames(JTypeVisitable)}
+     * with the following differences:
+     * <ul>
+     *     <li>For nested types, display the enclosing type in canonical format (with dots) unless the nested type
+     *         is defined within the same compilation unit and therefore doesn't need to be qualified.</li>
+     *     <li>TypePrettyPrint would display only the simple name of the nested type (e.g. {@code Entry} instead
+     *         of {@code Map.Entry})</li>
+     * </ul>
+     */
     static class SimpleNameVisitor implements JTypeVisitor<StringBuilder, StringBuilder> {
         private final List<JClassSymbol> enclosingTypeSymbols;
 
+        /**
+         * @param enclosingTypeSymbols List of type symbols, which are in scope. Nested types of these don't need
+         *                             to be qualified.
+         */
         SimpleNameVisitor(List<JClassSymbol> enclosingTypeSymbols) {
             this.enclosingTypeSymbols = enclosingTypeSymbols;
         }
@@ -135,10 +154,24 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
 
         @Override
         public StringBuilder visitClass(JClassType classType, StringBuilder sb) {
+            PSet<SymbolicValue.SymAnnot> typeAnnotations = classType.getTypeAnnotations();
+            if (typeAnnotations != null) {
+                for (SymbolicValue.SymAnnot annot : typeAnnotations) {
+                    sb.append("@").append(annot.getSimpleName()).append(" ");
+                }
+            }
+
             JClassSymbol symbol = classType.getSymbol();
             JClassSymbol enclosingClass = symbol.getEnclosingClass();
-            if (enclosingClass != null && !enclosingTypeSymbols.contains(enclosingClass)) {
-                sb.append(enclosingClass.getSimpleName());
+            List<String> enclosingNames = new ArrayList<>();
+            while (enclosingClass != null) {
+                if (!enclosingTypeSymbols.contains(enclosingClass)) {
+                    enclosingNames.add(enclosingClass.getSimpleName());
+                }
+                enclosingClass = enclosingClass.getEnclosingClass();
+            }
+            if (!enclosingNames.isEmpty()) {
+                sb.append(String.join(".", enclosingNames));
                 sb.append(".");
             }
             sb.append(symbol.getSimpleName());
