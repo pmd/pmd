@@ -73,14 +73,14 @@ public class Foo {
 
     <test-code>
         <description>should be flagged</description>
-        <rule-property name="allowLongTypeNames">32</rule-property>
+        <rule-property name="allowLongTypeNames">100</rule-property>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>5,6,7,8</expected-linenumbers>
         <expected-messages>
-            <message>The declared type 'String' is not long enough (&lt;32) to justify the use of var</message>
-            <message>The declared type 'int' is not long enough (&lt;32) to justify the use of var</message>
-            <message>The declared type 'List&lt;Object&gt;' is not long enough (&lt;32) to justify the use of var</message>
-            <message>The declared type 'DemoGeneric&lt;DemoGeneric&lt;Demo1&gt;&gt;' is not long enough (&lt;32) to justify the use of var</message>
+            <message>The explicit type 'String' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'int' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'List&lt;Object&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'DemoGeneric&lt;DemoGeneric&lt;Demo1&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.Arrays;
@@ -108,7 +108,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>The declared type 'java.util.ArrayList&lt;String&gt;' is not long enough (&lt;32) to justify the use of var</message>
+            <message>The explicit type 'ArrayList&lt;String&gt;' is not long enough (&lt; 32) to justify the use of var</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -125,13 +125,44 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>The declared type 'ArrayList&lt;String&gt;' is not long enough (&lt;32) to justify the use of var</message>
+            <message>The explicit type 'ArrayList&lt;String&gt;' is not long enough (&lt; 32) to justify the use of var</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.ArrayList;
 public class Foo {
     public void bar() {
         var list = new ArrayList<String>();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map examples</description>
+        <rule-property name="allowLongTypeNames">100</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>4,5,6,10,11,12</expected-linenumbers>
+        <expected-messages>
+            <message>The explicit type 'HashMap&lt;String, String&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Set&lt;Map.Entry&lt;String, String&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Iterator&lt;Map.Entry&lt;String, String&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'HashMap&lt;String, X&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Set&lt;Map.Entry&lt;String, X&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Iterator&lt;Map.Entry&lt;String, X&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.HashMap;
+public class Foo {
+    public void bar() {
+        var map = new HashMap<String, String>(); // line 4: HashMap<String, String>
+        var entries = map.entrySet(); // line 5: Set<Map.Entry<String, String>> + import for Map + Set
+        var iterator = entries.iterator(); // line 6: Iterator<Map.Entry<String, String>> + import for Map + Iterator
+    }
+
+    public <X extends CharSequence> void bar2() {
+        var map = new HashMap<String, X>(); // line 10: HashMap<String, X>
+        var entries = map.entrySet(); // line 11: Set<Map.Entry<String, X>> + import for Map + Set
+        var iterator = entries.iterator(); // line 12: Iterator<Map.Entry<String, X>> + import for Map + Iterator
     }
 }
 ]]></code>

@@ -4,15 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
+import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -79,17 +91,21 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
 
         int requiredLongTypeNamesLength = getProperty(ALLOW_LONG_TYPE_NAMES);
 
-        JTypeMirror typeMirror = node.getVarIds().first().getTypeMirror();
-        String typeName = typeMirror.toString();
+        // note: var declarations have exactly one varId
+        ASTVariableId firstVarId = node.getVarIds().first();
+        assert firstVarId != null : "Invalid java syntax? the local var declaration should have one varId";
+        JTypeMirror typeMirror = firstVarId.getTypeMirror();
 
-        // for ctor calls, just take the type verbatim
-        ASTClassType ctorType = node.descendants(ASTVariableDeclarator.class)
-                .children(ASTConstructorCall.class)
-                .descendants(ASTClassType.class)
-                .first();
-        if (ctorType != null) {
-            typeName = ctorType.getText().toString();
-        }
+        List<@NonNull JClassSymbol> enclosingTypeSymbols = node.ancestors(ASTClassDeclaration.class)
+                .toStream()
+                .map(ASTClassDeclaration::getTypeMirror)
+                .map(JClassType::getSymbol)
+                .collect(Collectors.toList());
+        SimpleNameVisitor visitor = new SimpleNameVisitor(enclosingTypeSymbols);
+
+        StringBuilder sb = new StringBuilder();
+        typeMirror.acceptVisitor(visitor, sb);
+        String typeName = sb.toString();
 
         boolean allowLongTypeNames = requiredLongTypeNamesLength < Integer.MAX_VALUE;
         if (allowLongTypeNames && typeName.length() >= requiredLongTypeNamesLength) {
@@ -97,12 +113,73 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
         }
 
         if (allowLongTypeNames) {
-            ctx.addViolationWithMessage(node, "The declared type ''{0}'' is not long enough (<{1}) to justify the use of var",
+            ctx.addViolationWithMessage(node, "The explicit type ''{0}'' is not long enough (< {1}) to justify the use of var",
                     typeName, requiredLongTypeNamesLength);
         } else {
             ctx.addViolation(node);
         }
 
         return null;
+    }
+
+    private static class SimpleNameVisitor implements JTypeVisitor<Void, StringBuilder> {
+        private final List<JClassSymbol> enclosingTypeSymbols;
+
+        private SimpleNameVisitor(List<JClassSymbol> enclosingTypeSymbols) {
+            this.enclosingTypeSymbols = enclosingTypeSymbols;
+        }
+
+        @Override
+        public Void visit(JTypeMirror t, StringBuilder stringBuilder) {
+            return null;
+        }
+
+        @Override
+        public Void visitClass(JClassType classType, StringBuilder sb) {
+            JClassSymbol symbol = classType.getSymbol();
+            JClassSymbol enclosingClass = symbol.getEnclosingClass();
+            if (enclosingClass != null && !enclosingTypeSymbols.contains(enclosingClass)) {
+                sb.append(enclosingClass.getSimpleName());
+                sb.append(".");
+            }
+            sb.append(symbol.getSimpleName());
+
+            List<JTypeMirror> typeArgs = classType.getTypeArgs();
+            if (!typeArgs.isEmpty()) {
+                sb.append("<");
+                for (int i = 0; i < typeArgs.size(); i++) {
+                    typeArgs.get(i).acceptVisitor(this, sb);
+                    if (i != typeArgs.size() - 1) {
+                        sb.append(", ");
+                    }
+                }
+                sb.append(">");
+            }
+            return null;
+        }
+
+        @Override
+        public Void visitPrimitive(JPrimitiveType t, StringBuilder sb) {
+            sb.append(t.getSimpleName());
+            return null;
+        }
+
+        @Override
+        public Void visitTypeVar(JTypeVar t, StringBuilder sb) {
+            sb.append(t.getName());
+            return null;
+        }
+
+        @Override
+        public Void visitWildcard(JWildcardType wildcardType, StringBuilder sb) {
+            sb.append("?");
+            if (wildcardType.isUpperBound()) {
+                sb.append(" extends ");
+            } else {
+                sb.append(" super ");
+            }
+            wildcardType.getBound().acceptVisitor(this, sb);
+            return null;
+        }
     }
 }
