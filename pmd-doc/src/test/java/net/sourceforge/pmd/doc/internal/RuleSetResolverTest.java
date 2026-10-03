@@ -12,6 +12,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 class RuleSetResolverTest {
 
     private static final List<String> EXCLUDED_RULESETS = listOf(
-            "pmd-test/src/main/resources/rulesets/dummy/basic.xml"
+            FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml")
     );
 
     @Test
@@ -43,7 +44,7 @@ class RuleSetResolverTest {
 
     @Test
     void testAdditionalRulesetPattern() {
-        String filePath = "/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml";
+        String filePath = FilenameUtils.normalize("/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml");
         assertTrue(GenerateRuleDocsCmd.ADDITIONAL_RULESET_PATTERN.matcher(filePath).matches());
     }
 
