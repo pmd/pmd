@@ -7,21 +7,28 @@ L2
     [head]                                  1         7
     [\n]                                    7         7
 L3
-    [script]                                1         9
+    [script]                                1         32
     [\nhtml5Clone:i.createElement("nav"[    32        67
 L4
     [#comment]                              68        74
     [",r.innerHTML="]                       75        89
-    [table]                                 90        132
-    [tr]                                    97        124
-    [td]                                    101       109
-    [td]                                    110       119
+    [table]                                 90        97
+    [tr]                                    97        101
+    [td]                                    101       105
+    [/td]                                   105       110
+    [td]                                    110       114
     [t]                                     114       114
+    [/td]                                   115       120
+    [/tr]                                   120       125
+    [/table]                                125       133
     ["\n]                                   133       134
 L5
+    [/script]                               1         10
     [\n]                                    10        10
 L6
+    [/head]                                 1         8
     [\n]                                    8         8
 L7
+    [/html]                                 1         8
     [\n]                                    8         8
 EOF

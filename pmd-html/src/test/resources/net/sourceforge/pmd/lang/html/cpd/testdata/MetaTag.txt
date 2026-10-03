@@ -4,7 +4,7 @@ L1
     [#doctype]                              1         15
     [\n]                                    16        16
 L2
-    [html]                                  1         7
+    [html]                                  1         17
     [\n]                                    17        17
 L3
     [head]                                  1         7
@@ -16,12 +16,15 @@ L5
     [meta]                                  5         27
     [\n]                                    27        27
 L6
+    [/head]                                 1         8
     [\n]                                    8         8
 L7
     [body]                                  1         7
     [\n]                                    7         7
 L8
+    [/body]                                 1         8
     [\n]                                    8         8
 L9
+    [/html]                                 1         8
     [\n]                                    8         8
 EOF
