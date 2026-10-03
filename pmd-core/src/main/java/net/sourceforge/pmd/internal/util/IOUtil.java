@@ -201,10 +201,6 @@ public final class IOUtil {
         return FilenameUtils.normalize(path);
     }
 
-    public static String getFilenameBase(String name) {
-        return FilenameUtils.getBaseName(name);
-    }
-
     public static void copy(InputStream from, OutputStream to) throws IOException {
         IOUtils.copyLarge(from, to);
     }

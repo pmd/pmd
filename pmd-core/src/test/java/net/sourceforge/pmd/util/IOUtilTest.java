@@ -30,13 +30,6 @@ import net.sourceforge.pmd.internal.util.IOUtil;
 class IOUtilTest {
 
     @Test
-    void testFilenameBase() {
-        assertEquals("cd", IOUtil.getFilenameBase("ab/cd.txt"));
-        assertEquals("ab.cd", IOUtil.getFilenameBase("ab.cd.txt"));
-        assertEquals("cd", IOUtil.getFilenameBase("ab/cd"));
-    }
-
-    @Test
     void testCopyStream() throws IOException {
         int size = 8192 + 8192 + 10;
         byte[] data = new byte[size];

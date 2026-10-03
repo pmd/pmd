@@ -7,6 +7,7 @@ package net.sourceforge.pmd.doc.internal;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -32,7 +33,7 @@ public final class RuleSetUtils {
     }
 
     public static String getRuleSetFilename(String rulesetFileName) {
-        return IOUtil.getFilenameBase(StringUtils.chomp(rulesetFileName));
+        return FilenameUtils.getBaseName(StringUtils.chomp(rulesetFileName));
     }
 
     /**
