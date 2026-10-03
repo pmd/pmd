@@ -20,7 +20,6 @@ import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -30,7 +29,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author Brian Remedios
  */
 public final class IOUtil {
-    public static final char UTF_BOM = ByteOrderMark.UTF_BOM;
     /** Conventional return value for readers. */
     public static final int EOF = -1;
 
