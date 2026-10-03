@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -288,7 +288,7 @@ public class PMDConfiguration extends AbstractConfiguration {
         List<Path> expandedClasspath = AuxClasspathUtil.expandClasspath(classpath);
         List<Path> notExistingFiles = expandedClasspath.stream()
                 .filter(path -> {
-                    boolean isJarFile = "jar".equalsIgnoreCase(IOUtil.getFilenameExtension(path.toString()));
+                    boolean isJarFile = "jar".equalsIgnoreCase(FilenameUtils.getExtension(path.toString()));
                     if (isJarFile && !Files.exists(path)) {
                         return true;
                     } else if (!isJarFile) {

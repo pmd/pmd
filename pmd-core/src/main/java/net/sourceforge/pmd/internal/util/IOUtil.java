@@ -27,7 +27,6 @@ import org.apache.commons.io.ByteOrderMark;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -200,10 +199,6 @@ public final class IOUtil {
 
     public static String normalizePath(String path) {
         return FilenameUtils.normalize(path);
-    }
-
-    public static String getFilenameExtension(String name) {
-        return FilenameUtils.getExtension(name);
     }
 
     public static String getFilenameBase(String name) {

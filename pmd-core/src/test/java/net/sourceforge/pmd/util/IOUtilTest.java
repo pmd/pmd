@@ -14,11 +14,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -30,14 +28,6 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.internal.util.IOUtil;
 
 class IOUtilTest {
-
-    @Test
-    void testFilenameExtension() {
-        assertEquals("txt", IOUtil.getFilenameExtension("ab/cd.txt"));
-        assertEquals("txt", IOUtil.getFilenameExtension("ab.cd.txt"));
-        assertEquals("", IOUtil.getFilenameExtension("ab/cd"));
-        assertEquals("html", IOUtil.getFilenameExtension("cd.html"));
-    }
 
     @Test
     void testFilenameBase() {
