@@ -46,7 +46,7 @@ class IOUtilTest {
         }
 
         Stream stream = new Stream();
-        IOUtil.closeQuietly(stream);
+        IOUtils.closeQuietly(stream);
         assertTrue(stream.isClosed());
     }
 

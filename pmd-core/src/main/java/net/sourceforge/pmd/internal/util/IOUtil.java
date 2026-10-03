@@ -131,7 +131,7 @@ public final class IOUtil {
 
     public static void tryCloseClassLoader(ClassLoader classLoader) {
         if (classLoader instanceof Closeable) {
-            closeQuietly((Closeable) classLoader);
+            IOUtils.closeQuietly((Closeable) classLoader);
         }
     }
 
@@ -179,16 +179,5 @@ public final class IOUtil {
         } else if (pendingException != null) {
             throw pendingException;
         }
-    }
-
-
-    // The following methods are taken from Apache Commons IO.
-    // The dependency was removed from PMD 6 because it had a security issue,
-    // and upgrading was not possible without upgrading to Java 8.
-    // See https://github.com/pmd/pmd/pull/3968
-    // TODO PMD 7: consider bringing back commons-io and cleaning this class up.
-
-    public static void closeQuietly(Closeable closeable) {
-        IOUtils.closeQuietly(closeable);
     }
 }
