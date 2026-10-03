@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -15,35 +14,14 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
 
 class IOUtilTest {
-
-    @Test
-    void testCopyStream() throws IOException {
-        int size = 8192 + 8192 + 10;
-        byte[] data = new byte[size];
-        for (int i = 0; i < size; i++) {
-            data[i] = 'A';
-        }
-        try (InputStream stream = new ByteArrayInputStream(data);
-             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            IOUtil.copy(stream, out);
-            byte[] bytes = out.toByteArray();
-            assertEquals(size, bytes.length);
-            assertArrayEquals(data, bytes);
-        }
-    }
 
     @Test
     void testCloseQuietly() {

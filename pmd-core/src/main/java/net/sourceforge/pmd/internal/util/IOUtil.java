@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -197,10 +196,6 @@ public final class IOUtil {
 
     public static String normalizePath(String path) {
         return FilenameUtils.normalize(path);
-    }
-
-    public static void copy(InputStream from, OutputStream to) throws IOException {
-        IOUtils.copyLarge(from, to);
     }
 
     public static String readToString(InputStream stream, Charset charset) throws IOException {
