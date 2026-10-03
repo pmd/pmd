@@ -229,8 +229,4 @@ public final class IOUtil {
     public static String readToString(InputStream stream, Charset charset) throws IOException {
         return IOUtils.toString(stream, charset);
     }
-
-    public static OutputStream fromWriter(Writer writer, String encoding) throws UnsupportedCharsetException {
-        return WriterOutputStream.builder().setCharset(encoding).setWriter(writer).getUnchecked();
-    }
 }

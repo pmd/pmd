@@ -47,15 +47,6 @@ class IOUtilTest {
     }
 
     @Test
-    void testOutputStreamFromWriter() throws IOException {
-        StringWriter writer = new StringWriter();
-        try (OutputStream outputStream = IOUtil.fromWriter(writer, "UTF-8")) {
-            outputStream.write("abc".getBytes(StandardCharsets.UTF_8));
-        }
-        assertEquals("abc", writer.toString());
-    }
-
-    @Test
     void testCopyStream() throws IOException {
         int size = 8192 + 8192 + 10;
         byte[] data = new byte[size];
