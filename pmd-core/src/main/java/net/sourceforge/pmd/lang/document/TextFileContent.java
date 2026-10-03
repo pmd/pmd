@@ -21,13 +21,12 @@ import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
 import org.apache.commons.io.ByteOrderMark;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Contents of a text file.
@@ -223,7 +222,7 @@ public final class TextFileContent {
             }
         }
 
-        while (n != IOUtil.EOF) {
+        while (n != IOUtils.EOF) {
             if (updateChecksum) {
                 // if we use a checked input stream we dont need to update the checksum manually
                 // note that this checksum operates on non-normalized characters

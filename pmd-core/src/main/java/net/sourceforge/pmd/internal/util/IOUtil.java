@@ -29,9 +29,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author Brian Remedios
  */
 public final class IOUtil {
-    /** Conventional return value for readers. */
-    public static final int EOF = -1;
-
     private IOUtil() {
     }
 
