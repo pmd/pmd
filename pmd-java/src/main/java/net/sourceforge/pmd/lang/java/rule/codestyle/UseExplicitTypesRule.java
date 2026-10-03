@@ -36,7 +36,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @since 7.0.0 (as XPath)
- * @since 7.28.0 (as Java rule)
+ * @since 7.29.0 (as Java rule)
  */
 public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<Boolean> ALLOW_LITERALS = PropertyFactory
