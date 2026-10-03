@@ -26,13 +26,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 class CpdCliTest extends BaseCliTest {
 
@@ -309,7 +309,7 @@ class CpdCliTest extends BaseCliTest {
 
                     r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
 
-                    String report = IOUtil.readFileToString(reportFile.toFile(), Charset.defaultCharset());
+                    String report = FileUtils.readFileToString(reportFile.toFile(), Charset.defaultCharset());
                     assertThat(report, containsString("Found a 5 line (13 tokens) duplication"));
                 });
     }

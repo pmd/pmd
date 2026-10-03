@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.ByteOrderMark;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -203,10 +202,6 @@ public final class IOUtil {
 
     public static void copy(InputStream from, OutputStream to) throws IOException {
         IOUtils.copyLarge(from, to);
-    }
-
-    public static String readFileToString(File file, Charset charset) throws IOException {
-        return FileUtils.readFileToString(file, charset);
     }
 
     public static String readToString(Reader reader) throws IOException {

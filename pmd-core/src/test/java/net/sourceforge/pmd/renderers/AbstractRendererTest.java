@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.io.TempDir;
@@ -237,7 +238,7 @@ abstract class AbstractRendererTest {
             throw new AssertionError(e);
         }
 
-        return IOUtil.readFileToString(file, expectedEncoding);
+        return FileUtils.readFileToString(file, expectedEncoding);
     }
 
 }

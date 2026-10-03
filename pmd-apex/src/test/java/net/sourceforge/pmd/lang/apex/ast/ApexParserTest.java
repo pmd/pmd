@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
@@ -157,7 +158,7 @@ class ApexParserTest extends ApexParserTestBase {
 
         for (File file : fList) {
             if (file.isFile() && file.getName().endsWith(".cls")) {
-                String sourceCode = IOUtil.readFileToString(file, StandardCharsets.UTF_8);
+                String sourceCode = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
                 assertNotNull(parse(sourceCode));
             }
         }

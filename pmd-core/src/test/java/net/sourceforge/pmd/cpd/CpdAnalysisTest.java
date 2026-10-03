@@ -29,13 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
@@ -286,7 +286,7 @@ class CpdAnalysisTest {
 
         assertTrue(Files.exists(reportFile), "Report file " + reportFile + " should have been created");
 
-        String reportContents = IOUtil.readFileToString(reportFile.toFile(), Charset.defaultCharset());
+        String reportContents = FileUtils.readFileToString(reportFile.toFile(), Charset.defaultCharset());
         assertThat(reportContents, containsString("duplication in the following files"));
         assertThat(reportContents, containsString(dup1.toAbsolutePath().normalize().toString()));
         assertThat(reportContents, containsString(dup2.toAbsolutePath().normalize().toString()));
