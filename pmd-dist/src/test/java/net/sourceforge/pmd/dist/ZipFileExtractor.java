@@ -19,8 +19,6 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.IOUtils;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
-
 /**
  * Extracts a zip file with preserving the unix file permissions.
  *
