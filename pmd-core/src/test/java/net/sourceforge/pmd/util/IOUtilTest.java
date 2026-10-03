@@ -17,6 +17,7 @@ import java.io.PrintStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
@@ -53,7 +54,7 @@ class IOUtilTest {
     void testReadStreamToString() throws IOException {
         String testString = "testReadStreamToString";
         InputStream stream = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));
-        assertEquals(testString, IOUtil.readToString(stream, StandardCharsets.UTF_8));
+        assertEquals(testString, IOUtils.toString(stream, StandardCharsets.UTF_8));
     }
 
     @Test

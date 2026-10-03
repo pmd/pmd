@@ -8,7 +8,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -22,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.ByteOrderMark;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -192,9 +190,5 @@ public final class IOUtil {
 
     public static void closeQuietly(Closeable closeable) {
         IOUtils.closeQuietly(closeable);
-    }
-
-    public static String readToString(InputStream stream, Charset charset) throws IOException {
-        return IOUtils.toString(stream, charset);
     }
 }
