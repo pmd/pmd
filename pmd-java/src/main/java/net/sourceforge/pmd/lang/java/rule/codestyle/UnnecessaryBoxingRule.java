@@ -33,9 +33,6 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-/**
- *
- */
 public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     private static final Set<String> INTERESTING_NAMES = setOf(
