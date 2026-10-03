@@ -6,13 +6,11 @@ package net.sourceforge.pmd.util;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.CharArrayReader;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,30 +30,6 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.internal.util.IOUtil;
 
 class IOUtilTest {
-
-    @Test
-    void testReadAllBytes() throws IOException {
-        byte[] data = "12345".getBytes(StandardCharsets.UTF_8);
-        try (InputStream stream = new ByteArrayInputStream(data)) {
-            byte[] bytes = IOUtil.toByteArray(stream);
-            assertEquals(5, bytes.length);
-            assertArrayEquals(data, bytes);
-        }
-    }
-
-    @Test
-    void testToByteArrayResize() throws IOException {
-        int size = 8192 + 8192 + 10;
-        byte[] data = new byte[size];
-        for (int i = 0; i < size; i++) {
-            data[i] = 'A';
-        }
-        try (InputStream stream = new ByteArrayInputStream(data)) {
-            byte[] bytes = IOUtil.toByteArray(stream);
-            assertEquals(size, bytes.length);
-            assertArrayEquals(data, bytes);
-        }
-    }
 
     @Test
     void testFilenameExtension() {
@@ -94,31 +68,6 @@ class IOUtilTest {
             byte[] bytes = out.toByteArray();
             assertEquals(size, bytes.length);
             assertArrayEquals(data, bytes);
-        }
-    }
-
-    @Test
-    void testCopyReader() throws IOException {
-        int size = 8192 + 8192 + 10;
-        char[] data = new char[size];
-        for (int i = 0; i < size; i++) {
-            data[i] = 'A';
-        }
-        try (Reader reader = new CharArrayReader(data);
-             StringWriter writer = new StringWriter()) {
-            IOUtil.copy(reader, writer);
-            char[] chars = writer.toString().toCharArray();
-            assertEquals(size, chars.length);
-            assertArrayEquals(data, chars);
-        }
-    }
-
-    @Test
-    void testReadEmptyStream() throws IOException {
-        try (InputStream in = new ByteArrayInputStream(new byte[0])) {
-            byte[] bytes = IOUtil.toByteArray(in);
-            assertNotNull(bytes);
-            assertEquals(0, bytes.length);
         }
     }
 

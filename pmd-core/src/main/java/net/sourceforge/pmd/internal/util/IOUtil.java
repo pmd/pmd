@@ -198,16 +198,8 @@ public final class IOUtil {
         IOUtils.closeQuietly(closeable);
     }
 
-    public static byte[] toByteArray(InputStream stream) throws IOException {
-        return IOUtils.toByteArray(stream);
-    }
-
     public static String normalizePath(String path) {
         return FilenameUtils.normalize(path);
-    }
-
-    public static boolean equalsNormalizedPaths(String path1, String path2) {
-        return FilenameUtils.equalsNormalized(path1, path2);
     }
 
     public static String getFilenameExtension(String name) {
@@ -219,10 +211,6 @@ public final class IOUtil {
     }
 
     public static void copy(InputStream from, OutputStream to) throws IOException {
-        IOUtils.copyLarge(from, to);
-    }
-
-    public static void copy(Reader from, Writer to) throws IOException {
         IOUtils.copyLarge(from, to);
     }
 
