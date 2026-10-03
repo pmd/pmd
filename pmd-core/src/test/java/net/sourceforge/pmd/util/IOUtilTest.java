@@ -72,13 +72,6 @@ class IOUtilTest {
     }
 
     @Test
-    void testReadToString() throws IOException {
-        String testString = "testReadToString";
-        Reader reader = new StringReader(testString);
-        assertEquals(testString, IOUtil.readToString(reader));
-    }
-
-    @Test
     void testReadStreamToString() throws IOException {
         String testString = "testReadStreamToString";
         InputStream stream = new ByteArrayInputStream(testString.getBytes(StandardCharsets.UTF_8));

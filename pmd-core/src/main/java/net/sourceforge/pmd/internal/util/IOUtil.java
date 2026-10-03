@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -202,10 +201,6 @@ public final class IOUtil {
 
     public static void copy(InputStream from, OutputStream to) throws IOException {
         IOUtils.copyLarge(from, to);
-    }
-
-    public static String readToString(Reader reader) throws IOException {
-        return IOUtils.toString(reader);
     }
 
     public static String readToString(InputStream stream, Charset charset) throws IOException {

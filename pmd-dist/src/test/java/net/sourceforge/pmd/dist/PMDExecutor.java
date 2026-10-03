@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
@@ -92,7 +93,7 @@ public class PMDExecutor {
         String report = null;
         if (reportFile != null) {
             try (Reader reader = Files.newBufferedReader(reportFile, StandardCharsets.UTF_8)) {
-                report = IOUtil.readToString(reader);
+                report = IOUtils.toString(reader);
             }
         }
         return result.withExitCode(exitCode).withReport(report).build();
