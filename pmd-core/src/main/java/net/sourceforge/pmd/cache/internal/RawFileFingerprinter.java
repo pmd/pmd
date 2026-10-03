@@ -14,10 +14,9 @@ import java.util.Set;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Base fingerprinter for raw files.
@@ -43,9 +42,7 @@ public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
     public void fingerprint(Path entry, Checksum checksum) throws IOException {
         try (CheckedInputStream inputStream = new CheckedInputStream(Files.newInputStream(entry), checksum)) {
             // Just read it, the CheckedInputStream will update the checksum on its own
-            while (IOUtil.skipFully(inputStream, Long.MAX_VALUE) == Long.MAX_VALUE) {
-                // just loop
-            }
+            IOUtils.consume(inputStream);
         } catch (final NoSuchFileException ignored) {
             LOG.warn("Classpath entry {} doesn't exist, ignoring it", entry);
         }
