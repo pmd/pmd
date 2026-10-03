@@ -194,10 +194,6 @@ public final class IOUtil {
         IOUtils.closeQuietly(closeable);
     }
 
-    public static String normalizePath(String path) {
-        return FilenameUtils.normalize(path);
-    }
-
     public static String readToString(InputStream stream, Charset charset) throws IOException {
         return IOUtils.toString(stream, charset);
     }
