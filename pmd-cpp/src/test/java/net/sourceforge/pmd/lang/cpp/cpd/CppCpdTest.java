@@ -19,7 +19,6 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
@@ -28,8 +27,7 @@ class CppCpdTest {
 
     @BeforeEach
     void setUp() {
-        String path = IOUtil.normalizePath("src/test/resources/net/sourceforge/pmd/lang/cpp/cpd/testdata");
-        testdir = Paths.get(path);
+        testdir = Paths.get("src/test/resources/net/sourceforge/pmd/lang/cpp/cpd/testdata");
     }
 
     @Test
