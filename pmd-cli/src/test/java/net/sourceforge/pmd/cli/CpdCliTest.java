@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -308,7 +309,7 @@ class CpdCliTest extends BaseCliTest {
 
                     r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
 
-                    String report = IOUtil.readFileToString(reportFile.toFile());
+                    String report = IOUtil.readFileToString(reportFile.toFile(), Charset.defaultCharset());
                     assertThat(report, containsString("Found a 5 line (13 tokens) duplication"));
                 });
     }

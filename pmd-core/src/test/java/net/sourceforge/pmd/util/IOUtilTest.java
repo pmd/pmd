@@ -72,14 +72,6 @@ class IOUtilTest {
     }
 
     @Test
-    void testReadFileToString() throws IOException {
-        String testString = "Test ABC";
-        Path tempFile = Files.createTempFile("pmd", ".txt");
-        Files.write(tempFile, testString.getBytes(Charset.defaultCharset()));
-        assertEquals(testString, IOUtil.readFileToString(tempFile.toFile()));
-    }
-
-    @Test
     void testReadToString() throws IOException {
         String testString = "testReadToString";
         Reader reader = new StringReader(testString);

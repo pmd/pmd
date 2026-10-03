@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -285,7 +286,7 @@ class CpdAnalysisTest {
 
         assertTrue(Files.exists(reportFile), "Report file " + reportFile + " should have been created");
 
-        String reportContents = IOUtil.readFileToString(reportFile.toFile());
+        String reportContents = IOUtil.readFileToString(reportFile.toFile(), Charset.defaultCharset());
         assertThat(reportContents, containsString("duplication in the following files"));
         assertThat(reportContents, containsString(dup1.toAbsolutePath().normalize().toString()));
         assertThat(reportContents, containsString(dup2.toAbsolutePath().normalize().toString()));

@@ -205,10 +205,6 @@ public final class IOUtil {
         IOUtils.copyLarge(from, to);
     }
 
-    public static String readFileToString(File file) throws IOException {
-        return FileUtils.readFileToString(file, Charset.defaultCharset());
-    }
-
     public static String readFileToString(File file, Charset charset) throws IOException {
         return FileUtils.readFileToString(file, charset);
     }
