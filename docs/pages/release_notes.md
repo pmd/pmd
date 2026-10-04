@@ -60,6 +60,29 @@ This is a {{ site.pmd.release_type }} release.
     recommended to upgrade PMD.  
     Reported by [Dan](https://github.com/7alen7) (@7alen7).
     Independently reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
+*   [GHSA-9hm5-r2r7-hjcq](https://github.com/pmd/pmd/security/advisories/GHSA-9hm5-r2r7-hjcq):
+    Local file reads through XXE in PMD rule tests.  
+    **Normal usage of PMD for analyzing source code is not affected.** Only projects that develop custom
+    rules and test them with PMD's rule test framework (modules `pmd-test` and `pmd-test-schema`) are affected.  
+    The parser for rule-test XML files did not disable DTDs and external entities. A crafted rule-test XML
+    file could therefore read a local file and place its contents into a parsed test description. Since the
+    description is used as the name of the JUnit test, the file contents could appear in test results.
+    This is relevant when rule-test XML files from untrusted sources are executed, e.g. in a CI/CD pipeline
+    for pull requests from external contributors.  
+    With this fix, DTDs are disabled. Rule-test XML files containing a `DOCTYPE` declaration are rejected.
+    This was never officially supported, as PMD doesn't provide a DTD for rule-test XML files.  
+    Affected versions: `pmd:pmd` >= 3.9, `net.sourceforge.pmd:pmd-test` <= 6.47.0,
+    `net.sourceforge.pmd:pmd-test-schema` <= 7.28.0. If you test custom rules with PMD's rule test
+    framework, it is recommended to upgrade PMD.  
+    Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
+*   [GHSA-wv72-2ccf-28gj](https://github.com/pmd/pmd/security/advisories/GHSA-wv72-2ccf-28gj):
+    Blind SSRF through Visualforce metadata parser.  
+    When resolving custom field types, the Visualforce module parsed Salesforce `*.field-meta.xml` files
+    from the analyzed source tree without disabling external DTD loading. A crafted metadata file could
+    therefore make PMD send a request to an attacker-chosen URL during analysis. This affects users who
+    analyze Visualforce code from untrusted sources, such as pull requests.  
+    Affected versions: `net.sourceforge.pmd:pmd-visualforce` >= 6.30.0, <= 7.28.0  
+    Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
 
 ### 🌟️ New and Changed Rules
 #### New Rules

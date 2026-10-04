@@ -42,6 +42,7 @@ import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -70,15 +71,8 @@ public class RuleSetWriter {
     }
 
     void write(RuleSet ruleSet, int indentation) {
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-            // Set the context classloader to be the platform classloader, so that we don't
-            // find the TransformerFactory from Saxon (which is on the classpath), but fallback
-            // to Java's built-in one. That one supports the "indent-number" attribute, Saxon does not.
-            // TODO: PMD 8: Use ClassLoader.getPlatformClassLoader()
-            Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader().getParent());
-
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory documentBuilderFactory = XmlUtil.newDocumentBuilderFactory();
             documentBuilderFactory.setNamespaceAware(true);
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             document = documentBuilder.newDocument();
@@ -87,7 +81,7 @@ public class RuleSetWriter {
             Element ruleSetElement = createRuleSetElement(ruleSet);
             document.appendChild(ruleSetElement);
 
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            TransformerFactory transformerFactory = XmlUtil.newTransformerFactory();
             try {
                 transformerFactory.setAttribute("indent-number", indentation);
             } catch (IllegalArgumentException iae) {
@@ -103,8 +97,6 @@ public class RuleSetWriter {
             transformer.transform(new DOMSource(document), new StreamResult(outputStream));
         } catch (DOMException | FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
             throw new RuntimeException(e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
         }
     }
 
