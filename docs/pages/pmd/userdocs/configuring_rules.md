@@ -68,11 +68,9 @@ in the `value` attribute, e.g.
 
 All property assignments must be enclosed in a `properties` element, which is itself inside a `rule` element.
 
-{% capture tip_content %}
-The properties of a rule are documented with the rule, e.g. [here](pmd_rules_java_design.html#npathcomplexity)
+> [!TIP]
+> The properties of a rule are documented with the rule, e.g. [here](pmd_rules_java_design.html#npathcomplexity)
 for NPathComplexity. Note that **assigning a value to a property that does not exist throws an error!**
-{% endcapture %}
-{%include tip.html content=tip_content %}
 
 Some properties take multiple values (a list), in which case you can provide them all by delimiting them with
 a comma (','), e.g.
