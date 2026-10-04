@@ -7,10 +7,10 @@ package net.sourceforge.pmd.doc.internal;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
@@ -32,7 +32,7 @@ public final class RuleSetUtils {
     }
 
     public static String getRuleSetFilename(String rulesetFileName) {
-        return IOUtil.getFilenameBase(StringUtils.chomp(rulesetFileName));
+        return FilenameUtils.getBaseName(StringUtils.chomp(rulesetFileName));
     }
 
     /**
@@ -65,7 +65,7 @@ public final class RuleSetUtils {
     }
 
     public static String normalizeForwardSlashes(String path) {
-        String normalized = IOUtil.normalizePath(path);
+        String normalized = FilenameUtils.normalize(path);
         if (SystemUtils.IS_OS_WINDOWS) {
             // Note: windows path separators are changed to forward slashes,
             // so that the editme link works

@@ -30,12 +30,12 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.Rule;
@@ -172,7 +172,7 @@ public class RuleDocGenerator {
     }
 
     private Path getAbsoluteOutputPath(String filename) {
-        return root.resolve(IOUtil.normalizePath(filename));
+        return root.resolve(FilenameUtils.normalize(filename));
     }
 
     private Map<Language, List<RuleSet>> sortRulesets(List<RuleSet> rulesets) {

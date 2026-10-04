@@ -20,13 +20,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -149,8 +149,8 @@ class FileCollectorTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(2));
-            assertHasName(files.get(0), IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/anotherfile.dummy"), pmd);
-            assertHasName(files.get(1), IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/somefile.dummy"), pmd);
+            assertHasName(files.get(0), FilenameUtils.normalize("net/sourceforge/pmd/lang/document/filecollectortest/src/anotherfile.dummy"), pmd);
+            assertHasName(files.get(1), FilenameUtils.normalize("net/sourceforge/pmd/lang/document/filecollectortest/src/somefile.dummy"), pmd);
         }
     }
 
@@ -162,7 +162,7 @@ class FileCollectorTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(files.get(0), ".." + IOUtil.normalizePath("/otherSrc/somefile.dummy"), pmd);
+            assertHasName(files.get(0), ".." + FilenameUtils.normalize("/otherSrc/somefile.dummy"), pmd);
             assertHasName(files.get(1), "anotherfile.dummy", pmd);
             assertHasName(files.get(2), "somefile.dummy", pmd);
         }

@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -423,7 +423,7 @@ class PmdCliTest extends BaseCliTest {
         Path zipArchive = createTemporaryZipArchive("sources.zip");
         CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", zipArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
         result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(zipArchive.toString()) + "!/someSource.dummy";
+        String reportPath = FilenameUtils.normalize(zipArchive.toString()) + "!/someSource.dummy";
         result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
@@ -432,7 +432,7 @@ class PmdCliTest extends BaseCliTest {
         Path jarArchive = createTemporaryZipArchive("sources.jar");
         CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", jarArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
         result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(jarArchive.toString()) + "!/someSource.dummy";
+        String reportPath = FilenameUtils.normalize(jarArchive.toString()) + "!/someSource.dummy";
         result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
@@ -468,7 +468,7 @@ class PmdCliTest extends BaseCliTest {
         runCli(VIOLATIONS_FOUND, "--dir", relativeSrcDir, "--rulesets",
                 DUMMY_RULESET_WITH_VIOLATIONS)
                 .verify(result -> result.checkStdOut(
-                        containsString("\n" + IOUtil.normalizePath(relativeSrcDir + "/somefile.dummy"))));
+                        containsString("\n" + FilenameUtils.normalize(relativeSrcDir + "/somefile.dummy"))));
     }
 
     @Test
@@ -514,7 +514,7 @@ class PmdCliTest extends BaseCliTest {
                 DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent().toString())
                 .verify(result -> {
                     result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
-                    result.checkStdOut(startsWith(IOUtil.normalizePath("src/someSource.dummy")));
+                    result.checkStdOut(startsWith(FilenameUtils.normalize("src/someSource.dummy")));
                 });
     }
 
