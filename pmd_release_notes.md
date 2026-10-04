@@ -38,6 +38,8 @@ This is a minor release.
     is the argument of a comparison, or remove them when it is already the receiver.
 
 ### 🐛️ Fixed Issues
+* core
+    * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
 * groovy
     * [#7110](https://github.com/pmd/pmd/issues/7110): \[groovy] Fix #7100: CPD fails on GStrings ending in an interpolated variable
 * java
