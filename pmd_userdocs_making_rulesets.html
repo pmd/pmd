@@ -23,7 +23,7 @@
 
 <link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
-</head>
+<style>.markdown-alert{padding:.5rem 1rem;margin-bottom:1rem;color:inherit;border-left:.25em solid #30363d}.markdown-alert>:first-child{margin-top:0}.markdown-alert>:last-child{margin-bottom:0}.markdown-alert .markdown-alert-title{display:flex;font-weight:500;align-items:center;line-height:1}.markdown-alert svg{margin-right:.5rem!important}.markdown-alert svg path{fill:currentColor}.markdown-alert.markdown-alert-note{border-left-color:#4493f8}.markdown-alert.markdown-alert-note .markdown-alert-title{color:#4493f8}.markdown-alert.markdown-alert-important{border-left-color:#ab7df8}.markdown-alert.markdown-alert-important .markdown-alert-title{color:#ab7df8}.markdown-alert.markdown-alert-warning{border-left-color:#9e6a03}.markdown-alert.markdown-alert-warning .markdown-alert-title{color:#d29922}.markdown-alert.markdown-alert-tip{border-left-color:#238636}.markdown-alert.markdown-alert-tip .markdown-alert-title{color:#3fb950}.markdown-alert.markdown-alert-caution{border-left-color:#da3633}.markdown-alert.markdown-alert-caution .markdown-alert-title{color:#f85149}</style></head>
 <body>
 <!-- Content is offset by the height of the topnav bar. -->
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
@@ -2111,7 +2111,8 @@ all PMD built-in rules are sorted in one of eight categories, which are consiste
   </li>
 </ul>
 
-<div class="alert alert-success" role="alert"><i class="fas fa-check-square-o"></i> <b>Tip:</b> You can discover the available rules by language and category <a href="tag_rule_references.html">from this page</a></div>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg> Tip</p><p>You can discover the available rules by language and category <a href="tag_rule_references.html">from this page</a>.</p>
+</div>
 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">EmptyCatchBlock</code> is simply the name of the rule. If there were no rule with that name within the specified
@@ -2134,18 +2135,15 @@ category, then PMD would fail before starting the analysis.</li>
 
 <p>Here, the <code class="language-plaintext highlighter-rouge">ref</code> attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.</p>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> Path separators in the source file path are normalized to be the <code class="language-plaintext highlighter-rouge">/</code> character within PMD, so the same ruleset can be used on multiple platforms transparently.</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg> Note</p><p>Path separators in the source file path are normalized to be the <code class="language-plaintext highlighter-rouge">/</code> character within PMD, so the same ruleset can be used on multiple platforms transparently.</p>
 </div>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> Referencing a complete category or ruleset means, you’ll also get automatically any
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg> Note</p><p>“Referencing a complete category or ruleset means, you’ll also get automatically any
 changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
 are deprecated, then these rules are automatically deactivated. This might or
-not might be, what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
-existing rules. If you want to have
-complete control over the rules, that you are using, then it is recommended to add each rule separately via
-a single rule reference.</p>
+not might be what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
+existing rules. If you want to have complete control over the rules that you are using, 
+then it is recommended to add each rule separately via a single rule reference.</p>
 </div>
 
 <h3 id="filtering-the-processed-files">Filtering the processed files</h3>
@@ -2170,8 +2168,10 @@ a single rule reference.</p>
 
 <h2 id="sharing-your-ruleset">Sharing your ruleset</h2>
 
-<div class="alert alert-success" role="alert"><i class="fas fa-check-square-o"></i> <b>Tip:</b> If you want to share your ruleset, you can add it to the list
-on <a href="pmd_userdocs_3rdpartyrulesets.html">3rd party rulesets</a>.</div>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg> Tip</p><p>If you want to share your ruleset, you can add it to the list</p>
+</div>
+
+<p>on <a href="pmd_userdocs_3rdpartyrulesets.html">3rd party rulesets</a>.</p>
 
 
     <div class="tags">

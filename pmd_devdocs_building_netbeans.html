@@ -23,7 +23,7 @@
 
 <link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
-</head>
+<style>.markdown-alert{padding:.5rem 1rem;margin-bottom:1rem;color:inherit;border-left:.25em solid #30363d}.markdown-alert>:first-child{margin-top:0}.markdown-alert>:last-child{margin-bottom:0}.markdown-alert .markdown-alert-title{display:flex;font-weight:500;align-items:center;line-height:1}.markdown-alert svg{margin-right:.5rem!important}.markdown-alert svg path{fill:currentColor}.markdown-alert.markdown-alert-note{border-left-color:#4493f8}.markdown-alert.markdown-alert-note .markdown-alert-title{color:#4493f8}.markdown-alert.markdown-alert-important{border-left-color:#ab7df8}.markdown-alert.markdown-alert-important .markdown-alert-title{color:#ab7df8}.markdown-alert.markdown-alert-warning{border-left-color:#9e6a03}.markdown-alert.markdown-alert-warning .markdown-alert-title{color:#d29922}.markdown-alert.markdown-alert-tip{border-left-color:#238636}.markdown-alert.markdown-alert-tip .markdown-alert-title{color:#3fb950}.markdown-alert.markdown-alert-caution{border-left-color:#da3633}.markdown-alert.markdown-alert-caution .markdown-alert-title{color:#f85149}</style></head>
 <body>
 <!-- Content is offset by the height of the topnav bar. -->
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
@@ -2073,8 +2073,7 @@ to execute the unit tests.</li>
   <li>You can also run individual test classes.</li>
 </ul>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> When executing tests, NetBeans actually calls Maven with <code class="language-plaintext highlighter-rouge">surefire:test</code> goal.</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg> Note</p><p>When executing tests, NetBeans actually calls Maven with <code class="language-plaintext highlighter-rouge">surefire:test</code> goal.</p>
 </div>
 
 <h2 id="running--debugging-pmd">Running / Debugging PMD</h2>
@@ -2092,18 +2091,19 @@ beginning to wait for the debugger. Then you can run in NetBeans “Debug &gt; A
 “SocketAttach” using port “8000”.</li>
 </ul>
 
-<div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> 
-If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
-PMD CLI as scope test, e.g.</p>
+<div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg> Note</p><p>If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
+ PMD CLI as scope test, e.g.</p>
 
-  <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nt">&lt;dependency&gt;</span>
-            <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
-            <span class="nt">&lt;artifactId&gt;</span>pmd-apex<span class="nt">&lt;/artifactId&gt;</span>
-            <span class="nt">&lt;version&gt;</span>${project.version}<span class="nt">&lt;/version&gt;</span>
-            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
-        <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div>  </div>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       <span class="nt">&lt;dependency&gt;</span>
+           <span class="nt">&lt;groupId&gt;</span>net.sourceforge.pmd<span class="nt">&lt;/groupId&gt;</span>
+           <span class="nt">&lt;artifactId&gt;</span>pmd-apex<span class="nt">&lt;/artifactId&gt;</span>
+           <span class="nt">&lt;version&gt;</span>${project.version}<span class="nt">&lt;/version&gt;</span>
+           <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+       <span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+
+</div>
+
 
 </div>
 

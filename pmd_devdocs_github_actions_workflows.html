@@ -23,7 +23,7 @@
 
 <link rel="alternate" type="application/rss+xml" title="" href="feed.xml">
 
-</head>
+<style>.markdown-alert{padding:.5rem 1rem;margin-bottom:1rem;color:inherit;border-left:.25em solid #30363d}.markdown-alert>:first-child{margin-top:0}.markdown-alert>:last-child{margin-bottom:0}.markdown-alert .markdown-alert-title{display:flex;font-weight:500;align-items:center;line-height:1}.markdown-alert svg{margin-right:.5rem!important}.markdown-alert svg path{fill:currentColor}.markdown-alert.markdown-alert-note{border-left-color:#4493f8}.markdown-alert.markdown-alert-note .markdown-alert-title{color:#4493f8}.markdown-alert.markdown-alert-important{border-left-color:#ab7df8}.markdown-alert.markdown-alert-important .markdown-alert-title{color:#ab7df8}.markdown-alert.markdown-alert-warning{border-left-color:#9e6a03}.markdown-alert.markdown-alert-warning .markdown-alert-title{color:#d29922}.markdown-alert.markdown-alert-tip{border-left-color:#238636}.markdown-alert.markdown-alert-tip .markdown-alert-title{color:#3fb950}.markdown-alert.markdown-alert-caution{border-left-color:#da3633}.markdown-alert.markdown-alert-caution .markdown-alert-title{color:#f85149}</style></head>
 <body>
 <!-- Content is offset by the height of the topnav bar. -->
 <!-- There's already a padding-top rule in modern-business.css, but it apparently doesn't work on Firefox 60 and Chrome 67 -->
@@ -2058,8 +2058,7 @@ This page gives an overview of how these workflows work and how to use them.
         <div id="inline-toc"><!-- empty, move TOC here when screen size too small --></div>
     </details>
 
-  <div class="alert alert-info" role="alert">
-  <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> This page is work in progress and does not yet describe all workflows.</p>
+  <div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg> Note</p><p>This page is work in progress and does not yet describe all workflows.</p>
 </div>
 
 <h2 id="build-build-pull-request-build-snapshot-build-release">Build, Build Pull Request, Build Snapshot, Build Release</h2>
@@ -2138,16 +2137,16 @@ to the pull request/commit for any misspelled word in documentation and source c
     <ul>
       <li>“verify”: runs a complete <code class="language-plaintext highlighter-rouge">./mvnw verify</code> with all code checks like checkstyle, japicmp, javadoc, etc.
 but excluding unit tests (these are run in a separate job).
-This job is only run on linux. It reuses the already compiled artifacts from the first “compile” job.
-Since it runs javadoc, it creates the javadocs-artifact.</li>
+This job is only run on Linux. It reuses the already compiled artifacts from the first “compile” job.
+Since it runs Javadoc, it creates the javadocs-artifact.</li>
       <li>“verify-unittests”: just runs the unit tests on Linux, Windows and MacOS. Only linux reuses the
 “compile-artifact” from the first job. For Windows/MacOS we can’t reuse this due to platform specific line
 endings and timestamp issues.</li>
       <li>“dogfood”: runs maven-pmd-plugin on PMD with the latest changes from this very pull request. It uses the
 “staging-repository” artifact.</li>
       <li>“documentation”: generates the rule documentations and builds PMD’s documentation page using jekyll.
-It also executes the verification for wrong rule tags and dead links. Additional it contains the release
-notes in markdown format, to be used for release publishing. It creates the artifact “docs-artifact”.</li>
+It also executes the verification for wrong rule tags and dead links. Additionally, it contains the release
+notes in Markdown format, to be used for release publishing. It creates the artifact “docs-artifact”.</li>
       <li>“regressiontester”: runs the <a href="pmd_devdocs_pmdtester.html">pmdtester</a> to produce the regression report.
 It reuses the artifact “dist-artifact” so that we don’t need to build PMD again. It uses a different build
 cache as the other jobs, as this cache now contains the test projects (like Spring Framework) and their

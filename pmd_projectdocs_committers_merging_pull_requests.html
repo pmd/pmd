@@ -2088,9 +2088,9 @@ gh pr checkout https://github.com/pmd/pmd/pull/123 -b pr-123     # creates a new
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git merge main
 </code></pre></div>    </div>
 
-    <div class="alert alert-info" role="alert">
-      <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> If there are merge conflicts, you’ll need to deal with them here.</p>
-    </div>
+    <blockquote>
+      <p><strong>🛈 Note:</strong> If there are merge conflicts, you’ll need to deal with them here.</p>
+    </blockquote>
   </li>
   <li>
     <p>Update the <a href="https://github.com/pmd/pmd/blob/main/docs/pages/release_notes.md">release notes</a>:</p>
@@ -2177,16 +2177,16 @@ git pull
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Cherrypick the already merged PR from main branch into the maintenance branch:</p>
+    <p>Cherry-pick the already merged PR from main branch into the maintenance branch:</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout backport-pr-124-to-7.26.x             # creates a new temporary branch
-git cherrypick commit-hash-you-want-to-packport
+git cherry-pick commit-hash-you-want-to-packport
 </code></pre></div>    </div>
 
-    <div class="alert alert-info" role="alert">
-      <p><i class="fas fa-info-circle"></i> <strong>Note:</strong> At this point, that you will need to fix conflicts / backport the changes for the older
+    <blockquote>
+      <p><strong>🛈 Note:</strong> At this point, that you will need to fix conflicts / backport the changes for the older
 PMD version. At least in the release notes (see above for details), maybe also in the code.</p>
-    </div>
+    </blockquote>
   </li>
   <li>
     <p>Run the complete build, then push:</p>
