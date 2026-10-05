@@ -72,7 +72,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>should be flagged</description>
+        <description>should be flagged, because the length of the type name is under the threshold</description>
         <rule-property name="allowLongTypeNames">100</rule-property>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>5,6,7,8</expected-linenumbers>
@@ -171,7 +171,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>should NOT be flagged</description>
+        <description>should NOT be flagged, because the type name is long enough</description>
         <rule-property name="allowLongTypeNames">32</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
