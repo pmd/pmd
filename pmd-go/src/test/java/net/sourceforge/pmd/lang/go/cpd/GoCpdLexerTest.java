@@ -35,4 +35,10 @@ class GoCpdLexerTest extends CpdTextComparisonTest {
         doTest("sample_unicode");
     }
 
+    @Test
+    void testTilde() {
+        // https://github.com/pmd/pmd/issues/6235
+        doTest("tilde");
+    }
+
 }
