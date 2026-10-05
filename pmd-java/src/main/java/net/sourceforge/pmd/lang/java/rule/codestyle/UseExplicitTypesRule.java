@@ -96,7 +96,21 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
         }
 
         int requiredLongTypeNamesLength = getProperty(ALLOW_LONG_TYPE_NAMES);
+        boolean allowLongTypeNames = requiredLongTypeNamesLength > 0;
 
+        if (!allowLongTypeNames) {
+            ctx.addViolation(node);
+        } else {
+            String typeName = determineTypeName(node);
+            if (typeName.length() < requiredLongTypeNamesLength) {
+                ctx.addViolationWithMessage(node, "The explicit type ''{0}'' is not long enough (< {1}) to justify the use of var",
+                        typeName, requiredLongTypeNamesLength);
+            }
+        }
+        return null;
+    }
+
+    private String determineTypeName(ASTLocalVariableDeclaration node) {
         // note: var declarations have exactly one varId
         ASTVariableId firstVarId = node.getVarIds().first();
         assert firstVarId != null : "Invalid java syntax? the local var declaration should have one varId";
@@ -110,21 +124,7 @@ public class UseExplicitTypesRule extends AbstractJavaRulechainRule {
         SimpleNameVisitor visitor = new SimpleNameVisitor(enclosingTypeSymbols);
 
         StringBuilder sb = typeMirror.acceptVisitor(visitor, new StringBuilder());
-        String typeName = sb.toString();
-
-        boolean allowLongTypeNames = requiredLongTypeNamesLength > 0;
-        if (allowLongTypeNames && typeName.length() >= requiredLongTypeNamesLength) {
-            return null;
-        }
-
-        if (allowLongTypeNames) {
-            ctx.addViolationWithMessage(node, "The explicit type ''{0}'' is not long enough (< {1}) to justify the use of var",
-                    typeName, requiredLongTypeNamesLength);
-        } else {
-            ctx.addViolation(node);
-        }
-
-        return null;
+        return sb.toString();
     }
 
     /**
