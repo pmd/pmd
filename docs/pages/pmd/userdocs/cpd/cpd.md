@@ -258,9 +258,10 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
     To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.3.0.</p></td></tr>
 </table>
 
-{%include note.html content="If PMD exits with 5, then PMD had trouble lexing one or more files.
-That means, that no duplications for the entire file are reported. This can be considered as false-negative.
-In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report." %}
+> [!NOTE]
+> If PMD exits with 5, then PMD had trouble lexing one or more files.
+> That means, that no duplications for the entire file are reported. This can be considered as false-negative.
+> In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report.
 
 ## Logging
 

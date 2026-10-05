@@ -106,7 +106,7 @@
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
             <artifactId>apex-ls_2.13</artifactId>
-            <version>6.2.0</version>
+            <version>6.3.1</version>
         </dependency>
         <dependency>
             <groupId>io.github.apex-dev-tools</groupId>
@@ -142,6 +142,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-lang-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

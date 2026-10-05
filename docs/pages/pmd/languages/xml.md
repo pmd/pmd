@@ -57,7 +57,9 @@ XPath spec, you can
 - match XML comments and processing instructions
 - use standard XPath functions like `text()` or `fn:string`
 
-{% include note.html content="The Rule Designer only works with `XPathRule`, and the tree it prints is inconsistent with the DOM representation used by `DomXPathRule`. You can use an online free XPath testing tool to test your query instead." %}
+> [!NOTE]
+> The Rule Designer only works with `XPathRule`, and the tree it prints is inconsistent with the DOM 
+> representation used by `DomXPathRule`. You can use an online free XPath testing tool to test your query instead.
 
 Here's an example declaration of a `DomXPathRule`:
 ```xml

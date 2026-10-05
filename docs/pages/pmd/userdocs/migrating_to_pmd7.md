@@ -7,10 +7,9 @@ author: Andreas Dangel <andreas.dangel@pmd-code.org>
 last_updated: June 2026 (7.26.0)
 ---
 
-{% include important.html content="
-This document might be incomplete and doesn't answer all questions. In that case please reach out to us
+> [!IMPORTANT]
+> This document might be incomplete and doesn't answer all questions. In that case please reach out to us
 by opening a [discussion](https://github.com/pmd/pmd/discussions) so that we can improve this guide.
-" %}
 
 ## Before you update
 
@@ -266,10 +265,8 @@ When creating a custom distribution which only integrates the languages you need
 * The artifact name for PMD Designer has been renamed, you need to use now `net.sourceforge.pmd:pmd-designer`
   instead of "pmd-ui".
 
-{% include note.html content="
-The examples on <https://github.com/pmd/pmd-examples> have been updated.
-" %}
-
+> [!NOTE]
+> The examples on <https://github.com/pmd/pmd-examples> have been updated.
 
 ### Rule tests are now using JUnit5
 
@@ -314,9 +311,10 @@ that also integrates tightly with the NodeStream API.
 * `getFirstDescendantOfType(descendantType)` ➡️ `descendants(descendantType).first()`
 * `hasDescendantOfType(type)` ➡️ `descendants(type).nonEmpty()`
 
-{% include tip.html content="First use PMD 7.0.0-rc3, which still has these methods. These methods are marked as
-deprecated, so you can then start to change them. The replacement method is usually provided in the javadocs.
-That way you avoid being confronted with just compile errors." %}
+> [!TIP]
+> First use PMD 7.0.0-rc3, which still has these methods. These methods are marked as
+deprecated, so you can then start to change them. The replacement method is usually provided in the Javadocs.
+That way you avoid being confronted with just compile errors
 
 Unchanged methods that work as before:
 * {% jdoc core::lang.ast.Node#getParent() %}
@@ -3347,11 +3345,10 @@ This is only relevant, if you are maintaining a CPD language module for a custom
 
 ### Build Tools
 
-{% include note.html content="
-When you switch from PMD 6.x to PMD 7 in your build tools, you most likely need to review your
-ruleset(s) as well and check for removed rules.
-See the use case [I'm using only built-in rules](#im-using-only-built-in-rules) above.
-" %}
+> [!NOTE]
+> When you switch from PMD 6.x to PMD 7 in your build tools, you most likely need to review your
+> ruleset(s) as well and check for removed rules.
+> See the use case [I'm using only built-in rules](#im-using-only-built-in-rules) above.
 
 #### Ant
 

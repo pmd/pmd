@@ -8,10 +8,9 @@ sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_rule_guidelines.html
 ---
 
-{% include note.html content="
-These guidelines are new and most rules don't follow these guidelines yet.
-The goal is, that eventually all rules are updated.
-" %}
+> [!NOTE]
+> These guidelines are new and most rules don't follow these guidelines yet.
+> The goal is, that eventually all rules are updated.
 
 ## Why do we need these guidelines?
 
