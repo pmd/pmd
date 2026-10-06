@@ -20,12 +20,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 class PMDCoverageTest {
@@ -68,7 +68,7 @@ class PMDCoverageTest {
                     }
 
                     report.setLength(0);
-                    report.append(IOUtil.readFileToString(f.toFile(), StandardCharsets.UTF_8));
+                    report.append(FileUtils.readFileToString(f.toFile(), StandardCharsets.UTF_8));
                 });
                 assertThat(errorOutput, not(containsString("Exception applying rule")));
                 assertThat(errorOutput, not(containsString("Ruleset not found")));

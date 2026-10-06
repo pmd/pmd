@@ -32,17 +32,18 @@ public class JavaCpdLexer extends JavaccCpdLexer {
     private final boolean ignoreLiterals;
     private final boolean ignoreIdentifiers;
 
-    private final ConstructorDetector constructorDetector;
+    private ConstructorDetector constructorDetector;
 
     public JavaCpdLexer(JavaLanguageProperties properties) {
         ignoreAnnotations = properties.getProperty(CpdLanguageProperties.CPD_IGNORE_METADATA);
         ignoreLiterals = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
         ignoreIdentifiers = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
-        constructorDetector = new ConstructorDetector(ignoreIdentifiers);
     }
 
     @Override
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
+        // CPD reuses this lexer, so constructor detection must start fresh for each file.
+        constructorDetector = new ConstructorDetector(ignoreIdentifiers);
         return JavaTokenKinds.newTokenManager(CharStream.create(doc, InternalApiBridge.javaTokenDoc()));
     }
 
