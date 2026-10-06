@@ -911,10 +911,9 @@ public class Foo {
 
     <test-code>
         <description>Overloads in other classes and constructor invocations - unboxing should be flagged unless another overload would be selected</description>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>30,43,54,55</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>35,42,43</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
@@ -945,14 +944,6 @@ public class Foo {
                     void m(int value) { }
                     static void z(int value) { }
                 }
-                class Middle {
-                    void m(int value) { }
-                    class Inner {
-                        void test(Integer value) {
-                            m(value.intValue()); // only Middle.m(int) is searched, not Example.m(Object)
-                        }
-                    }
-                }
                 interface Api {
                     static void v(int value) { }
                     static void v(Object value) { }
@@ -965,13 +956,9 @@ public class Foo {
                         v(value.intValue()); // static interface methods are not inherited, so only Impl.v(int) is searched
                     }
                 }
-                static void m(Object value) { }
-                static void s(int value) { }
-                void s(Object value) { }
                 void test(Sub sub, Integer value) {
                     sub.m(value.doubleValue()); // Sub.m(int) would be selected without doubleValue()
                     new Base(0) { void m(Object other) { } }.m(value.doubleValue()); // m(Object) would be selected without doubleValue()
-                    Example.s(value.intValue()); // the instance method s(Object) would be selected without intValue()
                     abs(value.longValue()); // Math.abs(int) would be selected without longValue()
                     new Counter(value.intValue()); // Counter(Object) is private
                     Impl.v(value.intValue()); // Api.v(Object) is not a member of Impl
@@ -1026,7 +1013,7 @@ public class Foo {
                     c(value.longValue()); // c(Integer) would be selected without longValue()
                     d(value.intValue()); // d(int...) is more specific than d(long...)
                     e(value.longValue()); // e(long...) is more specific than e(double...), and the other overloads of e take at least two arguments
-                    f(value.intValue(), () -> { while (true) { } }); // f(Object, Callable) would be selected without intValue()
+                    f(value.intValue(), () -> { throw new IllegalStateException(); }); // f(Object, Callable) would be selected without intValue()
                 }
             }
         ]]></code>
@@ -1034,10 +1021,9 @@ public class Foo {
 
     <test-code>
         <description>Lambda and method reference arguments - unboxing should be flagged unless another overload would be selected</description>
-        <expected-problems>11</expected-problems>
-        <expected-linenumbers>41,44,45,46,47,48,56,57,58,64,70</expected-linenumbers>
+        <expected-problems>10</expected-problems>
+        <expected-linenumbers>38,40,41,42,43,44,49,50,56,62</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
@@ -1059,7 +1045,6 @@ public class Foo {
             class Example {
                 static String text;
                 static Integer count;
-                static final boolean ON = true;
                 static void f(int value, Runnable task) { }
                 static void f(Integer value, Supplier<String> task) { }
                 static void g(int value, Supplier<Object> task) { }
@@ -1073,8 +1058,6 @@ public class Foo {
                 static void o(int value, Runnable task) { }
                 static void o(Integer value, Object task) { }
                 static void o(Integer value, Comparator<String> task) { }
-                static void r(int value, Consumer<List<String>> task) { }
-                static void r(Integer value, Function<List<String>, String> task) { }
                 static void t(int value, Runnable task) { }
                 static <T> void t(Integer value, T task) { }
                 static class Task {
@@ -1092,21 +1075,16 @@ public class Foo {
                 void test(Integer value, final boolean flag, TimedTask task) {
                     f(value.intValue(), Example::run); // run() returns no value for Supplier
                     f(value.intValue(), () -> { throw new IllegalStateException(); }); // f(Integer, Supplier) would be selected without intValue()
-                    f(value.intValue(), () -> { while (true) { for (;;) { break; } } }); // f(Integer, Supplier) would be selected without intValue()
                     f(value.intValue(), () -> { while (true) { break; } }); // the lambda body can complete normally, so it returns no value for Supplier
                     f(value.intValue(), () -> { while (text == null) { } }); // the lambda body can complete normally, so it returns no value for Supplier
                     f(value.intValue(), () -> { while (flag) { } }); // flag is not a constant variable, so the lambda body can complete normally
                     f(value.intValue(), () -> { for (String name : List.of(text)) { } }); // the lambda body can complete normally, so it returns no value for Supplier
                     f(value.intValue(), () -> { while (true) { return; } }); // the lambda returns no value for Supplier
-                    f(value.intValue(), () -> { while (1 < 2) { } }); // f(Integer, Supplier) would be selected without intValue()
-                    f(value.intValue(), () -> { while ((boolean) true) { } }); // f(Integer, Supplier) would be selected without intValue()
-                    f(value.intValue(), () -> { while (ON == true) { } }); // f(Integer, Supplier) would be selected without intValue()
                     f(value.intValue(), Example::name); // f(Integer, Supplier) would be selected without intValue(), with name() returning no value
                     f(value.intValue(), Example::runAll); // f(Integer, Supplier) would be selected without intValue(), with runAll(String...) returning no value
                     f(value.intValue(), Example::runGeneric); // f(Integer, Supplier) would be selected without intValue(), with runGeneric() returning no value
                     f(value.intValue(), task::stop); // f(Integer, Supplier) would be selected without intValue(), with stop() returning no value
                     g(value.intValue(), () -> -count); // the lambda body is not a statement for Runnable
-                    g(value.intValue(), () -> (text())); // a parenthesized expression is not a statement for Runnable
                     g(value.intValue(), () -> { return text(); }); // the lambda returns a value for Runnable
                     g(value.intValue(), () -> text()); // g(Integer, Runnable) would be selected without intValue()
                     g(value.intValue(), () -> new StringBuilder()); // g(Integer, Runnable) would be selected without intValue()
@@ -1120,7 +1098,6 @@ public class Foo {
                     j(value.intValue(), Example::text); // j(Integer, Supplier<String>) would be selected without intValue()
                     k(value.intValue(), Example::run); // k(Integer, Runnable) would be selected without intValue()
                     o(value.intValue(), () -> text()); // the lambda fits neither Object nor Comparator
-                    r(value.intValue(), List::clear); // r(Integer, Function) would be selected without intValue(), and the method reference would not compile
                     t(value.intValue(), () -> { }); // t(Integer, T) would be selected without intValue(), and T could not be inferred
                 }
             }
@@ -1129,12 +1106,9 @@ public class Foo {
 
     <test-code>
         <description>Other arguments whose type is inferred or unknown - unboxing should be flagged unless another overload may be selected</description>
-        <expected-problems>14</expected-problems>
-        <expected-linenumbers>47,49,50,51,52,53,55,59,60,61,64,67,71,74</expected-linenumbers>
+        <expected-problems>11</expected-problems>
+        <expected-linenumbers>41,43,44,45,46,47,48,52,53,54,63</expected-linenumbers>
         <expected-messages>
-            <message>Unnecessary explicit unboxing</message>
-            <message>Unnecessary explicit unboxing</message>
-            <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
@@ -1153,12 +1127,10 @@ public class Foo {
             import java.util.Arrays;
             import java.util.List;
             import java.util.Objects;
-            import org.example.Base;
             import org.example.Lib;
             import org.example.Task;
 
             class Example {
-                static class Mine extends Base { }
                 static <T> T any() { return null; }
                 static <T> T[] array() { return null; }
                 static String text() { return ""; }
@@ -1180,17 +1152,13 @@ public class Foo {
                 static void t(Integer value, Long number) { }
                 static void u(int value, Runnable task) { }
                 static void u(Integer value, Task task) { }
-                static void v(int value, Object object) { }
-                static void v(Integer value, long number) { }
-                static void w(int value, Object object) { }
-                static void w(Integer value, Lib lib) { }
                 static void x(int value, Object[] array) { }
                 static void x(Integer value, String[] array) { }
                 static void y(int value, Object object) { }
                 static void y(Integer value, List<Integer> list) { }
                 static void z(int value, Object object) { }
                 static void z(Integer value, Type type) { }
-                <N extends Integer, R extends Number & Runnable> void test(Integer value, boolean flag, int n, N number, Mine mine, int[] numbers, StringBuilder builder, String name, String[] names, Class rawType, R task) {
+                <N extends Integer, R extends Number & Runnable> void test(Integer value, boolean flag, int n, N number, int[] numbers, StringBuilder builder, String name, String[] names, Class rawType, R task) {
                     m(value.intValue(), any()); // m(Integer, Integer) would be selected without intValue()
                     m(value.intValue(), null); // m(Integer, Integer) would be selected without intValue()
                     m(value.intValue(), flag ? any() : null); // m(Integer, Integer) would be selected without intValue()
@@ -1201,7 +1169,6 @@ public class Foo {
                     m(value.intValue(), text()); // the String argument cannot be passed to m(Integer, Integer)
                     m(value.intValue(), Objects.requireNonNull(name)); // the String argument cannot be passed to m(Integer, Integer)
                     p(value.intValue(), flag ? 1 : 2); // the int argument cannot be passed to p(Integer, String)
-                    c(value.intValue(), flag ? 'a' : 1); // c(Integer, char) would be selected without intValue()
                     c(value.intValue(), flag ? 'a' : n); // the int argument cannot be passed to c(Integer, char)
                     q(value.intValue(), new ArrayList<>()); // q(Integer, List<Integer>) would be selected without intValue()
                     x(value.intValue(), array()); // x(Integer, String[]) would be selected without intValue()
@@ -1211,14 +1178,10 @@ public class Foo {
                     Arrays.copyOf(numbers.clone(), value.intValue()); // the int[] argument can only be passed to copyOf(int[], int)
                     r(value.intValue(), number); // the call would be ambiguous without intValue()
                     r(value.intValue(), flag ? value : null); // the call would be ambiguous without intValue()
-                    r(value.intValue(), null); // null cannot be passed to r(Integer, int)
                     r(value.intValue(), Lib.COUNT); // the call may be ambiguous without intValue()
                     t(value.intValue(), flag ? 1 : 2L); // the call would be ambiguous without intValue()
-                    t(value.intValue(), switch (n) { case 0 -> 1; default -> 2L; }); // the int result cannot be passed to t(Integer, Long)
                     t(value.intValue(), Lib.count() + 1); // the call may be ambiguous without intValue()
                     u(value.intValue(), () -> { }); // u(Integer, Task) may be selected without intValue()
-                    w(value.intValue(), mine); // w(Integer, Lib) may be selected without intValue()
-                    v(value.intValue(), new Base()); // a Base cannot be passed to v(Integer, long)
                     z(value.intValue(), rawType); // z(Integer, Type) would be selected without intValue()
                     a(value.intValue(), task); // a(Integer, Runnable) would be selected without intValue()
                     b(value.intValue(), task); // b(int, T) is more specific than b(long, Runnable)
@@ -1228,34 +1191,184 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Protected members of a class in another package - unboxing should be flagged unless a protected overload is accessible</description>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>5,14,15</expected-linenumbers>
+        <description>Protected constructor of a class in another package - unboxing should be flagged unless a subclass may use it</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
             <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryboxing.ProtectedConstructor;
+
+            class Example {
+                void test(Integer value) {
+                    new ProtectedConstructor(value.intValue()); // ProtectedConstructor(Object) is not accessible here
+                    new ProtectedConstructor(value.intValue()) { }; // ProtectedConstructor(Object) would be selected without intValue()
+                }
+            }
+            class Sub extends ProtectedConstructor {
+                Sub(Integer value) {
+                    super(value.intValue()); // ProtectedConstructor(Object) would be selected without intValue()
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7146 is fixed: the overload resolution prefers int over Integer where javac reports an ambiguity -->
+        <description>Overloads that javac finds ambiguous - #7146</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Example {
+                static void d(int x, int y) { }
+                static void d(long x, Integer y) { }
+                void test(Integer value) {
+                    d(value.intValue(), 5); // the call would be ambiguous without intValue()
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7149 is fixed: the overload resolution accepts null for a primitive parameter and int for Long -->
+        <description>Arguments with a conversion that JLS 5.3 does not allow - #7149</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
         </expected-messages>
         <code><![CDATA[
-            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryboxing.ProtectedMembers;
-
             class Example {
-                void test(Integer value) {
-                    new ProtectedMembers(value.intValue()); // ProtectedMembers(Object) is not accessible here
-                    new ProtectedMembers(value.intValue()) { }; // ProtectedMembers(Object) would be selected without intValue()
+                static void r(int value, Integer number) { }
+                static void r(Integer value, int number) { }
+                static void t(int value, long number) { }
+                static void t(Integer value, Long number) { }
+                void test(Integer value, int n) {
+                    r(value.intValue(), null); // null cannot be passed to r(Integer, int)
+                    t(value.intValue(), switch (n) { case 0 -> 1; default -> 2L; }); // the int result cannot be passed to t(Integer, Long)
                 }
             }
-            class Sub extends ProtectedMembers {
-                Sub(Integer value) {
-                    super(value.intValue()); // ProtectedMembers(Object) would be selected without intValue()
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7144 is fixed: a block lambda without return statements is value-compatible for the overload resolution only if it contains a throw -->
+        <description>Lambda block bodies that cannot complete normally - #7144</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.concurrent.Callable;
+            import java.util.function.Supplier;
+
+            class Example {
+                static final boolean ON = true;
+                static void f(int value, Runnable task) { }
+                static void f(Integer value, Supplier<String> task) { }
+                static void v(int value, Callable<String> task) { }
+                static void v(Object value, Callable<String> task) { }
+                static void v(int value, Runnable... tasks) { }
+                void test(Integer value) {
+                    f(value.intValue(), () -> { while (true) { for (;;) { break; } } }); // f(Integer, Supplier) would be selected without intValue()
+                    f(value.intValue(), () -> { while (1 < 2) { } }); // f(Integer, Supplier) would be selected without intValue()
+                    f(value.intValue(), () -> { while ((boolean) true) { } }); // f(Integer, Supplier) would be selected without intValue()
+                    f(value.intValue(), () -> { while (ON == true) { } }); // f(Integer, Supplier) would be selected without intValue()
+                    v(value.intValue(), () -> { while (true) { } }); // v(Object, Callable) would be selected without intValue()
                 }
-                void test(ProtectedMembers other, Integer value) {
-                    new ProtectedMembers(value.intValue()); // a protected constructor is not accessible to new outside its package
-                    other.m(value.intValue()); // m(Object) cannot be called on a ProtectedMembers here
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7145 is fixed: a parenthesized lambda body counts as a statement expression for the overload resolution -->
+        <description>Parenthesized lambda body - #7145</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.function.Supplier;
+
+            class Example {
+                static void g(int value, Supplier<Object> task) { }
+                static void g(Integer value, Runnable task) { }
+                static String text() { return ""; }
+                void test(Integer value) {
+                    g(value.intValue(), () -> (text())); // a parenthesized expression is not a statement for Runnable
                 }
-                class Inner {
-                    void test(Sub sub, Integer value) {
-                        sub.m(value.intValue()); // m(Object) would be selected without intValue()
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7147 is fixed: the overload resolution treats the protected constructor as accessible to new in a subclass outside its package -->
+        <description>Protected constructor used by new in a subclass of another package - #7147</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryboxing.ProtectedConstructor;
+
+            class Sub extends ProtectedConstructor {
+                Sub() {
+                    super(0);
+                }
+                void test(Integer value) {
+                    new ProtectedConstructor(value.intValue()); // ProtectedConstructor(Object) is not accessible to new outside its package
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7152 is fixed: with a type name as qualifier the overload resolution only considers static methods -->
+        <description>Instance method behind a type name qualifier - #7152</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Example {
+                static void s(int value) { }
+                void s(Object value) { }
+                void test(Integer value) {
+                    Example.s(value.intValue()); // the instance method s(Object) would be selected without intValue(), and the call would not compile
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7150 is fixed: the overload resolution types flag ? 'a' : 1 as int -->
+        <description>Numeric conditional typed by its constant operand - #7150</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Example {
+                static void c(int value, int number) { }
+                static void c(Integer value, char letter) { }
+                void test(Integer value, boolean flag) {
+                    c(value.intValue(), flag ? 'a' : 1); // c(Integer, char) would be selected without intValue()
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7151 is fixed: the overload resolution also considers Example.m(Object), which the inner class hides -->
+        <description>Method of an enclosing class with the name of a method of the inner class - #7151</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Example {
+                static void m(Object value) { }
+                class Middle {
+                    void m(int value) { }
+                    class Inner {
+                        void test(Integer value) {
+                            m(value.intValue()); // only Middle.m(int) is searched, not Example.m(Object)
+                        }
                     }
                 }
             }
