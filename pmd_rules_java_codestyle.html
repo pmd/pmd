@@ -5151,18 +5151,47 @@ blanket rule for when <code class="language-plaintext highlighter-rouge">var</co
 (ie: assignment to either a literal value or a constructor call). Those use cases
 can be enabled through properties.</p>
 
-<p>Notice that lambda parameters are allowed, as they are already inferred  by default (the <code class="language-plaintext highlighter-rouge">var</code> keyword
+<p>It may also make sense to use <code class="language-plaintext highlighter-rouge">var</code> when writing the explicit type would be cumbersome. Use the
+parameter <code class="language-plaintext highlighter-rouge">allowLongTypeNames</code> to control the minimum length when the explicit type can be omitted.
+Note that this might remove useful information and makes reading the code without an IDE more difficult.</p>
+
+<p>Notice that lambda parameters are allowed, as they are already inferred by default (the <code class="language-plaintext highlighter-rouge">var</code> keyword
 is completely optional).</p>
 
 <p>See also <a href="https://openjdk.org/projects/amber/guides/lvti-style-guide">Local Variable Type Inference Style Guidelines</a>.</p>
 
-<p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="na">@TypeInferred</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s2">"Literal"</span><span class="p">)]])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowLiterals</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="nt">ConstructorCall</span><span class="p">])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowCtors</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="nt">CastExpression</span><span class="p">])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowCasts</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
-    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">ForeachStatement</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowLoopVariable</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
-</span></code></pre></div></div>
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UseExplicitTypesRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.UseExplicitTypesRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.function.Function</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">var</span> <span class="n">s</span> <span class="o">=</span> <span class="s">"a"</span><span class="o">;</span> <span class="c1">// violation - unless allowLiterals=true</span>
+        <span class="nc">String</span> <span class="n">s2</span> <span class="o">=</span> <span class="s">"a"</span><span class="o">;</span> <span class="c1">// no violation - explicit type</span>
+        <span class="kt">var</span> <span class="n">f</span> <span class="o">=</span> <span class="n">getFoo</span><span class="o">();</span> <span class="c1">// violation</span>
+        <span class="kt">var</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">();</span> <span class="c1">// violation - unless allowCtors=true</span>
+
+        <span class="kt">var</span> <span class="n">f</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Integer</span><span class="o">)</span> <span class="n">getFoo</span><span class="o">();</span> <span class="c1">// violation - unless allowCasts=true</span>
+
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">strings</span> <span class="o">=</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span> <span class="s">"b"</span><span class="o">,</span> <span class="s">"c"</span><span class="o">);</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">var</span> <span class="n">str</span> <span class="o">:</span> <span class="n">strings</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// violation - unless allowLoopVariable=true</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kt">var</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span> <span class="c1">// violation - unless allowCtors=true</span>
+        <span class="kt">var</span> <span class="n">entries</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">entrySet</span><span class="o">();</span> <span class="c1">// violation - unless allowLongTypeNames=20</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">getFoo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"a"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
 
@@ -5195,6 +5224,11 @@ is completely optional).</p>
       <td>false</td>
       <td>Allow when variables are used as loop variables in enhanced for loops</td>
     </tr>
+    <tr>
+      <td>allowLongTypeNames</td>
+      <td>0</td>
+      <td>Allow when the explicit type name would be longer than the configured length. If the allowed length is 0, then no types are allowed regardless of the length.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -5209,6 +5243,7 @@ is completely optional).</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowCtors"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowCasts"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowLoopVariable"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowLongTypeNames"</span> <span class="na">value=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -5628,7 +5663,7 @@ reported just because of each other.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 4, 2026 <br />
+             Site last generated: Oct 6, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
