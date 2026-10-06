@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.Checksum;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.slf4j.Logger;
@@ -80,6 +81,9 @@ public class ZipFileFingerprinter implements ClasspathEntryFingerprinter {
             }
         } catch (final FileNotFoundException | NoSuchFileException ignored) {
             LOG.warn("Classpath entry {} doesn't exist, ignoring it", entry);
+        } catch (final ZipException e) {
+            // same as AuxClasspathLoader, which ignores invalid archives
+            LOG.warn("Classpath entry {} is not a valid archive, ignoring it ({})", entry, e.getMessage());
         }
     }
 
