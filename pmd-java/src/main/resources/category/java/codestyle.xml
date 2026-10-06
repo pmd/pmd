@@ -2120,7 +2120,7 @@ was made possible for anonymous class constructors.
           minimumLanguageVersion="10"
           since="7.0.0"
           message="Use Explicit Types"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UseExplicitTypesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useexplicittypes">
         <description>
 Java 10 introduced the `var` keyword. This reduces the amount of code written because java can infer the type
@@ -2134,29 +2134,47 @@ It may make sense to use `var` when the type is inherently clear upon reading th
 (ie: assignment to either a literal value or a constructor call). Those use cases
 can be enabled through properties.
 
-Notice that lambda parameters are allowed, as they are already inferred  by default (the `var` keyword
+It may also make sense to use `var` when writing the explicit type would be cumbersome. Use the
+parameter `allowLongTypeNames` to control the minimum length when the explicit type can be omitted.
+Note that this might remove useful information and makes reading the code without an IDE more difficult.
+
+Notice that lambda parameters are allowed, as they are already inferred by default (the `var` keyword
 is completely optional).
 
 See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/projects/amber/guides/lvti-style-guide).
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
-            <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
-            <property name="allowCasts" type="Boolean" value="false" description="Allow when variables are directly initialized with a the result of a cast"/>
-            <property name="allowLoopVariable" type="Boolean" value="false" description="Allow when variables are used as loop variables in enhanced for loops"/>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//LocalVariableDeclaration[@TypeInferred = true()]
-    [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
-    [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
-    [not(VariableDeclarator[CastExpression]) or $allowCasts = false()]
-    [not(parent::ForeachStatement) or $allowLoopVariable = false()]
+        <example>
+<![CDATA[
+import java.util.function.Function;
+import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
+
+public class Foo {
+    public void bar() {
+        var s = "a"; // violation - unless allowLiterals=true
+        String s2 = "a"; // no violation - explicit type
+        var f = getFoo(); // violation
+        var f = new Foo(); // violation - unless allowCtors=true
+
+        var f = (Integer) getFoo(); // violation - unless allowCasts=true
+
+        List<String> strings = Arrays.asList("a", "b", "c");
+        for (var str : strings) { // violation - unless allowLoopVariable=true
+            System.out.println(str);
+        }
+
+        var map = new HashMap<String, String>(); // violation - unless allowCtors=true
+        var entries = map.entrySet(); // violation - unless allowLongTypeNames=20
+    }
+
+    private String getFoo() {
+        return "a";
+    }
+}
 ]]>
-                </value>
-            </property>
-        </properties>
+        </example>
     </rule>
 
     <rule name="UselessParentheses"

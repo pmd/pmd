@@ -40,6 +40,9 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/bestpractices/LiteralsFirstInComparisons %} now recognizes final local String constants
     and unqualified references to non-static final String constants. This may add violations when such a constant
     is the argument of a comparison, or remove them when it is already the receiver.
+*   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
+    to use `var` when the explicit type name would be longer than a given minimum length configured with 
+    this property.
 
 ### 🐛️ Fixed Issues
 * core
@@ -51,6 +54,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7133](https://github.com/pmd/pmd/issues/7133): \[java] CPD: Constructor detection state leaks between files with --ignore-identifiers
 * java-bestpractices
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
+* java-codestyle
+    * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
