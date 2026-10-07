@@ -142,23 +142,14 @@ public final class PolyResolution {
             // Those are standalone if possible, otherwise they take
             // the target type
 
-            // in java 7 they are always standalone
-            if (isPreJava8()) {
-                // safe cast because ASTSwitchExpression doesn't exist pre java 13
-                ASTConditionalExpression conditional = (ASTConditionalExpression) e;
-                return computeStandaloneConditionalType(
-                    this.ts,
-                    conditional.getThenBranch().getTypeMirror(),
-                    conditional.getElseBranch().getTypeMirror()
-                );
-            }
-
             // Note that this creates expr mirrors for all subexpressions,
             // and may trigger inference on them (which does not go through PolyResolution).
             // Because this process may fail if the conditional is not standalone,
             // the ctors for expr mirrors must have only trivial side-effects.
             // See comment in MethodRefMirrorImpl
-            JTypeMirror target = ctx.getPolyTargetType(false);
+
+            // in java 7 they are always standalone
+            JTypeMirror target = isPreJava8() ? null : ctx.getPolyTargetType(false);
             if (target != null) {
                 // then it is a poly expression
                 // only reference conditional expressions take the target type,
