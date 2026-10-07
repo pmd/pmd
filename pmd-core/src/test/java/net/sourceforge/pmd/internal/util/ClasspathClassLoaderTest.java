@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.internal.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,10 +30,12 @@ import java.util.concurrent.Semaphore;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.platform.suite.api.Suite;
 
 class ClasspathClassLoaderTest {
     @TempDir
@@ -93,7 +95,7 @@ class ClasspathClassLoaderTest {
         try (ClasspathClassLoader loader = new ClasspathClassLoader(classpath, null)) {
             try (InputStream in = loader.getResourceAsStream(CUSTOM_JAR_RESOURCE)) {
                 assertNotNull(in);
-                String s = IOUtil.readToString(in, StandardCharsets.UTF_8);
+                String s = IOUtils.toString(in, StandardCharsets.UTF_8);
                 assertEquals(CUSTOM_JAR_RESOURCE_CONTENT, s);
             }
         }
@@ -140,7 +142,7 @@ class ClasspathClassLoaderTest {
                             // and has closed the ClasspathClassLoader
                             waitForClosed.await();
                         }
-                        String s = IOUtil.readToString(in, StandardCharsets.UTF_8);
+                        String s = IOUtils.toString(in, StandardCharsets.UTF_8);
                         assertEquals(CUSTOM_JAR_RESOURCE_CONTENT, s);
                     }
                 } catch (Exception e) {
@@ -196,7 +198,7 @@ class ClasspathClassLoaderTest {
         String classPath = jrtfsPath.toString();
 
         try (ClasspathClassLoader loader = new ClasspathClassLoader(classPath, null)) {
-            assertEquals(javaHome.toString(), loader.javaHome);
+            assertThat(loader.toString(), containsString("jrt-fs: " + javaHome));
             try (InputStream stream = loader.getResourceAsStream("java/lang/Object.class")) {
                 assertClassFile(stream, javaVersion);
             }
@@ -237,17 +239,23 @@ class ClasspathClassLoaderTest {
 
     @Test
     void findModuleInfoFromJar() throws IOException {
-        try (ClasspathClassLoader loader = new ClasspathClassLoader("", ClasspathClassLoader.class.getClassLoader())) {
+        try (ClasspathClassLoader loader = new ClasspathClassLoader(System.getProperty("java.class.path"), ClasspathClassLoader.class.getClassLoader())) {
             // search for module org.junit.platform.suite.api, which should be on the test-classpath in pmd-core...
             // inside a jar
             String junitJupiterApiModule = "org.junit.platform.suite.api/module-info.class";
-            URL resource = loader.getResource(junitJupiterApiModule);
-            assertNotNull(resource);
-            assertThat(resource.toString(), endsWith(".jar!/module-info.class"));
+            try (InputStream resource = loader.getResourceAsStream(junitJupiterApiModule)) {
+                assertNotNull(resource);
 
-            byte[] fromUrl = readBytes(resource.openStream());
-            byte[] fromStream = readBytes(loader.getResourceAsStream(junitJupiterApiModule));
-            assertArrayEquals(fromUrl, fromStream, "getResource and getResourceAsStream should return the same module");
+                byte[] fromStream = readBytes(resource);
+
+                // org.junit.platform.suite.api.Suite is located in the same JarFile as junitPlatformSuiteApiModule
+                URL jarFile = Suite.class.getProtectionDomain().getCodeSource().getLocation();
+                URL jarModuleInfoUrl = new URL("jar:" + jarFile.toExternalForm() + "!/module-info.class");
+                try (InputStream jarStream = jarModuleInfoUrl.openStream()) {
+                    byte[] fromJarStream = readBytes(jarStream);
+                    assertArrayEquals(fromStream, fromJarStream, "wrong module-info.class loaded");
+                }
+            }
         }
     }
 }

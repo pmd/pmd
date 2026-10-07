@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
 
@@ -38,6 +39,8 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.getBody() == null || isIgnoredMethod(node)) {
             return null;
         }
@@ -51,7 +54,7 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
         }
 
         for (ASTReturnStatement returnStmt : returnsToViolate) {
-            asCtx(data).addViolation(returnStmt);
+            ctx.addViolation(returnStmt);
         }
         return null;
     }

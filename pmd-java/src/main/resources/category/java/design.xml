@@ -26,7 +26,7 @@ protected constructor in order to prevent instantiation than make the class misl
                 <value>
 <![CDATA[
 //ClassDeclaration
-    [@Abstract = true() and @Interface = false()]
+    [@Abstract = true() and @Interface = false() and not(ExtendsList)]
     [ClassBody[not(ConstructorDeclaration | MethodDeclaration)]]
     [not(pmd-java:hasAnnotation('com.google.auto.value.AutoValue')
          or pmd-java:hasAnnotation('lombok.AllArgsConstructor')
@@ -871,6 +871,52 @@ public class MaybeAUtility {
         </example>
     </rule>
 
+    <rule name="InternalApiUsage"
+          language="java"
+          since="7.28.0"
+          message="Do not use internal APIs. {0} ''{1}'' is restricted to {2}."
+          class="net.sourceforge.pmd.lang.java.rule.design.InternalApiUsageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#internalapiusage">
+        <description>
+Some APIs are designed to be used only by the library or package that defines them, and using them from other code
+could cause incorrect behavior if the library class changes. By default, this rule reports usages of methods and fields
+
+* annotated by `@VisibleForTesting`, unless they are used from a test class or the declaring class,
+* annotated by `@TestOnly`, unless they are called from a test class,
+* annotated by `@org.apiguardian.api.API(status=INTERNAL)` or `org.jetbrains.annotations.ApiStatus.Internal`,
+  unless they are declared in the analyzed library.
+
+Annotations `@VisibleForTesting` and `@TestOnly` are matched by simple name, so they can be imported from
+any framework or defined in your own codebase.
+
+In the context of this rule, classes are considered to belong to the analyzed library,
+if the first three components of their package name match.
+This behavior can be overridden using the `ownPackages` property that may list
+packages which are considered to belong to the analyzed library.
+
+It is also possible to define which API statuses should be reported, the `reportedStatuses` property can be set
+to report APIs with experimental, internal, deprecated or (for JetBrains annotations) overrides-only status.
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    void bar() {
+        new Bar().setSecret(0);
+    }
+}
+
+class Bar {
+    private int secret;
+    @VisibleForTesting
+    setSecret(int secret) {
+        this.secret = secret;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="InvalidJavaBean"
           language="java"
           since="6.52.0"
@@ -1183,6 +1229,53 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ProtectedMemberInFinalClass"
+          language="java"
+          since="7.27.0"
+          message="Avoid protected members in a final class. Change to private or package access."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#protectedmemberinfinalclass">
+        <description>
+            Do not use protected members in final classes since they cannot be subclassed. This does
+            not apply to methods that override a protected method from a superclass, since visibility cannot be decreased .
+            Clarify your intent by using private or package access modifiers instead.
+
+            This replaced the old rules "AvoidProtectedFieldInFinalClass" and "AvoidProtectedMethodInFinalClassNotExtending" in PMD 7.27.0
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration[@Final=true()]/ClassBody/
+(
+  FieldDeclaration |
+  EnumDeclaration |
+  RecordDeclaration |
+  ClassDeclaration |
+  AnnotationTypeDeclaration |
+  ConstructorDeclaration |
+  MethodDeclaration[ @Override=false() ]
+)[@Visibility="protected"]
+ ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public final class Foo {
+  private int bar() {}
+  protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
+  protected int field; // This should be a private or package visible field
+  protected enum InnerEnum {} // Same for enums ...
+  protected class InnerClass {} // ... classes ...
+  protected record InnerRecord {} // ... record ...
+  protected @interface InnerAnnotation {} // ... and annotations
+}
+ ]]>
+        </example>
+    </rule>
+
     <rule name="PublicMemberInNonPublicType"
           language="java"
           since="7.21.0"
@@ -1362,11 +1455,11 @@ public boolean isBarEqualTo(int x) {
     <rule name="SimplifyConditional"
           language="java"
           since="3.1"
-          message="No need to check for null before an instanceof"
+          message="No need to check for null in the same expression as an instanceof"
           class="net.sourceforge.pmd.lang.java.rule.design.SimplifyConditionalRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifyconditional">
         <description>
-No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+No need to check for null in the same expression as an instanceof; the instanceof keyword returns false when given a null argument.
         </description>
         <priority>3</priority>
         <example>

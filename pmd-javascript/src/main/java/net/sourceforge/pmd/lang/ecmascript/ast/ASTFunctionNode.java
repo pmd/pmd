@@ -32,11 +32,11 @@ public final class ASTFunctionNode extends AbstractEcmascriptNode<FunctionNode> 
         if (node.getFunctionName() != null) {
             paramIndex = index + 1;
         }
-        return (EcmascriptNode<?>) getChild(paramIndex);
+        return getChild(paramIndex);
     }
 
     public EcmascriptNode<?> getBody() {
-        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
+        return getChild(getNumChildren() - 1);
     }
 
     public boolean isClosure() {

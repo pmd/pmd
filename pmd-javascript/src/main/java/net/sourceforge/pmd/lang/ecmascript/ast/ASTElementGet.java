@@ -18,14 +18,14 @@ public final class ASTElementGet extends AbstractEcmascriptNode<ElementGet> {
 
     public EcmascriptNode<?> getTarget() {
         if (getNumChildren() > 0) {
-            return (EcmascriptNode<?>) getChild(0);
+            return getChild(0);
         }
         return null;
     }
 
     public EcmascriptNode<?> getElement() {
         if (getNumChildren() > 1) {
-            return (EcmascriptNode<?>) getChild(1);
+            return getChild(1);
         }
         return null;
     }

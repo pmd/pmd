@@ -21,14 +21,14 @@ public final class ASTIfStatement extends AbstractEcmascriptNode<IfStatement> {
     }
 
     public EcmascriptNode<?> getCondition() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public EcmascriptNode<?> getThen() {
-        return (EcmascriptNode<?>) getChild(1);
+        return getChild(1);
     }
 
     public EcmascriptNode<?> getElse() {
-        return (EcmascriptNode<?>) getChild(2);
+        return getChild(2);
     }
 }

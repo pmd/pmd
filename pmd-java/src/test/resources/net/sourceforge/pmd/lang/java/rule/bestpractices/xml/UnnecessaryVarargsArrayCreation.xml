@@ -71,4 +71,112 @@
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Array is required: removing it creates constructor overload ambiguity</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Demo {
+                Demo(String file, String... lines) {}
+                Demo(String... args) {}
+
+                {
+                    // Removing the explicit array would yield new Demo("x", "a", "b"),
+                    // which is ambiguous between the two constructors.
+                    new Demo("x", new String[]{"a", "b"});
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Array is required: removing it creates method overload ambiguity</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                static void foo(String first, String... more) {}
+                static void foo(String... all) {}
+
+                static {
+                    // Removing the explicit array would yield foo("x", "a", "b"),
+                    // which is ambiguous between the two overloads.
+                    foo("x", new String[]{"a", "b"});
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Array is required: competing method overload is inherited from a supertype</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Base {
+                void foo(String... all) {}
+            }
+
+            public class Sub extends Base {
+                void foo(String first, String... more) {}
+
+                {
+                    Sub s = new Sub();
+                    // Removing the explicit array would yield s.foo("x", "a", "b"),
+                    // which is ambiguous between Sub.foo(String, String...) and the inherited Base.foo(String...).
+                    s.foo("x", new String[]{"a", "b"});
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No competing overload applicable to expanded args: still unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                void foo(String... args) {}
+                void foo(int x, String... args) {}
+
+                {
+                    // Expanded call foo("a", "b") does not match foo(int, String...),
+                    // so removing the array is unambiguous and still a violation.
+                    foo(new String[]{"a", "b"});
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5069 Array is required: explicit constructor invocation would select another constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Test {
+                public Test() {
+                    // this("prefix") would call Test(String), which delegates back here.
+                    this(new String[] {"prefix"});
+                }
+                public Test(String otherPrefix) {
+                    this("prefix", otherPrefix);
+                }
+                private Test(String... prefixes) {
+                    for (String str : prefixes) {
+                        System.out.println(str);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5069 Explicit constructor invocation with no competing constructor: still unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+            public class Test {
+                public Test() {
+                    this(new String[] {"a", "b"});
+                }
+                private Test(String... prefixes) {
+                }
+            }
+            ]]></code>
+    </test-code>
+
 </test-data>

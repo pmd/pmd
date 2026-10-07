@@ -18,7 +18,7 @@ class VBHTMLRendererTest extends AbstractRendererTest {
     }
 
     private String getEscapedRuleMessage() {
-        return "This should be escaped: &quot;&lt;script&gt;alert('test')&lt;/script&gt;&quot;.";
+        return "This should be escaped: &quot;&lt;script&gt;alert(&#39;test&#39;)&lt;/script&gt;&quot;.";
     }
 
     @Override

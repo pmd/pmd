@@ -603,4 +603,47 @@ class TypeReference<T> {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] #5441 False positive when the diamond would be inferred to a different type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+class Test {
+    interface CacheLoader<K, V> {
+    }
+
+    interface CacheBuilder<K, V> {
+        <K1 extends K, V1 extends V> AsyncCache<K1, V1> buildAsync(CacheLoader<? super K1, V1> loader);
+    }
+
+    interface Cache<K, V> {
+    }
+
+    interface AsyncCache<K, V> {
+        Cache<K, V> synchronous();
+    }
+
+    abstract static class ConcreteCacheLoader<K, V> implements CacheLoader<K, V> {
+        abstract V fetch(K key);
+    }
+
+    interface Provider {
+        <K, V> CacheBuilder<K, V> newCacheBuilder(String id);
+    }
+
+    void test(Provider provider) {
+        Cache<String, List<Integer>> cache = provider.<String, List<Integer>>newCacheBuilder("test")
+                .buildAsync(new ConcreteCacheLoader<String, List<Integer>>() {
+                    @Override
+                    List<Integer> fetch(String key) {
+                        return List.of(123);
+                    }
+                })
+                .synchronous();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

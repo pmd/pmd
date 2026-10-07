@@ -780,4 +780,36 @@ public class Test {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#6274 False positive: parentheses around a ternary in the else-branch are clarifying (default config)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public boolean test(boolean foo, boolean bar, boolean baz, boolean bam, boolean boo) {
+        boolean baa;
+        // Parentheses around the nested ternary in the else-branch are clarifying,
+        // consistent with the then-branch on the last line.
+        baa = foo ? bar : (baz ? bam : boo);
+        baa = foo ? (bar ? baz : bam) : boo;
+        return baa;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#6274 With ignoreClarifying=false, the else-branch ternary parentheses are reported as clarifying</description>
+        <rule-property name="ignoreClarifying">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public boolean test(boolean foo, boolean bar, boolean baz, boolean bam, boolean boo) {
+        boolean baa;
+        baa = foo ? bar : (baz ? bam : boo); // clarifying, reported
+        baa = foo ? (bar ? baz : bam) : boo; // necessary, not reported
+        return baa;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

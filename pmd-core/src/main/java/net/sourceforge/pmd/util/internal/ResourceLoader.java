@@ -55,6 +55,14 @@ public class ResourceLoader {
     }
 
     /**
+     * Returns the classloader this instance uses to resolve classpath
+     * resources and rule classes.
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    /**
      * Attempts to load the resource from file, a URL or the classpath.
      *
      * <p>Caller is responsible for closing the {@link InputStream}.

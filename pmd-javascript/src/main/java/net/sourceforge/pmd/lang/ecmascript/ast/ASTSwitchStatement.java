@@ -17,7 +17,7 @@ public final class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchState
     }
 
     public EcmascriptNode<?> getExpression() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public int getNumCases() {

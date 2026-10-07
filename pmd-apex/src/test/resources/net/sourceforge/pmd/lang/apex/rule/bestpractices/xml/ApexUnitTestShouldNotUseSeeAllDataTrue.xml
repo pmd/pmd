@@ -38,7 +38,7 @@ public class Foo {
     <test-code>
         <description>[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative due to casing (regression in PMD 7) #5095</description>
         <expected-problems>9</expected-problems>
-        <expected-linenumbers>2,5,10,15,20,25,30,35,40</expected-linenumbers>
+        <expected-linenumbers>1,4,9,14,19,24,29,34,39</expected-linenumbers>
         <code><![CDATA[
 @isTest(SeeAllData = true)
 public class SomeTest {
@@ -89,7 +89,7 @@ public class SomeTest {
     <test-code>
         <description>[apex] ApexUnitTestShouldNotUseSeeAllDataTrue seeAllData boolean enclosed in quote #5667</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>2,5</expected-linenumbers>
+        <expected-linenumbers>1,4</expected-linenumbers>
         <code><![CDATA[
 @isTest(SeeAllData = 'true')
 public class SomeTest {
@@ -97,6 +97,24 @@ public class SomeTest {
     @IsTest(SeeAllData=true)
     public static void testMethod1() {
         System.assertEquals(1 + 2, 3);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] ApexUnitTestShouldNotUseSeeAllDataTrue violation should be reported on the seeAllData parameter, not the whole method #5904</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+@isTest(
+    isParallel = true,
+    seeAllData = true
+)
+public class Foo {
+    public static testMethod void testSomething() {
+        Account a = null;
+        System.assertNotEquals(a, null, 'account not found');
     }
 }
 ]]></code>

@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ImplicitFunctionalInterfaceRule extends AbstractJavaRulechainRule {
     public ImplicitFunctionalInterfaceRule() {
@@ -17,12 +18,14 @@ public class ImplicitFunctionalInterfaceRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.isRegularInterface()
             && !node.isAnnotationPresent(FunctionalInterface.class)
             && !node.hasModifiers(JModifier.SEALED)) {
             JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(node.getTypeMirror());
             if (fun != null) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         }
         return null;

@@ -44,7 +44,7 @@ class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
         PLSQLNode n;
 
         for (int i = 0; i < node.getNumChildren(); i++) {
-            n = (PLSQLNode) node.getChild(i);
+            n = node.getChild(i);
             npath *= (Integer) n.acceptVisitor(this, data);
         }
 
@@ -244,7 +244,7 @@ class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
         int npath = 1;
         int caseRange = 0;
         for (int i = 0; i < node.getNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.getChild(i);
+            PLSQLNode n = node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.acceptVisitor(this, data);
@@ -264,7 +264,7 @@ class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
         int npath = 0;
         int caseRange = 0;
         for (int i = 0; i < node.getNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.getChild(i);
+            PLSQLNode n = node.getChild(i);
 
             // Fall-through labels count as 1 for complexity
             Integer complexity = (Integer) n.acceptVisitor(this, data);

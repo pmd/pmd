@@ -17,18 +17,18 @@ public final class ASTForLoop extends AbstractEcmascriptNode<ForLoop> {
     }
 
     public EcmascriptNode<?> getInitializer() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public EcmascriptNode<?> getCondition() {
-        return (EcmascriptNode<?>) getChild(1);
+        return getChild(1);
     }
 
     public EcmascriptNode<?> getIncrement() {
-        return (EcmascriptNode<?>) getChild(2);
+        return getChild(2);
     }
 
     public EcmascriptNode<?> getBody() {
-        return (EcmascriptNode<?>) getChild(3);
+        return getChild(3);
     }
 }

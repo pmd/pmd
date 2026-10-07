@@ -17,7 +17,7 @@ public final class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayCom
     }
 
     public EcmascriptNode<?> getResult() {
-        return (EcmascriptNode<?>) getChild(0);
+        return getChild(0);
     }
 
     public int getNumArrayComprehensionLoops() {
@@ -33,6 +33,6 @@ public final class ASTArrayComprehension extends AbstractEcmascriptNode<ArrayCom
     }
 
     public EcmascriptNode<?> getFilter() {
-        return (EcmascriptNode<?>) getChild(getNumChildren() - 1);
+        return getChild(getNumChildren() - 1);
     }
 }

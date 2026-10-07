@@ -24,7 +24,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 #v5.6.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -38,7 +38,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
             -Dmaven.repo.local=.m2/repository \
-            verify -PfastSkip -DskipTests -Dcyclonedx.skip=false \
+            verify -PfastSkip -DskipTests -DskipITs -Dcyclonedx.skip=false \
             deploy:deploy -DaltDeploymentRepository="dogfood::file://$(pwd)/target/staging"
       - name: Cleanup local repository
         run: |
@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - name: Spell Check Repo
-        uses: crate-ci/typos@bee27e3a4fd1ea2111cf90ab89cd076c870fce14 #v1.48.0
+        uses: crate-ci/typos@00f422f3b19c57bc6338715ebfe3316d38768461 #v1.50.3
         # note: don't fail the build on typos, just annotate them
         # so that publish-pull-requests job still runs.
         continue-on-error: true
@@ -95,7 +95,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 #v5.6.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -112,7 +112,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
-              verify -DskipTests
+              verify -DskipTests -DskipITs
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
           name: javadocs-artifact
@@ -135,7 +135,7 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 #v5.6.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         # under linux we execute more extensive integration tests with various java versions
         if: ${{ runner.os == 'Linux' }}
         with:
@@ -145,7 +145,7 @@ jobs:
             11
             17
             25
-      - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 #v5.6.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         # default java version for all os is 21
         with:
           distribution: 'temurin'
@@ -195,7 +195,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 #v5.6.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -262,6 +262,7 @@ jobs:
             verify \
             -PfastSkip,dogfood \
             -DskipTests \
+            -DskipITs \
             -Dpmd.skip=false \
             -Dcpd.skip=false
           echo "::endgroup::"
@@ -281,7 +282,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 #v5.6.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -300,9 +301,9 @@ jobs:
             -Dmaven.repo.local=.m2/repository \
             verify \
             -Pgenerate-rule-docs,fastSkip \
-            -DskipTests -Dassembly.skipAssembly=true
+            -DskipTests -DskipITs -Dassembly.skipAssembly=true
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b #v1.321.0
+        uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 #v1.327.0
         with:
           ruby-version: 4
       - name: Setup bundler
@@ -336,14 +337,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           fetch-depth: 2
-      - uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 #v5.6.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 #v6.0.1
         with:
           distribution: 'temurin'
           java-version: |
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b #v1.321.0
+        uses: ruby/setup-ruby@14594264cd68ce8a2345dd349bc3d138a4ef85c8 #v1.327.0
         with:
           ruby-version: 4
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0

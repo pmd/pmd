@@ -69,12 +69,15 @@ public class Fo$o {  // not a recommended name
     <rule name="AvoidProtectedFieldInFinalClass"
           language="java"
           since="2.1"
+          deprecated="true"
           message="Avoid protected fields in a final class.  Change to private or package access."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedfieldinfinalclass">
         <description>
 Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule java/design/ProtectedMemberInFinalClass %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
@@ -102,6 +105,7 @@ public final class Bar {
     <rule name="AvoidProtectedMethodInFinalClassNotExtending"
           language="java"
           since="5.1"
+          deprecated="true"
           message="Avoid protected methods in a final class that doesn't extend anything other than Object.  Change to private or package access."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprotectedmethodinfinalclassnotextending">
@@ -109,6 +113,8 @@ public final class Bar {
 Do not use protected methods in most final classes since they cannot be subclassed. This should
 only be allowed in final classes that extend other classes with protected methods (whose
 visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.
+
+**Deprecated:** This rule is deprecated since PMD 7.27.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule java/design/ProtectedMemberInFinalClass %}, which covers all class members.
         </description>
         <priority>3</priority>
         <properties>
@@ -178,6 +184,7 @@ public class SomeJNIClass {
         <description>
             Methods that return boolean or Boolean results should be named as predicate statements to denote this.
             I.e., 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc. Avoid the use of the 'get' prefix for these methods.
+            By default, methods returning the Boolean wrapper type are checked as well. This can be disabled with the includeWrappedType property.
         </description>
         <priority>4</priority>
         <properties>
@@ -187,16 +194,17 @@ public class SomeJNIClass {
 //MethodDeclaration
     [starts-with(@Name, 'get')]
     [@Arity = 0 or $checkParameterizedMethods = true()]
-    [ (PrimitiveType[@Kind = 'boolean'] or ClassType[pmd-java:typeIs('java.lang.Boolean')]) and @Override = false() ]
+    [ (PrimitiveType[@Kind = 'boolean'] or ($includeWrappedType and ClassType[pmd-java:typeIs('java.lang.Boolean')])) and @Override = false() ]
 ]]>
                 </value>
             </property>
             <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods" value="false"/>
+            <property name="includeWrappedType" type="Boolean" description="Include methods returning the Boolean wrapper type" value="true"/>
         </properties>
         <example>
             <![CDATA[
 public boolean getFoo();            // bad
-public Boolean getFoo();            // bad
+public Boolean getFoo();            // bad if includeWrappedType=true (default)
 public boolean isFoo();             // ok
 public Boolean isFoo();             // ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
@@ -421,6 +429,43 @@ while (true) {  // preferred approach
   x++;
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="CStyleArrayDeclaration"
+           language="java"
+           since="7.28.0"
+           message="Use Java-style array declarations instead of C-style array declarations"
+           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#cstylearraydeclaration">
+        <description><![CDATA[
+Use Java-style declarations for arrays, where the brackets follow the type, e.g. `int[] numbers` instead of `int numbers[]`.
+This applies to fields, local variables, parameters, and methods returning arrays.
+        ]]></description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//VariableId[ArrayDimensions]
+| //MethodDeclaration[ArrayDimensions]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+class Numbers {
+    double doubles[]; // bad
+    int[] ints; // good
+
+    double getDoubles()[] { // bad
+        return new double[] { 1.0 };
+    }
+
+    int[] getInts() { // good
+        return new int[] { 1 };
+    }
+}
+            ]]>
         </example>
     </rule>
 
@@ -1398,7 +1443,6 @@ public int getLength(String[] strings) {
 ]]>
         </example>
     </rule>
-
     <rule name="RemoteInterfaceNamingConvention"
           language="java"
           since="4.0"
@@ -1985,7 +2029,7 @@ class C extends A implements J { // Unnecessary to declare that C implements J, 
         <description>
 Avoid the creation of unnecessary local variables.
 
-This rule has been deprecated since 7.17.0. Use the new rule
+**Deprecated:** This rule has been deprecated since 7.17.0. Use the new rule
 {%rule VariableCanBeInlined %} instead, which additionally covers throw statements.
         </description>
         <priority>3</priority>
@@ -2155,7 +2199,7 @@ was made possible for anonymous class constructors.
           minimumLanguageVersion="10"
           since="7.0.0"
           message="Use Explicit Types"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UseExplicitTypesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useexplicittypes">
         <description>
 Java 10 introduced the `var` keyword. This reduces the amount of code written because java can infer the type
@@ -2169,29 +2213,47 @@ It may make sense to use `var` when the type is inherently clear upon reading th
 (ie: assignment to either a literal value or a constructor call). Those use cases
 can be enabled through properties.
 
-Notice that lambda parameters are allowed, as they are already inferred  by default (the `var` keyword
+It may also make sense to use `var` when writing the explicit type would be cumbersome. Use the
+parameter `allowLongTypeNames` to control the minimum length when the explicit type can be omitted.
+Note that this might remove useful information and makes reading the code without an IDE more difficult.
+
+Notice that lambda parameters are allowed, as they are already inferred by default (the `var` keyword
 is completely optional).
 
 See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/projects/amber/guides/lvti-style-guide).
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
-            <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
-            <property name="allowCasts" type="Boolean" value="false" description="Allow when variables are directly initialized with a the result of a cast"/>
-            <property name="allowLoopVariable" type="Boolean" value="false" description="Allow when variables are used as loop variables in enhanced for loops"/>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//LocalVariableDeclaration[@TypeInferred = true()]
-    [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
-    [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
-    [not(VariableDeclarator[CastExpression]) or $allowCasts = false()]
-    [not(parent::ForeachStatement) or $allowLoopVariable = false()]
+        <example>
+<![CDATA[
+import java.util.function.Function;
+import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
+
+public class Foo {
+    public void bar() {
+        var s = "a"; // violation - unless allowLiterals=true
+        String s2 = "a"; // no violation - explicit type
+        var f = getFoo(); // violation
+        var f = new Foo(); // violation - unless allowCtors=true
+
+        var f = (Integer) getFoo(); // violation - unless allowCasts=true
+
+        List<String> strings = Arrays.asList("a", "b", "c");
+        for (var str : strings) { // violation - unless allowLoopVariable=true
+            System.out.println(str);
+        }
+
+        var map = new HashMap<String, String>(); // violation - unless allowCtors=true
+        var entries = map.entrySet(); // violation - unless allowLongTypeNames=20
+    }
+
+    private String getFoo() {
+        return "a";
+    }
+}
 ]]>
-                </value>
-            </property>
-        </properties>
+        </example>
     </rule>
 
     <rule name="UselessParentheses"

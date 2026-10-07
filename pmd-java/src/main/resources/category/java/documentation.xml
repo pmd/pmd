@@ -59,22 +59,17 @@ Determines whether the dimensions of non-header comments found are within the sp
         <priority>3</priority>
         <example>
 <![CDATA[
-/**
-*
-*   too many lines!
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*/
+public class Foo {
+    /*
+     * 1
+     * 2
+     * 3
+     * 4
+     * 5
+     * 6
+     * 7
+     */
+}
 ]]>
         </example>
     </rule>

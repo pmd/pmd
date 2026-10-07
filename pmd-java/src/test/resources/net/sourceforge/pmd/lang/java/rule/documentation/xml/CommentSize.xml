@@ -8,8 +8,9 @@
         <description>Too many lines</description>
         <rule-property name="maxLines">5</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
+package foo;
 /* 1
  * 2
  * 3
@@ -32,8 +33,9 @@ public class Foo {
         <description>#4369 Line too long</description>
         <rule-property name="maxLineLength">5</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+package foo;
 //
 
 
@@ -91,6 +93,26 @@ public class Foo {
         comment
         */
     }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#6270 File header comments are not checked</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/*
+ * This is a long license header comment
+ * that exceeds the default maxLines limit.
+ * It must not be reported since header
+ * comments are ignored by this rule.
+ * line 5
+ * line 6
+ * line 7
+ * line 8
+ */
+package foo;
+
+public class Foo {
 }
         ]]></code>
     </test-code>

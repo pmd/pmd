@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
+    <test-code>
+        <!-- all tests here have violations, because the mock filename is snippet.java-->
+        <description>single mismatched class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>multiple mismatched types</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>Top-level type Foo should be defined in a file called Foo.java</message>
+            <message>Top-level type Bar should be defined in a file called Bar.java</message>
+            <message>Top-level type Baz should be defined in a file called Baz.java</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {}
+record Bar() {}
+enum Baz {}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>compact unit</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+void main() {}
+        ]]></code>
+    </test-code>
+</test-data>

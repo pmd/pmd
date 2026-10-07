@@ -148,7 +148,7 @@ public class ScopeAndDeclarationFinder extends PlsqlVisitorBase<Object, Object> 
     @Override
     public Object visit(ASTPackageSpecification node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.getParent()).getScope();
+        Scope s = node.getParent().getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -157,7 +157,7 @@ public class ScopeAndDeclarationFinder extends PlsqlVisitorBase<Object, Object> 
     @Override
     public Object visit(ASTPackageBody node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.getParent()).getScope();
+        Scope s = node.getParent().getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -166,7 +166,7 @@ public class ScopeAndDeclarationFinder extends PlsqlVisitorBase<Object, Object> 
     @Override
     public Object visit(ASTTypeSpecification node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.getParent()).getScope();
+        Scope s = node.getParent().getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -175,7 +175,7 @@ public class ScopeAndDeclarationFinder extends PlsqlVisitorBase<Object, Object> 
     @Override
     public Object visit(ASTTriggerUnit node, Object data) {
         createClassScope(node);
-        Scope s = ((PLSQLNode) node.getParent()).getScope();
+        Scope s = node.getParent().getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;

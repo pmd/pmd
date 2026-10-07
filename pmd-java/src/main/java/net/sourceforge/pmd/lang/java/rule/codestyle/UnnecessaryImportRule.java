@@ -46,6 +46,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -123,6 +124,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         this.moduleImports.clear();
         this.allSingleNameImports.clear();
         this.staticImportsOnDemand.clear();
@@ -132,7 +135,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         String packageName = node.getPackageName();
 
         for (ASTImportDeclaration importDecl : node.children(ASTImportDeclaration.class)) {
-            visitImport(importDecl, data, packageName);
+            visitImport(importDecl, ctx, packageName);
         }
 
         for (ImportWrapper wrapper : allSingleNameImports) {
@@ -144,27 +147,27 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             }
         }
 
-        super.visit(node, data);
+        super.visit(node, ctx);
         visitComments(node);
 
-        doReporting(data);
+        doReporting(ctx);
 
-        return data;
+        return null;
     }
 
-    private void doReporting(Object data) {
+    private void doReporting(RuleContext ctx) {
         for (ImportWrapper wrapper : allSingleNameImports) {
             String message = wrapper.isStatic() ? UNUSED_STATIC_IMPORT_MESSAGE : UNUSED_IMPORT_MESSAGE;
-            reportWithMessage(wrapper.node, data, message);
+            reportWithMessage(wrapper.node, ctx, message);
         }
         for (ImportWrapper wrapper : staticImportsOnDemand) {
-            reportWithMessage(wrapper.node, data, UNUSED_STATIC_IMPORT_MESSAGE);
+            reportWithMessage(wrapper.node, ctx, UNUSED_STATIC_IMPORT_MESSAGE);
         }
         for (ImportWrapper wrapper : typeImportsOnDemand) {
-            reportWithMessage(wrapper.node, data, UNUSED_IMPORT_MESSAGE);
+            reportWithMessage(wrapper.node, ctx, UNUSED_IMPORT_MESSAGE);
         }
         for (ImportWrapper wrapper : moduleImports) {
-            reportWithMessage(wrapper.node, data, "Unused module import ''{0}''");
+            reportWithMessage(wrapper.node, ctx, "Unused module import ''{0}''");
         }
 
         // remove unused ones, they have already been reported
@@ -175,10 +178,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         unnecessaryImportsFromSamePackage.removeAll(staticImportsOnDemand);
         unnecessaryImportsFromSamePackage.removeAll(typeImportsOnDemand);
         for (ImportWrapper wrapper : unnecessaryJavaLangImports) {
-            reportWithMessage(wrapper.node, data, IMPORT_FROM_JAVA_LANG_MESSAGE);
+            reportWithMessage(wrapper.node, ctx, IMPORT_FROM_JAVA_LANG_MESSAGE);
         }
         for (ImportWrapper wrapper : unnecessaryImportsFromSamePackage) {
-            reportWithMessage(wrapper.node, data, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
+            reportWithMessage(wrapper.node, ctx, IMPORT_FROM_SAME_PACKAGE_MESSAGE);
         }
     }
 
@@ -222,8 +225,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         fullname = m.group(2);
                         if (fullname != null) {
                             for (String param : fullname.split("\\s*,\\s*")) {
-                                removeReferenceSingleImport(param);
-                                removeReferenceOnDemandImport(param);
+                                String paramType = stripArrayOrVarargsSuffix(param);
+                                removeReferenceSingleImport(paramType);
+                                removeReferenceOnDemandImport(paramType);
                             }
                         }
                     }
@@ -236,7 +240,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
     }
 
-    private void visitImport(ASTImportDeclaration node, Object data, String thisPackageName) {
+    private void visitImport(ASTImportDeclaration node, RuleContext ctx, String thisPackageName) {
         if (thisPackageName.equals(node.getPackageName())) {
             unnecessaryImportsFromSamePackage.add(new ImportWrapper(node));
         }
@@ -246,7 +250,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
         if (!container.add(new ImportWrapper(node))) {
             // duplicate
-            reportWithMessage(node, data, DUPLICATE_IMPORT_MESSAGE);
+            reportWithMessage(node, ctx, DUPLICATE_IMPORT_MESSAGE);
         }
     }
 
@@ -262,12 +266,13 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         return allSingleNameImports;
     }
 
-    private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
-        asCtx(data).addViolationWithMessage(node, message, PrettyPrintingUtil.prettyImport(node));
+    private void reportWithMessage(ASTImportDeclaration node, RuleContext ctx, String message) {
+        ctx.addViolationWithMessage(node, message, PrettyPrintingUtil.prettyImport(node));
     }
 
     @Override
     public Object visit(ASTClassType node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.getQualifier() == null
             && !node.isFullyQualified()
             && node.getTypeMirror().isClassOrInterface()) {
@@ -277,7 +282,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                 node.getSymbolTable().types().iterateResults(node.getSimpleName());
             checkScopeChain(false, symbol, scopeIter, ts -> true, false);
         }
-        return super.visit(node, data);
+        return super.visit(node, ctx);
     }
 
     @Override
@@ -309,12 +314,14 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
                 // don't try further, but still visit all ASTClassType nodes in the AST.
                 recordFailedTypeResWithName(node, node.getMethodName(), true);
-                return super.visit(node, data); // todo we're erring towards FPs
+                return super.visit(node, ctx); // todo we're erring towards FPs
             }
 
             ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =
@@ -328,7 +335,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                             methods -> CollectionUtil.any(methods, m -> m.getSymbol().equals(symbol)),
                             true);
         }
-        return super.visit(node, data);
+        return super.visit(node, ctx);
     }
 
     @Override
@@ -438,6 +445,22 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
     }
 
+
+    /**
+     * A javadoc parameter type may be written as an array ({@code Type[]}) or
+     * varargs ({@code Type...}), e.g. in {@code {@link Foo#bar(Type[])}}. Strip
+     * that suffix so the remaining type name can be matched against an import.
+     */
+    private static String stripArrayOrVarargsSuffix(String paramType) {
+        String result = paramType;
+        if (result.endsWith("...")) {
+            result = result.substring(0, result.length() - "...".length());
+        }
+        while (result.endsWith("[]")) {
+            result = result.substring(0, result.length() - "[]".length());
+        }
+        return result;
+    }
 
     /** We found a reference to the type given by the name. */
     private void removeReferenceSingleImport(String referenceName) {

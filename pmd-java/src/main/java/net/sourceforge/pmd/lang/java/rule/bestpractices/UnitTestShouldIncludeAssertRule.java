@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
@@ -39,6 +40,8 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ASTTypeDeclaration enclosingType = method.getEnclosingType();
         // marks the usage of a SoftAssertionExtension (JUnit 5+) or SoftAssertionRule (JUnit 4)
         // effects are the same -> no explicit call to .assertAll() necessary
@@ -56,7 +59,7 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
             && getAllMethodCallsFrom(body)
                 .none(isAssertCall
                         .or(call -> extraAsserts.contains(call.getMethodName())))) {
-            asCtx(data).addViolation(method);
+            ctx.addViolation(method);
         }
         return data;
     }

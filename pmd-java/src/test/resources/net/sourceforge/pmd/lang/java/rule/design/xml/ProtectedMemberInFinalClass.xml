@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>ok, protected field in non-final class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, protected field in final class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    protected int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, private field in final class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private int x;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected field in inner class is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private class bar { protected int x; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, protected method in non final class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, protected method in final class that doesn't extend anything</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    protected void bar(){}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, protected method in final class that doesn't extend anything but implements interface</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo implements java.io.Serializable {
+    protected void bar(){}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, protected method in final class that does override something</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo extends Bar {
+    protected void bar(){}
+}
+class Bar {
+    protected void bar();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, protected method in final class that does override something</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public final class Foo extends Bar {
+    protected void bar(long x){}
+    protected void bar(int x){}
+}
+class Bar {
+    protected void bar(int x);
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, private method in final class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private void bar(){}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected method in non-final inner class is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private class Bar { protected int baz(){} }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected method in final inner class that overrides something is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+    private final class Bar extends Super { protected int baz(){} }
+}
+class Super {
+    protected int baz();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>protected method in final inner class that does not override anything is bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final class Bar { protected int baz(){} }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1241 False+ AvoidProtectedMethodInFinalClassNotExtending</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private final class Dummy {
+    @Override
+    protected void finalize() {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Protected nested types are bad</description>
+        <expected-problems>5</expected-problems>
+        <code><![CDATA[
+public final class Test {
+    protected enum Foo {}
+    protected record Bar() {}
+    protected class Baz {}
+    protected interface Face {}
+    protected @interface Annotation {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Public nested types are OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Test {
+    public enum Foo {}
+    public record Bar() {}
+    public class Baz {}
+    public interface Face {}
+    public @interface Annotation {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Protected constructor is bad</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public final class Test {
+    protected Test() {}
+    public Test(String s) {}
+}
+        ]]></code>
+    </test-code>
+</test-data>

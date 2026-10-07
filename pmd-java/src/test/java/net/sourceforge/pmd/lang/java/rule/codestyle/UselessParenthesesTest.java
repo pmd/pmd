@@ -93,7 +93,7 @@ class UselessParenthesesTest extends PmdRuleTst {
     @Test
     void testConditionals() {
         assertAll(
-            unnecessary("a ? b : (c ? d : e)"),
+            clarifying("a ? b : (c ? d : e)"),
 
             necessary("a ? (b ? c : d) : e"),
             unnecessary("a ? ((b ? c : d)) : e"),

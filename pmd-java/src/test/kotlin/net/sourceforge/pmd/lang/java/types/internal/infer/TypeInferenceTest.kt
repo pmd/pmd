@@ -498,4 +498,92 @@ class Main {
             info.methodType shouldBeSomeInstantiationOf ofNullable
         }
     }
+
+    parserTest("Lower bounds of an interdependent batch are used before upper bounds") {
+        // Reduced from spring-framework's JsonPathAssertions#value usages.
+        // The inference context for `value` ends up with the bounds
+        //     'a { 'a <: Object, 'a <: 'd }      ('a is T of value)
+        //     'd { 'd >: Integer, 'd >: 'a }     ('d is T of equalTo)
+        // 'a and 'd are interdependent, so they are instantiated simultaneously.
+        // If UPPER may be applied to 'a in the same pass in which LOWER is
+        // applied to 'd, we get 'a := Object and 'd := Integer, and incorporating
+        // both yields the false bound 'a <: Integer, ie the call does not resolve
+        // at all. Like javac, LOWER must be exhausted over the whole batch first:
+        // 'd := Integer, and only once that is incorporated 'a := glb(Object, Integer).
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                interface Matcher<T> {}
+                interface Consumer<T> {}
+                interface BodyContentSpec {}
+
+                interface JsonPathAssertions {
+                    <T> BodyContentSpec value(Matcher<? super T> matcher);
+                    <T> BodyContentSpec value(Consumer<T> consumer);
+                }
+
+                static <T> Matcher<T> equalTo(T operand) { return null; }
+
+                static void test(JsonPathAssertions a) {
+                    a.value(equalTo(42));
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, t_Matcher, _, t_BodyContentSpec) = acu.declaredTypeSignatures()
+        val valueCall = acu.firstMethodCall("value")
+        val equalToCall = acu.firstMethodCall("equalTo")
+
+        spy.shouldBeOk {
+            valueCall.overloadSelectionInfo::isFailed shouldBe false
+            valueCall shouldHaveType t_BodyContentSpec
+            // javac infers T := Integer here too, not Object.
+            valueCall.methodType.formalParameters[0] shouldBe t_Matcher[`?` `super` int.box()]
+            equalToCall shouldHaveType t_Matcher[int.box()]
+        }
+    }
+
+    parserTest("Interdependent batch in an implicitly typed lambda body") {
+        // Reduced from spring-framework's DefaultPublishedEvents#matchingMapped.
+        // Same root cause as the test above: `of`'s ivar and the ivar of the
+        // flatMap function are interdependent, and applying UPPER too eagerly
+        // makes the whole `of` call unresolvable.
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.List;
+            import java.util.function.Function;
+            import java.util.function.Predicate;
+            import java.util.stream.Stream;
+
+            class Scratch {
+                interface Typed<T> {}
+
+                static class Simple<T> implements Typed<T> {
+                    private final List<T> events = null;
+
+                    static <T> Simple<T> of(Stream<T> stream) { return null; }
+
+                    <S> Typed<T> matchingMapped(Function<T, S> mapper, Predicate<? super S> predicate) {
+                        return Simple.of(this.events.stream().flatMap(it -> {
+                            S mapped = mapper.apply(it);
+                            return predicate.test(mapped) ? Stream.of(it) : Stream.empty();
+                        }));
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_Simple = acu.declaredTypeSignatures()[2]
+        val (of) = acu.declaredMethodSignatures()
+        val ofCall = acu.firstMethodCall("of")
+
+        spy.shouldBeOk {
+            ofCall.overloadSelectionInfo::isFailed shouldBe false
+            ofCall.methodType shouldBeSomeInstantiationOf of
+            // ie Simple<T>, where T is the type param of the enclosing class
+            ofCall shouldHaveType t_Simple
+        }
+    }
 })

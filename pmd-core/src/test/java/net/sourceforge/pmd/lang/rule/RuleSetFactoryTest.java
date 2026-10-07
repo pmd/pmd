@@ -17,19 +17,24 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.internal.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class RuleSetFactoryTest extends RulesetFactoryTestBase {
     private static final String TEST_RULESET_1 = "net/sourceforge/pmd/lang/rule/TestRuleset1.xml";
@@ -41,7 +46,51 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertEquals("dummyRuleset.xml", rs.getFileName());
 
         rs = new RuleSetLoader().loadFromResource(TEST_RULESET_1);
-        assertEquals(rs.getFileName(), TEST_RULESET_1, "wrong RuleSet file name");
+        assertEquals(TEST_RULESET_1, rs.getFileName(), "wrong RuleSet file name");
+    }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/6952">pmd/pmd#6952</a>
+     */
+    @Test
+    void testRefToSiblingRuleset(@TempDir Path tempDir) throws IOException {
+        write(tempDir.resolve("leaf.xml"), rulesetXml(dummyRule()));
+        write(tempDir.resolve("base.xml"), rulesetXml(rulesetRef("leaf.xml")));
+        write(tempDir.resolve("main.xml"), rulesetXml(rulesetRef("base.xml")));
+
+        // the rulesets are neither on the classpath nor in the working directory
+        RuleSet rs = new RuleSetLoader().loadFromResource(tempDir.resolve("main.xml").toString());
+        assertEquals(1, rs.size());
+        assertNotNull(rs.getRuleByName("MockRuleName"));
+    }
+
+    private static void write(Path file, String content) throws IOException {
+        Files.write(file, content.getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void testLoadFromStringUsesConfiguredClassLoader() {
+        String ruleClass = "net.sourceforge.pmd.lang.rule.RuleOnlyVisibleToCustomClassLoader";
+        AtomicBoolean askedForRuleClass = new AtomicBoolean();
+        ClassLoader customClassLoader = new ClassLoader(RuleSetFactoryTest.class.getClassLoader()) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                if (ruleClass.equals(name)) {
+                    askedForRuleClass.set(true);
+                    return MockRuleWithNoProperties.class;
+                }
+                return super.loadClass(name);
+            }
+        };
+
+        RuleSet rs = new RuleSetLoader().loadResourcesWith(customClassLoader)
+                                        .withReporter(mockReporter)
+                                        .loadFromString("ruleset.xml", rulesetXml(
+                                            dummyRule(attrs -> attrs.put(SchemaConstants.CLASS, ruleClass))));
+
+        assertTrue(askedForRuleClass.get(), "the configured class loader was not used to load the rule class");
+        assertEquals(1, rs.size());
+        assertEquals(MockRuleWithNoProperties.class, rs.getRules().iterator().next().getClass());
     }
 
     @Test
@@ -125,7 +174,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testSingleRuleEmptyRef() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleSet rs = loadRuleSet(SINGLE_RULE_EMPTY_REF);
             assertEquals(1, rs.size());
 
@@ -236,7 +285,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetWithDeprecatedButRenamedRule() throws Exception {
-        SystemLambda.tapSystemErr(() -> {
+        tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                     + "  <description>ruleset desc</description>\n"
@@ -285,7 +334,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
-        SystemLambda.tapSystemErr(() -> {
+        tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                     + "  <description>ruleset desc</description>\n"
@@ -317,7 +366,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesRulesetWithADeprecatedRenamedRule() throws Exception {
-        SystemLambda.tapSystemErr(() -> {
+        tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                     + "  <description>ruleset desc</description>\n"
@@ -347,7 +396,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesRulesetWithAExcludedDeprecatedRule() throws Exception {
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                             + "  <description>ruleset desc</description>\n"
@@ -374,7 +423,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesRulesetWithAExcludedNonExistingRule() throws Exception {
-        SystemLambda.tapSystemErr(() -> {
+        tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 rulesetXml(
                     rulesetRef("rulesets/dummy/basic.xml",
@@ -400,7 +449,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesDeprecatedRuleset() throws Exception {
-        SystemLambda.tapSystemErr(() -> {
+        tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 rulesetXml(
                     rulesetRef("rulesets/dummy/deprecated.xml")
@@ -422,7 +471,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testRuleSetReferencesRulesetWithAMovedRule() throws Exception {
-        SystemLambda.tapSystemErr(() -> {
+        tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
                 rulesetXml(
                     ruleRef("rulesets/dummy/basic2.xml")
@@ -753,7 +802,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
         assertTrue(r instanceof RuleReference, "Rule Reference");
         assertFalse(r.isDeprecated(), "Not deprecated");
         assertTrue(((RuleReference) r).getRule().isDeprecated(), "Original Rule Deprecated");
-        assertEquals(r.getName(), DEPRECATED_RULE_NAME, "Rule name");
+        assertEquals(DEPRECATED_RULE_NAME, r.getName(), "Rule name");
     }
 
     @Test
@@ -949,7 +998,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testMissingRuleSetNameIsWarning() throws Exception {
-        SystemLambda.tapSystemErr(() -> {
+        tapSystemErr(() -> {
             loadRuleSetWithDeprecationWarnings(
                 "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
                     + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"

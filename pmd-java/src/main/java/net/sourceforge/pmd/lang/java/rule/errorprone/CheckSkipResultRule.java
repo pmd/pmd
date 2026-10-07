@@ -9,6 +9,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 
+/**
+ * @deprecated since 7.27.0. Use UnusedReturnValueRule instead.
+ */
+@Deprecated
 public class CheckSkipResultRule extends AbstractJavaRulechainRule {
 
     private static final InvocationMatcher SKIP_METHOD = InvocationMatcher.parse("java.io.InputStream#skip(long)");

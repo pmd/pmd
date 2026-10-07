@@ -94,7 +94,6 @@ final class KotlinTypeAwarenessSupport {
         if (annotationVisitor != null) {
             annotationVisitor.annotate(root, absPath);
             InternalApiBridge.setAnalysisContext(root, analysisContext);
-            InternalApiBridge.setTypeInfoAvailable(root);
         }
     }
 

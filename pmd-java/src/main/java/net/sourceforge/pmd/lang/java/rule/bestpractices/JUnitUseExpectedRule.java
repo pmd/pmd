@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule finds code like this:
@@ -45,11 +46,13 @@ public class JUnitUseExpectedRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         ASTBlock body = node.getBody();
         if (body != null && isJUnitMethod(node)) {
             body.descendants(ASTTryStatement.class)
                 .filter(this::isWeirdTry)
-                .forEach(it -> asCtx(data).addViolation(it));
+                .forEach(it -> ctx.addViolation(it));
         }
         return null;
     }

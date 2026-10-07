@@ -1,9 +1,9 @@
 repository: pmd/pmd
 
 pmd:
-    version: 7.27.0-SNAPSHOT
-    previous_version: 7.26.0
-    date: 2026-??-??
+    version: 7.29.0-SNAPSHOT
+    previous_version: 7.28.0
+    date: 2026-10-30
     # release types: major, minor, bugfix
     release_type: minor
     # minimal version to build PMD
@@ -65,6 +65,8 @@ feedback_disable: true
 # feedback_link: "http://helpy.io/"
 # if you uncomment the previous line, it changes where the feedback link points to
 
+plugins:
+  - jekyll-gfm-admonitions
 
 # filter used to process markdown. note that kramdown differs from github-flavored markdown in some subtle ways
 markdown: kramdown

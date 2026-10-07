@@ -12,7 +12,8 @@ PMD can be integrated through some of the Continuous Integration tools that exis
 This page lists some plugins to do so. If you think, something is missing here, please
 let us know.
 
-{% include note.html content="The tools are listed in alphabetical order without rating." %}
+> [!NOTE]
+> The tools are listed in alphabetical order without rating.
 
 In general, if PMD is integrated via build tools like [Maven](pmd_userdocs_tools_maven.html) or
 [Gradle](pmd_userdocs_tools_gradle.html) you can configure your build to fail if there are violations.

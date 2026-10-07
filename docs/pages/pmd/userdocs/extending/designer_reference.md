@@ -54,7 +54,8 @@ If the bin directory of your PMD distribution is on your shell's path, then you 
    windows="pmd.bat designer" %}
 
 
-{% include note.html content="pmd-designer.jar is not a runnable jar, because it doesn't include any PMD language module, or PMD Core. " %}
+> [!NOTE]
+> `pmd-designer.jar` is not a runnable jar, because it doesn't include any PMD language module, or PMD Core.
 
 
 This is to allow easy updating, and let you choose the dependencies you're interested in.

@@ -6,7 +6,8 @@ author: Andreas Dangel <andreas.dangel@pmd-code.org>
 last_updated: May 2026 (7.25.0)
 ---
 
-{%include warning.html content="It is not recommend to use VS Code for developing. See Known Issues below."%}
+> [!WARNING]
+> It is not recommend to use VS Code for developing. See Known Issues below.
 
 ## Import PMD Project
 
@@ -21,16 +22,14 @@ This needs to be done only once.
 
 * Navigate to a test class and select "Run Test".
 
-{%capture notetext%}
-You'll get the notification "Build failed". You can try to ignore the error and continue, but you might end
-up with "Unresolved compilation problems". See below under "Known Issues" for more information.
-
-PMD currently is still built for Java {{ site.pmd.java_run_version }} and the VS Code plugin chooses a Java {{ site.pmd.java_run_version }} runtime. For building however,
-we use Java {{ site.pmd.java_build_version }} and also the tests require some Java {{ site.pmd.java_build_version }} features. You might need to override the java version
-manually: Ctlr+Shift+P and enter "configure java runtime". There you can override the java version for
-each project/module.
-{%endcapture%}
-{%include note.html content=notetext %}
+> [!NOTE]
+> You'll get the notification "Build failed". You can try to ignore the error and continue, but you might end
+> up with "Unresolved compilation problems". See below under "Known Issues" for more information.
+> 
+> PMD currently is still built for Java {{ site.pmd.java_run_version }} and the VS Code plugin chooses a Java {{ site.pmd.java_run_version }} runtime. For building however,
+> we use Java {{ site.pmd.java_build_version }} and also the tests require some Java {{ site.pmd.java_build_version }} features. You might need to override the java version
+> manually: Ctlr+Shift+P and enter "configure java runtime". There you can override the java version for
+> each project/module.
 
 ## Running / Debugging PMD
 
@@ -52,20 +51,18 @@ each project/module.
 * Select the run configuration "PmdCli with args" in the dropdown and use File > Start Debugging or
   File > Run Without Debugging.
 
-{%capture notetext %}
-If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
-PMD CLI as scope test, e.g.
-
-```xml
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-apex</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-```
-{%endcapture%}
-{%include note.html content=notetext%}
+> [!NOTE]
+> If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
+> PMD CLI as scope test, e.g.
+>
+> ```xml
+>        <dependency>
+>            <groupId>net.sourceforge.pmd</groupId>
+>            <artifactId>pmd-apex</artifactId>
+>            <version>${project.version}</version>
+>            <scope>test</scope>
+>        </dependency>
+> ```
 
 
 ## Formatter configuration

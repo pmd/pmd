@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,7 +167,7 @@ public final class FileCollectionUtil {
                 LOG.trace("Adding database source object {}", falseFilePath);
 
                 try (Reader sourceCode = dbmsMetadata.getSourceCode(sourceObject)) {
-                    String source = IOUtil.readToString(sourceCode);
+                    String source = IOUtils.toString(sourceCode);
                     collector.addSourceFile(FileId.fromPathLikeString(falseFilePath), source);
                 } catch (SQLException ex) {
                     collector.getReporter().warnEx("Cannot get SourceCode for {0}  - skipping ...",

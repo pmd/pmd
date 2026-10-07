@@ -44,16 +44,20 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (!node.isAnonymousClass()) {
-            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess(ctx, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;
     }
 
     @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.isSuper()) {
-            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess(ctx, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;
     }

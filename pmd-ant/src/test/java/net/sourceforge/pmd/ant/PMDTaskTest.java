@@ -16,12 +16,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tools.ant.BuildException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 class PMDTaskTest extends AbstractAntTest {
 
@@ -75,10 +74,21 @@ class PMDTaskTest extends AbstractAntTest {
         executeTarget("testRelativizeWith");
 
         try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-test.txt"))) {
-            String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
+            String actual = IOUtils.toString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
             assertThat(actual, containsString("src" + File.separator + "sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
+        }
+    }
+
+    /** Gradle uses PMD's Ant integration, this is a test for <a href="https://github.com/gradle/gradle/issues/24885">gradle/gradle#24885</a> */
+    @Test
+    void testRelativeRulesetReference() throws IOException {
+        executeTarget("testRelativeRulesetReference");
+
+        try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-relative-ruleset.txt"))) {
+            assertThat(IOUtils.toString(in, StandardCharsets.UTF_8),
+                       containsString("sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
         }
     }
 
@@ -96,7 +106,7 @@ class PMDTaskTest extends AbstractAntTest {
     }
 
     private static @NonNull String readAndNormalize(InputStream expectedStream) throws IOException {
-        String expected = IOUtil.readToString(expectedStream, StandardCharsets.UTF_8);
+        String expected = IOUtils.toString(expectedStream, StandardCharsets.UTF_8);
         expected = expected.replaceFirst("timestamp=\"[^\"]+\"", "timestamp=\"\"");
         expected = expected.replaceFirst("\\.xsd\" version=\"[^\"]+\"", ".xsd\" version=\"\"");
         return expected;

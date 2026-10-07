@@ -5,7 +5,6 @@ package net.sourceforge.pmd.lang.test.ast
 
 import net.sourceforge.pmd.PMDConfiguration
 import net.sourceforge.pmd.PmdAnalysis
-import net.sourceforge.pmd.internal.util.IOUtil
 import net.sourceforge.pmd.lang.*
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask
@@ -19,6 +18,10 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.reporting.Report
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil.getPlatformClasspath
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath
+import net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath
+import org.apache.commons.io.IOUtils
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -194,6 +197,10 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val props = language.newPropertyBundle().apply {
             setLanguageVersion(params.defaultVerString ?: defaultVersion.version)
             setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
+            if (this is JvmLanguagePropertyBundle) {
+                setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH,
+                    toRawClasspath(getRuntimeClasspath(), getPlatformClasspath()))
+            }
             params.configLanguageProperties(this)
         }
         return language.createProcessor(props)
@@ -220,7 +227,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
      */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = FileId.fromPath(path))
+        parse(IOUtils.toString(Files.newBufferedReader(path)), version, fileName = FileId.fromPath(path))
 
     /**
      * Fetches the source of the given [clazz].
@@ -244,7 +251,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     private fun consume(input: InputStream) =
-            IOUtil.readToString(input, StandardCharsets.UTF_8)
+            IOUtils.toString(input, StandardCharsets.UTF_8)
                     .replace(Regex("\\R"), "\n")  // normalize line-endings
 
     /**

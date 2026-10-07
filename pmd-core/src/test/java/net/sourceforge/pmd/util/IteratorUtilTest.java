@@ -407,7 +407,7 @@ class IteratorUtilTest {
 
         int size = IteratorUtil.count(iter);
 
-        assertEquals(size, 3);
+        assertEquals(3, size);
         assertExhausted(iter);
     }
 
@@ -417,7 +417,7 @@ class IteratorUtilTest {
 
         int size = IteratorUtil.count(iter);
 
-        assertEquals(size, 0);
+        assertEquals(0, size);
     }
 
     @Test

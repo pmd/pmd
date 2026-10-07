@@ -63,6 +63,15 @@ public final class AssertionUtil {
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if the name is not a package name
+     */
+    public static void assertValidJavaPackageName(CharSequence name) {
+        if (!isValidJavaPackageName(name)) {
+            throw new IllegalArgumentException("Not a Java package name '" + name + "'");
+        }
+    }
+
     public static boolean isValidJavaPackageName(CharSequence name) {
         requireParamNotNull("name", name);
         return PACKAGE_PATTERN.matcher(name).matches();

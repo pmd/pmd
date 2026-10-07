@@ -79,7 +79,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
         }
 
         public int getComplexityAverage() {
-            return (double) methodCount == 0 ? 1 : (int) Math.rint((double) decisionPoints / (double) methodCount);
+            return methodCount == 0 ? 1 : (int) Math.rint((double) decisionPoints / methodCount);
         }
     }
 

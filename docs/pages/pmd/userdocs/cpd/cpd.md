@@ -258,9 +258,10 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
     To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.3.0.</p></td></tr>
 </table>
 
-{%include note.html content="If PMD exits with 5, then PMD had trouble lexing one or more files.
-That means, that no duplications for the entire file are reported. This can be considered as false-negative.
-In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report." %}
+> [!NOTE]
+> If PMD exits with 5, then PMD had trouble lexing one or more files.
+> That means, that no duplications for the entire file are reported. This can be considered as false-negative.
+> In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report.
 
 ## Logging
 
@@ -473,7 +474,7 @@ the comment based approach will be extended to those of them that can support it
 CPD has been through three major incarnations:
 
 *   First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
-    [here](http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html)).
+    [here](https://web.archive.org/web/20030323100855/http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html)).
 
 *   Then it was completely rewritten by Brian Ewins using the
     [Burrows-Wheeler transform](https://en.wikipedia.org/wiki/Burrows%E2%80%93Wheeler_transform).

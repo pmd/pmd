@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
+    <test-code>
+        <description>reports on-demand imports</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,2</expected-linenumbers>
+        <code><![CDATA[
+import static java.lang.Math.*;
+import java.util.*;
+import java.util.List;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>allows static imports from all supported test frameworks by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import static org.testng.Assert.*;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>does not treat a similarly named package as an allowed subpackage</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static org.junitx.Assert.*;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>configures multiple allowed static imports</description>
+        <rule-property name="allowStaticImportsFrom">com.acme.test,java.lang.Math</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import static com.acme.test.Assertions.*;
+import static java.lang.Math.*;
+import static org.junit.Assert.*;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>type import exclusions match packages exactly</description>
+        <rule-property name="allowTypeImportsFrom">java.util</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+import java.util.concurrent.*;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>asterisk allows all static imports</description>
+        <rule-property name="allowStaticImportsFrom">*</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.lang.Math.*;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>asterisk allows all type imports</description>
+        <rule-property name="allowTypeImportsFrom">*</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ignores single imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ignores module imports</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import module java.base;
+
+class Foo { }
+        ]]></code>
+    </test-code>
+</test-data>

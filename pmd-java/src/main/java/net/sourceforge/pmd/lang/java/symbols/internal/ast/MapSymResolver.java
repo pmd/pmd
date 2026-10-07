@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JPackageSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
 /**
@@ -42,6 +43,11 @@ final class MapSymResolver implements SymbolResolver {
 
     @Override
     public @Nullable JModuleSymbol resolveModule(@NonNull String moduleName) {
+        return null;
+    }
+
+    @Override
+    public @Nullable JPackageSymbol resolvePackage(@NonNull String packageName) {
         return null;
     }
 

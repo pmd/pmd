@@ -70,4 +70,124 @@ public class Foo {
         <expected-linenumbers>7,8,10,11,14</expected-linenumbers>
         <code-ref id="basic-sample"/>
     </test-code>
+
+    <test-code>
+        <description>should be flagged, because the length of the type name is under the threshold</description>
+        <rule-property name="allowLongTypeNames">100</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,7,8</expected-linenumbers>
+        <expected-messages>
+            <message>The explicit type 'String' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'int' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'List&lt;Object&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'DemoGeneric&lt;DemoGeneric&lt;Demo1&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.Arrays;
+
+public class Foo {
+    public void bar() {
+        var msg = "Hello world"; // line 5
+        var flag = 0x2; // line 6
+        var DEFAULT_LIST = Arrays.asList(); // line 7
+        var x1 = new DemoGeneric<DemoGeneric<Demo1>>(); // line 8, length 31
+    }
+
+    static class DemoGeneric<T> {
+    }
+
+    static class Demo1 {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>java.util.ArrayList without import</description>
+        <rule-property name="allowLongTypeNames">32</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The explicit type 'ArrayList&lt;String&gt;' is not long enough (&lt; 32) to justify the use of var</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        var list = new java.util.ArrayList<String>();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>java.util.ArrayList with import and type annotations</description>
+        <rule-property name="allowLongTypeNames">32</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The explicit type 'ArrayList&lt;@Nullable String&gt;' is not long enough (&lt; 32) to justify the use of var</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.ArrayList;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+public class Foo {
+    public void bar() {
+        var list = new ArrayList<@Nullable String>();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map examples</description>
+        <rule-property name="allowLongTypeNames">100</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>4,5,6,10,11,12</expected-linenumbers>
+        <expected-messages>
+            <message>The explicit type 'HashMap&lt;String, String&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Set&lt;Map.Entry&lt;String, String&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Iterator&lt;Map.Entry&lt;String, String&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'HashMap&lt;String, X&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Set&lt;Map.Entry&lt;String, X&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+            <message>The explicit type 'Iterator&lt;Map.Entry&lt;String, X&gt;&gt;' is not long enough (&lt; 100) to justify the use of var</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.HashMap;
+public class Foo {
+    public void bar() {
+        var map = new HashMap<String, String>(); // line 4: HashMap<String, String>
+        var entries = map.entrySet(); // line 5: Set<Map.Entry<String, String>> + import for Map + Set
+        var iterator = entries.iterator(); // line 6: Iterator<Map.Entry<String, String>> + import for Map + Iterator
+    }
+
+    public <X extends CharSequence> void bar2() {
+        var map = new HashMap<String, X>(); // line 10: HashMap<String, X>
+        var entries = map.entrySet(); // line 11: Set<Map.Entry<String, X>> + import for Map + Set
+        var iterator = entries.iterator(); // line 12: Iterator<Map.Entry<String, X>> + import for Map + Iterator
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>should NOT be flagged, because the type name is long enough</description>
+        <rule-property name="allowLongTypeNames">32</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String msg = "Hello world";
+        var x1 = new DemoGeneric<DemoGeneric<Demo12>>(); // length: 32
+        var x2 = new DemoGeneric<? extends DemoGeneric<?>>(); // length: 37
+    }
+
+    static class DemoGeneric<T> {
+    }
+
+    static class Demo12 {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

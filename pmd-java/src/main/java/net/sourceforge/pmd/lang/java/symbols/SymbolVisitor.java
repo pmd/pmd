@@ -71,4 +71,12 @@ public interface SymbolVisitor<R, P> {
         return visitLocal(sym, param);
     }
 
+    /**
+     * Delegates to {@link #visitSymbol(JElementSymbol, Object) visitSymbol}.
+     *
+     * @since 7.27.0
+     */
+    default R visitPackage(JPackageSymbol sym, P param) {
+        return visitSymbol(sym, param);
+    }
 }

@@ -17,8 +17,7 @@ import java.util.List;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Extracts a zip file with preserving the unix file permissions.
@@ -50,7 +49,7 @@ public class ZipFileExtractor {
                 } else {
                     try (InputStream data = zip.getInputStream(entry);
                          OutputStream fileOut = Files.newOutputStream(file.toPath());) {
-                        IOUtil.copy(data, fileOut);
+                        IOUtils.copyLarge(data, fileOut);
                     }
                     if ((entry.getUnixMode() & OWNER_EXECUTABLE) == OWNER_EXECUTABLE) {
                         assertTrue(file.setExecutable(true));
