@@ -947,8 +947,13 @@ public final class Infer {
     private void addBoundOrDefer(@Nullable MethodCallSite site, InferenceContext infCtx, MethodResolutionPhase phase, @NonNull ExprMirror arg, @NonNull JTypeMirror formalType) {
         ExprChecker exprChecker =
             (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase, site);
+        // Lambda result expressions and method reference return types are checked in an
+        // assignment context, which allows boxing even in the strict phase (JLS§15.27.3, §15.13.2).
+        MethodResolutionPhase resultPhase = phase.canBox() ? phase : MethodResolutionPhase.LOOSE;
+        ExprChecker resultChecker =
+            (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, resultPhase, site);
 
-        ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, site, this);
+        ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, resultChecker, site, this);
         if (!helper.isCompatible(formalType, arg)) {
             throw ResolutionFailedException.incompatibleFormalExprNoReason(logger, arg, formalType);
         }

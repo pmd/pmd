@@ -55,6 +55,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7133](https://github.com/pmd/pmd/issues/7133): \[java] CPD: Constructor detection state leaks between files with --ignore-identifiers
     * [#7145](https://github.com/pmd/pmd/issues/7145): \[java] Lambda with a parenthesized expression body is treated as void-compatible
     * [#7146](https://github.com/pmd/pmd/issues/7146): \[java] Overload resolution prefers int over Integer where javac reports an ambiguity
+    * [#7148](https://github.com/pmd/pmd/issues/7148): \[java] Strict phase rejects lambda and method reference results that need boxing
     * [#7149](https://github.com/pmd/pmd/issues/7149): \[java] Loose invocation conversion accepts int to Long and null to int
 * java-bestpractices
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
