@@ -47,6 +47,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛️ Fixed Issues
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
+* go
+    * [#6235](https://github.com/pmd/pmd/issues/6235): \[go] Go tokenizer doesn't recognize tilde syntax for generics
 * groovy
     * [#7110](https://github.com/pmd/pmd/issues/7110): \[groovy] Fix #7100: CPD fails on GStrings ending in an interpolated variable
 * java

@@ -854,6 +854,11 @@ fragment UNARY_OP
     | '<-'
     ;
 
+// "~" is used in type constraints, e.g. "~int | ~string" (since Go 1.18)
+TILDE
+    : '~'
+    ;
+
 
 // Integer literals
 
