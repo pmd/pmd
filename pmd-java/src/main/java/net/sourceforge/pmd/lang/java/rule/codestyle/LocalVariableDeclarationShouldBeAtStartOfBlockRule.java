@@ -66,6 +66,8 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         }
 
         String version = declaration.getLanguageVersion().getName().replace("Java ", "");
+        // whether preview versions are handled correctly does not currently have a unit test as using preview source
+        // type is causing tests to fail to build
         String numericPart = version.replace("-preview", "");
         double versionNum = Double.parseDouble(numericPart);
 
