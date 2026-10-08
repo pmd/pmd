@@ -22,9 +22,6 @@ import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
-import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
@@ -61,36 +58,7 @@ public interface ViolationSuppressor {
     /**
      * Suppressor for the violationSuppressXPath property.
      */
-    ViolationSuppressor XPATH_SUPPRESSOR = new ViolationSuppressor() {
-        @Override
-        public String getId() {
-            return "XPath";
-        }
-
-        @Override
-        public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            // todo this should not be implemented via a rule property
-            //  because the parsed xpath expression should be stored, not a random string
-            //  this needs to be checked to be a valid xpath expression in the ruleset,
-            //  not at the time it is evaluated, and also parsed by the XPath parser only once
-            Rule rule = rv.getRule();
-            Optional<String> xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-            if (!xpath.isPresent()) {
-                return null;
-            }
-            SaxonXPathRuleQuery rq = new SaxonXPathRuleQuery(
-                xpath.get(),
-                XPathVersion.DEFAULT,
-                rule.getPropertiesByPropertyDescriptor(),
-                node.getAstInfo().getLanguageProcessor().services().getXPathHandler(),
-                DeprecatedAttrLogger.createForSuppression(rv.getRule())
-            );
-            if (!rq.evaluate(node).isEmpty()) {
-                return new SuppressedViolation(rv, this, xpath.get());
-            }
-            return null;
-        }
-    };
+    ViolationSuppressor XPATH_SUPPRESSOR = new XPathViolationSuppressor();
 
     /**
      * Suppressor for regular NOPMD comments.
