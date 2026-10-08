@@ -96,7 +96,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
-        String image = node.getImage();
+        String image = node.getLiteralText().toString();
 
         // just catching strings of 'minLength' chars or more (including the
         // enclosing quotes)

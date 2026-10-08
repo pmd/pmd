@@ -21,6 +21,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class ASTMethodCall extends AbstractInvocationExpr implements QualifiableExpression {
 
+    private String methodName;
+
     ASTMethodCall(int id) {
         super(id);
     }
@@ -49,8 +51,14 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
     }
 
     @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.methodName = image;
+    }
+
+    @Override
     public @NonNull String getMethodName() {
-        return super.getImage();
+        return methodName;
     }
 
     @Override

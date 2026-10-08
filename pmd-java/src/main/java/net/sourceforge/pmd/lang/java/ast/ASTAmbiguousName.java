@@ -71,6 +71,11 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
     @Override
     public String getImage() {
+        return getName();
+    }
+
+    /** Returns the entire name, including periods if any. */
+    public String getName() {
         if (getFirstToken() == getLastToken()) {
             return getFirstToken().getImage();
         }
@@ -79,11 +84,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
             tok.getImageCs().appendChars(sb);
         }
         return sb.toString();
-    }
-
-    /** Returns the entire name, including periods if any. */
-    public String getName() {
-        return getImage();
     }
 
     boolean wasProcessed() {
