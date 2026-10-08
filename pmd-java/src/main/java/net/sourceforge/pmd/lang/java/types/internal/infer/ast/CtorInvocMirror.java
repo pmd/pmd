@@ -48,9 +48,11 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     @Override
     public JTypeMirror getStandaloneType() {
         if (isDiamond()) {
-            // todo if the expr must be standalone then we
-            // should infer this from the provided arguments.
-            return null;
+            if (mayBePoly) {
+                return null;
+            }
+            // Infer the type arguments without an enclosing target type.
+            return getStandaloneCtdecl().getMethodType().getReturnType();
         }
         return getNewType();
     }
