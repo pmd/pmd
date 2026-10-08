@@ -34,8 +34,10 @@ This is a {{ site.pmd.release_type }} release.
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
+* misc
+    * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate antlr generated parser implementation classes
 
-### 🚨️ API Changes
+### 🚨️ API Changes and Deprecations
 #### Experimental API
 * kotlin
     * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
@@ -47,6 +49,42 @@ This is a {{ site.pmd.release_type }} release.
     * A destructuring `PropertyDeclaration` (e.g. `val (a, b) = Pair(1, "x")`) no longer has a `@TypeName`.
       Before, it wrongly got the type of the first component. To find destructured variables
       by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
+
+#### Deprecations
+* coco
+    * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* css
+    * {% jdoc css::lang.css.ast.CssLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* csharp
+    * {% jdoc cs::lang.cs.ast.CSharpLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* dart
+    * {% jdoc dart::lang.dart.ast.DartLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* gherkin
+    * {% jdoc gherkin::lang.gherkin.ast.GherkinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* go
+    * {% jdoc go::lang.go.ast.GolangLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* javascript
+    * {% jdoc javascript::lang.typescript.ast.TypeScriptLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* julia
+    * {% jdoc julia::lang.julia.ast.JuliaLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* kotlin
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinParser %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* lua
+    * {% jdoc lua::lang.lua.ast.LuaLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* rust
+    * {% jdoc rust::lang.rust.ast.RustLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* swift
+    * {% jdoc swift::lang.swift.ast.SwiftBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftParser %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* tsql
+    * {% jdoc tsql::lang.tsql.ast.TSqlLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* xml
+    * {% jdoc xml::lang.xml.ast.XMLLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
