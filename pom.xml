@@ -278,6 +278,9 @@
                         <failOnWarning>true</failOnWarning>
                         <compilerArgs>
                             <arg>-Xlint:-options</arg> <!-- allow &dash;&dash;release 8 flag -->
+                            <!-- Enable the warning: "deprecated item is not annotated with @Deprecated".
+                                 This is enabled by default when compiling for java9+ -->
+                            <arg>-Xlint:dep-ann</arg>
                         </compilerArgs>
                     </configuration>
                     <executions>
