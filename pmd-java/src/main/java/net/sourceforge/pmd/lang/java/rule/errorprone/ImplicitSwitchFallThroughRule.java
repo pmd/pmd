@@ -32,13 +32,15 @@ public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
-        checkSwitchLike(node, asCtx(data));
+        RuleContext ctx = (RuleContext) data;
+        checkSwitchLike(node, ctx);
         return null;
     }
 
     @Override
     public Object visit(ASTSwitchExpression node, Object data) {
-        checkSwitchLike(node, asCtx(data));
+        RuleContext ctx = (RuleContext) data;
+        checkSwitchLike(node, ctx);
         return null;
     }
 
