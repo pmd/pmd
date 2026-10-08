@@ -28,8 +28,8 @@ import nl.stokpop.typemapper.model.TypeAst;
  * <p>Supported node types (same as {@code typeIs}):
  * <ul>
  *   <li>{@code PropertyDeclaration} -- property / local variable type</li>
- *   <li>{@code VariableDeclaration} -- single variable type, including each component of a
- *       destructuring declaration ({@code val (a, b) = ...}); the destructuring
+ *   <li>{@code VariableDeclaration} -- property or for-loop variable type, including each component
+ *       of a destructuring declaration ({@code val (a, b) = ...}); the destructuring
  *       {@code PropertyDeclaration} itself has no type</li>
  *   <li>{@code FunctionDeclaration} -- return type</li>
  *   <li>{@code FunctionValueParameter} / {@code ClassParameter} -- parameter type</li>

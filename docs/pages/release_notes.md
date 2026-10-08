@@ -72,8 +72,8 @@ This is a {{ site.pmd.release_type }} release.
 *   Kotlin (experimental type support): for a destructuring declaration such as `val (a, b) = pair`, the
     `PropertyDeclaration` node no longer reports the type of the first component, neither via `@TypeName` nor via
     `pmd-kotlin:typeIs()`, `pmd-kotlin:typeIsExactly()` or `pmd-kotlin:isNullable()`. The whole declaration has no
-    single type. Instead, each `VariableDeclaration` node now has its own `@TypeName` attribute, and these
-    functions can be used on it, e.g. `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
+    single type. Instead, each `VariableDeclaration` node (property and for-loop variables, including destructured
+    components) now has its own `@TypeName` attribute, and these functions can be used on it, e.g. `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

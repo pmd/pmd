@@ -73,6 +73,33 @@ class KotlinTypeAnnotationVisitorTest {
         assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
     }
 
+    @Test
+    void forLoopVariableDeclarationHasOwnTypeName() {
+        KtKotlinFile root = PARSER.parse("fun f(items: List<String>) { for (item in items) { } }");
+        KtVariableDeclaration var = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
+    }
+
+    @Test
+    void destructuredForLoopComponentsHaveOwnTypeName() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(pairs: List<Pair<Int, String>>) { for ((a, b) in pairs) { } }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void destructuredLambdaParameterComponentsHaveOwnTypeName() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(pairs: List<Pair<Int, String>>) { pairs.forEach { (a, b) -> } }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
     // --- FunctionDeclaration ---
 
     @Test
