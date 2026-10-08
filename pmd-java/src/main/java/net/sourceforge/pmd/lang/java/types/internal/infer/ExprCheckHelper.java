@@ -148,7 +148,13 @@ final class ExprCheckHelper {
             // in that case we need to infer that as well
             return isInvocationCompatible(targetType, (InvocationMirror) expr, isStandalone);
         } else if (expr instanceof BranchingMirror) {
-            return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));
+            // A standalone conditional was checked with its own type above. Its branches
+            // convert to that type, not to the target type (JLS 15.25), so they are only
+            // visited to finish their inference, each against its own standalone type.
+            return ((BranchingMirror) expr).branchesMatch(it -> {
+                JTypeMirror branchType = isStandalone ? it.getStandaloneType() : null;
+                return isCompatible(branchType != null ? branchType : targetType, it);
+            });
         }
 
         return false;

@@ -74,14 +74,23 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
      */
     private JTypeMirror getConditionalStandaloneType(ConditionalMirrorImpl mirror, ASTConditionalExpression cond) {
         @Nullable JTypeMirror thenType = standaloneExprTypeInConditional(mirror.thenBranch, cond.getThenBranch());
-        if (mayBePoly && (thenType == null || !thenType.unbox().isPrimitive())) {
+        if (mayBePoly && (thenType == null || !isPrimitiveOrNull(thenType))) {
             return null; // then it's a poly
         }
 
         @Nullable JTypeMirror elseType = standaloneExprTypeInConditional(mirror.elseBranch, cond.getElseBranch());
 
-        if (mayBePoly && (elseType == null || !elseType.unbox().isPrimitive())) {
+        if (mayBePoly && (elseType == null || !isPrimitiveOrNull(elseType))) {
             return null; // then it's a poly
+        }
+
+        if (mayBePoly && (thenType.isBottom() || elseType.isBottom())) {
+            if (thenType.isBottom() && elseType.isBottom()) {
+                return null; // a reference conditional, so a poly
+            }
+            // javac treats a null literal with a numeric or boolean operand as standalone:
+            // int and null give Integer, which the enclosing invocation may then unbox.
+            return (thenType.isBottom() ? elseType : thenType).box();
         }
 
         if (thenType == null || elseType == null) {
@@ -111,6 +120,10 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         return TypeConversion.capture(factory.ts.lub(listOf(thenType.box(), elseType.box())));
     }
 
+
+    private static boolean isPrimitiveOrNull(JTypeMirror t) {
+        return t.isBottom() || t.unbox().isPrimitive();
+    }
 
     private JTypeMirror standaloneExprTypeInConditional(ExprMirror mirror, ASTExpression e) {
 
