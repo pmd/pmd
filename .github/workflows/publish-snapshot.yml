@@ -115,7 +115,8 @@ jobs:
             -Dcyclonedx.skip=false \
             -Dmaven.javadoc.skip=false \
             -Ddokka.skip=false \
-            -Dmaven.source.skip=false
+            -Dmaven.source.skip=false \
+            -Dmaven.repository.credentialScope=id
 
   deploy-to-sourceforge-files:
     needs: check-version

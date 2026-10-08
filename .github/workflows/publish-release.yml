@@ -119,7 +119,8 @@ jobs:
             -Dcyclonedx.skip=false \
             -Dmaven.javadoc.skip=false \
             -Ddokka.skip=false \
-            -Dmaven.source.skip=false
+            -Dmaven.source.skip=false \
+            -Dmaven.repository.credentialScope=id
       - name: Re-export PMD_VERSION from check-version
         id: version
         env:
