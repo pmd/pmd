@@ -10,13 +10,11 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOfNotNull;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -42,10 +40,8 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
-import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.AssertionUtil;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaResolvers {
 
@@ -163,6 +159,7 @@ public final class JavaResolvers {
                     it -> it.nameEquals(simpleName)
                         && isAccessibleIn(nestRoot, it, true) // fetch protected methods
                         && isNotStaticInterfaceMethod(it)
+                        && isDeclaredOrInherited(it)
                 ).collect(OverloadSet.collectMostSpecific(t)); // remove overridden, hidden methods
             }
 
@@ -171,6 +168,31 @@ public final class JavaResolvers {
             private boolean isNotStaticInterfaceMethod(JMethodSymbol it) {
                 return !it.isStatic() || it.getEnclosingClass().equals(t.getSymbol())
                     || !it.getEnclosingClass().isInterface();
+            }
+
+            // Methods of supertypes are members of this type only if they are inherited
+            // (JLS 8.4.8), which accessibility alone does not decide. Private methods are
+            // never inherited. A package-private method is not inherited by a subclass in
+            // another package, and the classes below that one cannot inherit it either.
+            // Methods that are not members must not shadow those of the enclosing classes.
+            private boolean isDeclaredOrInherited(JMethodSymbol it) {
+                JClassSymbol owner = it.getEnclosingClass();
+                if (owner.equals(t.getSymbol())) {
+                    return true;
+                }
+                int mods = it.getModifiers();
+                if (Modifier.isPublic(mods) || Modifier.isProtected(mods)) {
+                    return true;
+                } else if (Modifier.isPrivate(mods)) {
+                    return false;
+                }
+                String pack = owner.getPackageName();
+                for (JClassSymbol c = t.getSymbol(); c != null && !c.equals(owner); c = c.getSuperclass()) {
+                    if (!c.getPackageName().equals(pack)) {
+                        return false;
+                    }
+                }
+                return true;
             }
 
             @Override
@@ -276,75 +298,6 @@ public final class JavaResolvers {
             }
         };
     }
-
-    private static final BinaryOperator<List<JMethodSig>> STATIC_MERGER =
-        (as, bs) -> methodMerger(true, as, bs);
-
-    private static final BinaryOperator<List<JMethodSig>> NON_STATIC_MERGER =
-        (as, bs) -> methodMerger(false, as, bs);
-
-
-    static BinaryOperator<List<JMethodSig>> methodMerger(boolean inStaticType) {
-        return inStaticType ? STATIC_MERGER : NON_STATIC_MERGER;
-    }
-
-    /**
-     * Merges two method scopes, the otherResult is the one of an enclosing class,
-     * the inner result is the one inherited from supertypes (which take precedence
-     * in case of override equivalence).
-     *
-     * <p>Non-static methods of the outer result are excluded if the inner scope is static.
-     */
-    private static List<JMethodSig> methodMerger(boolean inStaticType, List<JMethodSig> myResult, List<JMethodSig> otherResult) {
-        if (otherResult.isEmpty()) {
-            return myResult;
-        } // don't check myResult for emptiness, we might need to remove static methods
-
-        // For both the input lists, their elements are pairwise non-equivalent.
-        // If any element of myResult is override-equivalent to
-        // another in otherResult, then we must exclude the otherResult
-
-        BitSet isShadowed = new BitSet(otherResult.size());
-
-        for (JMethodSig m1 : myResult) {
-            int i = 0;
-            for (JMethodSig m2 : otherResult) {
-                boolean isAlreadyShadowed = isShadowed.get(i);
-                if (!isAlreadyShadowed && TypeOps.areOverrideEquivalent(m1, m2)
-                    || inStaticType && !m2.isStatic()) {
-                    isShadowed.set(i); // we'll remove it later
-                }
-                i++;
-            }
-        }
-
-        if (isShadowed.isEmpty()) {
-            return CollectionUtil.concatView(myResult, otherResult);
-        } else {
-            List<JMethodSig> result = new ArrayList<>(myResult.size() + otherResult.size() - 1);
-            result.addAll(myResult);
-            copyIntoWithMask(otherResult, isShadowed, result);
-            return Collections.unmodifiableList(result);
-        }
-    }
-
-    /**
-     * Copy the elements of the input list into the result list, excluding
-     * all elements marked by the bitset.
-     */
-    private static <T> void copyIntoWithMask(List<? extends T> input, BitSet denyList, List<? super T> result) {
-        int last = 0;
-        for (int i = denyList.nextSetBit(0); i >= 0; i = denyList.nextSetBit(i + 1)) {
-            if (last != i) {
-                result.addAll(input.subList(last, i));
-            }
-            last = i + 1;
-        }
-        if (last != input.size()) {
-            result.addAll(input.subList(last, input.size()));
-        }
-    }
-
 
     /**
      * Resolvers for inherited member types and fields. We can't process
