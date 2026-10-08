@@ -69,6 +69,11 @@ This is a {{ site.pmd.release_type }} release.
     Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
     These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
     `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+*   Kotlin (experimental type support): for a destructuring declaration such as `val (a, b) = pair`, the
+    `PropertyDeclaration` node no longer reports the type of the first component, neither via `@TypeName` nor via
+    `pmd-kotlin:typeIs()`, `pmd-kotlin:typeIsExactly()` or `pmd-kotlin:isNullable()`. The whole declaration has no
+    single type. Instead, each `VariableDeclaration` node now has its own `@TypeName` attribute, and these
+    functions can be used on it, e.g. `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

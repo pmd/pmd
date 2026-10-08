@@ -58,7 +58,7 @@ is configured and the kotlin-type-mapper analysis has resolved the types.
 
 | Attribute | Nodes | Meaning |
 |-----------|-------|---------|
-| `@TypeName` | `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
+| `@TypeName` | `PropertyDeclaration` (absent for destructuring declarations), `VariableDeclaration` (in property declarations, including each component of `val (a, b) = ...`), `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
 | `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name (including generic type arguments and nullable marker) |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
 
@@ -80,7 +80,7 @@ type resolution, so they're always present regardless of `auxClasspath`.
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
 | `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
 
-> **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name). Modifiers like
+> **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name) and `@TypeName`. Modifiers like
 > `private`, `lateinit`, or `const` are on the parent `PropertyDeclaration` node.
 > Use `//PropertyDeclaration[pmd-kotlin:modifiers() = 'private']` rather than querying
 > `VariableDeclaration`.
