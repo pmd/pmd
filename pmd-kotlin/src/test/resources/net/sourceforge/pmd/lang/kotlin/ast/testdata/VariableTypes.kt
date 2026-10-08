@@ -8,4 +8,6 @@ fun variableTypes(items: List<String>, pairs: List<Pair<Int, String>>) {
     for (item in items) { }
     for ((number, text) in pairs) { }
     pairs.forEach { (left, right) -> }
+    items.forEach { typed: String -> }
+    items.forEach { inferred -> }
 }

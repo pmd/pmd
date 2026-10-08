@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -19,9 +20,11 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
+import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
@@ -158,20 +161,34 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         // Each declared variable is its own KtVariableDeclaration node: "x" in
-        // "val x: String = ...", "item" in "for (item in items)", and each of "a"/"b"
-        // in destructuring declarations ("val (a, b) = ...", "for ((a, b) in ...)",
-        // "{ (a, b) -> ... }"). Matched individually (narrow, precise column range)
-        // so each gets its own correct type, instead of relying on the wider
-        // PropertyDeclaration/ForStatement-level match.
+        // "val x: String = ...", "item" in "for (item in items)" or "{ item: String -> }",
+        // and each of "a"/"b" in destructuring declarations ("val (a, b) = ...",
+        // "for ((a, b) in ...)", "{ (a, b) -> ... }"). Matched individually (narrow,
+        // precise column range) so each gets its own correct type, instead of relying
+        // on the wider PropertyDeclaration/ForStatement-level match.
         @Override
         public Void visitVariableDeclaration(KtVariableDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
             // Destructured components only match their own DESTRUCTURED_VARIABLE entry, never
             // the enclosing for-loop parameter, whose column range also covers "(a, b)".
             boolean destructured = node.getParent() instanceof KtMultiVariableDeclaration;
-            DeclarationAst decl = selectDeclaration(decls, node,
-                    d -> (destructured ? d.getKind() == DeclarationKind.DESTRUCTURED_VARIABLE : isVariableKind(d.getKind()))
-                            && d.getType() != null);
+            // Match by name within the enclosing declaration, without the first-candidate fallback
+            // of selectDeclaration: a variable without its own declaration entry (e.g. an inferred
+            // lambda parameter) must not borrow the type of a neighbouring one. The recorded range
+            // of a property may start at its initializer, possibly on a later line, so lines are
+            // bounded by the parent node and columns only break ties.
+            String name = KotlinAstUtil.textOf(node.firstChild(KtSimpleIdentifier.class));
+            List<DeclarationAst> candidates = decls.stream()
+                    .filter(d -> (destructured ? d.getKind() == DeclarationKind.DESTRUCTURED_VARIABLE : isVariableKind(d.getKind()))
+                            && d.getType() != null
+                            && d.getLine() >= node.getBeginLine()
+                            && d.getLine() <= node.getParent().getEndLine()
+                            && d.getName().equals(name))
+                    .collect(Collectors.toList());
+            DeclarationAst decl = candidates.stream()
+                    .filter(d -> columnsOverlap(node, d))
+                    .findFirst()
+                    .orElse(candidates.isEmpty() ? null : candidates.get(0));
             if (decl != null) {
                 InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
             }
@@ -179,7 +196,9 @@ public final class KotlinTypeAnnotationVisitor {
         }
 
         private static boolean isVariableKind(DeclarationKind kind) {
-            return kind == DeclarationKind.PROPERTY || kind == DeclarationKind.FOR_LOOP_VARIABLE;
+            return kind == DeclarationKind.PROPERTY
+                    || kind == DeclarationKind.FOR_LOOP_VARIABLE
+                    || kind == DeclarationKind.LAMBDA_PARAMETER;
         }
 
         // Primary constructor val/var parameters (e.g. "class Foo(val name: String)")

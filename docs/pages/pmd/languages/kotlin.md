@@ -58,7 +58,7 @@ is configured and the kotlin-type-mapper analysis has resolved the types.
 
 | Attribute | Nodes | Meaning |
 |-----------|-------|---------|
-| `@TypeName` | `PropertyDeclaration` (absent for destructuring declarations), `VariableDeclaration` (property and for-loop variables, and each component of a destructuring declaration such as `val (a, b) = ...`), `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
+| `@TypeName` | `PropertyDeclaration` (absent for destructuring declarations), `VariableDeclaration` (property and for-loop variables, explicitly typed lambda parameters, and each component of a destructuring declaration such as `val (a, b) = ...`), `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
 | `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name (including generic type arguments and nullable marker) |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
 
@@ -87,9 +87,11 @@ type resolution, so they're always present regardless of `auxClasspath`.
 
 > **Tip:** To find variables by type, query `VariableDeclaration`, e.g.
 > `//VariableDeclaration[pmd-kotlin:typeIs('java.util.Calendar')]`. It covers property and for-loop
-> variables as well as each component of a destructuring declaration (`val (a, b) = ...`,
-> `for ((a, b) in ...)`, `{ (a, b) -> ... }`). A destructuring `PropertyDeclaration` has no single type,
-> so `//PropertyDeclaration[pmd-kotlin:typeIs(...)]` misses destructured variables.
+> variables, explicitly typed lambda parameters (`{ x: String -> ... }`) as well as each component of a
+> destructuring declaration (`val (a, b) = ...`, `for ((a, b) in ...)`, `{ (a, b) -> ... }`). A destructuring
+> `PropertyDeclaration` has no single type, so `//PropertyDeclaration[pmd-kotlin:typeIs(...)]` misses
+> destructured variables. Lambda parameters with an inferred type (`{ x -> ... }`) and the implicit `it`
+> have no `@TypeName` yet.
 
 > **Note:** Boolean attributes like `@Mutable` require XPath's `true()` / `false()` functions:
 > `//PropertyDeclaration[@Mutable=false()]` (immutable `val` declarations).
