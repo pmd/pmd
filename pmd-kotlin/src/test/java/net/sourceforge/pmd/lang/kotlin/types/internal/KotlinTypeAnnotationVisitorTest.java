@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.kotlin.types.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -88,6 +89,32 @@ class KotlinTypeAnnotationVisitorTest {
         assertEquals(2, vars.size());
         assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
         assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void explicitlyTypedLambdaParameterHasOwnTypeName() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(items: List<String>) { items.forEach { item: String -> } }");
+        KtVariableDeclaration var = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
+    }
+
+    @Test
+    void variableDeclarationDoesNotTakeTypeFromAdjacentLine() {
+        // kotlin-type-mapper records no declaration for an inferred lambda parameter, so
+        // "inferred" must not borrow the type of "typed" on the previous line through the
+        // +/-1 line tolerance of the declaration index.
+        KtKotlinFile root = PARSER.parse(
+                "fun f(items: List<String>, numbers: List<Int>) {\n"
+                + "    items.forEach { typed: String -> }\n"
+                + "    numbers.forEach { inferred -> }\n"
+                + "}");
+        KtVariableDeclaration inferred = root.descendants(KtVariableDeclaration.class)
+                .filter(v -> v.getBeginLine() == 3).first();
+        assertNotNull(inferred);
+        KotlinTypeName type = KotlinNodeTypeData.getType(inferred);
+        assertTrue(type == null || "kotlin.Int".equals(KotlinTypeName.displayStringOf(type)),
+                "inferred must not get kotlin.String from the adjacent line, was " + KotlinTypeName.displayStringOf(type));
     }
 
     @Test

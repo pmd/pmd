@@ -85,7 +85,7 @@
    |  |        |  |              |     +- Declaration[]
    |  |        |  |              |        +- PropertyDeclaration[@AnnotationFqNames = (), @Mutable = false, @TypeName = "kotlin.String"]
    |  |        |  |              |           +- T-VAL[@Text = "val"]
-   |  |        |  |              |           +- VariableDeclaration[@Identifier = "requestedData", @TypeName = "kotlin.Int"]
+   |  |        |  |              |           +- VariableDeclaration[@Identifier = "requestedData", @TypeName = "kotlin.String"]
    |  |        |  |              |           |  +- SimpleIdentifier[]
    |  |        |  |              |           |     +- T-Identifier[@Text = "requestedData"]
    |  |        |  |              |           +- T-ASSIGNMENT[@Text = "="]
