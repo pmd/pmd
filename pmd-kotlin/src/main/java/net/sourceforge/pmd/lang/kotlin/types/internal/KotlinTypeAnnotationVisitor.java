@@ -136,7 +136,13 @@ public final class KotlinTypeAnnotationVisitor {
         @Override
         public Void visitPropertyDeclaration(KtPropertyDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            DeclarationAst decl = selectDeclaration(decls, node, d -> d.getType() != null);
+            // Restrict to kind=PROPERTY so that a destructuring declaration
+            // (e.g. "val (a, b) = ...", whose components are recorded as
+            // kind=DESTRUCTURED_VARIABLE at the same line) doesn't leak the first
+            // component's type onto the whole PropertyDeclaration node: there is no
+            // single type for the destructured tuple as a whole.
+            DeclarationAst decl = selectDeclaration(decls, node,
+                    d -> d.getKind() == DeclarationKind.PROPERTY && d.getType() != null);
             if (decl != null) {
                 InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
                 AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());

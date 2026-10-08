@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
@@ -43,6 +44,16 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("val x: String = \"hello\"");
         KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
         assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(prop)));
+    }
+
+    @Test
+    void destructuringDeclarationTypeNameNotLeakedFromFirstComponent() {
+        KtKotlinFile root = PARSER.parse("fun f() { val (a, b) = Pair(1, \"x\") }");
+        KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
+        // There is no single type for a destructuring declaration as a whole,
+        // so no type should be assigned to the PropertyDeclaration node itself
+        // (in particular, it must not leak the first component's type, e.g. kotlin.Int).
+        assertNull(KotlinNodeTypeData.getType(prop));
     }
 
     // --- FunctionDeclaration ---
