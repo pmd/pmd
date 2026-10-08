@@ -290,4 +290,31 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
                 "CalendarUsage.kt should have no unresolved references (java.util.Calendar is a JDK type)");
     }
 
+    @Test
+    void typeIsDoesNotLeakFirstDestructuredComponentOntoWholeDeclaration() {
+        // The whole PropertyDeclaration has no @TypeName attribute for a destructuring
+        // declaration (no single type for the tuple), so typeIs() falls back to the
+        // line-based declaration index. That fallback must not match using a's or b's
+        // own DESTRUCTURED_VARIABLE declaration, which would leak a component's type
+        // onto the whole declaration via a different code path than the attribute.
+        Report report = runXPath(
+                "//PropertyDeclaration[pmd-kotlin:typeIs('kotlin.Int')]",
+                "fun f() { val (a, b) = Pair(1, \"x\") }");
+        assertNoErrors(report);
+        assertEquals(0, report.getViolations().size(),
+                "typeIs('kotlin.Int') must not match the whole destructuring PropertyDeclaration");
+    }
+
+    @Test
+    void typeIsMatchesDestructuredComponentOnItsOwnVariableDeclaration() {
+        // Querying the precise VariableDeclaration node for a destructured component
+        // (rather than the whole PropertyDeclaration) is the correct way to find it,
+        // and must still work via that node's own @TypeName attribute.
+        Report report = runXPath(
+                "//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]",
+                "fun f() { val (a, b) = Pair(1, \"x\") }");
+        assertNoErrors(report);
+        assertViolationAtLine(report, 1, "Expected violation on the 'a' VariableDeclaration (kotlin.Int)");
+    }
+
 }
