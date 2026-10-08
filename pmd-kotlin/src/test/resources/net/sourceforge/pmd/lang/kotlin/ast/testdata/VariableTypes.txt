@@ -403,7 +403,7 @@
    |  |           |  |                                                           +- T-LCURL[@Text = "{"]
    |  |           |  |                                                           +- LambdaParameters[]
    |  |           |  |                                                           |  +- LambdaParameter[]
-   |  |           |  |                                                           |     +- VariableDeclaration[@Identifier = "inferred"]
+   |  |           |  |                                                           |     +- VariableDeclaration[@Identifier = "inferred", @TypeName = "kotlin.String"]
    |  |           |  |                                                           |        +- SimpleIdentifier[]
    |  |           |  |                                                           |           +- T-Identifier[@Text = "inferred"]
    |  |           |  |                                                           +- T-ARROW[@Text = "->"]

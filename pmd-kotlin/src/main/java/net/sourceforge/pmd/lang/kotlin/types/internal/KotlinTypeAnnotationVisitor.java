@@ -173,10 +173,10 @@ public final class KotlinTypeAnnotationVisitor {
             // the enclosing for-loop parameter, whose column range also covers "(a, b)".
             boolean destructured = node.getParent() instanceof KtMultiVariableDeclaration;
             // Match by name within the enclosing declaration, without the first-candidate fallback
-            // of selectDeclaration: a variable without its own declaration entry (e.g. an inferred
-            // lambda parameter) must not borrow the type of a neighbouring one. The recorded range
-            // of a property may start at its initializer, possibly on a later line, so lines are
-            // bounded by the parent node and columns only break ties.
+            // of selectDeclaration: a variable without its own declaration entry must not borrow
+            // the type of a neighbouring one. Lines are bounded by the parent node and columns only
+            // break ties, since the recorded range of a declaration does not always start at its
+            // name (before kotlin-type-mapper 0.7.2, a property started at its initializer).
             String name = KotlinAstUtil.textOf(node.firstChild(KtSimpleIdentifier.class));
             List<DeclarationAst> candidates = decls.stream()
                     .filter(d -> (destructured ? d.getKind() == DeclarationKind.DESTRUCTURED_VARIABLE : isVariableKind(d.getKind()))
