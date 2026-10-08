@@ -28,6 +28,9 @@ import nl.stokpop.typemapper.model.TypeAst;
  * <p>Supported node types (same as {@code typeIs}):
  * <ul>
  *   <li>{@code PropertyDeclaration} -- property / local variable type</li>
+ *   <li>{@code VariableDeclaration} -- single variable type, including each component of a
+ *       destructuring declaration ({@code val (a, b) = ...}); the destructuring
+ *       {@code PropertyDeclaration} itself has no type</li>
  *   <li>{@code FunctionDeclaration} -- return type</li>
  *   <li>{@code FunctionValueParameter} / {@code ClassParameter} -- parameter type</li>
  *   <li>{@code CatchBlock} -- caught exception type</li>
@@ -102,7 +105,7 @@ public final class KotlinIsNullableFunction extends BaseKotlinXPathFunction {
             KotlinTypeAnalysisContext ctx = KotlinNodeTypeData.getAnalysisContext(root);
             String absPath = contextNode.getTextDocument().getFileId().getAbsolutePath();
             int line = contextNode.getBeginLine();
-            List<DeclarationAst> decls = ctx.declarationsAt(absPath, line);
+            List<DeclarationAst> decls = DeclarationFallback.relevantTo(contextNode, ctx.declarationsAt(absPath, line));
             for (DeclarationAst decl : decls) {
                 if (!columnsOverlap(contextNode, decl)) {
                     continue;

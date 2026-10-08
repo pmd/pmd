@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
@@ -54,6 +55,22 @@ class KotlinTypeAnnotationVisitorTest {
         // so no type should be assigned to the PropertyDeclaration node itself
         // (in particular, it must not leak the first component's type, e.g. kotlin.Int).
         assertNull(KotlinNodeTypeData.getType(prop));
+    }
+
+    @Test
+    void destructuringComponentsHaveOwnTypeName() {
+        KtKotlinFile root = PARSER.parse("fun f() { val (a, b) = Pair(1, \"x\") }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void nonDestructuredVariableDeclarationHasOwnTypeNameToo() {
+        KtKotlinFile root = PARSER.parse("val x: String = \"hello\"");
+        KtVariableDeclaration var = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
     }
 
     // --- FunctionDeclaration ---

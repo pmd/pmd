@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
@@ -135,17 +137,38 @@ public final class KotlinTypeAnnotationVisitor {
 
         @Override
         public Void visitPropertyDeclaration(KtPropertyDeclaration node, Void data) {
+            annotatePropertyType(node);
+            return visitChildren(node, data);
+        }
+
+        // Restricted to kind=PROPERTY so that a destructuring declaration
+        // (e.g. "val (a, b) = ...", whose components are recorded as
+        // kind=DESTRUCTURED_VARIABLE at the same line) doesn't leak the first
+        // component's type onto the whole PropertyDeclaration node: there is no
+        // single type for the destructured tuple as a whole.
+        private void annotatePropertyType(KotlinNode node) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            // Restrict to kind=PROPERTY so that a destructuring declaration
-            // (e.g. "val (a, b) = ...", whose components are recorded as
-            // kind=DESTRUCTURED_VARIABLE at the same line) doesn't leak the first
-            // component's type onto the whole PropertyDeclaration node: there is no
-            // single type for the destructured tuple as a whole.
             DeclarationAst decl = selectDeclaration(decls, node,
                     d -> d.getKind() == DeclarationKind.PROPERTY && d.getType() != null);
             if (decl != null) {
                 InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
                 AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
+            }
+        }
+
+        // Each component of a property declaration -- "x" in "val x: String = ..."
+        // or "a"/"b" in a destructuring declaration "val (a, b) = ..." -- is its own
+        // KtVariableDeclaration node, matched here individually (narrow, precise
+        // column range) so each gets its own correct type, instead of relying on
+        // the (wider, ambiguous for destructuring) PropertyDeclaration-level match.
+        @Override
+        public Void visitVariableDeclaration(KtVariableDeclaration node, Void data) {
+            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
+            DeclarationAst decl = selectDeclaration(decls, node,
+                    d -> (d.getKind() == DeclarationKind.PROPERTY || d.getKind() == DeclarationKind.DESTRUCTURED_VARIABLE)
+                            && d.getType() != null);
+            if (decl != null) {
+                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
             }
             return visitChildren(node, data);
         }
@@ -155,13 +178,7 @@ public final class KotlinTypeAnnotationVisitor {
         // kotlin-type-mapper emits them as kind="property" with a type field.
         @Override
         public Void visitClassParameter(KtClassParameter node, Void data) {
-            List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            DeclarationAst decl = selectDeclaration(decls, node,
-                    d -> d.getKind() == DeclarationKind.PROPERTY && d.getType() != null);
-            if (decl != null) {
-                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
-                AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
-            }
+            annotatePropertyType(node);
             return visitChildren(node, data);
         }
 
