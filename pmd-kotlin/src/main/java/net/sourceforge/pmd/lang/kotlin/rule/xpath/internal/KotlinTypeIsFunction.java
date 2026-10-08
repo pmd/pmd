@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
  * <p>Supported node types:
  * <ul>
  *   <li>{@code PropertyDeclaration} -- property / local variable type</li>
- *   <li>{@code VariableDeclaration} -- single variable type, including each component of a
- *       destructuring declaration ({@code val (a, b) = ...}); the destructuring
+ *   <li>{@code VariableDeclaration} -- property or for-loop variable type, including each component
+ *       of a destructuring declaration ({@code val (a, b) = ...}); the destructuring
  *       {@code PropertyDeclaration} itself has no type</li>
  *   <li>{@code ClassParameter} -- primary constructor {@code val}/{@code var} parameter type</li>
  *   <li>{@code FunctionDeclaration} -- return type</li>
