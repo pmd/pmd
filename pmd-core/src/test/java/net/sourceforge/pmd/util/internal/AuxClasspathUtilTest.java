@@ -6,6 +6,8 @@ package net.sourceforge.pmd.util.internal;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +17,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -137,5 +140,18 @@ class AuxClasspathUtilTest {
         assertEquals(CollectionUtil.listOf(
                 bJar
         ), AuxClasspathUtil.getAuxClasspath(configuration));
+    }
+
+    @Test
+    void containsPlatform() {
+        Path lib1 = Paths.get("somwhere/lib1.jar");
+        Path rt = Paths.get("somewhere/lib/rt.jar");
+        Path platformClasspath = AuxClasspathUtil.getPlatformClasspath();
+
+        assertFalse(AuxClasspathUtil.containsPlatformClasspath(Collections.singletonList(lib1)));
+        assertTrue(AuxClasspathUtil.containsPlatformClasspath(Arrays.asList(lib1, platformClasspath)));
+        assertTrue(AuxClasspathUtil.containsPlatformClasspath(Arrays.asList(platformClasspath, lib1)));
+        assertTrue(AuxClasspathUtil.containsPlatformClasspath(Arrays.asList(lib1, rt)));
+        assertTrue(AuxClasspathUtil.containsPlatformClasspath(Arrays.asList(rt, lib1)));
     }
 }

@@ -20,11 +20,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * This test calls ant in a fake terminal to make sure we have a {@link java.io.Console} connected.
@@ -94,7 +93,7 @@ class AntIT extends AbstractBinaryDistributionTest {
         final Process process = pb.start();
         Thread outputReader = new Thread(() -> {
             try (InputStream in = process.getInputStream()) {
-                String output = IOUtil.readToString(in, StandardCharsets.UTF_8);
+                String output = IOUtils.toString(in, StandardCharsets.UTF_8);
                 result.withOutput(output);
             } catch (IOException e) {
                 result.withOutput("Exception occurred: " + e.toString());

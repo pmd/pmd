@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.kotlin.rule.internal;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +21,9 @@ import org.junit.jupiter.api.Test;
 
 import nl.stokpop.typemapper.analyzer.KotlinTypeMapper;
 import nl.stokpop.typemapper.model.CallSiteAst;
+import nl.stokpop.typemapper.model.DeclarationAst;
+import nl.stokpop.typemapper.model.DeclarationKind;
+import nl.stokpop.typemapper.model.FileAst;
 import nl.stokpop.typemapper.model.TypedAst;
 
 class KotlinTypeAnalysisContextTest {
@@ -95,6 +102,66 @@ class KotlinTypeAnalysisContextTest {
             assertTrue(call.getEndLine() >= 0);
             assertTrue(call.getEndColumn() >= 0);
         }
+    }
+
+    @Test
+    void fromSkipsFileWhoseAbsolutePathCannotBeCanonicalized() {
+        // One file has a relativePath that getCanonicalPath() can never resolve (embedded
+        // NUL byte -- rejected uniformly by the JDK on every OS/filesystem, unlike a
+        // too-long name whose failure depends on OS/filesystem-specific path limits) --
+        // from() must not let this abort building the whole index; it must skip only that
+        // file and keep the other.
+        DeclarationAst goodDecl = new DeclarationAst(
+                DeclarationKind.PROPERTY, "x", "pkg.x", "pkg",
+                null, null, Collections.emptyList(), Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList(),
+                1, 1, 0, 0, Collections.emptyList());
+        FileAst goodFile = new FileAst(
+                "Good.kt", "pkg", Collections.singletonList(goodDecl),
+                Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
+        String unresolvableName = "Bad\u0000.kt";
+        FileAst badFile = new FileAst(
+                unresolvableName, "pkg", Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
+        TypedAst ast = new TypedAst(
+                "2.0", "test", "/tmp/does-not-need-to-exist",
+                Arrays.asList(goodFile, badFile), Collections.emptyMap());
+
+        // from() logs the skip at ERROR level (by design, see production code comment) --
+        // capture stderr around the call so the expected log line doesn't show up as build
+        // noise, while still asserting it was actually emitted.
+        PrintStream originalErr = System.err;
+        ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(capturedErr, true));
+        KotlinTypeAnalysisContext result;
+        try {
+            result = assertDoesNotThrow(() -> KotlinTypeAnalysisContext.from(ast));
+        } finally {
+            System.setErr(originalErr);
+        }
+
+        assertEquals(1, result.declarationsAt("/tmp/does-not-need-to-exist/Good.kt", 1).size());
+        String logged = capturedErr.toString();
+        assertTrue(logged.contains("Skipping type info for"),
+                "Expected the skip to be logged at ERROR level, got: " + logged);
+    }
+
+    @Test
+    void nullLookupPathReturnsEmptyAlsoForDiskBasedContext() {
+        DeclarationAst goodDecl = new DeclarationAst(
+                DeclarationKind.PROPERTY, "x", "pkg.x", "pkg",
+                null, null, Collections.emptyList(), Collections.emptyList(),
+                Collections.emptyList(), Collections.emptyList(),
+                1, 1, 0, 0, Collections.emptyList());
+        FileAst goodFile = new FileAst(
+                "Good.kt", "pkg", Collections.singletonList(goodDecl),
+                Collections.emptyList(), Collections.emptyList(), "", Collections.emptyList());
+        TypedAst ast = new TypedAst(
+                "2.0", "test", "/tmp/does-not-need-to-exist",
+                Collections.singletonList(goodFile), Collections.emptyMap());
+
+        KotlinTypeAnalysisContext result = KotlinTypeAnalysisContext.from(ast);
+        assertEquals(0, result.declarationsAt(null, 1).size());
     }
 
 }

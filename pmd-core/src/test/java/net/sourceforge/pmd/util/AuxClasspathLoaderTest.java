@@ -6,12 +6,16 @@ package net.sourceforge.pmd.util;
 
 import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.getRuntimeClasspath;
 import static net.sourceforge.pmd.util.internal.AuxClasspathUtil.toRawClasspath;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -29,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -36,7 +41,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.platform.suite.api.Suite;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 class AuxClasspathLoaderTest {
@@ -76,6 +80,40 @@ class AuxClasspathLoaderTest {
             assertResource(classpathLoader, "my/other/package/Other.class", "my.other.package.Other in lib1.jar");
             assertNull(classpathLoader.findResource("does/not/exist.class"));
         }
+    }
+
+    @Test
+    void skipsNonArchiveClasspathEntries() throws Exception {
+        Path lib1 = createLib1();
+        Path nativeLib = tempDir.resolve("libsqlite4java-linux-amd64-1.0.392.so");
+        Files.write(nativeLib, "not a zip archive".getBytes(StandardCharsets.UTF_8));
+
+        String log = tapSystemErr(() -> {
+            try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
+                    nativeLib + File.pathSeparator + lib1)) {
+                assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
+                assertNull(classpathLoader.findResource("does/not/exist.class"));
+                assertNull(classpathLoader.findResource("com.example/module-info.class"));
+            }
+        });
+        assertThat(log, emptyString());
+    }
+
+    @Test
+    void warnForCorruptZipFilesInClasspath() throws Exception {
+        Path lib1 = createLib1();
+        Path corruptLib2 = tempDir.resolve("corrupt.jar");
+        Files.write(corruptLib2, "PK\003\004 Corrupt ZIP".getBytes(StandardCharsets.US_ASCII));
+
+        String log = tapSystemErr(() -> {
+            try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
+                    corruptLib2 + File.pathSeparator + lib1)) {
+                assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
+                assertNull(classpathLoader.findResource("does/not/exist.class"));
+            }
+        });
+        assertThat(log, containsString("Ignoring corrupt archive on auxClasspath"));
+        assertThat(log, containsString(corruptLib2.toString()));
     }
 
     @Test
@@ -259,7 +297,7 @@ class AuxClasspathLoaderTest {
     private static void assertResource(AuxClasspathLoader classpathLoader, String name, String expectedContent) throws IOException {
         try (InputStream resource = classpathLoader.findResource(name)) {
             assertNotNull(resource);
-            Assertions.assertEquals(expectedContent, IOUtil.readToString(resource, StandardCharsets.UTF_8));
+            Assertions.assertEquals(expectedContent, IOUtils.toString(resource, StandardCharsets.UTF_8));
         }
     }
 }

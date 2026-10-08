@@ -264,10 +264,11 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
     To ignore recoverable errors, use <code>--no-fail-on-error</code>.<p>Since PMD 7.3.0.</p></td></tr>
 </table>
 
-{%include note.html content="If PMD exits with 5, then PMD had either trouble parsing one or more files or a rule failed with an exception.
-That means, that either no violations for the entire file or for that rule are reported. These cases can be considered as false-negatives.
-In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report. Recoverable errors
-are usually part of the generated PMD report." %}
+> [!NOTE]
+> If PMD exits with 5, then PMD had either trouble parsing one or more files or a rule failed with an exception.
+> That means, that either no violations for the entire file or for that rule are reported. These cases can be considered as false-negatives.
+> In any case, the root cause should be investigated. If it's a problem in PMD itself, please create a bug report. Recoverable errors
+> are usually part of the generated PMD report.
 
 ## Logging
 

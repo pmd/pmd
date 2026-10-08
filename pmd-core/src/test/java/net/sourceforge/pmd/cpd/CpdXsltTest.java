@@ -20,9 +20,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 
 class CpdXsltTest {
@@ -38,14 +37,14 @@ class CpdXsltTest {
     @Test
     void cpdhtml() throws Exception {
         String result = runXslt("cpdhtml.xslt");
-        String expected = IOUtil.readToString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
+        String expected = IOUtils.toString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport.html"), StandardCharsets.UTF_8);
         assertEquals(expected, result);
     }
 
     @Test
     void cpdhtmlv2() throws Exception {
         String result = runXslt("cpdhtml-v2.xslt");
-        String expected = IOUtil.readToString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport-v2.html"), StandardCharsets.UTF_8);
+        String expected = IOUtils.toString(CpdXsltTest.class.getResourceAsStream("ExpectedCpdHtmlReport-v2.html"), StandardCharsets.UTF_8);
         assertEquals(expected, result);
     }
 

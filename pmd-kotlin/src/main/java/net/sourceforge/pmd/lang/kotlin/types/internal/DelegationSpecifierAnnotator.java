@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifiers;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -84,7 +85,7 @@ final class DelegationSpecifierAnnotator {
             written = KotlinTypeAnnotationVisitor.rawTypeNameOf(written);
             String fqn = simpleToFqn.get(KotlinTypeAnnotationVisitor.simpleNameOf(written));
             if (fqn != null) {
-                InternalApiBridge.setTypeName(spec, fqn);
+                InternalApiBridge.setType(spec, KotlinTypeName.ofFqName(fqn));
             }
         } catch (IndexOutOfBoundsException e) {
             throw AssertionUtil.contexted(e).addContextValue("delegation specifier", spec);

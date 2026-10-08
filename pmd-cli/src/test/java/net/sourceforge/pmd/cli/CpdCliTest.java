@@ -13,7 +13,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,15 +26,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class CpdCliTest extends BaseCliTest {
 
@@ -212,7 +212,7 @@ class CpdCliTest extends BaseCliTest {
     @Test
     void testEncodingOption() throws Exception {
 
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             // set the default encoding under Windows
             System.setProperty("file.encoding", "Cp1252");
 
@@ -309,7 +309,7 @@ class CpdCliTest extends BaseCliTest {
 
                     r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
 
-                    String report = IOUtil.readFileToString(reportFile.toFile());
+                    String report = FileUtils.readFileToString(reportFile.toFile(), Charset.defaultCharset());
                     assertThat(report, containsString("Found a 5 line (13 tokens) duplication"));
                 });
     }

@@ -14,9 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Executes PMD from command line. Deals with the differences, when PMD is run on Windows or on Linux.
@@ -63,7 +62,7 @@ public class PMDExecutor {
             public void run() {
                 String output;
                 try {
-                    output = IOUtil.readToString(process.getInputStream(), StandardCharsets.UTF_8);
+                    output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
                     result.withOutput(output);
                 } catch (IOException e) {
                     result.withOutput("Exception occurred: " + e.toString());
@@ -76,7 +75,7 @@ public class PMDExecutor {
             public void run() {
                 String error;
                 try {
-                    error = IOUtil.readToString(process.getErrorStream(), StandardCharsets.UTF_8);
+                    error = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
                     result.withErrorOutput(error);
                 } catch (IOException e) {
                     result.withErrorOutput("Exception occurred: " + e.toString());
@@ -92,7 +91,7 @@ public class PMDExecutor {
         String report = null;
         if (reportFile != null) {
             try (Reader reader = Files.newBufferedReader(reportFile, StandardCharsets.UTF_8)) {
-                report = IOUtil.readToString(reader);
+                report = IOUtils.toString(reader);
             }
         }
         return result.withExitCode(exitCode).withReport(report).build();

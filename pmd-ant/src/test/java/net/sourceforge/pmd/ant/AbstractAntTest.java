@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.ant;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.restoreSystemProperties;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.io.File;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 
+import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
@@ -19,7 +20,6 @@ import org.apache.tools.ant.ProjectHelper;
 import org.junit.jupiter.api.AfterAll;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 class AbstractAntTest {
     protected Project project;
@@ -61,8 +61,8 @@ class AbstractAntTest {
         log = new StringBuilder();
         out = new StringWriter();
         err = new StringWriter();
-        PrintStream outStream = new PrintStream(IOUtil.fromWriter(out, Charset.defaultCharset().name()));
-        PrintStream errStream = new PrintStream(IOUtil.fromWriter(err, Charset.defaultCharset().name()));
+        PrintStream outStream = new PrintStream(WriterOutputStream.builder().setCharset(Charset.defaultCharset()).setWriter(out).getUnchecked());
+        PrintStream errStream = new PrintStream(WriterOutputStream.builder().setCharset(Charset.defaultCharset()).setWriter(err).getUnchecked());
         synchronized (System.out) {
             PrintStream originalOut = System.out;
             PrintStream originalErr = System.err;
