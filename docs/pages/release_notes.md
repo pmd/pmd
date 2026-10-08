@@ -64,6 +64,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
 
+*   [#6609](https://github.com/pmd/pmd/issues/6609): \[plsql] Parse exception when comparing a parenthesized arithmetic expression in a WHERE clause
+
 ### 🚨️ API Changes
 
 *   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
