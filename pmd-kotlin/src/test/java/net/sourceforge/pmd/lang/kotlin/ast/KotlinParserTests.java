@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -181,15 +182,18 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     @Test
-    void annotationFqNamesXpathAttributePresentWhenEmptyForBothFunctionAndClass() {
+    void annotationFqNamesXpathAttributeAbsentWhenEmptyForBothFunctionAndClass() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class C\nfun plain() {}");
         KtClassDeclaration clazz = file.descendants(KtClassDeclaration.class).first();
         KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
 
-        // Both class and function declarations expose non-null AnnotationFqNames attribute,
-        // even when empty. KotlinInnerNode omits only null-valued attributes.
-        assertTrue(hasXPathAttribute(func, "AnnotationFqNames"));
-        assertTrue(hasXPathAttribute(clazz, "AnnotationFqNames"));
+        // Neither class nor function declaration has annotations here, so the
+        // AnnotationFqNames attribute is entirely absent: KotlinInnerNode omits
+        // null-valued attributes AND empty-collection-valued ones (no behavior
+        // difference for rule authors, since both evaluate to an empty XPath
+        // sequence, but it removes noise from tree dumps).
+        assertFalse(hasXPathAttribute(func, "AnnotationFqNames"));
+        assertFalse(hasXPathAttribute(clazz, "AnnotationFqNames"));
     }
 
     @Test
