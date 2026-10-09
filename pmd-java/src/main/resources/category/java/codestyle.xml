@@ -1100,7 +1100,7 @@ public class Bar {
 
     // requireBeforeThisSuper set to true
     public Bar () {
-        super()
+        super();
         int localVariable1; // incorrect, super has been called above the variable declarations
         localVariable1 = 1;
     }

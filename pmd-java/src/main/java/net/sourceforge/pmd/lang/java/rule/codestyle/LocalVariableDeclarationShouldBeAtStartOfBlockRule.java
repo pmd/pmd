@@ -75,12 +75,12 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
                 if (child.hasInitializer()) {
                     String childName = child.getVarId().getName();
                     ctx.addViolationWithMessage(child,
-                            "Local variable `" + childName + "` is declared with initialization");
+                            "Local variable `{0}` is declared with initialization", childName);
                 }
                 if (!declarationIsAtStartOfBlock) {
                     String childName = child.getVarId().getName();
                     ctx.addViolationWithMessage(child,
-                            "Local variable `" + childName + "` is not declared at start of block");
+                            "Local variable `{0}` is not declared at start of block", childName);
                 }
             });
         }
@@ -135,8 +135,7 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
             return;
         }
 
-        ctx.addViolation(node, nodeName, prevName,
-                getProperty(SORT_BY).toString().toLowerCase(Locale.ENGLISH));
+        ctx.addViolation(node, nodeName, prevName, SORT_BY.serializer().toString(getProperty(SORT_BY)));
     }
 
     /**
