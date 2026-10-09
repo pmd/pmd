@@ -5,12 +5,18 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLogBuilder;
+import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
@@ -28,6 +34,7 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
             .create();
 
     private SarifLogBuilder sarifLogBuilder;
+    private boolean hasFileNameRenderer;
 
     public SarifRenderer() {
         super(NAME, DEFAULT_DESCRIPTION);
@@ -40,7 +47,34 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        sarifLogBuilder = SarifLogBuilder.sarifLogBuilder();
+        sarifLogBuilder = SarifLogBuilder.sarifLogBuilder(this::determineFileUri);
+    }
+
+    @Override
+    public void setFileNameRenderer(FileNameRenderer fileNameRenderer) {
+        super.setFileNameRenderer(fileNameRenderer);
+        hasFileNameRenderer = true;
+    }
+
+    private String determineFileUri(FileId fileId) {
+        if (!hasFileNameRenderer) {
+            return fileId.getUriString();
+        }
+        String fileName = determineFileName(fileId);
+        Path path = Paths.get(fileName);
+        if (path.isAbsolute()) {
+            return path.toUri().toASCIIString();
+        }
+        String uriPath = fileName.replace('\\', '/');
+        // A colon in the first segment would otherwise be interpreted as a URI scheme.
+        if (uriPath.indexOf(':') >= 0 && uriPath.split("/", 2)[0].contains(":")) {
+            uriPath = "./" + uriPath;
+        }
+        try {
+            return new URI(null, null, uriPath, null).toASCIIString();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Invalid file name: " + fileName, e);
+        }
     }
 
     @Override

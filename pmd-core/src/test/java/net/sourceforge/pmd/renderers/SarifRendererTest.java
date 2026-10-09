@@ -8,11 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.reporting.ConfigurableFileNameRenderer;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
 
@@ -107,6 +113,46 @@ class SarifRendererTest extends AbstractRendererTest {
             reportBuilder.onRuleViolation(newRuleViolation(5, 1, 5, 11, fooRule));
             reportBuilder.onRuleViolation(newRuleViolation(2, 2, 3, 1, booRule));
         };
+    }
+
+    @Test
+    void testRelativizedViolationUri() throws Exception {
+        Path root = Paths.get("project").toAbsolutePath();
+        FileId file = FileId.fromPath(root.resolve("src/naïve 100%#.java"));
+        ConfigurableFileNameRenderer fileNames = new ConfigurableFileNameRenderer();
+        fileNames.relativizeWith(root);
+        Renderer renderer = getRenderer();
+        renderer.setFileNameRenderer(fileNames);
+        FileLocation location = FileLocation.range(file, TextRange2d.range2d(1, 1, 1, 2));
+        String actual = renderReport(renderer,
+            listener -> listener.onRuleViolation(newRuleViolation(createFooRule(), location, "blah")));
+
+        JsonObject run = new Gson().fromJson(actual, JsonObject.class)
+            .getAsJsonArray("runs").get(0).getAsJsonObject();
+        JsonObject physicalLocation = run.getAsJsonArray("results").get(0).getAsJsonObject()
+            .getAsJsonArray("locations").get(0).getAsJsonObject().getAsJsonObject("physicalLocation");
+        assertEquals("src/na%C3%AFve%20100%25%23.java",
+            physicalLocation.getAsJsonObject("artifactLocation").get("uri").getAsString());
+    }
+
+    @Test
+    void testRelativizedProcessingErrorUri() throws Exception {
+        Path root = Paths.get("project").toAbsolutePath();
+        FileId file = FileId.fromPath(root.resolve("src/Foo.java"));
+        ConfigurableFileNameRenderer fileNames = new ConfigurableFileNameRenderer();
+        fileNames.relativizeWith(root);
+        Renderer renderer = getRenderer();
+        renderer.setFileNameRenderer(fileNames);
+        String actual = renderReport(renderer,
+            listener -> listener.onError(new Report.ProcessingError(new RuntimeException("Error"), file)));
+
+        JsonObject run = new Gson().fromJson(actual, JsonObject.class)
+            .getAsJsonArray("runs").get(0).getAsJsonObject();
+        JsonObject physicalLocation = run.getAsJsonArray("invocations").get(0).getAsJsonObject()
+            .getAsJsonArray("toolExecutionNotifications").get(0).getAsJsonObject()
+            .getAsJsonArray("locations").get(0).getAsJsonObject().getAsJsonObject("physicalLocation");
+        assertEquals("src/Foo.java",
+            physicalLocation.getAsJsonObject("artifactLocation").get("uri").getAsString());
     }
 
     protected String readFile(String relativePath) {

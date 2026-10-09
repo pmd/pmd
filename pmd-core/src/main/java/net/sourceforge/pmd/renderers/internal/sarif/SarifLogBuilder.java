@@ -9,8 +9,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ArtifactLocation;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.AssociatedRule;
@@ -35,6 +37,7 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 public class SarifLogBuilder {
+    private final Function<FileId, String> fileUriRenderer;
     private final List<ReportingDescriptor> rules = new ArrayList<>();
     private final List<Result> results = new ArrayList<>();
     private final List<ToolConfigurationNotification> toolConfigurationNotifications = new ArrayList<>();
@@ -42,6 +45,18 @@ public class SarifLogBuilder {
 
     public static SarifLogBuilder sarifLogBuilder() {
         return new SarifLogBuilder();
+    }
+
+    public static SarifLogBuilder sarifLogBuilder(Function<FileId, String> fileUriRenderer) {
+        return new SarifLogBuilder(fileUriRenderer);
+    }
+
+    public SarifLogBuilder() {
+        this(FileId::getUriString);
+    }
+
+    private SarifLogBuilder(Function<FileId, String> fileUriRenderer) {
+        this.fileUriRenderer = fileUriRenderer;
     }
 
     public SarifLogBuilder add(RuleViolation violation) {
@@ -61,7 +76,7 @@ public class SarifLogBuilder {
 
     public SarifLogBuilder addRunTimeError(Report.ProcessingError error) {
         ArtifactLocation artifactLocation = ArtifactLocation.builder()
-                .uri(error.getFileId().getUriString())
+                .uri(fileUriRenderer.apply(error.getFileId()))
                 .build();
 
         PhysicalLocation physicalLocation = PhysicalLocation.builder()
@@ -151,7 +166,7 @@ public class SarifLogBuilder {
 
     private Location getRuleViolationLocation(RuleViolation rv) {
         ArtifactLocation artifactLocation = ArtifactLocation.builder()
-                .uri(rv.getFileId().getUriString())
+                .uri(fileUriRenderer.apply(rv.getFileId()))
                 .build();
 
         Region region = Region.builder()
