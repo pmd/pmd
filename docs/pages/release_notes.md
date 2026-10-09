@@ -64,6 +64,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+* matlab
+    * [#2258](https://github.com/pmd/pmd/issues/2258): \[matlab] \[cpd] Parse error with backslashes in string literals
 
 ### 🚨️ API Changes
 

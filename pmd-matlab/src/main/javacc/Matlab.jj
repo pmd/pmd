@@ -136,21 +136,8 @@ PARSER_END(MatlabParserImpl)
 
 <DEFAULT> TOKEN :
 {
-    < STRING: "'" ( <ESC_SEQ> | "'" "'" | ~["\\","'","\n"] )* "'" >
+    < STRING: "'" ( "'" "'" | ~["'","\n"] )* "'" >
 |   < DSTRING: "\"" ( "\\" | "\"" "\"" | ~["\\","\"","\n"] )* "\"" >
-|   < #ESC_SEQ:
-      "\\" ( "b" | "t" | "n" | "f" | "r" | "\"" | "'" | "\\" )
-    | <UNICODE_ESC>
-    | <OCTAL_ESC>
-  >
-|   < #UNICODE_ESC: "\\" "u" <HEX_DIGIT> <HEX_DIGIT> <HEX_DIGIT> <HEX_DIGIT> >
-|   < #OCTAL_ESC:
-      "\\" ["0" - "3"] <OCTAL_DIGIT> <OCTAL_DIGIT>
-    | "\\" <OCTAL_DIGIT> <OCTAL_DIGIT>
-    | "\\" <OCTAL_DIGIT>
-    >
-|   < #HEX_DIGIT: ["0"-"9", "a"-"f", "A"-"F"] >
-|   < #OCTAL_DIGIT: ["0"-"7"] >
 }
 
 <DEFAULT, TRANSPOSE> TOKEN :
