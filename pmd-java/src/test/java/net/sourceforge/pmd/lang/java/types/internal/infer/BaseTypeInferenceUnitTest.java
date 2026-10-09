@@ -20,11 +20,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.SelfDescribing;
+import org.hamcrest.TypeSafeMatcher;
 
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -102,19 +101,16 @@ class BaseTypeInferenceUnitTest {
         return (JIntersectionType) glb;
     }
 
-    static Matcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
-        return new BaseMatcher<InferenceVar>() {
+    static TypeSafeMatcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
+        return new TypeSafeMatcher<InferenceVar>() {
             @Override
             public void describeTo(Description description) {
 
             }
 
             @Override
-            public boolean matches(Object actual) {
-                if (!(actual instanceof InferenceVar)) {
-                    return false;
-                }
-                return ((InferenceVar) actual).getBounds(kind).contains(t);
+            public boolean matchesSafely(InferenceVar actual) {
+                return actual.getBounds(kind).contains(t);
             }
         };
     }
@@ -122,8 +118,8 @@ class BaseTypeInferenceUnitTest {
     /**
      * Exactly, modulo the upper(OBJECT), which can be omitted.
      */
-    static Matcher<InferenceVar> hasBoundsExactly(Bound... bounds) {
-        return new BaseMatcher<InferenceVar>() {
+    static TypeSafeMatcher<InferenceVar> hasBoundsExactly(Bound... bounds) {
+        return new TypeSafeMatcher<InferenceVar>() {
             @Override
             public void describeTo(Description description) {
                 description.appendText("'_ ");
@@ -131,12 +127,7 @@ class BaseTypeInferenceUnitTest {
             }
 
             @Override
-            public void describeMismatch(Object item, Description description) {
-                if (!(item instanceof InferenceVar)) {
-                    description.appendText("Not an ivar: ").appendValue(item);
-                    return;
-                }
-                InferenceVar ivar = (InferenceVar) item;
+            public void describeMismatchSafely(InferenceVar ivar, Description description) {
                 description.appendText("was ");
                 description.appendText(ivar.getName());
                 description.appendText(" ");
@@ -145,11 +136,7 @@ class BaseTypeInferenceUnitTest {
             }
 
             @Override
-            public boolean matches(Object actual) {
-                if (!(actual instanceof InferenceVar)) {
-                    return false;
-                }
-                InferenceVar ivar = (InferenceVar) actual;
+            public boolean matchesSafely(InferenceVar ivar) {
                 JClassType top = ivar.getTypeSystem().OBJECT;
 
                 // note: don't use ivar.getBounds(ALL) as this would merge 'a >: T and 'a <: T
@@ -195,8 +182,6 @@ class BaseTypeInferenceUnitTest {
         for (BoundKind kind : BoundKind.values()) {
             Set<JTypeMirror> bounds = actual.getBounds(kind);
             actualBounds.put(kind, bounds);
-            if (!bounds.isEmpty()) {
-            }
         }
 
         return actualBounds;

@@ -107,10 +107,9 @@ class RuleSetSchemaTest {
 
         @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            if ("https://pmd.sourceforge.io/ruleset_2_0_0.xsd".equals(systemId)) {
-                return new InputSource(schema2.toExternalForm());
-            }
-            throw new IllegalArgumentException("Unable to resolve entity (publicId=" + publicId + ", systemId=" + systemId + ")");
+            assertEquals("https://pmd.sourceforge.io/ruleset_2_0_0.xsd", systemId,
+                    "Unable to resolve entity (publicId=" + publicId + ", systemId=" + systemId + ")");
+            return new InputSource(schema2.toExternalForm());
         }
 
         public static Schema getSchemaVersion2() throws SAXException {
