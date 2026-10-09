@@ -435,4 +435,65 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7063: CheckResultSet false-positive with next() as ternary condition in a lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.sql.ResultSet;
+            import java.sql.SQLException;
+
+            class Foo {
+                interface ResultSetHandler<T> {
+                    T handle(ResultSet rs) throws SQLException;
+                }
+
+                int getCount() throws SQLException {
+                    ResultSetHandler<Integer> countHandler =
+                        (rs) -> rs.next() ? rs.getInt(1) : 0;
+                    return countHandler.handle(null);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7063: CheckResultSet false-positive with next() as ternary condition in assignments and arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.sql.ResultSet;
+            import java.sql.SQLException;
+
+            class Foo {
+                int count;
+
+                void bar(ResultSet rs, boolean flag) throws SQLException {
+                    count = rs.next() ? rs.getInt(1) : 0;
+                    count = (rs.next()) ? rs.getInt(1) : 0;
+                    count = !rs.previous() ? 0 : rs.getInt(1);
+                    System.out.println(flag && rs.first() ? rs.getInt(1) : 0);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7063: next() unchecked inside a branch of a ternary is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+            import java.sql.ResultSet;
+            import java.sql.SQLException;
+            import java.util.function.Consumer;
+
+            class Foo {
+                void bar(ResultSet rs, boolean flag) throws SQLException {
+                    Consumer<ResultSet> c = flag ? r -> {
+                        r.next();
+                    } : r -> { };
+                    c.accept(rs);
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
