@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import java.util.Locale;
-
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
@@ -114,18 +112,16 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
 
         // requireBeforeThisSuper==false: declarations must be after super() or this()
 
-        // when there is a super()/this() call after, then we are _not_ at the start of the block
-        if (StreamImpl.followingSiblings(declaration)
-                .filterIs(ASTExplicitConstructorInvocation.class)
-                .nonEmpty()) {
-            return false;
-        }
-        // when there are only local var declarations or super()/this() calls before,
-        // then we are at the start of the block.
-        return StreamImpl.precedingSiblings(declaration).all(sibling ->
-                sibling instanceof ASTLocalVariableDeclaration
-                        || sibling instanceof ASTSwitchLabel
-                        || sibling instanceof ASTExplicitConstructorInvocation);
+        return  // when there is no super()/this() call after, then we are at the start of the block.
+                StreamImpl.followingSiblings(declaration)
+                    .filterIs(ASTExplicitConstructorInvocation.class)
+                    .isEmpty()
+                // and when there are only local var declarations or super()/this() calls before,
+                // then we are at the start of the block.
+                && StreamImpl.precedingSiblings(declaration).all(sibling ->
+                        sibling instanceof ASTLocalVariableDeclaration
+                                || sibling instanceof ASTSwitchLabel
+                                || sibling instanceof ASTExplicitConstructorInvocation);
     }
 
     /**
