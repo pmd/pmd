@@ -65,25 +65,26 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         if (isInStatementInitializer(declaration)) {
             return null;
         }
+        // rule does not apply to variables declared with var keyword
+        if (declaration.isTypeInferred()) {
+            return null;
+        }
 
         boolean java25orLater = declaration.getLanguageVersion().compareToVersion("25") >= 0;
         boolean declarationIsAtStartOfBlock = isAtStartOfBlock(declaration, java25orLater);
 
-        // initialization and start of block enforcement does not apply to variables declared with var keyword
-        if (!declaration.isTypeInferred()) {
-            declaration.children(ASTVariableDeclarator.class).forEach(child -> {
-                if (child.hasInitializer()) {
-                    String childName = child.getVarId().getName();
-                    ctx.addViolationWithMessage(child,
-                            "Local variable `{0}` is declared with initialization", childName);
-                }
-                if (!declarationIsAtStartOfBlock) {
-                    String childName = child.getVarId().getName();
-                    ctx.addViolationWithMessage(child,
-                            "Local variable `{0}` is not declared at start of block", childName);
-                }
-            });
-        }
+        declaration.children(ASTVariableDeclarator.class).forEach(child -> {
+            if (child.hasInitializer()) {
+                String childName = child.getVarId().getName();
+                ctx.addViolationWithMessage(child,
+                        "Local variable `{0}` is declared with initialization", childName);
+            }
+            if (!declarationIsAtStartOfBlock) {
+                String childName = child.getVarId().getName();
+                ctx.addViolationWithMessage(child,
+                        "Local variable `{0}` is not declared at start of block", childName);
+            }
+        });
 
         if (declarationIsAtStartOfBlock) {
             flagSorting(declaration, ctx, getPreviousDeclaration(declaration));

@@ -298,7 +298,7 @@ public class Bar {
                     int localVariable1;
                     localVariable1 = 1;
 
-                    var localVariable2 = 2; // correct, var declarations must happen with initialization
+                    var localVariable2 = 2; // var is ignored
                 }
             }
         ]]></code>
@@ -322,7 +322,7 @@ public class Bar {
 
 
     <test-code>
-        <description>Rule should not be triggered in statement initialisers</description>
+        <description>Rule should not be triggered in statement initializers</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>17</expected-linenumbers>
         <expected-messages>
@@ -791,19 +791,15 @@ public class Bar {
 
 
     <test-code>
-        <description>Multiple var declarations should be sorted by name when sorting by type</description>
+        <description>Multiple var declarations are ignored</description>
         <rule-property name="sortBy">type</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
-        <expected-messages>
-            <message>The variable `a` comes before `b` when ordered by type</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class Bar {
                 public void foo () {
                     int x;
-                    var b = "hello";
-                    var a = 123; // incorrect, both are 'var', so 'a' must come before 'b'
+                    var b = "hello"; // ignored
+                    var a = 123; // ignored
                 }
             }
         ]]></code>
