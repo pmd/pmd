@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.conventionalEnumProperty;
-
 import java.util.Locale;
 
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
@@ -19,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -28,13 +27,13 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
 
     private static final PropertyDescriptor<Boolean> REQUIRE_BEFORE_THIS_SUPER =
             PropertyFactory.booleanProperty("requireBeforeThisSuper")
-                    .desc("Require that variable declaration comes before super(...) and this(...) calls. Always behaves as false in Java24 and below.")
+                    .desc("Require that variable declaration comes before super(...) and this(...) calls. Possible only with Java25+. Always behaves as false in Java24 and below.")
                     .defaultValue(true)
                     .build();
 
 
     private static final PropertyDescriptor<SortBy> SORT_BY =
-            conventionalEnumProperty("sortBy", SortBy.class)
+            PropertyFactory.conventionalEnumProperty("sortBy", SortBy.class)
                     .desc("Enforce lexicographic sorting of variable declarations. When sorting by type declarations of the same type will be ordered by name.")
                     .defaultValue(SortBy.NONE)
                     .build();
@@ -59,40 +58,37 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
 
     @Override
     public Object visit(ASTLocalVariableDeclaration declaration, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         // rule does not apply to variables declared and initialized inside for loop initializers
         // it also does not apply to try-with-resources blocks
         if (isInStatementInitializer(declaration)) {
-            return data;
+            return null;
         }
 
-        String version = declaration.getLanguageVersion().getName().replace("Java ", "");
-        // whether preview versions are handled correctly does not currently have a unit test as using preview source
-        // type is causing tests to fail to build
-        String numericPart = version.replace("-preview", "");
-        double versionNum = Double.parseDouble(numericPart);
+        boolean java25orLater = declaration.getLanguageVersion().compareToVersion("25") >= 0;
+        boolean declarationIsAtStartOfBlock = isAtStartOfBlock(declaration, !java25orLater);
 
-        boolean declarationIsAtStartOfBlock = isAtStartOfBlock(declaration, versionNum < 25);
-
-        // initialisation and start of block enforcement does not apply to variables declared with var keyword
+        // initialization and start of block enforcement does not apply to variables declared with var keyword
         if (!declaration.isTypeInferred()) {
             declaration.children(ASTVariableDeclarator.class).forEach(child -> {
                 if (child.hasInitializer()) {
                     String childName = child.getVarId().getName();
-                    asCtx(data).addViolationWithMessage(child,
+                    ctx.addViolationWithMessage(child,
                             "Local variable `" + childName + "` is declared with initialization");
                 }
                 if (!declarationIsAtStartOfBlock) {
                     String childName = child.getVarId().getName();
-                    asCtx(data).addViolationWithMessage(child,
+                    ctx.addViolationWithMessage(child,
                             "Local variable `" + childName + "` is not declared at start of block");
                 }
             });
         }
 
         if (declarationIsAtStartOfBlock) {
-            return flagSorting(declaration, data, getPreviousDeclaration(declaration));
+            flagSorting(declaration, ctx, getPreviousDeclaration(declaration));
         }
-        return data;
+        return null;
     }
 
     private boolean isInStatementInitializer(ASTLocalVariableDeclaration declaration) {
@@ -117,17 +113,17 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
     /**
      * Takes a declaration and raises a violation if it is out of order with the previous declaration
      */
-    private Object flagSorting(ASTLocalVariableDeclaration node,
-                                                Object data,
+    private void flagSorting(ASTLocalVariableDeclaration node,
+                                                RuleContext ctx,
                                                 ASTLocalVariableDeclaration previousDeclaration) {
 
         if (getProperty(SORT_BY) == SortBy.NONE) {
-            return data;
+            return;
         }
 
         // it is the first declaration in the scope
         if (previousDeclaration == null) {
-            return data;
+            return;
         }
 
         String prevName = previousDeclaration.getVarIds().get(0).getName();
@@ -136,13 +132,11 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         TypeNode nodeType = node.getTypeNode();
 
         if (isDeclarationOrderCorrect(prevType, prevName, nodeType, nodeName)) {
-            return data;
+            return;
         }
 
-        asCtx(data).addViolation(node, nodeName, prevName,
+        ctx.addViolation(node, nodeName, prevName,
                 getProperty(SORT_BY).toString().toLowerCase(Locale.ENGLISH));
-
-        return data;
     }
 
     /**
