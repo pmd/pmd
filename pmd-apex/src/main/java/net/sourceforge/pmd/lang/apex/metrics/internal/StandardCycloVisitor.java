@@ -10,10 +10,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTCatchBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForLoopStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTIdentifierCase;
 import net.sourceforge.pmd.lang.apex.ast.ASTIfBlockStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTLiteralCase;
 import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.apex.ast.ASTTypeWhenBlock;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
 
@@ -21,6 +24,24 @@ import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
  * @author Clément Fournier
  */
 public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
+
+    @Override
+    public Void visit(ASTLiteralCase node, MutableInt data) {
+        data.increment();
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Void visit(ASTIdentifierCase node, MutableInt data) {
+        data.increment();
+        return super.visit(node, data);
+    }
+
+    @Override
+    public Void visit(ASTTypeWhenBlock node, MutableInt data) {
+        data.increment();
+        return super.visit(node, data);
+    }
 
     @Override
     public Void visit(ASTIfBlockStatement node, MutableInt data) {
