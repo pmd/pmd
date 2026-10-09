@@ -110,6 +110,7 @@
     <rule ref="category/java/codestyle.xml/ForLoopShouldBeWhileLoop"/>
     <rule ref="category/java/codestyle.xml/IdenticalCatchBranches"/>
     <!-- <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" /> -->
+    <!-- <rule ref="category/java/codestyle.xml/LocalVariableDeclarationShouldBeAtStartOfBlock"/> -->
     <!-- <rule ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal" /> -->
     <rule ref="category/java/codestyle.xml/NoPackage"/>
     <!-- <rule ref="category/java/codestyle.xml/UseExplicitTypes"/> -->
