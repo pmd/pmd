@@ -167,8 +167,8 @@ public class Bar {
                 public class Bar {
                     public void foo () {
                         int localVariable1 = 1; // incorrect, variable1 is initialized on the same line as it is declared
-
                         int localVariable2; // correct, the issue here lies only with variable1, once that initialization is separated the method is correct
+
                         localVariable2 = 2;
                     }
                 }
@@ -223,7 +223,8 @@ public class Bar {
                 public class Bar {
                     public Bar () {
                         super();
-                        int localVariable1; // incorrect, super has been called above the variable declarations
+                        int localVariable1; // incorrect, super has been called above the variable declarations,
+                        // but with java 24, there is no way to declare the variable before the super call
                         localVariable1 = 1;
                     }
                 }
@@ -247,6 +248,46 @@ public class Bar {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>When requireBeforeThisSuper is false declarations must come after super(...) and this(...) calls</description>
+        <rule-property name="requireBeforeThisSuper">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable1` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        int localVariable1; // while this is supported by the compiler, the rule uses requireBeforeThisSuper=false
+                        this();
+                        localVariable1 = 1;
+                    }
+                }
+            ]]></code>
+        <source-type>java 25</source-type>
+    </test-code>
+
+    <test-code>
+        <description>When requireBeforeThisSuper is false declarations must come after super(...) and this(...) calls</description>
+        <rule-property name="requireBeforeThisSuper">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Local variable `localVariable1` is not declared at start of block</message>
+        </expected-messages>
+        <code><![CDATA[
+                public class Bar {
+                    public Bar () {
+                        int localVariable1;
+                        this();
+                        int localVariable2; // second declaration block, not reported. Only localVariable1 must be moved down.
+                        localVariable1 = 1;
+                    }
+                }
+            ]]></code>
+        <source-type>java 25</source-type>
+    </test-code>
 
     <test-code>
         <description>Rule should not be triggered on declarations with var</description>
@@ -573,20 +614,21 @@ public class Bar {
         <description>Explicit constructor calls should not affect ordering</description>
         <rule-property name="sortBy">type</rule-property>
         <rule-property name="requireBeforeThisSuper">false</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>10</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,10</expected-linenumbers>
         <expected-messages>
+            <message>Local variable `localVariable1` is not declared at start of block</message>
             <message>The variable `localVariable2` comes before `localVariable1` when ordered by type</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
-                    public Bar () {
+                    public Bar() {
                         super();
                         int localVariable1;
                     }
 
                     public Bar(int a) {
-                        String localVariable1;
+                        String localVariable1; // since requireBeforeThisSuper is false, localVariable1 should be after this()
                         this();
                         int localVariable2; // incorrect, int should be before string
                     }

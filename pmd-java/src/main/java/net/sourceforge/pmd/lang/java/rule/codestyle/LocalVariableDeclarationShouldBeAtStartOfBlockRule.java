@@ -67,7 +67,7 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         }
 
         boolean java25orLater = declaration.getLanguageVersion().compareToVersion("25") >= 0;
-        boolean declarationIsAtStartOfBlock = isAtStartOfBlock(declaration, !java25orLater);
+        boolean declarationIsAtStartOfBlock = isAtStartOfBlock(declaration, java25orLater);
 
         // initialization and start of block enforcement does not apply to variables declared with var keyword
         if (!declaration.isTypeInferred()) {
@@ -97,17 +97,32 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
                 || declaration.getParent() instanceof ASTSwitchFallthroughBranch);
     }
 
-    private boolean isAtStartOfBlock(ASTLocalVariableDeclaration declaration, boolean ignoreThisSuper) {
+    private boolean isAtStartOfBlock(ASTLocalVariableDeclaration declaration, boolean flexibleCtorBodiesSupported) {
+        boolean requireBeforeThisSuper = getProperty(REQUIRE_BEFORE_THIS_SUPER) && flexibleCtorBodiesSupported;
 
-        return StreamImpl.precedingSiblings(declaration).all(
-            sibling -> {
-                if (sibling instanceof ASTExplicitConstructorInvocation) {
-                    // super or this
-                    return !getProperty(REQUIRE_BEFORE_THIS_SUPER) || ignoreThisSuper;
-                }
-                return sibling instanceof ASTLocalVariableDeclaration || sibling instanceof ASTSwitchLabel;
-            }
-        );
+        if (requireBeforeThisSuper) {
+            // when there are only local var declarations before,
+            // then we are at the start of the block. This excludes any
+            // super()/this() calls.
+            return StreamImpl.precedingSiblings(declaration).all(sibling ->
+                    sibling instanceof ASTLocalVariableDeclaration
+                            || sibling instanceof ASTSwitchLabel);
+        }
+
+        // requireBeforeThisSuper==false: declarations must be after super() or this()
+
+        // when there is a super()/this() call after, then we are _not_ at the start of the block
+        if (StreamImpl.followingSiblings(declaration)
+                .filterIs(ASTExplicitConstructorInvocation.class)
+                .nonEmpty()) {
+            return false;
+        }
+        // when there are only local var declarations or super()/this() calls before,
+        // then we are at the start of the block.
+        return StreamImpl.precedingSiblings(declaration).all(sibling ->
+                sibling instanceof ASTLocalVariableDeclaration
+                        || sibling instanceof ASTSwitchLabel
+                        || sibling instanceof ASTExplicitConstructorInvocation);
     }
 
     /**
