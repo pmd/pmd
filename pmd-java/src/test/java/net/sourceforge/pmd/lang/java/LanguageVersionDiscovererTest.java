@@ -35,13 +35,9 @@ class LanguageVersionDiscovererTest {
     }
 
     private LanguageVersion determineLatestNonPreviewVersion() {
-        LanguageVersion latest = null;
-        for (LanguageVersion lv : JavaLanguageModule.getInstance().getVersions()) {
-            if (!lv.getName().endsWith("preview")) {
-                latest = lv;
-            }
-        }
-        return latest;
+        return JavaLanguageModule.getInstance().getVersions().stream()
+                .filter(lv -> !lv.getName().endsWith("preview"))
+                .max(LanguageVersion::compareTo).orElse(null);
     }
 
     /**

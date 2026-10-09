@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,9 +121,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
         zip.close();
 
-        if (!expectedFileNames.isEmpty()) {
-            fail("Missing files in archive: " + expectedFileNames);
-        }
+        assertTrue(expectedFileNames.isEmpty(), "Missing files in archive: " + expectedFileNames);
     }
 
     @Test

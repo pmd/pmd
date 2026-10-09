@@ -7,7 +7,7 @@ package net.sourceforge.pmd.ant;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,22 +31,18 @@ class PMDTaskTest extends AbstractAntTest {
 
     @Test
     void testFormatterWithNoToFileAttribute() {
-        try {
-            executeTarget("testFormatterWithNoToFileAttribute");
-            fail("This should throw an exception");
-        } catch (BuildException ex) {
-            assertEquals("toFile or toConsole needs to be specified in Formatter", ex.getMessage());
-        }
+        BuildException ex = assertThrows(BuildException.class, () ->
+            executeTarget("testFormatterWithNoToFileAttribute")
+        );
+        assertEquals("toFile or toConsole needs to be specified in Formatter", ex.getMessage());
     }
 
     @Test
     void testNoRuleSets() {
-        try {
-            executeTarget("testNoRuleSets");
-            fail("This should throw an exception");
-        } catch (BuildException ex) {
-            assertEquals("No rulesets specified", ex.getMessage());
-        }
+        BuildException ex = assertThrows(BuildException.class, () ->
+            executeTarget("testNoRuleSets")
+        );
+        assertEquals("No rulesets specified", ex.getMessage());
     }
 
     @Test
@@ -56,17 +52,13 @@ class PMDTaskTest extends AbstractAntTest {
 
     @Test
     void testInvalidLanguageVersion() {
-        try {
-            executeTarget("testInvalidLanguageVersion");
-            assertEquals(
-                    "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.",
-                    log.toString());
-            fail("This should throw an exception");
-        } catch (BuildException ex) {
-            assertEquals(
+        BuildException ex = assertThrows(BuildException.class, () ->
+            executeTarget("testInvalidLanguageVersion")
+        );
+        assertEquals(
                     "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.",
                     ex.getMessage());
-        }
+        assertEquals("", log.toString());
     }
 
     @Test
