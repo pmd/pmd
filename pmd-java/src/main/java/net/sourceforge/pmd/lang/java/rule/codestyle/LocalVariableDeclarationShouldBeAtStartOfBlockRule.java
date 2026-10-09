@@ -22,7 +22,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
- * @since 7.27.0
+ * @since 7.29.0
  */
 public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends AbstractJavaRulechainRule {
 
