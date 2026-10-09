@@ -152,4 +152,69 @@
         </code>
     </test-code>
 
+    <test-code>
+        <description>#5101 Literal, enum, grouped and default switch cases</description>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 6.</message>
+            <message>'Foo.Color' has value 1.</message>
+            <message>'Foo#literals()' has value 4.</message>
+            <message>'Foo#identifiers()' has value 3.</message>
+            <message>'Foo#onlyElse()' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    enum Color { RED, GREEN }
+    void literals() {
+        Integer value = 1;
+        switch on value {
+            when 1, 2 { }
+            when null { }
+            when else { }
+        }
+    }
+    void identifiers() {
+        Color value = Color.RED;
+        switch on value {
+            when RED, GREEN { }
+            when else { }
+        }
+    }
+    void onlyElse() {
+        Integer value = 1;
+        switch on value {
+            when else { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5101 Type cases and nested decisions</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 6.</message>
+            <message>'Foo#types()' has value 6.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void types() {
+        SObject value = new Account();
+        switch on value {
+            when Account account {
+                if (account.Name != null && account.Name != '') { }
+            }
+            when Contact contact {
+                switch on contact.Name {
+                    when 'Alice' { }
+                    when else { }
+                }
+            }
+            when else { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
