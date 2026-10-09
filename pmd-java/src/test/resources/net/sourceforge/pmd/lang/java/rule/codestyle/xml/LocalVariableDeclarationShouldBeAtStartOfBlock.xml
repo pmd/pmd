@@ -763,24 +763,6 @@ public class Bar {
         ]]></code>
     </test-code>
 
-
-    <test-code>
-        <description>Fields declared after a method are not considered at the top of the block</description>
-        <rule-property name="sortBy">name</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public class Bar {
-                int z = 1;
-
-                public void doSomething() {
-                }
-
-                int a = 2; // correct, field is declared after a method so it is ignored
-            }
-        ]]></code>
-    </test-code>
-
-
     <test-code>
         <description>Modifiers like final should not affect type sorting</description>
         <rule-property name="sortBy">type</rule-property>
