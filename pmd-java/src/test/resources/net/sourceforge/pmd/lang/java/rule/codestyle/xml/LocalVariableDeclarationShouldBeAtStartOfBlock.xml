@@ -322,7 +322,7 @@ public class Bar {
 
 
     <test-code>
-        <description>Rule should not be triggered in statement initializers</description>
+        <description>Rule should not be triggered in for loops/try-with-resources</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>17</expected-linenumbers>
         <expected-messages>
@@ -357,10 +357,10 @@ public class Bar {
         <expected-problems>4</expected-problems>
         <expected-linenumbers>14,18,18,23</expected-linenumbers>
         <expected-messages>
-            <message>Local variable `b` is not declared at start of block</message>
-            <message>Local variable `b` is declared with initialization</message>
-            <message>Local variable `b` is not declared at start of block</message>
-            <message>Local variable `b` is not declared at start of block</message>
+            <message>Local variable `c` is not declared at start of block</message>
+            <message>Local variable `e` is declared with initialization</message>
+            <message>Local variable `e` is not declared at start of block</message>
+            <message>Local variable `g` is not declared at start of block</message>
         </expected-messages>
         <code><![CDATA[
             public class Bar {
@@ -374,18 +374,18 @@ public class Bar {
                             int a; // correct
                             a = 1;
                         case 2:
-                            int a; // correct
-                            a = 2;
-                            int b; // incorrect
+                            int b; // correct
+                            b = 2;
+                            int c; // incorrect
                         case 3: {
-                            int a; // correct
-                            a = 3;
-                            int b = 3; // incorrect
+                            int d; // correct
+                            d = 3;
+                            int e = 3; // incorrect
                         }
                         default:
-                            int a; // correct
-                            a = 4;
-                            int b; // incorrect
+                            int f; // correct
+                            f = 4;
+                            int g; // incorrect
                     }
                }
             }
@@ -591,19 +591,19 @@ public class Bar {
 
 
     <test-code>
-        <description>Type inference with var should come last</description>
+        <description>Type inference with var is ignored</description>
         <rule-property name="sortBy">type</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The variable `localVariable3` comes before `localVariable1` when ordered by type</message>
+            <message>The variable `localVariable3` comes before `localVariable2` when ordered by type</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
                     public void foo () {
                         int localVariable2;
-                        var localVariable1 = 1;
-                        XCustomType localVariable3; // incorrect, X comes after v but var should always come last
+                        var localVariable1 = 1; // var is ignored
+                        ACustomType localVariable3; // incorrect
                     }
                 }
             ]]></code>
@@ -668,21 +668,31 @@ public class Bar {
 
 
     <test-code>
-        <description>With multiple declarations on one line only the first variable type should be considered</description>
+        <description>With multiple declarations on one line only the first variable type should be considered (arrays)</description>
         <rule-property name="sortBy">type</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>9</expected-linenumbers>
         <expected-messages>
-            <message>The variable `b` comes before `a` when ordered by type</message>
+            <message>The variable `a` comes before `b` when ordered by type</message>
         </expected-messages>
         <code><![CDATA[
                 public class Bar {
-                    public void foo () {
+                    public void foo() {
                         int[] a;
-                        int b, c[]; // incorrect, int comes before int[]
+                        int b, c[]; // correct, same array element type
                     }
 
-                    public void foo2 () {
+                    public void fooWrong() {
+                        int b, c[];
+                        int[] a; // incorrect, same type, but a comes before b
+                    }
+
+                    public void foo2() {
+                        int a;
+                        int[] b, c[]; // correct, same array element type
+                    }
+
+                    public void foo3() {
                         int a[], b;
                         int c; // correct, only the overall type is considered
                     }

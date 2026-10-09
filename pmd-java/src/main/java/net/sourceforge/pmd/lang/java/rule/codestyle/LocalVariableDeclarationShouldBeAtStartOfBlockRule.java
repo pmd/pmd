@@ -15,6 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -154,56 +156,51 @@ public class LocalVariableDeclarationShouldBeAtStartOfBlockRule extends Abstract
         ctx.addViolation(node, nodeName, prevName, SORT_BY.serializer().toString(getProperty(SORT_BY)));
     }
 
+    private String getSimpleTypeName(TypeNode typeNode) {
+        JTypeDeclSymbol typeSymbol1 = typeNode.getTypeMirror().getSymbol();
+        if (typeSymbol1 instanceof JClassSymbol) {
+            if (((JClassSymbol) typeSymbol1).getArrayComponent() != null) {
+                typeSymbol1 = ((JClassSymbol) typeSymbol1).getArrayComponent();
+            }
+            return typeSymbol1.getSimpleName();
+        }
+        return typeNode.getOriginalText().toString();
+    }
+
     /**
      * Takes the properties of two variables, 1 comes before 2 in the code and returns whether they are in the correct order
      */
     private boolean isDeclarationOrderCorrect(TypeNode type1, String name1, TypeNode type2, String name2) {
         if (getProperty(SORT_BY) == SortBy.TYPE) {
-            String t1;
-            String t2;
+            String t1 = getSimpleTypeName(type1);
+            String t2 = getSimpleTypeName(type2);
 
-            if (type1 == null) {
-                t1 = "var";
+            int result;
+            if (getProperty(CASE_SENSITIVE_SORTING)) {
+                result = t1.compareTo(t2);
             } else {
-                t1 = type1.getOriginalText().toString().replace(" ", "");
+                result = t1.compareToIgnoreCase(t2);
             }
 
-            if (type2 == null) {
-                t2 = "var";
-            } else {
-                t2 = type2.getOriginalText().toString().replace(" ", "");
-            }
-
-            if (!getProperty(CASE_SENSITIVE_SORTING)) {
-                t1 = t1.toLowerCase(Locale.ENGLISH);
-                t2 = t2.toLowerCase(Locale.ENGLISH);
-            }
-
-            // if they are the same then continue to name sorting
-            if (!t2.equals(t1)) {
-                // if either is var then the result is decided otherwise compare directly
-                if ("var".equals(t1)) {
-                    return false;
-                }
-                return "var".equals(t2) || t1.compareTo(t2) < 0;
+            // if they are not the same, then we are done; else continue with name sorting
+            if (result != 0) {
+                return result < 0;
             }
         }
 
         // either sort by is set to name or their types are the same and it has defaulted to name
-        if (!getProperty(CASE_SENSITIVE_SORTING)) {
-            name1 = name1.toLowerCase(Locale.ENGLISH);
-            name2 = name2.toLowerCase(Locale.ENGLISH);
-        }
-        // non-strict inequality because variables with the same name but different capitalization are equal
-        // but should not be flagged when caseSensitiveSorting is false
-        return name1.compareTo(name2) <= 0;
 
+        if (getProperty(CASE_SENSITIVE_SORTING)) {
+            return name1.compareTo(name2) <= 0;
+        }
+        return name1.compareToIgnoreCase(name2) <= 0;
     }
 
     private ASTLocalVariableDeclaration getPreviousDeclaration(ASTLocalVariableDeclaration node) {
-        return (ASTLocalVariableDeclaration) StreamImpl
+        return StreamImpl
                 .precedingSiblings(node)
-                .filter(n -> n instanceof ASTLocalVariableDeclaration)
+                .filterIs(ASTLocalVariableDeclaration.class)
+                .filterNot(ASTLocalVariableDeclaration::isTypeInferred)
                 .last();
     }
 }
