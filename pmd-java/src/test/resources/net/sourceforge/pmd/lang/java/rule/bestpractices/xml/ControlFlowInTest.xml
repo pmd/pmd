@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>If in a test method is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        if (System.currentTimeMillis() > 0) {
+            assertTrue(true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test without conditional execution is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        assertEquals(4, 2 + 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If in an ordinary method is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    void ordinaryMethod() {
+        if (System.currentTimeMillis() > 0) {
+            System.out.println("Ready");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

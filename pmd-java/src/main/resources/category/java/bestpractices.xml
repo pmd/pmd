@@ -2414,4 +2414,30 @@ public class Example {
         </example>
     </rule>
 
+    <rule name="ControlFlowInTest"
+          language="java"
+          since="7.29.0"
+          message="Conditional execution in a test can obscure its assertions"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ControlFlowInTestRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#controlflowintest">
+        <description>
+            Conditional execution in tests can obscure which assertions run.
+            Use concrete test cases instead of conditional logic.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        if (isReady()) { // violation
+            assertTrue(result());
+        }
+    }
+}
+        ]]></example>
+    </rule>
+
 </ruleset>
