@@ -365,7 +365,7 @@ public class Example {
     <test-code>
         <description>Verify #1519 [java] UselessParenthesis: False Positive: "Prohibits the use of useless parentheses" when more than one line</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-linenumbers>3-4,7</expected-linenumbers>
         <code><![CDATA[
 public class Pokemon {
     public void method(String pokeNick, Pokemon pokemon, Pokemon renameResult) {

@@ -75,6 +75,14 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super.setLastToken(token);
     }
 
+    /**
+     * Associate a token containing the name of this node with the node itself.
+     * @param token name token
+     */
+    protected void setNameToken(JavaccToken token) {
+        setImage(token.getImage());
+    }
+
     @Override
     protected void enlargeLeft(JavaccToken child) {
         super.enlargeLeft(child);

@@ -22,7 +22,7 @@ class Foo {        // perfect, both methods provided
     <test-code>
         <description>Bad example #1 - missing hashCode</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>1-5</expected-linenumbers>
         <code><![CDATA[
 class Bar {        // poor, missing a hashCode() method
     override fun equals(o: Any?): Boolean {
@@ -35,7 +35,7 @@ class Bar {        // poor, missing a hashCode() method
     <test-code>
         <description>Bad example #2 - missing equals</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>1-5</expected-linenumbers>
         <code><![CDATA[
 class Baz {        // poor, missing an equals() method
     override fun hashCode(): Int {

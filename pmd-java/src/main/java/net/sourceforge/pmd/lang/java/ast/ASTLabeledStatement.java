@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * A wrapper around a statement that assigns it a label.
  *
@@ -39,4 +41,8 @@ public final class ASTLabeledStatement extends AbstractStatement {
         return (ASTStatement) getChild(0);
     }
 
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
+    }
 }

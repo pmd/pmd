@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * Represents a {@code for} loop (distinct from {@linkplain ASTForeachStatement foreach loops}).
  *
@@ -50,6 +52,11 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
     public @Nullable ASTStatementExpressionList getUpdate() {
         ASTForUpdate update = firstChild(ASTForUpdate.class);
         return update == null ? null : update.getExprList();
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
     }
 
 
