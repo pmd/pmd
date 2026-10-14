@@ -334,4 +334,322 @@ class Tester {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6449 - null guard before a realistic stream pipeline</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+
+class Foo {
+    boolean hasResults(Build lastCompletedBuild, boolean selectTools, Set<String> tools) {
+        if (lastCompletedBuild == null) {
+            return true;
+        }
+        return lastCompletedBuild.getActions(ResultAction.class)
+                .stream()
+                .filter(createToolFilter(selectTools, tools))
+                .anyMatch(resultAction -> resultAction.getResult().getTotalSize() > 0);
+    }
+
+    Predicate<ResultAction> createToolFilter(boolean selectTools, Set<String> tools) {
+        return action -> !selectTools || tools.contains(action.getTool());
+    }
+
+    interface Build { List<ResultAction> getActions(Class<ResultAction> type); }
+    interface ResultAction {
+        Result getResult();
+        String getTool();
+    }
+    interface Result { int getTotalSize(); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - a single call with an expression lambda is complex in either branch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+
+class Foo {
+    boolean literalThenTrue(boolean guard, Stream<String> values) {
+        if (guard) return true;
+        return values.anyMatch(value -> value == null);
+    }
+
+    boolean literalElseFalse(boolean guard, Stream<String> values) {
+        if (guard) {
+            return values.anyMatch(value -> value == null);
+        } else {
+            return false;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - a single call with a block lambda is complex in either branch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+
+class Foo {
+    boolean literalThenFalse(boolean guard, Stream<String> values) {
+        if (guard) {
+            return false;
+        } else {
+            return values.anyMatch(value -> { return value == null; });
+        }
+    }
+
+    boolean literalElseTrue(boolean guard, Stream<String> values) {
+        if (guard) return values.anyMatch(value -> { return value == null; });
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - exactly two calls including the root remain simple in all branch positions</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean literalElseFalse(boolean guard, String value) {
+        if (guard) {
+            return value.trim().isEmpty();
+        } else {
+            return false;
+        }
+    }
+
+    boolean literalElseTrue(boolean guard, String value) {
+        if (guard) return value.trim().isEmpty();
+        return true;
+    }
+
+    boolean literalThenTrue(boolean guard, String value) {
+        if (guard) {
+            return true;
+        }
+        return value.trim().isEmpty();
+    }
+
+    boolean literalThenFalse(boolean guard, String value) {
+        if (guard) return false;
+        else return value.trim().isEmpty();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - three calls including qualifiers are complex in all branch positions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean literalElseFalse(boolean guard, String value) {
+        if (guard) {
+            return value.trim().toLowerCase().isEmpty();
+        } else {
+            return false;
+        }
+    }
+
+    boolean literalElseTrue(boolean guard, String value) {
+        if (guard) return value.trim().toLowerCase().isEmpty();
+        return true;
+    }
+
+    boolean literalThenTrue(boolean guard, String value) {
+        if (guard) {
+            return true;
+        }
+        return value.trim().toLowerCase().isEmpty();
+    }
+
+    boolean literalThenFalse(boolean guard, String value) {
+        if (guard) return false;
+        else return value.trim().toLowerCase().isEmpty();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - a three-call chain with method references is complex without lambdas</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+class Foo {
+    boolean hasEmptyValue(boolean guard, List<String> values) {
+        if (guard) return false;
+        return values.stream().map(String::trim).anyMatch(String::isEmpty);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - method references do not make one-call or two-call expressions complex</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.stream.Stream;
+
+class Foo {
+    boolean oneCall(boolean guard, Stream<String> values) {
+        if (guard) return values.anyMatch(String::isEmpty);
+        else return true;
+    }
+
+    boolean twoCalls(boolean guard, List<String> values) {
+        if (guard) return false;
+        return values.stream().anyMatch(String::isEmpty);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - parentheses and unary negation do not hide complex calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean parenthesized(boolean guard, String value) {
+        if (guard) return (value.trim().toLowerCase().isEmpty());
+        return false;
+    }
+
+    boolean negated(boolean guard, String value) {
+        if (guard) {
+            return true;
+        } else {
+            return !value.trim().toLowerCase().isEmpty();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - casts and comparisons do not hide complex calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean cast(boolean guard, String value) {
+        if (guard) return false;
+        return (boolean) value.trim().toLowerCase().isEmpty();
+    }
+
+    boolean comparison(boolean guard, String value) {
+        if (guard) {
+            return value.trim().toLowerCase().length() == 0;
+        } else {
+            return true;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - calls in sibling and nested arguments count towards the limit</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    boolean twoCalls(boolean guard, boolean flag, String value) {
+        if (guard) return Boolean.logicalAnd(flag, value.isEmpty());
+        return false;
+    }
+
+    boolean threeCallsInSiblingArguments(boolean guard, String left, String right) {
+        if (guard) return true;
+        return Boolean.logicalAnd(left.isEmpty(), right.isEmpty());
+    }
+
+    boolean threeCallsInNestedArguments(boolean guard, boolean flag, String value) {
+        if (guard) return Boolean.logicalAnd(flag, Boolean.logicalOr(flag, value.isEmpty()));
+        else return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - a complex condition does not suppress any pair of literal returns</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+class Foo {
+    boolean trueThenFalse(List<String> values) {
+        if (values.stream().filter(String::isEmpty).anyMatch(value -> value == null)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    boolean falseThenTrue(List<String> values) {
+        if (values.stream().filter(String::isEmpty).anyMatch(value -> value == null)) return false;
+        return true;
+    }
+
+    boolean bothTrue(List<String> values) {
+        if (values.stream().filter(String::isEmpty).anyMatch(value -> value == null)) return true;
+        else return true;
+    }
+
+    boolean bothFalse(List<String> values) {
+        if (values.stream().filter(String::isEmpty).anyMatch(value -> value == null)) {
+            return false;
+        }
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - complexity in the condition alone does not suppress simple return branches</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+class Foo {
+    boolean literalThen(List<String> values, boolean fallback) {
+        if (values.stream().filter(String::isEmpty).anyMatch(value -> value == null)) return true;
+        return fallback;
+    }
+
+    boolean literalElse(List<String> values, String fallback) {
+        if (values.stream().filter(String::isEmpty).anyMatch(value -> value == null)) {
+            return fallback.isEmpty();
+        } else {
+            return false;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - complementary complex returns are still reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean complement(boolean guard, String value) {
+        if (guard) return value.trim().toLowerCase().isEmpty();
+        return !value.trim().toLowerCase().isEmpty();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
