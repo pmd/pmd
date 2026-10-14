@@ -652,4 +652,167 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#6449 - a single ordinary method call remains simple in either branch</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>This if statement can be replaced by `return {condition} || {elseBranch};`</message>
+            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {elseBranch};`</message>
+            <message>This if statement can be replaced by `return !{condition} || {thenBranch};`</message>
+            <message>This if statement can be replaced by `return {condition} &amp;&amp; {thenBranch};`</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    boolean literalThenTrue(boolean guard, String value) {
+        if (guard) return true;
+        return value.isEmpty();
+    }
+
+    boolean literalThenFalse(boolean guard, String value) {
+        if (guard) return false;
+        else return value.isEmpty();
+    }
+
+    boolean literalElseTrue(boolean guard, String value) {
+        if (guard) return value.isEmpty();
+        return true;
+    }
+
+    boolean literalElseFalse(boolean guard, String value) {
+        if (guard) return value.isEmpty();
+        else return false;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - ternary returns require parentheses even without method calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    boolean literalThenTrue(boolean guard, boolean choose, boolean left, boolean right) {
+        if (guard) return true;
+        return choose ? left : right;
+    }
+
+    boolean literalThenFalse(boolean guard, boolean choose, boolean left, boolean right) {
+        if (guard) return false;
+        else return (choose ? left : right);
+    }
+
+    boolean literalElseTrue(boolean guard, boolean choose, boolean left, boolean right) {
+        if (guard) return choose ? left : right;
+        return true;
+    }
+
+    boolean literalElseFalse(boolean guard, boolean choose, boolean left, boolean right) {
+        if (guard) return (choose ? left : right);
+        else return false;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6449 - negated chains and lambdas remain complex in either return branch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+
+class Foo {
+    boolean negatedThen(boolean guard, String value) {
+        if (guard) return !(value.trim().toLowerCase().isEmpty());
+        else return true;
+    }
+
+    boolean negatedFollowingReturn(boolean guard, String value) {
+        if (guard) return false;
+        return !value.trim().toLowerCase().isEmpty();
+    }
+
+    boolean negatedLambdaThen(boolean guard, Stream<String> values) {
+        if (guard) return !values.anyMatch(value -> value == null);
+        return false;
+    }
+
+    boolean negatedLambdaElse(boolean guard, Stream<String> values) {
+        if (guard) return true;
+        else return !values.anyMatch(value -> { return value == null; });
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5219 - the final if in a longer else-if chain still has a simple pair of returns</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>This if statement can be replaced by `return !{condition} &amp;&amp; {elseBranch};`</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.Set;
+
+class Foo {
+    private static final Set<String> TRUE_STRINGS = Set.of("true", "on", "yes", "1");
+    private static final Set<String> FALSE_STRINGS = Set.of("false", "off", "no", "0");
+
+    boolean toBool(String stringToConvert, boolean defaultValue) {
+        if (stringToConvert.isEmpty()) {
+            return defaultValue;
+        } else if (TRUE_STRINGS.contains(stringToConvert)) {
+            return true;
+        } else if (FALSE_STRINGS.contains(stringToConvert)) {
+            return false;
+        } else {
+            return defaultValue;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5219 - a longer else-if chain is not reported when its final return is complex</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+class Foo {
+    boolean toBool(List<String> values, boolean defaultValue) {
+        if (values.isEmpty()) {
+            return defaultValue;
+        } else if (values.size() == 1) {
+            return true;
+        } else if (values.get(0).isEmpty()) {
+            return false;
+        } else {
+            return values.stream().map(String::trim).anyMatch(String::isEmpty);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Rule documentation example remains reportable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>This if statement can be replaced by `return {condition};`</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    int bar;
+
+    boolean isBarEqualTo(int x) {
+        if (bar == x) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
