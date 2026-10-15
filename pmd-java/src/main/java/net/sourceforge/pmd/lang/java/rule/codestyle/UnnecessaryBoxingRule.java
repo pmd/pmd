@@ -11,18 +11,19 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
@@ -30,7 +31,9 @@ import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
-import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
+import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
@@ -193,75 +196,30 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Check if the unboxing conversion is required for correct method overload selection.
-     * Returns true if removing the unboxing would cause a different method overload to be selected.
+     * Whether removing the unboxing changes the compile-time declaration of the call (JLS 15.12.2), that is, another
+     * method is selected or the call becomes ambiguous. This reruns the overload resolution of the call with the boxed
+     * expression in place of the unboxing call. The mirrors are built as in {@link UseDiamondOperatorRule}. The call
+     * as written is rerun too, because the result stored on the AST can lose the ambiguity flag of the overload
+     * selection.
      */
-    private boolean isUnboxingRequiredForOverloadSelection(ASTExpression conversionExpr, ASTExpression convertedExpr) {
-        // Find the invocation and argument index
+    private static boolean isUnboxingRequiredForOverloadSelection(ASTExpression conversionExpr, ASTExpression convertedExpr) {
         JavaNode parent = conversionExpr.getParent();
-        InvocationNode invocation;
-        int argIndex;
-        
-        if (parent instanceof ASTList && parent.getParent() instanceof InvocationNode) {
-            invocation = (InvocationNode) parent.getParent();
-            argIndex = conversionExpr.getIndexInParent();
-        } else if (parent instanceof InvocationNode) {
-            invocation = (InvocationNode) parent;
-            argIndex = 0;
-        } else {
+        if (!(parent instanceof ASTArgumentList)
+            || ((InvocationNode) parent.getParent()).getOverloadSelectionInfo().isFailed()) {
             return false;
         }
-        
-        // Get the method and validate we have a boxed->primitive conversion
-        JMethodSig currentMethod;
-        try {
-            currentMethod = invocation.getMethodType();
-        } catch (Exception e) {
-            return false;
+        InvocationNode call = (InvocationNode) parent.getParent();
+        Infer infer = InternalApiBridge.getInferenceEntryPoint(call);
+        // this may not mutate the AST
+        JavaExprMirrors factory = JavaExprMirrors.forObservation(infer);
+        MethodCtDecl before = infer.getCompileTimeDecl(infer.newCallSite(factory.getTopLevelInvocationMirror(call), null));
+        if (before.isFailed()) {
+            // The overload selection does not settle the call as written, so the comparison below would not mean much
+            return true;
         }
-        
-        if (!convertedExpr.getTypeMirror().isBoxedPrimitive() || !conversionExpr.getTypeMirror().isPrimitive()) {
-            return false;
-        }
-        
-        // Check if there are overloads that would accept the boxed type differently
-        return hasObjectOverloadAtPosition(currentMethod, argIndex, invocation instanceof ASTConstructorCall);
-    }
-    
-    /**
-     * Check if there are other overloads that would accept the boxed type differently,
-     * making the unboxing necessary for correct overload selection.
-     */
-    private boolean hasObjectOverloadAtPosition(JMethodSig currentMethod, int argIndex, boolean isConstructor) {
-        JTypeMirror declaringType = currentMethod.getDeclaringType();
-        if (!(declaringType instanceof JClassType) || argIndex >= currentMethod.getFormalParameters().size()) {
-            return false;
-        }
-        
-        JClassType classType = (JClassType) declaringType;
-        JTypeMirror currentParamType = currentMethod.getFormalParameters().get(argIndex);
-        if (!currentParamType.isPrimitive()) {
-            return false;
-        }
-        
-        JTypeMirror boxedType = currentParamType.box();
-        
-        // Get all overloads and check if any would accept the boxed type differently
-        java.util.List<JMethodSig> overloads = isConstructor 
-            ? classType.getConstructors()
-            : classType.streamMethods(method -> method.nameEquals(currentMethod.getName()))
-                      .collect(OverloadSet.collectMostSpecific(classType));
-        
-        return overloads.stream()
-            .filter(overload -> !overload.equals(currentMethod))
-            .filter(overload -> argIndex < overload.getFormalParameters().size())
-            .map(overload -> overload.getFormalParameters().get(argIndex))
-            .anyMatch(overloadParamType -> 
-                // Boxed type is assignable to overload parameter (Object, generic, etc.)
-                boxedType.isSubtypeOf(overloadParamType) 
-                // Or overload takes reference type while current takes primitive (different conversion paths)
-                || overloadParamType.isTypeVariable() || !overloadParamType.isPrimitive() && currentParamType.isPrimitive()
-            );
+        MethodCtDecl after = infer.getCompileTimeDecl(infer.newCallSite(factory.getInvocationMirror(call, (e, p, self) ->
+            factory.defaultMirrorMaker().createMirrorForSubexpression(e == conversionExpr ? convertedExpr : e, p, self)), null));
+        return after.isFailed() || !after.getMethodType().getSymbol().equals(before.getMethodType().getSymbol());
     }
 
 
