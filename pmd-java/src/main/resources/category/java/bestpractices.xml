@@ -1457,6 +1457,9 @@ public class Foo {
             Reports test assertions that may be simplified using a more specific
             assertion method. This enables better error messages, and makes the
             assertions more readable.
+
+            With JUnit 5.8 or later, `assertTrue(a instanceof A)` may also be
+            simplified to `assertInstanceOf(A.class, a)`.
         </description>
         <priority>3</priority>
         <example>
@@ -1479,6 +1482,11 @@ class SomeTestClass {
 
         assertTrue(a == null); // could be assertNull(a);
         assertTrue(a != null); // could be assertNotNull(a);
+
+        assertEquals(null, a); // could be assertNull(a);
+        assertNotEquals(null, a); // could be assertNotNull(a);
+
+        assertEquals("a", "b"); // always fails, could be fail();
     }
 }
             ]]>
