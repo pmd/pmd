@@ -6,6 +6,7 @@ package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -127,11 +128,31 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
         synchronized (lock) {
             tryToFlushBuffer();
             if (!reportBuffer.isEmpty()) {
-                // this would be a problem in PmdAnalysis, maybe because it didn't join on the parallel processing tasks.
-                throw new AssertionError("Closed listener but not all files have been processed");
+                // This would be a problem in PmdAnalysis, maybe because it didn't join
+                // on the parallel processing tasks. Report which files were never
+                // processed, so that this error does not hide the real cause (e.g. a
+                // failing analysis job whose error was only reported but not propagated).
+                throw new AssertionError("Closed listener but not all files have been processed: "
+                                             + unprocessedFiles());
             }
         }
         listener.close();
+    }
+
+    /**
+     * Returns the report file ids that were declared to this listener but whose
+     * reports were never completed. Used to explain the error thrown by
+     * {@link #close()} when the analysis was not fully joined.
+     */
+    private String unprocessedFiles() {
+        List<FileId> notProcessed = new ArrayList<>();
+        for (Map.Entry<FileId, Integer> entry : filesToIdx.entrySet()) {
+            if (entry.getValue() >= nextToOutput) {
+                notProcessed.add(entry.getKey());
+            }
+        }
+        notProcessed.sort(null);
+        return notProcessed + " (buffer size " + reportBuffer.size() + ")";
     }
 
     @Override
