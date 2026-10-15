@@ -64,14 +64,55 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+* misc
+    * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate antlr generated parser implementation classes
 
-### 🚨️ API Changes
+### 🚨️ API Changes and Deprecations
 
-*   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
-    including local variables and unqualified instance fields. Numeric references are converted to their declared type.
-    Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
-    These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
-    `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+#### API Changes
+
+* java
+    * Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
+      including local variables and unqualified instance fields. Numeric references are converted to their declared type.
+      Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
+      These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
+      `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+
+#### Deprecations
+* coco
+    * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* css
+    * {% jdoc css::lang.css.ast.CssLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* csharp
+    * {% jdoc cs::lang.cs.ast.CSharpLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* dart
+    * {% jdoc dart::lang.dart.ast.DartLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* gherkin
+    * {% jdoc gherkin::lang.gherkin.ast.GherkinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* go
+    * {% jdoc go::lang.go.ast.GolangLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* javascript
+    * {% jdoc javascript::lang.typescript.ast.TypeScriptLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* julia
+    * {% jdoc julia::lang.julia.ast.JuliaLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* kotlin
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinParser %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* lua
+    * {% jdoc lua::lang.lua.ast.LuaLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* rust
+    * {% jdoc rust::lang.rust.ast.RustLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* swift
+    * {% jdoc swift::lang.swift.ast.SwiftBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftParser %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* tsql
+    * {% jdoc tsql::lang.tsql.ast.TSqlLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* xml
+    * {% jdoc xml::lang.xml.ast.XMLLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
