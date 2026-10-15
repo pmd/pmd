@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * A "catch" clause of a {@linkplain ASTTryStatement try statement}.
  *
@@ -35,4 +37,8 @@ public final class ASTCatchClause extends AbstractJavaNode {
         return firstChild(ASTBlock.class);
     }
 
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstChild().getReportLocation();
+    }
 }

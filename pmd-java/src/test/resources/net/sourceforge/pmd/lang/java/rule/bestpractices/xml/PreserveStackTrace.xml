@@ -1055,7 +1055,7 @@ public class SomeOtherUserDefinedException extends Exception {
     <test-code>
         <description>Ternary with only one branch ok</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>6,14</expected-linenumbers>
+        <expected-linenumbers>6-7,14</expected-linenumbers>
         <code><![CDATA[
             public abstract class AbstractNamedValueMethodArgumentResolver {
 

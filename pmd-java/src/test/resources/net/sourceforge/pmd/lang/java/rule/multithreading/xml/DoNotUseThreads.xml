@@ -236,4 +236,19 @@ public class OnSpinWaitExample {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>ForkJoinPool</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.ForkJoinPool;
+class Tester {
+    void fork() {
+         ForkJoinPool
+         .commonPool();
+    }
+}
+        ]]>
+        </code>
+    </test-code>
 </test-data>

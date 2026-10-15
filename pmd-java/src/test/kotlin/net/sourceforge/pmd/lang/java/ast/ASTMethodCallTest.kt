@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 /**
@@ -74,6 +75,13 @@ class ASTMethodCallTest : ParserTestSpec({
                             ambiguousName("System.out")
                         }
                     }
+                }
+            }
+            "foo.bar()" should parseAs {
+                methodCall("bar") {
+                    it.getReportText() shouldBe "bar"
+                    skipQualifier()
+                    argList {  }
                 }
             }
         }

@@ -17,6 +17,9 @@ import io.kotest.core.test.TestType
 import io.kotest.matchers.Matcher
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.ParseException
+import net.sourceforge.pmd.lang.ast.impl.AbstractNode
+import net.sourceforge.pmd.lang.document.TextPos2d
+import net.sourceforge.pmd.lang.document.TextRegion
 import net.sourceforge.pmd.lang.test.ast.Assertions
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 import net.sourceforge.pmd.lang.test.ast.ValuedNodeSpec
@@ -242,6 +245,12 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
 
             suspend fun <T : Node> inContext(nodeParsingCtx: NodeParsingCtx<T>, assertions: suspend ImplicitNodeParsingCtx<T>.() -> Unit) {
                 ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
+            }
+
+            fun Node.getReportText(): String {
+                val start = this.textDocument.offsetAtLineColumn(TextPos2d.pos2d(this.reportLocation.startLine, this.reportLocation.startColumn))
+                val end = this.textDocument.offsetAtLineColumn(TextPos2d.pos2d(this.reportLocation.endLine, this.reportLocation.endColumn))
+                return this.textDocument.sliceOriginalText(TextRegion.fromBothOffsets(start, end)).toString()
             }
 
             inner class ImplicitNodeParsingCtx<T : Node>(private val nodeParsingCtx: NodeParsingCtx<T>) {

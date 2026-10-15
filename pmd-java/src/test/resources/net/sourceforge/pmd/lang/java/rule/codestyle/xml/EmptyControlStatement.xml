@@ -43,7 +43,7 @@
     <test-code>
         <description>pos, empty finally block</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>5-6</expected-linenumbers>
         <expected-messages>
             <message>Empty finally clause</message>
         </expected-messages>
@@ -355,7 +355,7 @@
     <test-code>
         <description>pos, empty foreach</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>6,8</expected-linenumbers>
+        <expected-linenumbers>6-7,8</expected-linenumbers>
         <expected-messages>
             <message>Empty foreach statement</message>
             <message>Empty foreach statement</message>
@@ -451,7 +451,7 @@ public class Foo {
     <test-code>
         <description>empty if with else statement</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-linenumbers>3,4-5</expected-linenumbers>
         <expected-messages>
             <message>Empty if statement</message>
             <message>Empty else statement</message>
@@ -470,7 +470,7 @@ public class Foo {
     <test-code>
         <description>empty if with else and else if statement</description>
         <expected-problems>3</expected-problems>
-        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-linenumbers>3,4,5-6</expected-linenumbers>
         <expected-messages>
             <message>Empty if statement</message>
             <message>Empty if statement</message>
@@ -553,7 +553,7 @@ public class Foo {
     <test-code>
         <description>Verify location of violation (TODO)</description>
         <expected-problems>20</expected-problems>
-        <expected-linenumbers>2-3,5-7,10-15,17-22,20-22,24-27,29-29,32-32,37-38,40-43,44-46,48-53,54-58,60-63,64-66,68-71,72-74,76-82,81-82,83-85</expected-linenumbers>
+        <expected-linenumbers>2-3,5-7,10,17,20-22,24,29-29,32-32,37-38,40,44,48,54,60-63,64-66,68,72,76,81-82,83</expected-linenumbers>
         <code><![CDATA[
 public class Empty {
     { // <--violation: line 2

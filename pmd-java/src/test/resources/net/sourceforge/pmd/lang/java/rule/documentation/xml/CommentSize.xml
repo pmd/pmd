@@ -8,7 +8,7 @@
         <description>Too many lines</description>
         <rule-property name="maxLines">5</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
+        <expected-linenumbers>2-10</expected-linenumbers>
         <code><![CDATA[
 package foo;
 /* 1
@@ -79,7 +79,7 @@ public class Foo {
         <description>#2996 Not suppressed</description>
         <rule-property name="maxLines">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>6-11</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public Foo() {

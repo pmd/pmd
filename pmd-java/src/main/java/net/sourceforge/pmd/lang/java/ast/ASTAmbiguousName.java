@@ -221,7 +221,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
                 if (parent instanceof ASTClassType) {
                     ((ASTClassType) parent).setSimpleName(simpleName);
                 } else {
-                    parent.setImage(simpleName);
+                    parent.setNameToken(ambig.getLastToken());
                 }
                 return null;
             }

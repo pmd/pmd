@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * Represents an {@code if} statement, possibly with an {@code else} statement.
  *
@@ -68,5 +70,10 @@ public final class ASTIfStatement extends AbstractStatement {
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
     }
 }
