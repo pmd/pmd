@@ -169,4 +169,480 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6451: rethrowing is still reported by default, once per configured type</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,12,12</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void singleCatch() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    void multiCatch() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception | Error e) {
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: explicitly disabling the exemption still reports rethrows</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">false</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,12,12</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void singleCatch() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    void multiCatch() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception | Error e) {
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: enabled exemption allows direct rethrows, cleanup, logging, and nested blocks</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void direct() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    void cleanup(java.util.List<String> pending) throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            pending.clear();
+            throw e;
+        }
+    }
+    void logging() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    void nestedBlocks() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            {
+                {
+                    throw e;
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: wrapping the caught exception is not a direct rethrow</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void wrapped() {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: both branches of a conditional must rethrow</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void full(boolean condition) throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            if (condition) {
+                throw e;
+            } else {
+                throw e;
+            }
+        }
+    }
+    void partial(boolean condition) throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            if (condition) {
+                throw e;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: an early return means the final rethrow is not on every path</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void earlyReturn(boolean condition) throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            if (condition) {
+                return;
+            }
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: a rethrow escaping a nested try-finally is exempt</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void nestedTryFinally() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            try {
+                throw e;
+            } finally {
+                cleanup();
+            }
+        }
+    }
+    void cleanup() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: a nested catch that swallows the rethrow does not exempt the outer catch</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void swallowed() throws Exception {
+        try {
+            throw new java.io.IOException();
+        } catch (Exception e) {
+            try {
+                throw e;
+            } catch (java.io.IOException ignored) {
+                // The original exception is swallowed by this non-configured catch type.
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: an inner catch rethrow does not exempt the outer catch</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void innerOnly() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            try {
+                throw new RuntimeException();
+            } catch (RuntimeException inner) {
+                throw inner;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: Throwable and Error have the same enabled behavior</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void throwable() throws Throwable {
+        try {
+            throw new Throwable();
+        } catch (Throwable e) {
+            log(e);
+            throw e;
+        }
+    }
+    void error() throws Error {
+        try {
+            throw new Error();
+        } catch (Error e) {
+            log(e);
+            throw e;
+        }
+    }
+    void log(Object value) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: valid Exception|Error multi-catch can rethrow the unchanged parameter</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void multiCatch() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception | Error e) {
+            log(e);
+            throw e;
+        }
+    }
+    void log(Object value) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: catches are checked independently</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void independent() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            throw e;
+        } catch (Error e) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: a configured custom catch type is still reported when wrapped</description>
+        <rule-property name="typesThatShouldNotBeCaught">custom.FooException</rule-property>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+package custom;
+public class Foo {
+    void customType() throws FooException {
+        try {
+            throw new FooException();
+        } catch (FooException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    void customRethrow() throws FooException {
+        try {
+            throw new FooException();
+        } catch (FooException e) {
+            throw e;
+        }
+    }
+}
+class FooException extends Exception {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: reassigning the catch parameter prevents exemption</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void reassigned() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            e = new Exception();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: throws in lambdas and local classes do not rethrow the enclosing parameter</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void nestedDeclarations() throws Exception {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            java.util.concurrent.Callable<Void> lambda = () -> { throw e; };
+            class Local {
+                void run() throws Exception {
+                    throw e;
+                }
+            }
+            new Local().run();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: finally can replace a rethrow with a return or a different exception</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,16</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    void returning(boolean condition) throws Exception {
+        try { throw new Exception(); }
+        catch (Exception e) {
+            try {
+                throw e;
+            } finally {
+                if (condition) {
+                    return;
+                }
+            }
+        }
+    }
+    void replacing() throws Exception {
+        try { throw new Exception(); }
+        catch (Exception e) {
+            try {
+                throw e;
+            } finally {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: conditional multi-catch rethrows still report each configured type</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    void partial(boolean condition) throws Exception {
+        try { throw new Exception(); }
+        catch (Exception | Error e) {
+            if (condition) {
+                throw e;
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: remaining paths can rethrow later, including after nested cleanup</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void remainingPaths(boolean condition) throws Exception {
+        try { throw new Exception(); }
+        catch (Exception e) {
+            if (condition) {
+                throw e;
+            }
+            throw (e);
+        }
+    }
+    void nestedCleanup() throws Exception {
+        try { throw new Exception(); }
+        catch (Exception e) {
+            try {
+                cleanup();
+            } catch (IllegalStateException cleanupFailure) {
+                e.addSuppressed(cleanupFailure);
+            }
+            throw e;
+        }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6451: throwing another variable or a shadowing field is not rethrowing the parameter</description>
+        <rule-property name="excludeCasesWhereExceptionIsRethrown">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,11</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    Exception e = new Exception();
+    void field() throws Exception {
+        try { throw new Exception(); }
+        catch (Exception e) {
+            throw this.e;
+        }
+    }
+    void other(Exception other) throws Exception {
+        try { throw new Exception(); }
+        catch (Exception e) {
+            throw other;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
