@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -53,17 +54,13 @@ class AbruptCompletionTests extends BaseParserTest {
 
     private Executable canCompleteNormally(String stmt) {
         return canCompleteNormally(stmt, actual -> {
-            if (!actual) {
-                fail("Code CAN complete normally: `" + stmt + "`");
-            }
+            assertTrue(actual, "Code CAN complete normally: `" + stmt + "`");
         });
     }
 
     private Executable mustCompleteAbruptly(String stmt) {
         return canCompleteNormally(stmt, actual -> {
-            if (actual) {
-                fail("Code MUST complete abruptly: `" + stmt + "`");
-            }
+            assertFalse(actual, "Code MUST complete abruptly: `" + stmt + "`");
         });
     }
 
