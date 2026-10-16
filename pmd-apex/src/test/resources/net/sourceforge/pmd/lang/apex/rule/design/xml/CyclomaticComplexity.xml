@@ -274,4 +274,32 @@ trigger CaseAssignLevel on CaseAssignLevel__c (after delete, after insert, after
         <expected-problems>0</expected-problems>
         <code-ref id="trigger"/>
     </test-code>
+    <test-code>
+        <description>#5101 Switch cases contribute to the reporting threshold</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'bar()' has a cyclomatic complexity of 12.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar() {
+        Integer value = 1;
+        switch on value {
+            when 1 { }
+            when 2 { }
+            when 3 { }
+            when 4 { }
+            when 5 { }
+            when 6 { }
+            when 7 { }
+            when 8 { }
+            when 9 { }
+            when 10 { }
+            when 11 { }
+            when else { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
