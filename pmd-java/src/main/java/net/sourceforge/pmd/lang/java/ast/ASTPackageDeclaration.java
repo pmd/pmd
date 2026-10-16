@@ -27,6 +27,7 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
 
     private TextRegion reportRegion;
     private JPackageSymbol symbol;
+    private String name;
 
     ASTPackageDeclaration(int id) {
         super(id);
@@ -54,7 +55,12 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
      * @since 6.30.0
      */
     public String getName() {
-        return super.getImage();
+        return name;
+    }
+
+    @Override
+    protected void setImage(String image) {
+        this.name = image;
     }
 
     @Override

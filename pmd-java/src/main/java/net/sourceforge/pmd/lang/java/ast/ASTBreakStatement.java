@@ -24,6 +24,8 @@ public final class ASTBreakStatement extends AbstractStatement {
     private static final Function<Object, ASTStatement> BREAK_TARGET_MAPPER =
         NodeStream.asInstanceOf(ASTLoopStatement.class, ASTSwitchStatement.class);
 
+    private String label;
+
     ASTBreakStatement(int id) {
         super(id);
     }
@@ -38,7 +40,13 @@ public final class ASTBreakStatement extends AbstractStatement {
      * Returns the label, or null if there is none.
      */
     public @Nullable String getLabel() {
-        return getImage();
+        return label;
+    }
+
+    @Override
+    protected void setImage(String image) {
+        super.setImage(image);
+        this.label = image;
     }
 
     /**

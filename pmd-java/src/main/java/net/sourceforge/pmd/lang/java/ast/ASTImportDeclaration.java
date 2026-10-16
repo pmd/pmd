@@ -22,6 +22,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
     private boolean isImportOnDemand;
     private boolean isStatic;
     private boolean moduleImport;
+    private String importedName;
 
     ASTImportDeclaration(int id) {
         super(id);
@@ -70,7 +71,13 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * this is the name of the module.
      */
     public @NonNull String getImportedName() {
-        return super.getImage();
+        return importedName;
+    }
+
+
+    @Override
+    protected void setImage(String image) {
+        this.importedName = image;
     }
 
 

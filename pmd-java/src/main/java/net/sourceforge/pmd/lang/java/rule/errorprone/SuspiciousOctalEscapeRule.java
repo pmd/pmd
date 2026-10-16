@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
@@ -15,7 +16,7 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
-        String image = node.getImage();
+        Chars image = node.getLiteralText();
         // trim quotes
         String s = image.substring(1, image.length() - 1);
 
