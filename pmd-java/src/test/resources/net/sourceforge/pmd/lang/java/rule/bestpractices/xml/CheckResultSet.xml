@@ -596,4 +596,94 @@ public class ResultSetTesting {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>ResultSet navigation in a while body with an unrelated condition is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs, boolean cond) throws SQLException {
+        while (cond) {
+            rs.next();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ResultSet navigation in a nested while body with unrelated conditions is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs, boolean cond, boolean other) throws SQLException {
+        while (cond) {
+            if (other) {
+                rs.next();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ResultSet navigation checked by a while condition remains accepted</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs) throws SQLException {
+        while (rs.next()) {
+            System.out.println(rs.getString(1));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ResultSet navigation checked through a variable inside an unrelated while remains accepted</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs, boolean cond) throws SQLException {
+        while (cond) {
+            boolean hasNext = rs.next();
+            if (hasNext) {
+                System.out.println(rs.getString(1));
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ResultSet navigation in a while using a lambda parameter is reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+interface CheckedBooleanConsumer {
+    void accept(boolean condition) throws SQLException;
+}
+
+public class ResultSetTesting {
+    public void foo(ResultSet rs) {
+        CheckedBooleanConsumer action = condition -> {
+            while (condition) {
+                rs.next();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

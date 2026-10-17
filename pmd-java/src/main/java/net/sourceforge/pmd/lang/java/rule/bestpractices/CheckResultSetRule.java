@@ -12,10 +12,12 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
@@ -33,7 +35,30 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        return null;
+        // Keep skipping checked navigation conditions and their bodies to avoid existing false positives.
+        if (node.getCondition().descendantsOrSelf().filterIs(ASTMethodCall.class).any(this::isResultSetMethod)) {
+            return null;
+        }
+        // A cached navigation result used as the loop condition also checks the navigation call.
+        if (isCheckedNavigationVariable(node.getCondition())) {
+            return null;
+        }
+        return super.visit(node, data);
+    }
+
+    private boolean isCheckedNavigationVariable(ASTExpression condition) {
+        return condition.descendantsOrSelf().filterIs(ASTAssignableExpr.ASTNamedReferenceExpr.class).any(reference -> {
+            if (reference.getReferencedSym() == null) {
+                return false;
+            }
+            ASTVariableId variableId = reference.getReferencedSym().tryGetNode();
+            if (variableId == null) {
+                return false;
+            }
+            ASTExpression initializer = variableId.getInitializer();
+            return initializer != null
+                && initializer.descendantsOrSelf().filterIs(ASTMethodCall.class).any(this::isResultSetMethod);
+        });
     }
 
     @Override
