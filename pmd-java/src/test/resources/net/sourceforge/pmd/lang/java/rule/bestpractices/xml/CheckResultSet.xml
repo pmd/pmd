@@ -496,4 +496,104 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7070: next() is reported inside an unrelated if statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs, boolean cond) throws SQLException {
+        if (cond) {
+            rs.next();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7070: next() is reported inside else and nested if bodies</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,9</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs, boolean cond, boolean other) throws SQLException {
+        if (cond) {
+            if (other) {
+                rs.next();
+            }
+        } else {
+            rs.next();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7070: unused next() assignment in an if body is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs, boolean cond) throws SQLException {
+        if (cond) {
+            boolean hasNext = rs.next();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7070: next() assignment read in an if condition remains checked</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs) throws SQLException {
+        boolean hasNext = rs.next();
+        if (hasNext) {
+            System.out.println("next!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7070: next() remains checked in an if condition</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            System.out.println(rs.getString(1));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7070: nested if condition checking ResultSet navigation remains accepted</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class ResultSetTesting {
+    public void foo(ResultSet rs, boolean cond) throws SQLException {
+        if (cond) {
+            if (rs.first()) {
+                    System.out.println(rs.getString(1));
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

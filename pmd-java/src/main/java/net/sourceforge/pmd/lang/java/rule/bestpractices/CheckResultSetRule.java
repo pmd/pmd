@@ -43,7 +43,11 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        return null;
+        // Keep skipping checked navigation conditions and their bodies to avoid existing false positives.
+        if (node.getCondition().descendantsOrSelf().filterIs(ASTMethodCall.class).any(this::isResultSetMethod)) {
+            return null;
+        }
+        return super.visit(node, data);
     }
 
     @Override
