@@ -68,6 +68,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨️ API Changes
 
+*   Apex DML statement nodes now expose the `@RunAsMode` XPath attribute. It contains `USER_MODE` or `SYSTEM_MODE`
+    when the statement specifies an access mode, and is absent when the mode is implicit ([#7108](https://github.com/pmd/pmd/issues/7108)).
 *   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
     including local variables and unqualified instance fields. Numeric references are converted to their declared type.
     Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
