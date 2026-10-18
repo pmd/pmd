@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, CStyleArrayDeclaration, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBlock, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined, VariableDeclarationUsageDistance">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, CStyleArrayDeclaration, EmptyControlStatement, EmptyMethodInAbstractClassShouldBeAbstract, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableDeclarationShouldBeAtStartOfBlock, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, TypeParameterNamingConventions, UnnecessaryAnnotationValueElement, UnnecessaryBlock, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryInterfaceDeclaration, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, UseUnderscoresInNumericLiterals, VariableCanBeInlined, VariableDeclarationUsageDistance">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -3594,6 +3594,146 @@ Developers Perceive Them</a>.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LocalVariableCouldBeFinal"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreForEachDecl"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="localvariabledeclarationshouldbeatstartofblock">LocalVariableDeclarationShouldBeAtStartOfBlock</h2>
+
+<p><strong>Since:</strong> PMD 7.29.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule enforces a specific code style where local variables should all
+be declared together at the start of their block without initialization.</p>
+
+<p><strong>Note</strong>: This is not a widely accepted style and may be considered
+controversial. See <a href="pmd_rules_java_codestyle.html#variabledeclarationusagedistance"><code class="language-plaintext highlighter-rouge">VariableDeclarationUsageDistance</code></a> for an
+alternative. Instead of organizing the local variables in this way,
+consider to refactor such methods into multiple smaller methods
+with fewer variables.</p>
+
+<p>The rule expects a "declaration section" at the start of each block.
+Within this declaration section, variables must only be declared,
+but not initialized. The variables can optionally be sorted
+either by name or by type and name. This can be controlled with
+properties <code class="language-plaintext highlighter-rouge">sortBy</code> and <code class="language-plaintext highlighter-rouge">caseSensitiveSorting</code>.</p>
+
+<p>This rule exists to make it easy to see the type of any given variable
+at a glance and not have declarations hidden amongst other code or
+long initialization assignments.</p>
+
+<p>It ignores local variables within <code class="language-plaintext highlighter-rouge">for</code> loops, foreach loops, and
+<code class="language-plaintext highlighter-rouge">try</code>-with-resources statements.
+For this rule a case in a <code class="language-plaintext highlighter-rouge">switch</code> statement counts as block.</p>
+
+<p>By default, <code class="language-plaintext highlighter-rouge">super(...)</code> and <code class="language-plaintext highlighter-rouge">this(...)</code> must be placed after the
+declarations in Java versions which support it. This is only
+possible with Java25 (see <a href="https://openjdk.org/jeps/513">JEP 513: Flexible Constructor Bodies</a>).
+Use the property <code class="language-plaintext highlighter-rouge">requireBeforeThisSuper</code> to control this.
+When analyzing code for older Java versions, this property has
+no effect.</p>
+
+<p>Using local variables where the type is inferred (<code class="language-plaintext highlighter-rouge">var</code>) is
+not incompatible with this rule: Those variable declarations are
+required to be initialized. Therefore, this rule ignores them.</p>
+
+<p>When sorting by type, variables of the same type are then sorted by
+name. When sorting by type for arrays, only the element type
+is considered (e.g. for <code class="language-plaintext highlighter-rouge">int a[]</code> and <code class="language-plaintext highlighter-rouge">int[] a</code> the type of both is
+<code class="language-plaintext highlighter-rouge">int</code>). When the local variable declaration declares multiple
+variables, then only the name of the first variable is considered.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/LocalVariableDeclarationShouldBeAtStartOfBlockRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.LocalVariableDeclarationShouldBeAtStartOfBlockRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo1</span> <span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">localVariable1</span><span class="o">;</span> <span class="c1">// correct, variables are declared at the start of the block and not initialized</span>
+        <span class="kt">int</span> <span class="n">localVariable2</span><span class="o">;</span>
+
+        <span class="n">localVariable1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// correct, once all variables are declared they can be initialized and used</span>
+        <span class="n">localVariable2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo2</span> <span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">localVariable1</span><span class="o">;</span>
+        <span class="n">localVariable1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+
+        <span class="kt">int</span> <span class="n">localVariable2</span><span class="o">;</span> <span class="c1">// incorrect, variable2 is declared after others are initialized</span>
+        <span class="n">localVariable2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo3</span> <span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">localVariable1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="c1">// incorrect, variables should be declared first and initialized later</span>
+        <span class="kt">int</span> <span class="n">localVariable2</span><span class="o">;</span> <span class="c1">// correct, because 1 is initialized in its declaration the fault lies in that line, not here</span>
+
+        <span class="n">localVariable2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// requireBeforeThisSuper set to true</span>
+    <span class="kd">public</span> <span class="nf">Bar</span> <span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+        <span class="kt">int</span> <span class="n">localVariable1</span><span class="o">;</span> <span class="c1">// incorrect, super has been called above the variable declarations</span>
+        <span class="n">localVariable1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo4</span> <span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">localVariable1</span><span class="o">;</span>
+        <span class="n">localVariable1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+
+        <span class="kt">var</span> <span class="n">localVariable2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span> <span class="c1">// inferred types are ignored</span>
+    <span class="o">}</span>
+
+    <span class="c1">// sortBy set to "type"</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo5</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">x</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">b</span><span class="o">;</span> <span class="c1">// incorrect, int comes before String when case-insensitive</span>
+        <span class="kt">int</span> <span class="n">a</span><span class="o">;</span> <span class="c1">// incorrect, variables of the same type are sorted by name and a comes before b</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>requireBeforeThisSuper</td>
+      <td>true</td>
+      <td>Require that variable declaration comes before super(…) and this(…) calls. Possible only with Java25+. Always behaves as false in Java24 and below.</td>
+    </tr>
+    <tr>
+      <td>sortBy</td>
+      <td>none</td>
+      <td>Enforce lexicographic sorting of variable declarations. When sorting by type declarations of the same type will be ordered by name.<br />One of: <code class="language-plaintext highlighter-rouge">name</code>, <code class="language-plaintext highlighter-rouge">none</code>, <code class="language-plaintext highlighter-rouge">type</code></td>
+    </tr>
+    <tr>
+      <td>caseSensitiveSorting</td>
+      <td>false</td>
+      <td>Use case sensitive sorting</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LocalVariableDeclarationShouldBeAtStartOfBlock"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/LocalVariableDeclarationShouldBeAtStartOfBlock"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"requireBeforeThisSuper"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"sortBy"</span> <span class="na">value=</span><span class="s">"none"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"caseSensitiveSorting"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>

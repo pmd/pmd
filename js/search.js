@@ -2300,6 +2300,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/codestyle.md",
+  "title": "LocalVariableDeclarationShouldBeAtStartOfBlock (Java, Code Style)",
+  "tags": "",
+  "keywords": "Local Variable Declaration Should Be At Start Of Block",
+  "url": "pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock",
+  "summary": "This rule enforces a specific code style where local variables should all be declared together..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/codestyle.md",
   "title": "LocalVariableNamingConventions (Java, Code Style)",
   "tags": "",
   "keywords": "Local Variable Naming Conventions",

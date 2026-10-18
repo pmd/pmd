@@ -2064,6 +2064,14 @@
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock"><code class="language-plaintext highlighter-rouge">LocalVariableDeclarationShouldBeAtStartOfBlock</code></a> enforces a code style
+where all local variables are declared together at the start of their block, without initialization.
+Optionally, the declarations can be required to be sorted by name or by type and name
+(see properties <code class="language-plaintext highlighter-rouge">sortBy</code> and <code class="language-plaintext highlighter-rouge">caseSensitiveSorting</code>).</li>
+</ul>
+
 <h4 id="changed-rules">Changed Rules</h4>
 <ul>
   <li>The Java rule <a href="pmd_rules_java_design.html#finalfieldcouldbestatic"><code class="language-plaintext highlighter-rouge">FinalFieldCouldBeStatic</code></a> no longer reports casts or conditional expressions
@@ -2119,6 +2127,7 @@ this property.</li>
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6882">#6882</a>: [java] New Rule: Enforce local variable declarations to be at the start of a block</li>
       <li><a href="https://github.com/pmd/pmd/issues/6903">#6903</a>: [java] Enhance UseExplicitTypes to allow verbose long explicit types</li>
     </ul>
   </li>

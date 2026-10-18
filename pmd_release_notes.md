@@ -11,6 +11,7 @@ This is a minor release.
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
@@ -21,6 +22,12 @@ This is a minor release.
 ### 🚀️ New and noteworthy
 
 ### 🌟️ New and Changed Rules
+#### New Rules
+*   The new Java rule [`LocalVariableDeclarationShouldBeAtStartOfBlock`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock) enforces a code style
+    where all local variables are declared together at the start of their block, without initialization.
+    Optionally, the declarations can be required to be sorted by name or by type and name
+    (see properties `sortBy` and `caseSensitiveSorting`).
+
 #### Changed Rules
 *   The Java rule [`FinalFieldCouldBeStatic`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_design.html#finalfieldcouldbestatic) no longer reports casts or conditional expressions
     whose constant classification previously depended on a boxed static final field. Direct static field references
@@ -57,6 +64,7 @@ This is a minor release.
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
 * java-codestyle
+    * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
