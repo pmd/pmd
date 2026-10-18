@@ -15,12 +15,14 @@ editmepath: false
 *   [DeprecatedSample](pmd_rules_java_sample.html#deprecatedsample): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Just some description of a deprecated rule. RuleTag with quotes: Use {% rule "RenamedRule" %} ins...
 *   [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer): Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
 *   [MovedRule](pmd_rules_java_sample.html#movedrule): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been moved to another ruleset. Use instead [JumbledIncrementer](pmd_rules_java_sample2.html#jumbledincrementer).
+*   [MultipleNewlinesRule](pmd_rules_java_sample.html#multiplenewlinesrule): Indented CDATA description
 *   [OverrideBothEqualsAndHashcode](pmd_rules_java_sample.html#overridebothequalsandhashcode): Override both 'public boolean Object.equals(Object other)', and 'public int Object.hashCode()', o...
 *   [RenamedRule1](pmd_rules_java_sample.html#renamedrule1): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer).
 *   [RenamedRule2](pmd_rules_java_sample.html#renamedrule2): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer).
 *   [RenamedRule3](pmd_rules_java_sample.html#renamedrule3): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer).
 *   [RenamedRule4](pmd_rules_java_sample.html#renamedrule4): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [JumbledIncrementer](pmd_rules_java_sample.html#jumbledincrementer).
 *   [SampleRuleWithEnumProperties](pmd_rules_java_sample.html#samplerulewithenumproperties): This rule is for testing enum properties
+*   [SampleRuleWithLotsOfLinks](pmd_rules_java_sample.html#samplerulewithlotsoflinks): This Rule is for Testing links
 *   [XSSInDocumentation](pmd_rules_java_sample.html#xssindocumentation): &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.        ...
 
 ## Additional rulesets

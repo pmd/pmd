@@ -95,7 +95,7 @@ public final class ExprOps {
 
                 boolean expectsVoid = fun.getReturnType() == ts.NO_TYPE;
 
-                return expectsVoid && lambda.isVoidCompatible() || lambda.isValueCompatible();
+                return expectsVoid ? lambda.isVoidCompatible() : lambda.isValueCompatible();
 
             } else {
                 // is method reference

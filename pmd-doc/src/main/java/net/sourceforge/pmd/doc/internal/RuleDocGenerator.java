@@ -30,12 +30,12 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.Rule;
@@ -172,7 +172,7 @@ public class RuleDocGenerator {
     }
 
     private Path getAbsoluteOutputPath(String filename) {
-        return root.resolve(IOUtil.normalizePath(filename));
+        return root.resolve(FilenameUtils.normalize(filename));
     }
 
     private Map<Language, List<RuleSet>> sortRulesets(List<RuleSet> rulesets) {
@@ -323,7 +323,7 @@ public class RuleDocGenerator {
     }
 
     /**
-     * Shortens and escapes (for markdown) some special characters. Otherwise the shortened text
+     * Shortens and escapes (for Markdown) some special characters. Otherwise the shortened text
      * could contain some unfinished sequences.
      * @param rule
      * @return
@@ -336,7 +336,9 @@ public class RuleDocGenerator {
                         .replaceAll("\n+|\r+", " ")
                         .replaceAll("\\|", "\\\\|")
                         .replaceAll("`", "'")
-                        .replaceAll("\\*", "")),
+                        .replaceAll("\\*", "")
+                        .replaceAll("\\[([^\\]]+)\\]\\([^\\)]*\\)", "$1")  // Markdown links
+                ),
                 100));
         return EscapeUtils.preserveRuleTagQuotes(htmlEscaped);
     }
@@ -626,8 +628,9 @@ public class RuleDocGenerator {
         if (description == null || description.isEmpty()) {
             return "";
         }
-
-        String stripped = StringUtils.stripStart(description, "\n\r");
+        // can't just trim the description, spaces in first non-blank line matter
+        // leading blank lines may break the docs front matter
+        String stripped = description.replaceFirst("^\\s*\\n", "");
         stripped = StringUtils.stripEnd(stripped, "\n\r ");
 
         int indentation = 0;

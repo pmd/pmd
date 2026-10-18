@@ -58,6 +58,13 @@ public final class JavaSemanticErrors {
      * TODO Should be an error.
      */
     public static final String MALFORMED_GENERIC_TYPE = "Malformed generic type: expected {0} type arguments, got {1}";
+    /**
+     * Unresolved types freeze arity on first use. A later use with a
+     * different count cannot be substituted safely, so analysis of the
+     * file is skipped.
+     */
+    public static final String UNRESOLVED_GENERIC_ARITY =
+        "Mismatched generic count on unresolved type \"{0}\" (missing aux-classpath?)";
     // this is an error
     public static final String EXPECTED_ANNOTATION_TYPE = "Expected an annotation type";
     /**

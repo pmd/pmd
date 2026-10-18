@@ -916,4 +916,22 @@ public class CompletableFuture<T> {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7060 A final local constant equal to one is a permitted skip</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    void test(boolean skip) {
+        final int step = 1;
+        for (int i = 0; i < 10; i++) {
+            if (skip) {
+                i += step; // Equivalent to skipping one iteration with i += 1.
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

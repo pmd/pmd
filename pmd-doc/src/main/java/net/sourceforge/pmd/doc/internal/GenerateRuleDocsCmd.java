@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
+import org.apache.commons.io.FilenameUtils;
+
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 
@@ -49,7 +50,7 @@ public final class GenerateRuleDocsCmd {
     }
 
     static final Pattern ADDITIONAL_RULESET_PATTERN = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
-            + Pattern.quote(IOUtil.normalizePath(File.separator + Paths.get("src", "main", "resources", "rulesets").toString()) + File.separator)
+            + Pattern.quote(FilenameUtils.normalize(File.separator + Paths.get("src", "main", "resources", "rulesets").toString()) + File.separator)
             + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
 
     public static List<String> findAdditionalRulesets(Path basePath) {

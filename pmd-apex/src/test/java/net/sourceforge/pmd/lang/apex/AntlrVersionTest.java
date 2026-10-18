@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import java.io.IOException;
 import java.util.Deque;
@@ -17,7 +18,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 import io.github.apexdevtools.apexparser.ApexParser;
 
 class AntlrVersionTest {
@@ -78,7 +78,7 @@ class AntlrVersionTest {
 
     private String executeCheckVersion(String generatingToolVersion, String compileTimeVersion) {
         try {
-            return SystemLambda.tapSystemErr(() -> {
+            return tapSystemErr(() -> {
                 RuntimeMetaData.checkVersion(generatingToolVersion, compileTimeVersion);
             });
         } catch (Exception e) {

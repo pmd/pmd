@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
@@ -19,9 +21,11 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
+import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
 import nl.stokpop.typemapper.model.DeclarationKind;
+import nl.stokpop.typemapper.model.TypeAst;
 
 /**
  * Walks a parsed Kotlin AST and sets type/annotation attributes on nodes using
@@ -97,15 +101,45 @@ public final class KotlinTypeAnnotationVisitor {
             this.absPath = absPath;
         }
 
+        /**
+         * Picks the declaration matching {@code candidateFilter} whose source-column range
+         * overlaps {@code node}'s, to disambiguate multiple declarations recorded on the same
+         * line (e.g. {@code val a: String = ""; val b: String? = null}). Falls back to the
+         * first matching candidate if no column overlap is found (e.g. an annotation placed on
+         * its own line, resolved via the +/-1 line tolerance in
+         * {@link KotlinTypeAnalysisContext#declarationsAt}, where column data for the two lines
+         * isn't comparable).
+         */
+        private static DeclarationAst selectDeclaration(
+                List<DeclarationAst> decls, Node node, Predicate<DeclarationAst> candidateFilter) {
+            DeclarationAst firstMatch = null;
+            for (DeclarationAst decl : decls) {
+                if (!candidateFilter.test(decl)) {
+                    continue;
+                }
+                if (firstMatch == null) {
+                    firstMatch = decl;
+                }
+                if (columnsOverlap(node, decl)) {
+                    return decl;
+                }
+            }
+            return firstMatch;
+        }
+
+        private static boolean columnsOverlap(Node node, DeclarationAst decl) {
+            // No end-column data (older kotlin-type-mapper JSON schema) -- can't compare.
+            return decl.getEndColumn() > 0
+                    && decl.getColumn() <= node.getEndColumn() && decl.getEndColumn() >= node.getBeginColumn();
+        }
+
         @Override
         public Void visitPropertyDeclaration(KtPropertyDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            for (DeclarationAst decl : decls) {
-                if (decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
-                    AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
-                    break;
-                }
+            DeclarationAst decl = selectDeclaration(decls, node, d -> d.getType() != null);
+            if (decl != null) {
+                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
+                AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
             }
             return visitChildren(node, data);
         }
@@ -116,12 +150,11 @@ public final class KotlinTypeAnnotationVisitor {
         @Override
         public Void visitClassParameter(KtClassParameter node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            for (DeclarationAst decl : decls) {
-                if (decl.getKind() == DeclarationKind.PROPERTY && decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
-                    AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
-                    break;
-                }
+            DeclarationAst decl = selectDeclaration(decls, node,
+                    d -> d.getKind() == DeclarationKind.PROPERTY && d.getType() != null);
+            if (decl != null) {
+                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
+                AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
             }
             return visitChildren(node, data);
         }
@@ -129,13 +162,11 @@ public final class KotlinTypeAnnotationVisitor {
         @Override
         public Void visitFunctionDeclaration(KtFunctionDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            for (DeclarationAst decl : decls) {
-                if (decl.getReturnType() != null) {
-                    InternalApiBridge.setReturnTypeName(node, decl.getReturnType());
-                    AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
-                    FunctionParameterAnnotator.setFunctionParameterTypes(node, decl.getParameters());
-                    break;
-                }
+            DeclarationAst decl = selectDeclaration(decls, node, d -> d.getReturnType() != null);
+            if (decl != null) {
+                InternalApiBridge.setReturnType(node, toKotlinTypeName(decl.getReturnType()));
+                AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
+                FunctionParameterAnnotator.setFunctionParameterTypes(node, decl.getParameters());
             }
             return visitChildren(node, data);
         }
@@ -143,11 +174,10 @@ public final class KotlinTypeAnnotationVisitor {
         @Override
         public Void visitCatchBlock(KtCatchBlock node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            for (DeclarationAst decl : decls) {
-                if (decl.getKind() == DeclarationKind.CATCH_VARIABLE && decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
-                    break;
-                }
+            DeclarationAst decl = selectDeclaration(decls, node,
+                    d -> d.getKind() == DeclarationKind.CATCH_VARIABLE && d.getType() != null);
+            if (decl != null) {
+                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
             }
             return visitChildren(node, data);
         }
@@ -155,11 +185,10 @@ public final class KotlinTypeAnnotationVisitor {
         @Override
         public Void visitForStatement(KtForStatement node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            for (DeclarationAst decl : decls) {
-                if (decl.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && decl.getType() != null) {
-                    InternalApiBridge.setTypeName(node, decl.getType());
-                    break;
-                }
+            DeclarationAst decl = selectDeclaration(decls, node,
+                    d -> d.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && d.getType() != null);
+            if (decl != null) {
+                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
             }
             return visitChildren(node, data);
         }
@@ -174,7 +203,8 @@ public final class KotlinTypeAnnotationVisitor {
                         || decl.getKind() == DeclarationKind.INTERFACE
                         || decl.getKind() == DeclarationKind.ENUM) {
                     // Set @TypeName to the class's own FQN (useful in Designer + XPath)
-                    InternalApiBridge.setTypeName(node, decl.getFqName());
+                    InternalApiBridge.setType(node, new KotlinTypeName(
+                            decl.getFqName(), false, false, decl.getFqName()));
                     AnnotationFqnAnnotator.setAnnotationFqns(node, decl.getAnnotations());
                     DelegationSpecifierAnnotator.setDelegationSpecifierTypes(node, decl.getSuperTypes());
                     break;
@@ -194,6 +224,15 @@ public final class KotlinTypeAnnotationVisitor {
     static String rawTypeNameOf(String name) {
         int angle = name.indexOf('<');
         return angle >= 0 ? name.substring(0, angle).trim() : name;
+    }
+
+    /** Converts a kotlin-type-mapper {@link TypeAst} to a PMD-owned {@link KotlinTypeName}. */
+    static KotlinTypeName toKotlinTypeName(TypeAst typeAst) {
+        return new KotlinTypeName(
+                typeAst.getFqName(),
+                typeAst.isNullable(),
+                typeAst.isUnresolved(),
+                typeAst.toFqString());
     }
 
     /**

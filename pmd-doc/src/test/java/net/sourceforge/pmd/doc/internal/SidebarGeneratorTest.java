@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.representer.Representer;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RuleSet;
@@ -59,7 +59,7 @@ class SidebarGeneratorTest {
         String yaml = new Yaml(new SafeConstructor(new LoaderOptions()), new Representer(dumperOptions), dumperOptions).dump(result);
 
         String expected = MockedFileWriter.normalizeLineSeparators(
-                IOUtil.readToString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8));
+                IOUtils.toString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8));
         assertEquals(expected, yaml);
     }
 }

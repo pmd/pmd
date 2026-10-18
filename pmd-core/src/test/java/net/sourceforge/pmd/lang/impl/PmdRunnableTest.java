@@ -16,6 +16,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.util.List;
 
@@ -42,8 +43,6 @@ import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.ContextedAssertionError;
 import net.sourceforge.pmd.util.log.PmdReporter;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PmdRunnableTest {
 
@@ -82,7 +81,7 @@ class PmdRunnableTest {
 
     @Test
     void inErrorRecoveryModeErrorsShouldBeLoggedByParser() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
             Report report = process(versionWithParserThatThrowsAssertionError());
@@ -93,7 +92,7 @@ class PmdRunnableTest {
 
     @Test
     void inErrorRecoveryModeErrorsShouldBeLoggedByRule() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             System.setProperty(SystemProps.PMD_ERROR_RECOVERY, "");
 
             Report report = process(ThrowingLanguageModule.INSTANCE.getDefaultVersion());
@@ -107,7 +106,7 @@ class PmdRunnableTest {
 
     @Test
     void withoutErrorRecoveryModeProcessingShouldBeAbortedByParser() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
             assertThrows(AssertionError.class, () -> process(versionWithParserThatThrowsAssertionError()));
         });
@@ -115,7 +114,7 @@ class PmdRunnableTest {
 
     @Test
     void withoutErrorRecoveryModeProcessingShouldBeAbortedByRule() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             System.clearProperty(SystemProps.PMD_ERROR_RECOVERY);
             assertThrows(AssertionError.class, () -> process(ThrowingLanguageModule.INSTANCE.getDefaultVersion()));
         });
