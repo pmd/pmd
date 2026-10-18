@@ -42,7 +42,7 @@ class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>Replace default case with explicit cases to make sure compiler keeps checking that all cases are present.</message>
+            <message>Remove default case and use the rule NonExhaustiveSwitch to make sure the switch stays exhaustive.</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
@@ -82,7 +82,7 @@ sealed interface Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Replace default case with explicit cases to make sure compiler keeps checking that all cases are present.</message>
+            <message>Remove default case and use the rule NonExhaustiveSwitch to make sure the switch stays exhaustive.</message>
         </expected-messages>
         <code><![CDATA[
 sealed interface Foo {
@@ -203,7 +203,7 @@ public class Test {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>Remove default case to make sure compiler keeps checking that all cases are present.</message>
+            <message>Remove default case to make sure the compiler keeps checking that all cases are present.</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {

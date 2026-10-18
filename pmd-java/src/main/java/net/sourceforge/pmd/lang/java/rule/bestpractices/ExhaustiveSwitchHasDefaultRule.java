@@ -55,20 +55,27 @@ public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
     }
 
     private void visitSwitchLike(ASTSwitchLike node, RuleContext ctx) {
-        if (node.isExhaustive() && node.hasDefaultCase()) {
-            if (!defaultBranchIsNecessary(node)) {
-                List<String> missing = missingCases(node);
-                if (missing.isEmpty()
-                        && node instanceof ASTSwitchExpression
-                        && node.getDefaultCase() instanceof ASTSwitchArrowBranch) {
-                    ctx.addViolationWithMessage(node,
-                            "Remove default case to make sure compiler keeps checking that all cases are present.");
+        if (!node.isExhaustive() || !node.hasDefaultCase()) {
+            return;
+        }
+
+        if (!defaultBranchIsNecessary(node)) {
+            List<String> missing = missingCases(node);
+            if (node instanceof ASTSwitchExpression) {
+                // switch expressions - the compiler will do the exhaustive check
+                if (missing.isEmpty()) {
+                    ctx.addViolationWithMessage(node, "Remove default case to make sure the compiler keeps checking that all cases are present.");
                 } else {
                     ctx.addViolation(node, formatMissingCases(missing));
                 }
-            } else if (!branchJustThrows(node.getDefaultCase())) {
-                ctx.addViolationWithMessage(node, "The switch block is exhaustive. The default case should only throw, nothing else.");
+            } else {
+                // switch statement - no compiler checks. The rule NonExhaustiveSwitch should be used.
+                if (missing.isEmpty()) {
+                    ctx.addViolationWithMessage(node, "Remove default case and use the rule NonExhaustiveSwitch to make sure the switch stays exhaustive.");
+                }
             }
+        } else if (!branchJustThrows(node.getDefaultCase())) {
+            ctx.addViolationWithMessage(node, "The switch block is exhaustive. The default case should only throw, nothing else.");
         }
     }
 
@@ -94,7 +101,7 @@ public class ExhaustiveSwitchHasDefaultRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * returns true iff the default branch of this switch is necessary to make the code compile.
+     * returns true if the default branch of this switch is necessary to make the code compile.
      * This happens, if you initialize a final variable in your other branches.
      */
     // visible for testing
