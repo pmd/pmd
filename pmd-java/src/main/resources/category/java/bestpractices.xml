@@ -614,7 +614,7 @@ class ColorTester {
     <rule name="ExhaustiveSwitchHasDefault"
           language="java"
           since="7.10.0"
-          message="The switch block is exhaustive even without the default case"
+          message="Replace default case with explicit cases{0} to make sure compiler keeps checking that all cases are present."
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.ExhaustiveSwitchHasDefaultRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#exhaustiveswitchhasdefault">
         <description>
