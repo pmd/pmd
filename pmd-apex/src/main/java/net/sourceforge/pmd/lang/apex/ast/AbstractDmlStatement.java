@@ -8,10 +8,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 
-import com.google.summit.ast.statement.DmlStatement;
-
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.IteratorUtil;
+
+import com.google.summit.ast.statement.DmlStatement;
 
 public abstract class AbstractDmlStatement extends AbstractApexNode.Single<DmlStatement> {
     protected AbstractDmlStatement(DmlStatement node) {
