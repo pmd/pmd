@@ -1278,8 +1278,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled until #7145 is fixed: a parenthesized lambda body counts as a statement expression for the overload resolution -->
+    <test-code>
         <description>Parenthesized lambda body - #7145</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
