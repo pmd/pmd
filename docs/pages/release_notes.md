@@ -53,6 +53,10 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
     to use `var` when the explicit type name would be longer than a given minimum length configured with 
     this property.
+*   The Java rule {% rule java/performance/AddEmptyString %} no longer reports concatenation of an empty string
+    with a compile-time constant variable, or with a constant expression that uses one. `javac` inlines those
+    concatenations to a string literal, while `String.valueOf` and `Integer.toString` stay method calls.
+    Literal conversions such as `"" + 123`, and concatenation of two strings, are still reported.
 
 ### 🐛️ Fixed Issues
 * apex-performance
@@ -94,6 +98,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7137](https://github.com/pmd/pmd/issues/7137): \[java] InvalidLogMessageFormat: false positive for unresolved exception type (incomplete auxclasspath)
 * java-multithreading
     * [#7120](https://github.com/pmd/pmd/issues/7120): \[java] NonThreadSafeSingleton: throws NoSuchElementException on a record that null checks its own fields
+* java-performance
+    * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: False positive reported for constants
 * java-security
     * [#7014](https://github.com/pmd/pmd/issues/7014): \[java] InsecureCryptoIv/HardCodedCryptoKey: False negative when a hard-coded array is constructed through array element assignments
     * [#7015](https://github.com/pmd/pmd/issues/7015): \[java] InsecureCryptoIv/HardCodedCryptoKey: False negative for unchanged default-initialized arrays
