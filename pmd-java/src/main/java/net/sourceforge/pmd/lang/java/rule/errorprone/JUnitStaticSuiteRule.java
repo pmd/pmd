@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class JUnitStaticSuiteRule extends AbstractJavaRulechainRule {
 
@@ -20,13 +21,14 @@ public class JUnitStaticSuiteRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (isJUnit3Class(node)) {
             ASTMethodDeclaration suiteMethod = node.getDeclarations(ASTMethodDeclaration.class)
                                                    .filter(it -> "suite".equals(it.getName()) && it.getArity() == 0)
                                                    .first();
             if (suiteMethod != null
                 && (suiteMethod.getVisibility() != Visibility.V_PUBLIC || !suiteMethod.isStatic())) {
-                asCtx(data).addViolation(suiteMethod);
+                ctx.addViolation(suiteMethod);
             }
         }
         return null;
