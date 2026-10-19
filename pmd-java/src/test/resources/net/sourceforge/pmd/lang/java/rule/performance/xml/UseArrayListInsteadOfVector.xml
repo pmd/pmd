@@ -118,8 +118,8 @@ public class C {
     </test-code>
 
     <test-code>
-        <description>Only consider Vector and not subclasses</description>
-        <expected-problems>0</expected-problems>
+        <description>#6546 Stack is reported once because the rule is an alias of ReplaceVectorWithList</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Stack;
 class StackUser {

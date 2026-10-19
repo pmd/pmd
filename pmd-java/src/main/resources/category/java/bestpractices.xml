@@ -1426,12 +1426,23 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacevectorwithlist">
         <description>
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
+For Stack, which extends Vector, consider java.util.Deque and an implementation such as java.util.ArrayDeque instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIsExactly('java.util.Vector')]
+//ClassType[
+  pmd-java:typeIs('java.util.Vector')
+  or pmd-java:typeIsExactly('Vector')
+][
+  not(
+    parent::ConstructorCall/parent::VariableDeclarator/preceding-sibling::ClassType[
+      pmd-java:typeIs('java.util.Vector')
+      or pmd-java:typeIsExactly('Vector')
+    ]
+  )
+]
                 ]]></value>
             </property>
         </properties>

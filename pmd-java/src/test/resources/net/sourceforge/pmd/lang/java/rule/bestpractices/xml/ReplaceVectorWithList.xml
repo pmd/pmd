@@ -6,7 +6,7 @@
 
     <test-code>
         <description>bad, local variable of type Vector</description>
-        <expected-problems>2</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Vector;
 public class Foo {
@@ -73,6 +73,56 @@ public class Foo {
                 }
 
             }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 declaration typed as Vector is a single violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+    void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 constructor is reported when the variable is not a Vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+    void bar() {
+        Object v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 Stack is a Vector subclass and is reported once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Deque;
+import java.util.Stack;
+public class Foo {
+    void bar() {
+        Deque s = new Stack();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 extending Vector is still reported once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class MyVec extends Vector {
+}
         ]]></code>
     </test-code>
 </test-data>
