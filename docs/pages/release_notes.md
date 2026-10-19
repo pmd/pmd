@@ -49,6 +49,10 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
     to use `var` when the explicit type name would be longer than a given minimum length configured with 
     this property.
+*   The Java rule {% rule java/performance/AddEmptyString %} no longer reports concatenation of an empty string
+    with a compile-time constant variable, or with a constant expression that uses one. `javac` inlines those
+    concatenations to a string literal, while `String.valueOf` and `Integer.toString` stay method calls.
+    Literal conversions such as `"" + 123`, and concatenation of two strings, are still reported.
 
 ### 🐛️ Fixed Issues
 * core
@@ -73,6 +77,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+* java-performance
+    * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: False positive reported for constants
 
 ### 🚨️ API Changes
 
