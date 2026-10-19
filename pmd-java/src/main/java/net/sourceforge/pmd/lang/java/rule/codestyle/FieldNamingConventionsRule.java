@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -64,6 +65,8 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         for (ASTVariableId id : node) {
             if (getProperty(EXCLUDED_NAMES).contains(id.getName())) {
                 continue;
@@ -72,30 +75,32 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
             boolean isFinal = node.hasModifiers(FINAL);
             boolean isStatic = node.hasModifiers(STATIC) || JavaAstUtils.hasAnyAnnotation(enclosingType, MAKE_FIELD_STATIC_CLASS_ANNOT);
             if (isFinal && isStatic) {
-                checkMatches(id, node.getVisibility() == V_PUBLIC ? publicConstantFieldRegex : constantFieldRegex, data);
+                checkMatches(id, node.getVisibility() == V_PUBLIC ? publicConstantFieldRegex : constantFieldRegex, ctx);
             } else if (isFinal) {
-                checkMatches(id, finalFieldRegex, data);
+                checkMatches(id, finalFieldRegex, ctx);
             } else if (isStatic) {
-                checkMatches(id, staticFieldRegex, data);
+                checkMatches(id, staticFieldRegex, ctx);
             } else {
-                checkMatches(id, defaultFieldRegex, data);
+                checkMatches(id, defaultFieldRegex, ctx);
             }
         }
-        return data;
+        return null;
     }
 
 
     @Override
     public Object visit(ASTEnumConstant node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         // This inlines checkMatches because there's no variable declarator id
 
         if (!getProperty(enumConstantRegex).matcher(node.getImage()).matches()) {
-            asCtx(data).addViolation(node, "enum constant",
-                                     node.getImage(),
-                                     getProperty(enumConstantRegex).toString());
+            ctx.addViolation(node, "enum constant",
+                             node.getImage(),
+                             getProperty(enumConstantRegex).toString());
         }
 
-        return data;
+        return null;
     }
 
 

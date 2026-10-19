@@ -8,6 +8,8 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Objects;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -105,7 +107,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
         try {
             this.writer.flush();
         } finally {
-            IOUtil.closeQuietly(writer);
+            IOUtils.closeQuietly(writer);
         }
     }
 

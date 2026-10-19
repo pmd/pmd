@@ -22,12 +22,12 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Utilities to interpret a string-based classpath.
@@ -85,6 +85,21 @@ public final class AuxClasspathUtil {
             return rtJar;
         }
         throw new IllegalStateException("Could not determine current jvm classpath");
+    }
+
+    /**
+     * Returns whether the given (already expanded) classpath entries contain the platform
+     * classpath, ie a {@code lib/jrt-fs.jar} or {@code lib/rt.jar} entry.
+     *
+     * @since 7.28.0
+     */
+    public static boolean containsPlatformClasspath(List<Path> entries) {
+        Path relativeJrtFsJar = Paths.get("lib/jrt-fs.jar");
+        Path relativeRtJar = Paths.get("lib/rt.jar");
+
+        return entries.stream()
+                .map(Path::toAbsolutePath)
+                .anyMatch(p -> p.endsWith(relativeJrtFsJar) || p.endsWith(relativeRtJar));
     }
 
     public static String toRawClasspath(List<Path> paths, Path... additionalPaths) {
@@ -153,6 +168,7 @@ public final class AuxClasspathUtil {
                     path = Paths.get(classpath.substring(5));
                 }
 
+                // TODO: PMD 8: Use UTF-8
                 try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
                     entries.addAll(lines
                             .map(String::trim)
@@ -177,7 +193,7 @@ public final class AuxClasspathUtil {
                 Path wildcardDirectory = Paths.get(entry.substring(0, entry.length() - 2));
                 try (Stream<Path> stream = Files.list(wildcardDirectory)) {
                     result.addAll(stream
-                            .filter(p -> "jar".equalsIgnoreCase(IOUtil.getFilenameExtension(p.getFileName().toString())))
+                            .filter(p -> "jar".equalsIgnoreCase(FilenameUtils.getExtension(p.getFileName().toString())))
                             .sorted() // make the results deterministic
                             .collect(Collectors.toList()));
                 } catch (IOException e) {
