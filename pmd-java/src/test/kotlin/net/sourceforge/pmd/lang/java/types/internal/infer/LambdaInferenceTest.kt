@@ -507,6 +507,116 @@ class Scratch {
         h.shouldBeCompat(value = true, void = true)
     }
 
+    parserTestContainer("Parenthesized expression lambda compatibility", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        for (body in listOf("str(i)", "new Scratch(i)", "i = 1", "++i", "--i", "i++", "i--",
+                            "str((i))", "(this).str(i)", "new Scratch((i))", "i = (i + 1)")) {
+            doTest(body) {
+                val acu = parser.parse(
+                    """
+                    import java.util.function.Supplier;
+                    class Scratch {
+                        int i;
+                        Scratch(int i) { }
+                        String str(int i) { return ""; }
+                        void test() {
+                            Supplier<Object> bare = () -> $body;
+                            Supplier<Object> parenthesized = () -> ($body);
+                            Supplier<Object> nested = () -> (($body));
+                        }
+                    }
+                    """.trimIndent()
+                )
+
+                val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
+                val mirrors = JavaExprMirrors.forTypeResolution(infer)
+                acu.descendants(ASTLambdaExpression::class.java).toList().forEachIndexed { index, lambda ->
+                    val mirror = mirrors.getTopLevelFunctionalMirror(lambda) as ExprMirror.LambdaExprMirror
+                    withClue(lambda) {
+                        mirror.isVoidCompatible shouldBe (index == 0)
+                        mirror.isValueCompatible shouldBe true
+                    }
+                }
+            }
+        }
+    }
+
+    parserTest("Parenthesized lambda body selects value compatible overload", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Supplier;
+            class Scratch {
+                static void g(int i, Supplier<String> supplier) { }
+                static void g(Object o, Runnable runnable) { }
+                static String str() { return ""; }
+                static void test(Integer i) {
+                    g(i, () -> (str()));
+                    g(i, () -> str());
+                    g(i, () -> ((str())));
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (t_Scratch) = acu.declaredTypeSignatures()
+        val calls = acu.descendants(ASTMethodCall::class.java).filter { it.methodName == "g" }.toList()
+
+        spy.shouldBeOk {
+            calls.forEachIndexed { index, call ->
+                val formals = if (index == 1) {
+                    listOf(ts.OBJECT, java.lang.Runnable::class.raw)
+                } else {
+                    listOf(ts.INT, Supplier::class[gen.t_String])
+                }
+                call.methodType.shouldMatchMethod(
+                    named = "g",
+                    declaredIn = t_Scratch,
+                    withFormals = formals,
+                    returning = ts.NO_TYPE
+                )
+                call.overloadSelectionInfo.isFailed shouldBe false
+            }
+        }
+    }
+
+    parserTest("Parenthesized implicitly typed lambda selects value compatible overload", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Consumer;
+            import java.util.function.Function;
+            class Scratch {
+                static void g(int i, Function<String, String> function) { }
+                static void g(Object o, Consumer<String> consumer) { }
+                static String str(String s) { return s; }
+                static void test(Integer i) {
+                    g(i, s -> (str(s)));
+                    g(i, s -> str(s));
+                    g(i, s -> ((str(s))));
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (t_Scratch) = acu.declaredTypeSignatures()
+        val calls = acu.descendants(ASTMethodCall::class.java).filter { it.methodName == "g" }.toList()
+
+        spy.shouldBeOk {
+            calls.forEachIndexed { index, call ->
+                val formals = if (index == 1) {
+                    listOf(ts.OBJECT, java.util.function.Consumer::class[gen.t_String])
+                } else {
+                    listOf(ts.INT, java.util.function.Function::class[gen.t_String, gen.t_String])
+                }
+                call.methodType.shouldMatchMethod(
+                    named = "g",
+                    declaredIn = t_Scratch,
+                    withFormals = formals,
+                    returning = ts.NO_TYPE
+                )
+                call.overloadSelectionInfo.isFailed shouldBe false
+            }
+        }
+    }
+
     parserTest("Test void compatible lambda with value compatible body") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """

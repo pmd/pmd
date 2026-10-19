@@ -24,9 +24,63 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+*   The new Java rule {% rule java/codestyle/LocalVariableDeclarationShouldBeAtStartOfBlock %} enforces a code style
+    where all local variables are declared together at the start of their block, without initialization.
+    Optionally, the declarations can be required to be sorted by name or by type and name
+    (see properties `sortBy` and `caseSensitiveSorting`).
+
+#### Changed Rules
+*   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
+    whose constant classification previously depended on a boxed static final field. Direct static field references
+    are still reported.
+*   The Java rule {% rule java/errorprone/UnconditionalIfStatement %} now excludes final local boolean constants,
+    consistently with its existing exclusion of named compile-time constants used for conditional compilation.
+*   The Java rule {% rule java/errorprone/UnusedNullCheckInEquals %} now recognizes final local String constants
+    and unqualified instance String constants as non-null receivers, avoiding unnecessary reports.
+*   The Java rule {% rule java/bestpractices/AvoidReassigningLoopVariables %}, with `forReassign=skip`, now accepts
+    a final local constant equal to one as the increment of a conditional skip.
+*   The Java rule {% rule java/bestpractices/UnusedAssignment %} now recognizes final local boolean constants
+    when analyzing short-circuit conditions, avoiding false positives caused by assignments that cannot execute.
+*   The Java rule {% rule java/bestpractices/LiteralsFirstInComparisons %} now recognizes final local String constants
+    and unqualified references to non-static final String constants. This may add violations when such a constant
+    is the argument of a comparison, or remove them when it is already the receiver.
+*   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
+    to use `var` when the explicit type name would be longer than a given minimum length configured with 
+    this property.
+
 ### 🐛️ Fixed Issues
+* core
+    * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
+    * [#7156](https://github.com/pmd/pmd/issues/7156): \[core] Analysis cache fails with ZipException on invalid archive on the auxclasspath
+* groovy
+    * [#7110](https://github.com/pmd/pmd/issues/7110): \[groovy] Fix #7100: CPD fails on GStrings ending in an interpolated variable
+* html
+    * [#5313](https://github.com/pmd/pmd/issues/5313): \[html] CPD gets end line wrong for HTML
+    * [#7166](https://github.com/pmd/pmd/issues/7166): \[html] endcolumn of nodes is off-by-one
+* java
+    * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
+    * [#7133](https://github.com/pmd/pmd/issues/7133): \[java] CPD: Constructor detection state leaks between files with --ignore-identifiers
+    * [#7145](https://github.com/pmd/pmd/issues/7145): \[java] Lambda with a parenthesized expression body is treated as void-compatible
+* java-bestpractices
+    * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
+    * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
+    * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
+* java-codestyle
+    * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
+    * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
+* java-design
+    * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
+    * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
 
 ### 🚨️ API Changes
+
+*   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
+    including local variables and unqualified instance fields. Numeric references are converted to their declared type.
+    Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
+    These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
+    `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.w3c.dom.Document;
@@ -28,7 +29,6 @@ import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -186,7 +186,7 @@ class XMLRendererTest extends AbstractRendererTest {
         renderer.flush();
 
         try (FileInputStream input = new FileInputStream(reportFile)) {
-            return IOUtil.readToString(input, expectedCharset);
+            return IOUtils.toString(input, expectedCharset);
         }
     }
 }

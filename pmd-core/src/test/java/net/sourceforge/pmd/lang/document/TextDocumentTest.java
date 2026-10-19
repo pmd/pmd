@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -192,7 +192,7 @@ class TextDocumentTest {
     void testReader(TextDocument doc) throws IOException {
 
         assertEquals(doc.getText().toString(),
-                     IOUtil.readToString(doc.newReader()),
+                    IOUtils.toString(doc.newReader()),
                     "NewReader should read the text");
 
     }

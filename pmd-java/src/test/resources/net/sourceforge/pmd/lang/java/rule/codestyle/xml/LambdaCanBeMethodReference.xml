@@ -66,23 +66,24 @@
             public final class Foo {
 
                 public static void iTakeLambda(ALambda l) {}
-                static {
+                {
                     iTakeLambda(x ->{ return correct(x); }); // flag
                     iTakeLambda(x ->{ if(x == 1) return correct(x); else return correct(x); }); // do not flag
                     iTakeLambda(x ->{
                         foo();
                         return correct(x);
                     }); // do not flag
-                    iTakeLambda(x -> {});
+                    iTakeLambda(x -> { return 0; });
                     iTakeLambda(this::correct);
                 }
                 public int correct(int a) {
                     return 0;
                 }
+                void foo() { }
             }
 
             interface ALambda {
-                void doSomething(int a);
+                int doSomething(int a);
             }
             ]]></code>
     </test-code>

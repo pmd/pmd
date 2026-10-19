@@ -80,7 +80,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
         super.end(ctx);
     }
 
-    private void processResults(Object data) {
+    private void processResults(RuleContext ctx) {
 
         int threshold = getProperty(THRESHOLD_DESCRIPTOR);
 
@@ -89,7 +89,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
             if (occurrences.size() >= threshold) {
                 ASTStringLiteral first = occurrences.first();
                 Object[] args = { first.toPrintableString(), occurrences.size(), first.getBeginLine(), };
-                asCtx(data).addViolation(first, args);
+                ctx.addViolation(first, args);
             }
         }
     }
@@ -101,17 +101,17 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
         // just catching strings of 'minLength' chars or more (including the
         // enclosing quotes)
         if (image.length() < minLength) {
-            return data;
+            return null;
         }
 
         // skip any exceptions
         if (exceptions.contains(image.substring(1, image.length() - 1))) {
-            return data;
+            return null;
         }
 
         // Skip literals in annotations
         if (getProperty(SKIP_ANNOTATIONS_DESCRIPTOR) && node.ancestors(ASTAnnotation.class).nonEmpty()) {
-            return data;
+            return null;
         }
 
         // This is a rulechain rule - the nodes might be visited out of order. Therefore sort the occurrences.
@@ -119,7 +119,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
                 key -> new TreeSet<>(Node.COORDS_COMPARATOR));
         occurrences.add(node);
 
-        return data;
+        return null;
     }
 
 }

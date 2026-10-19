@@ -17,11 +17,11 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
 class ApexMultifileAnalysisTest {
@@ -75,7 +75,7 @@ class ApexMultifileAnalysisTest {
 
     private void copyResource(String resourcePath, String relativePathInTempDir) throws IOException {
         Path file = tempFolder.resolve(relativePathInTempDir);
-        String fileContents = IOUtil.readToString(getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8);
+        String fileContents = IOUtils.toString(getClass().getResourceAsStream(resourcePath), StandardCharsets.UTF_8);
         Files.write(file, Arrays.asList(fileContents.split("\\R").clone()));
     }
 

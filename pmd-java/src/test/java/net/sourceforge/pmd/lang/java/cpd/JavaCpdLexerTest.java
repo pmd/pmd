@@ -6,12 +6,17 @@ package net.sourceforge.pmd.lang.java.cpd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -98,6 +103,23 @@ class JavaCpdLexerTest extends CpdTextComparisonTest {
     }
 
     @Test
+    void testIgnoreIdentifiersAcrossFiles() {
+        assertIndependentTokenization(
+            "        return void.class;\n",
+            "class Holder<T> implements Marker\n        {\n}\n",
+            "    default void onCreated(Session session)\n"
+        );
+    }
+
+    @Test
+    void testIgnoreIdentifiersAfterIncompleteClass() {
+        assertIndependentTokenization(
+            "class Before {\n",
+            "class Holder { Holder() {} }\nBefore();\n"
+        );
+    }
+
+    @Test
     void testIgnoreLiterals() {
         doTest("ignoreLiterals", "", ignoreLiterals());
     }
@@ -110,6 +132,19 @@ class JavaCpdLexerTest extends CpdTextComparisonTest {
     @Test
     void testTabWidth() {
         doTest("tabWidth");
+    }
+
+    private void assertIndependentTokenization(String... sources) {
+        CpdLexer reusedLexer = newCpdLexer(ignoreIdents());
+        for (String source : sources) {
+            Tokens expected = tokenize(newCpdLexer(ignoreIdents()), sourceCodeOf(source));
+            Tokens actual = tokenize(reusedLexer, sourceCodeOf(source));
+            assertEquals(tokenImages(expected), tokenImages(actual), source);
+        }
+    }
+
+    private static List<String> tokenImages(Tokens tokens) {
+        return tokens.getTokens().stream().map(token -> token.getImage(tokens)).collect(Collectors.toList());
     }
 
 
