@@ -1962,6 +1962,9 @@ public class Foo {
         <description>
 Import statements allow the use of non-fully qualified names.  The use of a fully qualified name
 which is covered by an import statement is redundant.  Consider using the non-fully qualified name.
+
+A fully qualified `lombok.Builder` is kept when `builderClassName` is `"Builder"`. The generated
+builder class then has that simple name, so `@Builder` no longer refers to the annotation.
         </description>
         <priority>4</priority>
         <example>
