@@ -32,6 +32,16 @@ class RuleSetFactoryTest extends AbstractRuleSetFactoryTest {
                 + " 51| \n"
                 + " 52|     <rule name=\"AvoidDeeplyNestedIfStmts\"\n");
         messages.put("category/java/design.xml", designMessages);
+        Set<String> performanceMessages = new HashSet<>();
+        performanceMessages.add("Warning at category/java/performance.xml:655:5\n"
+                + " 653|     </rule>\n"
+                + " 654| \n"
+                + " 655|     <rule name=\"UseArrayListInsteadOfVector\" ref=\"category/java/bestpractices.xml/ReplaceVectorWithList\" deprecated=\"true\" />\n"
+                + "          ^^^^^ Use Rule name category/java/bestpractices.xml/ReplaceVectorWithList instead of the deprecated Rule name category/java/performance.xml/UseArrayListInsteadOfVector. PMD 8.0.0 will remove support for this deprecated Rule name usage.\n"
+                + "\n"
+                + " 656| \n"
+                + " 657|     <rule name=\"UseArraysAsList\"\n");
+        messages.put("category/java/performance.xml", performanceMessages);
         return messages;
     }
 

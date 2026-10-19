@@ -652,19 +652,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UseArrayListInsteadOfVector"
-          language="java"
-          since="3.0"
-          message="Use ArrayList instead of Vector"
-          ref="category/java/bestpractices.xml/ReplaceVectorWithList"
-          deprecated="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraylistinsteadofvector">
-        <description>
-ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
-
-This rule is deprecated. Use ReplaceVectorWithList from the best practices category instead.
-        </description>
-    </rule>
+    <rule name="UseArrayListInsteadOfVector" ref="category/java/bestpractices.xml/ReplaceVectorWithList" deprecated="true" />
 
     <rule name="UseArraysAsList"
           language="java"
