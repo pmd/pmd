@@ -1086,4 +1086,41 @@ public class NPathComplexityOverflow {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Short-circuit operators outside of conditions don't add paths #5798</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#serialize(Dto)' has value 161.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    public void serialize(Dto dto) {
+        final boolean notSet = dto.getNot() != null && dto.getNot();
+        final boolean optionalSet = dto.getOptional() != null && dto.getOptional();
+        final boolean subString = dto.isSubString();
+        final boolean contentTypeSet = dto.getContentType() != null;
+        if (this.defaults || notSet || optionalSet || contentTypeSet || subString) {
+            if (notSet) {
+                write("not");
+            }
+            if (optionalSet) {
+                write("optional");
+            }
+            if (dto.getRawBytes() != null) {
+                write("rawBytes");
+            }
+            if (subString) {
+                write("subString");
+            }
+            if (contentTypeSet) {
+                write("contentType");
+            }
+        } else {
+            write("string");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
