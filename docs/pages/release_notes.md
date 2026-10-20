@@ -26,6 +26,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
+*   The new Java rule {% rule java/bestpractices/InitializeFieldsBeforeCtor %} finds field assignments in constructors,
+    that could be moved before the superclass constructor call. This is possible since Java 25
+    (JEP 513: Flexible Constructor Bodies) and ensures that the fields are initialized, while the superclass
+    constructor runs.
 *   The new Java rule {% rule java/codestyle/LocalVariableDeclarationShouldBeAtStartOfBlock %} enforces a code style
     where all local variables are declared together at the start of their block, without initialization.
     Optionally, the declarations can be required to be sorted by name or by type and name
@@ -67,6 +71,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
     * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
+    * [#7174](https://github.com/pmd/pmd/issues/7174): \[java] Initialize fields before calling super()
 * java-codestyle
     * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
