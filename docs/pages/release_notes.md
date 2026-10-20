@@ -73,6 +73,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+* java-errorprone
+    * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass false positive with multiple top-level classes
 
 ### 🚨️ API Changes
 
