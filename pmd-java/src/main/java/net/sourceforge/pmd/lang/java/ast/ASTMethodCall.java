@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -48,6 +50,8 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
 
         assert getMethodName() != null;
 
+        // TODO: Remove this, when we remove getImage()
+        assert Objects.equals(getImage(), getMethodName());
     }
 
     @Override

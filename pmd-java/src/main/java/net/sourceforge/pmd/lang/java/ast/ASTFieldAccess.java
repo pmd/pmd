@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -50,6 +52,13 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         this.setLastToken(identifier);
     }
 
+
+    @Override
+    public void jjtClose() {
+        // TODO: Remove this, when we remove getImage()
+        super.jjtClose();
+        assert Objects.equals(getImage(), getName());
+    }
 
     @Override
     public @NonNull ASTExpression getQualifier() {

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
 /**
  * A wrapper around a statement that assigns it a label.
  *
@@ -21,6 +23,13 @@ public final class ASTLabeledStatement extends AbstractStatement {
         super(id);
     }
 
+
+    @Override
+    public void jjtClose() {
+        // TODO: Remove this, when we remove getImage()
+        super.jjtClose();
+        assert Objects.equals(getImage(), getLabel());
+    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

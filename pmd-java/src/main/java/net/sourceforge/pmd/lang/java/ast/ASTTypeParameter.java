@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -34,6 +36,13 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
         super(id);
     }
 
+
+    @Override
+    public void jjtClose() {
+        // TODO: Remove this, when we remove getImage()
+        super.jjtClose();
+        assert Objects.equals(getImage(), getName());
+    }
 
     @Override
     protected void setImage(String image) {
