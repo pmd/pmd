@@ -335,8 +335,8 @@ void Prolog() #void :
 	)?
 	
     (
-    	LOOKAHEAD( ( CommentTag() | JspComment() )* 	DoctypeDeclaration() )
-    	( CommentTag() | JspComment() )*
+    	LOOKAHEAD( ( CommentTag() | JspComment() | JspDirective() | JspScriptlet() | JspDeclaration() )* 	DoctypeDeclaration() )
+    	( CommentTag() | JspComment() | JspDirective() | JspScriptlet() | JspDeclaration() )*
 	    DoctypeDeclaration()
 	)?
 }

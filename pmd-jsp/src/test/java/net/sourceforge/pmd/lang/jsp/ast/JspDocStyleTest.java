@@ -118,6 +118,32 @@ class JspDocStyleTest extends AbstractJspNodesTst {
     }
 
     /**
+     * A doctype declaration may follow JSP directives, scriptlets and
+     * comments, e.g. a {@code <%@ page %>} directive at the top of the file.
+     *
+     * @see <a href="https://github.com/pmd/pmd/issues/5092">#5092</a>
+     */
+    @Test
+    void testDoctypeAfterJspDirectives() {
+        String[] prologs = {
+            "<%@ page contentType=\"text/html\" %>\n",
+            "<%@ page contentType=\"text/html\" %>\n<%@ taglib prefix=\"c\" uri=\"http://example.com/c\" %>\n",
+            "<% int a = 1; %>\n",
+            "<%! int a = 1; %>\n",
+            "<%-- comment --%>\n<%@ page contentType=\"text/html\" %>\n<!-- html comment -->\n",
+            "<?xml version=\"1.0\"?>\n<%@ page contentType=\"text/html\" %>\n",
+        };
+        for (String prolog : prologs) {
+            ASTCompilationUnit root = jsp.parse(prolog + "<!DOCTYPE html>\n<html></html>");
+
+            List<ASTDoctypeDeclaration> docTypeDeclarations = root.descendants(ASTDoctypeDeclaration.class).toList();
+            assertEquals(1, docTypeDeclarations.size(), "One doctype declaration expected for: " + prolog);
+            assertEquals("html", docTypeDeclarations.get(0).getName(), "Correct doctype-name expected!");
+            assertEquals(1, root.descendants(ASTElement.class).count(), "One element expected for: " + prolog);
+        }
+    }
+
+    /**
      * Test parsing of a XML comment.
      *
      */
