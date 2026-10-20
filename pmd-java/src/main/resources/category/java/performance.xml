@@ -19,17 +19,9 @@ Rules that flag suboptimal code.
 The conversion of literals to strings by concatenating them with empty strings is inefficient.
 It is much better to use one of the type-specific `toString()` methods instead or `String.valueOf()`.
 
-Concatenation with a compile-time constant variable is not reported. The compiler inlines it:
-`DURATION + ""` becomes the string literal of that constant, while `String.valueOf(DURATION)`
-is a method call and not a constant expression. Concatenation of two strings is still reported.
+Concatenation with a compile-time constant variable is not reported. The compiler inlines such concatenations, making them more efficient than `String.valueOf` calls. Concatenation of two strings is still reported.
         </description>
         <priority>3</priority>
-        <example>
-<![CDATA[
-String s = "" + 123;                // inefficient
-String t = Integer.toString(456);   // preferred approach
-]]>
-        </example>
         <example>
 <![CDATA[
 class Constants {
