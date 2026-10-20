@@ -652,7 +652,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UseArrayListInsteadOfVector" ref="category/java/bestpractices.xml/ReplaceVectorWithList" deprecated="true" />
+    <rule name="UseArrayListInsteadOfVector" ref="category/java/bestpractices.xml/ReplaceJavaUtilVector" deprecated="true" />
 
     <rule name="UseArraysAsList"
           language="java"

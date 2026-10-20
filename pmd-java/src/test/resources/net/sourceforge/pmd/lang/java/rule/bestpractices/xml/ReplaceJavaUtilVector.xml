@@ -106,11 +106,11 @@ public class Foo {
         <description>#6546 Stack is a Vector subclass and is reported once</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import java.util.Deque;
 import java.util.Stack;
+import java.util.Vector;
 public class Foo {
     void bar() {
-        Deque s = new Stack();
+        Vector s = new Stack();
     }
 }
         ]]></code>
@@ -122,6 +122,61 @@ public class Foo {
         <code><![CDATA[
 import java.util.Vector;
 public class MyVec extends Vector {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 Stack constructor is reported when the variable is not a Vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Stack;
+public class Foo {
+    void bar() {
+        Object s = new Stack();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unresolved Vector without a package is ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.Annotation;
+@Annotation
+public class Foo {
+    void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fully qualified Vector is reported even with unrelated unresolved imports</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import some.OtherClass;
+public class Foo {
+    void bar() {
+        java.util.Vector v = new java.util.Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No problem using List or Deque with modern implementations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+public class Foo {
+    List list = new ArrayList();
+    Deque deque = new ArrayDeque();
 }
         ]]></code>
     </test-code>
