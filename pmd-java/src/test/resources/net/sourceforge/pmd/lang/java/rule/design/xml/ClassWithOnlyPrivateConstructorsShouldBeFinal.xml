@@ -399,4 +399,33 @@ Foo // <--violation: line 2
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ClassWithOnlyPrivateConstructorsShouldBeFinal: lombok constructors with a staticName are private #5072</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>6,9,12,15,18</expected-linenumbers>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+@AllArgsConstructor(staticName = "build")
+class AllArgs1 { private AllArgs1() {} } // violation: the generated ctor is private
+
+@NoArgsConstructor(staticName = "build")
+class NoArgs1 { private NoArgs1(String a) {} } // violation: the generated ctor is private
+
+@RequiredArgsConstructor(staticName = "build")
+class Required1 { private Required1() {} } // violation: the generated ctor is private
+
+@lombok.AllArgsConstructor(staticName = "build")
+class AllArgs2 { private AllArgs2() {} } // violation: the generated ctor is private
+
+@lombok.NoArgsConstructor(staticName = "build", access = lombok.AccessLevel.PUBLIC)
+class NoArgs2 { private NoArgs2(String a) {} } // violation: access applies to the static method only
+
+@AllArgsConstructor(staticName = "")
+class AllArgs3 { private AllArgs3() {} } // no violation: an empty staticName is the same as none
+]]></code>
+    </test-code>
 </test-data>
