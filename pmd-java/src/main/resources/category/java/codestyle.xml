@@ -2392,10 +2392,11 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
                 <value><![CDATA[
 //VariableDeclarator
     (: Skip when a type argument is not an unbounded wildcard. The short form
-       would be a generic array creation error. List<?>[] is still reported. :)
-    [not(parent::*/ArrayType/ClassType/TypeArguments[ClassType or WildcardType/ClassType])]
+       would be a generic array creation error. List<?>[] is still reported.
+       (ArrayType|.) covers both standard and C-style array dimensions. :)
+    [not(parent::*/(ArrayType|.)/ClassType/TypeArguments[ClassType or WildcardType/ClassType])]
     [VariableId[@TypeInferred = false() and @ArrayType = true()]]
-    [ArrayAllocation/ArrayInitializer]
+    /ArrayAllocation[ArrayInitializer]
                 ]]></value>
             </property>
         </properties>
