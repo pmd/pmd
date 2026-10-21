@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
@@ -289,8 +290,9 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     public Object visit(ASTAmbiguousName node, Object data) {
         // ambiguous name means the symbol table could not resolve the first name
 
-        // only consider static imports
-        boolean onlyStatic = !(node.getParent() instanceof ASTClassType);
+        // A field-access qualifier may be a type brought in by an on-demand import.
+        boolean onlyStatic = !(node.getParent() instanceof ASTClassType)
+            && !(node.getParent() instanceof ASTFieldAccess);
         recordFailedTypeResWithName(node, node.getFirstToken().getImage(), onlyStatic);
         return null;
     }
