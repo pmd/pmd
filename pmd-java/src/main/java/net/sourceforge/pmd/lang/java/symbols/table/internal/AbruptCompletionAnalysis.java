@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -44,11 +45,11 @@ import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Implementation of {@link #canCompleteNormally(ASTStatement)}, which
- * is used to implement scoping of pattern variables.
+ * is used to implement scoping of pattern variables and lambda body compatibility.
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html#jls-14.22">Java Language Specification</a>
  */
-final class AbruptCompletionAnalysis {
+public final class AbruptCompletionAnalysis {
 
     private AbruptCompletionAnalysis() {
         // util class
@@ -60,7 +61,19 @@ final class AbruptCompletionAnalysis {
      * complete normally, while a return or throw always complete abruptly.
      */
     static boolean canCompleteNormally(ASTStatement stmt) {
-        return stmt.acceptVisitor(new ReachabilityVisitor(), new SubtreeState(f -> VisitResult.CONTINUE));
+        // Symbol tables are still being built, so avoid constant folding here.
+        return canCompleteNormally(stmt, expr -> JavaAstUtils.isBooleanLiteral(expr, true));
+    }
+
+    /**
+     * Returns whether the statement can complete normally, using the given
+     * predicate to recognize constant-true expressions.
+     *
+     * @param stmt A reachable statement
+     * @param isConstantTrue Predicate appropriate to the caller's resolution stage
+     */
+    public static boolean canCompleteNormally(ASTStatement stmt, Predicate<ASTExpression> isConstantTrue) {
+        return stmt.acceptVisitor(new ReachabilityVisitor(isConstantTrue), new SubtreeState(f -> VisitResult.CONTINUE));
     }
 
     /**
@@ -75,6 +88,12 @@ final class AbruptCompletionAnalysis {
      * can complete normally.
      */
     static final class ReachabilityVisitor extends JavaVisitorBase<SubtreeState, Boolean> {
+
+        private final Predicate<ASTExpression> isConstantTrue;
+
+        ReachabilityVisitor(Predicate<ASTExpression> isConstantTrue) {
+            this.isConstantTrue = isConstantTrue;
+        }
 
         enum VisitResult {
             CONTINUE,
@@ -184,7 +203,7 @@ final class AbruptCompletionAnalysis {
             recordReachableNode(node, data);
             boolean bodyCompletesNormally = node.getBody().acceptVisitor(this, data);
 
-            boolean isNotDoWhileTrue = !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
+            boolean isNotDoWhileTrue = !isConstantTrue.test(node.getCondition());
 
             return isNotDoWhileTrue && (bodyCompletesNormally || data.containsContinue(node))
                 || data.containsBreak(node);
@@ -193,11 +212,13 @@ final class AbruptCompletionAnalysis {
         @Override
         public Boolean visit(ASTSwitchStatement node, SubtreeState data) {
 
-            // note: exhaustive enum switches are NOT considered exhaustive
-            // for the purposes of liveness analysis, only the presence of a
-            // default case matters. Otherwise liveness analysis would depend
-            // on type resolution and bad things would happen.
-            boolean isExhaustive = node.hasDefaultCase();
+            // Enhanced switches must be exhaustive. Recognize them syntactically
+            // so this analysis does not depend on type resolution. Plain enum
+            // switches without a default can still complete normally.
+            boolean isExhaustive = node.hasDefaultCase()
+                || node.getBranches().any(branch -> branch.getLabel().isPatternLabel()
+                    || branch.getLabel().isCaseNull()
+                    || branch.getLabel().getExprList().any(isConstantTrue));
 
             boolean completesNormally = true;
             boolean first = true;
@@ -217,7 +238,8 @@ final class AbruptCompletionAnalysis {
                     throw AssertionUtil.shouldNotReachHere("Not a branch type: " + branch);
                 }
 
-                if (isExhaustive && first) {
+                // A colon group falls through; only the final group can exit normally.
+                if (isExhaustive && (first || branch instanceof ASTSwitchFallthroughBranch)) {
                     completesNormally = branchCompletesNormally;
                     first = false;
                 } else {
@@ -225,7 +247,7 @@ final class AbruptCompletionAnalysis {
                 }
             }
 
-            return completesNormally;
+            return completesNormally || data.containsBreak(node);
 
         }
 
@@ -246,7 +268,7 @@ final class AbruptCompletionAnalysis {
             recordReachableNode(node, data);
 
             node.getBody().acceptVisitor(this, data);
-            boolean isNotWhileTrue = !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
+            boolean isNotWhileTrue = !isConstantTrue.test(node.getCondition());
 
             return isNotWhileTrue || data.containsBreak(node);
         }
@@ -258,7 +280,7 @@ final class AbruptCompletionAnalysis {
 
             node.getBody().acceptVisitor(this, data);
             boolean isNotForTrue = node.getCondition() != null
-                && !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
+                && !isConstantTrue.test(node.getCondition());
 
             return isNotForTrue || data.containsBreak(node);
         }
@@ -386,7 +408,11 @@ final class AbruptCompletionAnalysis {
             if (continueTargets.isEmpty()) {
                 continueTargets = new HashSet<>();
             }
-            continueTargets.add(continueStatement.getTarget());
+            ASTStatement target = continueStatement.getTarget();
+            if (target instanceof ASTLabeledStatement) {
+                target = ((ASTLabeledStatement) target).getStatement();
+            }
+            continueTargets.add(target);
             if (parent != null) {
                 parent.addContinue(continueStatement);
             }
