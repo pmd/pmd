@@ -107,6 +107,34 @@ class CaptureInferenceTest : ProcessorTestSpec({
         }
     }
 
+    listOf("C extends Iterable<?> & Marker", "C extends Iterable<?>").forEach { typeParameters ->
+        parserTest("Capture wildcard in upper bound, method ref <$typeParameters> #7054") {
+            val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                """
+            import java.util.function.Consumer;
+
+            class Reproducer {
+                static <$typeParameters> void visit(C values) {
+                    Consumer<Consumer<Object>> f = values::forEach;
+                }
+            }
+            """.trimIndent()
+            )
+
+            val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
+            spy.shouldBeOk {
+                val captured = captureMatcher(`?`)
+                mref.referencedMethod.shouldMatchMethod(
+                    named = "forEach",
+                    declaredIn = Iterable::class[captured],
+                    withFormals = listOf(Consumer::class[`?` `super` captured]),
+                    returning = void
+                )
+                mref shouldHaveType Consumer::class[Consumer::class[ts.OBJECT]]
+            }
+        }
+    }
+
     parserTest("Test capture incompatibility recovery") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
