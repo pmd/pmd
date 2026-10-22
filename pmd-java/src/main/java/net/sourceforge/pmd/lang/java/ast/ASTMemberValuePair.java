@@ -28,10 +28,18 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
         super(id);
     }
 
+    // /**
+    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+    //  */
     @Override
-    protected void setImage(String image) {
-        super.setImage(image);
-        this.name = image;
+    // @Deprecated
+    // @DeprecatedAttribute(replaceWith = "@Name")
+    public String getImage() {
+        return getName();
+    }
+
+    void setName(String name) {
+        this.name = name;
     }
 
     /**

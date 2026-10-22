@@ -2829,7 +2829,7 @@ void AnnotationMemberList():
 
 void ShorthandAnnotationValue() #MemberValuePair:
 {
-    jjtThis.setImage(ASTMemberValuePair.VALUE_ATTR);
+    jjtThis.setName(ASTMemberValuePair.VALUE_ATTR);
     jjtThis.setShorthand();
 }
 {
@@ -2840,7 +2840,7 @@ void ShorthandAnnotationValue() #MemberValuePair:
 void MemberValuePair():
 {}
 {
-    <IDENTIFIER> { setLastTokenImage(jjtThis); } "=" MemberValue()
+    <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); } "=" MemberValue()
 }
 
 void MemberValue() #void:
