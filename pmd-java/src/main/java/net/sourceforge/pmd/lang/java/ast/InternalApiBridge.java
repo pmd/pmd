@@ -217,6 +217,10 @@ public final class InternalApiBridge {
         return type.getReferencedSym();
     }
 
+    public static @Nullable JTypeDeclSymbol getOrDisambigSupertypeSym(ASTClassType supertype) {
+        return AstDisambiguationPass.getOrDisambigSupertypeSym(supertype);
+    }
+
     public static void setTypedSym(ASTFieldAccess expr, JVariableSig.FieldSig sym) {
         expr.setTypedSym(sym);
     }

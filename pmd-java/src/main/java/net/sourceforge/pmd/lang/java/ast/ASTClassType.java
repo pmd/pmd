@@ -43,6 +43,8 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
     // the ambiguous qualifier is resolved to a package name
     private boolean isFqcn;
     private JClassType implicitEnclosing;
+    // true while the disambiguation pass is resolving the symbol
+    private boolean isBeingDisambiguated;
 
     ASTClassType(ASTAmbiguousName lhs, String simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSTYPE);
@@ -87,6 +89,14 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
 
     void setSymbol(JTypeDeclSymbol symbol) {
         this.symbol = symbol;
+    }
+
+    boolean isBeingDisambiguated() {
+        return isBeingDisambiguated;
+    }
+
+    void setBeingDisambiguated(boolean beingDisambiguated) {
+        isBeingDisambiguated = beingDisambiguated;
     }
 
     // this is just a transitory variable

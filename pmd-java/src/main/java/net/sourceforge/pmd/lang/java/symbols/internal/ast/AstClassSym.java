@@ -522,9 +522,12 @@ final class AstClassSym
 
         }
 
-        JClassSymbol superclass = classSymbolOf(node.getSuperClassTypeNode());
-        if (superclass != null) {
-            return superclass;
+        ASTClassType superclassNode = node.getSuperClassTypeNode();
+        if (superclassNode != null) {
+            JClassSymbol superclass = classSymbolOf(superclassNode);
+            // null if the inheritance is cyclic (or the superclass is a type var),
+            // which is a compile-time error
+            return superclass != null ? superclass : factory.types().OBJECT.getSymbol();
         }
 
         JClassType sup = getSuperclassType(Substitution.EMPTY);
@@ -539,12 +542,9 @@ final class AstClassSym
                 // we play safe here, but the symbol is either a JClassSymbol
                 // or a JTypeParameterSymbol, with the latter case being a
                 // compile-time error
-                JClassSymbol sym = classSymbolOf(n);
-                if (sym != null) {
-                    return sym;
-                }
-                JTypeDeclSymbol typeSym = n.getTypeMirror().getSymbol();
-                return typeSym instanceof JClassSymbol ? (JClassSymbol) typeSym : null;
+                // null if the inheritance is cyclic (or the interface is a type var),
+                // which is a compile-time error
+                return classSymbolOf(n);
             }
         );
         if (isAnnotation()) {
@@ -554,17 +554,14 @@ final class AstClassSym
     }
 
     /**
-     * Returns the class symbol referenced by a supertype node, if it
-     * has already been disambiguated. This avoids building the full type
-     * of the supertype, which requires its type arguments to be disambiguated
-     * too. This matters while disambiguating the type arguments of a supertype,
+     * Returns the class symbol referenced by a supertype node, disambiguating
+     * it if needed. This avoids building the full type of the supertype, which
+     * requires its type arguments to be disambiguated too. This is needed to
+     * walk the hierarchy of this class while type headers are being disambiguated,
      * as they may refer to member types of this class (#4436).
      */
-    private static @Nullable JClassSymbol classSymbolOf(@Nullable ASTClassType supertypeNode) {
-        if (supertypeNode == null) {
-            return null;
-        }
-        JTypeDeclSymbol sym = InternalApiBridge.getReferencedSym(supertypeNode);
+    private static @Nullable JClassSymbol classSymbolOf(ASTClassType supertypeNode) {
+        JTypeDeclSymbol sym = InternalApiBridge.getOrDisambigSupertypeSym(supertypeNode);
         return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
     }
 

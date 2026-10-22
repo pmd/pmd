@@ -17,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -52,6 +53,15 @@ public final class ReferenceCtx {
 
     public static ReferenceCtx root(JavaAstProcessor processor, ASTCompilationUnit root) {
         return new ReferenceCtx(processor, root.getPackageName(), null);
+    }
+
+    /**
+     * Returns the context of the header of the given type declaration,
+     * that is, its enclosing class.
+     */
+    public static ReferenceCtx ofTypeHeader(JavaAstProcessor processor, ASTTypeDeclaration decl) {
+        ASTTypeDeclaration enclosing = decl.getEnclosingType();
+        return new ReferenceCtx(processor, decl.getPackageName(), enclosing == null ? null : enclosing.getSymbol());
     }
 
     public ReferenceCtx scopeDownToNested(JClassSymbol newEnclosing) {

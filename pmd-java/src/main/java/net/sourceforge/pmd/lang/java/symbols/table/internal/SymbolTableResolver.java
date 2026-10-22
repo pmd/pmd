@@ -275,10 +275,8 @@ public final class SymbolTableResolver {
 
             setTopSymbolTable(node);
 
-            for (ASTTypeDeclaration td : typeDecls) {
-                // preprocess all sibling types
-                processTypeHeader(td, ctx);
-            }
+            // preprocess all sibling types
+            processTypeHeaders(typeDecls, ctx);
 
             // All of the header symbol tables belong to the CompilationUnit
             visitChildren(node, ctx);
@@ -289,27 +287,47 @@ public final class SymbolTableResolver {
         }
 
 
+        /**
+         * Sets the symbol tables of all the headers before disambiguating them.
+         * Disambiguating a header may need to look up members of another
+         * type, which disambiguates its supertypes on demand. This requires
+         * its header to have its symbol table.
+         */
+        private void processTypeHeaders(NodeStream<? extends ASTTypeDeclaration> siblings, ReferenceCtx ctx) {
+            for (ASTTypeDeclaration td : siblings) {
+                setHeaderSymbolTables(td);
+            }
+            for (ASTTypeDeclaration td : siblings) {
+                // resolve the supertypes, necessary for TypeMemberSymTable
+                f.disambig(headerNodes(td), ctx); // extends/implements
+            }
+        }
+
         private void processTypeHeader(ASTTypeDeclaration node, ReferenceCtx ctx) {
+            processTypeHeaders(NodeStream.of(node), ctx);
+        }
+
+        private void setHeaderSymbolTables(ASTTypeDeclaration node) {
             setTopSymbolTable(node.getModifiers());
 
             int pushed = pushOnStack(f.selfType(top(), node.getTypeMirror()));
             pushed += pushOnStack(f.typeHeader(top(), node.getSymbol()));
 
-            NodeStream<? extends JavaNode> notBody = node.children().drop(1).dropLast(1);
-            if (node instanceof ASTRecordDeclaration) {
-                notBody = notBody.drop(1); // drop record components
-            }
-            for (JavaNode it : notBody) {
+            for (JavaNode it : headerNodes(node)) {
                 setTopSymbolTable(it);
             }
 
             popStack(pushed - 1);
-
-            // resolve the supertypes, necessary for TypeMemberSymTable
-            f.disambig(notBody, ctx); // extends/implements
-
             setTopSymbolTable(node);
             popStack();
+        }
+
+        private static NodeStream<? extends JavaNode> headerNodes(ASTTypeDeclaration node) {
+            NodeStream<? extends JavaNode> notBody = node.children().drop(1).dropLast(1);
+            if (node instanceof ASTRecordDeclaration) {
+                notBody = notBody.drop(1); // drop record components
+            }
+            return notBody;
         }
 
         @Override
@@ -334,8 +352,7 @@ public final class SymbolTableResolver {
             }
 
             // preprocess siblings
-            node.getDeclarations(ASTTypeDeclaration.class)
-                .forEach(d -> processTypeHeader(d, bodyCtx));
+            processTypeHeaders(node.getDeclarations(ASTTypeDeclaration.class), bodyCtx);
 
 
             // process fields first, their type is needed for JSymbolTable#resolveValue
