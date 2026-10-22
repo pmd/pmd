@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
@@ -27,7 +28,12 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
         this.identToken = identToken;
     }
 
+    // /**
+    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+    //  */
     @Override
+    // @Deprecated
+    // @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return null;
     }

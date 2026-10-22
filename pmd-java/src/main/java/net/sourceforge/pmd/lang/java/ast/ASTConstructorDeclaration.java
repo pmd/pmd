@@ -35,7 +35,12 @@ public final class ASTConstructorDeclaration extends AbstractExecutableDeclarati
     }
 
 
+    // /**
+    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+    //  */
     @Override
+    // @Deprecated
+    // @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }

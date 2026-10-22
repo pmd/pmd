@@ -82,6 +82,9 @@ This is a {{ site.pmd.release_type }} release.
     These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
     `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
 
+*   Java AST
+    *   The `@Image` attribute of `ASTConstructorDeclaration` is deprecated. Use `@Name` instead.
+
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
