@@ -10,6 +10,7 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A continue statement, that jumps to the next iteration of an enclosing loop.
@@ -37,10 +38,19 @@ public final class ASTContinueStatement extends AbstractStatement {
         return visitor.visit(this, data);
     }
 
+
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getLabel()} instead.
+     */
     @Override
-    protected void setImage(String image) {
-        super.setImage(image);
-        this.label = image;
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Label")
+    public String getImage() {
+        return getLabel();
+    }
+
+    void setLabel(String label) {
+        this.label = label;
     }
 
     /**

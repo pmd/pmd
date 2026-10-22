@@ -2700,7 +2700,7 @@ void BreakStatement() :
 void ContinueStatement() :
 {}
 {
-  "continue" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
+  "continue" [ <IDENTIFIER> { jjtThis.setLabel(getToken(0).getImage()); } ] ";"
 }
 
 void ReturnStatement() :
