@@ -221,13 +221,13 @@ final class TypesFromAst {
                 JClassSymbol symbol;
                 if (qualifierType instanceof JClassType) {
                     JClassType enclosing = (JClassType) qualifierType;
-                    JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing.getSymbol(), node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
-                                                       .resolveFirst(node.getSimpleName());
+                    JClassSymbol resolved = JavaResolvers.getMemberClassResolver(enclosing.getSymbol(), node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
+                                                         .resolveFirst(node.getSimpleName());
                     if (resolved == null) {
                         // compile-time error
                         symbol = (JClassSymbol) node.getTypeSystem().UNKNOWN.getSymbol();
                     } else {
-                        symbol = resolved.getSymbol();
+                        symbol = resolved;
                         JClassType actualEnclosing = enclosing.getAsSuper(symbol.getEnclosingClass());
                         assert actualEnclosing != null : "We got this symbol by looking into enclosing";
                         node.setImplicitEnclosing(actualEnclosing);

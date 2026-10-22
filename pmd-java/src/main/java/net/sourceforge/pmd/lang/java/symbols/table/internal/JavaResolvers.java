@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
@@ -269,8 +270,9 @@ public final class JavaResolvers {
                 }
 
                 if (result == null) {
-                    result = JavaResolvers.getMemberClassResolver(containerType.getSymbol(), accessPackageName, null, simpleName)
-                                          .resolveHere(simpleName);
+                    List<JClassSymbol> found = JavaResolvers.getMemberClassResolver(containerType.getSymbol(), accessPackageName, null, simpleName)
+                                                            .resolveHere(simpleName);
+                    result = CollectionUtil.map(found, JavaResolvers::staticMemberType);
                 }
                 return result;
             }
@@ -311,8 +313,8 @@ public final class JavaResolvers {
         return new NameResolver<JClassType>() {
             @Override
             public @NonNull List<JClassType> resolveHere(String simpleName) {
-                List<JClassType> found = getMemberClassResolver(container, accessPackageName, null, simpleName).resolveHere(simpleName);
-                return importableStaticMembers(found, JClassType::getSymbol, accessPackageName);
+                List<JClassSymbol> found = getMemberClassResolver(container, accessPackageName, null, simpleName).resolveHere(simpleName);
+                return CollectionUtil.map(importableStaticMembers(found, Function.identity(), accessPackageName), JavaResolvers::staticMemberType);
             }
 
             @Override
@@ -338,6 +340,15 @@ public final class JavaResolvers {
         };
     }
 
+    /**
+     * The type of a static member class. This does not depend on the
+     * parameterization of the type it is a member of, so it is the same
+     * whether the member is inherited or not.
+     */
+    private static JClassType staticMemberType(JClassSymbol member) {
+        return (JClassType) member.getTypeSystem().declaration(member);
+    }
+
     // Members that are hidden by a non-static or inaccessible member are not
     // returned by the member resolvers, so filtering them afterwards gives the
     // same result as filtering them during the hierarchy walk.
@@ -350,6 +361,13 @@ public final class JavaResolvers {
             return Modifier.isStatic(sym.getModifiers()) && canBeImportedIn(accessPackageName, sym);
         }).collect(Collectors.toList());
     }
+
+    private static final ShadowChainBuilder<JClassSymbol, ScopeInfo> CLASS_SYMBOLS = new ShadowChainBuilder<JClassSymbol, ScopeInfo>() {
+        @Override
+        public String getSimpleName(JClassSymbol sym) {
+            return sym.getSimpleName();
+        }
+    };
 
     /**
      * Resolvers for inherited member types and fields. We can't process
@@ -490,19 +508,16 @@ public final class JavaResolvers {
      * may perform a hierarchy traversal, but this handles hidden and
      * ambiguous declarations nicely.
      *
-     * <p>The hierarchy is walked using symbols only, not types, so that
-     * this can be used while the supertypes of the class are being
-     * disambiguated (see #4436). The returned types are therefore the
-     * {@linkplain net.sourceforge.pmd.lang.java.types.TypeSystem#declaration(JClassSymbol) generic declarations}
-     * of the member classes, and do not take into account the parameterization
-     * of the supertypes they are inherited from.
+     * <p>This returns symbols and not types, because the hierarchy is
+     * walked using symbols only. That way this can be used while the
+     * supertypes of the class are being disambiguated (see #4436).
      *
      * @param c      Class to search
      * @param access Context of where the declaration is referenced
      * @param name   Name of the class to find
      */
-    public static NameResolver<JClassType> getMemberClassResolver(JClassSymbol c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
-        return getNamedMemberResolver(c, JavaResolvers::directSuperclassSymbols, access, accessPackageName, JavaResolvers::getDeclaredClassType, name, JClassType::getSymbol, SymTableFactory.TYPES);
+    public static NameResolver<JClassSymbol> getMemberClassResolver(JClassSymbol c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+        return getNamedMemberResolver(c, JavaResolvers::directSuperclassSymbols, access, accessPackageName, JClassSymbol::getDeclaredClass, name, Function.identity(), CLASS_SYMBOLS);
     }
 
     public static NameResolver<FieldSig> getMemberFieldResolver(JClassType c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
@@ -511,11 +526,6 @@ public final class JavaResolvers {
 
     private static List<JClassSymbol> directSuperclassSymbols(JClassSymbol c) {
         return CollectionUtil.concatView(listOfNotNull(c.getSuperclass()), c.getSuperInterfaces());
-    }
-
-    private static @Nullable JClassType getDeclaredClassType(JClassSymbol c, String name) {
-        JClassSymbol inner = c.getDeclaredClass(name);
-        return inner == null ? null : (JClassType) inner.getTypeSystem().declaration(inner);
     }
 
     private static <C, S> NameResolver<S> getNamedMemberResolver(C c,
