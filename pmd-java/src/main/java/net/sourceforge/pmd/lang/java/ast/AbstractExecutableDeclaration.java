@@ -8,7 +8,6 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
-import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
