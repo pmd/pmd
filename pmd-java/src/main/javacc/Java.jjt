@@ -1116,7 +1116,7 @@ void PackageDeclaration() :
   image=VoidName() {
     endTok = getToken(0);
     jjtThis.setNameRegion(startTok.getNext(), endTok);
-    jjtThis.setImage(image);
+    jjtThis.setName(image);
   }
   ";"
 }
