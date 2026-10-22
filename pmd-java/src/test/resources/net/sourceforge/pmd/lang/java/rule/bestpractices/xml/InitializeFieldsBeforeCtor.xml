@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Field assigned after explicit super() (example from #7174)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <expected-messages>
+            <message>Field `name` could be assigned before the superclass constructor is called</message>
+        </expected-messages>
+        <code><![CDATA[
+class Base {
+    Base() {
+        System.out.println(this); // calls the overridden toString()
+    }
+}
+
+class Sub extends Base {
+    private final String name;
+
+    Sub(String name) {
+        super();
+        // name is still null, while Base() runs
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name.toUpperCase();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field assigned before super() (correct example from #7174)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base {
+    Base() {
+        System.out.println(this);
+    }
+}
+
+class Sub extends Base {
+    private final String name;
+
+    Sub(String name) {
+        this.name = name;
+        super();
+    }
+
+    @Override
+    public String toString() {
+        return name.toUpperCase();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field assigned after implicit super()</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    private String name;
+
+    Sub(String name) {
+        this.name = name;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unqualified field name</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    private int count;
+
+    Sub(int n) {
+        super();
+        count = n;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Only the assignments directly after super() are reported</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>9,10</expected-linenumbers>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    private int a;
+    private int b;
+    private int c;
+
+    Sub(int a, int b, int c) {
+        this.a = a;
+        this.b = b;
+        System.out.println("init");
+        this.c = c; // not reported: moving it would change the order of side effects
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Prologue statements before an explicit super() call (Java 25)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    private final int a;
+    private final int b;
+
+    Sub(int a, int b) {
+        if (a < 0) throw new IllegalArgumentException();
+        this.a = a;
+        super();
+        this.b = b;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static methods and calls on parameters are allowed</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,12</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Objects;
+
+class Base { }
+
+class Sub extends Base {
+    private final String name;
+    private final String upper;
+
+    Sub(String name) {
+        super();
+        this.name = Objects.requireNonNull(name);
+        this.upper = name.toUpperCase();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Right-hand side uses the current instance</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base {
+    String inheritedMethod() {
+        return "";
+    }
+}
+
+class Sub extends Base {
+    private String a;
+    private String b;
+    private Runnable c;
+    private Object d;
+
+    Sub(String s) {
+        super();
+        this.a = compute(s); // instance method
+    }
+
+    Sub(int i) {
+        super();
+        this.b = this.toString(); // explicit this
+    }
+
+    Sub(long l) {
+        super();
+        this.c = () -> compute("x"); // lambda calling an instance method
+    }
+
+    Sub(short s) {
+        super();
+        this.d = new Object() { }; // anonymous class
+    }
+
+    Sub(byte b) {
+        super();
+        this.a = inheritedMethod(); // inherited instance method
+    }
+
+    String compute(String s) {
+        return s;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Right-hand side reads another field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    private int a;
+    private int b;
+
+    Sub(int x) {
+        super();
+        a = x;
+        b = a + 1; // reads field a, not reported
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Creating an inner class needs this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    class Inner { }
+
+    private Inner inner;
+
+    Sub() {
+        super();
+        this.inner = new Inner(); // needs this as enclosing instance
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static nested class creation is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    static class Nested { }
+
+    private Nested nested;
+
+    Sub() {
+        this.nested = new Nested();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fields that cannot be assigned before super()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base {
+    protected int inherited;
+}
+
+class Sub extends Base {
+    private static int counter;
+    private int withInitializer = 0;
+    private int other;
+
+    Sub(int x) {
+        super();
+        withInitializer = x; // has an initializer
+    }
+
+    Sub(long x) {
+        super();
+        counter = (int) x; // static field
+    }
+
+    Sub(short x) {
+        super();
+        inherited = x; // inherited field
+    }
+
+    Sub(byte x) {
+        super();
+        other += x; // compound assignment
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constructor delegating with this(...)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    private int a;
+    private int b;
+
+    Sub(int a, int b) {
+        this.a = a;
+        this.b = b;
+        super();
+    }
+
+    Sub(int a) {
+        this(a, 0);
+        this.b = 1;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class without extends clause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    private String name;
+
+    Foo(String name) {
+        this.name = name;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Not reported before Java 25</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base { }
+
+class Sub extends Base {
+    private String name;
+
+    Sub(String name) {
+        super();
+        this.name = name;
+    }
+}
+]]></code>
+        <source-type>java 24</source-type>
+    </test-code>
+</test-data>

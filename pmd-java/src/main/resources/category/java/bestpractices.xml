@@ -783,6 +783,69 @@ log.debug("log something expensive: {}", this::calculateExpensiveLoggingText);
         </example>
     </rule>
 
+    <rule name="InitializeFieldsBeforeCtor"
+          language="java"
+          since="7.29.0"
+          minimumLanguageVersion="25"
+          message="Field `{0}` could be assigned before the superclass constructor is called"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.InitializeFieldsBeforeCtorRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#initializefieldsbeforector">
+        <description>
+Since Java 25 ([JEP 513: Flexible Constructor Bodies](https://openjdk.org/jeps/513)), a constructor may
+assign the fields of its own class before it calls the superclass constructor with `super(...)`.
+
+Assigning fields before calling the superclass constructor ensures that the fields are already
+initialized while the superclass constructor runs. This avoids bugs where the superclass constructor
+calls an overridable method, which then sees a field that is still `null` or `0`
+(see also {% rule java/errorprone/ConstructorCallsOverridableMethod %}).
+
+This rule reports field assignments that are executed directly after the (explicit or implicit)
+superclass constructor call, and that could be moved before it. An assignment is only reported if
+the field is declared in this class, is not static, has no initializer, and the assigned value does
+not use `this` (e.g. by calling an instance method or reading another field). Only the assignments
+directly after the superclass constructor call are reported, so that moving them does not change
+the order of other statements.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Base {
+    Base() {
+        System.out.println(this); // calls the overridden toString()
+    }
+}
+
+class Bad extends Base {
+    private final String name;
+
+    Bad(String name) {
+        super();
+        this.name = name; // too late: name is still null, while Base() runs
+    }
+
+    @Override
+    public String toString() {
+        return name.toUpperCase(); // NullPointerException
+    }
+}
+
+class Good extends Base {
+    private final String name;
+
+    Good(String name) {
+        this.name = name; // assigned before Base() runs
+        super();
+    }
+
+    @Override
+    public String toString() {
+        return name.toUpperCase();
+    }
+}
+]]>
+        </example>
+    </rule>
+
 
     <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
           language="java"
