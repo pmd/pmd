@@ -515,6 +515,30 @@ class MemberInheritanceTest : ParserTestSpec({
         }
     }
 
+    parserTest("#4436 Inherited inner types are in scope in the header of a nested class") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse(
+                """
+            package p;
+            class Foo extends FooParent {
+                static class Sub implements KeyProvider<Bar> { }
+            }
+            class FooParent {
+                enum Bar { A }
+            }
+            interface KeyProvider<K> { }
+        """
+        )
+
+        val (_, sub, _, bar, keyProvider) =
+            acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        sub.getSuperInterfaceTypes(Substitution.EMPTY).shouldContainExactly(
+            acu.typeSystem.parameterise(keyProvider, listOf(acu.typeSystem.declaration(bar)))
+        )
+    }
+
     parserTestContainer("Shadowing of inherited types") {
         doTest("Inaccessible member types of supertypes hide types inherited from further supertypes") {
             val acu = parser.withProcessing().parse("""

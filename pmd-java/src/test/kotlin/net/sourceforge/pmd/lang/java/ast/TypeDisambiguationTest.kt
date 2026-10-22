@@ -11,6 +11,7 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.*
 import net.sourceforge.pmd.lang.java.types.JClassType
+import net.sourceforge.pmd.lang.java.types.Substitution
 import net.sourceforge.pmd.lang.test.ast.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import kotlin.test.assertEquals
@@ -312,15 +313,15 @@ class TypeDisambiguationTest : ParserTestSpec({
         assertErrored(aI)
     }
 
-    parserTest("!TODO Import on demand of class defined in same compilation unit that has an extends clause") {
+    parserTest("#4436 Import on demand of class defined in same compilation unit that has an extends clause") {
         // the extends clause must be disambiguated early to process the on demand import (ODI),
         // which is itself needed to resolve a supertype of Foo (which is itself part of the ODI)
 
         // this is a cyclic dependency, we should probably avoid collecting the static imports
         // before all classes of the CU have been visited
-        enableProcessing()
+        assertNoSemanticErrorsOrWarnings()
 
-        @Suppress("UNUSED_VARIABLE") val acu = parser.parse("""
+        val acu = parser.parse("""
 package p;
 import static p.Assert2.*;
 
@@ -333,5 +334,111 @@ class Assert2 extends Assert {
 class Foo2 extends Foo { }
 
         """)
+
+        val (_, foo, _, bar, foo2) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        foo2.superclass shouldBe foo
+        foo.superclass shouldBe bar
+    }
+
+    parserTest("#4436 Static import on demand of inherited member type of class defined in same compilation unit") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse("""
+package p;
+import static p.Foo.*;
+
+class Foo extends FooParent implements KeyProvider<Bar> { }
+class FooParent {
+    static class Bar { }
+}
+interface KeyProvider<K> { }
+        """)
+
+        val (foo, fooParent, bar, keyProvider) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        foo.superclass shouldBe fooParent
+        foo.getSuperInterfaceTypes(Substitution.EMPTY).single().shouldBe(
+            acu.typeSystem.parameterise(keyProvider, listOf(acu.typeSystem.declaration(bar)))
+        )
+    }
+
+    parserTest("#4436 Single static import of inherited member type of class, used in the header of that class") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse("""
+package p;
+import static p.Foo.Bar;
+
+class Foo extends FooParent implements KeyProvider<Bar> { }
+class FooParent {
+    static class Bar { }
+}
+interface KeyProvider<K> { }
+        """)
+
+        val (foo, fooParent, bar, keyProvider) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        foo.superclass shouldBe fooParent
+        foo.getSuperInterfaceTypes(Substitution.EMPTY).single().shouldBe(
+            acu.typeSystem.parameterise(keyProvider, listOf(acu.typeSystem.declaration(bar)))
+        )
+    }
+
+    parserTest("#4436 Inherited member type qualified by the class being declared, in its own header") {
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse("""
+package p;
+class Foo extends FooParent implements KeyProvider<Foo.Bar> {
+    public Bar getKey() { return Bar.A; }
+}
+class FooParent {
+    public enum Bar { A, B, C }
+}
+interface KeyProvider<K> { K getKey(); }
+        """)
+
+        val (foo, fooParent, bar, keyProvider) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        foo.superclass shouldBe fooParent
+        foo.getSuperInterfaceTypes(Substitution.EMPTY).single().shouldBe(
+            acu.typeSystem.parameterise(keyProvider, listOf(acu.typeSystem.declaration(bar)))
+        )
+
+        val fooBar = acu.descendants(ASTClassType::class.java).first { it.simpleName == "Bar" }!!
+        fooBar.shouldMatchN {
+            classType("Bar") {
+                classType("Foo") {
+                    it::getReferencedSym shouldBe foo
+                }
+                it::getReferencedSym shouldBe bar
+            }
+        }
+    }
+
+    parserTest("#4436 Inherited member types are not in scope in the header of the class without qualification") {
+        // javac rejects this: the header scope does not include members of the class.
+        // This should not crash, and Bar should stay unresolved.
+        val logger = enableProcessing()
+
+        val acu = parser.parse("""
+package p;
+class Foo extends FooParent implements KeyProvider<Bar> { }
+class FooParent {
+    static class Bar { }
+}
+interface KeyProvider<K> { }
+        """)
+
+        val (foo, fooParent) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        foo.superclass shouldBe fooParent
+
+        val barNode = acu.descendants(ASTClassType::class.java).first { it.simpleName == "Bar" }!!
+        barNode.referencedSym.shouldBeA<JClassSymbol> {
+            it::isUnresolved shouldBe true
+        }
+        logger.warnings[CANNOT_RESOLVE_SYMBOL]!!.map { it.first } shouldBe listOf(barNode)
     }
 })
