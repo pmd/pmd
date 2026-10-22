@@ -1350,6 +1350,7 @@ void SelectOrSelectIntoStatement() #SelectStatement(>1) :
  * @deprecated since 7.12.0. This production is not used anymore and is just still there for API backwards
  * compatibility. See also deprecation notice at class level.
  */
+//@Deprecated
 ASTSelectIntoStatement SelectIntoStatement() :
 {}
 {
@@ -2764,8 +2765,8 @@ ASTMergeStatement MergeStatement() :
 }
 
 /**
- * @deprecated MergeUpdateClausePrefix is no longer used as MergeStatement is simplified,
- * but kept for not breaking interface.
+ * @deprecated Since 7.5.0. MergeUpdateClausePrefix is no longer used as MergeStatement is simplified,
+ * but kept for not breaking interface. See also deprecation notice at class level.
  */
 //@Deprecated
 void MergeUpdateClausePrefix() #void:
@@ -5628,9 +5629,9 @@ void KEYWORD(String id) #void:
  *
  * https://docs.oracle.com/en/database/oracle/oracle-database/23/lnpls/plsql-language-fundamentals.html#GUID-53E09662-5AD4-4530-8C6B-FF3F7C7430D5
  *
- * @deprecated This is only used to generate a node class
+ * @deprecated Since 7.3.0. This is only used to generate a node class. See also deprecation notice at class level.
  */
-// @Deprecated
+//@Deprecated
 ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}{KEYWORD_NOT_RESERVED() {return jjtThis;}}
 
 private void KEYWORD_NOT_RESERVED () #void: {}
