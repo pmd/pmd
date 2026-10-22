@@ -87,6 +87,7 @@ This is a {{ site.pmd.release_type }} release.
     *   The `@Image` attribute of `ASTAmbiguousName` is deprecated. Use `@Name` instead.
     *   The `@Image` attribute of `ASTBreakStatement` is deprecated. Use `@Label` instead.
     *   The `@Image` attribute of `ASTContinueStatement` is deprecated. Use `@Label` instead.
+    *   The `@Image` attribute of `ASTFieldAccess` is deprecated. Use `@Name` instead.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

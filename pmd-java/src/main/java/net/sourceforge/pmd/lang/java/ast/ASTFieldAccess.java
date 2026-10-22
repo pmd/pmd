@@ -38,14 +38,14 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
         assert fieldName != null;
         this.addChild(lhs, 0);
-        this.setImage(fieldName);
+        this.setName(fieldName);
     }
 
     ASTFieldAccess(ASTExpression lhs, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
         TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
         this.addChild((AbstractJavaNode) lhs, 0);
-        this.setImage(identifier.getImage());
+        this.setName(identifier.getImage());
         this.setFirstToken(lhs.getFirstToken());
         this.setLastToken(identifier);
     }
@@ -56,10 +56,18 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         return (ASTExpression) getChild(0);
     }
 
+    // /**
+    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+    //  */
     @Override
-    protected void setImage(String image) {
-        super.setImage(image);
-        this.fieldName = image;
+    // @Deprecated
+    // @DeprecatedAttribute(replaceWith = "@Name")
+    public String getImage() {
+        return getName();
+    }
+
+    void setName(String name) {
+        this.fieldName = name;
     }
 
     @Override
