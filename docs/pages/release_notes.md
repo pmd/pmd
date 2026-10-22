@@ -85,6 +85,7 @@ This is a {{ site.pmd.release_type }} release.
 *   Java AST
     *   The `@Image` attribute of `ASTConstructorDeclaration` is deprecated. Use `@Name` instead.
     *   The `@Image` attribute of `ASTAmbiguousName` is deprecated. Use `@Name` instead.
+    *   The `@Image` attribute of `ASTBreakStatement` is deprecated. Use `@Label` instead.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

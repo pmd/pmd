@@ -2694,7 +2694,7 @@ void ForUpdate() :
 void BreakStatement() :
 {}
 {
-  "break" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
+  "break" [ <IDENTIFIER> { jjtThis.setLabel(getToken(0).getImage()); } ] ";"
 }
 
 void ContinueStatement() :

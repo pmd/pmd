@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A break statement, that jumps to a named label (or exits the current loop).
@@ -43,10 +44,18 @@ public final class ASTBreakStatement extends AbstractStatement {
         return label;
     }
 
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getLabel()} instead.
+     */
     @Override
-    protected void setImage(String image) {
-        super.setImage(image);
-        this.label = image;
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Label")
+    public String getImage() {
+        return getLabel();
+    }
+
+    void setLabel(String label) {
+        this.label = label;
     }
 
     /**
