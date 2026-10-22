@@ -2432,7 +2432,7 @@ void StatementNoIdent() #void:
 void LabeledStatement() :
 {}
 {
-  <IDENTIFIER> { setLastTokenImage(jjtThis); } ":" Statement()
+  <IDENTIFIER> { jjtThis.setLabel(getToken(0).getImage()); } ":" Statement()
 }
 
 void Block() :

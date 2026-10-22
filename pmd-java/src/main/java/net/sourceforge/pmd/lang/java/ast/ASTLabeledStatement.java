@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+
 /**
  * A wrapper around a statement that assigns it a label.
  *
@@ -27,10 +29,18 @@ public final class ASTLabeledStatement extends AbstractStatement {
         return visitor.visit(this, data);
     }
 
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getLabel()} instead.
+     */
     @Override
-    protected void setImage(String image) {
-        super.setImage(image);
-        this.label = image;
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Label")
+    public String getImage() {
+        return getLabel();
+    }
+
+    void setLabel(String label) {
+        this.label = label;
     }
 
     /**
