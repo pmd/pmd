@@ -96,6 +96,7 @@ This is a {{ site.pmd.release_type }} release.
     *   The `@Image` attribute of `ASTPackageDeclaration` is deprecated. Use `@Name` instead.
         Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
     *   The `@Image` attribute of `ASTTypeParameter` is deprecated. Use `@Name` instead.
+    *   The `@Image` attribute of `ASTVariableAccess` is deprecated. Use `@Name` instead.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

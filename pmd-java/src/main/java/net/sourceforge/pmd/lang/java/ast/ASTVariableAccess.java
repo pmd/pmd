@@ -34,7 +34,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
      */
     ASTVariableAccess(ASTAmbiguousName name) {
         super(JavaParserImplTreeConstants.JJTVARIABLEACCESS);
-        setImage(name.getFirstToken().getImage());
+        setName(name.getFirstToken().getImage());
     }
 
     ASTVariableAccess(JavaccToken identifier) {
@@ -42,7 +42,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
 
         TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-        setImage(identifier.getImage());
+        setName(identifier.getImage());
         setFirstToken(identifier);
         setLastToken(identifier);
     }
@@ -52,10 +52,19 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
         super(id);
     }
 
+
+    // /**
+    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+    //  */
     @Override
-    protected void setImage(String image) {
-        super.setImage(image);
-        this.name = image;
+    // @Deprecated
+    // @DeprecatedAttribute(replaceWith = "@Name")
+    public String getImage() {
+        return getName();
+    }
+
+    private void setName(String name) {
+        this.name = name;
     }
 
     @Override
