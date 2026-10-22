@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainBuilder;
+import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -42,6 +43,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public final class JavaResolvers {
 
@@ -267,7 +269,7 @@ public final class JavaResolvers {
                 }
 
                 if (result == null) {
-                    result = JavaResolvers.getMemberClassResolver(containerType, accessPackageName, null, simpleName)
+                    result = JavaResolvers.getMemberClassResolver(containerType.getSymbol(), accessPackageName, null, simpleName)
                                           .resolveHere(simpleName);
                 }
                 return result;
@@ -439,29 +441,46 @@ public final class JavaResolvers {
 
     /**
      * Produce a name resolver that resolves member classes with the
-     * given name declared or inherited by the given type. Each access
+     * given name declared or inherited by the given class. Each access
      * may perform a hierarchy traversal, but this handles hidden and
      * ambiguous declarations nicely.
+     *
+     * <p>The hierarchy is walked using symbols only, not types, so that
+     * this can be used while the supertypes of the class are being
+     * disambiguated (see #4436). The returned types are therefore the
+     * {@linkplain net.sourceforge.pmd.lang.java.types.TypeSystem#declaration(JClassSymbol) generic declarations}
+     * of the member classes, and do not take into account the parameterization
+     * of the supertypes they are inherited from.
      *
      * @param c      Class to search
      * @param access Context of where the declaration is referenced
      * @param name   Name of the class to find
      */
-    public static NameResolver<JClassType> getMemberClassResolver(JClassType c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
-        return getNamedMemberResolver(c, access, accessPackageName, JClassType::getDeclaredClass, name, JClassType::getSymbol, SymTableFactory.TYPES);
+    public static NameResolver<JClassType> getMemberClassResolver(JClassSymbol c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
+        return getNamedMemberResolver(c, JavaResolvers::directSuperclassSymbols, access, accessPackageName, JavaResolvers::getDeclaredClassType, name, JClassType::getSymbol, SymTableFactory.TYPES);
     }
 
     public static NameResolver<FieldSig> getMemberFieldResolver(JClassType c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
-        return getNamedMemberResolver(c, access, accessPackageName, JClassType::getDeclaredField, name, FieldSig::getSymbol, SymTableFactory.VARS);
+        return getNamedMemberResolver(c, DIRECT_STRICT_SUPERTYPES::iterable, access, accessPackageName, JClassType::getDeclaredField, name, FieldSig::getSymbol, SymTableFactory.VARS);
     }
 
-    private static <S> NameResolver<S> getNamedMemberResolver(JClassType c,
-                                                              @Nullable JClassSymbol access,
-                                                              @NonNull String accessPackageName,
-                                                              BiFunction<? super JClassType, String, ? extends S> getter,
-                                                              String name,
-                                                              Function<? super S, ? extends JAccessibleElementSymbol> symbolGetter,
-                                                              ShadowChainBuilder<? super S, ?> classes) {
+    private static List<JClassSymbol> directSuperclassSymbols(JClassSymbol c) {
+        return CollectionUtil.concatView(listOfNotNull(c.getSuperclass()), c.getSuperInterfaces());
+    }
+
+    private static @Nullable JClassType getDeclaredClassType(JClassSymbol c, String name) {
+        JClassSymbol inner = c.getDeclaredClass(name);
+        return inner == null ? null : (JClassType) inner.getTypeSystem().declaration(inner);
+    }
+
+    private static <C, S> NameResolver<S> getNamedMemberResolver(C c,
+                                                                 Function<? super C, ? extends Iterable<? extends C>> directSupertypes,
+                                                                 @Nullable JClassSymbol access,
+                                                                 @NonNull String accessPackageName,
+                                                                 BiFunction<? super C, String, ? extends S> getter,
+                                                                 String name,
+                                                                 Function<? super S, ? extends JAccessibleElementSymbol> symbolGetter,
+                                                                 ShadowChainBuilder<? super S, ?> classes) {
         S found = getter.apply(c, name);
         if (found != null) {
             // fast path, doesn't need to check accessibility, etc
@@ -471,29 +490,34 @@ public final class JavaResolvers {
         JClassSymbol nestRoot = access == null ? null : access.getNestRoot();
         Predicate<S> isAccessible = s -> {
             JAccessibleElementSymbol sym = symbolGetter.apply(s);
-            return isAccessibleIn(nestRoot, accessPackageName, sym, isSubtype(access, sym.getEnclosingClass()));
+            return isAccessibleIn(nestRoot, accessPackageName, sym, isSubclass(access, sym.getEnclosingClass()));
         };
 
         @SuppressWarnings("unchecked")
         ShadowChainBuilder<S, ?>.ResolverBuilder builder = (ShadowChainBuilder<S, ?>.ResolverBuilder) classes.new ResolverBuilder();
 
-        for (JClassType next : DIRECT_STRICT_SUPERTYPES.iterable(c)) {
-            walkForSingleName(next, isAccessible, name, getter, builder, HashTreePSet.empty());
+        for (C next : directSupertypes.apply(c)) {
+            walkForSingleName(next, directSupertypes, isAccessible, name, getter, builder, HashTreePSet.empty());
         }
 
         return builder.build();
     }
 
-    private static boolean isSubtype(JClassSymbol sub, JClassSymbol sup) {
-        return sub != null && sub.getTypeSystem().typeOf(sub, true).getAsSuper(sup) != null;
+    // Only used to check access to protected members. Those are always
+    // declared in classes, not interfaces, so we can ignore interfaces.
+    // This works on symbols, so that it can be used while the supertypes
+    // of the access class are being disambiguated.
+    private static boolean isSubclass(JClassSymbol sub, JClassSymbol sup) {
+        return sub != null && InternalApiBridge.isSubClassOfNoInterface(sub, sup);
     }
 
-    private static <S> void walkForSingleName(JClassType t,
-                                              Predicate<? super S> isAccessible,
-                                              String name,
-                                              BiFunction<? super JClassType, String, ? extends S> getter,
-                                              ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
-                                              final PSet<String> hidden) {
+    private static <C, S> void walkForSingleName(C t,
+                                                 Function<? super C, ? extends Iterable<? extends C>> directSupertypes,
+                                                 Predicate<? super S> isAccessible,
+                                                 String name,
+                                                 BiFunction<? super C, String, ? extends S> getter,
+                                                 ShadowChainBuilder<? super S, ?>.ResolverBuilder builder,
+                                                 final PSet<String> hidden) {
 
         PSet<String> hiddenInSup = processDeclarations(builder, hidden, isAccessible, listOfNotNull(getter.apply(t, name)));
 
@@ -504,8 +528,8 @@ public final class JavaResolvers {
         }
 
         // depth first
-        for (JClassType next : DIRECT_STRICT_SUPERTYPES.iterable(t)) {
-            walkForSingleName(next, isAccessible, name, getter, builder, hiddenInSup);
+        for (C next : directSupertypes.apply(t)) {
+            walkForSingleName(next, directSupertypes, isAccessible, name, getter, builder, hiddenInSup);
         }
     }
 

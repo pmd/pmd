@@ -2126,7 +2126,7 @@ public final class TypeOps {
             || Modifier.isProtected(mods) && isSubClassOfNoInterface(ctx, owner);
     }
 
-    private static boolean isSubClassOfNoInterface(JClassSymbol sub, JClassSymbol symbol) {
+    static boolean isSubClassOfNoInterface(JClassSymbol sub, JClassSymbol symbol) {
         if (symbol.equals(sub)) {
             return true;
         }

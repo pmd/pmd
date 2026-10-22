@@ -166,14 +166,37 @@ final class AstDisambiguationPass {
                 type.getFirstChild().acceptVisitor(this, ctx);
             }
 
-            // revisit children, which may have changed
-            visitChildren(type, ctx);
+            // The type arguments are visited after the symbol of this type
+            // is set. They may refer to member types of the class whose
+            // header contains this type, eg `class Foo extends Sup implements I<Foo.Inner>`.
+            // Looking up those members walks the supertypes of that class
+            // by symbol, so this type must already have its symbol (#4436).
+            ASTTypeArguments typeArgs = type.getTypeArguments();
 
-            if (type.getReferencedSym() != null) {
-                postProcess(type, ctx);
-                return null;
+            // revisit children, which may have changed
+            for (int i = 0; i < type.getNumChildren(); i++) {
+                JavaNode child = type.getChild(i);
+                if (child != typeArgs) {
+                    child.acceptVisitor(this, ctx);
+                }
             }
 
+            if (type.getReferencedSym() == null) {
+                setClassSymbol(type, ctx);
+            }
+
+            if (typeArgs != null) {
+                typeArgs.acceptVisitor(this, ctx);
+            }
+
+            if (type.getReferencedSym() != null) {
+                // the symbol is null for qualified ctor calls
+                postProcess(type, ctx);
+            }
+            return null;
+        }
+
+        private static void setClassSymbol(ASTClassType type, ReferenceCtx ctx) {
             ASTClassType lhsType = type.getQualifier();
             if (lhsType != null) {
                 JTypeDeclSymbol lhsSym = lhsType.getReferencedSym();
@@ -185,18 +208,13 @@ final class AstDisambiguationPass {
                     // Leave the reference null, this is handled lazily,
                     // because the interaction it depends on the type of
                     // the qualifier
-                    return null;
+                    return;
                 }
 
-                if (type.getReferencedSym() == null) {
-                    setClassSymbolIfNoQualifier(type, ctx);
-                }
+                setClassSymbolIfNoQualifier(type, ctx);
             }
 
             assert type.getReferencedSym() != null : "Null symbol for " + type;
-
-            postProcess(type, ctx);
-            return null;
         }
 
         private static void setClassSymbolIfNoQualifier(ASTClassType type, ReferenceCtx ctx) {

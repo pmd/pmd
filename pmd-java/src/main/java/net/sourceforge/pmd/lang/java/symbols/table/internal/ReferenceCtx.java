@@ -72,8 +72,7 @@ public final class ReferenceCtx {
 
     public @Nullable JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name, JavaNode errorLocation) {
         if (classSym instanceof JClassSymbol) {
-            JClassType c = (JClassType) classSym.getTypeSystem().typeOf(classSym, false);
-            @NonNull List<JClassType> found = JavaResolvers.getMemberClassResolver(c, packageName, enclosingClass, name).resolveHere(name);
+            @NonNull List<JClassType> found = JavaResolvers.getMemberClassResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveHere(name);
             JClassType result = maybeAmbiguityError(name, errorLocation, found);
             return result == null ? null : result.getSymbol();
         }

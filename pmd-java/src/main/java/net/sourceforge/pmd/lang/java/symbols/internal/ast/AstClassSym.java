@@ -522,6 +522,11 @@ final class AstClassSym
 
         }
 
+        JClassSymbol superclass = classSymbolOf(node.getSuperClassTypeNode());
+        if (superclass != null) {
+            return superclass;
+        }
+
         JClassType sup = getSuperclassType(Substitution.EMPTY);
         return sup == null ? null : sup.getSymbol();
     }
@@ -534,14 +539,33 @@ final class AstClassSym
                 // we play safe here, but the symbol is either a JClassSymbol
                 // or a JTypeParameterSymbol, with the latter case being a
                 // compile-time error
-                JTypeDeclSymbol sym = n.getTypeMirror().getSymbol();
-                return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
+                JClassSymbol sym = classSymbolOf(n);
+                if (sym != null) {
+                    return sym;
+                }
+                JTypeDeclSymbol typeSym = n.getTypeMirror().getSymbol();
+                return typeSym instanceof JClassSymbol ? (JClassSymbol) typeSym : null;
             }
         );
         if (isAnnotation()) {
             itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationSym()), itfs);
         }
         return itfs;
+    }
+
+    /**
+     * Returns the class symbol referenced by a supertype node, if it
+     * has already been disambiguated. This avoids building the full type
+     * of the supertype, which requires its type arguments to be disambiguated
+     * too. This matters while disambiguating the type arguments of a supertype,
+     * as they may refer to member types of this class (#4436).
+     */
+    private static @Nullable JClassSymbol classSymbolOf(@Nullable ASTClassType supertypeNode) {
+        if (supertypeNode == null) {
+            return null;
+        }
+        JTypeDeclSymbol sym = InternalApiBridge.getReferencedSym(supertypeNode);
+        return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
     }
 
     @Override

@@ -221,7 +221,7 @@ final class TypesFromAst {
                 JClassSymbol symbol;
                 if (qualifierType instanceof JClassType) {
                     JClassType enclosing = (JClassType) qualifierType;
-                    JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
+                    JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing.getSymbol(), node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
                                                        .resolveFirst(node.getSimpleName());
                     if (resolved == null) {
                         // compile-time error

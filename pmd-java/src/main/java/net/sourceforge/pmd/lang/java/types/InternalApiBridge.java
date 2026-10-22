@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 /**
  * Internal API.
@@ -23,5 +24,9 @@ public final class InternalApiBridge {
 
     public static boolean isSameTypeInInference(JTypeMirror t, JTypeMirror s) {
         return TypeOps.isSameTypeInInference(t, s);
+    }
+
+    public static boolean isSubClassOfNoInterface(JClassSymbol sub, JClassSymbol sup) {
+        return TypeOps.isSubClassOfNoInterface(sub, sup);
     }
 }
