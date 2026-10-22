@@ -92,6 +92,7 @@ This is a {{ site.pmd.release_type }} release.
         Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
     *   The `@Image` attribute of `ASTLabeledStatement` is deprecated. Use `@Label` instead.
     *   The `@Image` attribute of `ASTMemberValuePair` is deprecated. Use `@Name` instead.
+    *   The `@Image` attribute of `ASTMethodCall` is deprecated. Use `@MethodName` instead.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

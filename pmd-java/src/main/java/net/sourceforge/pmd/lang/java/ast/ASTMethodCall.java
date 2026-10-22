@@ -50,7 +50,12 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
 
     }
 
+    // /**
+    //  * @deprecated Since 7.29.0. Use {@link #getMethodName()} instead.
+    //  */
     @Override
+    // @Deprecated
+    // @DeprecatedAttribute(replaceWith = "@MethodName")
     public String getImage() {
         return getMethodName();
     }
