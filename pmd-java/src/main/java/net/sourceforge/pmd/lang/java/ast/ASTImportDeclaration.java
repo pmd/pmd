@@ -82,7 +82,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
 
     /**
      * @deprecated Since 7.29.0. Use #getImportedName() instead. Note: This method always
-     * returns {@code null}. Don't use it.
+     * returns {@code null}. Don't use it. The deprecation is just a technicality.
      */
     @Override
     @Deprecated

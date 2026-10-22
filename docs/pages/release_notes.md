@@ -60,6 +60,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#5313](https://github.com/pmd/pmd/issues/5313): \[html] CPD gets end line wrong for HTML
     * [#7166](https://github.com/pmd/pmd/issues/7166): \[html] endcolumn of nodes is off-by-one
 * java
+    * [#7048](https://github.com/pmd/pmd/issues/7048): \[java] Deprecate getImage()/@<!-- -->Image and remove usages
     * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
     * [#7133](https://github.com/pmd/pmd/issues/7133): \[java] CPD: Constructor detection state leaks between files with --ignore-identifiers
     * [#7145](https://github.com/pmd/pmd/issues/7145): \[java] Lambda with a parenthesized expression body is treated as void-compatible
@@ -75,30 +76,43 @@ This is a {{ site.pmd.release_type }} release.
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
 
 ### 🚨️ API Changes
-
-*   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
-    including local variables and unqualified instance fields. Numeric references are converted to their declared type.
-    Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
-    These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
-    `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
-
-*   Java AST
-    *   The `@Image` attribute of `ASTConstructorDeclaration` is deprecated. Use `@Name` instead.
-    *   The `@Image` attribute of `ASTAmbiguousName` is deprecated. Use `@Name` instead.
-    *   The `@Image` attribute of `ASTBreakStatement` is deprecated. Use `@Label` instead.
-    *   The `@Image` attribute of `ASTContinueStatement` is deprecated. Use `@Label` instead.
-    *   The `@Image` attribute of `ASTFieldAccess` is deprecated. Use `@Name` instead.
-    *   The `@Image` attribute of `ASTImportDeclaration` is deprecated. Use `@ImportedName` instead.
-        Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
-    *   The `@Image` attribute of `ASTLabeledStatement` is deprecated. Use `@Label` instead.
-    *   The `@Image` attribute of `ASTMemberValuePair` is deprecated. Use `@Name` instead.
-    *   The `@Image` attribute of `ASTMethodDeclaration` is deprecated. Use `@Name` instead.
-        Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
-    *   The `@Image` attribute of `ASTMethodCall` is deprecated. Use `@MethodName` instead.
-    *   The `@Image` attribute of `ASTPackageDeclaration` is deprecated. Use `@Name` instead.
-        Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
-    *   The `@Image` attribute of `ASTTypeParameter` is deprecated. Use `@Name` instead.
-    *   The `@Image` attribute of `ASTVariableAccess` is deprecated. Use `@Name` instead.
+*   pmd-java
+    *   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
+        including local variables and unqualified instance fields. Numeric references are converted to their declared type.
+        Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
+        These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
+        `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+    *   As part of [Deprecate getImage()/@Image (#4787)](https://github.com/pmd/pmd/issues/4787), the `@Image`
+        attribute and `getImage()` method of multiple AST nodes have been deprecated:
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTConstructorDeclaration#getImage() %}:
+            The `@Image` attribute of `ConstructorDeclaration` has been deprecated. Use `@Name` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTAmbiguousName#getImage() %}:
+            The `@Image` attribute of `AmbiguousName` has been deprecated. Use `@Name` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTBreakStatement#getImage() %}:
+            The `@Image` attribute of `BreakStatement` has been deprecated. Use `@Label` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTContinueStatement#getImage() %}:
+            The `@Image` attribute of `ContinueStatement` has been deprecated. Use `@Label` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTFieldAccess#getImage() %}:
+            The `@Image` attribute of `FieldAccess` has been deprecated. Use `@Name` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTImportDeclaration#getImage() %}:
+            The `@Image` attribute of `ImportDeclaration` has been deprecated. Use `@ImportedName` instead.
+            Note: This method always returns `null`. Don't use it. The deprecation is just a technicality.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTLabeledStatement#getImage() %}:
+            The `@Image` attribute of `LabeledStatement` has been deprecated. Use `@Label` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTMemberValuePair#getImage() %}:
+            The `@Image` attribute of `MemberValuePair` has been deprecated. Use `@Name` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTMethodCall#getImage() %}:
+            The `@Image` attribute of `MethodCall` has been deprecated. Use `@MethodName` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTMethodDeclaration#getImage() %}:
+            The `@Image` attribute of `MethodDeclaration` has been deprecated. Use `@Name` instead.
+            Note: This method always returns `null`. Don't use it. The deprecation is just a technicality.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTPackageDeclaration#getImage() %}:
+            The `@Image` attribute of `PackageDeclaration` has been deprecated. Use `@Name` instead.
+            Note: This method always returns `null`. Don't use it. The deprecation is just a technicality.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTTypeParameter#getImage() %}:
+            The `@Image` attribute of `TypeParameter` has been deprecated. Use `@Name` instead.
+        *   {% jdoc !!pmd-java::lang.java.ast.ASTVariableAccess#getImage() %}:
+            The `@Image` attribute of `VariableAccess` has been deprecated. Use `@Name` instead.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
