@@ -59,7 +59,7 @@ end Test;
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassSpecifier/*[SimpleName[1]/@Name != SimpleName[last()]/@Name]
+//ClassSpecifier/*[SimpleName[1]/@Name != SimpleName[last()]/@Name]/*[last()]
 ]]>
                 </value>
             </property>

@@ -497,7 +497,7 @@ public class Foo {
         <description>Verify location of violation (TODO)</description>
         <rule-property name="checkCaseStmt">true</rule-property>
         <expected-problems>9</expected-problems>
-        <expected-linenumbers>5-5,9-10,14-15,17-20,22-25,27-30,32-35,39-41,42-43</expected-linenumbers>
+        <expected-linenumbers>5-5,9-10,14-15,17,22,27-30,32,39,42</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo() {

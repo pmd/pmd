@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 
@@ -72,10 +73,10 @@ class ASTStatementsTest : ParserTestSpec({
         inContext(StatementParsingCtx) {
             "for (;;) {}" should parseAs {
                 forLoop {
+                    it.getReportText() shouldBe "for"
                     it::getInit shouldBe null
                     it::getCondition shouldBe null
                     it::getUpdate shouldBe null
-
                     block { }
                 }
             }
@@ -192,6 +193,61 @@ class ASTStatementsTest : ParserTestSpec({
                         breakStatement("l") {
                             it::getTarget shouldBe null // invalid code
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    parserTestContainer("While loop") {
+        inContext(StatementParsingCtx) {
+            """
+                 while (true);
+            """ should parseAs {
+                whileLoop {
+                    it.getReportText() shouldBe "while"
+                    boolean(true)
+                    emptyStatement {  }
+                }
+            }
+        }
+    }
+
+    parserTestContainer("Do loop") {
+        inContext(StatementParsingCtx) {
+            """
+                 do {} while (true);
+            """ should parseAs {
+                doLoop {
+                    it.getReportText() shouldBe "do"
+                    val body = block {  }
+                    boolean(true)
+                    body
+                }
+            }
+        }
+    }
+
+    parserTestContainer("Switch statement") {
+        inContext(StatementParsingCtx) {
+            """
+                 switch(a){case 1:; case 2: break; }
+            """ should parseAs {
+                switchStmt {
+                    it.getReportText() shouldBe "switch"
+                    variableAccess("a")
+                    switchFallthrough {
+                        it.getReportText() shouldBe "case"
+                        switchLabel {
+                            int(1)
+                        }
+                        emptyStatement {  }
+                    }
+                    switchFallthrough {
+                        switchLabel {
+                            int(2)
+                        }
+                        breakStatement {  }
                     }
                 }
             }

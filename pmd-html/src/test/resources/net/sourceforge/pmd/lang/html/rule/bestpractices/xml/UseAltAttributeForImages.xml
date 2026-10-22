@@ -12,10 +12,26 @@
 <html>
   <body>
     <!-- instead of -->
-    <img src="house.jpeg">
+    <img src="house.jpeg"/>
 
     <!-- use this -->
-    <img src="house.jpeg" alt="A house from the 18th century">
+    <img src="house.jpeg" alt="A house from the 18th century"/>
+  </body>
+</html>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <!-- This should correctly report a single line if https://github.com/pmd/pmd/issues/7053 is implemented -->
+        <description>Unclosed tags (known issue)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-6</expected-linenumbers>
+        <code><![CDATA[
+<html>
+  <body>
+    <img src="house.jpeg">
+
+    <img src="house.jpeg" alt="A house.">
   </body>
 </html>
         ]]></code>

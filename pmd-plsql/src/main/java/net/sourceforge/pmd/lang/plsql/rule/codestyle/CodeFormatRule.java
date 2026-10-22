@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.plsql.ast.ASTArgument;
 import net.sourceforge.pmd.lang.plsql.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.plsql.ast.ASTBulkCollectIntoClause;
@@ -256,7 +257,11 @@ public class CodeFormatRule extends AbstractPLSQLRule {
             // closing parenthesis should be on a new line
             Node primaryExpression = node.ancestors().get(2);
             if (primaryExpression.getEndLine() != node.getEndLine() + 1) {
-                asCtx(data).addViolationWithMessage(primaryExpression, "Closing parenthesis should be on a new line.");
+                FileLocation location = FileLocation.caret(primaryExpression.getReportLocation().getFileId(),
+                        primaryExpression.getEndLine(),
+                        primaryExpression.getEndColumn() - 1);
+                asCtx(data).addViolationWithPosition(primaryExpression, node.getAstInfo(), location,
+                        "Closing parenthesis should be on a new line.");
             }
         }
 

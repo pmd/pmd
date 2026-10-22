@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
  * and unqualified invocation expressions.
@@ -20,6 +23,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTMethodCall extends AbstractInvocationExpr implements QualifiableExpression {
+
+    private JavaccToken nameToken;
 
     ASTMethodCall(int id) {
         super(id);
@@ -67,5 +72,16 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return nameToken == null ? super.getReportLocation() : nameToken.getReportLocation();
+    }
+
+    @Override
+    protected void setNameToken(JavaccToken token) {
+        this.nameToken = token;
+        setImage(token.getImage());
     }
 }

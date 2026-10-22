@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * Try statement node.
@@ -75,6 +75,11 @@ public final class ASTTryStatement extends AbstractStatement {
      */
     public @Nullable ASTFinallyClause getFinallyClause() {
         return firstChild(ASTFinallyClause.class);
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
     }
 
 }

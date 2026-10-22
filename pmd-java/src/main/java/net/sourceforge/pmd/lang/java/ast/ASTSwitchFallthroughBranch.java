@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * A fallthrough switch branch. This contains exactly one label, and zero
@@ -52,4 +53,8 @@ public final class ASTSwitchFallthroughBranch extends AbstractJavaNode
         return children(ASTStatement.class);
     }
 
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
+    }
 }

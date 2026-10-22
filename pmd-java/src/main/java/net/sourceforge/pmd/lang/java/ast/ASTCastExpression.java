@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * Represents a type cast expression. This is syntactically a unary prefix
  * operation and has the same precedence.
@@ -31,5 +33,10 @@ public final class ASTCastExpression extends AbstractJavaExpr {
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
     }
 }

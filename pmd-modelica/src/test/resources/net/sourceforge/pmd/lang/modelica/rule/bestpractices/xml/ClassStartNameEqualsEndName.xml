@@ -16,7 +16,7 @@ end Test;
     <test-code>
         <description>Invalid example</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 package Test
 end OtherName;

@@ -175,7 +175,7 @@ do {
     <test-code>
         <description>Bad, switch</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>2,6</expected-linenumbers>
+        <expected-linenumbers>2-5,6-10</expected-linenumbers>
         <code><![CDATA[
 switch(1) {
     case 1:

@@ -138,7 +138,7 @@ class BinaryDistributionIT extends AbstractBinaryDistributionTest {
     void testPmdXmlFormat() throws Exception {
         ExecutionResult result = PMDExecutor.runPMDRules(createTemporaryReportFile(), tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml", "xml");
         result.assertExitCode(4).assertReport(containsString("JumbledIncrementer.java\">"));
-        result.assertExitCode(4).assertReport(containsString("<violation beginline=\"8\" endline=\"10\" begincolumn=\"13\" endcolumn=\"14\" rule=\"JumbledIncrementer\""));
+        result.assertExitCode(4).assertReport(containsString("<violation beginline=\"8\" endline=\"8\" begincolumn=\"37\" endcolumn=\"40\" rule=\"JumbledIncrementer\""));
     }
 
     @Test

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * Represents a {@code do ... while} statement.
  *
@@ -44,5 +46,10 @@ public final class ASTDoStatement extends AbstractStatement implements ASTLoopSt
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
     }
 }
