@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -52,13 +50,6 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
 
     ASTVariableAccess(int id) {
         super(id);
-    }
-
-    @Override
-    public void jjtClose() {
-        // TODO: Remove this, when we remove getImage()
-        super.jjtClose();
-        assert Objects.equals(getImage(), getName());
     }
 
     @Override

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import java.util.Objects;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,13 +31,6 @@ public final class ASTContinueStatement extends AbstractStatement {
         super(id);
     }
 
-
-    @Override
-    public void jjtClose() {
-        // TODO: Remove this, when we remove getImage()
-        super.jjtClose();
-        assert Objects.equals(getImage(), getLabel());
-    }
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -68,13 +67,6 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
     ASTAmbiguousName(int id) {
         super(id);
-    }
-
-    @Override
-    public void jjtClose() {
-        // TODO: Remove this, when we remove getImage()
-        super.jjtClose();
-        assert Objects.equals(getImage(), getName());
     }
 
     @Override

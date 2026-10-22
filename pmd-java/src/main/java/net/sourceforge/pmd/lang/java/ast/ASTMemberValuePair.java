@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Objects;
-
 /**
  * Represents a single pair of member name to value in an annotation.
  * This node also represents the shorthand syntax, see {@link #isShorthand()}.
@@ -28,13 +26,6 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
 
     ASTMemberValuePair(int id) {
         super(id);
-    }
-
-    @Override
-    public void jjtClose() {
-        // TODO: Remove this, when we remove getImage()
-        super.jjtClose();
-        assert Objects.equals(getImage(), getName());
     }
 
     @Override
