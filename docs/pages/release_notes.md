@@ -32,6 +32,10 @@ This is a {{ site.pmd.release_type }} release.
     (see properties `sortBy` and `caseSensitiveSorting`).
 
 #### Changed Rules
+*   The Java rule {% rule java/errorprone/AvoidCatchingGenericException %} has a new property
+    `excludeCasesWhereExceptionIsRethrown` (default: `false`). When enabled, it excludes catch clauses
+    that directly rethrow the unchanged caught exception on all explicit paths, for example after
+    cleanup, rollback, or logging. Wrapping the exception or rethrowing it only conditionally is not excluded.
 *   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
     whose constant classification previously depended on a boxed static final field. Direct static field references
     are still reported.
@@ -73,6 +77,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+* java-errorprone
+    * [#6451](https://github.com/pmd/pmd/issues/6451): \[java] AvoidCatchingGenericException should allow cleanup followed by rethrowing the caught exception
 
 ### 🚨️ API Changes
 
@@ -92,4 +98,3 @@ This is a {{ site.pmd.release_type }} release.
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
-
