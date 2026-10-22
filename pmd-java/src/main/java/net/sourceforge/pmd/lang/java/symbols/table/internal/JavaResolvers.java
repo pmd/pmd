@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.DIRECT_STRICT_SUPERTYPES;
-import static net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator.JUST_SELF;
 import static net.sourceforge.pmd.util.CollectionUtil.listOfNotNull;
 
 import java.lang.reflect.Modifier;
@@ -17,6 +16,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -302,6 +302,56 @@ public final class JavaResolvers {
     }
 
     /**
+     * Static member classes of the container, with any name. These are
+     * looked up lazily, as the container may be declared in the current
+     * compilation unit, and its supertypes may not have been disambiguated
+     * yet when the import is processed (#4436).
+     */
+    static NameResolver<JClassType> staticImportOnDemandClassResolver(JClassSymbol container, @NonNull String accessPackageName) {
+        return new NameResolver<JClassType>() {
+            @Override
+            public @NonNull List<JClassType> resolveHere(String simpleName) {
+                List<JClassType> found = getMemberClassResolver(container, accessPackageName, null, simpleName).resolveHere(simpleName);
+                return importableStaticMembers(found, JClassType::getSymbol, accessPackageName);
+            }
+
+            @Override
+            public String toString() {
+                return "all static classes of " + container;
+            }
+        };
+    }
+
+    /** Static fields of the container, with any name. */
+    static NameResolver<FieldSig> staticImportOnDemandFieldResolver(JClassType container, @NonNull String accessPackageName) {
+        return new NameResolver<FieldSig>() {
+            @Override
+            public @NonNull List<FieldSig> resolveHere(String simpleName) {
+                List<FieldSig> found = getMemberFieldResolver(container, accessPackageName, null, simpleName).resolveHere(simpleName);
+                return importableStaticMembers(found, FieldSig::getSymbol, accessPackageName);
+            }
+
+            @Override
+            public String toString() {
+                return "all static fields of " + container;
+            }
+        };
+    }
+
+    // Members that are hidden by a non-static or inaccessible member are not
+    // returned by the member resolvers, so filtering them afterwards gives the
+    // same result as filtering them during the hierarchy walk.
+    private static <S> List<S> importableStaticMembers(List<S> members, Function<? super S, ? extends JAccessibleElementSymbol> symbolGetter, String accessPackageName) {
+        if (members.isEmpty()) {
+            return members;
+        }
+        return members.stream().filter(m -> {
+            JAccessibleElementSymbol sym = symbolGetter.apply(m);
+            return Modifier.isStatic(sym.getModifiers()) && canBeImportedIn(accessPackageName, sym);
+        }).collect(Collectors.toList());
+    }
+
+    /**
      * Resolvers for inherited member types and fields. We can't process
      * methods that way, because there may be duplicates and the equals
      * of {@link JMethodSymbol} is not reliable for now (cannot differentiate
@@ -312,11 +362,6 @@ public final class JavaResolvers {
         Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> builders =
             hidingWalkResolvers(t, t, t.getSymbol().getPackageName(), true, /* onlyStatic: */false, DIRECT_STRICT_SUPERTYPES);
         return Pair.of(builders.getLeft().build(), builders.getRight().build());
-    }
-
-    static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder,
-        ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> importOnDemandMembersResolvers(JClassType t, @NonNull String accessPackageName) {
-        return hidingWalkResolvers(t, null, accessPackageName, false, /* onlyStatic: */ true, JUST_SELF /* include self members */);
     }
 
     private static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> hidingWalkResolvers(JClassType t,
