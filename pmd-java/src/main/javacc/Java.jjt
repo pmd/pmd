@@ -1312,7 +1312,7 @@ void TypeParameter():
 {}
 {
    AnnotationList()
-   <IDENTIFIER> {setLastTokenImage(jjtThis);} [ "extends" IntersectionType() ]
+   <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); } [ "extends" IntersectionType() ]
 }
 
 void ClassOrInterfaceBody() #ClassBody:
