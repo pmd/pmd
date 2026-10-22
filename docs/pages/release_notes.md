@@ -73,14 +73,19 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+  * plsql
+      * [#7223](https://github.com/pmd/pmd/issues/7223): \[plsql] Deprecate AST node `ASTKEYWORD_UNRESERVED`
 
 ### 🚨️ API Changes
-
-*   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
-    including local variables and unqualified instance fields. Numeric references are converted to their declared type.
-    Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
-    These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
-    `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+*   pmd-java
+    *   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
+        including local variables and unqualified instance fields. Numeric references are converted to their declared type.
+        Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
+        These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
+        `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+*   pmd-plsql
+    *   {% jdoc pmd-plsql::lang.plsql.ast.ASTKEYWORD_UNRESERVED %} has been deprecated. This AST node was generated
+        by mistake and is not used. The parser production has been deprecated already since 7.3.0.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
