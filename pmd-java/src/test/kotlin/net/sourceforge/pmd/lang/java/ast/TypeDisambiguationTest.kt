@@ -410,6 +410,34 @@ class NestedParent {
         nested.superclass shouldBe nestedParent
     }
 
+    parserTest("#4436 Static import on demand of a nested class whose supertype is inherited by its enclosing class") {
+        // NestedParent is resolved in the body of Outer, which needs
+        // the supertypes of Outer, before the header of Outer is processed.
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse("""
+package p;
+import static p.Outer.Nested.*;
+
+class First extends Inner { }
+class Outer extends OuterBase {
+    static class Nested extends NestedParent { }
+}
+class OuterBase {
+    static class NestedParent {
+        static class Inner { }
+    }
+}
+        """)
+
+        val (first, outer, nested, outerBase, nestedParent, inner) =
+            acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList { it.symbol }
+
+        first.superclass shouldBe inner
+        outer.superclass shouldBe outerBase
+        nested.superclass shouldBe nestedParent
+    }
+
     parserTest("#4436 Single static import of inherited member type of class, used in the header of that class") {
         assertNoSemanticErrorsOrWarnings()
 
