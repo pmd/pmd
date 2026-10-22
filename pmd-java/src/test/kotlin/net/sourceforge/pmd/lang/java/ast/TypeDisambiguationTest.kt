@@ -365,6 +365,51 @@ interface KeyProvider<K> { }
         )
     }
 
+    parserTest("#4436 Static import on demand of inherited member type of a class declared later in the file") {
+        // The header of Later must be disambiguated before the one of First
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse("""
+package p;
+import static p.Later.*;
+
+class First extends Inner { }
+class Later extends LaterParent { }
+class LaterParent {
+    static class Inner { }
+}
+        """)
+
+        val (first, later, laterParent, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        first.superclass shouldBe inner
+        later.superclass shouldBe laterParent
+    }
+
+    parserTest("#4436 Static import on demand of inherited member type of a nested class") {
+        // The header of Nested must be disambiguated before the one of First,
+        // but it is in the body of Outer
+        assertNoSemanticErrorsOrWarnings()
+
+        val acu = parser.parse("""
+package p;
+import static p.Outer.Nested.*;
+
+class First extends Inner { }
+class Outer {
+    static class Nested extends NestedParent { }
+}
+class NestedParent {
+    static class Inner { }
+}
+        """)
+
+        val (first, _, nested, nestedParent, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.symbol }
+
+        first.superclass shouldBe inner
+        nested.superclass shouldBe nestedParent
+    }
+
     parserTest("#4436 Single static import of inherited member type of class, used in the header of that class") {
         assertNoSemanticErrorsOrWarnings()
 
