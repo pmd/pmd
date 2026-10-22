@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.AssertionUtil;
 
@@ -99,37 +100,43 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         }
 
         if (symbol instanceof JFieldSymbol) {
-            @Nullable Object cv = ((JFieldSymbol) symbol).getConstValue();
-            if (cv != null) {
-                return ConstResult.ctConst(cv);
+            Object value = ((JFieldSymbol) symbol).getConstValue();
+            if (value != null) {
+                return coerceVariableValue(symbol, ConstResult.ctConst(value));
             }
         }
 
-        @Nullable
         ASTVariableId declaratorId = symbol.tryGetNode();
-        if (declaratorId != null) {
-            ASTExpression initializer = declaratorId.getInitializer();
-            if (initializer != null) {
-                ConstResult initRes = initializer.getConstFoldingResult();
-                if (initRes.hasValue()) {
-                    boolean isCompileTimeConstant = symbol instanceof JFieldSymbol
-                        && ((JFieldSymbol) symbol).isStatic();
-                    return new ConstResult(isCompileTimeConstant, initRes.getValue());
-                }
-                return initRes;
-            }
+        ASTExpression initializer = declaratorId == null ? null : declaratorId.getInitializer();
+        if (initializer == null) {
+            return ConstResult.NO_CONST_VALUE;
         }
-
-        return ConstResult.NO_CONST_VALUE;
+        return coerceVariableValue(symbol, initializer.getConstFoldingResult());
     }
 
     @Override
     public @NonNull ConstResult visit(ASTFieldAccess node, Void data) {
         JFieldSymbol symbol = node.getReferencedSym();
-        if (symbol != null) {
-            return ConstResult.ctConstIfNotNull(symbol.getConstValue());
+        if (symbol == null) {
+            return ConstResult.NO_CONST_VALUE;
         }
-        return ConstResult.NO_CONST_VALUE;
+
+        // JLS 15.29 permits qualified names only in the form TypeName.Identifier.
+        boolean isTypeQualified = node.getQualifier() instanceof ASTTypeExpression;
+        return coerceVariableValue(symbol, new ConstResult(isTypeQualified, symbol.getConstValue()));
+    }
+
+    private ConstResult coerceVariableValue(JVariableSymbol symbol, ConstResult result) {
+        if (!result.hasValue()) {
+            return result;
+        }
+
+        // Initializer literals may have a different numeric type from the variable they initialize.
+        JTypeMirror type = symbol.getTypeMirror(Substitution.EMPTY);
+        Object value = type.isNumeric() ? numericCoercion(result.getValue(), type) : result.getValue();
+        // JLS 4.12.4 does not require constant variables to be static fields.
+        boolean isConstantType = type.isPrimitive() || TypeTestUtil.isExactlyA(String.class, type);
+        return new ConstResult(result.isCompileTimeConstant() && isConstantType, value);
     }
 
     @Override

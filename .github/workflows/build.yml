@@ -24,7 +24,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c #v6.0.0
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad #v6.1.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -47,7 +47,7 @@ jobs:
           # version exactly is available in the staging repo. But if we rerun the build using the
           # older cache, it points to the old staging versions, which are not available anymore.
           find .m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -path "*/pmd-designer/*" -print0 | xargs -0 rm -vrf
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: compile-artifact
           if-no-files-found: error
@@ -58,12 +58,12 @@ jobs:
             !pmd-dist/target/pmd-dist-*-src.zip
             !pmd-dist/target/pmd-*-cyclonedx.xml
             !pmd-dist/target/pmd-*-cyclonedx.json
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: staging-repository
           if-no-files-found: error
           path: target/staging
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: dist-artifact
           if-no-files-found: error
@@ -79,7 +79,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
       - name: Spell Check Repo
-        uses: crate-ci/typos@d43b6c087ac471e2ea7b8af622ff15f05c0c365b #v1.50.1
+        uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b #v1.51.1
         # note: don't fail the build on typos, just annotate them
         # so that publish-pull-requests job still runs.
         continue-on-error: true
@@ -95,7 +95,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c #v6.0.0
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad #v6.1.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -105,7 +105,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
         with:
           name: compile-artifact
       - name: Full Build with Maven
@@ -113,7 +113,7 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
               verify -DskipTests -DskipITs
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: javadocs-artifact
           if-no-files-found: error
@@ -135,7 +135,7 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c #v6.0.0
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad #v6.1.0
         # under linux we execute more extensive integration tests with various java versions
         if: ${{ runner.os == 'Linux' }}
         with:
@@ -145,7 +145,7 @@ jobs:
             11
             17
             25
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c #v6.0.0
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad #v6.1.0
         # default java version for all os is 21
         with:
           distribution: 'temurin'
@@ -160,7 +160,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
         # we can only reuse compile-artifacts under linux due to file timestamp issues and
         # platform specific line endings in test resource files.
         if: ${{ runner.os == 'Linux' }}
@@ -195,7 +195,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c #v6.0.0
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad #v6.1.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -205,10 +205,10 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
         with:
           name: compile-artifact
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
         with:
           name: staging-repository
           path: target/staging
@@ -282,7 +282,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c #v6.0.0
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad #v6.1.0
         with:
           distribution: 'temurin'
           java-version: '21'
@@ -292,7 +292,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
         with:
           name: compile-artifact
       - name: Generate rule docs
@@ -303,7 +303,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -DskipITs -Dassembly.skipAssembly=true
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b #v1.321.0
+        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a #v1.329.0
         with:
           ruby-version: 4
       - name: Setup bundler
@@ -319,7 +319,7 @@ jobs:
         run: |
           cd docs
           bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6 > _site/pmd_release_notes.md
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: docs-artifact
           if-no-files-found: error
@@ -337,14 +337,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #v7.0.1
         with:
           fetch-depth: 2
-      - uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c #v6.0.0
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad #v6.1.0
         with:
           distribution: 'temurin'
           java-version: |
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b #v1.321.0
+        uses: ruby/setup-ruby@651ff0d62c5c79bed6d53ec518387aae20e72c1a #v1.329.0
         with:
           ruby-version: 4
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
@@ -356,7 +356,7 @@ jobs:
             .ci/files/vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
         with:
           name: dist-artifact
           path: pmd-dist/target
@@ -377,7 +377,7 @@ jobs:
         run: |
           echo "artifacts_path=$(realpath ..)" >> "${GITHUB_ENV}"
       - name: Upload regression tester report
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
         with:
           name: pmd-regression-tester
           if-no-files-found: error

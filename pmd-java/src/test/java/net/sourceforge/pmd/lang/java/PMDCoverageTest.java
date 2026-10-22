@@ -10,6 +10,8 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.fail;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemOut;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,15 +20,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PMDCoverageTest {
 
@@ -54,8 +54,8 @@ class PMDCoverageTest {
         try {
             Path f = Files.createTempFile(tempFolder, PMDCoverageTest.class.getSimpleName(), null);
 
-            String output = SystemLambda.tapSystemOut(() -> {
-                String errorOutput = SystemLambda.tapSystemErr(() -> {
+            String output = tapSystemOut(() -> {
+                String errorOutput = tapSystemErr(() -> {
                     PMDConfiguration conf = new PMDConfiguration();
                     conf.addInputPath(Paths.get(inputPath));
                     conf.setReportFile(f);
@@ -68,7 +68,7 @@ class PMDCoverageTest {
                     }
 
                     report.setLength(0);
-                    report.append(IOUtil.readFileToString(f.toFile(), StandardCharsets.UTF_8));
+                    report.append(FileUtils.readFileToString(f.toFile(), StandardCharsets.UTF_8));
                 });
                 assertThat(errorOutput, not(containsString("Exception applying rule")));
                 assertThat(errorOutput, not(containsString("Ruleset not found")));

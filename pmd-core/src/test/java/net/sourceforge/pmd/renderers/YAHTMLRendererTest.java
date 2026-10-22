@@ -15,12 +15,12 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.FooRule;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
@@ -73,8 +73,8 @@ class YAHTMLRendererTest extends AbstractRendererTest {
         for (String file : htmlFiles) {
             try (FileInputStream in = new FileInputStream(new File(outputDir, file));
                     InputStream expectedIn = YAHTMLRendererTest.class.getResourceAsStream("yahtml/" + file)) {
-                String data = IOUtil.readToString(in, StandardCharsets.UTF_8);
-                String expected = normalizeLineSeparators(IOUtil.readToString(expectedIn, StandardCharsets.UTF_8));
+                String data = IOUtils.toString(in, StandardCharsets.UTF_8);
+                String expected = normalizeLineSeparators(IOUtils.toString(expectedIn, StandardCharsets.UTF_8));
 
                 assertEquals(expected, data, "File " + file + " is different");
             }

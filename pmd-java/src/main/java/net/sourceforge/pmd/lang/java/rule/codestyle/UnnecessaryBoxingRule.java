@@ -56,6 +56,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.getTypeMirror().isBoxedPrimitive()) {
             ASTExpression arg = ASTList.singleOrNull(node.getArguments());
             if (arg == null) {
@@ -63,7 +64,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             }
             JTypeMirror argT = arg.getTypeMirror();
             if (argT.isPrimitive()) {
-                checkBox((RuleContext) data, node, arg);
+                checkBox(ctx, node, arg);
             }
         }
         return null;
@@ -72,6 +73,7 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (INTERESTING_NAMES.contains(node.getMethodName())) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
@@ -82,11 +84,11 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             ASTExpression qualifier = node.getQualifier();
 
             if (isValueOf && isWrapperValueOf(m)) {
-                checkBox((RuleContext) data, node, node.getArguments().get(0));
+                checkBox(ctx, node, node.getArguments().get(0));
             } else if (isValueOf && isBoxValueOfString(m)) {
-                checkUnboxing((RuleContext) data, node, m.getDeclaringType());
+                checkUnboxing(ctx, node, m.getDeclaringType());
             } else if (!isValueOf && qualifier != null && isUnboxingCall(m)) {
-                checkBox((RuleContext) data, node, qualifier);
+                checkBox(ctx, node, qualifier);
             }
         }
         return null;

@@ -92,7 +92,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
         if (index == 0) {
             enlargeLeft(getChild(index).getFirstToken());
         }
-        if (index == getNumChildren()) {
+        if (index == getNumChildren() - 1) {
             enlargeRight(getChild(index).getLastToken());
         }
     }

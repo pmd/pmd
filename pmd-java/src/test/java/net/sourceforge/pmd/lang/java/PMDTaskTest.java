@@ -11,9 +11,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.test.AbstractAntTestHelper;
 
 class PMDTaskTest extends AbstractAntTestHelper {
@@ -98,7 +98,7 @@ class PMDTaskTest extends AbstractAntTestHelper {
         setDefaultCharset("cp1252");
 
         executeTarget("testFormatterEncodingWithXML");
-        String report = IOUtil.readFileToString(currentTempFile(), StandardCharsets.UTF_8);
+        String report = FileUtils.readFileToString(currentTempFile(), StandardCharsets.UTF_8);
         assertTrue(report.contains("someVariableWithÜmlaut"));
     }
 

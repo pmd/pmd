@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Checks for variables in methods that are defined long before they are used.
@@ -38,6 +39,8 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.getParent() instanceof ASTForInit
             || node.getParent() instanceof ASTResource
             || node.isFinal()) {
@@ -68,7 +71,7 @@ public class VariableDeclarationUsageDistanceRule extends AbstractJavaRulechainR
                 distance++;
             }
             if (distance > maxDistance) {
-                asCtx(data).addViolation(node, id.getName(), distance, maxDistance);
+                ctx.addViolation(node, id.getName(), distance, maxDistance);
             }
         }
 

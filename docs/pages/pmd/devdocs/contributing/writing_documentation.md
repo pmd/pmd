@@ -1,7 +1,7 @@
 ---
 title: Writing documentation
 tags: [devdocs]
-last_updated: January 2026 (7.21.0)
+last_updated: September 2026 (7.28.0)
 permalink: pmd_devdocs_writing_documentation.html
 keywords: documentation, jekyll, markdown
 author: Andreas Dangel <andreas.dangel@adangel.org>
@@ -160,23 +160,26 @@ For a more exhaustive list, see [Pages - Frontmatter](http://idratherbewriting.c
 
 ## Alerts and Callouts
 
-See [Alerts](http://idratherbewriting.com/documentation-theme-jekyll/mydoc_alerts.html).
+For alerts, you can use the GitHub-flavored Markdown admonitions like this:
 
-For example, an info-box can be created like this:
-
-    {%raw%}{% include note.html content="This is a note." %}{%endraw%}
-
+```markdown
+> [!NOTE]
+> This is a note.
+```
 It renders as:
 
-{% include note.html content="This is a note." %}
+> [!NOTE]
+> This is a note.
 
-Other available types are:
+See [GFM Admonitions](https://github.com/Helveg/jekyll-gfm-admonitions#readme) for details.
 
-*   note.html
-*   tip.html
-*   warning.html
-*   important.html
+The available types are:
 
+*   NOTE
+*   TIP
+*   WARNING
+*   IMPORTANT
+*   CAUTION
 
 A callout is created like this:
 

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
 
@@ -15,6 +16,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         String image = node.getImage();
         // trim quotes
         String s = image.substring(1, image.length() - 1);
@@ -46,7 +49,7 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                     // escape followed by
                                     // an octal digit -- legal but very
                                     // confusing!
-                                    asCtx(data).addViolation(node, "\\" + first + second + " + " + third);
+                                    ctx.addViolation(node, "\\" + first + second + " + " + third);
                                 } else {
                                     // if there is a 4th decimal digit, it
                                     // could never be part of
@@ -55,7 +58,7 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                     if (escapeSequence.length() > 3) {
                                         char fourth = escapeSequence.charAt(3);
                                         if (isDecimal(fourth)) {
-                                            asCtx(data).addViolation(node, "\\" + first + second + third + " + " + fourth);
+                                            ctx.addViolation(node, "\\" + first + second + third + " + " + fourth);
                                         }
                                     }
                                 }
@@ -64,14 +67,14 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                 // this is a two-digit octal escape followed
                                 // by a decimal digit
                                 // legal but very confusing
-                                asCtx(data).addViolation(node, "\\" + first + second + " + " + third);
+                                ctx.addViolation(node, "\\" + first + second + " + " + third);
                             }
                         }
                     } else if (isDecimal(second)) {
                         // this is a one-digit octal escape followed by a
                         // decimal digit
                         // legal but very confusing
-                        asCtx(data).addViolation(node, "\\" + first + " + " + second);
+                        ctx.addViolation(node, "\\" + first + " + " + second);
                     }
                 }
             } else if (first == '\\') {
@@ -79,7 +82,7 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
             }
         }
 
-        return data;
+        return null;
     }
 
     private boolean isOctal(char c) {
