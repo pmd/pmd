@@ -472,10 +472,12 @@ final class AstClassSym
         } else if (node instanceof ASTClassDeclaration) {
 
             ASTClassType superClass = node.getSuperClassTypeNode();
-            return superClass == null
-                   ? ts.OBJECT
-                   // this cast relies on the fact that the superclass is not a type variable
-                   : (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
+            if (superClass == null || !InternalApiBridge.ensureSupertypeDisambiguated(superClass)) {
+                // the second case is cyclic inheritance, a compile-time error
+                return ts.OBJECT;
+            }
+            // this cast relies on the fact that the superclass is not a type variable
+            return (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
 
         } else if (isAnonymousClass()) {
 
@@ -567,7 +569,11 @@ final class AstClassSym
 
     @Override
     public List<JClassType> getSuperInterfaceTypes(Substitution subst) {
-        List<JClassType> itfs = CollectionUtil.map(node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
+        List<JClassType> itfs = CollectionUtil.mapNotNull(
+            node.getSuperInterfaceTypeNodes(),
+            // skip the interface if the inheritance is cyclic, a compile-time error
+            n -> InternalApiBridge.ensureSupertypeDisambiguated(n) ? (JClassType) TypeOps.subst(n.getTypeMirror(), subst) : null
+        );
         if (isAnnotation()) {
             itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationType()), itfs);
         }

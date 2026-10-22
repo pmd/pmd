@@ -87,6 +87,17 @@ final class AstDisambiguationPass {
         return supertype.getReferencedSym();
     }
 
+    /**
+     * Disambiguates a supertype in the header of a type declaration now
+     * if needed, so that its type can be built. Returns false if the
+     * supertype is being disambiguated, so that its type cannot be built
+     * yet. This happens with cyclic inheritance (a compile-time error).
+     */
+    static boolean ensureSupertypeDisambiguated(ASTClassType supertype) {
+        getOrDisambigSupertypeSym(supertype);
+        return !supertype.isBeingDisambiguated();
+    }
+
     static void retryDisambigWithCtx(NodeStream<? extends ASTAmbiguousName> nodes, ReferenceCtx ctx, JSymbolTable symbolTable) {
         assert ctx != null : "Null context";
         nodes.forEach(it -> {

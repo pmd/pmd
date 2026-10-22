@@ -221,6 +221,10 @@ public final class InternalApiBridge {
         return AstDisambiguationPass.getOrDisambigSupertypeSym(supertype);
     }
 
+    public static boolean ensureSupertypeDisambiguated(ASTClassType supertype) {
+        return AstDisambiguationPass.ensureSupertypeDisambiguated(supertype);
+    }
+
     public static void setTypedSym(ASTFieldAccess expr, JVariableSig.FieldSig sym) {
         expr.setTypedSym(sym);
     }

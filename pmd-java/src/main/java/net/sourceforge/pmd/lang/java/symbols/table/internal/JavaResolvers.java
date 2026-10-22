@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -370,16 +371,54 @@ public final class JavaResolvers {
     };
 
     /**
-     * Resolvers for inherited member types and fields. We can't process
-     * methods that way, because there may be duplicates and the equals
-     * of {@link JMethodSymbol} is not reliable for now (cannot differentiate
-     * overloads). But also, usually a subset of methods is used in a subclass,
-     * and it's ok performance-wise to process them on-demand.
+     * Resolvers for the member types and fields inherited by the given type.
+     * The hierarchy is walked on first use, as it needs the supertypes of
+     * the type to be disambiguated. That way the symbol table of the body
+     * of a type can be built before its header is disambiguated (#4436).
+     *
+     * <p>We can't process methods that way, because there may be duplicates
+     * and the equals of {@link JMethodSymbol} is not reliable for now (cannot
+     * differentiate overloads). But also, usually a subset of methods is used
+     * in a subclass, and it's ok performance-wise to process them on-demand.
      */
     static Pair<NameResolver<JTypeMirror>, NameResolver<JVariableSig>> inheritedMembersResolvers(JClassType t) {
-        Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> builders =
-            hidingWalkResolvers(t, t, t.getSymbol().getPackageName(), true, /* onlyStatic: */false, DIRECT_STRICT_SUPERTYPES);
-        return Pair.of(builders.getLeft().build(), builders.getRight().build());
+        class LazyWalk {
+            Pair<NameResolver<JTypeMirror>, NameResolver<JVariableSig>> result;
+
+            Pair<NameResolver<JTypeMirror>, NameResolver<JVariableSig>> get() {
+                if (result == null) {
+                    Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> builders =
+                        hidingWalkResolvers(t, t, t.getSymbol().getPackageName(), true, /* onlyStatic: */false, DIRECT_STRICT_SUPERTYPES);
+                    result = Pair.of(builders.getLeft().build(), builders.getRight().build());
+                }
+                return result;
+            }
+        }
+
+        LazyWalk walk = new LazyWalk();
+        return Pair.of(lazyResolver(() -> walk.get().getLeft(), () -> "inherited classes of " + t),
+                       lazyResolver(() -> walk.get().getRight(), () -> "inherited fields of " + t));
+    }
+
+    private static <S> NameResolver<S> lazyResolver(Supplier<NameResolver<S>> resolver, Supplier<String> description) {
+        return new NameResolver<S>() {
+            @Override
+            public @NonNull List<S> resolveHere(String simpleName) {
+                return resolver.get().resolveHere(simpleName);
+            }
+
+            @Override
+            public @Nullable S resolveFirst(String simpleName) {
+                return resolver.get().resolveFirst(simpleName);
+            }
+
+            @Override
+            public String toString() {
+                // Don't trigger the walk. The description is lazy too, as printing
+                // the type may need the bounds of its type parameters.
+                return description.get();
+            }
+        };
     }
 
     private static Pair<ShadowChainBuilder<JTypeMirror, ?>.ResolverBuilder, ShadowChainBuilder<JVariableSig, ?>.ResolverBuilder> hidingWalkResolvers(JClassType t,
