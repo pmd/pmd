@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
@@ -43,6 +45,91 @@ class KotlinTypeAnnotationVisitorTest {
         KtKotlinFile root = PARSER.parse("val x: String = \"hello\"");
         KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
         assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(prop)));
+    }
+
+    @Test
+    void destructuringDeclarationTypeNameNotLeakedFromFirstComponent() {
+        KtKotlinFile root = PARSER.parse("fun f() { val (a, b) = Pair(1, \"x\") }");
+        KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
+        // There is no single type for a destructuring declaration as a whole,
+        // so no type should be assigned to the PropertyDeclaration node itself
+        // (in particular, it must not leak the first component's type, e.g. kotlin.Int).
+        assertNull(KotlinNodeTypeData.getType(prop));
+    }
+
+    @Test
+    void destructuringComponentsHaveOwnTypeName() {
+        KtKotlinFile root = PARSER.parse("fun f() { val (a, b) = Pair(1, \"x\") }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void nonDestructuredVariableDeclarationHasOwnTypeNameToo() {
+        KtKotlinFile root = PARSER.parse("val x: String = \"hello\"");
+        KtVariableDeclaration var = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
+    }
+
+    @Test
+    void forLoopVariableDeclarationHasOwnTypeName() {
+        KtKotlinFile root = PARSER.parse("fun f(items: List<String>) { for (item in items) { } }");
+        KtVariableDeclaration var = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
+    }
+
+    @Test
+    void destructuredForLoopComponentsHaveOwnTypeName() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(pairs: List<Pair<Int, String>>) { for ((a, b) in pairs) { } }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void explicitlyTypedLambdaParameterHasOwnTypeName() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(items: List<String>) { items.forEach { item: String -> } }");
+        KtVariableDeclaration var = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
+    }
+
+    @Test
+    void inferredLambdaParameterHasOwnTypeName() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(numbers: List<Int>) { numbers.forEach { n -> } }");
+        KtVariableDeclaration var = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(var)));
+    }
+
+    @Test
+    void variableDeclarationDoesNotTakeTypeFromAdjacentLine() {
+        // "inferred" must get its own type, not the type of "typed" on the previous line through
+        // the +/-1 line tolerance of the declaration index. Before kotlin-type-mapper 0.7.2,
+        // inferred lambda parameters had no declaration entry and borrowed the adjacent type.
+        KtKotlinFile root = PARSER.parse(
+                "fun f(items: List<String>, numbers: List<Int>) {\n"
+                + "    items.forEach { typed: String -> }\n"
+                + "    numbers.forEach { inferred -> }\n"
+                + "}");
+        KtVariableDeclaration inferred = root.descendants(KtVariableDeclaration.class)
+                .filter(v -> v.getBeginLine() == 3).first();
+        assertNotNull(inferred);
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(inferred)));
+    }
+
+    @Test
+    void destructuredLambdaParameterComponentsHaveOwnTypeName() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(pairs: List<Pair<Int, String>>) { pairs.forEach { (a, b) -> } }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
     }
 
     // --- FunctionDeclaration ---
