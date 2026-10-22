@@ -51,9 +51,12 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
     }
 
     @Override
-    protected void setImage(String image) {
-        super.setImage(image);
-        this.methodName = image;
+    public String getImage() {
+        return getMethodName();
+    }
+
+    void setMethodName(String name) {
+        this.methodName = name;
     }
 
     @Override

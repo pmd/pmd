@@ -69,7 +69,12 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         super(id);
     }
 
+    // /**
+    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+    //  */
     @Override
+    // @Deprecated
+    // @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }
@@ -210,8 +215,10 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
                 AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
                 if (parent instanceof ASTClassType) {
                     ((ASTClassType) parent).setSimpleName(simpleNameImage);
+                } else if (parent instanceof ASTMethodCall) {
+                    ((ASTMethodCall) parent).setMethodName(simpleNameImage);
                 } else {
-                    parent.setImage(simpleNameImage);
+                    throw new UnsupportedOperationException("Unexpected parent type: " + parent.getClass().getName());
                 }
                 parent.removeChildAtIndex(simpleName.getIndexInParent());
                 return null;
@@ -220,8 +227,10 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
                 AbstractJavaNode parent = (AbstractJavaNode) ambig.getParent();
                 if (parent instanceof ASTClassType) {
                     ((ASTClassType) parent).setSimpleName(simpleName);
+                } else if (parent instanceof ASTMethodCall) {
+                    ((ASTMethodCall) parent).setMethodName(simpleName);
                 } else {
-                    parent.setImage(simpleName);
+                    throw new UnsupportedOperationException("Unexpected parent type: " + parent.getClass().getName());
                 }
                 return null;
             }
