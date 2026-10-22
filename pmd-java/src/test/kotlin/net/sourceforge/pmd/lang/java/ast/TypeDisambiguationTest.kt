@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.*
@@ -414,6 +416,52 @@ interface KeyProvider<K> { K getKey(); }
                 }
                 it::getReferencedSym shouldBe bar
             }
+        }
+    }
+
+    parserTestContainer("#4436 Cyclic inheritance through a member type should not crash") {
+        // All of these are rejected by javac with "cyclic inheritance involving A".
+        // We only check that disambiguation terminates and gives every type a symbol.
+        enableProcessing()
+
+        fun assertAllTypesHaveSymbol(code: String) {
+            val acu = parser.parse(code)
+            acu.descendants(ASTClassType::class.java).crossFindBoundaries().forEach {
+                withClue(it.text) {
+                    it.referencedSym shouldNotBe null
+                    it.typeMirror shouldNotBe null
+                }
+            }
+        }
+
+        doTest("Member type declared in the class") {
+            assertAllTypesHaveSymbol("""
+                package p;
+                class A extends A.B { static class B { } }
+            """)
+        }
+
+        doTest("Member type that does not exist") {
+            assertAllTypesHaveSymbol("""
+                package p;
+                class A extends A.B { }
+            """)
+        }
+
+        doTest("Member type inherited from a superinterface") {
+            assertAllTypesHaveSymbol("""
+                package p;
+                class A extends A.B implements I { }
+                interface I { class B { } }
+            """)
+        }
+
+        doTest("Mutually dependent headers") {
+            assertAllTypesHaveSymbol("""
+                package p;
+                class A extends C.B { static class B { } }
+                class C extends A.B { }
+            """)
         }
     }
 
