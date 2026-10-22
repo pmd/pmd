@@ -1129,7 +1129,7 @@ void ImportDeclaration() :
        "static" {jjtThis.setStatic();}
      | LOOKAHEAD({isKeyword("module")}) <IDENTIFIER> {jjtThis.setModuleImport();}
     )?
-    image=VoidName() { jjtThis.setImage(image); }
+    image=VoidName() { jjtThis.setImportedName(image); }
     [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 

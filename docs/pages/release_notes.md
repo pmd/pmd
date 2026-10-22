@@ -88,6 +88,8 @@ This is a {{ site.pmd.release_type }} release.
     *   The `@Image` attribute of `ASTBreakStatement` is deprecated. Use `@Label` instead.
     *   The `@Image` attribute of `ASTContinueStatement` is deprecated. Use `@Label` instead.
     *   The `@Image` attribute of `ASTFieldAccess` is deprecated. Use `@Name` instead.
+    *   The `@Image` attribute of `ASTImportDeclaration` is deprecated. Use `@ImportedName` instead.
+        Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
