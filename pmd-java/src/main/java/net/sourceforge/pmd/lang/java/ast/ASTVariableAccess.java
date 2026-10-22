@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * An unqualified reference to a variable (either local, or a field that
@@ -53,12 +54,12 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
     }
 
 
-    // /**
-    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
-    //  */
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
     @Override
-    // @Deprecated
-    // @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }

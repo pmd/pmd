@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A field access expression.
@@ -56,12 +57,12 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         return (ASTExpression) getChild(0);
     }
 
-    // /**
-    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
-    //  */
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
     @Override
-    // @Deprecated
-    // @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }

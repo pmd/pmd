@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
@@ -35,12 +36,12 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
     }
 
 
-    // /**
-    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
-    //  */
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
     @Override
-    // @Deprecated
-    // @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }

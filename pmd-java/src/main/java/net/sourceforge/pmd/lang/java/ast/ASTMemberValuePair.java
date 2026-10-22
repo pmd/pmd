@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+
 /**
  * Represents a single pair of member name to value in an annotation.
  * This node also represents the shorthand syntax, see {@link #isShorthand()}.
@@ -28,12 +30,12 @@ public final class ASTMemberValuePair extends AbstractJavaNode {
         super(id);
     }
 
-    // /**
-    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
-    //  */
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
     @Override
-    // @Deprecated
-    // @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }

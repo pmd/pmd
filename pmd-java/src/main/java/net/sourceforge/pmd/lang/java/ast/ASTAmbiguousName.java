@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * An ambiguous name occurring in any context. Without a disambiguation
@@ -69,12 +70,12 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         super(id);
     }
 
-    // /**
-    //  * @deprecated Since 7.29.0. Use {@link #getName()} instead.
-    //  */
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
     @Override
-    // @Deprecated
-    // @DeprecatedAttribute(replaceWith = "@Name")
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }
