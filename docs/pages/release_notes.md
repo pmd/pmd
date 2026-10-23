@@ -51,6 +51,8 @@ This is a {{ site.pmd.release_type }} release.
     this property.
 
 ### 🐛️ Fixed Issues
+* apex-errorprone
+    * [#5906](https://github.com/pmd/pmd/issues/5906): \[apex] MethodWithSameNameAsEnclosingClass range is too broad
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7156](https://github.com/pmd/pmd/issues/7156): \[core] Analysis cache fails with ZipException on invalid archive on the auxclasspath
