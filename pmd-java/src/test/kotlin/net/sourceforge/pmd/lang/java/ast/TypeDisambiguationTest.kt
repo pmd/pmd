@@ -492,6 +492,34 @@ interface KeyProvider<K> { K getKey(); }
         }
     }
 
+    parserTest("#5794 Member type qualified by the class being declared, in an annotation of that class with an unresolved superinterface") {
+        enableProcessing()
+
+        val acu = parser.parse("""
+package p;
+import com.example.Unresolved;
+@Ann(Foo.Builder.class)
+class Foo implements Unresolved {
+    static class Builder {}
+}
+@interface Ann { Class<?> value(); }
+        """)
+
+        val (foo, builder) = acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList { it.symbol }
+
+        foo.superInterfaces.single().isUnresolved shouldBe true
+
+        val fooBuilder = acu.descendants(ASTClassType::class.java).first { it.simpleName == "Builder" }!!
+        fooBuilder.shouldMatchN {
+            classType("Builder") {
+                classType("Foo") {
+                    it::getReferencedSym shouldBe foo
+                }
+                it::getReferencedSym shouldBe builder
+            }
+        }
+    }
+
     parserTestContainer("#4436 Cyclic inheritance through a member type should not crash") {
         // All of these are rejected by javac with "cyclic inheritance involving A".
         // We only check that disambiguation terminates and gives every type a symbol.

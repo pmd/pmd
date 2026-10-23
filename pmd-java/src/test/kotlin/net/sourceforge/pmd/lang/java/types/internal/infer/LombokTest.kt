@@ -490,4 +490,28 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
             acu.classSymbol("Desk").declaredClasses.map { it.simpleName } shouldBe emptyList()
         }
     }
+
+    parserTest("#5794 Lombok builder referenced in an annotation of the class, with an unresolved superinterface") {
+        val acu = parser.parse(
+            """
+            import com.example.vehicle.Odometer;
+            import lombok.Builder;
+            import lombok.Value;
+            import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbImmutable;
+
+            @Value
+            @Builder(toBuilder = true)
+            @DynamoDbImmutable(builder = PersistentOdometer.PersistentOdometerBuilder.class)
+            public class PersistentOdometer implements Odometer {
+                String unit;
+                Integer value;
+            }
+            """.trimIndent()
+        )
+
+        acu.withTypeDsl {
+            val odometer = acu.typeDeclarations().firstOrThrow().superInterfaceTypeNodes.firstOrThrow()
+            odometer.typeMirror.symbol!!.isUnresolved shouldBe true
+        }
+    }
 })
