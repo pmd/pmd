@@ -980,4 +980,41 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#7216 logstash structured arguments are deferred like plain parameters</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>21,23</expected-linenumbers>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.logstash.logback.argument.StructuredArguments;
+import static net.logstash.logback.argument.StructuredArguments.value;
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
+import static net.logstash.logback.argument.StructuredArguments.entries;
+
+import java.util.Map;
+
+public class Foo {
+    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
+
+    public void run(String user, int id, Map<String, Object> context) {
+        // deferred formatting, not flagged
+        LOG.debug("processing user={} id={}", user, id);
+        // structured arguments defer to the encoder, not flagged
+        LOG.debug("processing user={} id={}", value("user", user), value("id", id));
+        LOG.debug("processing user={} id={}", keyValue("user", user), StructuredArguments.keyValue("id", id));
+        LOG.debug("entries {}", entries(context));
+        // still flagged: a genuinely arbitrary call is not deferred
+        LOG.debug("processing user={}", computeName(user));
+        // still flagged: an expensive call nested inside a structured argument is evaluated eagerly
+        LOG.debug("processing user={}", value("user", computeName(user)));
+    }
+
+    private String computeName(String user) {
+        return user;
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
