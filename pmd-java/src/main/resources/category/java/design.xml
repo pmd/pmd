@@ -1433,6 +1433,10 @@ public class Bar {
         <description>
 Avoid unnecessary if-then-else statements when returning a boolean. The result of
 the conditional test can be returned instead.
+
+When only one branch returns a boolean literal, the rule avoids combining it with
+a complex return expression containing a lambda or more than two method calls
+(including calls in arguments), to preserve readability.
         </description>
         <priority>3</priority>
         <example>
