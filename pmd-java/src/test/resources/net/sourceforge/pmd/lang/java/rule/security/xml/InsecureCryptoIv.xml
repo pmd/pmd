@@ -5,6 +5,40 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
+        <description>Example from rule description</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>18,21,24</expected-linenumbers>
+        <code><![CDATA[
+import java.security.SecureRandom;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
+public class InsecureCryptoIvExample {
+    void good(SecretKey key) throws Exception {
+        SecureRandom random = SecureRandom.getInstanceStrong();
+        byte[] iv = new byte[Cipher.getInstance("AES").getBlockSize()];
+        random.nextBytes(iv);
+        IvParameterSpec ivParam = new IvParameterSpec(iv);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, ivParam);
+    }
+
+    void bad() {
+        byte[] iv1 = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
+        IvParameterSpec ivParam1 = new IvParameterSpec(iv1);
+
+        byte[] iv2 = new byte[16];
+        IvParameterSpec ivParam2 = new IvParameterSpec(iv2);
+
+        byte[] iv3 = "secret iv in here".getBytes();
+        IvParameterSpec ivParam3 = new IvParameterSpec(iv3);
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
         <description>Hard coded inline IvSpec, bad</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -231,14 +265,14 @@ class Example {
     <test-code>
         <description>#7015: Unchanged local array</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
-        byte[] iv = new byte[16];
-        new IvParameterSpec(iv); // Report: nothing has changed the array since allocation.
+        byte[] iv = new byte[16]; // Report: nothing has changed the array since allocation.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
@@ -247,15 +281,15 @@ class Example {
     <test-code>
         <description>#7015: Separate assignment</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
         byte[] iv;
-        iv = new byte[16];
-        new IvParameterSpec(iv); // Report: the single assignment is unconditional and in this block.
+        iv = new byte[16]; // Report: the single assignment is unconditional and in this block.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
@@ -264,15 +298,15 @@ class Example {
     <test-code>
         <description>#7015: Constant expression size</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
         final int size = 8;
-        byte[] iv = new byte[size * 2];
-        new IvParameterSpec(iv); // Report: constant folding gives a positive length of 16.
+        byte[] iv = new byte[size * 2]; // Report: constant folding gives a positive length of 16.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
@@ -281,14 +315,14 @@ class Example {
     <test-code>
         <description>#7015: Offset and length overload</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
-        byte[] iv = new byte[16];
-        new IvParameterSpec(iv, 0, iv.length); // Report: reading the length does not modify the array.
+        byte[] iv = new byte[16]; // Report: the array is created here
+        new IvParameterSpec(iv, 0, iv.length); // reading the length does not modify the array.
     }
 }
         ]]></code>
@@ -405,15 +439,16 @@ class Example {
 
     <test-code>
         <description>#7015: Alias before use</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
-        byte[] iv = new byte[16];
-        byte[] alias = iv;
-        new IvParameterSpec(iv); // No report: the check does not follow aliases, even unused ones.
+        byte[] iv = new byte[16]; // Report: default-initialized array created here.
+        byte[] alias = iv; // Note: this alias is ignored. The code is very suspicious and unclear. Better report on iv.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
@@ -456,15 +491,15 @@ class Example {
     <test-code>
         <description>#7015: Mutation after use does not hide the violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 import java.security.SecureRandom;
 
 class Example {
     void example() {
-        byte[] iv = new byte[16];
-        new IvParameterSpec(iv); // Report: this constructor copies the zeros before the fill.
+        byte[] iv = new byte[16]; // Report: default array creation, which is used in the next line.
+        new IvParameterSpec(iv);
         new SecureRandom().nextBytes(iv);
     }
 }
@@ -474,15 +509,15 @@ class Example {
     <test-code>
         <description>#7015: Reassignment after use does not hide the violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example(byte[] source) {
-        byte[] iv = new byte[16];
-        new IvParameterSpec(iv); // Report: the later reassignment cannot change this IV.
-        iv = source;
+        byte[] iv = new byte[16]; // Report: default array creation, which is used in the next line.
+        new IvParameterSpec(iv);
+        iv = source; // this later reassignment cannot change the IV.
     }
 }
         ]]></code>
@@ -491,7 +526,7 @@ class Example {
     <test-code>
         <description>#7015: Only the construction before mutation is reported</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
@@ -499,9 +534,9 @@ class Example {
     native int load(byte[] iv);
 
     void example() {
-        byte[] iv = new byte[16];
-        new IvParameterSpec(iv); // Report: the array is still unchanged at this use.
-        load(iv);
+        byte[] iv = new byte[16]; // Report: default array creation, which is used in the next line.
+        new IvParameterSpec(iv);
+        load(iv); // might change the IV, but too late.
         new IvParameterSpec(iv); // No report: the helper may have changed the contents.
     }
 }
@@ -509,8 +544,9 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>#7015: Conditional initialization is not a definite assignment</description>
-        <expected-problems>0</expected-problems>
+        <description>#7015: Conditional initialization is provides a code path for a definite assignment</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
@@ -518,17 +554,18 @@ class Example {
     void example(byte[] source) {
         byte[] iv = source;
         if (source.length > 0) {
-            iv = new byte[16];
+            iv = new byte[16]; // Report: default array creation. This code path exists and might be executed.
         }
-        new IvParameterSpec(iv); // No report: the allocation does not execute on every path.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>#7015: Loop mutation may affect the next iteration</description>
-        <expected-problems>0</expected-problems>
+        <description>#7015: Loop mutation may affect the next iteration, but not first</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
@@ -536,10 +573,10 @@ class Example {
     native int load(byte[] iv);
 
     void example() {
-        byte[] iv = new byte[16];
+        byte[] iv = new byte[16]; // Report: default array creation.
         for (int i = 0; i < 2; i++) {
-            new IvParameterSpec(iv); // No report: a previous iteration may have filled iv.
-            load(iv);
+            new IvParameterSpec(iv); // On first loop execution, the default array is used.
+            load(iv); // this only changes the IV for the next iteration.
         }
     }
 }
@@ -549,7 +586,7 @@ class Example {
     <test-code>
         <description>#7015: Fresh allocation inside a loop</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>9</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
@@ -558,8 +595,8 @@ class Example {
 
     void example() {
         for (int i = 0; i < 2; i++) {
-            byte[] iv = new byte[16];
-            new IvParameterSpec(iv); // Report: every iteration starts with a fresh zero-filled array.
+            byte[] iv = new byte[16]; // Report: every iteration starts with a fresh zero-filled array.
+            new IvParameterSpec(iv);
             load(iv);
         }
     }
@@ -611,7 +648,8 @@ class Example {
 
     <test-code>
         <description>#7015: Mutation in a later constructor argument</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
@@ -619,22 +657,23 @@ class Example {
     native int load(byte[] iv);
 
     void example() {
-        byte[] iv = new byte[16];
+        byte[] iv = new byte[16]; // Report: default array creation.
         // All arguments are evaluated before the constructor copies the array.
-        new IvParameterSpec(iv, load(iv), 16); // No report: load may change iv during argument evaluation.
+        new IvParameterSpec(iv, load(iv), 16); // load may change iv during argument evaluation, but this is bad style (side effect).
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>#7015: Array field is outside local analysis</description>
-        <expected-problems>0</expected-problems>
+        <description>#7015: Array field - default initialized</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
-    byte[] stored = new byte[16];
+    byte[] stored = new byte[16]; // Report: default array creation.
 
     void example() {
         new IvParameterSpec(stored); // No report: field contents are outside this local check.
@@ -644,16 +683,34 @@ class Example {
     </test-code>
 
     <test-code>
+        <description>#7015: Array field - default initialized and randomly modified</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+import java.security.SecureRandom;
+
+class Example {
+    byte[] stored = new byte[16];
+
+    void example() {
+        new SecureRandom().nextBytes(stored);
+        new IvParameterSpec(stored);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#7015: Runtime array size from outside - array size does not matter</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example(byte[] source) {
-        byte[] iv = new byte[source.length];
-        new IvParameterSpec(iv); // Report: the array is still default-initialized.
+        byte[] iv = new byte[source.length]; // Report: the array is still default-initialized.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
@@ -662,7 +719,7 @@ class Example {
     <test-code>
         <description>#7015: Different scopes with the same variable name</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>12</expected-linenumbers>
+        <expected-linenumbers>11</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
@@ -674,42 +731,42 @@ class Example {
             byte[] iv = new byte[16];
             load(iv);
         }
-        byte[] iv = new byte[16];
-        new IvParameterSpec(iv); // Report: the earlier use belongs to a different variable.
+        byte[] iv = new byte[16]; // Report: the earlier use belongs to a different variable.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>7015: Each unchanged use is reported</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>6,7</expected-linenumbers>
+        <description>#7015: Only the array creation is reported, not each usage</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     IvParameterSpec example() {
-        byte[] iv = new byte[16];
-        IvParameterSpec first = new IvParameterSpec(iv); // Report: the constructor copies the zeros.
-        return new IvParameterSpec(iv); // Report: the earlier constructor did not modify iv.
+        byte[] iv = new byte[16]; // Report: default-initialized array.
+        IvParameterSpec first = new IvParameterSpec(iv);
+        return new IvParameterSpec(iv);
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>7015: Later nested mutations do not hide the earlier violation</description>
+        <description>#7015: Later nested mutations do not hide the earlier violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 import java.security.SecureRandom;
 
 class Example {
     void example(boolean refill) {
-        byte[] iv = new byte[16];
-        new IvParameterSpec(iv); // Report: neither later block has executed yet.
+        byte[] iv = new byte[16]; // Report: default-initialized array.
+        new IvParameterSpec(iv); // neither later block has executed yet, still using default-initialized array.
         if (refill) {
             new SecureRandom().nextBytes(iv);
         }
@@ -722,7 +779,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Conditional random fill before use</description>
+        <description>#7015: Conditional random fill before use</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -741,17 +798,17 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Allocation and use inside a try block</description>
+        <description>#7015: Allocation and use inside a try block</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
         try {
-            byte[] iv = new byte[16];
-            new IvParameterSpec(iv); // Report: allocation and use are in the same try block.
+            byte[] iv = new byte[16]; // Report: allocation and use are in the same try block.
+            new IvParameterSpec(iv);
         } catch (RuntimeException e) {
             throw e;
         }
@@ -761,7 +818,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Zero-length arrays are excluded</description>
+        <description>#7015: Zero-length arrays are excluded</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -769,15 +826,15 @@ import javax.crypto.spec.IvParameterSpec;
 class Example {
     void example() {
         new IvParameterSpec(new byte[0]); // No report: this check requires a positive length.
-        byte[] iv = new byte[0];
-        new IvParameterSpec(iv); // No report: the same boundary applies to local variables.
+        byte[] iv = new byte[0];  // No report: this check requires a positive length.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>7015: Anonymous class capture</description>
+        <description>#7015: Anonymous class capture</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -801,15 +858,16 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Declaration in a for initializer</description>
-        <expected-problems>0</expected-problems>
+        <description>#7015: Declaration in a for initializer</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example(boolean repeat) {
-        for (byte[] iv = new byte[16]; repeat; repeat = false) {
-            new IvParameterSpec(iv); // No report: the allocation is outside the loop body block.
+        for (byte[] iv = new byte[16]; repeat; repeat = false) { // Report: default-initialized array which is used in the next line.
+            new IvParameterSpec(iv);
         }
     }
 }
@@ -817,7 +875,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Subclass constructors may transform their arguments</description>
+        <description>#7015: Subclass constructors may transform their arguments</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -845,7 +903,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Subclass use prevents a later report</description>
+        <description>#7015: Subclass use prevents a later report</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -867,7 +925,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Anonymous subclass overrides an inline default IV</description>
+        <description>#7015: Anonymous subclass overrides an inline default IV</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -893,7 +951,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Anonymous subclass overrides an unchanged local IV</description>
+        <description>#7015: Anonymous subclass overrides an unchanged local IV</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -920,7 +978,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Char literal array size</description>
+        <description>#7015: Char literal array size</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
@@ -935,7 +993,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Char cast array size</description>
+        <description>#7015: Char cast array size</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
@@ -950,24 +1008,24 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Char constant local array size</description>
+        <description>#7015: Char constant local array size</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
         final char size = '\020';
-        byte[] iv = new byte[size];
-        new IvParameterSpec(iv); // Report: the unchanged local array contains 16 zero bytes.
+        byte[] iv = new byte[size]; // Report: default-initialized array.
+        new IvParameterSpec(iv);
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>7015: Zero char array sizes are excluded</description>
+        <description>#7015: Zero char array sizes are excluded</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -985,7 +1043,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Anonymous subclass keeps existing array initializer reporting</description>
+        <description>#7015: Anonymous subclass keeps existing array initializer reporting</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[

@@ -5,6 +5,46 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
+        <description>Example from rule description</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>25,27,30</expected-linenumbers>
+        <code><![CDATA[
+import java.security.spec.KeySpec;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+public class HardCodedCryptoKeyExample {
+    void good() throws Exception {
+        // loading the key via properties from outside of the source code
+        SecretKey secretKey1 = new SecretKeySpec(Properties.getKey(), "AES");
+
+        // generating a fresh key
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(256);
+        SecretKey secretKey2 = keyGenerator.generateKey();
+
+        // generating from a password, the password is from outside the source code
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(Properties.getPassword().toCharArray(), Properties.getSalt().getBytes(), 65536, 256);
+        SecretKey secretKey3 = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+    }
+
+    void bad() {
+        SecretKey secretKey1 = new SecretKeySpec("my secret here".getBytes(), "AES");
+
+        byte[] key2 = new byte[] { 1, 2, 3 };
+        SecretKey secretKey2 = new SecretKeySpec(key2, "AES");
+
+        byte[] key3 = new byte[32];
+        SecretKey secretKey3 = new SecretKeySpec(key3, "AES");
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
         <description>Hard coded inline cryptographic key, bad</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
@@ -291,7 +331,7 @@ public class BadCase {
     <test-code>
         <description>#7015: default-initialized array</description>
         <expected-problems>6</expected-problems>
-        <expected-linenumbers>5,9,14,19,23,27</expected-linenumbers>
+        <expected-linenumbers>5,8,12,18,22,26</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.SecretKeySpec;
 
@@ -318,8 +358,8 @@ class Example {
         SecretKeySpec keySpec = new SecretKeySpec(key, 0, key.length, "AES");
     }
     void example6(byte[] source) {
-        byte[] key = new byte[32];
-        SecretKeySpec keySpec = new SecretKeySpec(key, "AES"); // Report: the later reassignment cannot change the key
+        byte[] key = new byte[32]; // Report: the later reassignment cannot change the key
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
         key = source;
     }
 }
