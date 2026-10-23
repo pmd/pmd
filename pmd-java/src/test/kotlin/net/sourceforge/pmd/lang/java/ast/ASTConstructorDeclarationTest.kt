@@ -90,4 +90,18 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
             }
         }
     }
+
+    // TODO Deprecation: This tests deprecated backwards compatibility.
+    parserTestContainer("Deprecated @Image attribute") {
+        inContext(TypeBodyParsingCtx) {
+            "Foo() { }" should parseAs {
+                constructorDecl {
+                    it::getImage shouldBe it.name
+                    modifiers()
+                    formalsList(0)
+                    block()
+                }
+            }
+        }
+    }
 })
