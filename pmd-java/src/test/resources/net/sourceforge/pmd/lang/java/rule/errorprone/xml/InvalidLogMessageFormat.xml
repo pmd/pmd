@@ -1608,4 +1608,34 @@ public class Test {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Java - InvalidLogMessageFormat false positive when if/else block is in the catch block (#7137)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.apache.logging.log4j.LogManager;
+            import org.apache.logging.log4j.Logger;
+            import java.util.function.Supplier;
+            public class Foo {
+                   private static final Logger logger = LogManager.getLogger();
+                   boolean isDeploymentTypeProduction() {
+                            return true;
+                   }
+
+                   public void call() {
+                        try {
+                              // ...
+                        }
+                        catch ( CustomerKickoutException ckE ) {
+                            if ( isDeploymentTypeProduction() ) {
+                               logger.error( "Kickout error: {}", ckE.toString() );
+                            } else {
+                               logger.error( "Kickout error:", ckE ); // -- Too many arguments, expected 0 argument but found 1.
+                            }
+                        }
+                   }
+            }
+            ]]>
+        </code>
+    </test-code>
 </test-data>
