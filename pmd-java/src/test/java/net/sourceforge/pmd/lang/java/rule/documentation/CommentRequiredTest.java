@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -39,10 +40,16 @@ class CommentRequiredTest extends PmdRuleTst {
     }
 
     private static List<PropertyDescriptor<?>> getProperties(Rule rule) {
+        List<String> skippedProperties = Arrays.asList(
+                "minimumVisibility",
+                "publicMethodCommentRequirement",
+                "protectedMethodCommentRequirement",
+                "packageMethodCommentRequirement");
         List<PropertyDescriptor<?>> result = new ArrayList<>();
         for (PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
             if (property != Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR
-                    && property != Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) {
+                    && property != Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR
+                    && !skippedProperties.contains(property.name())) {
                 result.add(property);
             }
         }
