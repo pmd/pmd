@@ -87,6 +87,7 @@ This is a {{ site.pmd.release_type }} release.
 * kotlin-bestpractices
     * [#7092](https://github.com/pmd/pmd/issues/7092): \[kotlin] New Rule: LooseCoupling
 * plsql
+    * [#6609](https://github.com/pmd/pmd/issues/6609): \[plsql] Parse exception when comparing a parenthesized arithmetic expression in a WHERE clause
     * [#7223](https://github.com/pmd/pmd/issues/7223): \[plsql] Deprecate AST node `ASTKEYWORD_UNRESERVED`
 
 ### 🚨️ API Changes
