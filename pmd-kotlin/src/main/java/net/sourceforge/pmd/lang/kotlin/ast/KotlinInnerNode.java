@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.kotlin.ast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -141,7 +142,14 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
             // ...) return null when the value does not apply, so the attribute is absent
             // from XPath rather than present-with-null. Rules distinguish "unresolved"
             // (pmd-kotlin:hasUnresolvedReference()) from "genuinely none" — see the Kotlin docs.
-            if (attr.getValue() == null) {
+            //
+            // Also skip empty-collection-valued attributes (e.g. @AnnotationFqNames on a
+            // declaration with no annotations): XPath treats an absent attribute and an
+            // attribute holding an empty sequence identically (both evaluate to an empty
+            // sequence), so suppressing the empty case too is a no-op for rule authors, and
+            // removes a lot of "@AnnotationFqNames = ()" noise from tree dumps.
+            Object value = attr.getValue();
+            if (value == null || value instanceof Collection && ((Collection<?>) value).isEmpty()) {
                 continue;
             }
             Attribute existing = byName.putIfAbsent(attr.getName(), attr);
