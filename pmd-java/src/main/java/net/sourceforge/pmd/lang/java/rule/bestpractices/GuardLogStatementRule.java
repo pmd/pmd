@@ -141,6 +141,15 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         return !areAdditionalParamsLowOverhead(node, messageArg + 1);
     }
 
+    /**
+     * Whether the argument is a logstash structured argument. Its string
+     * rendering is deferred to the encoder, so it is as cheap as a plain
+     * parameter substitution and needs no level guard.
+     */
+    private static boolean isStructuredLoggingArgument(ASTExpression it) {
+        return TypeTestUtil.isA("net.logstash.logback.argument.StructuredArgument", it);
+    }
+
     private boolean hasGuard(ASTMethodCall node, String logLevel) {
         for (ASTIfStatement ifStatement: node.ancestors(ASTIfStatement.class).take(2)) {
             if (ifStatement == null) {
@@ -241,7 +250,8 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(it -> isDirectAccess(it) || it.getConstFoldingResult().hasValue());
+                   .all(it -> isDirectAccess(it) || it.getConstFoldingResult().hasValue()
+                           || isStructuredLoggingArgument(it));
     }
 
     private static boolean isDirectAccess(ASTExpression it) {
