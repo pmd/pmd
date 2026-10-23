@@ -68,6 +68,7 @@ final class ParameterizedMetricKey<N extends Node, R extends Number> implements 
         // sharing instances allows using DataMap, which uses reference identity
         ParameterizedMetricKey<N, R> tmp = new ParameterizedMetricKey<>(key, options);
         POOL.putIfAbsent(tmp, tmp);
+
         @SuppressWarnings("unchecked")
         ParameterizedMetricKey<N, R> result = (ParameterizedMetricKey<N, R>) POOL.get(tmp);
         return result;
