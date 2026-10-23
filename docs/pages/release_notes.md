@@ -92,6 +92,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7015](https://github.com/pmd/pmd/issues/7015): \[java] InsecureCryptoIv/HardCodedCryptoKey: False negative for unchanged default-initialized arrays
 * kotlin-bestpractices
     * [#7092](https://github.com/pmd/pmd/issues/7092): \[kotlin] New Rule: LooseCoupling
+* matlab
+    * [#2258](https://github.com/pmd/pmd/issues/2258): \[matlab] \[cpd] Parse error with backslashes in string literals
 * plsql
     * [#6609](https://github.com/pmd/pmd/issues/6609): \[plsql] Parse exception when comparing a parenthesized arithmetic expression in a WHERE clause
     * [#7223](https://github.com/pmd/pmd/issues/7223): \[plsql] Deprecate AST node `ASTKEYWORD_UNRESERVED`
