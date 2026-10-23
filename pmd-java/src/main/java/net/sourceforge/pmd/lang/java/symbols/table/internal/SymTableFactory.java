@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.FORMAL_PARAM
 import static net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo.SAME_FILE;
 import static net.sourceforge.pmd.util.AssertionUtil.isValidJavaPackageName;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BinaryOperator;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -408,8 +406,9 @@ final class SymTableFactory {
         fields = VARS.shadow(fields, ScopeInfo.ENCLOSING_TYPE_MEMBER, VARS.groupByName(t.getDeclaredFields()));
 
         ShadowChainNode<JMethodSig, ScopeInfo> methods = methodNode(parent);
-        BinaryOperator<List<JMethodSig>> merger = JavaResolvers.methodMerger(Modifier.isStatic(t.getSymbol().getModifiers()));
-        methods = METHODS.augmentWithCache(methods, false, ScopeInfo.METHOD_MEMBER, JavaResolvers.subtypeMethodResolver(t), merger);
+        // Comb rule (JLS 15.12.1): if this class has a member method with a given name,
+        // the methods with that name of the enclosing classes and imports are shadowed.
+        methods = METHODS.augmentWithCache(methods, true, ScopeInfo.METHOD_MEMBER, JavaResolvers.subtypeMethodResolver(t));
 
         return buildTable(parent, fields, methods, types);
     }

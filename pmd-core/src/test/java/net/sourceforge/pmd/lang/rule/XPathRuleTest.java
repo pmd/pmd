@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.reporting.ReportTestUtil.getReportForRuleApply
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErrAndOut;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -22,8 +23,6 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.reporting.Report;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class XPathRuleTest {
 
@@ -40,7 +39,7 @@ class XPathRuleTest {
 
         DummyNode firstNode = newNode();
 
-        String log = SystemLambda.tapSystemErrAndOut(() -> {
+        String log = tapSystemErrAndOut(() -> {
             // with another rule forked from the same one (in multithreaded processor)
             Report report = getReportForRuleApply(xpr, firstNode);
             assertEquals(1, report.getViolations().size());
@@ -49,7 +48,7 @@ class XPathRuleTest {
         assertThat(log, Matchers.containsString("Use of deprecated attribute 'dummyNode/@Name' by XPath rule 'SomeRule', please use @Image instead"));
 
 
-        log = SystemLambda.tapSystemErrAndOut(() -> {
+        log = tapSystemErrAndOut(() -> {
             // with another node
             Report report = getReportForRuleApply(xpr, newNode());
             assertEquals(1, report.getViolations().size());
@@ -57,7 +56,7 @@ class XPathRuleTest {
         assertEquals("", log); // no additional warnings
 
 
-        log = SystemLambda.tapSystemErrAndOut(() -> {
+        log = tapSystemErrAndOut(() -> {
             // with another rule forked from the same one (in multithreaded processor)
             Report report = getReportForRuleApply(xpr.deepCopy(), newNode());
             assertEquals(1, report.getViolations().size());
@@ -68,7 +67,7 @@ class XPathRuleTest {
         XPathRule otherRule = makeRule(version, "OtherRule");
         otherRule.setRuleSetName("rset.xml");
 
-        log = SystemLambda.tapSystemErrAndOut(() -> {
+        log = tapSystemErrAndOut(() -> {
             Report report = getReportForRuleApply(otherRule, firstNode);
             assertEquals(1, report.getViolations().size());
         });

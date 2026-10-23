@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Parameter;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
@@ -186,8 +186,8 @@ public class Formatter {
             isOnError = false;
         } finally {
             if (isOnError) {
-                IOUtil.closeQuietly(output);
-                IOUtil.closeQuietly(writer);
+                IOUtils.closeQuietly(output);
+                IOUtils.closeQuietly(writer);
             }
         }
         return writer;
