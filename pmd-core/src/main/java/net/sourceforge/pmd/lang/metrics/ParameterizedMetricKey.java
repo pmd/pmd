@@ -64,7 +64,6 @@ final class ParameterizedMetricKey<N extends Node, R extends Number> implements 
      *
      * @return An instance of parameterized metric key corresponding to the parameters
      */
-    @SuppressWarnings("PMD.SingletonClassReturningNewInstance")
     public static <N extends Node, R extends Number> ParameterizedMetricKey<N, R> getInstance(Metric<N, R> key, MetricOptions options) {
         // sharing instances allows using DataMap, which uses reference identity
         ParameterizedMetricKey<N, R> tmp = new ParameterizedMetricKey<>(key, options);
