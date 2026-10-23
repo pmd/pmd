@@ -53,6 +53,9 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
     to use `var` when the explicit type name would be longer than a given minimum length configured with 
     this property.
+*   The Java rule {% rule java/codestyle/UnnecessaryFullyQualifiedName %} no longer reports `lombok.Builder`
+    when `builderClassName` is `"Builder"`. The generated builder class hides the annotation, so the
+    fully qualified name is required.
 
 ### 🐛️ Fixed Issues
 * core
@@ -78,6 +81,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
     * [#7119](https://github.com/pmd/pmd/issues/7119): \[java] SimplifiableTestAssertion: Various false negatives
 * java-codestyle
+    * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok annotation
     * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
 * java-design

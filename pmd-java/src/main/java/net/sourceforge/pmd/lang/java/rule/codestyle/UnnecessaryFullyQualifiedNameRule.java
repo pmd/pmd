@@ -13,16 +13,20 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -36,6 +40,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.ScopeInfo;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
@@ -98,7 +103,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     // we don't actually know where the method came from
                     String simpleName = formatMemberName(next, methodCall.getMethodType().getSymbol());
                     String unnecessary = produceQualifier(deepest, next, true);
-                    ctx.addViolation(next, unnecessary, simpleName, "");
+                    addViolation(ctx, next, unnecessary, simpleName, "");
                     return null;
                 }
             } else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
@@ -108,7 +113,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     String simpleName = formatMemberName(next, fieldAccess.getReferencedSym());
                     String reasonToString = unnecessaryReasonWrapper(reasonForFieldInScope);
                     String unnecessary = produceQualifier(deepest, next, true);
-                    ctx.addViolation(next, unnecessary, simpleName, reasonToString);
+                    addViolation(ctx, next, unnecessary, simpleName, reasonToString);
                     return null;
                 }
             }
@@ -118,9 +123,43 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             String simpleName = next.getSimpleName();
             String reasonToString = unnecessaryReasonWrapper(bestReason);
             String unnecessary = produceQualifier(deepest, next, false);
-            ctx.addViolation(next, unnecessary, simpleName, reasonToString);
+            addViolation(ctx, next, unnecessary, simpleName, reasonToString);
         }
         return null;
+    }
+
+    private void addViolation(RuleContext ctx, ASTClassType reported, String unnecessary, String simpleName, String reason) {
+        if (!isNecessaryLombokBuilderQualification(reported)) {
+            ctx.addViolation(reported, unnecessary, simpleName, reason);
+        }
+    }
+
+    /**
+     * {@code @lombok.Builder(builderClassName = "Builder")} generates a nested class
+     * named {@code Builder}. That class hides the imported annotation, and since
+     * Lombok 1.18.48 the simple name {@code @Builder} is rejected. The same hiding
+     * makes {@code @lombok.Builder.Default} necessary inside the type.
+     */
+    private static boolean isNecessaryLombokBuilderQualification(ASTClassType reported) {
+        if (!TypeTestUtil.isExactlyA("lombok.Builder", reported)) {
+            return false;
+        }
+        for (ASTTypeDeclaration type : reported.ancestors(ASTTypeDeclaration.class)) {
+            if (namesItsBuilderClassBuilder(type)
+                || type.getOperations().any(UnnecessaryFullyQualifiedNameRule::namesItsBuilderClassBuilder)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean namesItsBuilderClassBuilder(Annotatable node) {
+        ASTAnnotation annotation = node.getAnnotation("lombok.Builder");
+        if (annotation == null) {
+            return false;
+        }
+        ASTMemberValue className = annotation.getAttribute("builderClassName");
+        return className != null && "Builder".equals(className.getConstValue());
     }
 
 
