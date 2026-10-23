@@ -21,7 +21,8 @@ This needs to be done only once.
   to execute the unit tests.
 * You can also run individual test classes.
 
-{%include note.html content="When executing tests, NetBeans actually calls Maven with `surefire:test` goal. " %}
+> [!NOTE]
+> When executing tests, NetBeans actually calls Maven with `surefire:test` goal.
 
 ## Running / Debugging PMD
 
@@ -36,21 +37,18 @@ This needs to be done only once.
   beginning to wait for the debugger. Then you can run in NetBeans "Debug > Attach Debugger...", select
   "SocketAttach" using port "8000".
 
-{%capture notetext %}
-If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
-PMD CLI as scope test, e.g.
-
-```xml
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-apex</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-```
-{%endcapture%}
-{%include note.html content=notetext%}
-
+> [!NOTE]
+> If you want to run/debug other PMD modules than PMD Java, then you need to add additional dependencies to
+>  PMD CLI as scope test, e.g.
+>
+> ```xml
+>        <dependency>
+>            <groupId>net.sourceforge.pmd</groupId>
+>            <artifactId>pmd-apex</artifactId>
+>            <version>${project.version}</version>
+>            <scope>test</scope>
+>        </dependency>
+> ```
 
 ## Formatter configuration
 

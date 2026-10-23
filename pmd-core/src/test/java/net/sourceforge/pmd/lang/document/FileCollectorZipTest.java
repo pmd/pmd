@@ -16,11 +16,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 class FileCollectorZipTest {
 
@@ -65,7 +65,7 @@ class FileCollectorZipTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            String baseZipPath = IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectorziptest/zipWithSources.zip");
+            String baseZipPath = FilenameUtils.normalize("net/sourceforge/pmd/lang/document/filecollectorziptest/zipWithSources.zip");
             assertHasName(files.get(0), baseZipPath + "!/otherSrc/somefile.dummy", pmd);
             assertHasName(files.get(1), baseZipPath + "!/src/somefile.dummy", pmd);
             assertHasName(files.get(2), baseZipPath + "!/src/somefile1.dummy", pmd);

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
  * and unqualified invocation expressions.
@@ -20,6 +22,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTMethodCall extends AbstractInvocationExpr implements QualifiableExpression {
+
+    private String methodName;
 
     ASTMethodCall(int id) {
         super(id);
@@ -48,9 +52,23 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
 
     }
 
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getMethodName()} instead.
+     */
+    @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@MethodName")
+    public String getImage() {
+        return getMethodName();
+    }
+
+    void setMethodName(String name) {
+        this.methodName = name;
+    }
+
     @Override
     public @NonNull String getMethodName() {
-        return super.getImage();
+        return methodName;
     }
 
     @Override

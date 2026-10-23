@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -32,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -39,10 +41,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.platform.suite.api.Suite;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class AuxClasspathLoaderTest {
     @TempDir
@@ -89,7 +88,7 @@ class AuxClasspathLoaderTest {
         Path nativeLib = tempDir.resolve("libsqlite4java-linux-amd64-1.0.392.so");
         Files.write(nativeLib, "not a zip archive".getBytes(StandardCharsets.UTF_8));
 
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
                     nativeLib + File.pathSeparator + lib1)) {
                 assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
@@ -106,7 +105,7 @@ class AuxClasspathLoaderTest {
         Path corruptLib2 = tempDir.resolve("corrupt.jar");
         Files.write(corruptLib2, "PK\003\004 Corrupt ZIP".getBytes(StandardCharsets.US_ASCII));
 
-        String log = SystemLambda.tapSystemErr(() -> {
+        String log = tapSystemErr(() -> {
             try (AuxClasspathLoader classpathLoader = new AuxClasspathLoader(
                     corruptLib2 + File.pathSeparator + lib1)) {
                 assertResource(classpathLoader, "my/package/MyClass.class", "my.package.MyClass in lib1.jar");
@@ -298,7 +297,7 @@ class AuxClasspathLoaderTest {
     private static void assertResource(AuxClasspathLoader classpathLoader, String name, String expectedContent) throws IOException {
         try (InputStream resource = classpathLoader.findResource(name)) {
             assertNotNull(resource);
-            Assertions.assertEquals(expectedContent, IOUtil.readToString(resource, StandardCharsets.UTF_8));
+            Assertions.assertEquals(expectedContent, IOUtils.toString(resource, StandardCharsets.UTF_8));
         }
     }
 }

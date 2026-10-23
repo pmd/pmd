@@ -12,10 +12,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <java.version>8</java.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -110,6 +106,10 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
