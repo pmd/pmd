@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -103,7 +103,7 @@ public final class SymbolTableResolver {
         Map<ASTTypeDeclaration, JSymbolTable> bodyTables = new HashMap<>();
         Set<DeferredNode> todo = Collections.singleton(new DeferredNode(root, ctx, SymbolTableImpl.EMPTY));
         do {
-            Set<DeferredNode> newDeferred = new HashSet<>();
+            Set<DeferredNode> newDeferred = new LinkedHashSet<>();
             for (DeferredNode deferred : todo) {
                 MyVisitor visitor = new MyVisitor(helper, bodyTables, todo, newDeferred);
                 visitor.traverse(deferred);
