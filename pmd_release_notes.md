@@ -27,6 +27,10 @@ This is a minor release.
     where all local variables are declared together at the start of their block, without initialization.
     Optionally, the declarations can be required to be sorted by name or by type and name
     (see properties `sortBy` and `caseSensitiveSorting`).
+*   The new Kotlin rule [`LooseCoupling`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_kotlin_bestpractices.html#loosecoupling) reports declarations (properties,
+    parameters, function return types) using concrete collection/map implementation types (e.g. `ArrayList`,
+    `HashMap`) instead of the corresponding interface (e.g. `List`, `Map`). It is powered by the
+    `pmd-kotlin:typeIs()` XPath function introduced in the previous release.
 
 #### Changed Rules
 *   The Java rule [`FinalFieldCouldBeStatic`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_design.html#finalfieldcouldbestatic) no longer reports casts or conditional expressions
@@ -75,6 +79,8 @@ This is a minor release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+* kotlin-bestpractices
+    * [#7092](https://github.com/pmd/pmd/issues/7092): \[kotlin] New Rule: LooseCoupling
 * plsql
     * [#7223](https://github.com/pmd/pmd/issues/7223): \[plsql] Deprecate AST node `ASTKEYWORD_UNRESERVED`
 
@@ -128,6 +134,5 @@ This is a minor release.
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
-
 
 

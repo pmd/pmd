@@ -2070,6 +2070,10 @@
 where all local variables are declared together at the start of their block, without initialization.
 Optionally, the declarations can be required to be sorted by name or by type and name
 (see properties <code class="language-plaintext highlighter-rouge">sortBy</code> and <code class="language-plaintext highlighter-rouge">caseSensitiveSorting</code>).</li>
+  <li>The new Kotlin rule <a href="pmd_rules_kotlin_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a> reports declarations (properties,
+parameters, function return types) using concrete collection/map implementation types (e.g. <code class="language-plaintext highlighter-rouge">ArrayList</code>,
+<code class="language-plaintext highlighter-rouge">HashMap</code>) instead of the corresponding interface (e.g. <code class="language-plaintext highlighter-rouge">List</code>, <code class="language-plaintext highlighter-rouge">Map</code>). It is powered by the
+<code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs()</code> XPath function introduced in the previous release.</li>
 </ul>
 
 <h4 id="changed-rules">Changed Rules</h4>
@@ -2141,6 +2145,11 @@ this property.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4815">#4815</a>: [java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)</li>
       <li><a href="https://github.com/pmd/pmd/issues/7117">#7117</a>: [java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to</li>
+    </ul>
+  </li>
+  <li>kotlin-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/7092">#7092</a>: [kotlin] New Rule: LooseCoupling</li>
     </ul>
   </li>
   <li>plsql

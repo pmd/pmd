@@ -4346,6 +4346,14 @@ let pmd_doc_search_index = [
   "url": "pmd_rules_kotlin_bestpractices.html#localvariableshadowsparameter",
   "summary": "A local variable declaration uses the same name as a parameter of the enclosing function...."
 },{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/kotlin/bestpractices.md",
+  "title": "LooseCoupling (Kotlin, Best Practices)",
+  "tags": "",
+  "keywords": "Loose Coupling",
+  "url": "pmd_rules_kotlin_bestpractices.html#loosecoupling",
+  "summary": "Excessive coupling to implementation types (e.g., `HashMap`) limits your ability to use alternate implementations in..."
+},{
   "type": "ruledoc ruleset",
   "source": "pages/pmd/rules/kotlin/errorprone.md",
   "title": "Error Prone (Kotlin, Error Prone)",

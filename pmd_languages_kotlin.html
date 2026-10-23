@@ -2248,6 +2248,29 @@ parameters, and examples, see the
 <a href="pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions">PMD extension functions</a>
 page.</p>
 
+<h3 id="message-parameter-0-substitution">Message parameter (<code class="language-plaintext highlighter-rouge">{0}</code>) substitution</h3>
+
+<p><code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.rule.xpath.XPathRule</code> auto-binds <code class="language-plaintext highlighter-rouge">{0}</code> in a rule’s <code class="language-plaintext highlighter-rouge">message</code> from the
+matched node: it tries <code class="language-plaintext highlighter-rouge">getImage()</code> first, then falls back to the first attribute named <code class="language-plaintext highlighter-rouge">Name</code>,
+<code class="language-plaintext highlighter-rouge">SimpleName</code>, <code class="language-plaintext highlighter-rouge">MethodName</code>, or <code class="language-plaintext highlighter-rouge">Value</code> — this fallback list is hardcoded in pmd-core and shared
+across all languages.</p>
+
+<p>pmd-kotlin nodes have <code class="language-plaintext highlighter-rouge">getImage()</code> intentionally disabled (<code class="language-plaintext highlighter-rouge">@NoAttribute @Deprecated</code>), and most
+Kotlin declaration nodes don’t expose any of the hardcoded fallback attribute names either (a
+notable exception is <code class="language-plaintext highlighter-rouge">ImportHeader</code>’s <code class="language-plaintext highlighter-rouge">@Name</code>). So for a typical Kotlin XPathRule, <code class="language-plaintext highlighter-rouge">{0}</code> won’t
+resolve to anything useful unless the matched node happens to carry one of those specific
+attributes.</p>
+
+<p>If your rule’s message needs a dynamic value (e.g. the offending type name), consider one of:</p>
+<ul>
+  <li>Matching a node that does carry a usable <code class="language-plaintext highlighter-rouge">@Name</code>/<code class="language-plaintext highlighter-rouge">@SimpleName</code>/<code class="language-plaintext highlighter-rouge">@MethodName</code>/<code class="language-plaintext highlighter-rouge">@Value</code>
+attribute.</li>
+  <li>Writing a Java-based rule instead of an XPathRule, and calling <code class="language-plaintext highlighter-rouge">ctx.addViolation(node, arg)</code>
+explicitly with any value you like.</li>
+  <li>Keeping the message static/generic — this is the current approach for <code class="language-plaintext highlighter-rouge">LooseCoupling</code>, since
+the flagged concrete type name isn’t exposed under any of the fallback attribute names.</li>
+</ul>
+
 <h3 id="java-based-rules">Java-based rules</h3>
 
 <p>The same type information is accessible from Java-based rules via public interfaces and

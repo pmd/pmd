@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, FunctionNameTooShort, LocalVariableShadowsParameter">
+<meta name="keywords" content=" Best Practices, FunctionNameTooShort, LocalVariableShadowsParameter, LooseCoupling">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2106,6 +2106,107 @@ This shadows the parameter and may lead to confusion about which value is used.<
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/kotlin/bestpractices.xml/LocalVariableShadowsParameter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="loosecoupling">LooseCoupling</h2>
+
+<p><strong>Since:</strong> PMD 7.29.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Excessive coupling to implementation types (e.g., <code class="language-plaintext highlighter-rouge">HashMap</code>) limits your ability to use alternate
+implementations in the future as requirements change. Whenever available, declare properties,
+parameters, and return types using a more general type (e.g., <code class="language-plaintext highlighter-rouge">Map</code>).</p>
+
+<p>Note that Kotlin’s <code class="language-plaintext highlighter-rouge">List</code> / <code class="language-plaintext highlighter-rouge">Map</code> / <code class="language-plaintext highlighter-rouge">Set</code> are read-only interfaces, distinct from the mutable
+<code class="language-plaintext highlighter-rouge">MutableList</code> / <code class="language-plaintext highlighter-rouge">MutableMap</code> / <code class="language-plaintext highlighter-rouge">MutableSet</code>. Prefer the read-only interface by default; only fall
+back to the <code class="language-plaintext highlighter-rouge">Mutable*</code> variant when the value genuinely needs to be mutated after declaration
+(e.g. <code class="language-plaintext highlighter-rouge">put</code>, <code class="language-plaintext highlighter-rouge">add</code>, <code class="language-plaintext highlighter-rouge">remove</code>).</p>
+
+<p>This rule reports uses of concrete collection/map types. It currently checks a fixed list of
+common JDK implementation types (e.g. <code class="language-plaintext highlighter-rouge">ArrayList</code>, <code class="language-plaintext highlighter-rouge">HashMap</code>, <code class="language-plaintext highlighter-rouge">TreeSet</code>); unlike the Java version
+of this rule, it does not yet generically detect <em>any</em> concrete <code class="language-plaintext highlighter-rouge">Collection</code>/<code class="language-plaintext highlighter-rouge">Map</code> implementation,
+since that would require a dedicated type-introspection XPath function (see
+https://github.com/pmd/pmd/issues/7091). User-defined types that should be treated the same as
+interfaces can be configured with the property <code class="language-plaintext highlighter-rouge">allowedTypes</code>. Local variables are not reported,
+since their type is not part of the API surface.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="w">
+                        </span><span class="o">//</span><span class="nt">PropertyDeclaration</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">FunctionBody</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">AnonymousInitializer</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">SecondaryConstructor</span><span class="p">)]</span><span class="w">
+                        </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">ClassParameter</span><span class="w">
+                        </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">FunctionValueParameter</span><span class="p">[</span><span class="kn">ancestor::</span><span class="nt">FunctionDeclaration</span><span class="p">]</span><span class="w">
+                        </span><span class="p">|</span><span class="w"> </span><span class="o">//</span><span class="nt">FunctionDeclaration</span><span class="w">
+                    </span><span class="p">)</span><span class="w">
+                        </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nn">pmd-kotlin:</span><span class="ow">mod</span><span class="kr">if</span><span class="nf">iers</span><span class="p">()</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'override'</span><span class="p">)]</span><span class="w">
+                        </span><span class="p">[</span><span class="w">
+                            </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.ArrayList'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.LinkedList'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Vector'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Stack'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.HashMap'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Hashtable'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.LinkedHashMap'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.TreeMap'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.HashSet'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.LinkedHashSet'</span><span class="p">)</span><span class="w">
+                            </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.TreeSet'</span><span class="p">)</span><span class="w">
+                        </span><span class="p">]</span><span class="w">
+                        </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kr">some</span><span class="w"> </span><span class="nv">$t</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$allowedTypes</span><span class="w"> </span><span class="kr">satisfies</span><span class="w"> </span><span class="nn">pmd-kotlin:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="nv">$t</span><span class="p">))]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Example</span> <span class="p">{</span>
+    <span class="c1">// violation - concrete type used for a property</span>
+    <span class="k">private</span> <span class="kd">val</span> <span class="py">subscriptions</span><span class="p">:</span> <span class="nc">ArrayList</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="nc">ArrayList</span><span class="p">()</span>
+
+    <span class="c1">// violation - concrete return type</span>
+    <span class="k">private</span> <span class="k">fun</span> <span class="nf">sortedItems</span><span class="p">():</span> <span class="nc">LinkedHashMap</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">,</span> <span class="nc">Int</span><span class="p">&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nc">LinkedHashMap</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="c1">// preferred approach</span>
+    <span class="k">private</span> <span class="kd">val</span> <span class="py">subscriptions2</span><span class="p">:</span> <span class="nc">MutableList</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="nf">mutableListOf</span><span class="p">()</span>
+    <span class="k">private</span> <span class="k">fun</span> <span class="nf">sortedItems2</span><span class="p">():</span> <span class="nc">Map</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">,</span> <span class="nc">Int</span><span class="p">&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nf">linkedMapOf</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">fun</span> <span class="nf">local</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">val</span> <span class="py">local</span><span class="p">:</span> <span class="nc">ArrayList</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;</span> <span class="p">=</span> <span class="nc">ArrayList</span><span class="p">()</span>  <span class="c1">// no violation - local variable</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowedTypes</td>
+      <td>java.util.Properties</td>
+      <td>Exceptions to the rule: types that should be treated the same as interfaces even though they are concrete implementation types.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/kotlin/bestpractices.xml/LooseCoupling"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/kotlin/bestpractices.xml/LooseCoupling"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedTypes"</span> <span class="na">value=</span><span class="s">"java.util.Properties"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 
