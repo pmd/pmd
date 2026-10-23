@@ -75,6 +75,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+  * plsql
+      * [#7223](https://github.com/pmd/pmd/issues/7223): \[plsql] Deprecate AST node `ASTKEYWORD_UNRESERVED`
 
 ### 🚨️ API Changes
 *   pmd-java
@@ -114,6 +116,9 @@ This is a {{ site.pmd.release_type }} release.
             The `@Image` attribute of `TypeParameter` has been deprecated. Use `@Name` instead.
         *   {% jdoc !!pmd-java::lang.java.ast.ASTVariableAccess#getImage() %}:
             The `@Image` attribute of `VariableAccess` has been deprecated. Use `@Name` instead.
+*   pmd-plsql
+    *   {% jdoc pmd-plsql::lang.plsql.ast.ASTKEYWORD_UNRESERVED %} has been deprecated. This AST node was generated
+        by mistake and is not used. The parser production has been deprecated already since 7.3.0.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
