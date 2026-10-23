@@ -2098,6 +2098,7 @@ this property.</li>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6912">#6912</a>: [core] Include XML validation details in ruleset loading errors</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7072">#7072</a>: [core] Reuse compiled violationSuppressXPath queries</li>
       <li><a href="https://github.com/pmd/pmd/issues/7156">#7156</a>: [core] Analysis cache fails with ZipException on invalid archive on the auxclasspath</li>
     </ul>
   </li>
@@ -2114,9 +2115,12 @@ this property.</li>
   </li>
   <li>java
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/7048">#7048</a>: [java] Deprecate getImage()/@<!-- -->Image and remove usages</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7054">#7054</a>: [java] IllegalArgumentException with wildcard in the upper bound of a type variable, in a lambda or method reference</li>
       <li><a href="https://github.com/pmd/pmd/issues/7060">#7060</a>: [java] getConstValue() returns null for constant expressions referencing final local variables</li>
       <li><a href="https://github.com/pmd/pmd/issues/7133">#7133</a>: [java] CPD: Constructor detection state leaks between files with –ignore-identifiers</li>
       <li><a href="https://github.com/pmd/pmd/issues/7145">#7145</a>: [java] Lambda with a parenthesized expression body is treated as void-compatible</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7151">#7151</a>: [java] Unqualified method call resolves to an enclosing class method that the inner class hides</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -2138,16 +2142,64 @@ this property.</li>
       <li><a href="https://github.com/pmd/pmd/issues/7117">#7117</a>: [java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to</li>
     </ul>
   </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/7223">#7223</a>: [plsql] Deprecate AST node <code class="language-plaintext highlighter-rouge">ASTKEYWORD_UNRESERVED</code></li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-
 <ul>
-  <li>Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
+  <li>pmd-java
+    <ul>
+      <li>Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
 including local variables and unqualified instance fields. Numeric references are converted to their declared type.
 Boxed fields and field accesses qualified by expressions (such as <code class="language-plaintext highlighter-rouge">this.CONSTANT</code>) are not compile-time constants.
 These changes affect <code class="language-plaintext highlighter-rouge">ASTExpression.getConstValue()</code>, <code class="language-plaintext highlighter-rouge">isCompileTimeConstant()</code>, and the XPath attribute
 <code class="language-plaintext highlighter-rouge">@CompileTimeConstant</code>; custom Java and XPath rules relying on them may report different results.</li>
+      <li>As part of <a href="https://github.com/pmd/pmd/issues/4787">Deprecate getImage()/@Image (#4787)</a>, the <code class="language-plaintext highlighter-rouge">@Image</code>
+attribute and <code class="language-plaintext highlighter-rouge">getImage()</code> method of multiple AST nodes have been deprecated:
+        <ul>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#getImage()"><code>ASTConstructorDeclaration#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">ConstructorDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAmbiguousName.html#getImage()"><code>ASTAmbiguousName#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">AmbiguousName</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBreakStatement.html#getImage()"><code>ASTBreakStatement#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">BreakStatement</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Label</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTContinueStatement.html#getImage()"><code>ASTContinueStatement#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">ContinueStatement</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Label</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldAccess.html#getImage()"><code>ASTFieldAccess#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">FieldAccess</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#getImage()"><code>ASTImportDeclaration#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">ImportDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@ImportedName</code> instead.
+Note: This method always returns <code class="language-plaintext highlighter-rouge">null</code>. Don’t use it. The deprecation is just a technicality.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLabeledStatement.html#getImage()"><code>ASTLabeledStatement#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">LabeledStatement</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Label</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMemberValuePair.html#getImage()"><code>ASTMemberValuePair#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">MemberValuePair</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#getImage()"><code>ASTMethodCall#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">MethodCall</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@MethodName</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getImage()"><code>ASTMethodDeclaration#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">MethodDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.
+Note: This method always returns <code class="language-plaintext highlighter-rouge">null</code>. Don’t use it. The deprecation is just a technicality.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPackageDeclaration.html#getImage()"><code>ASTPackageDeclaration#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">PackageDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.
+Note: This method always returns <code class="language-plaintext highlighter-rouge">null</code>. Don’t use it. The deprecation is just a technicality.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeParameter.html#getImage()"><code>ASTTypeParameter#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">TypeParameter</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableAccess.html#getImage()"><code>ASTVariableAccess#getImage</code></a>:
+The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">VariableAccess</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>pmd-plsql
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/ASTKEYWORD_UNRESERVED.html#"><code>ASTKEYWORD_UNRESERVED</code></a> has been deprecated. This AST node was generated
+by mistake and is not used. The parser production has been deprecated already since 7.3.0.</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
@@ -2188,7 +2240,7 @@ These changes affect <code class="language-plaintext highlighter-rouge">ASTExpre
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 22, 2026 <br />
+             Site last generated: Oct 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
