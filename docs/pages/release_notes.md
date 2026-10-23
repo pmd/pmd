@@ -55,6 +55,8 @@ This is a {{ site.pmd.release_type }} release.
     this property.
 
 ### 🐛️ Fixed Issues
+* apex-design
+    * [#5101](https://github.com/pmd/pmd/issues/5101): \[apex] cyclomatic complexity does not count branches of switch statement
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7072](https://github.com/pmd/pmd/issues/7072): \[core] Reuse compiled violationSuppressXPath queries
