@@ -288,4 +288,71 @@ public class BadCase {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#7015: default-initialized array</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>5,9,14,19,23,27</expected-linenumbers>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+class Example {
+    void example1() {
+        SecretKeySpec keySpec = new SecretKeySpec(new byte[32], "AES");
+    }
+    void example2() {
+        byte[] key = new byte[32];
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+    }
+    void example3() {
+        byte[] key = new byte[32];
+        key[0] = 1;
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+    }
+    void example4() {
+        byte[] key;
+        key = new byte[32];
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+    }
+    void example5() {
+        byte[] key = new byte[32];
+        SecretKeySpec keySpec = new SecretKeySpec(key, 0, key.length, "AES");
+    }
+    void example6(byte[] source) {
+        byte[] key = new byte[32];
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES"); // Report: the later reassignment cannot change the key
+        key = source;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7015: Properly initialized/generated keys</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.security.SecureRandom;
+import javax.crypto.spec.SecretKeySpec;
+
+class ExampleGood {
+        void example1() {
+            byte[] key = new byte[32];
+            new SecureRandom().nextBytes(key);
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        }
+
+        native int load(byte[] key);
+        void example2() {
+            byte[] key = new byte[32];
+            load(key);
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        }
+
+        void example3(byte[] source) {
+            byte[] key = new byte[32];
+            System.arraycopy(source, 0, key, 0, key.length);
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        }
+}
+]]></code>
+    </test-code>
 </test-data>

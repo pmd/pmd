@@ -206,22 +206,30 @@ public class PosCase1 {
 
 
     <test-code>
-        <description>7015: Inline default initialization</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <description>#7015: Inline default initialization</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>8,9,13</expected-linenumbers>
         <code><![CDATA[
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example() {
-        new IvParameterSpec(new byte[16]); // Report: the new array contains only zeros.
+        new IvParameterSpec(new byte[16]); // Report: the new array contains only zeros. (AES)
+        new IvParameterSpec(new byte[8]); // Report: the new array contains only zeros. (DES)
+    }
+
+    void example2() throws NoSuchAlgorithmException, NoSuchPaddingException {
+        new IvParameterSpec(new byte[Cipher.getInstance("AES").getBlockSize()]); // Report: the new array contains only zeros.
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>7015: Unchanged local array</description>
+        <description>#7015: Unchanged local array</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -237,7 +245,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Separate assignment</description>
+        <description>#7015: Separate assignment</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -254,7 +262,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Constant expression size</description>
+        <description>#7015: Constant expression size</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -271,7 +279,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Offset and length overload</description>
+        <description>#7015: Offset and length overload</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -287,7 +295,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Unknown helper may initialize the array</description>
+        <description>#7015: Unknown helper may initialize the array</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -305,7 +313,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Random generator returned by a method</description>
+        <description>#7015: Random generator returned by a method</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -324,7 +332,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Newly constructed SecureRandom</description>
+        <description>#7015: Newly constructed SecureRandom</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -341,7 +349,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Array copy destination</description>
+        <description>#7015: Array copy destination</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -357,8 +365,8 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Element write before use</description>
-        <expected-problems>0</expected-problems>
+        <description>#7015/#7014: Element write constant before use</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
@@ -366,14 +374,37 @@ class Example {
     void example() {
         byte[] iv = new byte[16];
         iv[0] = 1;
-        new IvParameterSpec(iv); // No report: any element write ends default-array tracking.
+        new IvParameterSpec(iv); // Report: any element write with a constant keeps the whole array a constant
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>7015: Alias before use</description>
+        <description>#7015/#7014: Element write before use (no constant)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.IvParameterSpec;
+import java.security.SecureRandom;
+
+class Example {
+    byte getValue() {
+        byte[] random = new byte[1];
+        new SecureRandom().nextBytes(random);
+        return random[0];
+    }
+
+    void example() {
+        byte[] iv = new byte[16];
+        iv[0] = getValue();
+        new IvParameterSpec(iv); // No report: any element write not using a constant ends default-array tracking.
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7015: Alias before use</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -389,7 +420,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Stored in a field before use</description>
+        <description>#7015: Stored in a field before use</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -407,7 +438,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Reassignment before use</description>
+        <description>#7015: Reassignment before use</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -423,7 +454,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Mutation after use does not hide the violation</description>
+        <description>#7015: Mutation after use does not hide the violation</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -441,7 +472,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Reassignment after use does not hide the violation</description>
+        <description>#7015: Reassignment after use does not hide the violation</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -458,7 +489,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Only the construction before mutation is reported</description>
+        <description>#7015: Only the construction before mutation is reported</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
@@ -478,7 +509,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Conditional initialization is not a definite assignment</description>
+        <description>#7015: Conditional initialization is not a definite assignment</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -496,7 +527,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Loop mutation may affect the next iteration</description>
+        <description>#7015: Loop mutation may affect the next iteration</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -516,7 +547,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Fresh allocation inside a loop</description>
+        <description>#7015: Fresh allocation inside a loop</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
@@ -537,7 +568,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Lambda capture</description>
+        <description>#7015: Lambda capture</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -556,7 +587,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Local class capture</description>
+        <description>#7015: Local class capture</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -579,7 +610,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Mutation in a later constructor argument</description>
+        <description>#7015: Mutation in a later constructor argument</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -597,7 +628,7 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Array field is outside local analysis</description>
+        <description>#7015: Array field is outside local analysis</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
@@ -613,22 +644,23 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>7015: Runtime array size is outside the supported scope</description>
-        <expected-problems>0</expected-problems>
+        <description>#7015: Runtime array size from outside - array size does not matter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 import javax.crypto.spec.IvParameterSpec;
 
 class Example {
     void example(byte[] source) {
         byte[] iv = new byte[source.length];
-        new IvParameterSpec(iv); // No report: the array length is not a known positive constant.
+        new IvParameterSpec(iv); // Report: the array is still default-initialized.
     }
 }
         ]]></code>
     </test-code>
 
     <test-code>
-        <description>7015: Different scopes with the same variable name</description>
+        <description>#7015: Different scopes with the same variable name</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
