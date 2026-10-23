@@ -70,7 +70,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file://notAvailable.ext"
+                  "uri": "notAvailable.ext"
                 },
                 "region": {
                   "startLine": 1,
@@ -93,7 +93,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file://notAvailable.ext"
+                  "uri": "notAvailable.ext"
                 },
                 "region": {
                   "startLine": 2,
@@ -116,7 +116,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file://notAvailable.ext"
+                  "uri": "notAvailable.ext"
                 },
                 "region": {
                   "startLine": 5,

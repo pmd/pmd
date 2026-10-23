@@ -116,6 +116,32 @@ class SarifRendererTest extends AbstractRendererTest {
     }
 
     @Test
+    void testSettingDefaultFileNameRendererHasNoEffect() throws Exception {
+        Renderer renderer = getRenderer();
+        String expected = renderReport(renderer, reportOneViolation());
+        renderer.setFileNameRenderer(FileId::getOriginalPath);
+        assertEquals(expected, renderReport(renderer, reportOneViolation()));
+        renderer.setFileNameRenderer(FileId::getOriginalPath);
+        assertEquals(expected, renderReport(renderer, reportOneViolation()));
+    }
+
+    @Test
+    void testAbsoluteViolationUri() throws Exception {
+        FileId file = FileId.fromPath(Paths.get("project/src/naïve 100%#.java").toAbsolutePath());
+        Renderer renderer = getRenderer();
+        FileLocation location = FileLocation.range(file, TextRange2d.range2d(1, 1, 1, 2));
+        String actual = renderReport(renderer,
+            listener -> listener.onRuleViolation(newRuleViolation(createFooRule(), location, "blah")));
+
+        JsonObject run = new Gson().fromJson(actual, JsonObject.class)
+            .getAsJsonArray("runs").get(0).getAsJsonObject();
+        JsonObject physicalLocation = run.getAsJsonArray("results").get(0).getAsJsonObject()
+            .getAsJsonArray("locations").get(0).getAsJsonObject().getAsJsonObject("physicalLocation");
+        assertEquals(file.getUriString(),
+            physicalLocation.getAsJsonObject("artifactLocation").get("uri").getAsString());
+    }
+
+    @Test
     void testRelativizedViolationUri() throws Exception {
         Path root = Paths.get("project").toAbsolutePath();
         FileId file = FileId.fromPath(root.resolve("src/naïve 100%#.java"));
