@@ -196,6 +196,32 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#7215 false positive on a type used through an on-demand import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import p.*;
+public class U {
+    private void g() {
+        String k = C.V;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7215 false positive when an unresolved type is used as a method-call qualifier through an on-demand import</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import p.*;
+public class U {
+    private void g() {
+        C.m();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>imports used in javadoc comment, see also bug #254</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
