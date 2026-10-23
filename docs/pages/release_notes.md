@@ -71,6 +71,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
     * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
+    * [#7070](https://github.com/pmd/pmd/issues/7070): \[java] CheckResultSet: False negative caused by unrelated if or while
 * java-codestyle
     * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
