@@ -22,12 +22,12 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Utilities to interpret a string-based classpath.
@@ -193,7 +193,7 @@ public final class AuxClasspathUtil {
                 Path wildcardDirectory = Paths.get(entry.substring(0, entry.length() - 2));
                 try (Stream<Path> stream = Files.list(wildcardDirectory)) {
                     result.addAll(stream
-                            .filter(p -> "jar".equalsIgnoreCase(IOUtil.getFilenameExtension(p.getFileName().toString())))
+                            .filter(p -> "jar".equalsIgnoreCase(FilenameUtils.getExtension(p.getFileName().toString())))
                             .sorted() // make the results deterministic
                             .collect(Collectors.toList()));
                 } catch (IOException e) {

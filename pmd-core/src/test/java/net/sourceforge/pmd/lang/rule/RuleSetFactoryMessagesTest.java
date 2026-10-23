@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.rule;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import java.nio.charset.StandardCharsets;
@@ -22,6 +24,69 @@ import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
 import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
 
 class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
+
+    @Test
+    void validationErrorIncludedInExceptionMessage() {
+        RuleSetLoadException exception = assertThrows(RuleSetLoadException.class, () -> new RuleSetLoader().loadFromString(
+            "invalid-ruleset.xml",
+            rulesetXml(dummyRule(priority("not a priority")))
+        ));
+
+        assertThat(exception.getMessage(), containsString("An XML validation error occurred"));
+        assertThat(exception.getMessage(), containsString("Error at invalid-ruleset.xml:9:1"));
+        assertThat(exception.getMessage(), containsString("Not a valid priority: 'not a priority', expected a number in [1,5]"));
+    }
+
+    @Test
+    void multipleValidationErrorsIncludedInExceptionMessage() {
+        RuleSetLoadException exception = assertThrows(RuleSetLoadException.class, () -> new RuleSetLoader().loadFromString(
+            "invalid-ruleset.xml",
+            rulesetXml(
+                dummyRule(priority("not a priority")),
+                dummyRule(attrs -> attrs.put(SchemaConstants.NAME, "AnotherMockRule"), priority("6"))
+            )
+        ));
+
+        assertThat(exception.getMessage(), containsString("2 XML validation errors occurred"));
+        assertThat(exception.getMessage(), containsString("Not a valid priority: 'not a priority'"));
+        assertThat(exception.getMessage(), containsString("Not a valid priority: '6'"));
+    }
+
+    @Test
+    void warningsNotIncludedInValidationExceptionMessage() {
+        RuleSetLoadException exception = assertThrows(RuleSetLoadException.class, () -> new RuleSetLoader().loadFromString(
+            "invalid-ruleset.xml",
+            rulesetXml(
+                dummyRule(
+                    attrs -> attrs.put(SchemaConstants.CLASS, MockRule.class.getName()),
+                    priority("not a priority"),
+                    properties(
+                        "<property name='" + MockRule.PROP.name() + "' value='4'>\n"
+                            + "  <value>1</value>\n"
+                            + "</property>\n"
+                    )
+                )
+            )
+        ));
+
+        assertThat(exception.getMessage(), containsString("An XML validation error occurred"));
+        assertThat(exception.getMessage(), containsString("Not a valid priority: 'not a priority'"));
+        assertThat(exception.getMessage(), not(containsString("Both a 'value' attribute and a child element are present")));
+    }
+
+    @Test
+    void referencedRulesetValidationErrorIncludedInExceptionMessage(@TempDir Path tempDir) throws Exception {
+        Path childRuleset = tempDir.resolve("invalid-ruleset.xml").toAbsolutePath();
+        Files.write(childRuleset, rulesetXml(dummyRule(priority("not a priority"))).getBytes(StandardCharsets.UTF_8));
+
+        RuleSetLoadException exception = assertThrows(RuleSetLoadException.class, () -> new RuleSetLoader().loadFromString(
+            "parent-ruleset.xml", rulesetXml(ruleRef(childRuleset.toString()))
+        ));
+
+        assertThat(exception.getMessage(), containsString("Cannot load ruleset " + childRuleset + ": An XML validation error occurred"));
+        assertThat(exception.getMessage(), containsString("Error at " + childRuleset + ":9:1"));
+        assertThat(exception.getMessage(), containsString("Not a valid priority: 'not a priority'"));
+    }
 
     @Test
     void testFullMessage() throws Exception {

@@ -21,6 +21,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.IOUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -31,7 +32,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
@@ -62,7 +62,7 @@ public class RuleSetWriter {
     }
 
     public void close() {
-        IOUtil.closeQuietly(outputStream);
+        IOUtils.closeQuietly(outputStream);
     }
 
     public void write(RuleSet ruleSet) {

@@ -16,6 +16,8 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.io.TempDir;
@@ -23,7 +25,6 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.RuleWithProperties;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -141,7 +142,7 @@ abstract class AbstractRendererTest {
      */
     protected String readFile(String relativePath) {
         try (InputStream in = getClass().getResourceAsStream(relativePath)) {
-            return IOUtil.readToString(in, StandardCharsets.UTF_8);
+            return IOUtils.toString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -237,7 +238,7 @@ abstract class AbstractRendererTest {
             throw new AssertionError(e);
         }
 
-        return IOUtil.readFileToString(file, expectedEncoding);
+        return FileUtils.readFileToString(file, expectedEncoding);
     }
 
 }

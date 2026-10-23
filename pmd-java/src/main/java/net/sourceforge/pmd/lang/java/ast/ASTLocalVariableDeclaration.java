@@ -52,9 +52,12 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     /**
      * If true, this local variable declaration represents a declaration,
      * which makes use of local variable type inference, e.g. java10 "var".
-     * You can receive the inferred type via {@link #getTypeNode()}.{@link TypeNode#getTypeMirror() getTypeMirror()}.
+     * Since there is no type node, {@link #getTypeNode()} will return {@code null}.
+     * To get the inferred type, call {@link ASTVariableId#getTypeMirror()} on the
+     * {@link ASTVariableId} children.
      *
      * @see ASTVariableId#isTypeInferred()
+     * @see ASTVariableId#getTypeMirror()
      */
     public boolean isTypeInferred() {
         return getTypeNode() == null;

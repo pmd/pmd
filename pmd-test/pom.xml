@@ -12,10 +12,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <java.version>8</java.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -106,6 +102,10 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
 
         <dependency>
