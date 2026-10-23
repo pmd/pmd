@@ -16,6 +16,9 @@ import net.sourceforge.pmd.lang.test.ast.component7
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Future
 import java.util.function.DoubleConsumer
 import java.util.function.Supplier
 import kotlin.test.assertEquals
@@ -466,45 +469,218 @@ class Scratch {
         }
     }
 
-    parserTest("Value compatibility unit tests") {
-        val acu = parser.parse(
-            """
-class Scratch {
+    parserTestContainer("Lambda body compatibility", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        suspend fun testBody(body: String, void: Boolean = false, value: Boolean = false) {
+            doTest(body) {
+                val acu = parser.parse(
+                    """
+                    import java.util.function.Supplier;
+                    class Scratch {
+                        static final boolean FOREVER = 1 < 2;
+                        int i;
+                        static String str() { return ""; }
+                        void test(boolean b) {
+                            final boolean forever = 1 < 2;
+                            Object lambda = () -> $body;
+                        }
+                    }
+                    """.trimIndent()
+                )
 
-    static {
-        Object a = g -> { return g.fetch(); };  // val
-        Object b = g -> { return; };            // void
-        Object c = g -> { };                    // void
-        Object d = g -> g + 2;                  // val
-        Object e = g -> o(g + 2);               // val + void
-        Object f = g -> new O(g + 2);           // val + void
-        Object h = g -> { throw new E(); };     // val + void 
-    }
-}
-
-        """.trimIndent()
-        )
-
-        val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
-        val mirrors = JavaExprMirrors.forTypeResolution(infer)
-        val (a, b, c, d, e, f, h) = acu.descendants(ASTLambdaExpression::class.java)
-            .toList { mirrors.getTopLevelFunctionalMirror(it) as ExprMirror.LambdaExprMirror }
-
-        fun ExprMirror.LambdaExprMirror.shouldBeCompat(void: Boolean = false, value: Boolean = false) {
-            withClue(this) {
-                assertEquals(void, this.isVoidCompatible, "void compatible")
-                assertEquals(value, this.isValueCompatible, "value compatible")
+                val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
+                val mirrors = JavaExprMirrors.forTypeResolution(infer)
+                val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+                val mirror = mirrors.getTopLevelFunctionalMirror(lambda) as ExprMirror.LambdaExprMirror
+                withClue(lambda) {
+                    assertEquals(void, mirror.isVoidCompatible, "void compatible")
+                    assertEquals(value, mirror.isValueCompatible, "value compatible")
+                }
             }
         }
 
+        testBody("{ return str(); }", value = true)
+        testBody("{ return; }", void = true)
+        testBody("{ }", void = true)
+        testBody("i + 2", value = true)
+        testBody("str()", void = true, value = true)
+        testBody("new Scratch()", void = true, value = true)
+        testBody("{ throw new IllegalStateException(); }", void = true, value = true)
+        testBody("{ if (b) throw new IllegalStateException(); }", void = true)
+        testBody("{ if (b) return str(); }")
+        testBody("{ if (true) return str(); }")
+        testBody("{ if (b) return str(); else return str(); }", value = true)
+        testBody("{ if (b) return str(); else return; }")
+        testBody("{ if (b) return; throw new IllegalStateException(); }", void = true)
 
-        a.shouldBeCompat(value = true)
-        b.shouldBeCompat(void = true)
-        c.shouldBeCompat(void = true)
-        d.shouldBeCompat(value = true)
-        e.shouldBeCompat(value = true, void = true)
-        f.shouldBeCompat(value = true, void = true)
-        h.shouldBeCompat(value = true, void = true)
+        testBody("{ while (true) { } }", void = true, value = true)
+        testBody("{ do { } while (true); }", void = true, value = true)
+        testBody("{ for (;;) { } }", void = true, value = true)
+        testBody("{ for (; true;) { } }", void = true, value = true)
+        testBody("{ while (1 < 2) { } }", void = true, value = true)
+        testBody("{ do { } while (1 < 2); }", void = true, value = true)
+        testBody("{ for (; 1 < 2;) { } }", void = true, value = true)
+        testBody("{ while (forever) { } }", void = true, value = true)
+        testBody("{ while (FOREVER) { } }", void = true, value = true)
+        testBody("{ while (b) { } }", void = true)
+        testBody("{ while (true || b) { } }", void = true)
+
+        testBody("{ while (true) { if (b) break; } }", void = true)
+        testBody("{ outer: while (true) { while (true) { break outer; } } }", void = true)
+        testBody("{ while (true) { while (true) { break; } } }", void = true, value = true)
+        testBody("{ while (true) { continue; } }", void = true, value = true)
+        testBody("{ do { continue; } while (b); }", void = true)
+        testBody("{ outer: do { while (true) { continue outer; } } while (b); }", void = true)
+        testBody("{ do { while (true) { continue; } } while (b); }", void = true, value = true)
+        testBody("{ while (true) { try { break; } finally { throw new IllegalStateException(); } } }", void = true, value = true)
+        testBody("{ do { try { continue; } finally { while (true) { } } } while (b); }", void = true, value = true)
+
+        testBody("{ switch (i) { default: case 1: return 1; } }", value = true)
+        testBody("{ switch (i) { case 1: i++; default: return 1; } }", value = true)
+        testBody("{ switch (i) { case 1: return 1; default: } }")
+        testBody("{ switch (i) { case 1: break; default: return 1; } }")
+
+        testBody("{ Runnable nested = () -> { return; }; return str(); }", value = true)
+        testBody("{ Supplier<String> nested = () -> { return str(); }; }", void = true)
+        testBody("{ class Nested { void run() { return; } } return str(); }", value = true)
+        testBody("{ class Nested { String get() { return str(); } } }", void = true)
+        testBody("{ Object nested = new Object() { String get() { return str(); } }; }", void = true)
+    }
+
+    parserTestContainer("Block lambda selects submit overload", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        for ((body, value) in listOf(
+            "while (true) { }" to true,
+            "if (flag) { throw new IllegalStateException(); }" to false,
+            "while (1 < 2) { }" to true,
+            "do { } while (forever);" to true,
+            "for (; FOREVER;) { }" to true,
+            "for (;;) { }" to true
+        )) {
+            doTest(body) {
+                val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                    """
+                    import java.util.concurrent.ExecutorService;
+                    class Scratch {
+                        static final boolean FOREVER = 1 < 2;
+                        void test(ExecutorService pool, boolean flag) {
+                            final boolean forever = 1 < 2;
+                            pool.submit(() -> { $body });
+                        }
+                    }
+                    """.trimIndent()
+                )
+
+                val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+                spy.shouldBeOk {
+                    call.methodType.shouldMatchMethod(
+                        named = "submit",
+                        declaredIn = ExecutorService::class.raw,
+                        withFormals = listOf(if (value) Callable::class[ts.OBJECT] else Runnable::class.raw),
+                        returning = if (value) Future::class[ts.OBJECT] else Future::class[`?`]
+                    )
+                    call.overloadSelectionInfo.isFailed shouldBe false
+                }
+            }
+        }
+    }
+
+    parserTest("Loop condition uses implicitly typed lambda parameter", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Consumer;
+            import java.util.function.Function;
+            class Scratch {
+                static class Holder { boolean flag; }
+                static void foo(Function<Holder, Integer> f) { }
+                static void foo(Consumer<Holder> f) { }
+                void test() {
+                    Function<Holder, Integer> direct = s -> { while (s.flag) { } return 1; };
+                    foo(s -> { while (s.flag) { } return 1; });
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (t_Scratch, t_Holder) = acu.declaredTypeSignatures()
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val lambdas = acu.descendants(ASTLambdaExpression::class.java).toList()
+        val fields = acu.descendants(ASTFieldAccess::class.java).crossFindBoundaries().toList()
+        val flagSymbol = acu.varId("flag").symbol
+        spy.shouldBeOk {
+            val functionType = java.util.function.Function::class[t_Holder, ts.INT.box()]
+            lambdas.forEach { it shouldHaveType functionType }
+            call.methodType.shouldMatchMethod(
+                named = "foo",
+                declaredIn = t_Scratch,
+                withFormals = listOf(functionType),
+                returning = ts.NO_TYPE
+            )
+            call.overloadSelectionInfo.isFailed shouldBe false
+            fields.size shouldBe 2
+            fields.forEach {
+                it shouldHaveType ts.BOOLEAN
+                it.referencedSym shouldBe flagSymbol
+                it.qualifier shouldHaveType t_Holder
+            }
+        }
+    }
+
+    parserTest("Exhaustive pattern switch lambda without default") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Function;
+            class Scratch {
+                Function<Object, Integer> f = o -> {
+                    switch (o) {
+                        case String s -> { return 1; }
+                        case Object x -> { return 2; }
+                    }
+                };
+            }
+            """.trimIndent()
+        )
+
+        val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+        val infer = Infer(testTypeSystem, 21, TypeInferenceLogger.noop())
+        val mirror = JavaExprMirrors.forTypeResolution(infer)
+            .getTopLevelFunctionalMirror(lambda) as ExprMirror.LambdaExprMirror
+        mirror.isVoidCompatible shouldBe false
+        mirror.isValueCompatible shouldBe true
+        spy.shouldBeOk {
+            lambda shouldHaveType java.util.function.Function::class[ts.OBJECT, ts.INT.box()]
+        }
+    }
+
+    parserTestContainer("Exhaustive boolean switch lambda without default") {
+        for ((trueLabel, falseLabel) in listOf("true" to "false", "YES" to "NO")) {
+            doTest("$trueLabel / $falseLabel") {
+                val (acu, spy) = parser.parseWithTypeInferenceSpy(
+                    """
+                    import java.util.function.Supplier;
+                    class Scratch {
+                        static final boolean YES = true, NO = false;
+                        void test(boolean b) {
+                            Supplier<Integer> f = () -> {
+                                switch (b) {
+                                    case $trueLabel -> { return 1; }
+                                    case $falseLabel -> { return 2; }
+                                }
+                            };
+                        }
+                    }
+                    """.trimIndent()
+                )
+
+                val lambda = acu.descendants(ASTLambdaExpression::class.java).firstOrThrow()
+                val infer = Infer(testTypeSystem, 27, TypeInferenceLogger.noop())
+                val mirror = JavaExprMirrors.forTypeResolution(infer)
+                    .getTopLevelFunctionalMirror(lambda) as ExprMirror.LambdaExprMirror
+                mirror.isVoidCompatible shouldBe false
+                mirror.isValueCompatible shouldBe true
+                spy.shouldBeOk {
+                    lambda shouldHaveType Supplier::class[ts.INT.box()]
+                }
+            }
+        }
     }
 
     parserTestContainer("Parenthesized expression lambda compatibility", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {

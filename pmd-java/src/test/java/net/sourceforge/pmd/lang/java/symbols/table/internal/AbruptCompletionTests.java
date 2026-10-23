@@ -133,6 +133,7 @@ class AbruptCompletionTests extends BaseParserTest {
             canCompleteNormally("do { } while(foo);"),
             canCompleteNormally("do { continue; } while(foo);"),
             canCompleteNormally("do { break; } while(foo);"),
+            canCompleteNormally("outer: do { while(true) { continue outer; } } while(foo);"),
 
             canCompleteNormally("do { break; } while(true);"),
 
@@ -141,6 +142,15 @@ class AbruptCompletionTests extends BaseParserTest {
             mustCompleteAbruptly("do { continue; } while(true);"),
 
             mustCompleteAbruptly("do { return; } while(foo);")
+        );
+    }
+
+    @Test
+    void testConstantExpressionLoopDefaultPolicy() {
+        assertAll(
+            canCompleteNormally("while(1 < 2) { }"),
+            canCompleteNormally("for(;1 < 2;) { }"),
+            canCompleteNormally("do { } while(1 < 2);")
         );
     }
 
@@ -174,7 +184,12 @@ class AbruptCompletionTests extends BaseParserTest {
             canCompleteNormally("switch(foo) {}"),
             canCompleteNormally("switch(foo) { case 1: break; }"),
             canCompleteNormally("switch(foo) { case 1: break; case 2: foo(); }"),
-            canCompleteNormally("switch(foo) { case 1: return; case 2: foo(); }")
+            canCompleteNormally("switch(foo) { case 1: return; case 2: foo(); }"),
+            mustCompleteAbruptly("switch(foo) { default: case 1: return; }"),
+            mustCompleteAbruptly("switch(foo) { case 1: foo(); default: return; }"),
+            canCompleteNormally("switch(foo) { case 1: return; default: }"),
+            canCompleteNormally("switch(foo) { case 1: break; default: return; }"),
+            mustCompleteAbruptly("switch(foo) { case 1: switch(bar) { default: break; } default: return; }")
         );
     }
 
