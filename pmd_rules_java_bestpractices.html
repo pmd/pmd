@@ -4241,6 +4241,9 @@ especially if UTF-8 is not the desired charset.</p>
 assertion method. This enables better error messages, and makes the
 assertions more readable.</p>
 
+<p>With JUnit 5.8 or later, <code class="language-plaintext highlighter-rouge">assertTrue(a instanceof A)</code> may also be
+simplified to <code class="language-plaintext highlighter-rouge">assertInstanceOf(A.class, a)</code>.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/SimplifiableTestAssertionRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableTestAssertionRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -4263,6 +4266,11 @@ assertions more readable.</p>
 
         <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span> <span class="o">==</span> <span class="kc">null</span><span class="o">);</span> <span class="c1">// could be assertNull(a);</span>
         <span class="n">assertTrue</span><span class="o">(</span><span class="n">a</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">);</span> <span class="c1">// could be assertNotNull(a);</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="n">a</span><span class="o">);</span> <span class="c1">// could be assertNull(a);</span>
+        <span class="n">assertNotEquals</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="n">a</span><span class="o">);</span> <span class="c1">// could be assertNotNull(a);</span>
+
+        <span class="n">assertEquals</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span> <span class="s">"b"</span><span class="o">);</span> <span class="c1">// always fails, could be fail();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>

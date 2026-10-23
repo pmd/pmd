@@ -4160,7 +4160,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Hard Coded Crypto Key",
   "url": "pmd_rules_java_security.html#hardcodedcryptokey",
-  "summary": "Do not use hard coded values for cryptographic operations. Please store keys outside of source..."
+  "summary": "Do not use hard-coded values for cryptographic operations. Store keys outside of source code or..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/security.md",
@@ -4168,7 +4168,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Insecure Crypto Iv",
   "url": "pmd_rules_java_security.html#insecurecryptoiv",
-  "summary": "Do not use hard coded initialization vector in cryptographic operations. Please use a randomly generated..."
+  "summary": "Do not use hard coded initialization vector in cryptographic operations. Use a randomly generated IV...."
 },{
   "type": "page",
   "source": "pages/pmd/rules/jsp.md",

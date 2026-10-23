@@ -2063,19 +2063,37 @@
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Do not use hard coded values for cryptographic operations. Please store keys outside of source code.</p>
+<p>Do not use hard-coded values for cryptographic operations. Store keys outside of source code or generate
+it from a random source.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/security/HardCodedCryptoKeyRule.java">net.sourceforge.pmd.lang.java.rule.security.HardCodedCryptoKeyRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kt">void</span> <span class="nf">good</span><span class="o">()</span> <span class="o">{</span>
-        <span class="nc">SecretKeySpec</span> <span class="n">secretKeySpec</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecretKeySpec</span><span class="o">(</span><span class="nc">Properties</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span> <span class="s">"AES"</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HardCodedCryptoKeyExample</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">good</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="c1">// loading the key via properties from outside of the source code</span>
+        <span class="nc">SecretKey</span> <span class="n">secretKey1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecretKeySpec</span><span class="o">(</span><span class="nc">Properties</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span> <span class="s">"AES"</span><span class="o">);</span>
+
+        <span class="c1">// generating a fresh key</span>
+        <span class="nc">KeyGenerator</span> <span class="n">keyGenerator</span> <span class="o">=</span> <span class="nc">KeyGenerator</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">"AES"</span><span class="o">);</span>
+        <span class="n">keyGenerator</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="mi">256</span><span class="o">);</span>
+        <span class="nc">SecretKey</span> <span class="n">secretKey2</span> <span class="o">=</span> <span class="n">keyGenerator</span><span class="o">.</span><span class="na">generateKey</span><span class="o">();</span>
+
+        <span class="c1">// generating from a password, the password is from outside the source code</span>
+        <span class="nc">SecretKeyFactory</span> <span class="n">factory</span> <span class="o">=</span> <span class="nc">SecretKeyFactory</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">"PBKDF2WithHmacSHA256"</span><span class="o">);</span>
+        <span class="nc">KeySpec</span> <span class="n">spec</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PBEKeySpec</span><span class="o">(</span><span class="nc">Properties</span><span class="o">.</span><span class="na">getPassword</span><span class="o">().</span><span class="na">toCharArray</span><span class="o">(),</span> <span class="nc">Properties</span><span class="o">.</span><span class="na">getSalt</span><span class="o">().</span><span class="na">getBytes</span><span class="o">(),</span> <span class="mi">65536</span><span class="o">,</span> <span class="mi">256</span><span class="o">);</span>
+        <span class="nc">SecretKey</span> <span class="n">secretKey3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecretKeySpec</span><span class="o">(</span><span class="n">factory</span><span class="o">.</span><span class="na">generateSecret</span><span class="o">(</span><span class="n">spec</span><span class="o">).</span><span class="na">getEncoded</span><span class="o">(),</span> <span class="s">"AES"</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kt">void</span> <span class="nf">bad</span><span class="o">()</span> <span class="o">{</span>
-        <span class="nc">SecretKeySpec</span> <span class="n">secretKeySpec</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecretKeySpec</span><span class="o">(</span><span class="s">"my secret here"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="s">"AES"</span><span class="o">);</span>
+        <span class="nc">SecretKey</span> <span class="n">secretKey1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecretKeySpec</span><span class="o">(</span><span class="s">"my secret here"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(),</span> <span class="s">"AES"</span><span class="o">);</span>
+
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">key2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[]</span> <span class="o">{</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span> <span class="o">};</span>
+        <span class="nc">SecretKey</span> <span class="n">secretKey2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecretKeySpec</span><span class="o">(</span><span class="n">key2</span><span class="o">,</span> <span class="s">"AES"</span><span class="o">);</span>
+
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">key3</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">32</span><span class="o">];</span>
+        <span class="nc">SecretKey</span> <span class="n">secretKey3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecretKeySpec</span><span class="o">(</span><span class="n">key3</span><span class="o">,</span> <span class="s">"AES"</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -2090,25 +2108,32 @@
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Do not use hard coded initialization vector in cryptographic operations. Please use a randomly generated IV.</p>
+<p>Do not use hard coded initialization vector in cryptographic operations. Use a randomly generated IV.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/security/InsecureCryptoIvRule.java">net.sourceforge.pmd.lang.java.rule.security.InsecureCryptoIvRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kt">void</span> <span class="nf">good</span><span class="o">()</span> <span class="o">{</span>
-        <span class="nc">SecureRandom</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SecureRandom</span><span class="o">();</span>
-        <span class="kt">byte</span> <span class="n">iv</span><span class="o">[]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">16</span><span class="o">];</span>
-        <span class="n">random</span><span class="o">.</span><span class="na">nextBytes</span><span class="o">(</span><span class="n">bytes</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">InsecureCryptoIvExample</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">good</span><span class="o">(</span><span class="nc">SecretKey</span> <span class="n">key</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">SecureRandom</span> <span class="n">random</span> <span class="o">=</span> <span class="nc">SecureRandom</span><span class="o">.</span><span class="na">getInstanceStrong</span><span class="o">();</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">iv</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="nc">Cipher</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">"AES"</span><span class="o">).</span><span class="na">getBlockSize</span><span class="o">()];</span>
+        <span class="n">random</span><span class="o">.</span><span class="na">nextBytes</span><span class="o">(</span><span class="n">iv</span><span class="o">);</span>
+        <span class="nc">IvParameterSpec</span> <span class="n">ivParam</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IvParameterSpec</span><span class="o">(</span><span class="n">iv</span><span class="o">);</span>
+
+        <span class="nc">Cipher</span> <span class="n">cipher</span> <span class="o">=</span> <span class="nc">Cipher</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">"AES/CBC/PKCS5Padding"</span><span class="o">);</span>
+        <span class="n">cipher</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="nc">Cipher</span><span class="o">.</span><span class="na">ENCRYPT_MODE</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">ivParam</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kt">void</span> <span class="nf">bad</span><span class="o">()</span> <span class="o">{</span>
-        <span class="kt">byte</span><span class="o">[]</span> <span class="n">iv</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[]</span> <span class="o">{</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="o">};</span>
-    <span class="o">}</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">iv1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[]</span> <span class="o">{</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="mo">00</span><span class="o">,</span> <span class="o">};</span>
+        <span class="nc">IvParameterSpec</span> <span class="n">ivParam1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IvParameterSpec</span><span class="o">(</span><span class="n">iv1</span><span class="o">);</span>
 
-    <span class="kt">void</span> <span class="nf">alsoBad</span><span class="o">()</span> <span class="o">{</span>
-        <span class="kt">byte</span><span class="o">[]</span> <span class="n">iv</span> <span class="o">=</span> <span class="s">"secret iv in here"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">();</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">iv2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="mi">16</span><span class="o">];</span>
+        <span class="nc">IvParameterSpec</span> <span class="n">ivParam2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IvParameterSpec</span><span class="o">(</span><span class="n">iv2</span><span class="o">);</span>
+
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">iv3</span> <span class="o">=</span> <span class="s">"secret iv in here"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">();</span>
+        <span class="nc">IvParameterSpec</span> <span class="n">ivParam3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IvParameterSpec</span><span class="o">(</span><span class="n">iv3</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
