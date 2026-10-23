@@ -62,7 +62,7 @@ fun compute2(input: Int): Int {
     </rule>
 
     <rule name="LooseCoupling"
-          since="7.28.0"
+          since="7.29.0"
           language="kotlin"
           message="Avoid using implementation types (e.g. ArrayList, HashMap); use the corresponding interface (e.g. List, Map) instead"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"

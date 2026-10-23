@@ -33,7 +33,7 @@ This is a {{ site.pmd.release_type }} release.
 *   The new Kotlin rule {% rule kotlin/bestpractices/LooseCoupling %} reports declarations (properties,
     parameters, function return types) using concrete collection/map implementation types (e.g. `ArrayList`,
     `HashMap`) instead of the corresponding interface (e.g. `List`, `Map`). It is powered by the
-    `pmd-kotlin:typeIs()` XPath function introduced above.
+    `pmd-kotlin:typeIs()` XPath function introduced in the previous release.
 
 #### Changed Rules
 *   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
