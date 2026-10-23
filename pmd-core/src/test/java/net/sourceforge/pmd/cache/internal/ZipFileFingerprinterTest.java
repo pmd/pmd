@@ -66,6 +66,26 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
         assertEquals(baselineFingerprint, updateFingerprint(zipFile));
     }
 
+    @Test
+    void invalidArchiveIsIgnored() throws IOException {
+        final Path invalidJar = tempDir.resolve("invalid.jar");
+        Files.write(invalidJar, "not a zip".getBytes(StandardCharsets.UTF_8));
+        final long prevValue = checksum.getValue();
+
+        assertEquals(prevValue, updateFingerprint(invalidJar));
+    }
+
+    @Test
+    void invalidArchiveThatBecomesValidAffectsFingerprint() throws IOException {
+        final Path jar = tempDir.resolve("foo.jar");
+        Files.write(jar, "not a zip".getBytes(StandardCharsets.UTF_8));
+        final long invalidFingerprint = getBaseLineFingerprint(jar);
+
+        overwriteZipFileContents(jar, new ZipEntry("lib/Foo.class"));
+
+        assertNotEquals(invalidFingerprint, getBaseLineFingerprint(jar));
+    }
+
     @Override
     protected ClasspathEntryFingerprinter newFingerPrinter() {
         return new ZipFileFingerprinter();

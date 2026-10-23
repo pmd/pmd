@@ -33,7 +33,7 @@ class HTMLRendererTest extends AbstractRendererTest {
     }
 
     private String getEscapedRuleMessage() {
-        return "This should be escaped: &quot;&lt;script&gt;alert('test')&lt;/script&gt;&quot;.";
+        return "This should be escaped: &quot;&lt;script&gt;alert(&#39;test&#39;)&lt;/script&gt;&quot;.";
     }
 
     @Override
@@ -93,7 +93,7 @@ class HTMLRendererTest extends AbstractRendererTest {
                 + "<td align=\"center\">1</td>" + EOL
                 + "<td align=\"center\"><a href=\"https://example.org/rules/foo\">Foo</a></td>" + EOL
                 + "<td align=\"center\">//NOPMD</td>" + EOL
-                + "<td align=\"center\">userMessage should be &lt;script&gt;alert('escaped')&lt;/script&gt;</td>" + EOL
+                + "<td align=\"center\">userMessage should be &lt;script&gt;alert(&#39;escaped&#39;)&lt;/script&gt;</td>" + EOL
                 + "</tr>" + EOL
                 + "</table></body></html>" + EOL;
     }
