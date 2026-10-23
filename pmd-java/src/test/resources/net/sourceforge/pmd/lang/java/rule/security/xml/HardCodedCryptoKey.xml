@@ -395,4 +395,30 @@ class ExampleGood {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False positive with reused byte array variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+class Example {
+    void method(int ivLength) {
+        byte[] tmp = getRandomBytes();
+        SecretKey clientCipherKey = new SecretKeySpec(tmp, alg);
+        tmp = getRandomBytes();
+        SecretKey serverCipherKey = new SecretKeySpec(tmp, alg);
+
+        if (ivLength != 0) {
+            tmp = new byte[ivLength]; // this is not a problem, the default array is not used above for SecretKey
+            byte[] block = getRandomBytes();
+            System.arraycopy(block, 0, tmp, 0, ivLength);
+            IvParameterSpec clientIv = new IvParameterSpec(tmp);
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

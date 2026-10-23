@@ -94,7 +94,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
                 }
 
                 validateProperKeyArgument(data, varDecl.getInitializer());
-                validateVarUsages(data, varDecl);
+                validateVarUsages(data, varAccess, varDecl);
             } else if (varAccess.isCompileTimeConstant()
                     && varAccess.getConstValue() instanceof String) {
                 asCtx(data).addViolation(varAccess);
@@ -171,7 +171,9 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         List<ASTNamedReferenceExpr> localUsages = new ArrayList<>(varDecl.getLocalUsages());
         localUsages.sort(Node.COORDS_COMPARATOR);
         // remove accesses after the current usage (e.g. ctor call)
-        localUsages = localUsages.subList(0, localUsages.indexOf(varAccess));
+        if (localUsages.contains(varAccess)) {
+            localUsages = localUsages.subList(0, localUsages.indexOf(varAccess));
+        }
 
         return arrayIsLeaking(varAccess, localUsages) || arrayIsModifiedLocally(varAccess, localUsages);
     }
@@ -287,8 +289,14 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         return !arguments.isEmpty() && arguments.get(0).descendantsOrSelf().any(node -> node == literal);
     }
 
-    private void validateVarUsages(Object data, ASTVariableId varDecl) {
-        varDecl.getLocalUsages().stream()
+    private void validateVarUsages(Object data, ASTVariableAccess varAccess, ASTVariableId varDecl) {
+        List<ASTNamedReferenceExpr> localUsages = new ArrayList<>(varDecl.getLocalUsages());
+        localUsages.sort(Node.COORDS_COMPARATOR);
+        // remove accesses after the current usage (e.g. ctor call)
+        if (localUsages.contains(varAccess)) {
+            localUsages = localUsages.subList(0, localUsages.indexOf(varAccess));
+        }
+        localUsages.stream()
             .filter(u -> u.getAccessType() == AccessType.WRITE)
             .filter(u -> u.getParent() instanceof ASTAssignmentExpression)
             .forEach(usage -> {
