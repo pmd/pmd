@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
+import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -47,7 +48,7 @@ public class AvoidBooleanMethodParametersRule extends AbstractApexRule {
      */
     @Override
     public Object visit(ASTMethod theMethod, Object data) {
-        if (!isPublicOrGlobal(theMethod)) {
+        if (!isPublicOrGlobal(theMethod) || theMethod.getParent() instanceof ASTProperty) {
             return data;
         }
         theMethod.descendants(ASTParameter.class).filter(parameter -> isBoolean(parameter))

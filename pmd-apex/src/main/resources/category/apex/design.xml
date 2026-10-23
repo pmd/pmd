@@ -24,6 +24,8 @@ Rules that help you discover design issues.
             This rule flags any boolean parameters found in public or global methods,
             encouraging developers to use more expressive alternatives such as enums,
             separate methods, or configuration objects.
+
+            Property accessors are excluded from this rule.
         </description>
         <priority>2</priority>
         <example>

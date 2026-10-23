@@ -51,6 +51,8 @@ This is a {{ site.pmd.release_type }} release.
     this property.
 
 ### 🐛️ Fixed Issues
+* apex-design
+    * [#6261](https://github.com/pmd/pmd/issues/6261): \[apex] AvoidBooleanMethodParameters: False positive on getter and setter
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7156](https://github.com/pmd/pmd/issues/7156): \[core] Analysis cache fails with ZipException on invalid archive on the auxclasspath
