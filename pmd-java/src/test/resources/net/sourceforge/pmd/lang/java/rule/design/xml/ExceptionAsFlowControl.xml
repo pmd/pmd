@@ -71,6 +71,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>Catch block for subtype</description>
         <expected-problems>1</expected-problems>
@@ -95,9 +96,9 @@ public class Foo {{
 }}
 class TopE extends Exception { }
 class SubE extends TopE { }
-
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#4434 simple propagation</description>
         <expected-problems>0</expected-problems>
@@ -132,8 +133,9 @@ class SubE extends TopE { }
                 public InvalidCacheLoadException(String msg) { super(msg);}
             }
 
-            ]]></code>
+        ]]></code>
     </test-code>
+
     <test-code>
         <description>#4434 simple propagation, 2nd case</description>
         <expected-problems>0</expected-problems>
@@ -161,7 +163,230 @@ class SubE extends TopE { }
             class InvalidCacheLoadException extends RuntimeException {
                 public InvalidCacheLoadException(String msg) { super(msg);}
             }
+        ]]></code>
+    </test-code>
 
-            ]]></code>
+    <test-code>
+        <description>#4815 Exception thrown in a lambda body is not caught by the try around the lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.IOException;
+            import java.io.UncheckedIOException;
+            import java.util.concurrent.ExecutorService;
+
+            public class Foo {
+                private ExecutorService es;
+
+                void doPublish() {
+                    try {
+                        es.execute(() -> {
+                            try {
+                                unsafeDoPublish();
+                            } catch (IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
+                        });
+                    } catch (RuntimeException e) {
+                        System.err.println("could not submit: " + e);
+                    }
+                }
+
+                void unsafeDoPublish() throws IOException { }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4815 A throw outside the lambda is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.concurrent.ExecutorService;
+
+            public class Foo {
+                private ExecutorService es;
+
+                void doPublish(boolean ok) {
+                    try {
+                        es.execute(() -> { });
+                        if (!ok) {
+                            throw new IllegalStateException();
+                        }
+                    } catch (RuntimeException e) {
+                        System.err.println("failed: " + e);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Iterable.forEach calls the lambda argument itself, so the exception is caught</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>16</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void checkForLeaks() throws InterruptedException {
+                    while (true) {
+                        try {
+                            this.created.forEach(info -> {
+                                if (!info.isEmpty()) {
+                                    throw failureOf(info);
+                                }
+                            });
+                            break;
+                        } catch (AssertionError ex) {
+                            Thread.sleep(50);
+                        }
+                    }
+                }
+
+                private static AssertionError failureOf(String info) {
+                    return new AssertionError(info);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Iterable.forEach, but that exception type is not caught here</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void check(boolean flag) {
+                    try {
+                        this.created.forEach(info -> {
+                            if (flag) {
+                                throw new AssertionError(info);
+                            }
+                        });
+                    } catch (IllegalStateException ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Stream.map, an intermediate operation that is evaluated inside the try, so the exception is caught</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>15</expected-linenumbers>
+        <expected-messages>
+            <message>Exception thrown at line 11 is caught in this block.</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void check(boolean flag) {
+                    try {
+                        this.created.stream().map(info -> {
+                            if (flag) {
+                                throw new AssertionError(info);
+                            }
+                            return info;
+                        }).findFirst();
+                    } catch (AssertionError ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Stream.map, but that exception type is not caught here</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            public class Foo {
+                private final List<String> created = new ArrayList<>();
+
+                void check(boolean flag) {
+                    try {
+                        this.created.stream().map(info -> {
+                            if (flag) {
+                                throw new AssertionError(info);
+                            }
+                            return info;
+                        }).findFirst();
+                    } catch (IllegalStateException ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>IntStream.forEach invokes its lambda inside the try</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.stream.IntStream;
+            class Foo {
+                void check() {
+                    try {
+                        IntStream.of(1).forEach(value -> {
+                            throw new IllegalStateException();
+                        });
+                    } catch (IllegalStateException ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>LongStream.map is evaluated by a terminal operation inside the try</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.stream.LongStream;
+            class Foo {
+                void check() {
+                    try {
+                        LongStream.of(1L).map(value -> {
+                            throw new IllegalStateException();
+                        }).sum();
+                    } catch (IllegalStateException ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>DoubleStream.anyMatch invokes its lambda inside the try</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import java.util.stream.DoubleStream;
+            class Foo {
+                void check() {
+                    try {
+                        DoubleStream.of(1.0).anyMatch(value -> {
+                            throw new IllegalStateException();
+                        });
+                    } catch (IllegalStateException ex) {
+                        System.err.println(ex);
+                    }
+                }
+            }
+        ]]></code>
     </test-code>
 </test-data>

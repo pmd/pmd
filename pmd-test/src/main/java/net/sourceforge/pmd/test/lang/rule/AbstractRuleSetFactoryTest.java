@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -47,7 +48,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.InternalApiBridge;
@@ -203,7 +203,7 @@ public abstract class AbstractRuleSetFactoryTest {
             } else {
                 String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
                         + language.getId() + "_"
-                        + IOUtil.getFilenameBase(fileName)
+                        + FilenameUtils.getBaseName(fileName)
                         + ".html#"
                         + rule.getName().toLowerCase(Locale.ROOT);
                 if (rule.getExternalInfoUrl() == null || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {

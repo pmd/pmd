@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechainRule {
 
@@ -28,15 +29,17 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.isVoid() || !"getInstance".equals(node.getName())) {
-            return data;
+            return null;
         }
 
         DescendantNodeStream<ASTReturnStatement> rsl = node.descendants(ASTReturnStatement.class);
         if (returnsNewInstances(rsl) || returnsLocalVariables(rsl)) {
-            asCtx(data).addViolation(node);
+            ctx.addViolation(node);
         }
-        return data;
+        return null;
     }
 
     private boolean returnsNewInstances(NodeStream<ASTReturnStatement> returns) {

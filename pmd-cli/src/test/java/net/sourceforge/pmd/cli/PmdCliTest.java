@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.io.File;
 import java.io.FilterOutputStream;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,12 +47,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.reporting.RuleContext;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PmdCliTest extends BaseCliTest {
 
@@ -183,7 +182,7 @@ class PmdCliTest extends BaseCliTest {
         assertFalse(Files.exists(reportFile), "Report file should not exist");
 
         // restoring system properties: --debug might change logging properties
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS, "--report-file", reportFile.toString(), "--debug");
         });
 
@@ -196,7 +195,7 @@ class PmdCliTest extends BaseCliTest {
     void testExcludeFile() throws Exception {
 
         // restoring system properties: --debug might change logging properties
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             runCli(OK,
                     "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--exclude", srcDir.toString(), "--debug")
                     .verify(r -> {
@@ -247,7 +246,7 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void testRelativeFileInputs() throws Exception {
-        SystemLambda.restoreSystemProperties(() -> {
+        restoreSystemProperties(() -> {
             // change working directory
             System.setProperty("user.dir", srcDir.toString());
             runCli(VIOLATIONS_FOUND, "--dir", ".", "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS)
@@ -424,7 +423,7 @@ class PmdCliTest extends BaseCliTest {
         Path zipArchive = createTemporaryZipArchive("sources.zip");
         CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", zipArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
         result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(zipArchive.toString()) + "!/someSource.dummy";
+        String reportPath = FilenameUtils.normalize(zipArchive.toString()) + "!/someSource.dummy";
         result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
@@ -433,7 +432,7 @@ class PmdCliTest extends BaseCliTest {
         Path jarArchive = createTemporaryZipArchive("sources.jar");
         CliExecutionResult result = runCli(VIOLATIONS_FOUND, "--dir", jarArchive.toString(), "--rulesets", "rulesets/dummy/basic.xml");
         result.checkStdErr(not(containsStringIgnoringCase("Cannot open zip file")));
-        String reportPath = IOUtil.normalizePath(jarArchive.toString()) + "!/someSource.dummy";
+        String reportPath = FilenameUtils.normalize(jarArchive.toString()) + "!/someSource.dummy";
         result.checkStdOut(containsString(reportPath + ":1:\tSampleXPathRule:\tTest Rule 2"));
     }
 
@@ -469,7 +468,7 @@ class PmdCliTest extends BaseCliTest {
         runCli(VIOLATIONS_FOUND, "--dir", relativeSrcDir, "--rulesets",
                 DUMMY_RULESET_WITH_VIOLATIONS)
                 .verify(result -> result.checkStdOut(
-                        containsString("\n" + IOUtil.normalizePath(relativeSrcDir + "/somefile.dummy"))));
+                        containsString("\n" + FilenameUtils.normalize(relativeSrcDir + "/somefile.dummy"))));
     }
 
     @Test
@@ -515,7 +514,7 @@ class PmdCliTest extends BaseCliTest {
                 DUMMY_RULESET_WITH_VIOLATIONS, "-z", srcDir.getParent().toString())
                 .verify(result -> {
                     result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
-                    result.checkStdOut(startsWith(IOUtil.normalizePath("src/someSource.dummy")));
+                    result.checkStdOut(startsWith(FilenameUtils.normalize("src/someSource.dummy")));
                 });
     }
 

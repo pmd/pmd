@@ -8,6 +8,7 @@ import static java.io.File.separator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,8 +28,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 
-import com.github.stefanbirkner.systemlambda.Statement;
-import com.github.stefanbirkner.systemlambda.SystemLambda;
+import uk.org.webcompere.systemstubs.SystemStubs;
+import uk.org.webcompere.systemstubs.ThrowingRunnable;
 
 /**
  * Base test class for ant tests.
@@ -112,7 +113,7 @@ public abstract class AbstractAntTestHelper {
             restoreLocale(() -> {
                 // restoring system properties: Test might change file.encoding or might change logging properties
                 // See Slf4jSimpleConfigurationForAnt and resetLogging
-                SystemLambda.restoreSystemProperties(() -> {
+                restoreSystemProperties(() -> {
                     output = tapSystemOut(() -> {
                         antProject.executeTarget(target);
                     });
@@ -142,17 +143,17 @@ public abstract class AbstractAntTestHelper {
         assertThat(text, not(containsString(toFind)));
     }
 
-    private static void restoreLocale(Statement statement) throws Exception {
+    private static void restoreLocale(ThrowingRunnable statement) throws Exception {
         Locale originalLocale = Locale.getDefault();
         try {
-            statement.execute();
+            statement.asCallable().call();
         } finally {
             Locale.setDefault(originalLocale);
         }
     }
 
     /**
-     * This is similar to {@link SystemLambda#tapSystemOut(Statement)}. But this
+     * This is similar to {@link SystemStubs#tapSystemOut(ThrowingRunnable)}. But this
      * method doesn't use the platform default charset as it was when the JVM started.
      * Instead, it uses the current system property {@code file.encoding}. This allows
      * tests to change the encoding.
@@ -161,7 +162,7 @@ public abstract class AbstractAntTestHelper {
      * @return text that is written to stdout. Lineendings are normalized to {@code \n}.
      * @throws Exception any exception thrown by the statement
      */
-    private static String tapSystemOut(Statement statement) throws Exception {
+    private static String tapSystemOut(ThrowingRunnable statement) throws Exception {
         @SuppressWarnings("PMD.CloseResource") // we don't want to close System.out
         PrintStream originalOut = System.out;
         ByteArrayOutputStream text = new ByteArrayOutputStream();
@@ -169,7 +170,7 @@ public abstract class AbstractAntTestHelper {
         try {
             PrintStream replacement = new PrintStream(text, true, currentDefaultCharset);
             System.setOut(replacement);
-            statement.execute();
+            statement.asCallable().call();
         } finally {
             System.setOut(originalOut);
         }

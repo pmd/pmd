@@ -27,6 +27,7 @@ import org.pcollections.PSet;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -578,10 +579,18 @@ public final class DataflowPass {
             ) {
                 recordReachingDefsInDeadOperand(cur, orExpr.getRightOperand());
             } else {
+                // When the left value is unknown, the right operand may be skipped.
+                // Preserve that outcome before the right operand's strong updates
+                // overwrite it in a state that aliases thenState (an if without else).
+                Map<JVariableSymbol, VarLocalInfo> skipState = (null == leftValue) ? new LinkedHashMap<>(before.symtable) : null;
                 cur = linkConditional(cur, orExpr.getRightOperand(), thenState, elseState, false);
                 thenState.absorb(cur);
 
                 elseState.absorb(cur);
+
+                if (skipState != null && thenState == before) { // NOPMD CompareObjectsWithEqual
+                    CollectionUtil.mergeMaps(before.symtable, skipState, VarLocalInfo::merge);
+                }
             }
 
             return cur;
@@ -913,12 +922,23 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTContinueStatement node, SpanInfo data) {
-            return data.global.continueTargets.doBreak(data, node.getImage());
+            return data.global.continueTargets.doBreak(data, node.getLabel());
         }
 
         @Override
         public SpanInfo visit(ASTBreakStatement node, SpanInfo data) {
-            return processBreakableStmt(node, data, () -> data.global.breakTargets.doBreak(data, node.getImage()));
+            return processBreakableStmt(node, data, () -> data.global.breakTargets.doBreak(data, node.getLabel()));
+        }
+
+        @Override
+        public SpanInfo visit(ASTAssertStatement node, SpanInfo data) {
+            // Assertions are disabled by default at runtime, so the statement
+            // may not be evaluated at all: its effects happen on one path only,
+            // and the state before it still reaches what follows. See #5159.
+            SpanInfo assertState = data.fork();
+            assertState = acceptOpt(node.getCondition(), assertState);
+            assertState = acceptOpt(node.getDetailMessageNode(), assertState);
+            return data.absorb(assertState);
         }
 
         @Override
