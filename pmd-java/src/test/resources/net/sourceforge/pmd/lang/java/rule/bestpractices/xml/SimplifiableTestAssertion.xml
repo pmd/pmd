@@ -541,7 +541,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#1323 False positive case of UseAssertTrueInsteadOfAssertEquals</description>
+        <description>False positive case of UseAssertTrueInsteadOfAssertEquals with TestNG (https://sourceforge.net/p/pmd/bugs/1323/)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             package com.groupon.mostest.refractor;
@@ -594,11 +594,7 @@ public class Foo {
 
     <test-code>
         <description>JUnit Test contains assertEquals with Boxed booleans as param</description>
-        <!-- JUnit 4 takes the message first, so this compares two different strings and always fails -->
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>Assertion may be simplified using fail</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.junit.Test;
 
@@ -608,7 +604,7 @@ public class Foo {
 
                 @Test
                 public void test() {
-                    assertEquals(methodWithBooleanParam(Boolean.TRUE), "a String value", "they should be equal!");
+                    assertEquals("they should be equal!", "a String value", methodWithBooleanParam(Boolean.TRUE));
                 }
 
                 public String methodWithBooleanParam(Boolean param) {
