@@ -55,6 +55,8 @@ This is a {{ site.pmd.release_type }} release.
     this property.
 
 ### 🐛️ Fixed Issues
+* apex
+    * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7072](https://github.com/pmd/pmd/issues/7072): \[core] Reuse compiled violationSuppressXPath queries
