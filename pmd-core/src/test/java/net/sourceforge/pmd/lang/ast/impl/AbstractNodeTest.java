@@ -7,12 +7,14 @@ package net.sourceforge.pmd.lang.ast.impl;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.root;
 import static net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil.tree;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,27 +32,23 @@ class AbstractNodeTest {
     private static final int NUM_CHILDREN = 3;
     private static final int NUM_GRAND_CHILDREN = 3;
 
-    // Note that in order to successfully run JUnitParams, we need to explicitly use `Integer` instead of `int`
+    private DummyRootNode rootNode;
 
-    static Integer[] childrenIndexes() {
+    static int[] childrenIndexes() {
         return getIntRange(NUM_CHILDREN);
     }
 
-    static Integer[] grandChildrenIndexes() {
+    static int[] grandChildrenIndexes() {
         return getIntRange(NUM_GRAND_CHILDREN);
     }
 
-    private static Integer[] getIntRange(final int exclusiveLimit) {
-        final Integer[] childIndexes = new Integer[exclusiveLimit];
-        for (int i = 0; i < exclusiveLimit; i++) {
-            childIndexes[i] = i;
-        }
-        return childIndexes;
+    private static int[] getIntRange(final int exclusiveLimit) {
+        return IntStream.range(0, exclusiveLimit).toArray();
     }
 
     static Object[] childrenAndGrandChildrenIndexes() {
-        final Integer[] childrenIndexes = childrenIndexes();
-        final Integer[] grandChildrenIndexes = grandChildrenIndexes();
+        final int[] childrenIndexes = childrenIndexes();
+        final int[] grandChildrenIndexes = grandChildrenIndexes();
         final Object[] indexes = new Object[childrenIndexes.length * grandChildrenIndexes.length];
         int i = 0;
         for (final int childIndex : childrenIndexes) {
@@ -60,8 +58,6 @@ class AbstractNodeTest {
         }
         return indexes;
     }
-
-    private DummyRootNode rootNode;
 
     @BeforeEach
     void setUpSampleNodeTree() {
@@ -166,23 +162,19 @@ class AbstractNodeTest {
     @ParameterizedTest
     @MethodSource("childrenIndexes")
     void testRemoveRootNodeChildAtIndex(final int childIndex) {
-        final List<? extends DummyNode> originalChildren = rootNode.children().toList();
+        final List<? extends DummyNode> filteredChildren = new ArrayList<>(rootNode.children().toList());
 
         // Do the actual removal
         rootNode.removeChildAtIndex(childIndex);
+        filteredChildren.remove(childIndex);
 
         // Check that conditions have been successfully changed
         assertEquals(NUM_CHILDREN - 1, rootNode.getNumChildren());
-        int j = 0;
         for (int i = 0; i < rootNode.getNumChildren(); i++) {
-            if (j == childIndex) { // Skip the removed child
-                j++;
-            }
             // Check that the nodes have been rightly shifted
-            assertEquals(originalChildren.get(j), rootNode.getChild(i));
+            assertEquals(filteredChildren.get(i), rootNode.getChild(i));
             // Check that the child index has been updated
             assertEquals(i, rootNode.getChild(i).getIndexInParent());
-            j++;
         }
     }
 
@@ -192,12 +184,10 @@ class AbstractNodeTest {
      */
     @Test
     void testRemoveChildAtIndexWithInvalidIndex() {
-        try {
+        assertDoesNotThrow(() -> {
             rootNode.removeChildAtIndex(-1);
             rootNode.removeChildAtIndex(rootNode.getNumChildren());
-        } catch (final Exception e) {
-            fail("No exception was expected.");
-        }
+        });
     }
 
     /**
