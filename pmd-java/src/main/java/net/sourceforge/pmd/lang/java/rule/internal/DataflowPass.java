@@ -352,10 +352,15 @@ public final class DataflowPass {
         // of this class
         private final @NonNull JClassSymbol enclosingClassScope;
         private final boolean inStaticCtx;
+        // If true, we're in a method body. Unlike in ctors and initializers,
+        // the class and the `this` instance are then already reachable by other
+        // code, so any method call may observe their fields.
+        private final boolean inMethod;
 
-        private ReachingDefsVisitor(@NonNull JClassSymbol scope, boolean inStaticCtx) {
+        private ReachingDefsVisitor(@NonNull JClassSymbol scope, boolean inStaticCtx, boolean inMethod) {
             this.enclosingClassScope = scope;
             this.inStaticCtx = inStaticCtx;
+            this.inMethod = inMethod;
         }
 
         /**
@@ -1127,7 +1132,7 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTMethodCall node, SpanInfo state) {
-            if (trackThisInstance() && JavaAstUtils.isCallOnThisInstance(node) != OptionalBool.NO) {
+            if (!inMethod && trackThisInstance() && JavaAstUtils.isCallOnThisInstance(node) != OptionalBool.NO) {
                 state.recordThisLeak(enclosingClassScope, node);
             }
             return visitInvocationExpr(node, state);
@@ -1154,6 +1159,11 @@ public final class DataflowPass {
             state = acceptOpt(node.getQualifier(), state);
             state = acceptOpt(node.getArguments(), state);
 
+            if (inMethod && node instanceof ASTMethodCall) {
+                // the method runs after its receiver and arguments are evaluated
+                state.recordMethodCallInMethod(enclosingClassScope, inStaticCtx, node);
+            }
+
             // todo In 7.0, with the precise type/overload resolution, we
             //  could only target methods that throw checked exceptions
             //  (unless some catch block catches an unchecked exceptions)
@@ -1171,8 +1181,10 @@ public final class DataflowPass {
         }
 
         private static SpanInfo processTypeDecl(ASTTypeDeclaration node, SpanInfo data) {
-            ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(node.getSymbol(), false);
-            ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(node.getSymbol(), true);
+            ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(node.getSymbol(), false, false);
+            ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(node.getSymbol(), true, false);
+            ReachingDefsVisitor instanceMethodVisitor = new ReachingDefsVisitor(node.getSymbol(), false, true);
+            ReachingDefsVisitor staticMethodVisitor = new ReachingDefsVisitor(node.getSymbol(), true, true);
             // process initializers and ctors first
             processInitializers(node.getDeclarations(), data, node.getSymbol(),
                                 instanceVisitor, staticVisitor);
@@ -1186,9 +1198,9 @@ public final class DataflowPass {
                         span.declareSpecialFieldValues(node.getSymbol(), staticCtx);
                         SpanInfo endState;
                         if (staticCtx) {
-                            endState = staticVisitor.acceptOpt(decl, span);
+                            endState = staticMethodVisitor.acceptOpt(decl, span);
                         } else {
-                            endState = instanceVisitor.acceptOpt(decl, span);
+                            endState = instanceMethodVisitor.acceptOpt(decl, span);
                         }
                         useAllSelfFields(endState, staticCtx, node.getSymbol());
                     }
@@ -1535,6 +1547,22 @@ public final class DataflowPass {
             // all reaching defs to fields until now may be observed
             for (JFieldSymbol field : enclosingClassSym.getDeclaredFields()) {
                 if (!field.isStatic()) {
+                    assignOutOfScope(field, escapingNode, SpecialAssignmentKind.UNKNOWN_METHOD_CALL);
+                }
+            }
+        }
+
+        /**
+         * Record a method call in a method body. When a method runs, the
+         * class and the `this` instance are already reachable by other code,
+         * so the called method may observe (and modify) their fields, eg through
+         * a callback that reenters this object. This means all defs reaching
+         * this point, for all the fields of the class (only static fields in
+         * a static method), may be used.
+         */
+        public void recordMethodCallInMethod(JClassSymbol enclosingClassSym, boolean inStaticCtx, JavaNode escapingNode) {
+            for (JFieldSymbol field : enclosingClassSym.getDeclaredFields()) {
+                if (!inStaticCtx || field.isStatic()) {
                     assignOutOfScope(field, escapingNode, SpecialAssignmentKind.UNKNOWN_METHOD_CALL);
                 }
             }
