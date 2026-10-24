@@ -114,7 +114,7 @@ public final class SymbolTableResolver {
         SymTableFactory helper = new SymTableFactory(root.getPackageName(), processor);
         ReferenceCtx ctx = ReferenceCtx.root(processor, root);
 
-        root.descendants(ASTTypeDeclaration.class).forEach(td -> {
+        root.descendants(ASTTypeDeclaration.class).crossFindBoundaries().forEach(td -> {
             SymbolResolutionPass.desugarLombokMembers(ctx.processor, td);
 
             // we now have new fields, that were not known before.

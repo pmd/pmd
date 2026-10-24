@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -26,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -53,6 +55,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 
@@ -69,6 +72,9 @@ final class AstClassSym
     private final PSet<String> annotAttributes;
 
     private List<JClassSymbol> permittedSubclasses;
+
+    private static final Set<String> LOMBOK_NON_NULL_SIMPLE_NAMES =
+        setOf("NonNull", "Nonnull", "NotNull", "RecentlyNonNull", "NonNullDecl", "NonNullType");
 
     AstClassSym(ASTTypeDeclaration node,
                 AstSymFactory factory,
@@ -181,11 +187,11 @@ final class AstClassSym
                     int accessModifier = -1;
 
                     if (fieldGetter != null) {
-                        accessModifier = getLombokAccessModifier(fieldGetter);
+                        accessModifier = getLombokAccessModifier(fieldGetter, ASTMemberValuePair.VALUE_ATTR);
                     } else {
                         ASTAnnotation classGetter = node.getAnnotation(LOMBOK_GETTER);
                         if (classGetter != null) {
-                            accessModifier = getLombokAccessModifier(classGetter);
+                            accessModifier = getLombokAccessModifier(classGetter, ASTMemberValuePair.VALUE_ATTR);
                         } else if (JavaAstUtils.hasAnyAnnotation(node, setOf(LOMBOK_DATA, LOMBOK_VALUE))) {
                             accessModifier = Modifier.PUBLIC;
                         }
@@ -200,10 +206,93 @@ final class AstClassSym
                         }
                     }
                 });
+
+        processLombokConstructors();
     }
 
-    private int getLombokAccessModifier(ASTAnnotation annot) {
-        return annot.getFlatValue(ASTMemberValuePair.VALUE_ATTR)
+    private void processLombokConstructors() {
+        // See https://projectlombok.org/features/constructor
+        // and lombok.javac.handlers.HandleConstructor for the exact semantics.
+        if (isRecord() || isInterface()) {
+            return;
+        }
+
+        List<JConstructorSymbol> lombokCtors = new ArrayList<>();
+        addLombokConstructor(lombokCtors, "lombok.NoArgsConstructor", Collections.emptyList());
+        addLombokConstructor(lombokCtors, "lombok.RequiredArgsConstructor", lombokConstructorFields(true));
+        addLombokConstructor(lombokCtors, "lombok.AllArgsConstructor", lombokConstructorFields(false));
+
+        if (!lombokCtors.isEmpty()) {
+            if (node.getDeclarations(ASTConstructorDeclaration.class).isEmpty()) {
+                // the compiler does not insert a default constructor when lombok generates one
+                declaredCtors.clear();
+            }
+            declaredCtors.addAll(lombokCtors);
+        }
+    }
+
+    private void addLombokConstructor(List<JConstructorSymbol> lombokCtors, String annotationName, List<JFieldSymbol> fields) {
+        ASTAnnotation annot = node.getAnnotation(annotationName);
+        if (annot == null) {
+            return;
+        }
+        int accessModifier = getLombokAccessModifier(annot, "access");
+        if (accessModifier == -1) {
+            return; // AccessLevel.NONE: no constructor is generated
+        }
+        if (isEnum() || hasLombokStaticName(annot)) {
+            // Enum constructors are always private.
+            // With staticName, "the generated constructor is always private, and an additional
+            // static factory method that wraps around the private constructor is generated".
+            // The access level then applies to the factory method.
+            accessModifier = Modifier.PRIVATE;
+        }
+        lombokCtors.add(ImplicitMemberSymbols.lombokConstructor(this, accessModifier, fields));
+    }
+
+    private static boolean hasLombokStaticName(ASTAnnotation annot) {
+        return annot.getFlatValue("staticName")
+                    .filterIs(ASTExpression.class)
+                    .any(it -> it.getConstValue() instanceof String && !((String) it.getConstValue()).isEmpty());
+    }
+
+    /**
+     * Returns the fields that are parameters of a lombok-generated constructor.
+     * Static fields and fields whose name starts with {@code $} are never included.
+     *
+     * @param requiredOnly If true, the fields for {@code @RequiredArgsConstructor}: uninitialized fields
+     *                     that are final or annotated with a non-null annotation. Otherwise, the
+     *                     fields for {@code @AllArgsConstructor}: all fields except initialized final fields.
+     */
+    private List<JFieldSymbol> lombokConstructorFields(boolean requiredOnly) {
+        List<JFieldSymbol> result = new ArrayList<>();
+        for (JFieldSymbol field : declaredFields) {
+            ASTVariableId varId = field.tryGetNode();
+            if (field.isStatic() || varId == null || field.getSimpleName().startsWith("$")) {
+                continue;
+            }
+            boolean isFinal = Modifier.isFinal(field.getModifiers());
+            boolean isInitialized = varId.getInitializer() != null;
+            if (requiredOnly
+                ? (isFinal || hasNonNullAnnotation(varId)) && !isInitialized
+                : !isFinal || !isInitialized) {
+                result.add(field);
+            }
+        }
+        return result;
+    }
+
+    private static boolean hasNonNullAnnotation(ASTVariableId varId) {
+        // Lombok recognizes a fixed list of annotations (lombok.core.handlers.HandlerUtil#NONNULL_ANNOTATIONS),
+        // which all use one of these simple names. Bean validation's @NotNull is explicitly not part of it.
+        return varId.getDeclaredAnnotations()
+                    .any(it -> LOMBOK_NON_NULL_SIMPLE_NAMES.contains(it.getSimpleName())
+                        && !TypeTestUtil.isA("javax.validation.constraints.NotNull", it)
+                        && !TypeTestUtil.isA("jakarta.validation.constraints.NotNull", it));
+    }
+
+    private int getLombokAccessModifier(ASTAnnotation annot, String attributeName) {
+        return annot.getFlatValue(attributeName)
                 .filter(v -> v instanceof ASTNamedReferenceExpr)
                 .toStream()
                 .map(ASTNamedReferenceExpr.class::cast)
@@ -214,6 +303,7 @@ final class AstClassSym
                     case "PROTECTED":
                         return Modifier.PROTECTED;
                     case "PACKAGE":
+                    case "MODULE":
                         return 0;
                     case "PRIVATE":
                         return Modifier.PRIVATE;
