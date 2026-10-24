@@ -55,6 +55,8 @@ This is a {{ site.pmd.release_type }} release.
     this property.
 
 ### 🐛️ Fixed Issues
+* apex-bestpractices
+    * [#5669](https://github.com/pmd/pmd/issues/5669): \[apex] ApexUnitTestMethodShouldHaveIsTestAnnotation: Violation range should only cover the method signature
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7072](https://github.com/pmd/pmd/issues/7072): \[core] Reuse compiled violationSuppressXPath queries

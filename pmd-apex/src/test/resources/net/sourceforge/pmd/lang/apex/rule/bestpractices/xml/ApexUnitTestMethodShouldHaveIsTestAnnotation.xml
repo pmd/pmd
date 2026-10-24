@@ -86,4 +86,17 @@ public class TestFactory {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Violation range covers only the method signature #5669</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+private class ATest {
+    static testmethod void methodATest() {
+        System.assertEquals(1,2);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
