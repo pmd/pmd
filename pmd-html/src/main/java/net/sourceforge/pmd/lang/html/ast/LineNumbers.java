@@ -71,7 +71,7 @@ class LineNumbers {
             nextIndex = htmlString.indexOf(">", nextIndex) + 1;
         }
 
-        setEndLocation(n, nextIndex - 1);
+        setEndLocation(n, nextIndex);
         return nextIndex;
     }
 
