@@ -86,10 +86,7 @@ public class ApexUnitTestShouldNotUseSeeAllDataTrueRule extends AbstractApexUnit
         final ASTUserClass userClass = node instanceof ASTUserClass
                 ? (ASTUserClass) node
                 : node.ancestors(ASTUserClass.class).first();
-        if (userClass == null) {
-            return false;
-        }
-        return userClass.descendants(ASTMethodCallExpression.class)
+        return userClass != null && userClass.descendants(ASTMethodCallExpression.class)
                 .any(call -> call.getFullMethodName().toLowerCase(Locale.ROOT).startsWith(CONNECT_API_PREFIX));
     }
 
