@@ -111,10 +111,10 @@ class MemberInheritanceTest : ParserTestSpec({
             outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, supF)
         }
 
-        doTest("Inside Inner: Outer#f() is shadowed") {
-            // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer) are in scope
-            // But Outer#f() is shadowed by Inner#f()
-            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F, supF)
+        doTest("Inside Inner: Outer#f() and Sup#f(int) are shadowed") {
+            // Inner#f() and Sup2#f(String) are members of Inner, so the methods
+            // named f of the enclosing class Outer are not in scope (JLS 15.12.1)
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F)
         }
 
         doTest("Inside Inner: Sup#k() is shadowed by Outer#k()") {
@@ -166,8 +166,8 @@ class MemberInheritanceTest : ParserTestSpec({
             outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
         }
 
-        doTest("Inside Inner: non-static Outer#f() is not in scope") {
-            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, staticOuter)
+        doTest("Inside Inner: both Outer's fs are shadowed") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF)
         }
 
     }
@@ -201,8 +201,251 @@ class MemberInheritanceTest : ParserTestSpec({
             outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
         }
 
-        doTest("Inside Inner: all methods are in scope") {
-            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, outerF, staticOuter)
+        doTest("Inside Inner: both Outer's fs are shadowed") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF)
+        }
+    }
+
+    parserTest("#7151 method of the inner class shadows the methods of the enclosing class with the same name") {
+        val (acu, spy) = parser.withProcessing().parseWithTypeInferenceSpy(
+            """
+            class Comb {
+                void m(Object o) { }
+
+                class Inner {
+                    void m(long x) { }
+
+                    void t(Integer value) {
+                        m(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, inner) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = inner,
+                withFormals = listOf(long),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7151 methods of the enclosing class are in scope if the inner class has no method with that name") {
+        val (acu, spy) = parser.withProcessing().parseWithTypeInferenceSpy(
+            """
+            class Comb {
+                void m(Object o) { }
+
+                class Inner {
+                    void t(Integer value) {
+                        m(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (comb) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = comb,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7151 method of a static nested class shadows the static methods of the enclosing class with the same name") {
+        val (acu, spy) = parser.withProcessing().parseWithTypeInferenceSpy(
+            """
+            class Comb {
+                static void m(Object o) { }
+
+                static class Nested {
+                    void m(long x) { }
+
+                    void t(Integer value) {
+                        m(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, nested) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = nested,
+                withFormals = listOf(long),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7151 methods of the enclosing class are in scope in a static nested class without a method with that name") {
+        val acu = parser.withProcessing().parse("""
+            package test;
+
+            class Outer {
+
+                void f() {}
+
+                static void f(String s) {}
+
+                static class Nested {
+                    void g() {}
+                }
+            }
+        """)
+
+        val (outerF, staticOuter) =
+                acu.descendants(ASTMethodDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .toList { it.genericSignature }
+
+        val (_, nested) =
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.body!! }
+
+        // Both methods are in scope (JLS 6.3). Whether an unqualified call may
+        // invoke the instance method is checked later, by JLS 15.12.3.
+        nested.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
+    }
+
+    parserTest("#7151 method inherited by the inner class shadows the methods of the enclosing class with the same name") {
+        val (acu, spy) = parser.withProcessing().parseWithTypeInferenceSpy(
+            """
+            class Comb {
+                void m(Object o) { }
+
+                static class Sup {
+                    void m(long x) { }
+                }
+
+                class Inner extends Sup {
+                    void t(Integer value) {
+                        m(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, sup) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = sup,
+                withFormals = listOf(long),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7151 private method of the superclass is not inherited, so the enclosing class is searched") {
+        val (acu, spy) = parser.withProcessing().parseWithTypeInferenceSpy(
+            """
+            class Comb {
+                void m(Object o) { }
+
+                static class Sup {
+                    private void m(long x) { }
+                }
+
+                class Inner extends Sup {
+                    void t(Integer value) {
+                        m(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (comb) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = comb,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7151 package-private method of a superclass in another package is not inherited, so the enclosing class is searched") {
+        val (acu, spy) = parser.withProcessing().parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata;
+
+            import javasymbols.testdata.deep.SubclassOfPackagePrivateSuper;
+
+            class Comb {
+                void m(Object o) { }
+
+                // PackagePrivateSuper.m(long) is accessible here, but the subclass in
+                // package deep did not inherit it, so it is not a member of Inner (JLS 8.4.8)
+                class Inner extends SubclassOfPackagePrivateSuper {
+                    void t(Integer value) {
+                        m(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (comb) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = comb,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7151 method of the class shadows the statically imported methods with the same name") {
+        val (acu, spy) = parser.withProcessing().parseWithTypeInferenceSpy(
+            """
+            import static java.util.Objects.isNull;
+
+            class Imp {
+                boolean isNull(long x) { return false; }
+
+                boolean t(Integer value) {
+                    return isNull(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (imp) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "isNull",
+                declaredIn = imp,
+                withFormals = listOf(long),
+                returning = boolean
+            )
         }
     }
 
