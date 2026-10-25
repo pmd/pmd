@@ -53,8 +53,13 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
     to use `var` when the explicit type name would be longer than a given minimum length configured with 
     this property.
+*   The Apex rule {% rule apex/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrue %} has a new property
+    `reportConnectApi`. It defaults to `true`. Set it to `false` to exempt test classes that call a `ConnectApi`
+    method, since most `ConnectApi` methods require `seeAllData=true` in tests (see [#7236](https://github.com/pmd/pmd/issues/7236)).
 
 ### 🐛️ Fixed Issues
+* apex-bestpractices
+    * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7072](https://github.com/pmd/pmd/issues/7072): \[core] Reuse compiled violationSuppressXPath queries
