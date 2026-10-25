@@ -73,6 +73,10 @@ public class Foo {
         <description>
 Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the 
 user running it.
+
+A test method that calls a `ConnectApi` method is not reported, because Connect in Apex does not support `System.runAs`.
+
+See more here: &lt;https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/connectAPI_TestingApex.htm&gt;
         </description>
         <priority>3</priority>
         <example>

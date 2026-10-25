@@ -53,8 +53,13 @@ This is a {{ site.pmd.release_type }} release.
 *   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
     to use `var` when the explicit type name would be longer than a given minimum length configured with 
     this property.
+*   The Apex rule {% rule apex/bestpractices/ApexUnitTestClassShouldHaveRunAs %} no longer reports a test method
+    that calls a `ConnectApi` method, because Connect in Apex does not support `System.runAs`
+    (see [#7238](https://github.com/pmd/pmd/issues/7238)).
 
 ### 🐛️ Fixed Issues
+* apex-bestpractices
+    * [#7238](https://github.com/pmd/pmd/issues/7238): \[apex] ApexUnitTestClassShouldHaveRunAs: False positive for test methods that call ConnectApi
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7072](https://github.com/pmd/pmd/issues/7072): \[core] Reuse compiled violationSuppressXPath queries

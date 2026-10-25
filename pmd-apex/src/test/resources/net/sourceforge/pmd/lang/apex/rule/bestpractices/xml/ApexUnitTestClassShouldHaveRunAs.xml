@@ -118,4 +118,71 @@ private class RunAs {
       ]]>
       </code>
    </test-code>
+
+   <test-code>
+      <description>ApexUnitTestClassShouldHaveRunAs - Test method that calls ConnectApi is not reported, since Connect in Apex does not support runAs</description>
+      <expected-problems>0</expected-problems>
+      <code>
+         <![CDATA[
+@IsTest
+private class NewsFeedClassTest {
+   @IsTest
+   static void testGetNewsFeedCount() {
+      ConnectApi.FeedElementPage testPage = new ConnectApi.FeedElementPage();
+      testPage.elements = new List<ConnectApi.FeedItem>();
+      ConnectApi.ChatterFeeds.setTestGetFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me', testPage);
+      Assert.areEqual(0, NewsFeedClass.getNewsFeedCount(), 'feed count');
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>ApexUnitTestClassShouldHaveRunAs - ConnectApi call in any case is not reported, other test methods in the class still are</description>
+      <expected-problems>1</expected-problems>
+      <expected-linenumbers>11</expected-linenumbers>
+      <code>
+         <![CDATA[
+@IsTest
+private class NewsFeedClassTest {
+   @IsTest
+   static void testGetNewsFeedCount() {
+      connectapi.feedelementpage testPage = new ConnectApi.FeedElementPage();
+      CONNECTAPI.ChatterFeeds.setTestGetFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me', testPage);
+      Assert.areEqual(0, NewsFeedClass.getNewsFeedCount(), 'feed count');
+   }
+
+   @IsTest
+   static void testNoRunAs() {
+      Assert.areEqual(0, NewsFeedClass.getNewsFeedCount(), 'feed count');
+   }
+}
+        ]]>
+      </code>
+   </test-code>
+
+   <test-code>
+      <description>ApexUnitTestClassShouldHaveRunAs - A class or helper named like ConnectApi does not exempt the test method</description>
+      <expected-problems>2</expected-problems>
+      <expected-linenumbers>4,10</expected-linenumbers>
+      <code>
+         <![CDATA[
+@IsTest
+private class NewsFeedClassTest {
+   @IsTest
+   static void testHelper() {
+      ConnectApiHelper.buildFeed();
+      Assert.areEqual(0, NewsFeedClass.getNewsFeedCount(), 'feed count');
+   }
+
+   @IsTest
+   static void testOnlyType() {
+      ConnectApi.FeedElementPage testPage = new ConnectApi.FeedElementPage();
+      Assert.isNotNull(testPage, 'page');
+   }
+}
+        ]]>
+      </code>
+   </test-code>
 </test-data>
