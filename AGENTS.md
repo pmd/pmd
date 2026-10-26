@@ -19,7 +19,8 @@ already require. The human-oriented docs are in `CONTRIBUTING.md` and `docs/page
 
 ## Build
 
-- Building requires `JDK 21+` (enforced by `maven-enforcer-plugin`). Always use `./mvnw`.
+- Building requires `JDK 21+` (enforced by `maven-enforcer-plugin`). Always use `./mvnw`, with
+  `--no-transfer-progress` to keep the output free of download progress logs.
 - Use a `UTF-8` locale (`LANG=C.UTF-8 LC_ALL=C.UTF-8`). Under the `POSIX` locale, tests with
   non-ASCII file names fail with `InvalidPathException: Malformed input or input contains
   unmappable characters` (e.g. `HTMLRendererTest` in `pmd-core`).
@@ -55,7 +56,7 @@ already require. The human-oriented docs are in `CONTRIBUTING.md` and `docs/page
 ./mvnw -e --no-transfer-progress -pl pmd-java -am verify -DskipTests -DskipITs
 
 # Full build, as asked for in the PR template
-./mvnw clean verify
+./mvnw --no-transfer-progress clean verify
 
 # Spell check, like the CI "spelling" job (config: .ci/files/typos.toml)
 .ci/tools/typos.sh --format brief .
