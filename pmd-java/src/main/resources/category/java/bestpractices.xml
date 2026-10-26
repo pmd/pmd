@@ -482,6 +482,54 @@ public interface YetAnotherConstantInterface {
         </example>
     </rule>
 
+    <rule name="ControlFlowInTest"
+          language="java"
+          since="7.29.0"
+          message="Control flow in a test can obscure its assertions"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ControlFlowInTestRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#controlflowintest">
+        <description>
+            Control flow in test methods can make it difficult to determine which
+            assertions are executed and whether all intended cases are covered.
+
+            This rule reports if statements, conditional expressions, switch statements
+            and expressions, explicit throw statements, and try statements with catch clauses.
+
+            Loops are allowed by default. Set the property `allowLoops` to `false`
+            to report for, enhanced for, while, and do-while loops as well.
+            Other control flow inside an allowed loop is still reported.
+
+            Prefer concrete examples or parameterized tests over conditional assertions.
+            Use `assertThrows` or `assertDoesNotThrow` instead of manually catching exceptions.
+
+            The rule checks test methods recognized by PMD's JUnit and TestNG support,
+            including lambda bodies within those methods. Methods and initializers of local
+            or anonymous classes are not treated as part of the enclosing test.
+
+            Try-finally and try-with-resources statements without catch clauses are allowed.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExampleTest {
+    @Test
+    void checksValueConditionally() {
+        int value = Integer.parseInt("42");
+        if (value > 0) { // violation
+            assertEquals(42, value);
+        }
+    }
+
+    @Test
+    void checksConcreteValue() {
+        assertEquals(42, Integer.parseInt("42"));
+    }
+}
+        ]]></example>
+    </rule>
+
     <rule name="DefaultLabelNotLastInSwitchStmt" deprecated="true" ref="DefaultLabelNotLastInSwitch" />
 
     <rule name="DefaultLabelNotLastInSwitch"
@@ -2413,31 +2461,4 @@ public class Example {
 ]]>
         </example>
     </rule>
-
-    <rule name="ControlFlowInTest"
-          language="java"
-          since="7.29.0"
-          message="Conditional execution in a test can obscure its assertions"
-          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ControlFlowInTestRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#controlflowintest">
-        <description>
-            Conditional execution in tests can obscure which assertions run.
-            Use concrete test cases instead of conditional logic.
-        </description>
-        <priority>3</priority>
-        <example><![CDATA[
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-class ExampleTest {
-    @Test
-    void checksResult() {
-        if (isReady()) { // violation
-            assertTrue(result());
-        }
-    }
-}
-        ]]></example>
-    </rule>
-
 </ruleset>

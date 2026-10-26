@@ -4,10 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
@@ -15,9 +25,15 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class ControlFlowInTestRule extends AbstractJavaRulechainRule {
 
+    private static final PropertyDescriptor<Boolean> ALLOW_LOOPS =
+            PropertyFactory.booleanProperty("allowLoops")
+                    .desc("Allow loops in test methods")
+                    .defaultValue(true)
+                    .build();
+
     public ControlFlowInTestRule() {
-        // Inspect method declarations only.
         super(ASTMethodDeclaration.class);
+        definePropertyDescriptor(ALLOW_LOOPS);
     }
 
     @Override
@@ -28,11 +44,32 @@ public class ControlFlowInTestRule extends AbstractJavaRulechainRule {
         }
 
         RuleContext context = (RuleContext) data;
+        boolean allowLoops = getProperty(ALLOW_LOOPS);
 
-        // Report each conditional at its own location.
-        method.getBody().descendants(ASTIfStatement.class)
+        method.getBody().descendants()
+                .crossFindBoundaries(true)
+                .filter(node -> node.ancestors(ASTMethodDeclaration.class).first() == method)
+                .filter(node -> node.ancestors(ASTTypeDeclaration.class).first()
+                        == method.getEnclosingType())
+                .filter(node -> isDisallowedControlFlow(node, allowLoops))
                 .forEach(context::addViolation);
 
         return null;
+    }
+
+    private boolean isDisallowedControlFlow(Node node, boolean allowLoops) {
+        if (node instanceof ASTIfStatement
+                || node instanceof ASTConditionalExpression
+                || node instanceof ASTSwitchStatement
+                || node instanceof ASTSwitchExpression
+                || node instanceof ASTThrowStatement) {
+            return true;
+        }
+
+        if (node instanceof ASTTryStatement) {
+            return ((ASTTryStatement) node).getCatchClauses().nonEmpty();
+        }
+
+        return !allowLoops && node instanceof ASTLoopStatement;
     }
 }

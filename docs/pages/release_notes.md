@@ -26,6 +26,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### Changed Rules
+*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
+    reports control flow in test methods that can obscure which assertions
+    are executed. It checks conditionals, switch statements and expressions,
+    explicit throw statements, and try statements with catch clauses.
+    Loops are allowed by default and can be reported by setting
+    `allowLoops` to `false`.
 *   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
     whose constant classification previously depended on a boxed static final field. Direct static field references
     are still reported.
@@ -59,6 +65,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-bestpractices
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
+    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] new rule: ControlFlowInTest
 * java-codestyle
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
 * java-design
