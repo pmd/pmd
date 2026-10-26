@@ -10,6 +10,6 @@
                   +- SoqlExpression[@CanonicalQuery = "SELECT Break__c,Check_Out__c FROM VMS_Time_Card_Item__c WHERE Time_Card__c =:tmpVar1 AND Check_Out__c = 01:tmpVar2:tmpVar3", @DefiningType = "PmdTest", @Query = "SELECT Break__c,Check_Out__c FROM VMS_Time_Card_Item__c WHERE Time_Card__c =:timeCard.Id AND Check_Out__c = 01:00:00.000Z", @RealLoc = true]
                   |  +- BindExpressions[@DefiningType = "PmdTest", @RealLoc = true]
                   |     +- VariableExpression[@DefiningType = "PmdTest", @Image = "Id", @RealLoc = true]
-                  |        +- ReferenceExpression[@DefiningType = "PmdTest", @Image = "timeCard", @RealLoc = true, @ReferenceType = ReferenceType.LOAD, @SObjectType = false, @SafeNav = false]
+                  |        +- ReferenceExpression[@DefiningType = "PmdTest", @Image = "timeCard", @Name = "timeCard", @RealLoc = true, @ReferenceType = ReferenceType.LOAD, @SObjectType = false, @SafeNav = false]
                   +- VariableExpression[@DefiningType = "PmdTest", @Image = "o", @RealLoc = true]
                      +- EmptyReferenceExpression[@DefiningType = null, @RealLoc = false]
