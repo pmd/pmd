@@ -120,8 +120,8 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             return true;
         }
 
-        // A catch parameter is always a Throwable subtype, even if the declared type is
-        // unresolvable.
+        // A catch parameter is always a Throwable subtype, even if the type
+        // of `lastArg` couldn't be resolved (due to incomplete auxclasspath).
         if (lastArg instanceof ASTNamedReferenceExpr) {
             JVariableSymbol sym = ((ASTNamedReferenceExpr) lastArg).getReferencedSym();
             ASTVariableId decl = sym != null ? sym.tryGetNode() : null;

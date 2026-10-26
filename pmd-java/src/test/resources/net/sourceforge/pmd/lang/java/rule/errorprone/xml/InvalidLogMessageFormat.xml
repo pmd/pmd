@@ -1610,7 +1610,7 @@ public class Test {
     </test-code>
 
     <test-code>
-        <description>Java - InvalidLogMessageFormat false positive when if/else block is in the catch block (#7137)</description>
+        <description>#7137 false positive for unresolved exception type (incomplete auxclasspath)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.apache.logging.log4j.LogManager;
@@ -1626,7 +1626,7 @@ public class Test {
                         try {
                               // ...
                         }
-                        catch ( CustomerKickoutException ckE ) {
+                        catch ( CustomerKickoutException ckE ) { // type of "ckE" is unresolved
                             if ( isDeploymentTypeProduction() ) {
                                logger.error( "Kickout error: {}", ckE.toString() );
                             } else {
