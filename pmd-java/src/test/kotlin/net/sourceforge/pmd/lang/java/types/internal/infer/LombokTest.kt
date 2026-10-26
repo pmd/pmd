@@ -238,6 +238,30 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
         }
     }
 
+    parserTestContainer("Lombok @Getter on boolean fields with an is prefix") {
+        val code =
+            """
+            import lombok.Getter;
+
+            @Getter
+            public class Account {
+                private boolean isActive;
+                private boolean island;
+                private boolean is;
+                private Boolean isLocked;
+            }
+            """.trimIndent()
+
+        doTest("Does not double the is prefix of primitive boolean fields") {
+            val acu = parser.parse(code)
+            acu.withTypeDsl {
+                val classSymbol = acu.typeDeclarations().firstOrThrow().typeMirror.symbol
+                classSymbol.declaredMethods.map { it.simpleName }.toSet() shouldBe
+                    setOf("isActive", "isIsland", "isIs", "getIsLocked")
+            }
+        }
+    }
+
     parserTestContainer("Lombok @Data annotation") {
         val code =
             """
