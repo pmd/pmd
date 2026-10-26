@@ -71,7 +71,7 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     /**
      * Computes the standalone type of a conditional expression. Before
      * Java 8, conditional expressions are always standalone. Since Java 8,
-     * they are standalone if both their branches are of a primitive type
+     * they are standalone if and only if both their branches are of a primitive type
      * (or a primitive wrapper type), or they appear in a cast context.
      * This may involve inferring the compile-time declaration of a method
      * call or of a constructor call.
