@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -63,7 +64,13 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             return false;
         }
 
-        ASTFieldDeclaration fieldDeclaration = varId.ancestors(ASTFieldDeclaration.class).firstOrThrow();
+        NodeStream<ASTFieldDeclaration> ancestors = varId.ancestors(ASTFieldDeclaration.class);
+        if (ancestors.isEmpty()) {
+            // e.g., this is a record.
+            return false;
+        }
+
+        ASTFieldDeclaration fieldDeclaration = ancestors.firstOrThrow();
         return checkNonStaticFields || fieldDeclaration.hasModifiers(JModifier.STATIC);
     }
 
