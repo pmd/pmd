@@ -122,17 +122,14 @@ Properties:
         lower-case(@MethodName) = "getdescribe" and ReferenceExpression[@SObjectType = true()]
         or lower-case(@MethodName) = "describesobjects"
     ]
-    [not(
-            VariableExpression/ReferenceExpression
-                [lower-case(@Image) = ("sobjectdescribeoptions", "fielddescribeoptions")]
-            or VariableExpression[lower-case(@Image) = ("deferred", "full", "full_describe", "default")]/ReferenceExpression
-                [lower-case(@Image) = "schema"]
+    [not(VariableExpression/ReferenceExpression
+            [lower-case(@Name) = ("sobjectdescribeoptions", "schema.sobjectdescribeoptions", "fielddescribeoptions", "schema.fielddescribeoptions")]
          )
     ]
 |
 //ReferenceExpression
     [$noDefault = true()]
-    [lower-case(@Image) = ("sobjectdescribeoptions", "schema")]
+    [lower-case(@Name) = ("sobjectdescribeoptions", "schema.sobjectdescribeoptions")]
     [parent::VariableExpression[lower-case(@Image) = "default"]]
 ]]>
                 </value>

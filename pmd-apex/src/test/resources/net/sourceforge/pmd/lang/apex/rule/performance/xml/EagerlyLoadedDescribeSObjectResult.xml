@@ -143,7 +143,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Correct describer option check with Schema.SObjectDescribeOptions.DEFERRED</description>
+        <description>#5082 Correct describer option check with Schema.SObjectDescribeOptions.DEFERRED</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -157,7 +157,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Correct describer option check using Schema class with Schema.SObjectDescribeOptions.DEFERRED</description>
+        <description>#5082 Correct describer option check using Schema class with Schema.SObjectDescribeOptions.DEFERRED</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -171,7 +171,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Default describer option check allowing Schema.SObjectDescribeOptions.DEFAULT</description>
+        <description>#5082 Default describer option check allowing Schema.SObjectDescribeOptions.DEFAULT</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -185,7 +185,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Default describer option check restricting Schema.SObjectDescribeOptions.DEFAULT</description>
+        <description>#5082 Default describer option check restricting Schema.SObjectDescribeOptions.DEFAULT</description>
         <rule-property name="noDefault">true</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -194,6 +194,18 @@ public class Foo {
         if (Account.SObjectType.getDescribe(Schema.SObjectDescribeOptions.DEFAULT).isCreateable()) {
             insert accounts;
         }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5082 False positive on SObjectField with Schema.FieldDescribeOptions.FULL_DESCRIBE</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(Case case) {
+        String fieldName = Case.Subject.getDescribe(Schema.FieldDescribeOptions.FULL_DESCRIBE).getName();
     }
 }
         ]]></code>
