@@ -1336,8 +1336,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled until #7150 is fixed: the overload resolution types flag ? 'a' : 1 as int -->
+    <test-code>
         <description>Numeric conditional typed by its constant operand - #7150</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
