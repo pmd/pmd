@@ -148,9 +148,13 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
     }
 
     /**
-     * Return true if the expression may return void.
+     * Return true if the expression is a statement expression (JLS 14.8).
      */
     private static boolean isExpressionStatement(ASTExpression body) {
+        if (body.isParenthesized()) {
+            return false;
+        }
+
         // statement expression
         return body instanceof ASTMethodCall
             || body instanceof ASTConstructorCall

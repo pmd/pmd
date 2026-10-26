@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -40,7 +41,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.platform.suite.api.Suite;
 
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 
 class AuxClasspathLoaderTest {
@@ -297,7 +297,7 @@ class AuxClasspathLoaderTest {
     private static void assertResource(AuxClasspathLoader classpathLoader, String name, String expectedContent) throws IOException {
         try (InputStream resource = classpathLoader.findResource(name)) {
             assertNotNull(resource);
-            Assertions.assertEquals(expectedContent, IOUtil.readToString(resource, StandardCharsets.UTF_8));
+            Assertions.assertEquals(expectedContent, IOUtils.toString(resource, StandardCharsets.UTF_8));
         }
     }
 }
