@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -59,6 +60,24 @@ import net.sourceforge.pmd.util.CollectionUtil;
 final class AstClassSym
     extends AbstractAstTParamOwner<ASTTypeDeclaration>
     implements JClassSymbol {
+
+    /**
+     * Maps lombok logger annotations to the type of the field they generate.
+     * {@code @CustomLog} is not included, as its type is defined in {@code lombok.config}.
+     *
+     * @see <a href="https://projectlombok.org/features/log">Lombok @Log</a>
+     */
+    private static final Map<String, String> LOMBOK_LOGGERS = CollectionUtil.buildMap(m -> {
+        m.put("lombok.extern.slf4j.Slf4j", "org.slf4j.Logger");
+        m.put("lombok.extern.slf4j.XSlf4j", "org.slf4j.ext.XLogger");
+        m.put("lombok.extern.java.Log", "java.util.logging.Logger");
+        m.put("lombok.extern.log4j.Log4j", "org.apache.log4j.Logger");
+        m.put("lombok.extern.log4j.Log4j2", "org.apache.logging.log4j.Logger");
+        m.put("lombok.extern.apachecommons.CommonsLog", "org.apache.commons.logging.Log");
+        m.put("lombok.extern.jbosslog.JBossLog", "org.jboss.logging.Logger");
+        m.put("lombok.extern.flogger.Flogger", "com.google.common.flogger.FluentLogger");
+    });
+
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
     private final List<JClassSymbol> declaredClasses;
     private final List<JMethodSymbol> declaredMethods;
@@ -162,13 +181,15 @@ final class AstClassSym
     }
 
     public void processLombok(JavaAstProcessor processor) {
-        final String LOMBOK_SLF4J = "lombok.extern.slf4j.Slf4j";
         final String LOMBOK_GETTER = "lombok.Getter";
         final String LOMBOK_DATA = "lombok.Data";
         final String LOMBOK_VALUE = "lombok.Value";
 
-        if (node.isAnnotationPresent(LOMBOK_SLF4J)) {
-            declaredFields.add(ImplicitMemberSymbols.lombokSlf4jLoggerField(this, processor));
+        for (Map.Entry<String, String> logger : LOMBOK_LOGGERS.entrySet()) {
+            if (node.isAnnotationPresent(logger.getKey())) {
+                declaredFields.add(ImplicitMemberSymbols.lombokLoggerField(this, processor, logger.getValue()));
+                break;
+            }
         }
 
         declaredFields.stream()
