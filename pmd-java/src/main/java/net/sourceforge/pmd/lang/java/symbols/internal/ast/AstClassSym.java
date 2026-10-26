@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import static net.sourceforge.pmd.util.CollectionUtil.setOf;
-
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,8 +15,6 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
@@ -28,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
@@ -37,7 +30,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
-import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -60,23 +52,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
 final class AstClassSym
     extends AbstractAstTParamOwner<ASTTypeDeclaration>
     implements JClassSymbol {
-
-    /**
-     * Maps lombok logger annotations to the type of the field they generate.
-     * {@code @CustomLog} is not included, as its type is defined in {@code lombok.config}.
-     *
-     * @see <a href="https://projectlombok.org/features/log">Lombok @Log</a>
-     */
-    private static final Map<String, String> LOMBOK_LOGGERS = CollectionUtil.buildMap(m -> {
-        m.put("lombok.extern.slf4j.Slf4j", "org.slf4j.Logger");
-        m.put("lombok.extern.slf4j.XSlf4j", "org.slf4j.ext.XLogger");
-        m.put("lombok.extern.java.Log", "java.util.logging.Logger");
-        m.put("lombok.extern.log4j.Log4j", "org.apache.log4j.Logger");
-        m.put("lombok.extern.log4j.Log4j2", "org.apache.logging.log4j.Logger");
-        m.put("lombok.extern.apachecommons.CommonsLog", "org.apache.commons.logging.Log");
-        m.put("lombok.extern.jbosslog.JBossLog", "org.jboss.logging.Logger");
-        m.put("lombok.extern.flogger.Flogger", "com.google.common.flogger.FluentLogger");
-    });
 
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
     private final List<JClassSymbol> declaredClasses;
@@ -181,73 +156,8 @@ final class AstClassSym
     }
 
     public void processLombok(JavaAstProcessor processor) {
-        final String LOMBOK_GETTER = "lombok.Getter";
-        final String LOMBOK_DATA = "lombok.Data";
-        final String LOMBOK_VALUE = "lombok.Value";
-
-        for (Map.Entry<String, String> logger : LOMBOK_LOGGERS.entrySet()) {
-            if (node.isAnnotationPresent(logger.getKey())) {
-                declaredFields.add(ImplicitMemberSymbols.lombokLoggerField(this, processor, logger.getValue()));
-                break;
-            }
-        }
-
-        declaredFields.stream()
-                .filter(f -> !f.isStatic())
-                .map(f -> f.tryGetNode())
-                .filter(Objects::nonNull)
-                .filter(varId -> !varId.isRecordComponent())
-                .forEach(varId -> {
-                    ASTAnnotation fieldGetter = varId.getAnnotation(LOMBOK_GETTER);
-                    int accessModifier = -1;
-
-                    if (fieldGetter != null) {
-                        accessModifier = getLombokAccessModifier(fieldGetter);
-                    } else {
-                        ASTAnnotation classGetter = node.getAnnotation(LOMBOK_GETTER);
-                        if (classGetter != null) {
-                            accessModifier = getLombokAccessModifier(classGetter);
-                        } else if (JavaAstUtils.hasAnyAnnotation(node, setOf(LOMBOK_DATA, LOMBOK_VALUE))) {
-                            accessModifier = Modifier.PUBLIC;
-                        }
-                    }
-
-                    if (accessModifier != -1) {
-                        JMethodSymbol getter = ImplicitMemberSymbols.lombokGetter(this,
-                                (JFieldSymbol) varId.getSymbol(), accessModifier);
-                        String getterName = getter.getSimpleName();
-                        if (declaredMethods.stream().noneMatch(m -> m.getSimpleName().equals(getterName) && m.getArity() == 0)) {
-                            declaredMethods.add(getter);
-                        }
-                    }
-                });
+        LombokUtil.addLombokMembers(this, node, processor, declaredFields, declaredMethods);
     }
-
-    private int getLombokAccessModifier(ASTAnnotation annot) {
-        return annot.getFlatValue(ASTMemberValuePair.VALUE_ATTR)
-                .filter(v -> v instanceof ASTNamedReferenceExpr)
-                .toStream()
-                .map(ASTNamedReferenceExpr.class::cast)
-                .map(ASTNamedReferenceExpr::getName)
-                .findFirst()
-                .map(accessLevel -> {
-                    switch (accessLevel) {
-                    case "PROTECTED":
-                        return Modifier.PROTECTED;
-                    case "PACKAGE":
-                        return 0;
-                    case "PRIVATE":
-                        return Modifier.PRIVATE;
-                    case "NONE":
-                        return -1; // special value for NONE, we'll use -1 as a flag or handle it
-                    case "PUBLIC":
-                    default:
-                        return Modifier.PUBLIC;
-                    }
-                })
-                .orElse(Modifier.PUBLIC); // lombok generates by default public getters
-    }
-
 
     private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
                                                           ASTRecordComponentList components,
