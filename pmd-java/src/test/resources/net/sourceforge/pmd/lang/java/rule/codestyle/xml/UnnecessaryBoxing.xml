@@ -1351,8 +1351,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled until #7151 is fixed: the overload resolution also considers Example.m(Object), which the inner class hides -->
+    <test-code>
         <description>Method of an enclosing class with the name of a method of the inner class - #7151</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
