@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Too many if statements</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Tester注 {
+    public void handle(int i) {
+        if (i == 1) {
+        } else if (i== 2) {
+        } else if (i == 3) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Not too many if statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Tester {
+    public void handle(int i) {
+        if (i == 1) {
+        } else if (i== 2) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom property value</description>
+        <rule-property name="minimumBranches">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Tester {
+    public void handle(int i) {
+        if (i == 1) {
+        } else if (i== 2) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Checks for strings</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Tester {
+    public void handle(String s) {
+        if (s.equals("a")) {
+        } else if (s.equals("b")) {
+        } else if (s.equals("c")) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Checks for enums using equals method</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Tester {
+    public void handle(Digit s) {
+        if (s.equals(Digit.ONE)) {
+        } else if (s.equals(Digit.TWO)) {
+        } else if (s.equals(Digit.THREE)) {
+        }
+    }
+    enum Digit { ONE, TWO, THREE }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Checks for enums using operator</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Tester {
+    public void handle(Digit s) {
+        if (s == Digit.ONE) {
+        } else if (s == Digit.TWO) {
+        } else if (s == Digit.THREE) {
+        }
+    }
+    enum Digit { ONE, TWO, THREE }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Checks for enums with import</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package pkg;
+
+import static pkg.Tester.Digit.ONE;
+import static pkg.Tester.Digit.TWO;
+import static pkg.Tester.Digit.THREE;
+
+class Tester {
+    public void handle(Digit s) {
+        if (s.equals(ONE)) {
+        } else if (s.equals(TWO)) {
+        } else if (s.equals(THREE)) {
+        }
+    }
+    enum Digit { ONE, TWO, THREE }
+}
+        ]]></code>
+    </test-code>
+</test-data>
