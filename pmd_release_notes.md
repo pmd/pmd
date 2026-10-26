@@ -52,6 +52,8 @@ This is a minor release.
     this property.
 
 ### 🐛️ Fixed Issues
+* apex-performance
+    * [#5082](https://github.com/pmd/pmd/issues/5082): \[apex] EagerlyLoadedDescribeSObjectResult: false positive with fully qualified SObjectDescribeOptions/FieldDescribeOptions
 * core
     * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
     * [#7072](https://github.com/pmd/pmd/issues/7072): \[core] Reuse compiled violationSuppressXPath queries
