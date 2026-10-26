@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
@@ -34,6 +35,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -161,11 +163,15 @@ final class AstClassSym
                                : HashTreePSet.empty();
     }
 
-    public void processLombok(JavaAstProcessor processor) {
+    /**
+     * @return builder classes added by this call, in declaration order
+     */
+    public List<JClassSymbol> processLombok(JavaAstProcessor processor) {
         final String LOMBOK_SLF4J = "lombok.extern.slf4j.Slf4j";
         final String LOMBOK_GETTER = "lombok.Getter";
         final String LOMBOK_DATA = "lombok.Data";
         final String LOMBOK_VALUE = "lombok.Value";
+        final String LOMBOK_BUILDER = "lombok.Builder";
 
         if (node.isAnnotationPresent(LOMBOK_SLF4J)) {
             declaredFields.add(ImplicitMemberSymbols.lombokSlf4jLoggerField(this, processor));
@@ -200,6 +206,44 @@ final class AstClassSym
                         }
                     }
                 });
+
+        int classesBeforeBuilders = declaredClasses.size();
+        addLombokBuilders(LOMBOK_BUILDER);
+        return new ArrayList<>(declaredClasses.subList(classesBeforeBuilders, declaredClasses.size()));
+    }
+
+    /**
+     * Lombok {@code @Builder} adds a static nested class named {@code <TypeName>Builder},
+     * or the {@code builderClassName} attribute when that is set ({@code *} is the type name).
+     * An existing member class of that name is left in place.
+     */
+    private void addLombokBuilders(String lombokBuilder) {
+        if (isInterface() || isAnonymousClass() || node.getSimpleName().isEmpty()) {
+            return;
+        }
+        addLombokBuilder(node, lombokBuilder);
+        node.getOperations().forEach(op -> addLombokBuilder(op, lombokBuilder));
+    }
+
+    private void addLombokBuilder(Annotatable annotated, String lombokBuilder) {
+        ASTAnnotation builder = annotated.getAnnotation(lombokBuilder);
+        if (builder == null) {
+            return;
+        }
+        String builderName = lombokBuilderClassName(builder, node.getSimpleName());
+        if (declaredClasses.stream().anyMatch(c -> c.nameEquals(builderName))) {
+            return;
+        }
+        declaredClasses.add(ImplicitMemberSymbols.lombokBuilderClass(this, builderName));
+    }
+
+    private static String lombokBuilderClassName(ASTAnnotation annotation, String typeName) {
+        ASTMemberValue configured = annotation.getAttribute("builderClassName");
+        Object value = configured == null ? null : configured.getConstValue();
+        if (!(value instanceof String) || ((String) value).isEmpty()) {
+            return typeName + "Builder";
+        }
+        return ((String) value).replace("*", typeName);
     }
 
     private int getLombokAccessModifier(ASTAnnotation annot) {

@@ -76,6 +76,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
@@ -115,7 +116,21 @@ public final class SymbolTableResolver {
         ReferenceCtx ctx = ReferenceCtx.root(processor, root);
 
         root.descendants(ASTTypeDeclaration.class).forEach(td -> {
-            SymbolResolutionPass.desugarLombokMembers(ctx.processor, td);
+            List<JClassSymbol> builders = SymbolResolutionPass.desugarLombokMembers(ctx.processor, td);
+            // Class-level annotations are outside the type body, so they do not
+            // see member types unless those types are added to their scope.
+            // That is what makes `@lombok.Builder` necessary when the generated
+            // class is itself named Builder.
+            if (!builders.isEmpty()) {
+                JSymbolTable annotationScope = td.getModifiers().getSymbolTable();
+                for (JClassSymbol builder : builders) {
+                    JClassType memberType = td.getTypeMirror().getDeclaredClass(builder.getSimpleName());
+                    if (memberType != null) {
+                        annotationScope = helper.withMemberType(annotationScope, memberType);
+                    }
+                }
+                InternalApiBridge.setSymbolTable(td.getModifiers(), annotationScope);
+            }
 
             // we now have new fields, that were not known before.
             // The updated symbol table now also knows about them.
