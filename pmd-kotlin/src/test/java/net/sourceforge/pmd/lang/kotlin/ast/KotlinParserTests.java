@@ -8,7 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -182,18 +182,22 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     @Test
-    void annotationFqNamesXpathAttributeAbsentWhenEmptyForBothFunctionAndClass() {
+    void annotationFqNamesXpathAttributePresentWhenEmptyForBothFunctionAndClass() {
         KtKotlinFile file = KotlinParsingHelper.DEFAULT.parse("class C\nfun plain() {}");
         KtClassDeclaration clazz = file.descendants(KtClassDeclaration.class).first();
         KtFunctionDeclaration func = file.descendants(KtFunctionDeclaration.class).first();
 
-        // Neither class nor function declaration has annotations here, so the
-        // AnnotationFqNames attribute is entirely absent: KotlinInnerNode omits
-        // null-valued attributes AND empty-collection-valued ones (no behavior
-        // difference for rule authors, since both evaluate to an empty XPath
-        // sequence, but it removes noise from tree dumps).
-        assertFalse(hasXPathAttribute(func, "AnnotationFqNames"));
-        assertFalse(hasXPathAttribute(clazz, "AnnotationFqNames"));
+        // Both class and function declarations expose non-null AnnotationFqNames attribute,
+        // even when empty. KotlinInnerNode omits only null-valued attributes.
+        assertTrue(hasXPathAttribute(func, "AnnotationFqNames"));
+        assertTrue(hasXPathAttribute(clazz, "AnnotationFqNames"));
+
+        Object funcAnnotationFqNames = getXpathAttribute(func, "AnnotationFqNames").get();
+        assertInstanceOf(List.class, funcAnnotationFqNames);
+        assertTrue(((List<?>) funcAnnotationFqNames).isEmpty());
+        Object clazzAnnotationFqNames = getXpathAttribute(clazz, "AnnotationFqNames").get();
+        assertInstanceOf(List.class, clazzAnnotationFqNames);
+        assertTrue(((List<?>) clazzAnnotationFqNames).isEmpty());
     }
 
     @Test
@@ -287,14 +291,17 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     private static boolean hasXPathAttribute(KotlinNode node, String name) {
+        return getXpathAttribute(node, name).isPresent();
+    }
+
+    private static Optional<Object> getXpathAttribute(KotlinNode node, String name) {
         Iterator<Attribute> it = node.getXPathAttributesIterator();
         while (it.hasNext()) {
             Attribute attr = it.next();
             if (name.equals(attr.getName())) {
-                return true;
+                return Optional.ofNullable(attr.getValue());
             }
         }
-        return false;
+        return Optional.empty();
     }
-
 }
