@@ -155,10 +155,6 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         return t.isBottom() || t.unbox().isPrimitive();
     }
 
-    private static boolean isPrimitiveOrNull(JTypeMirror t) {
-        return t.isBottom() || t.unbox().isPrimitive();
-    }
-
     private JTypeMirror standaloneExprTypeInConditional(ExprMirror mirror, ASTExpression e) {
 
         if (mirror instanceof StandaloneExprMirror) {
