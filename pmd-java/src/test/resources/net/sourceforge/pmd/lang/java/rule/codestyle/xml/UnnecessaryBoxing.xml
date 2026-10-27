@@ -1214,8 +1214,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled until #7146 is fixed: the overload resolution prefers int over Integer where javac reports an ambiguity -->
+    <test-code>
         <description>Overloads that javac finds ambiguous - #7146</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1229,8 +1228,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled until #7149 is fixed: the overload resolution accepts null for a primitive parameter and int for Long -->
+    <test-code>
         <description>Arguments with a conversion that JLS 5.3 does not allow - #7149</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>7,8</expected-linenumbers>
