@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class NullAssignmentRule extends AbstractJavaRulechainRule {
 
@@ -30,21 +31,23 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTNullLiteral node, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (node.getParent() instanceof ASTAssignmentExpression) {
             ASTAssignmentExpression assignment = (ASTAssignmentExpression) node.getParent();
             if (isAssignmentToFinal(assignment) || isFirstAssignmentToBlankLocal(assignment)) {
-                return data;
+                return null;
             }
             if (assignment.getRightOperand() == node) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         } else if (node.getParent() instanceof ASTConditionalExpression) {
             if (isBadTernary((ASTConditionalExpression) node.getParent(), node)) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         }
 
-        return data;
+        return null;
     }
 
     private boolean isAssignmentToFinal(ASTAssignmentExpression n) {
