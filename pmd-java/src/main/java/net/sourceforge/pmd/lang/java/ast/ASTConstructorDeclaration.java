@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or
@@ -35,7 +36,12 @@ public final class ASTConstructorDeclaration extends AbstractExecutableDeclarati
     }
 
 
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
     @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return getName();
     }

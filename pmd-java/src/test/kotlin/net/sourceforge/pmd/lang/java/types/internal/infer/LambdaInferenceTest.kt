@@ -507,6 +507,116 @@ class Scratch {
         h.shouldBeCompat(value = true, void = true)
     }
 
+    parserTestContainer("Parenthesized expression lambda compatibility", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        for (body in listOf("str(i)", "new Scratch(i)", "i = 1", "++i", "--i", "i++", "i--",
+                            "str((i))", "(this).str(i)", "new Scratch((i))", "i = (i + 1)")) {
+            doTest(body) {
+                val acu = parser.parse(
+                    """
+                    import java.util.function.Supplier;
+                    class Scratch {
+                        int i;
+                        Scratch(int i) { }
+                        String str(int i) { return ""; }
+                        void test() {
+                            Supplier<Object> bare = () -> $body;
+                            Supplier<Object> parenthesized = () -> ($body);
+                            Supplier<Object> nested = () -> (($body));
+                        }
+                    }
+                    """.trimIndent()
+                )
+
+                val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
+                val mirrors = JavaExprMirrors.forTypeResolution(infer)
+                acu.descendants(ASTLambdaExpression::class.java).toList().forEachIndexed { index, lambda ->
+                    val mirror = mirrors.getTopLevelFunctionalMirror(lambda) as ExprMirror.LambdaExprMirror
+                    withClue(lambda) {
+                        mirror.isVoidCompatible shouldBe (index == 0)
+                        mirror.isValueCompatible shouldBe true
+                    }
+                }
+            }
+        }
+    }
+
+    parserTest("Parenthesized lambda body selects value compatible overload", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Supplier;
+            class Scratch {
+                static void g(int i, Supplier<String> supplier) { }
+                static void g(Object o, Runnable runnable) { }
+                static String str() { return ""; }
+                static void test(Integer i) {
+                    g(i, () -> (str()));
+                    g(i, () -> str());
+                    g(i, () -> ((str())));
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (t_Scratch) = acu.declaredTypeSignatures()
+        val calls = acu.descendants(ASTMethodCall::class.java).filter { it.methodName == "g" }.toList()
+
+        spy.shouldBeOk {
+            calls.forEachIndexed { index, call ->
+                val formals = if (index == 1) {
+                    listOf(ts.OBJECT, java.lang.Runnable::class.raw)
+                } else {
+                    listOf(ts.INT, Supplier::class[gen.t_String])
+                }
+                call.methodType.shouldMatchMethod(
+                    named = "g",
+                    declaredIn = t_Scratch,
+                    withFormals = formals,
+                    returning = ts.NO_TYPE
+                )
+                call.overloadSelectionInfo.isFailed shouldBe false
+            }
+        }
+    }
+
+    parserTest("Parenthesized implicitly typed lambda selects value compatible overload", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Consumer;
+            import java.util.function.Function;
+            class Scratch {
+                static void g(int i, Function<String, String> function) { }
+                static void g(Object o, Consumer<String> consumer) { }
+                static String str(String s) { return s; }
+                static void test(Integer i) {
+                    g(i, s -> (str(s)));
+                    g(i, s -> str(s));
+                    g(i, s -> ((str(s))));
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (t_Scratch) = acu.declaredTypeSignatures()
+        val calls = acu.descendants(ASTMethodCall::class.java).filter { it.methodName == "g" }.toList()
+
+        spy.shouldBeOk {
+            calls.forEachIndexed { index, call ->
+                val formals = if (index == 1) {
+                    listOf(ts.OBJECT, java.util.function.Consumer::class[gen.t_String])
+                } else {
+                    listOf(ts.INT, java.util.function.Function::class[gen.t_String, gen.t_String])
+                }
+                call.methodType.shouldMatchMethod(
+                    named = "g",
+                    declaredIn = t_Scratch,
+                    withFormals = formals,
+                    returning = ts.NO_TYPE
+                )
+                call.overloadSelectionInfo.isFailed shouldBe false
+            }
+        }
+    }
+
     parserTest("Test void compatible lambda with value compatible body") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
@@ -777,6 +887,140 @@ class NodeStream {
                 )
                 it.overloadSelectionInfo::isFailed shouldBe false
             }
+        }
+    }
+
+    parserTest("#7148 lambda result may be boxed in strict phase") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Supplier;
+
+            class LambdaResult {
+                static void m(Supplier<Integer> s, int x) { }
+                static void m(Supplier<Integer> s, Integer x) { }
+
+                void t(int i) {
+                    // javac selects m(Supplier, int) in the strict phase
+                    m(() -> 1, i);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("m")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(Supplier::class[gen.t_Integer], int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7148 boxing of a lambda result does not widen first") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.IntSupplier;
+            import java.util.function.Supplier;
+
+            class LambdaResult {
+                static void h(Supplier<Long> s, int x) { }
+                static void h(Supplier<Integer> s, Integer x) { }
+                static void p(IntSupplier s, int x) { }
+                static void p(Supplier<Integer> s, Integer x) { }
+
+                void t(int i) {
+                    // 1 is not assignable to Long, so h(Supplier<Long>, int) is not applicable
+                    h(() -> 1, i);
+                    // null is not assignable to int, so p(IntSupplier, int) is not applicable
+                    p(() -> null, i);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val hCall = acu.firstMethodCall("h")
+        val pCall = acu.firstMethodCall("p")
+
+        spy.shouldBeOk {
+            hCall.methodType.shouldMatchMethod(
+                named = "h",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(Supplier::class[gen.t_Integer], gen.t_Integer),
+                returning = void
+            )
+            pCall.methodType.shouldMatchMethod(
+                named = "p",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(Supplier::class[gen.t_Integer], gen.t_Integer),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7148 lambda result may be boxed in strict phase, with an implicitly typed lambda argument") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Predicate;
+            import java.util.function.Supplier;
+
+            class ImplicitLambda {
+                private static void m(Supplier<Integer> s, Integer x, Predicate<String> p) { }
+                private static void m(Supplier<Integer> s, int x, Predicate<String> p) { }
+
+                void t(int i) {
+                    // javac selects m(Supplier, int, Predicate) in the strict phase
+                    m(() -> 1, i, t -> t.isEmpty());
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_ImplicitLambda = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("m")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = t_ImplicitLambda,
+                withFormals = listOf(Supplier::class[gen.t_Integer], int, java.util.function.Predicate::class[gen.t_String]),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7148 unboxing of a lambda result in the strict phase") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.IntSupplier;
+            import java.util.function.Supplier;
+
+            class LambdaResult {
+                static void m(IntSupplier s, int x) { }
+                static void m(Supplier<Integer> s, Integer x) { }
+
+                void t(int i, Integer value) {
+                    // javac selects m(IntSupplier, int) in the strict phase
+                    m(() -> value, i);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("m")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(java.util.function.IntSupplier::class.raw, int),
+                returning = void
+            )
         }
     }
 })
