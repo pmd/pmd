@@ -493,7 +493,8 @@ public interface YetAnotherConstantInterface {
             assertions are executed and whether all intended cases are covered.
 
             This rule reports if statements, conditional expressions, switch statements
-            and expressions, explicit throw statements, and try statements with catch clauses.
+            and expressions, explicit throw statements, try statements with catch clauses,
+            and plain try-finally statements.
 
             Loops are allowed by default. Set the property `allowLoops` to `false`
             to report for, enhanced for, while, and do-while loops as well.
@@ -506,7 +507,9 @@ public interface YetAnotherConstantInterface {
             including lambda bodies within those methods. Methods and initializers of local
             or anonymous classes are not treated as part of the enclosing test.
 
-            Try-finally and try-with-resources statements without catch clauses are allowed.
+            Try-with-resources statements without catch clauses are allowed.
+            Plain try-finally statements are reported; prefer an @AfterEach method
+            for test cleanup where appropriate.
         </description>
         <priority>3</priority>
         <example><![CDATA[

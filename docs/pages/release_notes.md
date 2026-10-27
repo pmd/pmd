@@ -26,6 +26,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
+*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
+    reports control flow in test methods that can obscure which assertions
+    are executed. It checks conditionals, switch statements and expressions,
+    explicit throw statements, try statements with catch clauses,
+    and plain try-finally statements.
+    Loops are allowed by default and can be reported by setting
+    `allowLoops` to `false`.
 *   The new Java rule {% rule java/codestyle/LocalVariableDeclarationShouldBeAtStartOfBlock %} enforces a code style
     where all local variables are declared together at the start of their block, without initialization.
     Optionally, the declarations can be required to be sorted by name or by type and name
@@ -36,12 +43,6 @@ This is a {{ site.pmd.release_type }} release.
     `pmd-kotlin:typeIs()` XPath function introduced in the previous release.
 
 #### Changed Rules
-*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
-    reports control flow in test methods that can obscure which assertions
-    are executed. It checks conditionals, switch statements and expressions,
-    explicit throw statements, and try statements with catch clauses.
-    Loops are allowed by default and can be reported by setting
-    `allowLoops` to `false`.
 *   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
     whose constant classification previously depended on a boxed static final field. Direct static field references
     are still reported.

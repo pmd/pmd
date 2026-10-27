@@ -132,7 +132,6 @@ class ExampleTest {
     }
 }
         ]]></code>
-        <source-type>java 17</source-type>
     </test-code>
 
     <test-code>
@@ -172,8 +171,9 @@ class ExampleTest {
     </test-code>
 
     <test-code>
-        <description>Resource management without catch is allowed</description>
-        <expected-problems>0</expected-problems>
+        <description>Try-with-resources is allowed but plain try-finally is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
 import java.io.StringReader;
 import org.junit.jupiter.api.Test;
@@ -230,6 +230,7 @@ class ExampleTest {
         <description>All loop types are reported when disabled</description>
         <rule-property name="allowLoops">false</rule-property>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,10,15,19</expected-linenumbers>
         <code><![CDATA[
 import org.junit.jupiter.api.Test;
 

@@ -67,7 +67,9 @@ public class ControlFlowInTestRule extends AbstractJavaRulechainRule {
         }
 
         if (node instanceof ASTTryStatement) {
-            return ((ASTTryStatement) node).getCatchClauses().nonEmpty();
+            ASTTryStatement tryStatement = (ASTTryStatement) node;
+            return !tryStatement.isTryWithResources()
+                    || tryStatement.getCatchClauses().nonEmpty();
         }
 
         return !allowLoops && node instanceof ASTLoopStatement;
