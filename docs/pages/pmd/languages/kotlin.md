@@ -120,6 +120,27 @@ parameters, and examples, see the
 [PMD extension functions]({{ baseurl }}pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions)
 page.
 
+### Message parameter (`{0}`) substitution
+
+`net.sourceforge.pmd.lang.rule.xpath.XPathRule` auto-binds `{0}` in a rule's `message` from the
+matched node: it tries `getImage()` first, then falls back to the first attribute named `Name`,
+`SimpleName`, `MethodName`, or `Value` — this fallback list is hardcoded in pmd-core and shared
+across all languages.
+
+pmd-kotlin nodes have `getImage()` intentionally disabled (`@NoAttribute @Deprecated`), and most
+Kotlin declaration nodes don't expose any of the hardcoded fallback attribute names either (a
+notable exception is `ImportHeader`'s `@Name`). So for a typical Kotlin XPathRule, `{0}` won't
+resolve to anything useful unless the matched node happens to carry one of those specific
+attributes.
+
+If your rule's message needs a dynamic value (e.g. the offending type name), consider one of:
+- Matching a node that does carry a usable `@Name`/`@SimpleName`/`@MethodName`/`@Value`
+  attribute.
+- Writing a Java-based rule instead of an XPathRule, and calling `ctx.addViolation(node, arg)`
+  explicitly with any value you like.
+- Keeping the message static/generic — this is the current approach for `LooseCoupling`, since
+  the flagged concrete type name isn't exposed under any of the fallback attribute names.
+
 ### Java-based rules
 
 The same type information is accessible from Java-based rules via public interfaces and

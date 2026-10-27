@@ -5,6 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.BYTE;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.CHAR;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT;
+import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.SHORT;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.function.Predicate;
@@ -65,10 +69,12 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
 
 
     /**
-     * Conditional expressions are standalone iff both their branches
-     * are of a primitive type (or a primitive wrapper type), or they
-     * appear in a cast context. This may involve inferring the compile-time
-     * declaration of a method call.
+     * Computes the standalone type of a conditional expression. Before
+     * Java 8, conditional expressions are always standalone. Since Java 8,
+     * they are standalone if and only if both their branches are of a primitive type
+     * (or a primitive wrapper type), or they appear in a cast context.
+     * This may involve inferring the compile-time declaration of a method
+     * call or of a constructor call.
      *
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.25
      */
@@ -109,6 +115,19 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
             return thenType.equals(elseType) ? thenType : thenType.unbox();
         }
 
+        // JLS 15.25.2: byte with short gives short, and byte, short or char
+        // with an int constant representable in that type gives that type
+        JTypeMirror thenUnboxed = thenType.unbox();
+        JTypeMirror elseUnboxed = elseType.unbox();
+        if (thenUnboxed.isPrimitive(BYTE) && elseUnboxed.isPrimitive(SHORT)
+            || thenUnboxed.isPrimitive(SHORT) && elseUnboxed.isPrimitive(BYTE)) {
+            return factory.ts.SHORT;
+        } else if (isRepresentableIntConstant(cond.getElseBranch(), elseType, thenUnboxed)) {
+            return thenUnboxed;
+        } else if (isRepresentableIntConstant(cond.getThenBranch(), thenType, elseUnboxed)) {
+            return elseUnboxed;
+        }
+
         if (thenType.isNumeric() && elseType.isNumeric()) {
             return TypeConversion.binaryNumericPromotion(thenType.unbox(), elseType.unbox());
         }
@@ -120,6 +139,21 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         return TypeConversion.capture(factory.ts.lub(listOf(thenType.box(), elseType.box())));
     }
 
+    private static boolean isRepresentableIntConstant(ASTExpression expr, JTypeMirror exprType, JTypeMirror target) {
+        Object value = exprType.isPrimitive(INT) ? expr.getConstValue() : null;
+        if (!(value instanceof Integer)) {
+            return false;
+        }
+        int v = (Integer) value;
+        return target.isPrimitive(BYTE) && v == (byte) v
+            || target.isPrimitive(SHORT) && v == (short) v
+            || target.isPrimitive(CHAR) && v == (char) v;
+    }
+
+
+    private static boolean isPrimitiveOrNull(JTypeMirror t) {
+        return t.isBottom() || t.unbox().isPrimitive();
+    }
 
     private static boolean isPrimitiveOrNull(JTypeMirror t) {
         return t.isBottom() || t.unbox().isPrimitive();
@@ -137,7 +171,8 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         if (mirror instanceof CtorInvocationMirror) {
             // A class instance creation expression (§15.9) for class Boolean.
             // A class instance creation expression (§15.9) for a class that is convertible to a numeric type.
-            return ((CtorInvocationMirror) mirror).getNewType().unbox();
+            JTypeMirror newType = mirror.getStandaloneType(); // null for a diamond that may be poly
+            return newType == null ? null : newType.unbox();
         }
 
         if (mirror instanceof BranchingMirror) {

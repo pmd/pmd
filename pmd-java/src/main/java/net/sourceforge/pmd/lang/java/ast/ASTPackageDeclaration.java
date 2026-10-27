@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.java.symbols.JPackageSymbol;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
@@ -27,6 +28,7 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
 
     private TextRegion reportRegion;
     private JPackageSymbol symbol;
+    private String name;
 
     ASTPackageDeclaration(int id) {
         super(id);
@@ -54,10 +56,20 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
      * @since 6.30.0
      */
     public String getName() {
-        return super.getImage();
+        return name;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     * Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
+     */
     @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         // the image was null before 7.0, best keep it that way
         return null;
