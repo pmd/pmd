@@ -178,6 +178,23 @@ append_classpath() {
 
 add_pmd_classpath() {
   append_classpath "$CONF_DIR:$LIB_DIR/*"
+
+  if [ "$APPNAME" = "designer" ]
+  then
+    if [ "$java_version_feature" -eq 8 ]
+    then
+      append_classpath "$LIB_DIR/controlsfx-8/*"
+    elif [ "$java_version_feature" -ge 11 ]
+    then
+      append_classpath "$LIB_DIR/controlsfx-11/*"
+    else
+      script_exit "
+        The Designer requires Java 8 or 11+. Java 9 and 10 are not supported.
+        See https://docs.pmd-code.org/latest/pmd_userdocs_extending_designer_reference.html#installing-running-updating
+        for instructions.
+      "
+    fi
+  fi
 }
 
 add_openjfx_classpath() {
@@ -203,10 +220,10 @@ add_openjfx_classpath() {
         "
       fi
 
-      if [ "$java_version_feature" -lt 10 ]
+      if [ "$java_version_feature" -lt 11 ]
       then
         script_exit "
-          For OpenJFX at least Java 10 is required. Newer OpenJFX version
+          For OpenJFX at least Java 11 is required. Newer OpenJFX version
           might require newer Java versions.
         "
       fi
@@ -240,8 +257,8 @@ check_conf_dir
 
 convert_cygwin_vars
 
-add_pmd_classpath
 determine_java_version
+add_pmd_classpath
 add_openjfx_classpath
 determine_additional_java_opts
 
