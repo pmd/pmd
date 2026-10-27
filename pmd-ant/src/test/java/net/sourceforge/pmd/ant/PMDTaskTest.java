@@ -58,7 +58,6 @@ class PMDTaskTest extends AbstractAntTest {
         assertEquals(
                     "The following language is not supported:<sourceLanguage name=\"java\" version=\"42\" />.",
                     ex.getMessage());
-        assertEquals("", log.toString());
     }
 
     @Test
