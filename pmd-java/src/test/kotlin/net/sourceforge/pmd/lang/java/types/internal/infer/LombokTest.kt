@@ -380,4 +380,75 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
             }
         }
     }
+
+    parserTestContainer("Lombok @Builder annotation") {
+        val code = """
+            import lombok.Builder;
+
+            @Builder
+            class Book {
+                String title;
+            }
+
+            @Builder(builderClassName = "Builder")
+            class Shelf {
+                static class Builder {}
+            }
+
+            class Desk {
+                @Builder
+                Desk(String name) {}
+
+                @Builder(builderClassName = "CustomBuilder")
+                static Desk of(String name) { return new Desk(name); }
+            }
+
+            @Builder
+            class Lamp {
+                @Builder
+                Lamp(int watts) {}
+            }
+
+            @Builder(builderClassName = "*Builder")
+            class Star {
+                int n;
+            }
+        """.trimIndent()
+
+        fun ASTCompilationUnit.classSymbol(simpleName: String) =
+            typeDeclarations().filter { it.simpleName == simpleName }.firstOrThrow().symbol
+
+        doTest("Adds a public static nested builder class") {
+            val acu = parser.parse(code)
+            val book = acu.classSymbol("Book")
+            book.declaredClasses.map { it.simpleName } shouldBe listOf("BookBuilder")
+            val builder = book.declaredClasses[0]
+            Modifier.isPublic(builder.modifiers) shouldBe true
+            Modifier.isStatic(builder.modifiers) shouldBe true
+            builder.enclosingClass shouldBe book
+            builder.binaryName shouldBe "Book\$BookBuilder"
+            (builder.tryGetNode() == null) shouldBe true
+
+            acu.classSymbol("Star").declaredClasses.map { it.simpleName } shouldBe listOf("StarBuilder")
+        }
+
+        doTest("Does not replace an existing nested class of the same name") {
+            val acu = parser.parse(code)
+            val shelf = acu.classSymbol("Shelf")
+            shelf.declaredClasses.map { it.simpleName } shouldBe listOf("Builder")
+            (shelf.declaredClasses.single().tryGetNode() != null) shouldBe true
+        }
+
+        doTest("Builder on a constructor or method belongs to the enclosing class") {
+            val acu = parser.parse(code)
+            acu.classSymbol("Desk").declaredClasses.map { it.simpleName } shouldBe listOf("DeskBuilder", "CustomBuilder")
+            acu.classSymbol("Lamp").declaredClasses.map { it.simpleName } shouldBe listOf("LampBuilder")
+        }
+
+        doTest("Do nothing when lombok support is disabled") {
+            val acu = parser.disableLombok().parse(code)
+            acu.classSymbol("Book").declaredClasses.map { it.simpleName } shouldBe emptyList()
+            acu.classSymbol("Desk").declaredClasses.map { it.simpleName } shouldBe emptyList()
+        }
+    }
 })

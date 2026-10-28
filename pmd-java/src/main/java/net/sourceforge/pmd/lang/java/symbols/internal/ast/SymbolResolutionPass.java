@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -48,13 +50,17 @@ public final class SymbolResolutionPass {
         return visitor.makeKnownSymbolResolver();
     }
 
-    public static void desugarLombokMembers(JavaAstProcessor processor, ASTTypeDeclaration type) {
+    /**
+     * @return builder classes added to this type, if any
+     */
+    public static List<JClassSymbol> desugarLombokMembers(JavaAstProcessor processor, ASTTypeDeclaration type) {
         assert processor.hasFirstClassLombokSupport() : "This method should not be called if Lombok support is disabled";
 
         JClassSymbol symbol = type.getSymbol();
         if (symbol instanceof AstClassSym) {
-            ((AstClassSym) symbol).processLombok(processor);
+            return ((AstClassSym) symbol).processLombok(processor);
         }
+        return Collections.emptyList();
     }
 
     /**
