@@ -380,4 +380,99 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
             }
         }
     }
+
+    parserTestContainer("Lombok constructor annotations") {
+        val code =
+            """
+            import lombok.AccessLevel;
+            import lombok.AllArgsConstructor;
+            import lombok.NoArgsConstructor;
+            import lombok.NonNull;
+            import lombok.RequiredArgsConstructor;
+
+            @NoArgsConstructor(access = AccessLevel.PRIVATE)
+            @RequiredArgsConstructor
+            @AllArgsConstructor(staticName = "of", access = AccessLevel.PUBLIC)
+            public class Book {
+                private static int count;
+                private final String title;
+                private final int edition = 1;
+                @NonNull private String author;
+                private int pages;
+
+                public static void main(String[] args) {
+                    Book b = new Book("title", "author");
+                }
+            }
+            """.trimIndent()
+
+        doTest("Creates constructors when supported") {
+            val acu = parser.parse(code)
+            acu.withTypeDsl {
+                val classSymbol = acu.typeDeclarations().firstOrThrow().symbol
+                // no implicit default constructor
+                classSymbol.constructors.map { ctor -> ctor.formalParameters.map { it.simpleName } } shouldBe listOf(
+                    emptyList(),
+                    listOf("title", "author"),
+                    listOf("title", "author", "pages"),
+                )
+                classSymbol.constructors.map { Modifier.toString(it.modifiers) } shouldBe listOf(
+                    "private",
+                    "public",
+                    "private", // staticName makes the constructor private
+                )
+                classSymbol.constructors[2].getFormalParameterTypes(null) shouldBe listOf(
+                    ts.STRING,
+                    ts.STRING,
+                    int,
+                )
+
+                val ctorCall = acu.firstCtorCall()
+                ctorCall.overloadSelectionInfo.isFailed shouldBe false
+                ctorCall.methodType.symbol shouldBe classSymbol.constructors[1]
+            }
+        }
+
+        doTest("Keeps the default constructor when lombok support is disabled") {
+            val acu = parser.disableLombok().parse(code)
+            acu.withTypeDsl {
+                val classSymbol = acu.typeDeclarations().firstOrThrow().symbol
+                classSymbol.constructors.map { it.arity } shouldBe listOf(0)
+                Modifier.isPublic(classSymbol.constructors[0].modifiers) shouldBe true
+                acu.firstCtorCall().overloadSelectionInfo.isFailed shouldBe true
+            }
+        }
+
+        doTest("Handles explicit constructors, AccessLevel.NONE/PACKAGE and enums") {
+            val acu = parser.parse(
+                """
+                import lombok.AccessLevel;
+                import lombok.AllArgsConstructor;
+                import lombok.NoArgsConstructor;
+
+                public class Outer {
+                    @NoArgsConstructor(access = AccessLevel.NONE)
+                    public static class NoneAccess { }
+
+                    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+                    static class Explicit { private Explicit(int x) { } }
+
+                    @AllArgsConstructor
+                    enum Color {
+                        RED(1);
+                        private final int value;
+                    }
+                }
+                """.trimIndent()
+            )
+            val (_, noneAccess, explicit, color) = acu.typeDeclarations().toList { it.symbol }
+
+            // AccessLevel.NONE generates nothing, so the default constructor remains
+            noneAccess.constructors.map { Modifier.toString(it.modifiers) to it.arity } shouldBe listOf("public" to 0)
+            // explicit constructors are kept
+            explicit.constructors.map { Modifier.toString(it.modifiers) to it.arity } shouldBe listOf("private" to 1, "" to 0)
+            // enum constructors are always private
+            color.constructors.map { Modifier.toString(it.modifiers) to it.arity } shouldBe listOf("private" to 1)
+        }
+    }
 })
