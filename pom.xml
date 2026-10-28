@@ -105,7 +105,8 @@
 
         <pmd.build-tools.version>40</pmd.build-tools.version>
 
-        <pmd-designer.version>7.19.4-SNAPSHOT</pmd-designer.version>
+        <pmd-designer.version>7.19.3</pmd-designer.version>
+<!--        <pmd-designer.version>7.19.4-SNAPSHOT</pmd-designer.version>-->
 
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
