@@ -26,6 +26,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
+*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
+    reports control flow in test methods that can obscure which assertions
+    are executed. It checks conditionals, switch statements and expressions,
+    explicit throw statements, try statements with catch clauses,
+    and plain try-finally statements.
+    Loops are allowed by default and can be reported by setting
+    `allowLoops` to `false`.
 *   The new Java rule {% rule java/codestyle/LocalVariableDeclarationShouldBeAtStartOfBlock %} enforces a code style
     where all local variables are declared together at the start of their block, without initialization.
     Optionally, the declarations can be required to be sorted by name or by type and name
@@ -82,6 +89,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
     * [#7018](https://github.com/pmd/pmd/issues/7018): \[java] UnusedAssignment: false positive for an assignment in a condition operand that may be skipped
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
+    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] new rule: ControlFlowInTest
     * [#7119](https://github.com/pmd/pmd/issues/7119): \[java] SimplifiableTestAssertion: Various false negatives
 * java-codestyle
     * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
