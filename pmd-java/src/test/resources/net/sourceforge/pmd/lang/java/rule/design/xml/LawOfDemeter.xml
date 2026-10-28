@@ -1372,4 +1372,42 @@ class C { void doIt() {} }
 class Bar { C getC() {} }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>The receiver of a method call is evaluated before the call may modify fields #5016</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>18,18,18,23,24</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+public class Foo {
+    final Map<String, Count> map = new HashMap<>();
+
+    static class Count {
+        int value;
+    }
+
+    static class EntryIterator {
+        private final Iterator<Map.Entry<String, Count>> entryIterator;
+        private Map.Entry<String, Count> current;
+        private int itemCount;
+
+        EntryIterator(Foo parent) {
+            this.entryIterator = parent.map.entrySet().iterator();
+        }
+
+        String next() {
+            if (itemCount == 0) {
+                current = entryIterator.next();
+                itemCount = current.getValue().value; // the call to getValue cannot modify current before it is read
+            }
+            itemCount--;
+            return current.getKey();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

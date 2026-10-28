@@ -78,6 +78,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7150](https://github.com/pmd/pmd/issues/7150): \[java] Numeric conditional with a char operand and an int constant is typed as int
     * [#7151](https://github.com/pmd/pmd/issues/7151): \[java] Unqualified method call resolves to an enclosing class method that the inner class hides
 * java-bestpractices
+    * [#5016](https://github.com/pmd/pmd/issues/5016): \[java] UnusedAssignment - false-positive boolean flag for execution and reset in finally
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment: false positive when using assert
     * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
     * [#7018](https://github.com/pmd/pmd/issues/7018): \[java] UnusedAssignment: false positive for an assignment in a condition operand that may be skipped
