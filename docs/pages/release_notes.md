@@ -90,6 +90,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
 * java-errorprone
+    * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass false positive with multiple top-level classes
     * [#5158](https://github.com/pmd/pmd/issues/5158): \[java] SingletonClassReturningNewInstance: false positive due to type cast
     * [#7137](https://github.com/pmd/pmd/issues/7137): \[java] InvalidLogMessageFormat: false positive for unresolved exception type (incomplete auxclasspath)
 * java-multithreading
