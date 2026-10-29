@@ -944,4 +944,158 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7213 Qualified FieldSource reference to a private field in the same class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import org.junit.jupiter.params.provider.FieldSource;
+
+class ExampleTest {
+    private static String[] arguments = {"foo"};
+
+    @FieldSource("demo.ExampleTest#arguments")
+    void test(String input) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 Qualified FieldSource reference in the default package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.params.provider.FieldSource;
+
+class ExampleTest {
+    private static String[] arguments = {"foo"};
+
+    @FieldSource("ExampleTest#arguments")
+    void test(String input) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 Qualified FieldSource references use the binary name of a nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import org.junit.jupiter.params.provider.FieldSource;
+
+class OuterTest {
+    private static String[] arguments = {"unused"};
+
+    static class InnerTest {
+        private static String[] arguments = {"foo"};
+
+        @FieldSource("demo.OuterTest$InnerTest#arguments")
+        void test(String input) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 A nested test can reference its outer class field by qualified name</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import org.junit.jupiter.params.provider.FieldSource;
+
+class OuterTest {
+    private static String[] arguments = {"foo"};
+
+    class InnerTest {
+        @FieldSource("demo.OuterTest#arguments")
+        void test(String input) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 FieldSource arrays and constant expressions retain the qualified owner</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import org.junit.jupiter.params.provider.FieldSource;
+
+class ExampleTest {
+    private static final String OWNER = "demo.ExampleTest#";
+    private static String[] first = {"foo"}, second = {"bar"};
+
+    @FieldSource({OWNER + "first", OWNER + "second"})
+    void test(String input) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 FieldSource references to other classes do not hide unused local fields</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,7,8</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import org.junit.jupiter.params.provider.FieldSource;
+
+class ExampleTest {
+    private static String[] external = {"unused"};
+    private static String[] sameFile = {"unused"};
+    private static String[] notQualified = {"unused"};
+
+    @FieldSource({"other.ExampleTest#external", "demo.OtherTest#sameFile", "ExampleTest#notQualified"})
+    void test(String input) { }
+}
+
+class OtherTest {
+    private static String[] sameFile = {"foo"};
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 A canonical nested class name does not match its binary name for FieldSource</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import org.junit.jupiter.params.provider.FieldSource;
+
+class OuterTest {
+    static class InnerTest {
+        private static String[] arguments = {"unused"};
+
+        @FieldSource("demo.OuterTest.InnerTest#arguments")
+        void test(String input) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 FieldSource does not accept method-style parentheses</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import org.junit.jupiter.params.provider.FieldSource;
+
+class ExampleTest {
+    private static String[] simple = {"unused"};
+    private static String[] qualified = {"unused"};
+
+    @FieldSource({"simple()", "demo.ExampleTest#qualified()"})
+    void test(String input) { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
