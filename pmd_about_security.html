@@ -2057,6 +2057,94 @@
   <p>For reporting security issues, see <a href="https://github.com/pmd/pmd/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 
 <h2 id="security-vulnerabilities">Security Vulnerabilities</h2>
+<h3 id="ghsa-jm8j-h474-h54h">GHSA-jm8j-h474-h54h</h3>
+<p><strong>Published:</strong> 2026-10-30</p>
+
+<p><strong>CVE:</strong> requested</p>
+
+<p><strong>Severity:</strong> Medium</p>
+
+<p><strong>Summary:</strong> Formula injection in CSV report format via unescaped quotes in file names</p>
+
+<p><strong>Versions Affected:</strong></p>
+<ul>
+  <li>pmd:pmd &gt;= 1.2</li>
+  <li>net.sourceforge.pmd:pmd-core &lt;= 7.28.0</li>
+</ul>
+
+<p><strong>Description:</strong></p>
+
+<p>When PMD generates a CSV report, a crafted source filename can break out of the quoted file cell and inject a
+spreadsheet formula. A user who opens the report in a spreadsheet application may have the formula evaluated.</p>
+
+<p><strong>Details:</strong></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">CSVRenderer.allColumns</code> defines the columns and fills the File column using <code class="language-plaintext highlighter-rouge">determineFileName(rv.getFileId())</code>
+(CSVRenderer.java:51).</li>
+  <li><code class="language-plaintext highlighter-rouge">CSVWriter.quote</code> wraps a field in double quotes but does not escape embedded double quotes (CSVWriter.java:72-76).</li>
+  <li>Neither class neutralizes values that begin with a formula trigger character (<code class="language-plaintext highlighter-rouge">=</code>, <code class="language-plaintext highlighter-rouge">+</code>, <code class="language-plaintext highlighter-rouge">-</code>, <code class="language-plaintext highlighter-rouge">@</code>).</li>
+</ul>
+
+<p>A source filename containing a quote and comma can therefore terminate the File field and introduce a new field
+beginning with <code class="language-plaintext highlighter-rouge">=</code>. The generated CSV contains a formula cell.</p>
+
+<p><strong>Poc:</strong></p>
+
+<p>Setup: PMD 7.28.0 binary distribution.</p>
+
+<ol>
+  <li>Create a Java source file:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt; 'pfx",=1+1,".java' &lt;&lt;'EOF'
+class Trigger {
+ void run() {
+     try {
+     } catch (Exception ignored) {
+     }
+ }
+}
+EOF
+</code></pre></div>    </div>
+  </li>
+  <li>Run PMD with the CSV renderer:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check \
+  -d . \
+  -R category/java/errorprone.xml \
+  -f csv \
+  -r report.csv \
+  --no-cache
+</code></pre></div>    </div>
+  </li>
+  <li>Inspect the created report:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"Problem","Package","File","Priority","Line","Description","Rule set","Rule"
+"1","","./pfx",=1+1,".java","3","4","Avoid catching Exception in try-catch block","Error Prone","AvoidCatchingGenericException"
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>A CSV parser reads <code class="language-plaintext highlighter-rouge">=1+1</code> as its own cell; the row has now 10 fields instead of 8.</p>
+
+<p><strong>Impact:</strong></p>
+
+<p>CWE-1236: Improper Neutralization of Formula Elements in a CSV File</p>
+
+<p>An attacker who can contribute source files to a project analyzed by PMD can place a formula in the generated
+CSV report. If a user opens the report in a spreadsheet application, the formula may be evaluated. This
+reproduction demonstrates formula injection; it does not demonstrate data theft or code execution.</p>
+
+<p>The other fields are affected as well: if the attacker controls the executed ruleset, a rule name,
+ruleset name or rule message can inject a formula, either by the same quote breakout or simply by starting with <code class="language-plaintext highlighter-rouge">=</code>.</p>
+
+<p><strong>Fixes</strong></p>
+<ul>
+  <li>See <a href="https://github.com/pmd/pmd/issues/7262">#7262</a>: [core] Fix missing escaping in CSV renderers</li>
+</ul>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-jm8j-h474-h54h">GHSA-jm8j-h474-h54h</a> - Formula injection in CSV report format via unescaped quotes in file names</li>
+</ul>
+
 <h3 id="ghsa-wv72-2ccf-28gj">GHSA-wv72-2ccf-28gj</h3>
 <p><strong>Published:</strong> 2026-10-30</p>
 

@@ -22,7 +22,6 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
-
 #### Security fixes
 *   [GHSA-wj6q-xw9m-26p6](https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6):
     Arbitrary file disclosure in CPD via symlinks in analyzed sources.  
@@ -82,6 +81,15 @@ This is a minor release.
     analyze Visualforce code from untrusted sources, such as pull requests.  
     Affected versions: `net.sourceforge.pmd:pmd-visualforce` >= 6.30.0, <= 7.28.0  
     Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
+*   [GHSA-jm8j-h474-h54h](https://github.com/pmd/pmd/security/advisories/GHSA-jm8j-h474-h54h):
+    Formula injection in CSV report format via unescaped quotes in file names.  
+    The CSV renderer neither escaped embedded double quotes nor neutralized values starting with
+    formula trigger characters (`=`, `+`, `-`, `@`). This let a crafted source filename, or a rule name, ruleset name
+    or rule message from an attacker-controlled ruleset, inject a formula into the CSV report, which a spreadsheet
+    application could evaluate when the report is opened.  
+    Affected versions: `pmd:pmd` >= 1.2, `net.sourceforge.pmd:pmd-core` <= 7.28.0  
+    Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
+    Independently reported by [Hama1cco](https://github.com/Hama1cco) (@Hama1cco).
 
 ### 🌟️ New and Changed Rules
 #### New Rules

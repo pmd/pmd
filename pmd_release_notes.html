@@ -2062,7 +2062,6 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-
 <h4 id="security-fixes">Security fixes</h4>
 <ul>
   <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</a>:
@@ -2123,6 +2122,15 @@ therefore make PMD send a request to an attacker-chosen URL during analysis. Thi
 analyze Visualforce code from untrusted sources, such as pull requests.<br />
 Affected versions: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-visualforce</code> &gt;= 6.30.0, &lt;= 7.28.0<br />
 Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-jm8j-h474-h54h">GHSA-jm8j-h474-h54h</a>:
+Formula injection in CSV report format via unescaped quotes in file names.<br />
+The CSV renderer neither escaped embedded double quotes nor neutralized values starting with
+formula trigger characters (<code class="language-plaintext highlighter-rouge">=</code>, <code class="language-plaintext highlighter-rouge">+</code>, <code class="language-plaintext highlighter-rouge">-</code>, <code class="language-plaintext highlighter-rouge">@</code>). This let a crafted source filename, or a rule name, ruleset name
+or rule message from an attacker-controlled ruleset, inject a formula into the CSV report, which a spreadsheet
+application could evaluate when the report is opened.<br />
+Affected versions: <code class="language-plaintext highlighter-rouge">pmd:pmd</code> &gt;= 1.2, <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-core</code> &lt;= 7.28.0<br />
+Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).
+Independently reported by <a href="https://github.com/Hama1cco">Hama1cco</a> (@Hama1cco).</li>
 </ul>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
