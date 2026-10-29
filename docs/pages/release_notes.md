@@ -26,6 +26,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
+*   The new Java rule {% rule java/bestpractices/ReplaceJavaUtilVector %} reports usages of `java.util.Vector`,
+    including subclasses such as `Stack`, and suggests modern alternatives when thread safety is not required.
+    It recommends `ArrayList` for `Vector` and `Deque` with an implementation such as `ArrayDeque` for `Stack`,
+    and reports a declaration and its constructor call only once.
 *   The new Java rule {% rule java/codestyle/LocalVariableDeclarationShouldBeAtStartOfBlock %} enforces a code style
     where all local variables are declared together at the start of their block, without initialization.
     Optionally, the declarations can be required to be sorted by name or by type and name
@@ -54,6 +58,11 @@ This is a {{ site.pmd.release_type }} release.
     to use `var` when the explicit type name would be longer than a given minimum length configured with 
     this property.
 
+#### Deprecated Rules
+*   The Java rules {% rule java/bestpractices/ReplaceVectorWithList %} and
+    {% rule java/performance/UseArrayListInsteadOfVector %} are deprecated aliases of
+    {% rule java/bestpractices/ReplaceJavaUtilVector %}. Update rule references to use the new name.
+
 ### 🐛️ Fixed Issues
 * apex-performance
     * [#5082](https://github.com/pmd/pmd/issues/5082): \[apex] EagerlyLoadedDescribeSObjectResult: false positive with fully qualified SObjectDescribeOptions/FieldDescribeOptions
@@ -79,6 +88,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7151](https://github.com/pmd/pmd/issues/7151): \[java] Unqualified method call resolves to an enclosing class method that the inner class hides
 * java-bestpractices
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment: false positive when using assert
+    * [#6546](https://github.com/pmd/pmd/issues/6546): \[java] Consolidate Vector replacement rules as ReplaceJavaUtilVector
     * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
     * [#7018](https://github.com/pmd/pmd/issues/7018): \[java] UnusedAssignment: false positive for an assignment in a condition operand that may be skipped
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
