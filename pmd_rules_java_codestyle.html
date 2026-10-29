@@ -5526,9 +5526,13 @@ using <code class="language-plaintext highlighter-rouge">new</code>. Instead, on
 <p>E.g. <code class="language-plaintext highlighter-rouge">int[] x = new int[] { 1, 2, 3 };</code> can be written as <code class="language-plaintext highlighter-rouge">int[] x = { 1, 2, 3 };</code>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclarator</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nf">VariableDeclarator</span><span class="w">
+    </span><span class="c">(: Skip when a type argument is not an unbounded wildcard. The short form
+       would be a generic array creation error. List&lt;?&gt;[] is still reported.
+       (ArrayType|.) covers both standard and C-style array dimensions. :)</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="err">*/</span><span class="p">(</span><span class="nt">ArrayType</span><span class="p">|.)</span><span class="o">/</span><span class="nt">ClassType</span><span class="o">/</span><span class="nt">TypeArguments</span><span class="p">[</span><span class="nt">ClassType</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nt">WildcardType</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">])]</span><span class="w">
     </span><span class="p">[</span><span class="nt">VariableId</span><span class="p">[</span><span class="na">@TypeInferred</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@ArrayType</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]]</span><span class="w">
-    </span><span class="p">[</span><span class="nt">ArrayAllocation</span><span class="o">/</span><span class="nt">ArrayInitializer</span><span class="p">]</span><span class="w">
+    </span><span class="o">/</span><span class="nt">ArrayAllocation</span><span class="p">[</span><span class="nt">ArrayInitializer</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>

@@ -1876,11 +1876,19 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "ReplaceJavaUtilVector (Java, Best Practices)",
+  "tags": "",
+  "keywords": "Replace Java Util Vector",
+  "url": "pmd_rules_java_bestpractices.html#replacejavautilvector",
+  "summary": "Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required...."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
   "title": "ReplaceVectorWithList (Java, Best Practices)",
   "tags": "",
   "keywords": "Replace Vector With List",
   "url": "pmd_rules_java_bestpractices.html#replacevectorwithlist",
-  "summary": "Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required...."
+  "summary": "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> This rule..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
@@ -4096,7 +4104,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Use Array List Instead Of Vector",
   "url": "pmd_rules_java_performance.html#usearraylistinsteadofvector",
-  "summary": "ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required...."
+  "summary": "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span> The rule..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/performance.md",

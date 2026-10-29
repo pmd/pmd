@@ -2066,6 +2066,10 @@
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
 <h4 id="new-rules">New Rules</h4>
 <ul>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#replacejavautilvector"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilVector</code></a> reports usages of <code class="language-plaintext highlighter-rouge">java.util.Vector</code>,
+including subclasses such as <code class="language-plaintext highlighter-rouge">Stack</code>, and suggests modern alternatives when thread safety is not required.
+It recommends <code class="language-plaintext highlighter-rouge">ArrayList</code> for <code class="language-plaintext highlighter-rouge">Vector</code> and <code class="language-plaintext highlighter-rouge">Deque</code> with an implementation such as <code class="language-plaintext highlighter-rouge">ArrayDeque</code> for <code class="language-plaintext highlighter-rouge">Stack</code>,
+and reports a declaration and its constructor call only once.</li>
   <li>The new Java rule <a href="pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock"><code class="language-plaintext highlighter-rouge">LocalVariableDeclarationShouldBeAtStartOfBlock</code></a> enforces a code style
 where all local variables are declared together at the start of their block, without initialization.
 Optionally, the declarations can be required to be sorted by name or by type and name
@@ -2095,6 +2099,13 @@ is the argument of a comparison, or remove them when it is already the receiver.
   <li>The Java rule <a href="pmd_rules_java_codestyle.html#useexplicittypes"><code class="language-plaintext highlighter-rouge">UseExplicitTypes</code></a> has a new property <code class="language-plaintext highlighter-rouge">allowLongTypeNames</code>. It allows
 to use <code class="language-plaintext highlighter-rouge">var</code> when the explicit type name would be longer than a given minimum length configured with 
 this property.</li>
+</ul>
+
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+<ul>
+  <li>The Java rules <a href="pmd_rules_java_bestpractices.html#replacevectorwithlist"><code class="language-plaintext highlighter-rouge">ReplaceVectorWithList</code></a> and
+<a href="pmd_rules_java_performance.html#usearraylistinsteadofvector"><code class="language-plaintext highlighter-rouge">UseArrayListInsteadOfVector</code></a> are deprecated aliases of
+<a href="pmd_rules_java_bestpractices.html#replacejavautilvector"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilVector</code></a>. Update rule references to use the new name.</li>
 </ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
@@ -2139,6 +2150,7 @@ this property.</li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5159">#5159</a>: [java] UnusedAssignment: false positive when using assert</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6546">#6546</a>: [java] Consolidate Vector replacement rules as ReplaceJavaUtilVector</li>
       <li><a href="https://github.com/pmd/pmd/issues/6984">#6984</a>: [java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases</li>
       <li><a href="https://github.com/pmd/pmd/issues/7018">#7018</a>: [java] UnusedAssignment: false positive for an assignment in a condition operand that may be skipped</li>
       <li><a href="https://github.com/pmd/pmd/issues/7063">#7063</a>: [java] ResultSet.next() ? x : y fires CheckResultSet</li>
@@ -2147,6 +2159,7 @@ this property.</li>
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4576">#4576</a>: [java] UseShortArrayInitializer: False positive with arrays of parametrized types (generic array creation)</li>
       <li><a href="https://github.com/pmd/pmd/issues/6409">#6409</a>: [java] UnnecessaryCast: False positive for anonymous class in Stream.map() with toList()</li>
       <li><a href="https://github.com/pmd/pmd/issues/6882">#6882</a>: [java] New Rule: Enforce local variable declarations to be at the start of a block</li>
       <li><a href="https://github.com/pmd/pmd/issues/6903">#6903</a>: [java] Enhance UseExplicitTypes to allow verbose long explicit types</li>

@@ -2819,23 +2819,35 @@ if-else statement to increase code readability.</p>
 
 <h2 id="usearraylistinsteadofvector">UseArrayListInsteadOfVector</h2>
 
-<p><strong>Since:</strong> PMD 3.0</p>
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>The rule has been moved to another ruleset. Use instead: <a href="pmd_rules_java_bestpractices.html#replacejavautilvector">ReplaceJavaUtilVector</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p><strong>Since:</strong> PMD 7.29.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.</p>
+<p>Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
+For Stack, which extends Vector, consider java.util.Deque and an implementation such as java.util.ArrayDeque instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.util.Vector'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'Vector'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Vector'</span><span class="p">)][</span><span class="w">
+  </span><span class="ow">not</span><span class="p">(</span><span class="w">
+    </span><span class="kn">parent::</span><span class="nt">ConstructorCall</span><span class="o">/</span><span class="kn">parent::</span><span class="nt">VariableDeclarator</span><span class="o">/</span><span class="kn">preceding-sibling::</span><span class="nt">ClassType</span><span class="p">[</span><span class="w">
+      </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Vector'</span><span class="p">)</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">)</span><span class="w">
+</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleTest</span> <span class="kd">extends</span> <span class="nc">TestCase</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testX</span><span class="o">()</span> <span class="o">{</span>
-    <span class="nc">Collection</span> <span class="n">c1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Vector</span><span class="o">();</span>
-    <span class="nc">Collection</span> <span class="n">c2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>    <span class="c1">// achieves the same with much better performance</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Vector</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Vector</span> <span class="n">v</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Vector</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>

@@ -13,6 +13,7 @@ This is a minor release.
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
+    * [Deprecated Rules](#deprecated-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
 * [✨️ Merged pull requests](#merged-pull-requests)
@@ -23,6 +24,10 @@ This is a minor release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
+*   The new Java rule [`ReplaceJavaUtilVector`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_bestpractices.html#replacejavautilvector) reports usages of `java.util.Vector`,
+    including subclasses such as `Stack`, and suggests modern alternatives when thread safety is not required.
+    It recommends `ArrayList` for `Vector` and `Deque` with an implementation such as `ArrayDeque` for `Stack`,
+    and reports a declaration and its constructor call only once.
 *   The new Java rule [`LocalVariableDeclarationShouldBeAtStartOfBlock`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock) enforces a code style
     where all local variables are declared together at the start of their block, without initialization.
     Optionally, the declarations can be required to be sorted by name or by type and name
@@ -51,6 +56,11 @@ This is a minor release.
     to use `var` when the explicit type name would be longer than a given minimum length configured with 
     this property.
 
+#### Deprecated Rules
+*   The Java rules [`ReplaceVectorWithList`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_bestpractices.html#replacevectorwithlist) and
+    [`UseArrayListInsteadOfVector`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_performance.html#usearraylistinsteadofvector) are deprecated aliases of
+    [`ReplaceJavaUtilVector`](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_rules_java_bestpractices.html#replacejavautilvector). Update rule references to use the new name.
+
 ### 🐛️ Fixed Issues
 * apex-performance
     * [#5082](https://github.com/pmd/pmd/issues/5082): \[apex] EagerlyLoadedDescribeSObjectResult: false positive with fully qualified SObjectDescribeOptions/FieldDescribeOptions
@@ -76,11 +86,13 @@ This is a minor release.
     * [#7151](https://github.com/pmd/pmd/issues/7151): \[java] Unqualified method call resolves to an enclosing class method that the inner class hides
 * java-bestpractices
     * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment: false positive when using assert
+    * [#6546](https://github.com/pmd/pmd/issues/6546): \[java] Consolidate Vector replacement rules as ReplaceJavaUtilVector
     * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
     * [#7018](https://github.com/pmd/pmd/issues/7018): \[java] UnusedAssignment: false positive for an assignment in a condition operand that may be skipped
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
     * [#7119](https://github.com/pmd/pmd/issues/7119): \[java] SimplifiableTestAssertion: Various false negatives
 * java-codestyle
+    * [#4576](https://github.com/pmd/pmd/issues/4576): \[java] UseShortArrayInitializer: False positive with arrays of parametrized types (generic array creation)
     * [#6409](https://github.com/pmd/pmd/issues/6409): \[java] UnnecessaryCast: False positive for anonymous class in Stream.map() with toList()
     * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
