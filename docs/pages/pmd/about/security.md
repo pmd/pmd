@@ -105,7 +105,7 @@ This is the assurance/CI threat model: the author of the scanned source is a sep
 the runner that holds the secrets. Scanning untrusted source is the intended use of the tool.
 
 **Fixes:**
-*   See [#PR TODO](https://github.com/pmd/pmd/pull/TODO) \[core] Don't follow symlinks in FileCollector
+*   See [#7259](https://github.com/pmd/pmd/pull/7259) \[core] Don't follow symlinks in FileCollector
 
 **References:**
 *   [GHSA-wj6q-xw9m-26p6](https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6)
