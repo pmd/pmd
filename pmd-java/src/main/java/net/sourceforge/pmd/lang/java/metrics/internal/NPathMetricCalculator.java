@@ -67,9 +67,27 @@ public final class NPathMetricCalculator {
         return e.acceptVisitor(CfExpressionVisitor.INSTANCE, new CfPoint(point));
     }
 
+    /**
+     * Control flow of an expression whose value does not decide where the
+     * execution goes next, e.g. a variable initializer. Short-circuit
+     * operators like {@code a && b} are not decisions there.
+     */
+    private static DecisionPoint getControlFlowInValue(ASTExpression e, CfPoint point) {
+        return e.acceptVisitor(CfExpressionVisitor.VALUE_INSTANCE, new CfPoint(point));
+    }
+
     static final class CfExpressionVisitor extends JavaVisitorBase<CfPoint, DecisionPoint> {
 
-        static final NPathMetricCalculator.CfExpressionVisitor INSTANCE = new CfExpressionVisitor();
+        /** Counts short-circuit operators. Used for conditions and returned values. */
+        static final NPathMetricCalculator.CfExpressionVisitor INSTANCE = new CfExpressionVisitor(true);
+        /** Does not count short-circuit operators, only conditional expressions. */
+        static final NPathMetricCalculator.CfExpressionVisitor VALUE_INSTANCE = new CfExpressionVisitor(false);
+
+        private final boolean countShortCircuit;
+
+        private CfExpressionVisitor(boolean countShortCircuit) {
+            this.countShortCircuit = countShortCircuit;
+        }
 
         @Override
         public DecisionPoint visitJavaNode(JavaNode node, CfPoint point) {
@@ -91,7 +109,8 @@ public final class NPathMetricCalculator {
 
         @Override
         public DecisionPoint visit(ASTConditionalExpression node, CfPoint point) {
-            DecisionPoint condition = node.getCondition().acceptVisitor(this, new CfPoint(point));
+            // the condition always decides the control flow, even in a value context
+            DecisionPoint condition = node.getCondition().acceptVisitor(INSTANCE, new CfPoint(point));
             DecisionPoint thenState = node.getThenBranch().acceptVisitor(this, new CfPoint(condition.truePoint()));
             DecisionPoint elseState = node.getElseBranch().acceptVisitor(this, new CfPoint(condition.falsePoint()));
             return new BooleanDecisionPoint(
@@ -113,7 +132,7 @@ public final class NPathMetricCalculator {
 
         @Override
         public DecisionPoint visit(ASTInfixExpression node, CfPoint point) {
-            if (node.getOperator() == BinaryOp.CONDITIONAL_AND) {
+            if (countShortCircuit && node.getOperator() == BinaryOp.CONDITIONAL_AND) {
                 // a && b
                 // b is only visited if a is true
                 DecisionPoint leftState = node.getLeftOperand().acceptVisitor(this, point);
@@ -124,7 +143,7 @@ public final class NPathMetricCalculator {
                         rightState.truePoint(),
                         rightState.falsePoint().connectTo(leftState.falsePoint())
                 );
-            } else if (node.getOperator() == BinaryOp.CONDITIONAL_OR) {
+            } else if (countShortCircuit && node.getOperator() == BinaryOp.CONDITIONAL_OR) {
                 // a || b
                 // b is only visited if a is false
                 DecisionPoint leftState = node.getLeftOperand().acceptVisitor(this, point);
@@ -369,8 +388,23 @@ public final class NPathMetricCalculator {
 
         @Override
         public CfVisitState visitExpression(ASTExpression node, CfVisitState state) {
-            CfPoint endPoint = getControlFlowInCondition(node, state.currentProgramPoint).endPaths();
-            return state.withPoint(endPoint);
+            DecisionPoint flow = isResultOfStatement(node)
+                    ? getControlFlowInCondition(node, state.currentProgramPoint)
+                    : getControlFlowInValue(node, state.currentProgramPoint);
+            return state.withPoint(flow.endPaths());
+        }
+
+        /**
+         * Whether the expression gives the result of a return, throw, yield
+         * or of the arm of a switch expression. The short-circuit operators
+         * in those count, unlike the ones in e.g. a variable initializer.
+         */
+        private static boolean isResultOfStatement(ASTExpression expr) {
+            JavaNode parent = expr.getParent();
+            return parent instanceof ASTReturnStatement
+                    || parent instanceof ASTThrowStatement
+                    || parent instanceof ASTYieldStatement
+                    || parent instanceof ASTSwitchArrowBranch && parent.getParent() instanceof ASTSwitchExpression;
         }
 
         private CfVisitState acceptOpt(@Nullable JavaNode node, CfVisitState state) {
