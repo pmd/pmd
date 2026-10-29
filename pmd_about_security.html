@@ -2057,6 +2057,121 @@
   <p>For reporting security issues, see <a href="https://github.com/pmd/pmd/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 
 <h2 id="security-vulnerabilities">Security Vulnerabilities</h2>
+<h3 id="ghsa-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</h3>
+<p><strong>Published:</strong> 2026-10-30</p>
+
+<p><strong>CVE:</strong> requested</p>
+
+<p><strong>Severity:</strong> Medium</p>
+
+<p><strong>Summary:</strong> Arbitrary file disclosure in CPD via symlinks in analyzed sources</p>
+
+<p><strong>Versions Affected:</strong></p>
+<ul>
+  <li>net.sourceforge.pmd:pmd-core 7.28.0 and earlier, starting with 6.54.0</li>
+</ul>
+
+<p><strong>Description:</strong>
+CPD is the copy-paste detector shipped with PMD. It walks a directory of source files, tokenizes them, and reports
+duplicated regions along with the duplicated source text. The directory walk follows symbolic links, and the file
+reader applies no check that a resolved file stays inside the scanned tree. An attacker who controls the files in a
+scanned project (a pull request analyzed in CI, a delivered source package under assurance review) commits two symlinks
+that point at the same file outside the project. CPD reads the link target, detects the two copies as a 100%
+duplication, and writes the target file’s full contents into the report. When the report is published as a CI artifact
+the attacker reads it back.</p>
+
+<p><strong>Details:</strong></p>
+
+<ul>
+  <li>File collection walks directories with symlink following enabled:
+<code class="language-plaintext highlighter-rouge">Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), maxDepth, ...)</code>
+in <code class="language-plaintext highlighter-rouge">FileCollector.addDirectory</code>` (FileCollector.java:281).</li>
+  <li>The visitor adds any resolved regular file with no containment check. <code class="language-plaintext highlighter-rouge">addFile</code> only tests <code class="language-plaintext highlighter-rouge">Files.isRegularFile</code>,
+which itself follows the link, so a link to <code class="language-plaintext highlighter-rouge">/etc/passwd</code> is accepted as a source file.</li>
+  <li>CPD’s renderers write the duplicated source verbatim. <code class="language-plaintext highlighter-rouge">SimpleRenderer.renderOn</code> calls
+<code class="language-plaintext highlighter-rouge">report.getSourceCodeSlice(...)</code> and <code class="language-plaintext highlighter-rouge">source.writeFully(writer)</code> (SimpleRenderer.java).
+The XML and Markdown CPD renderers do the same through a CDATA / fenced block.</li>
+  <li>Two links to one target guarantee a full-length duplication, so the entire target file is emitted rather than a
+fragment.</li>
+</ul>
+
+<p><strong>PoC:</strong></p>
+
+<p>Setup: PMD 7.27.0 binary distribution (pmd-dist-7.27.0-bin.zip). No account or privilege needed. The attacker only
+needs to place files in a directory that CPD is later run against, which is the normal position of a PR author or a
+package submitter.</p>
+
+<ol>
+  <li>Stage a secret outside the project and two symlinks inside it</li>
+</ol>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> project OUTSIDE_THE_REPO
+<span class="nb">printf</span> <span class="s1">'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;\nDATABASE_PASSWORD = super_secret_prod_password_12345 ;\nGITHUB_TOKEN = ghp_fake_token_for_poc_000 ;\nSTRIPE_KEY = sk_live_fake_key_for_poc_000 ;\nMORE = padding to exceed the token threshold ;\n'</span> <span class="o">&gt;</span> OUTSIDE_THE_REPO/ci_secret.env
+<span class="nb">ln</span> <span class="nt">-s</span> ../OUTSIDE_THE_REPO/ci_secret.env project/copy_a.java
+<span class="nb">ln</span> <span class="nt">-s</span> ../OUTSIDE_THE_REPO/ci_secret.env project/copy_b.java
+</code></pre></div></div>
+
+<p>The project directory contains only two symlinks. The secret lives outside it.</p>
+
+<ol>
+  <li>Run CPD the way a CI job does</li>
+</ol>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd cpd <span class="nt">--minimum-tokens</span> 10 <span class="nt">--language</span> java <span class="nt">--dir</span> project <span class="nt">--format</span> text
+</code></pre></div></div>
+
+<ol>
+  <li>Read the target file’s contents back out of the report</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Found a 5 line (15 tokens) duplication in the following files:
+Starting at line 1 of .../project/copy_a.java
+Starting at line 1 of .../project/copy_b.java
+
+AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;
+DATABASE_PASSWORD = super_secret_prod_password_12345 ;
+GITHUB_TOKEN = ghp_fake_token_for_poc_000 ;
+STRIPE_KEY = sk_live_fake_key_for_poc_000 ;
+MORE = padding to exceed the token threshold ;
+</code></pre></div></div>
+
+<p>The contents of <code class="language-plaintext highlighter-rouge">OUTSIDE_THE_REPO/ci_secret.env</code>, a file that was never inside the scanned directory, appear verbatim
+in the report.</p>
+
+<p><strong>Expected:</strong> CPD analyzes files within the directory it is given and does not read or disclose files outside it based
+on symlinks committed by the analyzed project.</p>
+
+<p><strong>Actual:</strong> CPD follows committed symlinks out of the tree, reads the target, and writes its contents into the report.</p>
+
+<p><strong>Impact:</strong></p>
+
+<p>The core primitive is an arbitrary local-file read on the machine running CPD, driven entirely by files an untrusted
+party placed in the scanned project, with the file contents exfiltrated through the report artifact.</p>
+
+<p>Demonstrated:</p>
+
+<ol>
+  <li>Read of a file outside the scanned tree. The target contents appear in the default text report.</li>
+  <li>Exfiltration channel. CI pipelines routinely publish the CPD report as a build artifact or PR comment, which
+returns the leaked contents to the PR author.</li>
+  <li>Reach. Any absolute path the runner user can read is a valid target: <code class="language-plaintext highlighter-rouge">/etc/passwd</code>, <code class="language-plaintext highlighter-rouge">~/.aws/credentials</code>,
+<code class="language-plaintext highlighter-rouge">~/.ssh/id_*</code>, the CI token file, <code class="language-plaintext highlighter-rouge">.git-credentials</code>, or the checkout of an adjacent private repository on the
+same runner.</li>
+</ol>
+
+<p>This is the assurance/CI threat model: the author of the scanned source is a separate, unprivileged principal from
+the runner that holds the secrets. Scanning untrusted source is the intended use of the tool.</p>
+
+<p><strong>Fixes:</strong></p>
+<ul>
+  <li>See <a href="https://github.com/pmd/pmd/pull/7259">#7259</a> [core] Don’t follow symlinks in FileCollector</li>
+</ul>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</a></li>
+</ul>
+
 <h3 id="cve-2026-28338">CVE-2026-28338</h3>
 <p><strong>Published:</strong> 2026-02-27</p>
 
@@ -2300,7 +2415,7 @@ because of a 2017-09-15 change.)</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2026 (7.23.0)<br /> Site last generated: Oct 29, 2026 <br />
+            October 2026 (7.29.0)<br /> Site last generated: Oct 29, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

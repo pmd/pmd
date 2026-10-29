@@ -10,6 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Security fixes](#security-fixes)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
@@ -21,6 +22,21 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+
+#### Security fixes
+*   [GHSA-wj6q-xw9m-26p6](https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6):
+    Arbitrary file disclosure in CPD via symlinks in analyzed sources.  
+    When collecting files, CPD followed symbolic links, even if their targets were outside the scanned
+    directory. This allowed reading any file accessible to the user running CPD. If a CI/CD pipeline
+    runs CPD on untrusted source code (e.g. a pull request from an external contributor), an attacker
+    could commit two symlinks pointing to the same file outside the project. CPD detected them as
+    duplicates and wrote the full content of the target file into the report. If the report was
+    published, e.g. as a CI artifact, the attacker could read it.  
+    With this fix, neither PMD nor CPD follows symbolic links anymore when collecting files to analyze.  
+    Affected versions: PMD >= 6.54.0 and <= 7.28.0. If you run CPD on untrusted source code,
+    it is recommended to upgrade PMD.  
+    Reported by [Dan](https://github.com/7alen7) (@7alen7).
+    Independently reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
