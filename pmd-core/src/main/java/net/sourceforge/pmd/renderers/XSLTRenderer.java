@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * Renderer to XML format with a XSL Transformation applied.
@@ -107,8 +108,7 @@ public class XSLTRenderer extends XMLRenderer {
      */
     private void prepareTransformer(InputStream xslt) {
         try {
-            // Get a TransformerFactory object
-            TransformerFactory factory = TransformerFactory.newInstance();
+            TransformerFactory factory = XmlUtil.newTransformerFactory();
             StreamSource src = new StreamSource(xslt);
             // Get an XSL Transformer object
             this.transformer = factory.newTransformer(src);
@@ -140,7 +140,9 @@ public class XSLTRenderer extends XMLRenderer {
 
     private Document getDocument(String xml) {
         try {
-            DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilderFactory dbf = XmlUtil.newDocumentBuilderFactory();
+            dbf.setNamespaceAware(true);
+            DocumentBuilder parser = dbf.newDocumentBuilder();
             return parser.parse(new InputSource(new StringReader(xml)));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);

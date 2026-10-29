@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * @author Philippe T'Seyen - original implementation
@@ -81,7 +82,7 @@ public final class XMLRenderer implements CPDReportRenderer {
 
     private Document createDocument() {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = XmlUtil.newDocumentBuilderFactory();
             DocumentBuilder parser = factory.newDocumentBuilder();
             return parser.newDocument();
         } catch (ParserConfigurationException e) {
@@ -91,7 +92,7 @@ public final class XMLRenderer implements CPDReportRenderer {
 
     private void dumpDocToWriter(Document doc, Writer writer) {
         try {
-            TransformerFactory tf = TransformerFactory.newInstance();
+            TransformerFactory tf = XmlUtil.newTransformerFactory();
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -112,13 +113,15 @@ public final class XMLRenderer implements CPDReportRenderer {
     @Override
     public void render(final CPDReport report, final Writer writer) throws IOException {
         final Document doc = createDocument();
+        doc.setXmlStandalone(true);
         final Element root = createElement(doc, "pmd-cpd");
 
         if (newFormat) {
             root.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", NAMESPACE_URI + " " + NAMESPACE_LOCATION);
-            root.setAttributeNS(NAMESPACE_URI, "version", SCHEMA_VERSION);
-            root.setAttributeNS(NAMESPACE_URI, "pmdVersion", PMDVersion.VERSION);
-            root.setAttributeNS(NAMESPACE_URI, "timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            // note: attributes as unqualified (no namespace) as per schema default property attributeFormDefault="unqualified"
+            root.setAttribute("version", SCHEMA_VERSION);
+            root.setAttribute("pmdVersion", PMDVersion.VERSION);
+            root.setAttribute("timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         }
 
         final Map<FileId, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
@@ -141,8 +144,8 @@ public final class XMLRenderer implements CPDReportRenderer {
         if (newFormat) {
             for (Report.ProcessingError error : report.getProcessingErrors()) {
                 Element errorElt = doc.createElementNS(NAMESPACE_URI, "error");
-                errorElt.setAttributeNS(NAMESPACE_URI, "filename", report.getDisplayName(error.getFileId()));
-                errorElt.setAttributeNS(NAMESPACE_URI, "msg", error.getMsg());
+                errorElt.setAttribute("filename", report.getDisplayName(error.getFileId()));
+                errorElt.setAttribute("msg", error.getMsg());
                 errorElt.setTextContent(error.getDetail());
                 root.appendChild(errorElt);
             }
@@ -172,13 +175,13 @@ public final class XMLRenderer implements CPDReportRenderer {
     private void addCodeSnippet(Document doc, Element duplication, Match match, CPDReport report) {
         Chars codeSnippet = report.getSourceCodeSlice(match.getFirstMark());
         if (codeSnippet != null) {
-            // the code snippet has normalized line endings
-            String platformSpecific = codeSnippet.toString().replace("\n", System.lineSeparator());
+            // the code snippet has normalized line endings, the XML serializer will replace them with
+            // platform-specific line endings automatically.
             Element codefragment = createElement(doc, "codefragment");
             // only remove invalid characters, escaping is not necessary in CDATA.
             // if the string contains the end marker of a CDATA section, then the DOM impl will
             // create two cdata sections automatically.
-            codefragment.appendChild(doc.createCDATASection(StringUtil.removedInvalidXml10Characters(platformSpecific)));
+            codefragment.appendChild(doc.createCDATASection(StringUtil.removedInvalidXml10Characters(codeSnippet.toString())));
             duplication.appendChild(codefragment);
         }
     }
@@ -198,10 +201,6 @@ public final class XMLRenderer implements CPDReportRenderer {
     }
 
     private void setAttribute(Element element, String name, String value) {
-        if (newFormat) {
-            element.setAttributeNS(NAMESPACE_URI, name, value);
-        } else {
-            element.setAttribute(name, value);
-        }
+        element.setAttribute(name, value);
     }
 }

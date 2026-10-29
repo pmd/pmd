@@ -18,7 +18,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -37,6 +36,7 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 class XMLRendererTest extends AbstractRendererTest {
 
@@ -105,7 +105,7 @@ class XMLRendererTest extends AbstractRendererTest {
         Report report = Report.buildReport(it -> it.onRuleViolation(createRuleViolation(msg)));
         String actual = renderTempFile(renderer, report, charset);
         assertTrue(actual.contains(shouldContain));
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
                 .parse(new InputSource(new StringReader(actual)));
         NodeList violations = doc.getElementsByTagName("violation");
         assertEquals(1, violations.getLength());
@@ -155,7 +155,7 @@ class XMLRendererTest extends AbstractRendererTest {
             String actual = renderTempFile(renderer, report, StandardCharsets.UTF_8);
             assertTrue(actual.contains(specialChars));
             assertFalse(actual.contains(formFeed));
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
                     .parse(new InputSource(new StringReader(actual)));
             NodeList violations = doc.getElementsByTagName("violation");
             assertEquals(1, violations.getLength());
@@ -172,7 +172,7 @@ class XMLRendererTest extends AbstractRendererTest {
                 FileId.fromPathLikeString("dummy.txt"));
         String result = renderReport(getRenderer(), it -> it.onError(processingError), StandardCharsets.UTF_8);
 
-        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder documentBuilder = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder();
         assertDoesNotThrow(() -> documentBuilder.parse(new InputSource(new StringReader(result))));
     }
 

