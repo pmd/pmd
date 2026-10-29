@@ -2078,6 +2078,28 @@ Affected versions: PMD &gt;= 6.54.0 and &lt;= 7.28.0. If you run CPD on untruste
 it is recommended to upgrade PMD.<br />
 Reported by <a href="https://github.com/7alen7">Dan</a> (@7alen7).
 Independently reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-5x5v-644m-q2qc">GHSA-5x5v-644m-q2qc</a>:
+XSS via externalInfoUrl in HTML report formats.<br />
+The <code class="language-plaintext highlighter-rouge">html</code> and <code class="language-plaintext highlighter-rouge">summaryhtml</code> renderers inserted a rule’s <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> into generated reports
+without escaping or URL-scheme validation. With a crafted ruleset, this allowed injected markup that
+runs when the report is opened (with <code class="language-plaintext highlighter-rouge">--show-suppressed</code>), or <code class="language-plaintext highlighter-rouge">javascript:</code> links that run when clicked.
+This only affects setups where PMD loads an untrusted ruleset and the resulting HTML report is viewed
+in a browser.<br />
+Affected versions: PMD 7.28.0 and earlier. If you use the html or summaryhtml report formats, it is
+recommended to upgrade PMD.<br />
+Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</a>:
+XSS via rule name in summaryhtml report format.<br />
+The <code class="language-plaintext highlighter-rouge">summaryhtml</code> renderer wrote rule names into the report without HTML escaping. A ruleset with a
+crafted rule name could inject JavaScript that runs in the browser of anyone who opens the report.
+This affects setups that use <code class="language-plaintext highlighter-rouge">--format summaryhtml</code> together with a ruleset from an untrusted source,
+e.g. CI/CD pipelines that use a ruleset from a pull request by an external contributor.
+If the report is served from a web host (e.g. a CI dashboard), the script runs in that origin.
+This is a follow-up to CVE-2026-28338, whose fix did not cover the summaryhtml renderer.<br />
+Affected versions: PMD 7.28.0 and earlier. If you use the summaryhtml report format, it is
+recommended to upgrade PMD.<br />
+Reported by <a href="https://github.com/7alen7">Dan</a> (@7alen7).
+Independently reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
 </ul>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>

@@ -2057,6 +2057,240 @@
   <p>For reporting security issues, see <a href="https://github.com/pmd/pmd/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 
 <h2 id="security-vulnerabilities">Security Vulnerabilities</h2>
+<h3 id="ghsa-5x5v-644m-q2qc">GHSA-5x5v-644m-q2qc</h3>
+<p><strong>Published:</strong> 2026-10-30</p>
+
+<p><strong>CVE:</strong> requested</p>
+
+<p><strong>Severity:</strong> Moderate</p>
+
+<p><strong>Summary:</strong> XSS via externalInfoUrl in HTML report formats</p>
+
+<p><strong>Versions Affected:</strong></p>
+<ul>
+  <li>net.sourceforge.pmd:pmd-core 7.28.0 and earlier</li>
+</ul>
+
+<p><strong>Description:</strong>
+PMD’s <code class="language-plaintext highlighter-rouge">pmd-core</code> HTML renderers place attacker-controlled ruleset metadata into generated HTML
+without context-appropriate escaping or URL-scheme validation. A crafted custom ruleset can inject executable
+markup into a <code class="language-plaintext highlighter-rouge">summaryhtml</code> or <code class="language-plaintext highlighter-rouge">html</code> report when suppressed violations are rendered (<code class="language-plaintext highlighter-rouge">--show-suppressed</code>).
+It can also put a <code class="language-plaintext highlighter-rouge">javascript:</code> URL in a normal HTML violation link, which executes if the report viewer clicks the link.</p>
+
+<p>Exploitation requires PMD to load an attacker-controlled ruleset and a user to open the generated report.
+The <code class="language-plaintext highlighter-rouge">javascript:</code> link variant additionally requires a click. The issue is in report generation, not PMD’s ordinary
+source analysis by itself.</p>
+
+<p><strong>Details:</strong></p>
+
+<p>The issue stems from two unsafe output paths in <code class="language-plaintext highlighter-rouge">HTMLRenderer</code>, which <code class="language-plaintext highlighter-rouge">SummaryHTMLRenderer</code> reuses, and from
+missing validation in <code class="language-plaintext highlighter-rouge">RuleFactory</code>:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">HTMLRenderer.renderRuleNameEscaped</code> escapes the rule name but concatenates <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> directly
+into an HTML <code class="language-plaintext highlighter-rouge">href</code> attribute (HTMLRenderer.java:175). When suppressed warnings are rendered
+(with <code class="language-plaintext highlighter-rouge">--show-suppressed</code>), a quote in this attribute value can break out and inject markup.</li>
+  <li><code class="language-plaintext highlighter-rouge">HTMLRenderer.glomRuleViolations</code> parses <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> with <code class="language-plaintext highlighter-rouge">URI.create</code> and inserts it into an <code class="language-plaintext highlighter-rouge">href</code>.
+URI parsing does not reject the <code class="language-plaintext highlighter-rouge">javascript:</code> scheme. A violation can therefore produce a JavaScript URL that
+runs when clicked.</li>
+  <li><code class="language-plaintext highlighter-rouge">SummaryHTMLRenderer.outputReport</code> delegates to <code class="language-plaintext highlighter-rouge">HTMLRenderer</code> for violations and suppressions, so it
+inherits both issues.</li>
+  <li><code class="language-plaintext highlighter-rouge">RuleFactory</code> accepts <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> from ruleset XML without any validation or restrictions.</li>
+</ol>
+
+<p><strong>PoC:</strong></p>
+
+<p>These examples use only a harmless <code class="language-plaintext highlighter-rouge">alert()</code> call.</p>
+
+<ol>
+  <li>Define a ruleset with crafted <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> values and two test sources:</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt; rs.xml &lt;&lt;'EOF'
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;ruleset name="PoC" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"&gt;
+  &lt;description&gt;Local synthetic test&lt;/description&gt;
+  &lt;rule name="AttrPoc" language="java"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="Synthetic violation"
+        externalInfoUrl="&amp;quot;&amp;gt;&amp;lt;img src=x onerror=&amp;quot;alert('attribute')&amp;quot;&amp;gt;"&gt;
+    &lt;description&gt;Local synthetic test rule&lt;/description&gt;
+    &lt;priority&gt;3&lt;/priority&gt;
+    &lt;properties&gt;
+      &lt;property name="xpath" value="//ClassDeclaration"/&gt;
+    &lt;/properties&gt;
+  &lt;/rule&gt;
+
+  &lt;rule name="JsUriPoc" language="java"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        message="Synthetic violation"
+        externalInfoUrl="javascript:alert('scheme')"&gt;
+    &lt;description&gt;Local synthetic test rule&lt;/description&gt;
+    &lt;priority&gt;3&lt;/priority&gt;
+    &lt;properties&gt;
+      &lt;property name="xpath" value="//ClassDeclaration"/&gt;
+    &lt;/properties&gt;
+  &lt;/rule&gt;
+&lt;/ruleset&gt;
+EOF
+
+mkdir -p src
+echo 'class T {} // NOPMD' &gt; src/T.java
+echo 'class U {}' &gt; src/U.java
+</code></pre></div></div>
+
+<ol>
+  <li>Generate the reports:</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check --no-progress --no-cache --show-suppressed \
+  -d src/T.java -R rs.xml -f summaryhtml -r summary.html \
+  --no-fail-on-violation
+
+pmd check --no-progress --no-cache --show-suppressed \
+  -d src/T.java -R rs.xml -f html -r report.html \
+  --no-fail-on-violation
+
+pmd check --no-progress --no-cache \
+  -d src/U.java -R rs.xml/JsUriPoc -f html -r report-jsuri.html \
+  --no-fail-on-violation
+</code></pre></div></div>
+
+<ol>
+  <li>Observe the issues:</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">summary.html</code> and <code class="language-plaintext highlighter-rouge">report.html</code> contain <code class="language-plaintext highlighter-rouge">&lt;img src=x onerror="alert('attribute')"&gt;</code>. Opening the
+report in a browser runs the script.</li>
+  <li><code class="language-plaintext highlighter-rouge">summary.html</code> and <code class="language-plaintext highlighter-rouge">report.html</code> contain a link <code class="language-plaintext highlighter-rouge">&lt;a href="javascript:alert('scheme')"&gt;JsUriPoc&lt;/a&gt;</code>.
+Clicking the link runs the script.</li>
+  <li><code class="language-plaintext highlighter-rouge">report-jsuri.html</code> contains a link <code class="language-plaintext highlighter-rouge">&lt;a href="javascript:alert('scheme')"&gt;Synthetic violation&lt;/a&gt;</code>. 
+Clicking the link runs the script.</li>
+</ul>
+
+<p><strong>Expected:</strong> The <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> is properly escaped when used in the <code class="language-plaintext highlighter-rouge">href</code> attribute of a link element,
+and <code class="language-plaintext highlighter-rouge">javascript:</code> URLs are rejected or not rendered as links.</p>
+
+<p><strong>Actual:</strong> <code class="language-plaintext highlighter-rouge">HTMLRenderer</code> inserts <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> unescaped, allowing attribute injection, and does not
+block <code class="language-plaintext highlighter-rouge">javascript:</code> URLs, which execute when clicked.</p>
+
+<p><strong>Impact:</strong></p>
+
+<p>CWE-79: Improper Neutralization of Input During Web Page Generation (‘Cross-site Scripting’)</p>
+
+<p>Stored XSS in the generated <code class="language-plaintext highlighter-rouge">summaryhtml</code> and <code class="language-plaintext highlighter-rouge">html</code> reports. When suppressed violations are rendered
+(<code class="language-plaintext highlighter-rouge">--show-suppressed</code>), the injected script runs on load with no click. The <code class="language-plaintext highlighter-rouge">javascript:</code> URL variant affects
+normal violations as well, but requires the viewer to click the link. This is relevant to workflows that
+analyze untrusted contributions and make HTML reports available to reviewers (e.g., a published CI dashboard).
+Script access is limited by the origin and browser policy under which the report is opened.</p>
+
+<p><strong>Fixes:</strong></p>
+<ul>
+  <li>See <a href="https://github.com/pmd/pmd/pull/TODO">#PR TODO</a> [core] HTMLRenderers: Properly escape rule name and externalInfoUrl</li>
+</ul>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://github.com/advisories/GHSA-8rr6-2qw5-pc7r">CVE-2026-28338</a> - Stored XSS in HTML renderers via unescaped violation messages</li>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</a> - Improper Neutralization of Input During Web Page Generation (‘Cross-site Scripting’) in summaryhtml report format</li>
+</ul>
+
+<h3 id="ghsa-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</h3>
+<p><strong>Published:</strong> 2026-10-30</p>
+
+<p><strong>CVE:</strong> requested</p>
+
+<p><strong>Severity:</strong> Moderate</p>
+
+<p><strong>Summary:</strong> XSS via rule name in summaryhtml report format</p>
+
+<p><strong>Versions Affected:</strong></p>
+<ul>
+  <li>net.sourceforge.pmd:pmd-core 7.28.0 and earlier</li>
+</ul>
+
+<p><strong>Description:</strong>
+PMD’s <code class="language-plaintext highlighter-rouge">summaryhtml</code> report format prints a summary table of rule names and their violation counts. The renderer writes
+the rule name straight into the HTML with no escaping. A rule name that contains markup is emitted verbatim, so a
+report opened in a browser executes the script. This is the same weakness class as <a href="#CVE-2026-28338">CVE-2026-28338</a>,
+in a renderer and a field that the fix for that advisory did not touch. The main HTMLRenderer escapes the rule
+name through <code class="language-plaintext highlighter-rouge">renderRuleNameEscaped</code>; SummaryHTMLRenderer does not.</p>
+
+<p>The rule name comes from the ruleset. This reproduces when the ruleset used for analysis is attacker-influenced,
+which is the CI case where the ruleset is checked out from an untrusted pull request, or any workflow that runs
+a ruleset from an untrusted source.</p>
+
+<p><strong>Details:</strong></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">SummaryHTMLRenderer.renderSummary</code> builds each row with <code class="language-plaintext highlighter-rouge">writer.write(ruleName)</code> and no escaper
+(SummaryHTMLRenderer.java:66-68), where <code class="language-plaintext highlighter-rouge">ruleName</code> is <code class="language-plaintext highlighter-rouge">rv.getRule().getName()</code>.</li>
+  <li>Rule names are read verbatim from the ruleset XML by the rule factory with no character validation.
+XML entities in the <code class="language-plaintext highlighter-rouge">name</code> attribute decode to raw characters, so <code class="language-plaintext highlighter-rouge">name="&amp;lt;script&amp;gt;...&amp;lt;/script&amp;gt;"</code>
+becomes the literal <code class="language-plaintext highlighter-rouge">&lt;script&gt;...&lt;/script&gt;</code>.</li>
+  <li>The CVE-2026-28338 fix (#6475) added escaping to VBHTMLRenderer, YAHTMLRenderer, and the HTMLRenderer
+suppressed-violation path. It did not add escaping to SummaryHTMLRenderer, so this sibling sink remained.</li>
+</ul>
+
+<p><strong>PoC:</strong></p>
+
+<p>Setup: PMD 7.27.0 binary distribution. A ruleset whose rule name carries the payload.</p>
+
+<ol>
+  <li>Define a rule whose name is an XSS payload</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt; rs.xml &lt;&lt;'EOF'
+&lt;?xml version="1.0"?&gt;
+&lt;ruleset name="poc" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"&gt;
+  &lt;description&gt;poc&lt;/description&gt;
+  &lt;rule name="&amp;lt;script&amp;gt;alert(document.domain)&amp;lt;/script&amp;gt;"
+        language="java" message="hit"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"&gt;
+    &lt;properties&gt;&lt;property name="xpath"&gt;&lt;value&gt;//ClassDeclaration&lt;/value&gt;&lt;/property&gt;&lt;/properties&gt;
+  &lt;/rule&gt;
+&lt;/ruleset&gt;
+EOF
+mkdir -p src &amp;&amp; echo 'public class A { void m() {} }' &gt; src/A.java
+</code></pre></div></div>
+
+<ol>
+  <li>Generate the summaryhtml report</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check -d src -R rs.xml -f summaryhtml --no-cache
+</code></pre></div></div>
+
+<ol>
+  <li>Read the emitted HTML</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;tr&gt;&lt;td&gt;&lt;script&gt;alert(document.domain)&lt;/script&gt;&lt;/td&gt;&lt;td align=center&gt;1&lt;/td&gt;&lt;/tr&gt;
+</code></pre></div></div>
+
+<p>The rule name is written into the table cell unescaped. Opening the report in a browser runs the script.</p>
+
+<p><strong>Expected:</strong> the rule name is HTML-escaped before being written into the report, the same way HTMLRenderer escapes it.
+<strong>Actual:</strong> SummaryHTMLRenderer writes the rule name raw, so markup in the name executes.</p>
+
+<p><strong>Impact:</strong></p>
+
+<p>Stored XSS in the generated <code class="language-plaintext highlighter-rouge">summaryhtml</code> report. The script runs in the browser of whoever opens the report,
+which in CI is a developer or reviewer reading the analysis output. It runs on load with no click. Where the report
+is served from a domain (a published CI dashboard, an internal report host), the script runs in that origin and can
+act with the viewer’s session there.</p>
+
+<p><strong>Fixes:</strong></p>
+<ul>
+  <li>See <a href="https://github.com/pmd/pmd/pull/TODO">#PR TODO</a> [core] HTMLRenderers: Properly escape rule name and externalInfoUrl</li>
+</ul>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</a></li>
+</ul>
+
 <h3 id="ghsa-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</h3>
 <p><strong>Published:</strong> 2026-10-30</p>
 
