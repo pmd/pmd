@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.internal.util;
 
 
-import static net.sourceforge.pmd.util.AssertionUtil.requireOver1;
-import static net.sourceforge.pmd.util.AssertionUtil.requireParamNotNull;
-
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -33,19 +30,6 @@ public final class PredicateUtil {
     /** A predicate that always returns true. */
     public static <T> Predicate<T> always() {
         return t -> true;
-    }
-
-    /**
-     * Returns a case-insensitive predicate for files with the given extensions.
-     *
-     * @throws NullPointerException If the extensions array is null
-     */
-    public static Predicate<String> getFileExtensionFilter(String... extensions) {
-        requireParamNotNull("extensions", extensions);
-        // TODO add first parameter to mandate that. This affects a
-        //  constructor of AbstractLanguage and should be done later
-        requireOver1("Extension count", extensions.length);
-        return new FileExtensionFilter(true, extensions);
     }
 
     /**

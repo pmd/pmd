@@ -26,6 +26,7 @@ import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.function.Predicate
 
 /**
  * Language-independent base for a parser utils class.
@@ -160,6 +161,11 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     @JvmOverloads
     fun <R : Node> getNodes(target: Class<R>, source: String, version: String? = null): List<R> =
                 parse(source, version).descendants(target).crossFindBoundaries(true).toList()
+
+    @JvmOverloads
+    fun <R : Node> getNodes(target: Class<R>, source: String, check: Predicate<R>, version: String? = null): List<R> =
+        parse(source, version).descendants(target).crossFindBoundaries(true)
+            .filter { check.test(it) }.toList()
 
     /**
      * Parses the [sourceCode] with the given [version]. This may execute
