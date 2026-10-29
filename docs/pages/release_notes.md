@@ -38,6 +38,28 @@ This is a {{ site.pmd.release_type }} release.
     it is recommended to upgrade PMD.  
     Reported by [Dan](https://github.com/7alen7) (@7alen7).
     Independently reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
+*   [GHSA-5x5v-644m-q2qc](https://github.com/pmd/pmd/security/advisories/GHSA-5x5v-644m-q2qc):
+    XSS via externalInfoUrl in HTML report formats.  
+    The `html` and `summaryhtml` renderers inserted a rule's `externalInfoUrl` into generated reports
+    without escaping or URL-scheme validation. With a crafted ruleset, this allowed injected markup that
+    runs when the report is opened (with `--show-suppressed`), or `javascript:` links that run when clicked.
+    This only affects setups where PMD loads an untrusted ruleset and the resulting HTML report is viewed
+    in a browser.  
+    Affected versions: PMD 7.28.0 and earlier. If you use the html or summaryhtml report formats, it is
+    recommended to upgrade PMD.  
+    Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
+*   [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c):
+    XSS via rule name in summaryhtml report format.  
+    The `summaryhtml` renderer wrote rule names into the report without HTML escaping. A ruleset with a
+    crafted rule name could inject JavaScript that runs in the browser of anyone who opens the report.
+    This affects setups that use `--format summaryhtml` together with a ruleset from an untrusted source,
+    e.g. CI/CD pipelines that use a ruleset from a pull request by an external contributor.
+    If the report is served from a web host (e.g. a CI dashboard), the script runs in that origin.
+    This is a follow-up to CVE-2026-28338, whose fix did not cover the summaryhtml renderer.  
+    Affected versions: PMD 7.28.0 and earlier. If you use the summaryhtml report format, it is
+    recommended to upgrade PMD.  
+    Reported by [Dan](https://github.com/7alen7) (@7alen7).
+    Independently reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
