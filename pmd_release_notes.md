@@ -91,6 +91,7 @@ This is a minor release.
     * [#7018](https://github.com/pmd/pmd/issues/7018): \[java] UnusedAssignment: false positive for an assignment in a condition operand that may be skipped
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
     * [#7119](https://github.com/pmd/pmd/issues/7119): \[java] SimplifiableTestAssertion: Various false negatives
+    * [#7213](https://github.com/pmd/pmd/issues/7213): \[java] UnusedPrivateMethod / UnusedPrivateField: false positives for fully-qualified @MethodSource / @FieldSource references
 * java-codestyle
     * [#4576](https://github.com/pmd/pmd/issues/4576): \[java] UseShortArrayInitializer: False positive with arrays of parametrized types (generic array creation)
     * [#6409](https://github.com/pmd/pmd/issues/6409): \[java] UnnecessaryCast: False positive for anonymous class in Stream.map() with toList()
