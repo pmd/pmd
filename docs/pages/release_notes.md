@@ -88,6 +88,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
+    * [#5072](https://github.com/pmd/pmd/issues/5072): \[java] False negative in ClassWithOnlyPrivateConstructorsShouldBeFinal
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
 * java-errorprone
     * [#5158](https://github.com/pmd/pmd/issues/5158): \[java] SingletonClassReturningNewInstance: false positive due to type cast

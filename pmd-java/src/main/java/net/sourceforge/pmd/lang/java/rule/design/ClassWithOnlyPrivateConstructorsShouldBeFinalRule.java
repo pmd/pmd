@@ -6,9 +6,11 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -38,7 +40,18 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
                    .filter(it -> TypeTestUtil.isA("lombok.NoArgsConstructor", it)
                        || TypeTestUtil.isA("lombok.RequiredArgsConstructor", it)
                        || TypeTestUtil.isA("lombok.AllArgsConstructor", it))
+                   .filter(it -> !hasStaticName(it))
                    .any(it -> it.getFlatValue("access").filterIs(ASTNamedReferenceExpr.class).none(ref -> "PRIVATE".equals(ref.getName())));
+    }
+
+    /**
+     * With a {@code staticName}, lombok makes the generated constructor private
+     * and generates a static factory method instead.
+     */
+    private boolean hasStaticName(ASTAnnotation annotation) {
+        return annotation.getFlatValue("staticName")
+                         .filterIs(ASTStringLiteral.class)
+                         .any(name -> !name.isEmpty());
     }
 
     private boolean hasNoSubclasses(ASTClassDeclaration klass) {
