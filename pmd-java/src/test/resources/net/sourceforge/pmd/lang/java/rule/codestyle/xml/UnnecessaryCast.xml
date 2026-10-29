@@ -1383,4 +1383,40 @@ public class Caller {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6409 False positive for anonymous class in lambda return of generic method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+import java.util.Optional;
+public class Sample {
+    public List<Foo> calc(final List<Integer> list) {
+        // without the cast, map would return Stream<anonymous Foo>
+        return list.stream().map(i -> (Foo) new Foo(){}).toList();
+    }
+    public Foo calc2(final Optional<Integer> opt) {
+        return opt.map(i -> (Foo) new Foo(){}).orElse(new FooImpl());
+    }
+    interface Foo{}
+    static class FooImpl implements Foo {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6409 Unnecessary cast of anonymous class to its supertype</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <code><![CDATA[
+public class Sample {
+    void calc() {
+        Foo f = (Foo) new Foo(){};
+        Object o = (Foo) new Foo(){};
+        Runnable r = (Runnable) new Runnable() { public void run() {} };
+    }
+    interface Foo{}
+}
+]]></code>
+    </test-code>
 </test-data>

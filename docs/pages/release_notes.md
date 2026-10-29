@@ -84,6 +84,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
     * [#7119](https://github.com/pmd/pmd/issues/7119): \[java] SimplifiableTestAssertion: Various false negatives
 * java-codestyle
+    * [#6409](https://github.com/pmd/pmd/issues/6409): \[java] UnnecessaryCast: False positive for anonymous class in Stream.map() with toList()
     * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
 * java-design
