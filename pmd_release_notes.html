@@ -2100,6 +2100,29 @@ Affected versions: PMD 7.28.0 and earlier. If you use the summaryhtml report for
 recommended to upgrade PMD.<br />
 Reported by <a href="https://github.com/7alen7">Dan</a> (@7alen7).
 Independently reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-9hm5-r2r7-hjcq">GHSA-9hm5-r2r7-hjcq</a>:
+Local file reads through XXE in PMD rule tests.<br />
+<strong>Normal usage of PMD for analyzing source code is not affected.</strong> Only projects that develop custom
+rules and test them with PMD’s rule test framework (modules <code class="language-plaintext highlighter-rouge">pmd-test</code> and <code class="language-plaintext highlighter-rouge">pmd-test-schema</code>) are affected.<br />
+The parser for rule-test XML files did not disable DTDs and external entities. A crafted rule-test XML
+file could therefore read a local file and place its contents into a parsed test description. Since the
+description is used as the name of the JUnit test, the file contents could appear in test results.
+This is relevant when rule-test XML files from untrusted sources are executed, e.g. in a CI/CD pipeline
+for pull requests from external contributors.<br />
+With this fix, DTDs are disabled. Rule-test XML files containing a <code class="language-plaintext highlighter-rouge">DOCTYPE</code> declaration are rejected.
+This was never officially supported, as PMD doesn’t provide a DTD for rule-test XML files.<br />
+Affected versions: <code class="language-plaintext highlighter-rouge">pmd:pmd</code> &gt;= 3.9, <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-test</code> &lt;= 6.47.0,
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-test-schema</code> &lt;= 7.28.0. If you test custom rules with PMD’s rule test
+framework, it is recommended to upgrade PMD.<br />
+Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-wv72-2ccf-28gj">GHSA-wv72-2ccf-28gj</a>:
+Blind SSRF through Visualforce metadata parser.<br />
+When resolving custom field types, the Visualforce module parsed Salesforce <code class="language-plaintext highlighter-rouge">*.field-meta.xml</code> files
+from the analyzed source tree without disabling external DTD loading. A crafted metadata file could
+therefore make PMD send a request to an attacker-chosen URL during analysis. This affects users who
+analyze Visualforce code from untrusted sources, such as pull requests.<br />
+Affected versions: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-visualforce</code> &gt;= 6.30.0, &lt;= 7.28.0<br />
+Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
 </ul>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
