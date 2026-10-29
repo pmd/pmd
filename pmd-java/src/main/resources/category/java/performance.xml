@@ -652,37 +652,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UseArrayListInsteadOfVector"
-          language="java"
-          since="3.0"
-          message="Use ArrayList instead of Vector"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraylistinsteadofvector">
-        <description>
-ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ConstructorCall/ClassType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-import java.util.*;
-public class SimpleTest extends TestCase {
-    public void testX() {
-    Collection c1 = new Vector();
-    Collection c2 = new ArrayList();    // achieves the same with much better performance
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="UseArrayListInsteadOfVector" ref="category/java/bestpractices.xml/ReplaceJavaUtilVector" deprecated="true" />
 
     <rule name="UseArraysAsList"
           language="java"
@@ -903,13 +873,13 @@ or StringBuffer.toString().length() == ...
 (: finds sb.toString().equals(someVar) where var is a final variable initialized with literal "" :)
 //MethodCall[pmd-java:matchesSig('_#equals(_)')
   and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
-  and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@Image='""']]
+  and ArgumentList/VariableAccess[@Name = //VariableDeclarator[StringLiteral[@LiteralText='""']]
                                             /VariableId[pmd-java:modifiers() = 'final']/@Name]]
 |
 (: finds sb.toString().equals("") :)
 //MethodCall[pmd-java:matchesSig('_#equals(_)')
   and MethodCall[pmd-java:matchesSig('java.lang.AbstractStringBuilder#toString()')]
-  and ArgumentList/StringLiteral[@Image='""']]
+  and ArgumentList/StringLiteral[@LiteralText='""']]
 ]]></value>
             </property>
         </properties>

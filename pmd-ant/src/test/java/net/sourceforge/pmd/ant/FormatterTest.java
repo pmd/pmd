@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.ant;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 
@@ -23,20 +24,18 @@ class FormatterTest {
     void testType() {
         Formatter f = new Formatter();
         f.setType("xml");
-        assertTrue(f.createRenderer() instanceof XMLRenderer);
+        assertInstanceOf(XMLRenderer.class, f.createRenderer());
         f.setType("text");
-        assertTrue(f.createRenderer() instanceof TextRenderer);
+        assertInstanceOf(TextRenderer.class, f.createRenderer());
         f.setType("csv");
-        assertTrue(f.createRenderer() instanceof CSVRenderer);
+        assertInstanceOf(CSVRenderer.class, f.createRenderer());
         f.setType("html");
         assertTrue(f.createRenderer() instanceof HTMLRenderer);
-        try {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
             f.setType("FAIL");
             f.createRenderer();
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException be) {
-            assertTrue(be.getMessage().startsWith("Can't find the custom format FAIL"));
-        }
+        });
+        assertTrue(ex.getMessage().startsWith("Can't find the custom format FAIL"));
     }
 
     @Test

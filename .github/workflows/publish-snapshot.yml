@@ -498,7 +498,7 @@ jobs:
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-src.zip"
           printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-doc.zip"
-      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 #v3.2.0
+      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 #v3.3.0
         id: pmd-actions-helper-app-token
         with:
           client-id: ${{ secrets.PMD_ACTIONS_HELPER_CLIENT_ID }}
@@ -652,7 +652,7 @@ jobs:
             11
             21
       - name: Set up Ruby 4
-        uses: ruby/setup-ruby@e81a8fa391b11a595c1b7ed84177cc0fe02faf83 #v1.328.0
+        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f #v1.335.0
         with:
           ruby-version: 4
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 #v6.1.0
