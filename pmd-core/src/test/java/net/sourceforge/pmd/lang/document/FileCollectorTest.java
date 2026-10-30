@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.PMDConfiguration;
@@ -213,6 +215,67 @@ class FileCollectorTest {
         assertFilenameIs(applicableFiles.get(1), "somefile.dummy");
         assertFilenameIs(applicableFiles.get(2), "somefile2.dummy");
         assertFilenameIs(applicableFiles.get(3), "somefile4.dummy");
+    }
+
+    @Test
+    @DisabledOnOs(WINDOWS)
+    void testSymlinksAreDisabledAddDirectory() throws IOException {
+        Path foo = newFile(tempFolder, "foo.dummy");
+        Path link = tempFolder.resolve("link.dummy");
+        Files.createSymbolicLink(link, foo);
+
+        FileCollector collector = newCollector();
+        collector.addDirectory(tempFolder);
+
+        List<TextFile> collectedFiles = collector.getCollectedFiles();
+        assertEquals(1, collectedFiles.size());
+        assertFilenameIs(collectedFiles.get(0), "foo.dummy");
+    }
+
+    @Test
+    @DisabledOnOs(WINDOWS)
+    void testAddDirectoryDoesntFollowSymlinkArgument() throws IOException {
+        Path dir = tempFolder.resolve("dir");
+        Files.createDirectories(dir);
+
+        Path link = tempFolder.resolve("link");
+        Files.createSymbolicLink(link, dir);
+
+        newFile(dir, "foo.dummy");
+
+        FileCollector collector = newCollector();
+        collector.addDirectory(link);
+
+        List<TextFile> collectedFiles = collector.getCollectedFiles();
+        assertEquals(0, collectedFiles.size());
+    }
+
+    @Test
+    @DisabledOnOs(WINDOWS)
+    void testSymlinksAreDisabledAddFile() throws IOException {
+        Path foo = newFile(tempFolder, "foo.dummy");
+        Path link = tempFolder.resolve("link.dummy");
+        Files.createSymbolicLink(link, foo);
+
+        FileCollector collector = newCollector();
+        boolean result = collector.addFile(link);
+
+        assertFalse(result);
+    }
+
+    @Test
+    @DisabledOnOs(WINDOWS)
+    void testSymlinksAreDisabledAddFileForceLanguage() throws IOException {
+        Path foo = newFile(tempFolder, "foo.dummy");
+        Path link = tempFolder.resolve("link.dummy");
+        Files.createSymbolicLink(link, foo);
+
+        Language dummy = DummyLanguageModule.getInstance();
+
+        FileCollector collector = newCollector();
+        boolean result = collector.addFile(link, dummy);
+
+        assertFalse(result);
     }
 
     public static void assertHasName(TextFile textFile, String expected, PmdAnalysis pmd) {
