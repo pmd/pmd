@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java-bestpractices
+    * [#7070](https://github.com/pmd/pmd/issues/7070): \[java] CheckResultSet: False negative caused by unrelated if or while
 
 ### 🚨️ API Changes
 
