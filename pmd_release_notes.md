@@ -23,6 +23,10 @@ This is a minor release.
 
 ### 🚀️ New and noteworthy
 #### Security fixes
+All known security vulnerabilities are described in full detail on the page
+[PMD Security](https://docs.pmd-code.org/pmd-doc-7.29.0-SNAPSHOT/pmd_about_security.html). This release, the following
+security vulnerabilities were fixed:
+
 *   [GHSA-wj6q-xw9m-26p6](https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6):
     Arbitrary file disclosure in CPD via symlinks in analyzed sources.  
     When collecting files, CPD followed symbolic links, even if their targets were outside the scanned
