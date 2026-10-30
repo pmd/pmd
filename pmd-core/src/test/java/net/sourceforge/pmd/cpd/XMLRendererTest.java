@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,7 +15,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,6 +40,7 @@ import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * @author Philippe T'Seyen
@@ -59,22 +60,23 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
-                + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "         pmdVersion=\"XXX\"\n"
-                + "         timestamp=\"XXX\"\n"
-                + "         version=\"1.0.0\"\n"
-                + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\"/>\n",
-                report.replaceAll("timestamp=\".+?\"", "timestamp=\"XXX\"")
-                        .replaceAll("pmdVersion=\".+?\"", "pmdVersion=\"XXX\""),
-                "namespace is missing or wrong");
+        report = report.replaceAll("timestamp=\".+?\"", "timestamp=\"XXX\"")
+                .replaceAll("pmdVersion=\".+?\"", "pmdVersion=\"XXX\"");
+        assertThat(report, startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+        assertThat(report, containsString("xmlns=\"https://pmd-code.org/schema/cpd-report\""));
+        assertThat(report, containsString("xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\""));
+        assertThat(report, containsString("pmdVersion=\"XXX\""));
+        assertThat(report, containsString("timestamp=\"XXX\""));
+        assertThat(report, containsString("version=\"1.0.0\""));
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        DocumentBuilderFactory dbf = XmlUtil.newDocumentBuilderFactory();
+        dbf.setNamespaceAware(true);
+        Document doc = dbf.newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList nodes = doc.getChildNodes();
         Node n = nodes.item(0);
         assertEquals("pmd-cpd", n.getNodeName());
+        assertEquals("https://pmd-code.org/schema/cpd-report", n.getNamespaceURI());
         assertEquals(0, doc.getElementsByTagName("duplication").getLength());
     }
 
@@ -93,8 +95,8 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList dupes = doc.getElementsByTagName("duplication");
         assertEquals(1, dupes.getLength());
         Node file = dupes.item(0).getFirstChild();
@@ -143,8 +145,8 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         XPath xpath = XPathFactory.newInstance().newXPath();
         assertEquals(2, Integer.parseInt(xpath.evaluate("count(/pmd-cpd/duplication)", doc)), "duplication elements");
         assertEquals(4, Integer.parseInt(xpath.evaluate("count(/pmd-cpd/duplication/file)", doc)), "file elements inside duplication");
@@ -166,8 +168,8 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList dupes = doc.getElementsByTagName("duplication");
         assertEquals(1, dupes.getLength());
         Node file = dupes.item(0).getFirstChild();
@@ -228,8 +230,8 @@ class XMLRendererTest {
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
         assertReportIsValidSchema(xmlOutput);
-        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                                                   .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
         final NodeList files = doc.getElementsByTagName("file");
         final Node file = files.item(0);
         final NamedNodeMap attributes = file.getAttributes();
@@ -254,8 +256,8 @@ class XMLRendererTest {
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
         assertReportIsValidSchema(xmlOutput);
-        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                                                   .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
+                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
         final NodeList files = doc.getElementsByTagName("file");
         final Node dup_1 = files.item(1);
         final NamedNodeMap attrs_1 = dup_1.getAttributes();
@@ -306,7 +308,7 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
                 .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList nodes = doc.getChildNodes();
         Node n = nodes.item(0);
@@ -340,16 +342,15 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder documentBuilder = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder();
         assertDoesNotThrow(() -> documentBuilder.parse(new InputSource(new StringReader(report))));
     }
 
     private static void assertReportIsValidSchema(String report) throws SAXException, ParserConfigurationException, IOException {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        SchemaFactory schemaFactory = XmlUtil.newSchemaFactory();
         Schema schema = schemaFactory.newSchema(new StreamSource(XMLRenderer.class.getResourceAsStream("/cpd-report_1_0_0.xsd")));
 
-        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        saxParserFactory.setNamespaceAware(true);
+        SAXParserFactory saxParserFactory = XmlUtil.newSAXParserFactory();
         saxParserFactory.setValidating(false);
         saxParserFactory.setSchema(schema);
 

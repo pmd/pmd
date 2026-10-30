@@ -7,10 +7,11 @@ package net.sourceforge.pmd.test.lang.rule;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import java.io.BufferedReader;
@@ -33,6 +34,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -40,6 +42,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.event.Level;
@@ -59,6 +62,7 @@ import net.sourceforge.pmd.lang.rule.RuleSetWriter;
 import net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
 
 /**
@@ -70,6 +74,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private static ValidateDefaultHandler validateDefaultHandler;
     private static SAXParser saxParser;
+    private static SAXParser saxParserDtdSupport;
 
     // todo rename this field to validCoreRules or something. Make private.
     protected Set<String> validXPathClassNames = new HashSet<>();
@@ -111,9 +116,8 @@ public abstract class AbstractRuleSetFactoryTest {
      */
     @BeforeAll
     static void init() throws Exception {
-        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+        SAXParserFactory saxParserFactory = XmlUtil.newSAXParserFactory();
         saxParserFactory.setValidating(true);
-        saxParserFactory.setNamespaceAware(true);
 
         // Hope we're using Xerces, or this may not work!
         // Note: Features are listed here
@@ -125,6 +129,12 @@ public abstract class AbstractRuleSetFactoryTest {
         validateDefaultHandler = new ValidateDefaultHandler();
 
         saxParser = saxParserFactory.newSAXParser();
+
+        SAXParserFactory saxParserFactoryDtd = XmlUtil.newSAXParserFactory();
+        // DTD parsing, we need to allow doctype declarations
+        // The ValidateDefaultHandler only allows our own DTD to be loaded, no other entities
+        saxParserFactoryDtd.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
+        saxParserDtdSupport = saxParserFactoryDtd.newSAXParser();
     }
 
     /**
@@ -134,21 +144,16 @@ public abstract class AbstractRuleSetFactoryTest {
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRuleSetsAreSorted(String fileName) {
-        List<String> messages = new ArrayList<>();
-
+        List<Executable> checks = new ArrayList<>();
         String lastName = null;
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
         for (Rule rule : ruleSet.getRules()) {
-            if (lastName != null && String.CASE_INSENSITIVE_ORDER.compare(rule.getName(), lastName) < 0) {
-                messages.add(rule.getName() + " should be before " + lastName);
-            }
+            final String prevName = lastName;
+            checks.add(() -> assertTrue(prevName == null || String.CASE_INSENSITIVE_ORDER.compare(rule.getName(), prevName) > 0,
+                rule.getName() + " should be before " + prevName));
             lastName = rule.getName();
         }
-
-        // We do this at the end to ensure we test ALL the rules before failing the test
-        if (!messages.isEmpty()) {
-            fail("All built-in PMD rules need to be alphabetically sorted (" + messages.size() + " misplaced)\n" + String.join("\n", messages));
-        }
+        assertAll(checks);
     }
 
     /**
@@ -158,25 +163,14 @@ public abstract class AbstractRuleSetFactoryTest {
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRulesHaveSince(String fileName) {
-        List<String> messages = new ArrayList<>();
+        List<Executable> checks = new ArrayList<>();
 
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
-        for (Rule rule : ruleSet.getRules()) {
-            // Skip references
-            if (rule instanceof RuleReference) {
-                continue;
-            }
-
-            // Is since missing ?
-            if (rule.getSince() == null) {
-                messages.add("Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute\n");
-            }
+        for (Rule rule : skipReferences(ruleSet)) {
+            checks.add(() -> assertNotNull(rule.getSince(),
+                "Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute"));
         }
-
-        // We do this at the end to ensure we test ALL the rules before failing the test
-        if (!messages.isEmpty()) {
-            fail("All built-in PMD rules need 'since' attribute (" + messages.size() + " are missing)\n" + String.join("\n", messages));
-        }
+        assertAll(checks);
     }
 
     /**
@@ -186,54 +180,37 @@ public abstract class AbstractRuleSetFactoryTest {
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRulesHaveCorrectExternalInfoUrl(String fileName) {
-        List<String> messages = new ArrayList<>();
+        List<Executable> checks = new ArrayList<>();
 
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
-        for (Rule rule : ruleSet.getRules()) {
-            // Skip references
-            if (rule instanceof RuleReference) {
-                continue;
-            }
-
+        for (Rule rule : skipReferences(ruleSet)) {
             Language language = rule.getLanguage();
 
             // Is URL correct ?
-            if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
-                messages.add("Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute\n");
-            } else {
-                String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
-                        + language.getId() + "_"
-                        + FilenameUtils.getBaseName(fileName)
-                        + ".html#"
-                        + rule.getName().toLowerCase(Locale.ROOT);
-                if (rule.getExternalInfoUrl() == null || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
-                    messages.add("Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be: " + expectedExternalInfoURL + '\n');
-                }
-            }
-        }
+            String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
+                    + language.getId() + "_"
+                    + FilenameUtils.getBaseName(fileName)
+                    + ".html#"
+                    + rule.getName().toLowerCase(Locale.ROOT);
 
-        // We do this at the end to ensure we test ALL the rules before failing the test
-        if (!messages.isEmpty()) {
-            fail("All built-in PMD rules need a proper ExternalURLInfo (" + messages.size() + " are incorrect)\n" + String.join("\n", messages));
+            checks.add(() -> assertTrue(rule.getExternalInfoUrl() != null && rule.getExternalInfoUrl().matches(expectedExternalInfoURL),
+                    "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be: " + expectedExternalInfoURL + '\n'
+            ));
         }
+        assertAll(checks);
     }
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
-     * all rules have a valid classname
+     * all rules have a valid classname.
      */
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRulesHaveValidClassName(String fileName) {
-        List<String> messages = new ArrayList<>();
+        List<Executable> checks = new ArrayList<>();
 
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
-        for (Rule rule : ruleSet.getRules()) {
-            // Skip references
-            if (rule instanceof RuleReference) {
-                continue;
-            }
-
+        for (Rule rule : skipReferences(ruleSet)) {
             Language language = rule.getLanguage();
             String group = fileName.substring(fileName.lastIndexOf('/') + 1);
             group = group.substring(0, group.indexOf(".xml"));
@@ -243,71 +220,51 @@ public abstract class AbstractRuleSetFactoryTest {
 
             // Proper class name/packaging?
             String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group + "." + rule.getName() + "Rule";
-            if (!rule.getRuleClass().equals(expectedClassName) && !validXPathClassNames.contains(rule.getRuleClass())) {
-                messages.add("Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value (" + rule.getRuleClass() + "), it should be: " + expectedClassName + '\n');
-            }
+            checks.add(() -> assertTrue(
+                    rule.getRuleClass().equals(expectedClassName) || validXPathClassNames.contains(rule.getRuleClass()),
+                    "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value (" + rule.getRuleClass() + "), it should be: " + expectedClassName + '\n'
+            ));
         }
 
-        // We do this at the end to ensure we test ALL the rules before failing the test
-        if (!messages.isEmpty()) {
-            fail("All built-in PMD rules need a class name meeting conventions (" + messages.size() + " are invalid)\n" + String.join("\n", messages));
-        }
+        assertAll(checks);
     }
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
-     * no rules have a suppression regex
+     * no rules have a suppression regex.
      */
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRulesHaveNoSuppressionRegex(String fileName) {
-        List<String> messages = new ArrayList<>();
+        List<Executable> checks = new ArrayList<>();
 
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
-        for (Rule rule : ruleSet.getRules()) {
-            // Skip references
-            if (rule instanceof RuleReference) {
-                continue;
-            }
-
-            // Should not have violation suppress regex property
-            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
-                messages.add("Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "', this is intended for end user customization only.\n");
-            }
+        for (Rule rule : skipReferences(ruleSet)) {
+            checks.add(() -> assertFalse(
+                    rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent(),
+                "Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "', this is intended for end user customization only.\n"
+            ));
         }
-
-        // We do this at the end to ensure we test ALL the rules before failing the test
-        if (!messages.isEmpty()) {
-            fail("All built-in PMD rules should NOT have a " + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + " property (" + messages.size() + " do)\n" + String.join("\n", messages));
-        }
+        assertAll(checks);
     }
 
     /**
      * Checks all rulesets of all languages on the classpath and verifies that
-     * no rules have a suppression XPath
+     * no rules have a suppression XPath.
      */
     @ParameterizedTest
     @MethodSource("getRuleSetFileNames")
     void testAllPMDBuiltInRulesHaveNoSuppressionXPath(String fileName) {
-        List<String> messages = new ArrayList<>();
+        List<Executable> checks = new ArrayList<>();
 
         RuleSet ruleSet = loadRuleSetByFileName(fileName);
-        for (Rule rule : ruleSet.getRules()) {
-
-            // Skip references
-            if (rule instanceof RuleReference) {
-                continue;
-            }
-
-            // Should not have violation suppress xpath property
-            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
-                messages.add("Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "', this is intended for end user customization only.\n");
-            }
+        for (Rule rule : skipReferences(ruleSet)) {
+            checks.add(() -> assertFalse(
+                    rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent(),
+                    "Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "', this is intended for end user customization only.\n"
+            ));
         }
-        // We do this at the end to ensure we test ALL the rules before failing the test
-        if (!messages.isEmpty()) {
-            fail("All built-in PMD rules should NOT have a '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property (" + messages.size() + " do)\n" + String.join("\n", messages));
-        }
+        assertAll(checks);
     }
 
     /**
@@ -364,7 +321,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     /**
      * Reads and writes the rulesets to make sure, that no data is lost if the
-     * rulests are processed.
+     * rulesets are processed.
      *
      * @throws Exception
      *             any error
@@ -505,7 +462,7 @@ public abstract class AbstractRuleSetFactoryTest {
         }
 
         try (InputStream modifiedStream = new ByteArrayInputStream(file.getBytes(StandardCharsets.UTF_8))) {
-            saxParser.parse(modifiedStream, validateDefaultHandler.resetValid());
+            saxParserDtdSupport.parse(modifiedStream, validateDefaultHandler.resetValid());
         }
         return validateDefaultHandler.isValid();
     }
@@ -650,6 +607,12 @@ public abstract class AbstractRuleSetFactoryTest {
             assertEquals(propertyDescriptors1.size(), propertyDescriptors2.size(),
                     message + ", Rule property descriptor count");
         }
+    }
+
+    private List<Rule> skipReferences(RuleSet ruleSet) {
+        return ruleSet.getRules().stream()
+                .filter(r -> !(r instanceof RuleReference))
+                .collect(Collectors.toList());
     }
 
     /**
