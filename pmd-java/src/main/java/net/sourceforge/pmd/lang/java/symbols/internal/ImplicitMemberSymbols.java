@@ -170,16 +170,21 @@ public final class ImplicitMemberSymbols {
 
     public static JMethodSymbol lombokGetter(JClassSymbol classSym, JFieldSymbol field, int accessModifier) {
         String fieldName = field.getSimpleName();
-        String prefix = "get";
+        boolean isBoolean = false;
         ASTVariableId varId = field.tryGetNode();
         if (varId != null) {
             ASTType typeNode = varId.getTypeNode();
-            if (typeNode instanceof ASTPrimitiveType
-                    && ((ASTPrimitiveType) typeNode).getKind() == PrimitiveTypeKind.BOOLEAN) {
-                prefix = "is";
-            }
+            isBoolean = typeNode instanceof ASTPrimitiveType
+                    && ((ASTPrimitiveType) typeNode).getKind() == PrimitiveTypeKind.BOOLEAN;
         }
-        String name = prefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+        String name;
+        if (isBoolean && fieldName.length() > 2 && fieldName.startsWith("is")
+                && !Character.isLowerCase(fieldName.charAt(2))) {
+            // lombok does not double the prefix: boolean isActive -> isActive()
+            name = fieldName;
+        } else {
+            name = (isBoolean ? "is" : "get") + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+        }
 
         return new FakeMethodSym(
                 classSym,
