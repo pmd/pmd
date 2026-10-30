@@ -3011,7 +3011,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/237462?v=4",
       "profile": "http://people.apache.org/~hboutemy",
       "contributions": [
-        "bug"
+        "bug",
+        "security"
       ]
     },
     {
@@ -9006,6 +9007,33 @@
       "profile": "https://github.com/tanvir-ux",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "7alen7",
+      "name": "Dan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/71292133?v=4",
+      "profile": "https://github.com/7alen7",
+      "contributions": [
+        "security"
+      ]
+    },
+    {
+      "login": "ThejasRajamoney",
+      "name": "lapeace",
+      "avatar_url": "https://avatars.githubusercontent.com/u/267308147?v=4",
+      "profile": "https://github.com/ThejasRajamoney",
+      "contributions": [
+        "security"
+      ]
+    },
+    {
+      "login": "Hama1cco",
+      "name": "Hama1cco",
+      "avatar_url": "https://avatars.githubusercontent.com/u/115479378?v=4",
+      "profile": "https://github.com/Hama1cco",
+      "contributions": [
+        "security"
       ]
     }
   ],

