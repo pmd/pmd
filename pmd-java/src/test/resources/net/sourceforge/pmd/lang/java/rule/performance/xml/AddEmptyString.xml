@@ -133,4 +133,62 @@ class Main {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] AddEmptyString false positive for compile-time constants #6327</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public static final int duration = 86400;
+    static final String EMPTY = "";
+
+    void main(Request request) {
+        request.setHeader("Cache", duration + "");
+        request.setHeader("Cache", "" + duration);
+        request.setHeader("Cache", Test.duration + "");
+        request.setHeader("Cache", "" + duration * 1000);
+        request.setHeader("Cache", EMPTY + duration);
+    }
+
+    void local() {
+        final int seconds = 86400;
+        String header = seconds + "";
+    }
+
+    final int instanceDuration = 86400;
+
+    void instance() {
+        String header = instanceDuration + "";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Non-constant empty-string concatenation is still reported #6327</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>7,8,12,14,18</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public static int duration = 86400;
+    public static final int CONSTANT = 86400;
+    public static final String NAME = "Cache";
+
+    void main(Request request) {
+        request.setHeader("Cache", duration + "");
+        request.setHeader("Cache", this.CONSTANT + "");
+    }
+
+    void local(int seconds) {
+        String header = "" + seconds;
+        final int notConst = seconds + 1;
+        String other = notConst + "";
+    }
+
+    void stringConstant() {
+        String header = NAME + "";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
