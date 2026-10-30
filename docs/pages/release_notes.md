@@ -169,6 +169,8 @@ security vulnerabilities were fixed:
     * [#6409](https://github.com/pmd/pmd/issues/6409): \[java] UnnecessaryCast: False positive for anonymous class in Stream.map() with toList()
     * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
     * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
+    * [#7134](https://github.com/pmd/pmd/issues/7134): \[java] UnnecessaryBoxing: False negative when another overload takes an unrelated reference type
+    * [#7135](https://github.com/pmd/pmd/issues/7135): \[java] UnnecessaryBoxing: False positive when removing the conversion selects a more specific primitive overload
 * java-design
     * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl: False positive on Lambda/asynchronous
     * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: False negative when the lambda is invoked by the method it is passed to
