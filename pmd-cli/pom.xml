@@ -48,7 +48,6 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-designer</artifactId>
-            <version>${pmd-designer.version}</version>
         </dependency>
 
         <dependency>
