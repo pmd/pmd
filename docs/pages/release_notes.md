@@ -127,6 +127,9 @@ security vulnerabilities were fixed:
 *   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
     using `var` when the explicit type name would be longer than a given minimum length configured with
     this property.
+*   The Apex rule {% rule apex/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrue %} has a new property
+    `reportConnectApi`. It defaults to `true`. Set it to `false` to exempt test classes that call a `ConnectApi`
+    method, since most `ConnectApi` methods require `seeAllData=true` in tests (see [#7236](https://github.com/pmd/pmd/issues/7236)).
 
 #### Deprecated Rules
 *   The Java rules {% rule java/bestpractices/ReplaceVectorWithList %} and
@@ -134,6 +137,8 @@ security vulnerabilities were fixed:
     {% rule java/bestpractices/ReplaceJavaUtilVector %}. Update rule references to use the new name.
 
 ### 🐛️ Fixed Issues
+* apex-bestpractices
+    * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-performance
     * [#5082](https://github.com/pmd/pmd/issues/5082): \[apex] EagerlyLoadedDescribeSObjectResult: False positive with fully qualified SObjectDescribeOptions/FieldDescribeOptions
 * core

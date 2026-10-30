@@ -119,4 +119,79 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi defaults to true: a test class that calls ConnectApi is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData = true)
+public class ChatterFeedsTest {
+    @IsTest
+    public static void testGetFeed() {
+        ConnectApi.FeedElementPage page = ConnectApi.ChatterFeeds.getFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me');
+        Assert.isNotNull(page, 'page not found');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: class-level SeeAllData=true is not reported when the class calls ConnectApi</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData = true)
+public class ChatterFeedsTest {
+    @IsTest
+    public static void testGetFeed() {
+        ConnectApi.FeedElementPage page = ConnectApi.ChatterFeeds.getFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me');
+        Assert.isNotNull(page, 'page not found');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: method-level SeeAllData=true is not reported when the class calls ConnectApi, in any case</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+public class ChatterFeedsTest {
+    @IsTest(seeAlLData = TRUE)
+    public static void testGetFeed() {
+        connectapi.feedelementpage page = CONNECTAPI.chatterfeeds.getFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me');
+        Assert.isNotNull(page, 'page not found');
+    }
+
+    @IsTest(SeeAllData = 'true')
+    public static void testHelper() {
+        Assert.isNotNull(getFeed(), 'page not found');
+    }
+
+    private static ConnectApi.FeedElementPage getFeed() {
+        return ConnectApi.ChatterFeeds.getFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: SeeAllData=true is still reported when the class does not call ConnectApi</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,3</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData = true)
+public class AccountServiceTest {
+    @IsTest(SeeAllData = true)
+    public static void testAccounts() {
+        ConnectApiHelper.doSomething();
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+        Assert.isFalse(accounts.isEmpty(), 'no accounts');
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
