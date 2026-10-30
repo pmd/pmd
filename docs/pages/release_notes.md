@@ -233,11 +233,101 @@ security vulnerabilities were fixed:
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6923](https://github.com/pmd/pmd/pull/6923): \[java] Fix #6882: New Rule: Enforce that local variables are declared at the start of their scope without initialization - [Will-6543](https://github.com/Will-6543) (@Will-6543)
+* [#6996](https://github.com/pmd/pmd/pull/6996): \[java] Fix #6984: ExhaustiveSwitchHasDefault: list missing cases in the violation - [Abdullah](https://github.com/AzazelSensei) (@AzazelSensei)
+* [#7048](https://github.com/pmd/pmd/pull/7048): \[java] Deprecate getImage()/@<!-- -->Image and remove usages - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7050](https://github.com/pmd/pmd/pull/7050): \[html] Fix #5313: CPD end line without trailing newline - [Eymen Onar](https://github.com/Eymenonar) (@Eymenonar)
+* [#7055](https://github.com/pmd/pmd/pull/7055): \[java] Fix #7054: Capture wildcard components of intersection bounds - [benstpierre](https://github.com/benstpierre) (@benstpierre)
+* [#7059](https://github.com/pmd/pmd/pull/7059): \[java] Fix #7014/#7015: InsecureCryptoIv/HardCodedCryptoKey: Detect default-initialized arrays - [YukiAoto](https://github.com/aoto-tech) (@aoto-tech)
+* [#7062](https://github.com/pmd/pmd/pull/7062): \[java] Fix #7060: Fix constant classification of final variable references - [YukiAoto](https://github.com/aoto-tech) (@aoto-tech)
+* [#7066](https://github.com/pmd/pmd/pull/7066): \[java] Fix #7063: CheckResultSet false positive with next() as ternary condition - [Tanbir Hossain Ramim](https://github.com/TanbirRamim) (@TanbirRamim)
+* [#7067](https://github.com/pmd/pmd/pull/7067): \[java] Fix #7018: UnusedAssignment false positive for assignment in condition operand - [fudian](https://github.com/fudianchn) (@fudianchn)
+* [#7073](https://github.com/pmd/pmd/pull/7073): \[core] Fix #7072: Reuse compiled violationSuppressXPath queries - [YukiAoto](https://github.com/aoto-tech) (@aoto-tech)
+* [#7087](https://github.com/pmd/pmd/pull/7087): \[scala] chore: Add test for #2153 - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#7088](https://github.com/pmd/pmd/pull/7088): \[java] Fix #6903: Rewrite UseExplicitTypes as Java rule to support allowLongTypeNames - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7094](https://github.com/pmd/pmd/pull/7094): \[kotlin] Fix #7092: Add LooseCoupling rule - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#7103](https://github.com/pmd/pmd/pull/7103): \[java] UnnecessaryVarargsArrayCreation: add regression tests for #5069 - [Yuriy Tumanov](https://github.com/Eljees) (@Eljees)
+* [#7104](https://github.com/pmd/pmd/pull/7104): \[java] Fix #5159: UnusedAssignment: an assert statement may not run - [Yuriy Tumanov](https://github.com/Eljees) (@Eljees)
+* [#7105](https://github.com/pmd/pmd/pull/7105): \[java] Fix #4815: ExceptionAsFlowControl: stop at a lambda body - [Yuriy Tumanov](https://github.com/Eljees) (@Eljees)
+* [#7109](https://github.com/pmd/pmd/pull/7109): \[java] Fix #5158: SingletonClassReturningNewInstance: a local holding the existing instance is not new - [Yuriy Tumanov](https://github.com/Eljees) (@Eljees)
+* [#7110](https://github.com/pmd/pmd/pull/7110): \[groovy] Fix #7100: CPD fails on GStrings ending in an interpolated variable - [anying](https://github.com/anyingiit) (@anyingiit)
+* [#7112](https://github.com/pmd/pmd/pull/7112): \[doc] Use Markdown admonitions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#7115](https://github.com/pmd/pmd/pull/7115): \[plsql] Fix #6609: Parse parenthesized arithmetic comparisons - [Burak Kalaycı](https://github.com/kalayciburak) (@kalayciburak)
+* [#7118](https://github.com/pmd/pmd/pull/7118): \[java] Fix #7117: ExceptionAsFlowControl: a throw in a lambda invoked by the method it is passed to - [Yuriy Tumanov](https://github.com/Eljees) (@Eljees)
+* [#7121](https://github.com/pmd/pmd/pull/7121): \[java] Fix #7120: NonThreadSafeSingleton NoSuchElementException - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7122](https://github.com/pmd/pmd/pull/7122): \[java] Remove unused ctConstIfNotNull method from ASTExpression.ConstResult - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7123](https://github.com/pmd/pmd/pull/7123): \[core] Tokens: Add asserts - start of a location is never after the end of the location - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7129](https://github.com/pmd/pmd/pull/7129): \[java] Fix #7119: SimplifiableTestAssertion: Report more cases - [Akhil-1527](https://github.com/Akhil-1527) (@Akhil-1527)
+* [#7130](https://github.com/pmd/pmd/pull/7130): \[core] Include XML validation details in ruleset loading errors - [Noor Ahmadi](https://github.com/noor-ahmadi) (@noor-ahmadi)
+* [#7131](https://github.com/pmd/pmd/pull/7131): \[apex] Fix #5082: Allow "Schema." in "EagerlyLoadedDescribeSObjectResult" - [Marek Madejski](https://github.com/TrangOul) (@TrangOul)
+* [#7132](https://github.com/pmd/pmd/pull/7132): \[java] Prepare deprecation of asCtx in java-errorprone (part of #4814) - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7138](https://github.com/pmd/pmd/pull/7138): \[java] Reset CPD constructor detection for each file - [Noor Ahmadi](https://github.com/noor-ahmadi) (@noor-ahmadi)
+* [#7139](https://github.com/pmd/pmd/pull/7139): \[core] chore: Replace most of IOUtil with commons-io - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7154](https://github.com/pmd/pmd/pull/7154): Fix line endings of mwnw.cmd - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7157](https://github.com/pmd/pmd/pull/7157): \[core] Fix #7156: Analysis cache fails with ZipException on invalid archive - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#7158](https://github.com/pmd/pmd/pull/7158): \[java] Fix #7145: void compatibility of parenthesized lambda bodies - [Noor Ahmadi](https://github.com/noor-ahmadi) (@noor-ahmadi)
+* [#7160](https://github.com/pmd/pmd/pull/7160): \[java] Fix #7137: InvalidLogMessageFormat: handle unresolved exception type (incomplete auxclasspath) - [Kaustubh Abhinand](https://github.com/KaustAbhinand) (@KaustAbhinand)
+* [#7161](https://github.com/pmd/pmd/pull/7161): \[java] Fix #7151: Apply the comb rule to unqualified method calls - [sary](https://github.com/saryn17) (@saryn17)
+* [#7162](https://github.com/pmd/pmd/pull/7162): \[java] Fix #7150: type of numeric conditionals with byte, short or char operands - [sary](https://github.com/saryn17) (@saryn17)
+* [#7163](https://github.com/pmd/pmd/pull/7163): \[java] Fix #7146, #7149: Loose invocation conversion and the most specific check for boxing - [sary](https://github.com/saryn17) (@saryn17)
+* [#7164](https://github.com/pmd/pmd/pull/7164): \[java] Fix #7148: Allow boxing of lambda and method reference results in the strict phase - [sary](https://github.com/saryn17) (@saryn17)
+* [#7165](https://github.com/pmd/pmd/pull/7165): \[kotlin] Suppress empty-list attribute values in tree dump tests - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#7167](https://github.com/pmd/pmd/pull/7167): \[html] Fix #7166: off-by-one error in LineNumbers.java - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7169](https://github.com/pmd/pmd/pull/7169): chore: Ensure deprecated items are annotated with @<!-- -->Deprecated - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7170](https://github.com/pmd/pmd/pull/7170): chore: Replace `java.version` with `maven.compiler.release` in pom files - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7173](https://github.com/pmd/pmd/pull/7173): \[tests] Remove flow control from tests - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#7177](https://github.com/pmd/pmd/pull/7177): \[matlab] Fix #2258: Handle literal backslashes in character vectors - [subotac](https://github.com/subotac) (@subotac)
+* [#7193](https://github.com/pmd/pmd/pull/7193): \[java] Fix #6409: UnnecessaryCast false positive for anonymous class - [Yang Bai](https://github.com/ybai08) (@ybai08)
+* [#7199](https://github.com/pmd/pmd/pull/7199): \[java] Fix #6546: Consolidate the Vector replacement rules - [João Gabriel Alves Junior](https://github.com/Gabrieljr42) (@Gabrieljr42)
+* [#7203](https://github.com/pmd/pmd/pull/7203): \[java] Fix #4576: UseShortArrayInitializer false positive with arrays of parameterized types - [markxu](https://github.com/markjoin123) (@markjoin123)
+* [#7219](https://github.com/pmd/pmd/pull/7219): \[java] Fix #7213: UnusedPrivateMethod/UnusedPrivateField with qualified MethodSource/FieldSource references - [leeshengis](https://github.com/leeshengis) (@leeshengis)
+* [#7224](https://github.com/pmd/pmd/pull/7224): \[plsql] Fix #7223: Deprecate AST node ASTKEYWORD_UNRESERVED - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7230](https://github.com/pmd/pmd/pull/7230): \[core] Remove ShortFilenameUtil.java - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7232](https://github.com/pmd/pmd/pull/7232): \[core] Remove more unused code (FileFinder.java, FileExtensionFilter.java, PredicateUtil.getFileExtensionFilter()) - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7259](https://github.com/pmd/pmd/pull/7259): \[core] Don't follow symlinks in FileCollector - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7260](https://github.com/pmd/pmd/pull/7260): \[core] HTMLRenderers: Properly escape rule name and externalInfoUrl - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7261](https://github.com/pmd/pmd/pull/7261): \[core] Disallow external entity expansions/DTD in XML parsing - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7262](https://github.com/pmd/pmd/pull/7262): \[core] Fix missing escaping in CSV renderers - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#7113](https://github.com/pmd/pmd/pull/7113): Bump PMD from 7.27.0 to 7.28.0
+* [#7114](https://github.com/pmd/pmd/pull/7114): chore: Replace system-lambda with system-stubs
+* [#7124](https://github.com/pmd/pmd/pull/7124): chore(deps): bump org.mockito:mockito-core from 5.23.0 to 5.24.0
+* [#7125](https://github.com/pmd/pmd/pull/7125): chore(deps): bump org.apache.groovy:groovy from 5.1.2 to 5.1.3
+* [#7126](https://github.com/pmd/pmd/pull/7126): chore(deps): bump ruby/setup-ruby from 1.324.0 to 1.327.0
+* [#7127](https://github.com/pmd/pmd/pull/7127): chore(deps): bump org.apache.commons:commons-lang3 from 3.20.0 to 3.21.0
+* [#7128](https://github.com/pmd/pmd/pull/7128): chore(deps): bump crate-ci/typos from 1.50.2 to 1.50.3
+* [#7140](https://github.com/pmd/pmd/pull/7140): chore(deps): bump org.apache.maven:apache-maven from 3.9.16 to 3.10.0
+* [#7141](https://github.com/pmd/pmd/pull/7141): chore(deps): bump io.github.apex-dev-tools:apex-ls_2.13 from 6.2.0 to 6.3.1
+* [#7142](https://github.com/pmd/pmd/pull/7142): chore(deps-dev): bump com.google.guava:guava from 33.7.1-jre to 33.7.2-jre
+* [#7143](https://github.com/pmd/pmd/pull/7143): chore(deps): bump com.puppycrawl.tools:checkstyle from 14.1.0 to 14.3.0
+* [#7159](https://github.com/pmd/pmd/pull/7159): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.26.2 to 0.26.3
+* [#7185](https://github.com/pmd/pmd/pull/7185): chore(deps): bump ruby/setup-ruby from 1.327.0 to 1.328.0
+* [#7186](https://github.com/pmd/pmd/pull/7186): chore(deps): bump crate-ci/typos from 1.50.3 to 1.51.1
+* [#7187](https://github.com/pmd/pmd/pull/7187): chore(deps): bump actions/upload-artifact from 7.0.1 to 7.0.2
+* [#7188](https://github.com/pmd/pmd/pull/7188): chore(deps): bump actions/download-artifact from 8.0.1 to 8.0.2
+* [#7189](https://github.com/pmd/pmd/pull/7189): chore(deps): bump org.ow2.asm:asm from 9.10.1 to 9.11
+* [#7190](https://github.com/pmd/pmd/pull/7190): chore(deps): bump actions/setup-java from 6.0.1 to 6.1.0
+* [#7205](https://github.com/pmd/pmd/pull/7205): chore(deps): bump org.ow2.asm:asm from 9.11 to 9.11.1
+* [#7206](https://github.com/pmd/pmd/pull/7206): chore(deps): bump byte.buddy.version from 1.18.14 to 1.18.15
+* [#7207](https://github.com/pmd/pmd/pull/7207): chore(deps): bump org.sonatype.central:central-publishing-maven-plugin from 0.11.0 to 0.12.0
+* [#7208](https://github.com/pmd/pmd/pull/7208): chore(deps): bump io.github.apex-dev-tools:apex-parser from 5.2.0 to 5.3.0
+* [#7209](https://github.com/pmd/pmd/pull/7209): chore(deps): bump ruby/setup-ruby from 1.328.0 to 1.329.0
+* [#7210](https://github.com/pmd/pmd/pull/7210): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.26.3 to 0.26.5
+* [#7212](https://github.com/pmd/pmd/pull/7212): chore(deps-dev): bump org.codehaus.mojo:versions-maven-plugin from 2.22.0 to 2.23.0
+* [#7211](https://github.com/pmd/pmd/pull/7211): chore(deps): bump actions/create-github-app-token from 3.2.0 to 3.3.0
+* [#7222](https://github.com/pmd/pmd/pull/7222): chore(deps): bump io.github.apex-dev-tools:apex-ls_2.13 from 6.3.1 to 6.3.2
+* [#7247](https://github.com/pmd/pmd/pull/7247): chore(deps): bump byte.buddy.version from 1.18.15 to 1.18.16
+* [#7248](https://github.com/pmd/pmd/pull/7248): chore(deps): bump ruby/setup-ruby from 1.329.0 to 1.335.0
+* [#7249](https://github.com/pmd/pmd/pull/7249): chore(deps): bump surefire.version from 3.6.0 to 3.6.1
+* [#7250](https://github.com/pmd/pmd/pull/7250): chore(deps): bump io.github.apex-dev-tools:apex-ls_2.13 from 6.3.2 to 6.4.0
+* [#7251](https://github.com/pmd/pmd/pull/7251): chore(deps): bump com.google.code.gson:gson from 2.14.0 to 2.15.0
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 91 commits
+* 95 closed tickets & PRs
+* Days since last release: 34
 
 {% endtocmaker %}
