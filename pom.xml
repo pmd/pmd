@@ -45,9 +45,7 @@
         </mailingList>
         <mailingList>
             <name>PMD commits</name>
-            <subscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</subscribe>
-            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/pmd-commits</unsubscribe>
-            <archive>https://sourceforge.net/p/pmd/mailman/pmd-commits</archive>
+            <archive>https://github.com/pmd/pmd/commits/main</archive>
         </mailingList>
     </mailingLists>
     <developers>
