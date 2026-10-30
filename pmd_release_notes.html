@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.29.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.30.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.29.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.30.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.29.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 30-October-2026</div>
+    <li class="sidebarTitle">PMD 7.30.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-November-2026</div>
     
     
     
@@ -2055,283 +2055,17 @@
     </details>
 
   
-<h2 id="30-october-2026---7290-snapshot">30-October-2026 - 7.29.0-SNAPSHOT</h2>
+<h2 id="27-november-2026---7300-snapshot">27-November-2026 - 7.30.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.29.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.30.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-<h4 id="security-fixes">Security fixes</h4>
-<p>All known security vulnerabilities are described in full detail on the page
-<a href="pmd_about_security.html">PMD Security</a>. This release, the following
-security vulnerabilities were fixed:</p>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-wj6q-xw9m-26p6">GHSA-wj6q-xw9m-26p6</a>:
-Arbitrary file disclosure in CPD via symlinks in analyzed sources.<br />
-When collecting files, CPD followed symbolic links, even if their targets were outside the scanned
-directory. This allowed reading any file accessible to the user running CPD. If a CI/CD pipeline
-runs CPD on untrusted source code (e.g. a pull request from an external contributor), an attacker
-could commit two symlinks pointing to the same file outside the project. CPD detected them as
-duplicates and wrote the full content of the target file into the report. If the report was
-published, e.g. as a CI artifact, the attacker could read it.<br />
-With this fix, neither PMD nor CPD follows symbolic links anymore when collecting files to analyze.<br />
-Affected versions: PMD &gt;= 6.54.0 and &lt;= 7.28.0. If you run CPD on untrusted source code,
-it is recommended to upgrade PMD.<br />
-Reported by <a href="https://github.com/7alen7">Dan</a> (@7alen7).
-Independently reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-5x5v-644m-q2qc">GHSA-5x5v-644m-q2qc</a>:
-XSS via externalInfoUrl in HTML report formats.<br />
-The <code class="language-plaintext highlighter-rouge">html</code> and <code class="language-plaintext highlighter-rouge">summaryhtml</code> renderers inserted a rule’s <code class="language-plaintext highlighter-rouge">externalInfoUrl</code> into generated reports
-without escaping or URL-scheme validation. With a crafted ruleset, this allowed injected markup that
-runs when the report is opened (with <code class="language-plaintext highlighter-rouge">--show-suppressed</code>), or <code class="language-plaintext highlighter-rouge">javascript:</code> links that run when clicked.
-This only affects setups where PMD loads an untrusted ruleset and the resulting HTML report is viewed
-in a browser.<br />
-Affected versions: PMD 7.28.0 and earlier. If you use the html or summaryhtml report formats, it is
-recommended to upgrade PMD.<br />
-Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-x2h8-xxj6-pf6c">GHSA-x2h8-xxj6-pf6c</a>:
-XSS via rule name in summaryhtml report format.<br />
-The <code class="language-plaintext highlighter-rouge">summaryhtml</code> renderer wrote rule names into the report without HTML escaping. A ruleset with a
-crafted rule name could inject JavaScript that runs in the browser of anyone who opens the report.
-This affects setups that use <code class="language-plaintext highlighter-rouge">--format summaryhtml</code> together with a ruleset from an untrusted source,
-e.g. CI/CD pipelines that use a ruleset from a pull request by an external contributor.
-If the report is served from a web host (e.g. a CI dashboard), the script runs in that origin.
-This is a follow-up to CVE-2026-28338, whose fix did not cover the summaryhtml renderer.<br />
-Affected versions: PMD 7.28.0 and earlier. If you use the summaryhtml report format, it is
-recommended to upgrade PMD.<br />
-Reported by <a href="https://github.com/7alen7">Dan</a> (@7alen7).
-Independently reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-9hm5-r2r7-hjcq">GHSA-9hm5-r2r7-hjcq</a>:
-Local file reads through XXE in PMD rule tests.<br />
-<strong>Normal usage of PMD for analyzing source code is not affected.</strong> Only projects that develop custom
-rules and test them with PMD’s rule test framework (modules <code class="language-plaintext highlighter-rouge">pmd-test</code> and <code class="language-plaintext highlighter-rouge">pmd-test-schema</code>) are affected.<br />
-The parser for rule-test XML files did not disable DTDs and external entities. A crafted rule-test XML
-file could therefore read a local file and place its contents into a parsed test description. Since the
-description is used as the name of the JUnit test, the file contents could appear in test results.
-This is relevant when rule-test XML files from untrusted sources are executed, e.g. in a CI/CD pipeline
-for pull requests from external contributors.<br />
-With this fix, DTDs are disabled. Rule-test XML files containing a <code class="language-plaintext highlighter-rouge">DOCTYPE</code> declaration are rejected.
-This was never officially supported, as PMD doesn’t provide a DTD for rule-test XML files.<br />
-Affected versions: <code class="language-plaintext highlighter-rouge">pmd:pmd</code> &gt;= 3.9, <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-test</code> &lt;= 6.47.0,
-<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-test-schema</code> &lt;= 7.28.0. If you test custom rules with PMD’s rule test
-framework, it is recommended to upgrade PMD.<br />
-Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-wv72-2ccf-28gj">GHSA-wv72-2ccf-28gj</a>:
-Blind SSRF through Visualforce metadata parser.<br />
-When resolving custom field types, the Visualforce module parsed Salesforce <code class="language-plaintext highlighter-rouge">*.field-meta.xml</code> files
-from the analyzed source tree without disabling external DTD loading. A crafted metadata file could
-therefore make PMD send a request to an attacker-chosen URL during analysis. This affects users who
-analyze Visualforce code from untrusted sources, such as pull requests.<br />
-Affected versions: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-visualforce</code> &gt;= 6.30.0, &lt;= 7.28.0<br />
-Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).</li>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-jm8j-h474-h54h">GHSA-jm8j-h474-h54h</a>:
-Formula injection in CSV report format via unescaped quotes in file names.<br />
-The CSV renderer neither escaped embedded double quotes nor neutralized values starting with
-formula trigger characters (<code class="language-plaintext highlighter-rouge">=</code>, <code class="language-plaintext highlighter-rouge">+</code>, <code class="language-plaintext highlighter-rouge">-</code>, <code class="language-plaintext highlighter-rouge">@</code>). This let a crafted source filename, or a rule name, ruleset name
-or rule message from an attacker-controlled ruleset, inject a formula into the CSV report, which a spreadsheet
-application could evaluate when the report is opened.<br />
-Affected versions: <code class="language-plaintext highlighter-rouge">pmd:pmd</code> &gt;= 1.2, <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-core</code> &lt;= 7.28.0<br />
-Reported by <a href="https://github.com/ThejasRajamoney">lapeace</a> (@ThejasRajamoney).
-Independently reported by <a href="https://github.com/Hama1cco">Hama1cco</a> (@Hama1cco).</li>
-</ul>
-
-<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#replacejavautilvector"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilVector</code></a> reports usages of <code class="language-plaintext highlighter-rouge">java.util.Vector</code>,
-including subclasses such as <code class="language-plaintext highlighter-rouge">Stack</code>, and suggests modern alternatives when thread safety is not required.
-It recommends <code class="language-plaintext highlighter-rouge">ArrayList</code> for <code class="language-plaintext highlighter-rouge">Vector</code> and <code class="language-plaintext highlighter-rouge">Deque</code> with an implementation such as <code class="language-plaintext highlighter-rouge">ArrayDeque</code> for <code class="language-plaintext highlighter-rouge">Stack</code>.
-A declaration such as <code class="language-plaintext highlighter-rouge">Vector&lt;String&gt; v = new Vector&lt;&gt;()</code> is reported only once, not twice. It replaces
-the rules ReplaceVectorWithList and UseArrayListInsteadOfVector, which are now deprecated (see below).</li>
-  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#localvariabledeclarationshouldbeatstartofblock"><code class="language-plaintext highlighter-rouge">LocalVariableDeclarationShouldBeAtStartOfBlock</code></a> enforces a code style
-where all local variables are declared together at the start of their block, without initialization.
-Optionally, the declarations can be required to be sorted by name or by type and name
-(see properties <code class="language-plaintext highlighter-rouge">sortBy</code> and <code class="language-plaintext highlighter-rouge">caseSensitiveSorting</code>).</li>
-  <li>The new Kotlin rule <a href="pmd_rules_kotlin_bestpractices.html#loosecoupling"><code class="language-plaintext highlighter-rouge">LooseCoupling</code></a> reports declarations (properties,
-parameters, function return types) using concrete collection/map implementation types (e.g. <code class="language-plaintext highlighter-rouge">ArrayList</code>,
-<code class="language-plaintext highlighter-rouge">HashMap</code>) instead of the corresponding interface (e.g. <code class="language-plaintext highlighter-rouge">List</code>, <code class="language-plaintext highlighter-rouge">Map</code>). It is powered by the
-<code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs()</code> XPath function introduced in PMD 7.28.0.</li>
-</ul>
-
-<h4 id="changed-rules">Changed Rules</h4>
-<ul>
-  <li>Several Java rules now benefit from improved constant folding (see <a href="https://github.com/pmd/pmd/issues/7060">#7060</a>),
-which now recognizes final local variables and unqualified instance fields initialized with constant
-expressions. This may change the reported violations of the following rules:
-<a href="pmd_rules_java_bestpractices.html#avoidreassigningloopvariables"><code class="language-plaintext highlighter-rouge">AvoidReassigningLoopVariables</code></a>,
-<a href="pmd_rules_java_bestpractices.html#literalsfirstincomparisons"><code class="language-plaintext highlighter-rouge">LiteralsFirstInComparisons</code></a>,
-<a href="pmd_rules_java_bestpractices.html#unusedassignment"><code class="language-plaintext highlighter-rouge">UnusedAssignment</code></a>,
-<a href="pmd_rules_java_design.html#finalfieldcouldbestatic"><code class="language-plaintext highlighter-rouge">FinalFieldCouldBeStatic</code></a>,
-<a href="pmd_rules_java_errorprone.html#unconditionalifstatement"><code class="language-plaintext highlighter-rouge">UnconditionalIfStatement</code></a>,
-<a href="pmd_rules_java_errorprone.html#unusednullcheckinequals"><code class="language-plaintext highlighter-rouge">UnusedNullCheckInEquals</code></a>.
-Notably, LiteralsFirstInComparisons may report new violations when such a constant is the argument
-of a comparison.</li>
-  <li>The Java rule <a href="pmd_rules_java_codestyle.html#useexplicittypes"><code class="language-plaintext highlighter-rouge">UseExplicitTypes</code></a> has a new property <code class="language-plaintext highlighter-rouge">allowLongTypeNames</code>. It allows
-using <code class="language-plaintext highlighter-rouge">var</code> when the explicit type name would be longer than a given minimum length configured with
-this property.</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-<ul>
-  <li>The Java rules <a href="pmd_rules_java_bestpractices.html#replacevectorwithlist"><code class="language-plaintext highlighter-rouge">ReplaceVectorWithList</code></a> and
-<a href="pmd_rules_java_performance.html#usearraylistinsteadofvector"><code class="language-plaintext highlighter-rouge">UseArrayListInsteadOfVector</code></a> are deprecated aliases of
-<a href="pmd_rules_java_bestpractices.html#replacejavautilvector"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilVector</code></a>. Update rule references to use the new name.</li>
-</ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>apex-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5082">#5082</a>: [apex] EagerlyLoadedDescribeSObjectResult: False positive with fully qualified SObjectDescribeOptions/FieldDescribeOptions</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6912">#6912</a>: [core] Include XML validation details in ruleset loading errors</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7072">#7072</a>: [core] Reuse compiled violationSuppressXPath queries</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7156">#7156</a>: [core] Analysis cache fails with ZipException on invalid archive on the auxclasspath</li>
-    </ul>
-  </li>
-  <li>groovy
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7100">#7110</a>: [groovy] CPD fails on GStrings that end in an interpolated variable</li>
-    </ul>
-  </li>
-  <li>html
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5313">#5313</a>: [html] CPD does not include the last line in the duplication chunk</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7166">#7166</a>: [html] endcolumn of nodes is off-by-one</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7048">#7048</a>: [java] Deprecate getImage()/@<!-- -->Image and remove usages</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7054">#7054</a>: [java] IllegalArgumentException with wildcard in the upper bound of a type variable, in a lambda or method reference</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7060">#7060</a>: [java] getConstValue() returns null for constant expressions referencing final local variables</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7133">#7133</a>: [java] CPD: Constructor detection state leaks between files with –ignore-identifiers</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7145">#7145</a>: [java] Lambda with a parenthesized expression body is treated as void-compatible</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7146">#7146</a>: [java] Overload resolution prefers int over Integer where javac reports an ambiguity</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7148">#7148</a>: [java] Strict phase rejects lambda and method reference results that need boxing</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7149">#7149</a>: [java] Loose invocation conversion accepts int to Long and null to int</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7150">#7150</a>: [java] Numeric conditional with a char operand and an int constant is typed as int</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7151">#7151</a>: [java] Unqualified method call resolves to an enclosing class method that the inner class hides</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5159">#5159</a>: [java] UnusedAssignment: False positive when using assert</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6546">#6546</a>: [java] New Rule: ReplaceJavaUtilVector to consolidate ReplaceVectorWithList / UseArrayListInsteadOfVector</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6984">#6984</a>: [java] ExhaustiveSwitchHasDefault: Improve violation messages to list missing cases</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7018">#7018</a>: [java] UnusedAssignment: False positive for an assignment in a condition operand that may be skipped</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7063">#7063</a>: [java] CheckResultSet: False positive for rs.next() ? x : y</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7119">#7119</a>: [java] SimplifiableTestAssertion: False negatives for assertInstanceOf, assertNull, assertNonNull</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7213">#7213</a>: [java] UnusedPrivateMethod / UnusedPrivateField: False positives for fully qualified @<!-- -->MethodSource / @<!-- -->FieldSource references</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4576">#4576</a>: [java] UseShortArrayInitializer: False positive with arrays of parametrized types (generic array creation)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6409">#6409</a>: [java] UnnecessaryCast: False positive for anonymous class in Stream.map() with toList()</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6882">#6882</a>: [java] New Rule: Enforce local variable declarations to be at the start of a block</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6903">#6903</a>: [java] Enhance UseExplicitTypes to allow verbose long explicit types</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4815">#4815</a>: [java] ExceptionAsFlowControl: False positive on Lambda/asynchronous</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7117">#7117</a>: [java] ExceptionAsFlowControl: False negative when the lambda is invoked by the method it is passed to</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5158">#5158</a>: [java] SingletonClassReturningNewInstance: False positive due to type cast</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7137">#7137</a>: [java] InvalidLogMessageFormat: False positive for unresolved exception type (incomplete auxclasspath)</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7120">#7120</a>: [java] NonThreadSafeSingleton: throws NoSuchElementException on a record that null checks its own fields</li>
-    </ul>
-  </li>
-  <li>java-security
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7014">#7014</a>: [java] InsecureCryptoIv/HardCodedCryptoKey: False negative when a hard-coded array is constructed through array element assignments</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7015">#7015</a>: [java] InsecureCryptoIv/HardCodedCryptoKey: False negative for unchanged default-initialized arrays</li>
-    </ul>
-  </li>
-  <li>kotlin-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7092">#7092</a>: [kotlin] New Rule: LooseCoupling</li>
-    </ul>
-  </li>
-  <li>matlab
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2258">#2258</a>: [matlab] CPD: Parse error with backslashes in character vectors/string literals</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6609">#6609</a>: [plsql] Parse exception when comparing a parenthesized arithmetic expression in a WHERE clause</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7223">#7223</a>: [plsql] Deprecate AST node <code class="language-plaintext highlighter-rouge">ASTKEYWORD_UNRESERVED</code></li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-<ul>
-  <li>pmd-java
-    <ul>
-      <li>Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
-including local variables and unqualified instance fields. Numeric references are converted to their declared type.
-Boxed fields and field accesses qualified by expressions (such as <code class="language-plaintext highlighter-rouge">this.CONSTANT</code>) are not compile-time constants.
-These changes affect <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConstValue()"><code>ASTExpression#getConstValue</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#isCompileTimeConstant()"><code>isCompileTimeConstant</code></a>, and the XPath attribute
-<code class="language-plaintext highlighter-rouge">@CompileTimeConstant</code>; custom Java and XPath rules relying on them may report different results.</li>
-      <li>As part of <a href="https://github.com/pmd/pmd/issues/4787">Deprecate getImage()/@<!-- -->Image (#4787)</a>, the <code class="language-plaintext highlighter-rouge">@Image</code>
-attribute and <code class="language-plaintext highlighter-rouge">getImage()</code> method of multiple AST nodes have been deprecated:
-        <ul>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTAmbiguousName.html#getImage()"><code>ASTAmbiguousName#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">AmbiguousName</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTBreakStatement.html#getImage()"><code>ASTBreakStatement#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">BreakStatement</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Label</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#getImage()"><code>ASTConstructorDeclaration#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">ConstructorDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTContinueStatement.html#getImage()"><code>ASTContinueStatement#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">ContinueStatement</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Label</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTFieldAccess.html#getImage()"><code>ASTFieldAccess#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">FieldAccess</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#getImage()"><code>ASTImportDeclaration#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">ImportDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@ImportedName</code> instead.
-Note: This method always returns <code class="language-plaintext highlighter-rouge">null</code>. Don’t use it. It is only deprecated for consistency.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTLabeledStatement.html#getImage()"><code>ASTLabeledStatement#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">LabeledStatement</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Label</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMemberValuePair.html#getImage()"><code>ASTMemberValuePair#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">MemberValuePair</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodCall.html#getImage()"><code>ASTMethodCall#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">MethodCall</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@MethodName</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getImage()"><code>ASTMethodDeclaration#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">MethodDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.
-Note: This method always returns <code class="language-plaintext highlighter-rouge">null</code>. Don’t use it. It is only deprecated for consistency.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTPackageDeclaration.html#getImage()"><code>ASTPackageDeclaration#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">PackageDeclaration</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.
-Note: This method always returns <code class="language-plaintext highlighter-rouge">null</code>. Don’t use it. It is only deprecated for consistency.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTTypeParameter.html#getImage()"><code>ASTTypeParameter#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">TypeParameter</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTVariableAccess.html#getImage()"><code>ASTVariableAccess#getImage</code></a>:
-The <code class="language-plaintext highlighter-rouge">@Image</code> attribute of <code class="language-plaintext highlighter-rouge">VariableAccess</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">@Name</code> instead.</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>pmd-plsql
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.29.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/ast/ASTKEYWORD_UNRESERVED.html#"><code>ASTKEYWORD_UNRESERVED</code></a> has been deprecated. This AST node was generated
-by mistake and is not used. The parser production has already been deprecated since 7.3.0.</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
