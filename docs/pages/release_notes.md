@@ -27,6 +27,9 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛️ Fixed Issues
 
 ### 🚨️ API Changes
+*   pmd-apex
+    *   Apex DML statement nodes now expose the `@RunAsMode` XPath attribute. It contains `USER_MODE` or `SYSTEM_MODE`
+        when the statement specifies an access mode, and is absent when the mode is implicit ([#7108](https://github.com/pmd/pmd/issues/7108)).
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
