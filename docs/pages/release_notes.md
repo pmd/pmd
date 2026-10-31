@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* apex-security
+    * [#5734](https://github.com/pmd/pmd/issues/5734): \[apex] ApexSOQLInjection: Report multiline queries at the query call
 
 ### 🚨️ API Changes
 
