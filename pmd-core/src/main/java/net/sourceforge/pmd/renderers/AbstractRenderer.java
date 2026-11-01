@@ -96,6 +96,15 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
         return writer;
     }
 
+    /**
+     * @deprecated Since 7.30.0.
+     */
+    @Deprecated
+    @Override
+    public void flush() {
+        close();
+    }
+
     @Override
     public void close() {
         if (writer == null) {

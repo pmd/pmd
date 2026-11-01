@@ -170,6 +170,14 @@ public interface Renderer extends PropertySource {
      */
     void end() throws IOException;
 
+    /**
+     * @deprecated Since 7.30.0.
+     */
+    @Deprecated
+    default void flush() throws IOException {
+        close();
+    }
+
     void close() throws IOException;
 
     /**
