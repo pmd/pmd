@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * @since 7.29.0
+ * @since 7.30.0
  */
 public class ControlFlowInTestRule extends AbstractJavaRulechainRule {
 

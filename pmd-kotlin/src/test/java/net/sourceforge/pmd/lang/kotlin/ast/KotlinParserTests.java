@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -190,6 +191,13 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
         // even when empty. KotlinInnerNode omits only null-valued attributes.
         assertTrue(hasXPathAttribute(func, "AnnotationFqNames"));
         assertTrue(hasXPathAttribute(clazz, "AnnotationFqNames"));
+
+        Object funcAnnotationFqNames = getXpathAttribute(func, "AnnotationFqNames").get();
+        assertInstanceOf(List.class, funcAnnotationFqNames);
+        assertTrue(((List<?>) funcAnnotationFqNames).isEmpty());
+        Object clazzAnnotationFqNames = getXpathAttribute(clazz, "AnnotationFqNames").get();
+        assertInstanceOf(List.class, clazzAnnotationFqNames);
+        assertTrue(((List<?>) clazzAnnotationFqNames).isEmpty());
     }
 
     @Test
@@ -283,14 +291,17 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     }
 
     private static boolean hasXPathAttribute(KotlinNode node, String name) {
+        return getXpathAttribute(node, name).isPresent();
+    }
+
+    private static Optional<Object> getXpathAttribute(KotlinNode node, String name) {
         Iterator<Attribute> it = node.getXPathAttributesIterator();
         while (it.hasNext()) {
             Attribute attr = it.next();
             if (name.equals(attr.getName())) {
-                return true;
+                return Optional.ofNullable(attr.getValue());
             }
         }
-        return false;
+        return Optional.empty();
     }
-
 }

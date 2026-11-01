@@ -484,7 +484,7 @@ public interface YetAnotherConstantInterface {
 
     <rule name="ControlFlowInTest"
           language="java"
-          since="7.29.0"
+          since="7.30.0"
           message="Control flow in a test can obscure its assertions"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.ControlFlowInTestRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#controlflowintest">
@@ -1469,20 +1469,27 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="ReplaceVectorWithList"
+    <rule name="ReplaceJavaUtilVector"
           language="java"
-          since="3.4"
-          message="Consider replacing this Vector with the newer java.util.List"
+          since="7.29.0"
+          message="Consider replacing java.util.Vector with java.util.ArrayList or java.util.ArrayDeque"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacevectorwithlist">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacejavautilvector">
         <description>
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
+For Stack, which extends Vector, consider java.util.Deque and an implementation such as java.util.ArrayDeque instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIsExactly('java.util.Vector')]
+//ClassType[pmd-java:typeIs('java.util.Vector')][
+  not(
+    parent::ConstructorCall/parent::VariableDeclarator/preceding-sibling::ClassType[
+      pmd-java:typeIs('java.util.Vector')
+    ]
+  )
+]
                 ]]></value>
             </property>
         </properties>
@@ -1497,6 +1504,8 @@ public class Foo {
 ]]>
         </example>
     </rule>
+
+    <rule name="ReplaceVectorWithList" deprecated="true" ref="ReplaceJavaUtilVector" />
 
     <rule name="SimplifiableTestAssertion"
           language="java"
@@ -2472,4 +2481,5 @@ public class Example {
 ]]>
         </example>
     </rule>
+
 </ruleset>

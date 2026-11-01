@@ -75,6 +75,10 @@ class OverloadResolutionTest : ProcessorTestSpec({
 
             assertNotConvertible(byte to char)        // widening then narrowing (allowed in casts)
             assertNotConvertible(ts.BOXED_VOID to ts.INT) // unrelated types
+            assertNotConvertible(int to long.box())   // widening then boxing (#7149)
+            assertNotConvertible(int to long.box(), false)
+            assertNotConvertible(int to double.box()) // widening then boxing (#7149)
+            assertNotConvertible(ts.NULL_TYPE to int) // null to primitive (#7149)
         }
     }
 
@@ -311,9 +315,8 @@ class OverloadResolutionTest : ProcessorTestSpec({
             class Klass {
                 static {
                     // This is assertThat(Integer)
-                    // Integer is more specific than Long because int -> Integer
-                    // only involves boxing, while int -> Long needs widening and
-                    // then boxing.
+                    // assertThat(Long) is not applicable, because int -> Long
+                    // would need widening and then boxing (#7149).
                     assertThat(1);
                 }
             }
@@ -340,13 +343,13 @@ class OverloadResolutionTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Two overloads with boxed types, widening required, ambiguous") {
+    parserTest("Two overloads with boxed types, widening required, not applicable") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Static {
                 static {
-                    // ambiguous: 1 is int, and neither Double nor Long is more
-                    // specific because they both involve boxing + widening
+                    // not applicable: 1 is int, and JLS 5.3 allows boxing then
+                    // widening reference, not widening primitive then boxing (#7149)
                     assertThat(1);
                 }
 
@@ -363,7 +366,225 @@ class OverloadResolutionTest : ProcessorTestSpec({
         )
 
         val call = acu.firstMethodCall()
-        spy.shouldBeAmbiguous(call)
+        spy.shouldHaveMissingCtDecl(call)
+    }
+
+    parserTest("#7149 widening then boxing is not a loose invocation conversion") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Loose {
+                static void f(int x, Long y) { }
+                static void f(long x, long y) { }
+
+                void t(Integer value) {
+                    // f(int, Long) is not applicable, 2 -> Long would need widening then boxing
+                    f(value, 2);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "f",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(long, long),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7149 int argument for a Long parameter is not applicable") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class G {
+                static void g(Long y) { }
+
+                void t() {
+                    g(1);
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldHaveMissingCtDecl(acu.firstMethodCall())
+    }
+
+    parserTest("#7149 int argument for a Number parameter is applicable by boxing and widening") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class N {
+                static void f(Number n) { }
+
+                void t() {
+                    f(1);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "f",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(Number::class.decl),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7149 null argument for an int parameter is not applicable") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class H {
+                static void h(int x) { }
+
+                void t() {
+                    h(null);
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldHaveMissingCtDecl(acu.firstMethodCall())
+    }
+
+    parserTest("#7149 type variable bounded by Integer is applicable to an int parameter") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class TV {
+                static void h(int x) { }
+
+                <T extends Integer> void t(T t) {
+                    h(t);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "h",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7146 int is not more specific than Integer") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Example {
+                static void d(int x, int y) { }
+                static void d(long x, Integer y) { }
+
+                void test(Integer value) {
+                    // ambiguous: both are applicable by loose invocation,
+                    // and neither int nor Integer is a subtype of the other
+                    d(value, 5);
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldBeAmbiguous(acu.firstMethodCall())
+    }
+
+    parserTest("#7146 only e(int, int) is applicable by strict invocation") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class E {
+                static void e(int x, int y) { }
+                static void e(long x, Integer y) { }
+
+                void t() {
+                    e(1, 5);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "e",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(int, int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7146 int... is not more specific than Object... for an empty varargs call") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class VA {
+                static void v(int... a) { }
+                static void v(Object... a) { }
+
+                void t() {
+                    // ambiguous: int is not a subtype of Object
+                    v();
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldBeAmbiguous(acu.firstMethodCall())
+    }
+
+    parserTest("#7149 conditional with a null branch is typed as the box of the other branch") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Cond {
+                static void h(int x) { }
+                static void g(int x) { }
+                static void g(Integer x) { }
+                static void k(boolean x) { }
+
+                void t(boolean b) {
+                    // javac types b ? 1 : null as Integer, so h(int) applies by unboxing
+                    h(b ? 1 : null);
+                    // and g(Integer) is selected in the strict phase
+                    g(b ? null : 1);
+                    // the same for Boolean
+                    k(b ? true : null);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_Cond = acu.firstTypeSignature()
+        val (hCall, gCall, kCall) = acu.descendants(ASTMethodCall::class.java).toList()
+
+        spy.shouldBeOk {
+            hCall.methodType.shouldMatchMethod(
+                named = "h",
+                declaredIn = t_Cond,
+                withFormals = listOf(int),
+                returning = void
+            )
+            gCall.methodType.shouldMatchMethod(
+                named = "g",
+                declaredIn = t_Cond,
+                withFormals = listOf(int.box()),
+                returning = void
+            )
+            kCall.methodType.shouldMatchMethod(
+                named = "k",
+                declaredIn = t_Cond,
+                withFormals = listOf(boolean),
+                returning = void
+            )
+        }
     }
 
     parserTest("Overload selection must identify fallbacks if any") {

@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.visualforce.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.List;
@@ -156,12 +156,9 @@ class ASTExpressionTest {
             assertEquals(2, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            try {
-                expression.getDataNodes();
-                fail(template + " should have thrown");
-            } catch (ASTExpression.DataNodeStateException expected) {
-                // Intentionally left blank
-            }
+            assertThrows(ASTExpression.DataNodeStateException.class,
+                    expression::getDataNodes,
+                    template + " should have thrown");
         }
     }
 
@@ -174,12 +171,9 @@ class ASTExpressionTest {
             assertEquals(2, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            try {
-                expression.getDataNodes();
-                fail(template + " should have thrown");
-            } catch (ASTExpression.DataNodeStateException expected) {
-                // Intentionally left blank
-            }
+            assertThrows(ASTExpression.DataNodeStateException.class,
+                    expression::getDataNodes,
+                    template + " should have thrown");
         }
     }
 
@@ -192,12 +186,9 @@ class ASTExpressionTest {
             assertEquals(2, nodes.size(), template);
 
             ASTExpression expression = (ASTExpression) nodes.get(0);
-            try {
-                expression.getDataNodes();
-                fail(template + " should have thrown");
-            } catch (ASTExpression.DataNodeStateException expected) {
-                // Intentionally left blank
-            }
+            assertThrows(ASTExpression.DataNodeStateException.class,
+                    expression::getDataNodes,
+                    template + " should have thrown");
         }
     }
 
