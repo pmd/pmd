@@ -24,7 +24,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
+    reports control flow in test methods that can obscure which assertions
+    are executed. It checks conditionals, switch statements and expressions,
+    explicit throw statements, try statements with catch clauses,
+    and plain try-finally statements.
+    Loops are allowed by default and can be reported by setting
+    `allowLoops` to `false`.
+
 ### 🐛️ Fixed Issues
+* java-bestpractices
+    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] new rule: ControlFlowInTest
 
 ### 🚨️ API Changes
 
