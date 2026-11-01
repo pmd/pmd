@@ -78,7 +78,7 @@ class PmdAnalysisTest {
         verify(renderer, times(1)).renderFileReport(ArgumentMatchers.<Report>any());
         verify(renderer, times(1)).start();
         verify(renderer, times(1)).end();
-        verify(renderer, times(1)).flush();
+        verify(renderer, times(1)).close();
     }
 
     @Test
