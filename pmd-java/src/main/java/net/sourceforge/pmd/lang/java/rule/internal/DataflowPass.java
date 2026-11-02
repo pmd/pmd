@@ -58,6 +58,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -745,9 +746,12 @@ public final class DataflowPass {
             SpanInfo before = data;
 
             JavaNode lambdaBody = node.getChild(node.getNumChildren() - 1);
-            // if it's an expression, then no assignments may occur in it,
-            // but it can still use some variables of the context
-            acceptOpt(lambdaBody, before.forkCapturingNonLocal());
+            SpanInfo lambdaState = before.forkCapturingNonLocal();
+            for (ASTLambdaParameter parameter : node.getParameters()) {
+                lambdaState.declareBlank(parameter.getVarId());
+            }
+            // Captured definitions are still reachable, while parameter definitions are local.
+            acceptOpt(lambdaBody, lambdaState);
             return before;
         }
 
