@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -250,6 +251,10 @@ public class CloseResourceRule extends AbstractJavaRule {
         }
 
         List<ASTVariableId> vars = method.getBody().descendants(ASTVariableId.class)
+            .crossFindBoundaries()
+            // Lambdas share this declaration; nested methods, fields and initializers do not.
+            .filter(var -> var.ancestors(ASTBodyDeclaration.class).first() == method)
+            .filterNot(var -> hasBorrowedLambdaInitializer(var, method) && !hasOwnedReassignment(var))
             .filterNot(ASTVariableId::isFormalParameter)
             .filterNot(ASTVariableId::isExceptionBlockParameter)
             .filter(this::isVariableNotSpecifiedInTryWithResource)
@@ -264,6 +269,34 @@ public class CloseResourceRule extends AbstractJavaRule {
             resVars.put(var, varType);
         }
         return resVars;
+    }
+
+    private boolean hasBorrowedLambdaInitializer(ASTVariableId var, ASTExecutableDeclaration method) {
+        return isDeclaredInLambda(var, method)
+            && isBorrowedResourceValue(var.getInitializer());
+    }
+
+    private boolean isDeclaredInLambda(ASTVariableId var, ASTExecutableDeclaration method) {
+        @Nullable
+        ASTLambdaExpression lambda = var.ancestors(ASTLambdaExpression.class).first();
+        return lambda != null && lambda.ancestors(ASTBodyDeclaration.class).first() == method;
+    }
+
+    private boolean hasOwnedReassignment(ASTVariableId var) {
+        for (ASTNamedReferenceExpr usage : var.getLocalUsages()) {
+            if (usage.getParent() instanceof ASTAssignmentExpression) {
+                ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
+                if (assignment.getLeftOperand() == usage && !isBorrowedResourceValue(assignment.getRightOperand())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isBorrowedResourceValue(@Nullable ASTExpression expression) {
+        ASTExpression value = JavaAstUtils.peelCasts(expression);
+        return value == null || value instanceof ASTNamedReferenceExpr || value instanceof ASTNullLiteral;
     }
 
     private TypeNode getTypeOfVariable(ASTVariableId var) {
@@ -405,7 +438,8 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private boolean isNotWrappingResourceMethodParameter(ASTVariableId var,
                                                          ASTExecutableDeclaration method) {
-        return !isWrappingResourceMethodParameter(var, method);
+        return !isWrappingResourceMethodParameter(var, method)
+            || isDeclaredInLambda(var, method) && hasOwnedReassignment(var);
     }
 
     /**
@@ -450,7 +484,13 @@ public class CloseResourceRule extends AbstractJavaRule {
                 return true;
             }
         }
-        return false;
+        @Nullable
+        JVariableSymbol parameterSymbol = wrappedVarName.getReferencedSym();
+        @Nullable
+        ASTVariableId parameter = parameterSymbol == null ? null : parameterSymbol.tryGetNode();
+        return parameter != null && parameter.isLambdaParameter()
+            && parameter.ancestors(ASTBodyDeclaration.class).first() == methodParams.getParent()
+            && (isAssignment || isResourceTypeOrSubtype(parameter));
     }
 
     private ASTVariableAccess getWrappedVariableName(ASTVariableId var) {
@@ -875,9 +915,16 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private ASTExpressionStatement getFirstReassigningStatementBeforeBeingClosed(ASTVariableId variable, ASTExecutableDeclaration methodOrConstructor) {
-        List<ASTExpressionStatement> statements = methodOrConstructor.descendants(ASTExpressionStatement.class).toList();
+        List<ASTExpressionStatement> statements = methodOrConstructor.descendants(ASTExpressionStatement.class)
+            .crossFindBoundaries()
+            .filter(statement -> statement.ancestors(ASTBodyDeclaration.class).first() == methodOrConstructor)
+            .toList();
         boolean variableClosed = false;
-        boolean isInitialized = isNotNullInitialized(variable);
+        boolean lambdaLocal = isDeclaredInLambda(variable, methodOrConstructor);
+        boolean borrowedInitializer = lambdaLocal
+            && (hasBorrowedLambdaInitializer(variable, methodOrConstructor)
+                || isWrappingResourceMethodParameter(variable, methodOrConstructor));
+        boolean isInitialized = isNotNullInitialized(variable) && !borrowedInitializer;
         ASTExpression initializingExpression = initializerExpressionOf(variable);
         for (ASTExpressionStatement statement : statements) {
             if (isClosingVariableStatement(statement, variable)) {
@@ -897,7 +944,10 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (variableClosed) {
                     variableClosed = false;
                 } 
-                if (!isInitialized) {
+                if (lambdaLocal) {
+                    isInitialized = !isBorrowedResourceValue(assignment.getRightOperand());
+                    initializingExpression = statement.getExpr();
+                } else if (!isInitialized) {
                     isInitialized = true;
                     initializingExpression = statement.getExpr();
                 }

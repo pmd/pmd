@@ -2508,4 +2508,627 @@ class StaticMockTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7270 resource assigned inside lambda is unclosed</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            InputStream in = null;
+            try {
+                in = new FileInputStream("sample");
+                in.read();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 resource in a nested lambda is reported once</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable outer = () -> {
+            Runnable inner = () -> {
+                Scanner scanner = new Scanner("data");
+                scanner.hasNext();
+            };
+            inner.run();
+        };
+        outer.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 resource closed in lambda finally is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            Scanner scanner = new Scanner("data");
+            try {
+                scanner.hasNext();
+            } finally {
+                scanner.close();
+            }
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 lambda try-with-resources is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            try (Scanner scanner = new Scanner("data")) {
+                scanner.hasNext();
+            }
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 returning a lambda-local resource transfers ownership</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Scanner> run() {
+        return () -> {
+            Scanner scanner = new Scanner("data");
+            return scanner;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 anonymous method inside lambda is not reported twice</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable outer = () -> {
+            Runnable inner = new Runnable() {
+                public void run() {
+                    Scanner scanner = new Scanner("data");
+                    scanner.hasNext();
+                }
+            };
+            inner.run();
+        };
+        outer.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 separate lambda locals with the same name are independent</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable first = () -> {
+            Scanner scanner = new Scanner("first");
+            scanner.hasNext();
+        };
+        Runnable second = () -> {
+            Scanner scanner = new Scanner("second");
+            scanner.hasNext();
+        };
+        first.run();
+        second.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a lambda resource alias still belongs to its parameter caller</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Function;
+class Sample {
+    Function<Scanner, Runnable> run() {
+        return supplied -> () -> {
+            Scanner alias = supplied;
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 lambda reassignment leaks the original resource</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            Scanner scanner = new Scanner("first");
+            try {
+                scanner = new Scanner("second");
+            } finally {
+                scanner.close();
+            }
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 lambda closes the resource before assigning a new one</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            Scanner scanner = new Scanner("first");
+            try {
+                scanner.hasNext();
+            } finally {
+                scanner.close();
+            }
+            scanner = new Scanner("second");
+            try {
+                scanner.hasNext();
+            } finally {
+                scanner.close();
+            }
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 captured resource aliases do not acquire ownership</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Scanner source = new Scanner("data");
+        try {
+            Runnable work = () -> {
+                Scanner alias = source;
+                alias.hasNext();
+            };
+            work.run();
+        } finally {
+            source.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a borrowed lambda alias does not hide the owning resource leak</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Scanner source = new Scanner("data");
+        Runnable work = () -> {
+            Scanner alias = source;
+            alias.hasNext();
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 lambda-local aliases are not independent resource allocations</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            Scanner source = new Scanner("data");
+            Scanner alias = source;
+            alias.hasNext();
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 wrapping a lambda parameter follows caller ownership</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.util.Scanner;
+import java.util.function.Function;
+class Sample {
+    Function<InputStream, Runnable> run() {
+        return supplied -> () -> {
+            Scanner scanner = new Scanner(supplied);
+            scanner.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a rebound local alias owns its new resource</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            Scanner source = new Scanner("first");
+            try {
+                Scanner alias = source;
+                alias = new Scanner("second");
+            alias.hasNext();
+            } finally {
+                source.close();
+            }
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a rebound local alias closes its new resource</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    void run() {
+        Runnable work = () -> {
+            Scanner source = new Scanner("first");
+            try {
+                Scanner alias = source;
+                alias = new Scanner("second");
+            try {
+                alias.hasNext();
+            } finally {
+                alias.close();
+            }
+            } finally {
+                source.close();
+            }
+        };
+        work.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a rebound alias of a lambda parameter must be closed</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.util.Scanner;
+import java.util.function.Function;
+class Sample {
+    Function<Scanner, Runnable> run() {
+        return supplied -> () -> {
+            Scanner alias = supplied;
+            alias = new Scanner("second");
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a rebound alias of a lambda parameter is closed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.util.Scanner;
+import java.util.function.Function;
+class Sample {
+    Function<Scanner, Runnable> run() {
+        return supplied -> () -> {
+            Scanner alias = supplied;
+            alias = new Scanner("second");
+            try {
+                alias.hasNext();
+            } finally {
+                alias.close();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a rebound wrapper of a lambda parameter must be closed</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.util.Scanner;
+import java.util.function.Function;
+class Sample {
+    Function<InputStream, Runnable> run() {
+        return supplied -> () -> {
+            Scanner alias = new Scanner(supplied);
+            alias = new Scanner("second");
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a rebound wrapper of a lambda parameter is closed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.util.Scanner;
+import java.util.function.Function;
+class Sample {
+    Function<InputStream, Runnable> run() {
+        return supplied -> () -> {
+            Scanner alias = new Scanner(supplied);
+            alias = new Scanner("second");
+            try {
+                alias.hasNext();
+            } finally {
+                alias.close();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 references remain borrowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.BiConsumer;
+class Sample {
+    BiConsumer<Scanner, Scanner> run() {
+        return (first, second) -> {
+            Scanner alias = first;
+            alias = second;
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 null remains unowned</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.BiConsumer;
+class Sample {
+    BiConsumer<Scanner, Scanner> run() {
+        return (first, second) -> {
+            Scanner alias = first;
+            alias = second;
+            alias = null;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 acquired resource is closed after borrowed references</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.BiConsumer;
+class Sample {
+    BiConsumer<Scanner, Scanner> run() {
+        return (first, second) -> {
+            Scanner alias = first;
+            alias = second;
+            alias = new Scanner("owned");
+            try {
+                alias.hasNext();
+            } finally {
+                alias.close();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 acquired resource leaks after borrowed references</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.BiConsumer;
+class Sample {
+    BiConsumer<Scanner, Scanner> run() {
+        return (first, second) -> {
+            Scanner alias = first;
+            alias = second;
+            alias = new Scanner("owned");
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a wrapper rebound only to a borrowed reference stays borrowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.util.Scanner;
+import java.util.function.BiConsumer;
+class Sample {
+    BiConsumer<InputStream, Scanner> run() {
+        return (first, second) -> {
+            Scanner alias = new Scanner(first);
+            alias = second;
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 borrowing after acquisition still loses the owned resource</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Consumer;
+class Sample {
+    Consumer<Scanner> run() {
+        return supplied -> {
+            Scanner alias = new Scanner("owned");
+            alias = supplied;
+            try {
+                alias.hasNext();
+            } finally {
+                alias.close();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 null lambda alias borrows a parameter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Consumer;
+class Sample {
+    Consumer<Scanner> run() {
+        return supplied -> {
+            Scanner alias = null;
+            alias = supplied;
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 blank lambda alias borrows a parameter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Consumer;
+class Sample {
+    Consumer<Scanner> run() {
+        return supplied -> {
+            Scanner alias;
+            alias = supplied;
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 blank lambda declaration must close an acquisition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    Runnable run() {
+        return () -> {
+            Scanner alias;
+            alias = new Scanner("owned");
+            alias.hasNext();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 blank lambda declaration closes an acquisition</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+class Sample {
+    Runnable run() {
+        return () -> {
+            Scanner alias;
+            alias = new Scanner("owned");
+            try {
+                alias.hasNext();
+            } finally {
+                alias.close();
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
