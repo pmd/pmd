@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -857,12 +858,43 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean isReturnedByMethod(ASTVariableId variable, Node method) {
-        return method
+        boolean returnedDirectly = method
                 .descendants(ASTReturnStatement.class).crossFindBoundaries()
                 .descendants(ASTVariableAccess.class)
                 .filter(access -> !(access.getParent() instanceof ASTMethodCall))
                 .filter(access -> JavaAstUtils.isReferenceToVar(access, variable.getSymbol()))
                 .nonEmpty();
+        if (returnedDirectly || !JavaAstUtils.isEffectivelyFinal(variable)) {
+            return returnedDirectly;
+        }
+
+        return method.descendants(ASTReturnStatement.class).crossFindBoundaries()
+            .any(statement -> returnsResourceValue(statement.getExpr(), variable, new HashSet<>()));
+    }
+
+    private boolean returnsResourceValue(@Nullable ASTExpression expression, ASTVariableId variable,
+                                         Set<JVariableSymbol> visited) {
+        ASTExpression value = JavaAstUtils.peelCasts(expression);
+        if (value instanceof ASTVariableAccess) {
+            ASTVariableAccess access = (ASTVariableAccess) value;
+            if (JavaAstUtils.isReferenceToVar(access, variable.getSymbol())) {
+                return true;
+            }
+            JVariableSymbol symbol = access.getReferencedSym();
+            ASTVariableId alias = symbol == null ? null : symbol.tryGetNode();
+            return alias != null && alias.isLocalVariable() && alias.getInitializer() != null
+                && alias.ancestors(ASTBodyDeclaration.class).first() == variable.ancestors(ASTBodyDeclaration.class).first()
+                && JavaAstUtils.isEffectivelyFinal(alias) && visited.add(symbol)
+                && returnsResourceValue(alias.getInitializer(), variable, visited);
+        } else if (value instanceof ASTConstructorCall) {
+            return ((ASTConstructorCall) value).getArguments().toStream()
+                .any(argument -> returnsResourceValue(argument, variable, visited));
+        } else if (value instanceof ASTConditionalExpression) {
+            ASTConditionalExpression conditional = (ASTConditionalExpression) value;
+            return returnsResourceValue(conditional.getThenBranch(), variable, visited)
+                || returnsResourceValue(conditional.getElseBranch(), variable, visited);
+        }
+        return false;
     }
 
     private void addCloseResourceViolation(ASTVariableId id, TypeNode type, RuleContext ctx) {

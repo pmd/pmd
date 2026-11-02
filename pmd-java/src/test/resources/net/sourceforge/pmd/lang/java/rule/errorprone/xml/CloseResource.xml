@@ -3131,4 +3131,227 @@ class Sample {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7270 dogfood ownership escapes through a returned conditional wrapper</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+import java.util.function.Function;
+class Sample {
+    Function<String, Holder> resolve() {
+        return name -> {
+            InputStream inputStream = stream(name);
+            Holder loader = inputStream == null ? null : new Holder(inputStream);
+            return new Holder(loader);
+        };
+    }
+    InputStream stream(String name) { return null; }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 returning a final lambda-local alias transfers ownership</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Scanner> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            Scanner alias = resource;
+            return alias;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 returned constructor chains follow final aliases and casts</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Object> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            Holder first = new Holder(resource);
+            Holder second = first;
+            return new Holder((Object) second);
+        };
+    }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 an unreturned wrapper does not transfer ownership</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Object> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            Holder wrapper = new Holder(resource);
+            return new Holder(null);
+        };
+    }
+    Object stored;
+    Holder consume(Scanner scanner) { scanner.hasNext(); return new Holder(null); }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a replaced wrapper does not return its initial resource</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Object> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            Holder wrapper = new Holder(resource);
+            wrapper = new Holder(null);
+            return wrapper;
+        };
+    }
+    Object stored;
+    Holder consume(Scanner scanner) { scanner.hasNext(); return new Holder(null); }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 method-call results do not imply resource ownership transfer</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Object> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            Holder wrapper = consume(resource);
+            return wrapper;
+        };
+    }
+    Object stored;
+    Holder consume(Scanner scanner) { scanner.hasNext(); return new Holder(null); }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a conditional test is not a transferred resource value</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Object> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            Holder wrapper = resource == null ? new Holder(null) : new Holder(null);
+            return wrapper;
+        };
+    }
+    Object stored;
+    Holder consume(Scanner scanner) { scanner.hasNext(); return new Holder(null); }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a returned wrapper does not hide a replaced original resource</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Object> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            Holder wrapper = new Holder(resource);
+            resource.close();
+            resource = new Scanner("second");
+            return wrapper;
+        };
+    }
+    Object stored;
+    Holder consume(Scanner scanner) { scanner.hasNext(); return new Holder(null); }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7270 a returned field does not expand local resource aliases</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Scanner;
+import java.util.function.Supplier;
+class Sample {
+    Supplier<Object> run() {
+        return () -> {
+            Scanner resource = new Scanner("owned");
+            stored = new Holder(resource);
+            return stored;
+        };
+    }
+    Object stored;
+    Holder consume(Scanner scanner) { scanner.hasNext(); return new Holder(null); }
+    static class Holder {
+        final Object value;
+        Holder(Object value) { this.value = value; }
+    }
+
+}
+        ]]></code>
+    </test-code>
 </test-data>
