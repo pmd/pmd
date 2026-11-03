@@ -1813,11 +1813,16 @@ If the finalize() is implemented, its last action should be to call super.finali
 <!-- in English: a method declaration of finalize(), with no arguments, containing
 a block whose last statement is NOT a call to super.finalize -->
 <![CDATA[
-//MethodDeclaration[@Name = "finalize"][@Arity = 0]
-   /Block/*[last()]
-      [not(MethodCall[@MethodName = "finalize"]/SuperExpression)]
-      [not(FinallyClause/Block/ExpressionStatement/
-          MethodCall[@MethodName = "finalize"]/SuperExpression)]
+for $last in //MethodDeclaration[@Name = "finalize"][@Arity = 0]/Block/*[last()]
+return $last
+   [not(descendant-or-self::ExpressionStatement
+       [MethodCall[@MethodName = "finalize"]/SuperExpression]
+       [. is $last or MethodCall[@MethodName = "finalize"]/SuperExpression[not(ClassType)]]
+       [not(following-sibling::*)]
+       [ancestor::*[not(self::Block[not(following-sibling::*)])][1]
+          is $last/ancestor::MethodDeclaration[1]])]
+   [not(FinallyClause/Block/ExpressionStatement/
+       MethodCall[@MethodName = "finalize"]/SuperExpression)]
 ]]>
                 </value>
             </property>
@@ -1848,6 +1853,10 @@ If the finalize() is implemented, it should do something besides just calling su
 <![CDATA[
 //MethodDeclaration[@Name='finalize'][@Arity = 0]
    [Block[@Size=1]/ExpressionStatement/MethodCall[@MethodName = "finalize"][SuperExpression]]
+|
+//ExpressionStatement[MethodCall[@MethodName = "finalize"][SuperExpression[not(ClassType)]]]
+   /ancestor::*[not(self::Block[@Size = 1])][1]
+   [self::MethodDeclaration[@Name = "finalize"][@Arity = 0]]
 ]]>
                 </value>
             </property>
