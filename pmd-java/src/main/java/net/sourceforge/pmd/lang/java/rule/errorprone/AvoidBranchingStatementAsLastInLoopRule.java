@@ -116,7 +116,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
 
     private void checkInternal(PropertyDescriptor<List<LoopTypes>> property, Node node, RuleContext ctx) {
         Node parent = node.getParent();
-        if (parent instanceof ASTBlock) {
+        while (parent instanceof ASTBlock) {
             parent = parent.getParent();
             if (parent instanceof ASTFinallyClause) {
                 // get the parent of the block, in which the try statement is: ForStatement/Block/TryStatement/Finally
