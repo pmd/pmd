@@ -35,6 +35,11 @@ public class ResolutionFailure {
     }
 
     void addContext(JMethodSig m, PolySite<?> callSite, MethodResolutionPhase phase) {
+        if (this == UNKNOWN) {
+            // UNKNOWN is a shared static instance: storing the context would keep the
+            // type system, AST and class file streams of the last analysis reachable forever.
+            return;
+        }
         this.failedMethod = m;
         this.callSite = callSite;
         this.phase = phase;

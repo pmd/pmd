@@ -116,6 +116,11 @@ public interface SymbolResolver {
             public void logStats() {
                 stack.forEach(SymbolResolver::logStats);
             }
+
+            @Override
+            public void close() {
+                stack.forEach(SymbolResolver::close);
+            }
         };
     }
 
@@ -123,4 +128,13 @@ public interface SymbolResolver {
      * Called at the end of the analysis in order to log out statistics of the resolved symbols.
      */
     void logStats();
+
+    /**
+     * Called at the end of the analysis to release any resource that may
+     * still be held open, such as a stream for a class that was looked up
+     * but whose bytecode detail was never actually needed.
+     */
+    default void close() {
+        // most implementations don't hold onto any closeable resource
+    }
 }

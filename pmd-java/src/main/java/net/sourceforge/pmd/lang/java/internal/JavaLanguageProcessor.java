@@ -51,12 +51,15 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
     private TypeSystem typeSystem;
+    /** The type system created by this processor. It differs from {@link #typeSystem} if the latter was replaced. */
+    private final TypeSystem ownTypeSystem;
     private AuxClasspathLoader auxClasspathLoader;
 
     public JavaLanguageProcessor(JavaLanguageProperties properties) {
         super(properties);
 
         initTypeSystem(properties);
+        this.ownTypeSystem = typeSystem;
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
@@ -170,6 +173,8 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public void close() throws Exception {
         this.typeSystem.logStats();
+        // a type system set via setTypeSystem is shared with others, so it must stay usable
+        this.ownTypeSystem.close();
         if (this.auxClasspathLoader != null) {
             this.auxClasspathLoader.close();
         }
