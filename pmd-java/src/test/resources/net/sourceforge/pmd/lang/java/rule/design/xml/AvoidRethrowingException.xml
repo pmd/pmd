@@ -110,4 +110,160 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#7277 rethrow inside a bare block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#7277 rethrow inside nested bare blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { { { throw e; } } }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Bare block also logs before rethrowing</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { System.out.println(e); throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Logging before a bare rethrow block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            System.out.println(e);
+            { throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Conditional rethrow is not an unconditional rethrow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            if (enabled) { throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Synchronized rethrow does more than a bare block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            synchronized (this) { throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>A lambda body does not rethrow in the catch body</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            Runnable callback = () -> { throw e; };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Nested bare block throws a different exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { throw new IllegalStateException(); }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Bare rethrow before a superclass catch stays allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (IllegalArgumentException e) {
+            { { throw e; } }
+        } catch (RuntimeException e) {
+            System.out.println(e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Bare rethrow of a multicatch parameter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            { throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
