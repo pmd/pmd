@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -169,5 +170,25 @@ public class AsmSymbolResolver implements SymbolResolver {
                         + "{} were found but failed parsing (!), "
                         + "{} were found but never parsed.",
                 knownStubs.size(), numFailedQueries, numParsed, numFailed, numNotParsed);
+    }
+
+    /**
+     * Closes any stream that was eagerly opened (see {@link StreamLoader})
+     * for a class that was looked up but ended up never being parsed. Those
+     * streams would otherwise stay open (leaking the underlying file handle)
+     * until the JVM exits, as they are only closed from within
+     * {@link ClassStub}'s own parsing logic.
+     */
+    @Override
+    public void close() {
+        for (ClassStub stub : knownStubs.values()) {
+            if (stub.isNotParsed()) {
+                try {
+                    stub.getLoader().close();
+                } catch (IOException e) {
+                    LOG.debug("Failed to close {}", stub.getLoader(), e);
+                }
+            }
+        }
     }
 }
