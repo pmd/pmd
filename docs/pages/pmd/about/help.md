@@ -2,7 +2,7 @@
 title: Getting Help
 permalink: pmd_about_help.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: November 2024 (7.8.0)
+last_updated: November 2026 (7.30.0)
 ---
 
 There are numerous ways of getting help:
@@ -23,3 +23,6 @@ There are numerous ways of getting help:
 *   Ask your question our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
 
 *   Of course, you can also directly jump to our [source code on github](https://github.com/pmd/pmd).
+
+*   Looking for commercial support? See the list of
+    [companies offering commercial support](https://pmd.github.io/commercial-support/).
