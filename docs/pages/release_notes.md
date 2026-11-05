@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* core
+    * [#6869](https://github.com/pmd/pmd/issues/6869): \[core] AssertionError in DeterministicOutputListenerWrapper.close() under high file/violation count with multithreading
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * kotlin
