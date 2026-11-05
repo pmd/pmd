@@ -38,6 +38,7 @@ import nl.stokpop.typemapper.model.TypeAst;
  * pre-analyzed type data from kotlin-type-mapper:
  *
  * <ul>
+ *   <li>type data on {@code VariableDeclaration} nodes (variable type)</li>
  *   <li>type data on {@code PropertyDeclaration} nodes (property type)</li>
  *   <li>type data on {@code ClassParameter} nodes -- primary constructor
  *       {@code val}/{@code var} params (e.g. {@code class Foo(val name: String)})</li>
@@ -77,10 +78,11 @@ public final class KotlinTypeAnnotationVisitor {
     }
 
     /**
-     * Annotates all {@code PropertyDeclaration}, {@code FunctionDeclaration},
-     * {@code ClassDeclaration}, {@code CatchBlock}, and {@code ForStatement} nodes in
-     * the given AST root, and sets {@code @TypeName} on their annotation children
-     * as well as on {@code FunctionValueParameter} children of function declarations.
+     * Annotates all {@code VariableDeclaration}, {@code PropertyDeclaration},
+     * {@code FunctionDeclaration}, {@code ClassDeclaration}, {@code CatchBlock}, and
+     * {@code ForStatement} nodes in the given AST root, and sets {@code @TypeName} on
+     * their annotation children as well as on {@code FunctionValueParameter} children of
+     * function declarations.
      *
      * @param root     the root node of the parsed Kotlin file
      * @param absPath  the absolute path of the file (used to look up declarations by file)
