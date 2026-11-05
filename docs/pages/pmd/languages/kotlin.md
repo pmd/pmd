@@ -58,7 +58,7 @@ is configured and the kotlin-type-mapper analysis has resolved the types.
 
 | Attribute | Nodes | Meaning |
 |-----------|-------|---------|
-| `@TypeName` | `PropertyDeclaration`, `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
+| `@TypeName` | `PropertyDeclaration` (absent for destructuring declarations), `VariableDeclaration` (property and for-loop variables, lambda parameters, and each component of a destructuring declaration such as `val (a, b) = ...`), `ClassParameter`, `FunctionValueParameter`, `CatchBlock`, `ForStatement`, `ClassDeclaration`, `DelegationSpecifier`, `UnescapedAnnotation`, `SingleAnnotation` | Fully-qualified type name (including generic type arguments and nullable marker, e.g. `kotlin.collections.List<kotlin.String>?`) |
 | `@ReturnTypeName` | `FunctionDeclaration` | Fully-qualified return type name (including generic type arguments and nullable marker) |
 | `@AnnotationFqNames` | `FunctionDeclaration`, `ClassDeclaration`, `PropertyDeclaration`, `ClassParameter` | Sequence of FQNs of all annotations on the declaration |
 
@@ -80,10 +80,17 @@ type resolution, so they're always present regardless of `auxClasspath`.
 | `@Identifier` | `ClassDeclaration`, `FunctionDeclaration`, `ClassParameter`, `CompanionObject`, `VariableDeclaration`, `ImportAlias` | Simple name of the declared identifier |
 | `@Name` | `ImportHeader` | Fully-qualified imported name (e.g. `kotlin.collections.listOf`). |
 
-> **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name). Modifiers like
+> **Note:** `VariableDeclaration` carries only `@Identifier` (the variable name) and `@TypeName`. Modifiers like
 > `private`, `lateinit`, or `const` are on the parent `PropertyDeclaration` node.
 > Use `//PropertyDeclaration[pmd-kotlin:modifiers() = 'private']` rather than querying
 > `VariableDeclaration`.
+
+> **Tip:** To find variables by type, query `VariableDeclaration`, e.g.
+> `//VariableDeclaration[pmd-kotlin:typeIs('java.util.Calendar')]`. It covers property and for-loop
+> variables, lambda parameters (`{ x -> ... }`, `{ x: String -> ... }`) as well as each component of a
+> destructuring declaration (`val (a, b) = ...`, `for ((a, b) in ...)`, `{ (a, b) -> ... }`). A destructuring
+> `PropertyDeclaration` has no single type, so `//PropertyDeclaration[pmd-kotlin:typeIs(...)]` misses
+> destructured variables. The implicit lambda parameter `it` has no declaration node and no `@TypeName` yet.
 
 > **Note:** Boolean attributes like `@Mutable` require XPath's `true()` / `false()` functions:
 > `//PropertyDeclaration[@Mutable=false()]` (immutable `val` declarations).
@@ -119,6 +126,27 @@ There are a number of XPath functions available in the `pmd-kotlin` namespace, e
 parameters, and examples, see the
 [PMD extension functions]({{ baseurl }}pmd_userdocs_extending_writing_xpath_rules.html#pmd-extension-functions)
 page.
+
+### Message parameter (`{0}`) substitution
+
+`net.sourceforge.pmd.lang.rule.xpath.XPathRule` auto-binds `{0}` in a rule's `message` from the
+matched node: it tries `getImage()` first, then falls back to the first attribute named `Name`,
+`SimpleName`, `MethodName`, or `Value` — this fallback list is hardcoded in pmd-core and shared
+across all languages.
+
+pmd-kotlin nodes have `getImage()` intentionally disabled (`@NoAttribute @Deprecated`), and most
+Kotlin declaration nodes don't expose any of the hardcoded fallback attribute names either (a
+notable exception is `ImportHeader`'s `@Name`). So for a typical Kotlin XPathRule, `{0}` won't
+resolve to anything useful unless the matched node happens to carry one of those specific
+attributes.
+
+If your rule's message needs a dynamic value (e.g. the offending type name), consider one of:
+- Matching a node that does carry a usable `@Name`/`@SimpleName`/`@MethodName`/`@Value`
+  attribute.
+- Writing a Java-based rule instead of an XPathRule, and calling `ctx.addViolation(node, arg)`
+  explicitly with any value you like.
+- Keeping the message static/generic — this is the current approach for `LooseCoupling`, since
+  the flagged concrete type name isn't exposed under any of the fallback attribute names.
 
 ### Java-based rules
 

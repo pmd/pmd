@@ -48,6 +48,14 @@ class ASTFieldAccessTest : ParserTestSpec({
             "a" should parseAs {
                 variableAccess("a")
             }
+
+            // TODO Deprecated: Tests deprecated @Image attribute
+            "a.b" should parseAs {
+                fieldAccess("b") {
+                    it::getImage shouldBe it.name
+                    it::getQualifier shouldBe child<ASTAmbiguousName> {}
+                }
+            }
         }
     }
 })

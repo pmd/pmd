@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,10 @@ class JavaQualifiedNameTest {
 
     private <T extends Node> List<T> getNodes(Class<T> target, String code) {
         return JavaParsingHelper.DEFAULT.withDefaultVersion("15").getNodes(target, code);
+    }
+
+    private <T extends Node> List<T> getNodes(Class<T> target, String code, Predicate<T> check) {
+        return JavaParsingHelper.DEFAULT.withDefaultVersion("15").getNodes(target, code, check);
     }
 
     @Test
@@ -52,12 +57,11 @@ class JavaQualifiedNameTest {
     void testNestedClass() {
         final String TEST = "package foo.bar; class Bzaz{ class Bor{ class Foo{}}}";
 
-        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST);
+        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST,
+                node -> "FOO".equals(node.getSimpleName()));
 
         for (ASTClassDeclaration coid : nodes) {
-            if ("Foo".equals(coid.getSimpleName())) {
-                assertEquals("foo.bar.Bzaz$Bor$Foo", coid.getBinaryName());
-            }
+            assertEquals("foo.bar.Bzaz$Bor$Foo", coid.getBinaryName());
         }
     }
 
@@ -94,13 +98,12 @@ class JavaQualifiedNameTest {
     void testNestedEmptyPackage() {
         final String TEST = "class Bzaz{ class Bor{ class Foo{}}}";
 
-        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST);
+        List<ASTClassDeclaration> nodes = getNodes(ASTClassDeclaration.class, TEST,
+                coid -> "Foo".equals(coid.getSimpleName()));
 
         for (ASTClassDeclaration coid : nodes) {
-            if ("Foo".equals(coid.getSimpleName())) {
-                assertEquals("Bzaz$Bor$Foo", coid.getBinaryName());
-                assertEquals("", coid.getPackageName());
-            }
+            assertEquals("Bzaz$Bor$Foo", coid.getBinaryName());
+            assertEquals("", coid.getPackageName());
         }
     }
 

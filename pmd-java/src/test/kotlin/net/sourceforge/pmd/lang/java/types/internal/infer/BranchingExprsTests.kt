@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.CHAR
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.DOUBLE
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
@@ -213,7 +214,7 @@ class BranchingExprsTests : ProcessorTestSpec({
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it shouldHaveType it.typeSystem.INT
+                            it shouldHaveType it.typeSystem.CHAR
                             boolean(true)
                             int(1)
                             char('c')
@@ -372,7 +373,7 @@ class Scratch {
                     variableDeclarator("ter") {
 
                         ternaryExpr {
-                            it.typeMirror.shouldBePrimitive(INT)
+                            it.typeMirror.shouldBePrimitive(CHAR)
 
                             boolean(true)
                             int(1)
@@ -440,6 +441,147 @@ class Scratch {
                     }
                 }
             }
+        }
+    }
+
+    parserTest("#7150 byte and short operands give short", javaVersions = JavaVersion.since(JavaVersion.J1_7)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                void t(boolean flag, byte b, short s, Byte bb, Short ss) {
+                    short c1 = flag ? b : s;
+                    short c2 = flag ? bb : ss;
+                    short c3 = flag ? b : ss;
+                }
+            }
+            """.trimIndent()
+        )
+
+        val conditionals = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            conditionals.forEach { it shouldHaveType short }
+        }
+    }
+
+    parserTest("#7150 int constant representable in byte, short or char takes that type", javaVersions = JavaVersion.since(JavaVersion.J1_7)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                void t(boolean flag, byte b, short s, Byte bb, Character ch) {
+                    final int one = 1;
+                    char c1 = flag ? 'a' : 1;
+                    byte c2 = flag ? b : 1;
+                    short c3 = flag ? s : 1;
+                    byte c4 = flag ? bb : 1;
+                    char c5 = flag ? ch : 1;
+                    char c6 = flag ? 'a' : one;
+                }
+            }
+            """.trimIndent()
+        )
+
+        val conditionals = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            val expected = listOf(char, byte, short, byte, char, char)
+            conditionals.zip(expected).forEach { (cond, type) -> cond shouldHaveType type }
+        }
+    }
+
+    parserTest("#7150 int constant outside the range of the other operand gives int", javaVersions = JavaVersion.since(JavaVersion.J1_7)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Scratch {
+                void t(boolean flag, byte b, short s, int n) {
+                    byte c1 = flag ? b : 127;
+                    int c2 = flag ? b : 128;
+                    short c3 = flag ? s : 32767;
+                    int c4 = flag ? s : 32768;
+                    char c5 = flag ? 'a' : 65535;
+                    int c6 = flag ? 'a' : 65536;
+                    int c7 = flag ? 'a' : -1;
+                    int c8 = flag ? 'a' : n; // not a constant
+                }
+            }
+            """.trimIndent()
+        )
+
+        val conditionals = acu.descendants(ASTConditionalExpression::class.java).toList()
+
+        spy.shouldBeOk {
+            val expected = listOf(byte, int, short, int, char, int, int, int)
+            conditionals.zip(expected).forEach { (cond, type) -> cond shouldHaveType type }
+        }
+    }
+
+    parserTest("#7150 diamond in a branch of a standalone conditional is inferred from its arguments", javaVersions = JavaVersion.since(JavaVersion.J1_7)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Gen<T> {
+                Gen(T t) { }
+
+                void t(boolean flag) {
+                    Object x = (Object) (flag ? new Gen<>("a") : new Gen<>("b"));
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (t_Gen) = acu.declaredTypeSignatures()
+        val conditional = acu.descendants(ASTConditionalExpression::class.java).firstOrThrow()
+
+        spy.shouldBeOk {
+            conditional shouldHaveType t_Gen[ts.STRING]
+            conditional.thenBranch shouldHaveType t_Gen[ts.STRING]
+            conditional.elseBranch shouldHaveType t_Gen[ts.STRING]
+        }
+    }
+
+    parserTest("#7150 char conditional selects the overload with a char parameter", javaVersions = JavaVersion.since(JavaVersion.J1_7)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Cond {
+                static void c(int x, int y) { }
+                static void c(Integer x, char y) { }
+
+                void t(Integer value, boolean flag) {
+                    c(value, flag ? 'a' : 1);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_Cond = acu.firstTypeSignature()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "c",
+                declaredIn = t_Cond,
+                withFormals = listOf(int.box(), char),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7150 char conditional infers Character for a type parameter", javaVersions = JavaVersion.since(JavaVersion.J1_7)) {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Gen {
+                static <T> T g(T t) { return t; }
+
+                void t(boolean flag) {
+                    g(flag ? 'a' : 1);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call shouldHaveType char.box()
         }
     }
 })

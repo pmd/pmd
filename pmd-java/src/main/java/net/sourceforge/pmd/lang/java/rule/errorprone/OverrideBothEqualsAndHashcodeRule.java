@@ -26,7 +26,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
         return TypeTestUtil.isA(Comparable.class, node);
     }
 
-    private void visitTypeDecl(ASTTypeDeclaration node, Object data) {
+    private void visitTypeDecl(ASTTypeDeclaration node, RuleContext ctx) {
         if (skipType(node)) {
             return;
         }
@@ -46,7 +46,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
             }
         }
 
-        maybeReport(asCtx(data), node, hashCodeMethod, equalsMethod);
+        maybeReport(ctx, node, hashCodeMethod, equalsMethod);
     }
 
     protected void maybeReport(RuleContext ctx, ASTTypeDeclaration node, ASTMethodDeclaration hashCodeMethod, ASTMethodDeclaration equalsMethod) {
@@ -59,22 +59,25 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
 
     @Override
     public Object visit(ASTAnonymousClassDeclaration node, Object data) {
-        visitTypeDecl(node, data);
+        RuleContext ctx = (RuleContext) data;
+        visitTypeDecl(node, ctx);
         return null;
     }
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.isInterface()) {
             return null;
         }
-        visitTypeDecl(node, data);
+        visitTypeDecl(node, ctx);
         return null;
     }
 
     @Override
     public Object visit(ASTRecordDeclaration node, Object data) {
-        visitTypeDecl(node, data);
+        RuleContext ctx = (RuleContext) data;
+        visitTypeDecl(node, ctx);
         return null;
     }
 }

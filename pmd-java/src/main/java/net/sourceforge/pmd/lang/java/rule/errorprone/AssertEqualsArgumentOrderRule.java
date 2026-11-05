@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Looks for usages of assertEquals where the "actual" argument is a constant
@@ -23,6 +24,7 @@ public class AssertEqualsArgumentOrderRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!"assertEquals".equals(node.getMethodName())) {
             return null;
         }
@@ -33,7 +35,7 @@ public class AssertEqualsArgumentOrderRule extends AbstractJavaRulechainRule {
                     ASTExpression expected = node.getArguments().get(method.expectedPosition);
                     if (expected.getConstFoldingResult().getValue() == null
                             || !(expected instanceof ASTLiteral) && actual instanceof ASTLiteral) {
-                        asCtx(data).addViolation(node);
+                        ctx.addViolation(node);
                     }
                 }
             }

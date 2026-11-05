@@ -19,20 +19,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
@@ -61,6 +65,8 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
+        RuleContext ctx = (RuleContext) data;
+
         if (isLoggerCall(call, "org.slf4j.Logger", SLF4J)
             || isLoggerCall(call, "org.apache.logging.log4j.Logger", APACHE_SLF4J)) {
 
@@ -95,11 +101,11 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             }
 
             if (providedArguments < expectedArguments) {
-                asCtx(data).addViolationWithMessage(
+                ctx.addViolationWithMessage(
                     call,
                     "Missing arguments," + getExpectedMessage(providedArguments, expectedArguments));
             } else if (providedArguments > expectedArguments) {
-                asCtx(data).addViolationWithMessage(
+                ctx.addViolationWithMessage(
                     call,
                     "Too many arguments," + getExpectedMessage(providedArguments, expectedArguments));
             }
@@ -112,6 +118,16 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     private static boolean isThrowable(ASTExpression lastArg) {
         if (TypeTestUtil.isA(Throwable.class, lastArg)) {
             return true;
+        }
+
+        // A catch parameter is always a Throwable subtype, even if the type
+        // of `lastArg` couldn't be resolved (due to incomplete auxclasspath).
+        if (lastArg instanceof ASTNamedReferenceExpr) {
+            JVariableSymbol sym = ((ASTNamedReferenceExpr) lastArg).getReferencedSym();
+            ASTVariableId decl = sym != null ? sym.tryGetNode() : null;
+            if (decl != null && decl.getParent() instanceof ASTCatchParameter) {
+                return true;
+            }
         }
 
         if (TypeTestUtil.isA(Supplier.class, lastArg)) {
