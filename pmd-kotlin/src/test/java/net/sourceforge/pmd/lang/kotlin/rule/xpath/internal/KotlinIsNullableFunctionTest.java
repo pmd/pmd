@@ -79,4 +79,21 @@ class KotlinIsNullableFunctionTest extends BaseKotlinXPathFunctionTest {
         assertViolationAt(report, 24, 36,
                 "Expected violation for nullableSecond (String?) sharing a line with a non-nullable declaration");
     }
+
+    @Test
+    void isNullableDoesNotLeakDestructuredComponentOntoWholeDeclaration() {
+        Report report = runXPath("//PropertyDeclaration[pmd-kotlin:isNullable()]",
+                "fun f(p: Pair<String?, Int>) { val (a, b) = p }");
+        assertNoErrors(report);
+        assertNoViolationAtLine(report, 1,
+                "Whole destructuring PropertyDeclaration must not inherit nullability of component 'a'");
+    }
+
+    @Test
+    void isNullableMatchesNullableDestructuredComponent() {
+        Report report = runXPath("//VariableDeclaration[pmd-kotlin:isNullable()]",
+                "fun f(p: Pair<String?, Int>) { val (a, b) = p }");
+        assertNoErrors(report);
+        assertViolationAtLine(report, 1, "Expected violation on VariableDeclaration 'a' (String?)");
+    }
 }
