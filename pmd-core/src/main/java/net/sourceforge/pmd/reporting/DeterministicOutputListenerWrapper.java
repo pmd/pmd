@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -43,6 +44,9 @@ import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
  */
 public class DeterministicOutputListenerWrapper implements GlobalAnalysisListener {
     private static final Logger LOG = LoggerFactory.getLogger(DeterministicOutputListenerWrapper.class.getName());
+
+    /** Maximum number of file names per group in the error message of {@link #close()}. */
+    private static final int MAX_FILES_IN_MESSAGE = 10;
 
     private final GlobalAnalysisListener listener;
     private final Map<FileId, Integer> filesToIdx = new HashMap<>();
@@ -130,9 +134,10 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
             tryToFlushBuffer();
             if (!reportBuffer.isEmpty()) {
                 // This would be a problem in PmdAnalysis, maybe because it didn't join
-                // on the parallel processing tasks. Report which files were never
-                // processed, so that this error does not hide the real cause (e.g. a
-                // failing analysis thread whose error was only reported but not propagated).
+                // on the parallel processing tasks, e.g. because an Error in one analysis
+                // thread aborted the analysis while other files were still running.
+                // Report which files are missing, so that this error gives a hint at
+                // the real cause.
                 throw new AssertionError("Closed listener but not all files have been processed:\n"
                                              + unprocessedFiles());
             }
@@ -141,14 +146,29 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
     }
 
     /**
-     * Returns the report file ids that were declared to this listener but whose
-     * reports were never completed. Used to explain the error thrown by
-     * {@link #close()} when the analysis was not fully joined.
+     * Builds the details for the error thrown by {@link #close()} when not all
+     * declared files have been output. The files are split into two groups:
+     * <ul>
+     *     <li>files that never delivered a report: their analysis was still
+     *         running or was never started</li>
+     *     <li>files that were analyzed, but whose reports are still buffered
+     *         because they are waiting for one of the files above</li>
+     * </ul>
+     * Each group shows its size and the first {@value #MAX_FILES_IN_MESSAGE}
+     * file names (sorted), followed by the number of files left out.
+     *
+     * <p>Must be called while holding {@link #lock}.
+     *
+     * @return the two groups, one per line, each indented by two spaces
      */
     private String unprocessedFiles() {
+        Set<Integer> bufferedIdx = reportBuffer.stream()
+                .map(w -> w.idx)
+                .collect(Collectors.toSet());
         List<String> notProcessed = new ArrayList<>();
         for (Map.Entry<FileId, Integer> entry : filesToIdx.entrySet()) {
-            if (entry.getValue() >= nextToOutput) {
+            int idx = entry.getValue();
+            if (idx >= nextToOutput && !bufferedIdx.contains(idx)) {
                 notProcessed.add(entry.getKey().getOriginalPath());
             }
         }
@@ -156,24 +176,25 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
         List<String> buffered = reportBuffer.stream()
                 .map(w -> w.textFile.getFileId().getOriginalPath())
                 .collect(Collectors.toList());
-        notProcessed.removeAll(buffered);
         notProcessed.sort(null);
         buffered.sort(null);
 
-        final int MAX_FILES_IN_MESSAGE = 10;
-        String notProcessedMessage = notProcessed.size() + " file(s) never delivered a report: ";
-        if (notProcessed.size() <= MAX_FILES_IN_MESSAGE) {
-            notProcessedMessage += notProcessed;
-        } else {
-            notProcessedMessage += notProcessed.subList(0, MAX_FILES_IN_MESSAGE) + " ... and " + (notProcessed.size() - MAX_FILES_IN_MESSAGE) + " more";
+        return "  " + describeGroup("never delivered a report", notProcessed)
+            + "\n  " + describeGroup("analyzed but still buffered", buffered);
+    }
+
+    /**
+     * Formats one group of {@link #unprocessedFiles()}, e.g.
+     * {@code "13 file(s) never delivered a report: [a, b, ...] ... and 3 more"}.
+     * Only the first {@value #MAX_FILES_IN_MESSAGE} file names are listed.
+     */
+    private static String describeGroup(String label, List<String> files) {
+        String message = files.size() + " file(s) " + label + ": ";
+        if (files.size() <= MAX_FILES_IN_MESSAGE) {
+            return message + files;
         }
-        String bufferedMessage = buffered.size() + " file(s) analyzed but still buffered: ";
-        if (buffered.size() <= MAX_FILES_IN_MESSAGE) {
-            bufferedMessage += buffered;
-        } else {
-            bufferedMessage += buffered.subList(0, MAX_FILES_IN_MESSAGE) + " ... and " + (buffered.size() - MAX_FILES_IN_MESSAGE) + " more";
-        }
-        return "  " + notProcessedMessage + "\n  " + bufferedMessage;
+        return message + files.subList(0, MAX_FILES_IN_MESSAGE)
+            + " ... and " + (files.size() - MAX_FILES_IN_MESSAGE) + " more";
     }
 
     @Override

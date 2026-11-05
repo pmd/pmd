@@ -78,18 +78,18 @@ class DeterministicOutputListenerWrapperTest {
 
     }
 
-
     /**
      * When the parallel analysis jobs are not joined successfully, some file
      * reports never reach this wrapper. Closing it in that state must surface
-     * a diagnosis that give context information about the current status (the missing/unjoined files),
-     * not a bare {@code AssertionError} with no context.
+     * a diagnosis that gives context information about the current status
+     * (the missing and the buffered files), not a bare {@code AssertionError}
+     * with no context.
      *
      * <p>This test drives the wrapper directly: two files are declared, but
      * only the report of the <em>second</em> file is ever delivered (so the
      * buffer keeps the first file's slot and {@code nextToOutput} never
-     * catches up). Closing the wrapper must describe exactly which files were
-     * never processed.
+     * catches up). Closing the wrapper must name the first file as never
+     * delivered and the second file as still buffered.
      */
     @Test
     void closeNamesUnprocessedFilesWhenReportsAreMissing() throws Exception {
@@ -97,19 +97,8 @@ class DeterministicOutputListenerWrapperTest {
         FileId file1 = FileId.fromPathLikeString("file1.dummy");
         LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
 
-        GlobalAnalysisListener recording = new GlobalAnalysisListener() {
-            @Override
-            public FileAnalysisListener startFileAnalysis(TextFile file) {
-                return FileAnalysisListener.noop();
-            }
-
-            @Override
-            public void close() {
-                // nothing to close
-            }
-        };
-
-        DeterministicOutputListenerWrapper wrapper = new DeterministicOutputListenerWrapper(recording);
+        DeterministicOutputListenerWrapper wrapper =
+                new DeterministicOutputListenerWrapper(GlobalAnalysisListener.noop());
         try (ListenerInitializer init = wrapper.initializer()) {
             init.setNumberOfFilesToAnalyze(2);
             init.setFilesToAnalyze(Arrays.asList(file0, file1));
@@ -132,34 +121,23 @@ class DeterministicOutputListenerWrapperTest {
                 .boxed()
                 .map(i -> FileId.fromPathLikeString(String.format("file%03d.dummy", i)))
                 .collect(Collectors.toList());
-        List<FileId> unprocessed = IntStream.range(15, 30)
+        List<FileId> buffered = IntStream.range(13, 28)
                 .boxed()
                 .map(i -> FileId.fromPathLikeString(String.format("file%03d.dummy", i)))
                 .collect(Collectors.toList());
         LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
 
-        GlobalAnalysisListener recording = new GlobalAnalysisListener() {
-            @Override
-            public FileAnalysisListener startFileAnalysis(TextFile file) {
-                return FileAnalysisListener.noop();
-            }
-
-            @Override
-            public void close() {
-                // nothing to close
-            }
-        };
-
-        DeterministicOutputListenerWrapper wrapper = new DeterministicOutputListenerWrapper(recording);
+        DeterministicOutputListenerWrapper wrapper =
+                new DeterministicOutputListenerWrapper(GlobalAnalysisListener.noop());
         try (ListenerInitializer init = wrapper.initializer()) {
             List<FileId> allFiles = new ArrayList<>(notAnalyzed);
-            allFiles.addAll(unprocessed);
+            allFiles.addAll(buffered);
             init.setNumberOfFilesToAnalyze(allFiles.size());
             init.setFilesToAnalyze(allFiles);
         }
 
-        // only unprocessed file's report arrives, out of order -> notAnalyzed is left behind
-        for (FileId file : unprocessed) {
+        // only the reports of the buffered files arrive -> notAnalyzed is left behind
+        for (FileId file : buffered) {
             wrapper.startFileAnalysis(TextFile.forCharSeq("", file, lv)).close();
         }
 
@@ -167,8 +145,14 @@ class DeterministicOutputListenerWrapperTest {
         // The message must name the files that were never processed; this gives a
         // hint which files are problematic and may have caused an error.
         assertEquals("Closed listener but not all files have been processed:\n"
-                + "  13 file(s) never delivered a report: [file000.dummy, file001.dummy, file002.dummy, file003.dummy, file004.dummy, file005.dummy, file006.dummy, file007.dummy, file008.dummy, file009.dummy] ... and 3 more\n"
-                + "  15 file(s) analyzed but still buffered: [file015.dummy, file016.dummy, file017.dummy, file018.dummy, file019.dummy, file020.dummy, file021.dummy, file022.dummy, file023.dummy, file024.dummy] ... and 5 more", error.getMessage());
+                + "  13 file(s) never delivered a report: ["
+                + "file000.dummy, file001.dummy, file002.dummy, file003.dummy, file004.dummy, "
+                + "file005.dummy, file006.dummy, file007.dummy, file008.dummy, file009.dummy"
+                + "] ... and 3 more\n"
+                + "  15 file(s) analyzed but still buffered: ["
+                + "file013.dummy, file014.dummy, file015.dummy, file016.dummy, file017.dummy, "
+                + "file018.dummy, file019.dummy, file020.dummy, file021.dummy, file022.dummy"
+                + "] ... and 5 more", error.getMessage());
     }
 
     static class MyRuleReportingAlways extends FooRule {
