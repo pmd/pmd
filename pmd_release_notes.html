@@ -2064,8 +2064,31 @@
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
+<ul>
+  <li>kotlin
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/7168">#7168</a>: [kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
+<h4 id="experimental-api">Experimental API</h4>
+<ul>
+  <li>kotlin
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtVariableDeclarationAttributes.html#"><code>KtVariableDeclarationAttributes</code></a> now implements
+<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasTypeName.html#"><code>HasTypeName</code></a>, so <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> nodes have a <code class="language-plaintext highlighter-rouge">@TypeName</code> attribute.
+This covers property and for-loop variables, lambda parameters, and each component of a
+destructuring declaration (<code class="language-plaintext highlighter-rouge">val (a, b) = ...</code>, <code class="language-plaintext highlighter-rouge">for ((a, b) in ...)</code>, <code class="language-plaintext highlighter-rouge">{ (a, b) -&gt; ... }</code>).
+The XPath functions <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs</code>, <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIsExactly</code> and <code class="language-plaintext highlighter-rouge">pmd-kotlin:isNullable</code>
+support <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> nodes as well.</li>
+      <li>A destructuring <code class="language-plaintext highlighter-rouge">PropertyDeclaration</code> (e.g. <code class="language-plaintext highlighter-rouge">val (a, b) = Pair(1, "x")</code>) no longer has a <code class="language-plaintext highlighter-rouge">@TypeName</code>.
+Before, it wrongly got the type of the first component. To find destructured variables
+by type, query the component nodes instead: <code class="language-plaintext highlighter-rouge">//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]</code>.</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->

@@ -2132,7 +2132,7 @@ is configured and the kotlin-type-mapper analysis has resolved the types.</p>
   <tbody>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">@TypeName</code></td>
-      <td><code class="language-plaintext highlighter-rouge">PropertyDeclaration</code>, <code class="language-plaintext highlighter-rouge">ClassParameter</code>, <code class="language-plaintext highlighter-rouge">FunctionValueParameter</code>, <code class="language-plaintext highlighter-rouge">CatchBlock</code>, <code class="language-plaintext highlighter-rouge">ForStatement</code>, <code class="language-plaintext highlighter-rouge">ClassDeclaration</code>, <code class="language-plaintext highlighter-rouge">DelegationSpecifier</code>, <code class="language-plaintext highlighter-rouge">UnescapedAnnotation</code>, <code class="language-plaintext highlighter-rouge">SingleAnnotation</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PropertyDeclaration</code> (absent for destructuring declarations), <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> (property and for-loop variables, lambda parameters, and each component of a destructuring declaration such as <code class="language-plaintext highlighter-rouge">val (a, b) = ...</code>), <code class="language-plaintext highlighter-rouge">ClassParameter</code>, <code class="language-plaintext highlighter-rouge">FunctionValueParameter</code>, <code class="language-plaintext highlighter-rouge">CatchBlock</code>, <code class="language-plaintext highlighter-rouge">ForStatement</code>, <code class="language-plaintext highlighter-rouge">ClassDeclaration</code>, <code class="language-plaintext highlighter-rouge">DelegationSpecifier</code>, <code class="language-plaintext highlighter-rouge">UnescapedAnnotation</code>, <code class="language-plaintext highlighter-rouge">SingleAnnotation</code></td>
       <td>Fully-qualified type name (including generic type arguments and nullable marker, e.g. <code class="language-plaintext highlighter-rouge">kotlin.collections.List&lt;kotlin.String&gt;?</code>)</td>
     </tr>
     <tr>
@@ -2190,10 +2190,19 @@ type resolution, so they’re always present regardless of <code class="language
 </table>
 
 <blockquote>
-  <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> carries only <code class="language-plaintext highlighter-rouge">@Identifier</code> (the variable name). Modifiers like
+  <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> carries only <code class="language-plaintext highlighter-rouge">@Identifier</code> (the variable name) and <code class="language-plaintext highlighter-rouge">@TypeName</code>. Modifiers like
 <code class="language-plaintext highlighter-rouge">private</code>, <code class="language-plaintext highlighter-rouge">lateinit</code>, or <code class="language-plaintext highlighter-rouge">const</code> are on the parent <code class="language-plaintext highlighter-rouge">PropertyDeclaration</code> node.
 Use <code class="language-plaintext highlighter-rouge">//PropertyDeclaration[pmd-kotlin:modifiers() = 'private']</code> rather than querying
 <code class="language-plaintext highlighter-rouge">VariableDeclaration</code>.</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>Tip:</strong> To find variables by type, query <code class="language-plaintext highlighter-rouge">VariableDeclaration</code>, e.g.
+<code class="language-plaintext highlighter-rouge">//VariableDeclaration[pmd-kotlin:typeIs('java.util.Calendar')]</code>. It covers property and for-loop
+variables, lambda parameters (<code class="language-plaintext highlighter-rouge">{ x -&gt; ... }</code>, <code class="language-plaintext highlighter-rouge">{ x: String -&gt; ... }</code>) as well as each component of a
+destructuring declaration (<code class="language-plaintext highlighter-rouge">val (a, b) = ...</code>, <code class="language-plaintext highlighter-rouge">for ((a, b) in ...)</code>, <code class="language-plaintext highlighter-rouge">{ (a, b) -&gt; ... }</code>). A destructuring
+<code class="language-plaintext highlighter-rouge">PropertyDeclaration</code> has no single type, so <code class="language-plaintext highlighter-rouge">//PropertyDeclaration[pmd-kotlin:typeIs(...)]</code> misses
+destructured variables. The implicit lambda parameter <code class="language-plaintext highlighter-rouge">it</code> has no declaration node and no <code class="language-plaintext highlighter-rouge">@TypeName</code> yet.</p>
 </blockquote>
 
 <blockquote>
