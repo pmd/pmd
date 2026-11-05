@@ -2275,7 +2275,8 @@ in a single method makes its behaviour hard to read and change.</p>
 
 <p>Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
 plus one for the method entry. Decision points are places where the control flow jumps to another place in the
-program. As such, they include all control flow statements, such as ‘if’, ‘while’, ‘for’, and ‘case’.</p>
+program. As such, they include all control flow statements, such as <code class="language-plaintext highlighter-rouge">if</code>, <code class="language-plaintext highlighter-rouge">while</code>, <code class="language-plaintext highlighter-rouge">for</code>, and the <code class="language-plaintext highlighter-rouge">when</code> branches
+of <code class="language-plaintext highlighter-rouge">switch</code> statements.</p>
 
 <p>Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity &gt;= 10.
