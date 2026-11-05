@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParsingHelper;
+import net.sourceforge.pmd.lang.kotlin.ast.KtVariableDeclarationAttributes;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinNodeTypeData;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
 
@@ -116,9 +117,14 @@ class KotlinTypeAnnotationVisitorTest {
                 + "    items.forEach { typed: String -> }\n"
                 + "    numbers.forEach { inferred -> }\n"
                 + "}");
-        KtVariableDeclaration inferred = root.descendants(KtVariableDeclaration.class)
-                .filter(v -> v.getBeginLine() == 3).first();
+        KtVariableDeclaration typed = root.descendants(KtVariableDeclaration.class).get(0);
+        assertNotNull(typed);
+        assertEquals(2, typed.getBeginLine());
+        assertEquals("typed", typed.attributes(KtVariableDeclarationAttributes.class).getIdentifier());
+        KtVariableDeclaration inferred = root.descendants(KtVariableDeclaration.class).get(1);
         assertNotNull(inferred);
+        assertEquals(3, inferred.getBeginLine());
+        assertEquals("inferred", inferred.attributes(KtVariableDeclarationAttributes.class).getIdentifier());
         assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(inferred)));
     }
 
@@ -126,6 +132,51 @@ class KotlinTypeAnnotationVisitorTest {
     void destructuredLambdaParameterComponentsHaveOwnTypeName() {
         KtKotlinFile root = PARSER.parse(
                 "fun f(pairs: List<Pair<Int, String>>) { pairs.forEach { (a, b) -> } }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void singleComponentDestructuringHasNoTypeOnPropertyDeclaration() {
+        KtKotlinFile root = PARSER.parse("fun f() { val (only) = Pair(1, \"x\") }");
+        KtPropertyDeclaration prop = root.descendants(KtPropertyDeclaration.class).first();
+        // Same rule as "val (a, b)": no type on the declaration, even with one component
+        assertNull(KotlinNodeTypeData.getType(prop));
+
+        KtVariableDeclaration only = root.descendants(KtVariableDeclaration.class).first();
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(only)));
+    }
+
+    @Test
+    void underscoreComponentDoesNotBorrowNeighbourType() {
+        KtKotlinFile root = PARSER.parse("fun f() { val (_, b) = Pair(1, \"x\") }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        // "_" must never get b's type. Either null or kotlin.Int is fine,
+        // depending on whether kotlin-type-mapper records "_".
+        KotlinTypeName underscore = KotlinNodeTypeData.getType(vars.get(0));
+        if (underscore != null) {
+            assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(underscore));
+        }
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void sameNameOnOneLineResolvedByColumn() {
+        KtKotlinFile root = PARSER.parse("fun f() { val x = run { val x = \"s\"; 1 } }");
+        List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
+        assertEquals(2, vars.size());
+        // Outer x comes first in tree order and is Int; inner x is String
+        assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));
+        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
+    }
+
+    @Test
+    void sameNameLambdaParametersOnOneLineResolvedByColumn() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(a: List<Int>, b: List<String>) { a.forEach { v -> b.forEach { v -> } } }");
         List<KtVariableDeclaration> vars = root.descendants(KtVariableDeclaration.class).toList();
         assertEquals(2, vars.size());
         assertEquals("kotlin.Int", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(0))));

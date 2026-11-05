@@ -5,6 +5,8 @@
 fun variableTypes(items: List<String>, pairs: List<Pair<Int, String>>) {
     val single: String = "x"
     val (first, second) = Pair(1, "y")
+    val (only1a) = Pair(1, "y")
+    val (only1b, _) = Pair(1, "y")
     for (item in items) { }
     for ((number, text) in pairs) { }
     pairs.forEach { (left, right) -> }

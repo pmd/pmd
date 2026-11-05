@@ -317,4 +317,24 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
         assertViolationAtLine(report, 1, "Expected violation on the 'a' VariableDeclaration (kotlin.Int)");
     }
 
+    @Test
+    void typeIsDoesNotLeakNeighbourTypeOntoUnderscoreComponent() {
+        Report report = runXPath(
+                "//VariableDeclaration[pmd-kotlin:typeIs('kotlin.String')]",
+                "fun f() { val (_, b) = Pair(1, \"x\") }");
+        assertNoErrors(report);
+        assertNoViolationAt(report, 1, 16, "'_' must not match b's type kotlin.String");
+        assertViolationAt(report, 1, 19, "Expected violation on 'b' (kotlin.String)");
+    }
+
+    @Test
+    void typeIsDoesNotMatchInitializerCallOnUnderscoreComponent() {
+        // Fallback also checks call sites on the line; Pair(...) must not match "_"
+        Report report = runXPath(
+                "//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Pair')]",
+                "fun f() { val (_, b) = Pair(1, \"x\") }");
+        assertNoErrors(report);
+        assertEquals(0, report.getViolations().size(),
+                "No component is a Pair; the initializer call must not leak onto '_'");
+    }
 }
