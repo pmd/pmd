@@ -109,7 +109,25 @@ final class CpdTestUtils {
         }
 
         CPDReport build() {
+            return build(false);
+        }
+
+        CPDReport build(boolean useOriginalPaths) {
             assertEquals(files.size(), numTokensPerFile.size(), "files size/numTokensPerFile mismatch");
+
+            if (useOriginalPaths) {
+                return new CPDReport(
+                        new SourceManager(new ArrayList<>(files.values())),
+                        matches,
+                        numTokensPerFile,
+                        processingErrors
+                ) {
+                    @Override
+                    public String getDisplayName(FileId fileId) {
+                        return fileId.getOriginalPath();
+                    }
+                };
+            }
 
             return new CPDReport(
                     new SourceManager(new ArrayList<>(files.values())),
