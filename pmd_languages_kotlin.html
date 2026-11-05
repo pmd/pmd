@@ -2077,17 +2077,21 @@
 
 <h2 id="kotlin-language-versions--feature-support">Kotlin language versions / feature support</h2>
 
-<p>PMD’s Kotlin parser may lag behind the latest Kotlin compiler and does not aim to implement all new language features immediately.</p>
-
-<p>The only Kotlin 2.x feature currently supported is <strong>“Multidollar interpolation: improved handling of $ in string literals”</strong>.
-This feature was preview in Kotlin 2.1.0 and stabilized in Kotlin 2.2.0.
-See <a href="https://kotlinlang.org/docs/strings.html#multi-dollar-string-interpolation">Multi-dollar string interpolation</a>.</p>
-
-<p>For informational purposes, PMD advertises Kotlin 2.2.0 as the highest supported version.
-Selecting a different Kotlin language version does not currently change the parser behavior (unlike Java).</p>
-
-<p>Other Kotlin 2.0.0 / 2.1.0 / 2.2.0 / 2.3.0 language features are not supported at this time.
+<p>PMD aims to support Kotlin up to version 2.2.0, which is also the highest version PMD advertises.
+The parser is based on the official Kotlin grammar, but it may lag behind the Kotlin compiler,
+so some newer language features may not be parsed correctly yet.
+If you find Kotlin code that PMD fails to parse, please <a href="https://github.com/pmd/pmd/issues">report an issue</a>.
 PRs to improve Kotlin parser coverage are welcome.</p>
+
+<p>Selecting a different Kotlin language version does not currently change the parser behavior (unlike Java).</p>
+
+<p>Examples of newer language features that are supported:</p>
+
+<ul>
+  <li>Kotlin 1.9: <a href="https://kotlinlang.org/docs/ranges.html"><code class="language-plaintext highlighter-rouge">..&lt;</code> operator for open-ended ranges</a> (<a href="https://github.com/pmd/pmd/issues/7171">#7171</a>)</li>
+  <li>Kotlin 2.2: <a href="https://kotlinlang.org/docs/strings.html#multi-dollar-string-interpolation">Multi-dollar string interpolation</a> (<a href="https://github.com/pmd/pmd/issues/6003">#6003</a>)
+(preview in 2.1.0, stable in 2.2.0)</li>
+</ul>
 
 <h2 id="providing-the-auxiliary-classpath">Providing the auxiliary classpath</h2>
 
@@ -2375,7 +2379,7 @@ A richer type model may be added in a future version.</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2026 (7.26.0)<br /> Site last generated: Nov 5, 2026 <br />
+            November 2026 (7.30.0)<br /> Site last generated: Nov 5, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
