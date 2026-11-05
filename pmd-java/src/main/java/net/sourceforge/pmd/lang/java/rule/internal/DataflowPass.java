@@ -579,10 +579,18 @@ public final class DataflowPass {
             ) {
                 recordReachingDefsInDeadOperand(cur, orExpr.getRightOperand());
             } else {
+                // When the left value is unknown, the right operand may be skipped.
+                // Preserve that outcome before the right operand's strong updates
+                // overwrite it in a state that aliases thenState (an if without else).
+                Map<JVariableSymbol, VarLocalInfo> skipState = (null == leftValue) ? new LinkedHashMap<>(before.symtable) : null;
                 cur = linkConditional(cur, orExpr.getRightOperand(), thenState, elseState, false);
                 thenState.absorb(cur);
 
                 elseState.absorb(cur);
+
+                if (skipState != null && thenState == before) { // NOPMD CompareObjectsWithEqual
+                    CollectionUtil.mergeMaps(before.symtable, skipState, VarLocalInfo::merge);
+                }
             }
 
             return cur;
@@ -914,12 +922,12 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTContinueStatement node, SpanInfo data) {
-            return data.global.continueTargets.doBreak(data, node.getImage());
+            return data.global.continueTargets.doBreak(data, node.getLabel());
         }
 
         @Override
         public SpanInfo visit(ASTBreakStatement node, SpanInfo data) {
-            return processBreakableStmt(node, data, () -> data.global.breakTargets.doBreak(data, node.getImage()));
+            return processBreakableStmt(node, data, () -> data.global.breakTargets.doBreak(data, node.getLabel()));
         }
 
         @Override

@@ -57,7 +57,7 @@ abstract class AbstractKotlinTypeIsFunctionCall implements XPathFunctionDefiniti
         // not short-circuit on a miss and must still check call sites.
         String absPath = contextNode.getTextDocument().getFileId().getAbsolutePath();
         int line = contextNode.getBeginLine();
-        List<DeclarationAst> decls = ctx.declarationsAt(absPath, line);
+        List<DeclarationAst> decls = DeclarationFallback.relevantTo(contextNode, ctx.declarationsAt(absPath, line));
         return matchesAnyDeclaration(decls, typeName, ctx)
                 || matchesAnyCallSite(ctx.callSitesAt(absPath, line), typeName, ctx);
     }

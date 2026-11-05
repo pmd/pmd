@@ -253,6 +253,12 @@
             <file name="${parser-file}" />
         </replaceregexp>
 
+        <replaceregexp flags="gm">
+            <regexp pattern="^//@Deprecated" />
+            <substitution expression="@Deprecated" />
+            <file name="${parser-file}" />
+        </replaceregexp>
+
         <replaceregexp>
             <regexp pattern="public interface"/>
             <substitution expression='@net.sourceforge.pmd.annotation.Generated("org.javacc.javacc")${line.separator}
