@@ -1,7 +1,7 @@
 ---
 title: Kotlin Support
 permalink: pmd_languages_kotlin.html
-last_updated: June 2026 (7.26.0)
+last_updated: November 2026 (7.30.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Kotlin-specific features and guidance"
 ---
@@ -14,17 +14,19 @@ Java-based rules and XPath-based rules are supported.
 
 ## Kotlin language versions / feature support
 
-PMD's Kotlin parser may lag behind the latest Kotlin compiler and does not aim to implement all new language features immediately.
+PMD aims to support Kotlin up to version 2.2.0, which is also the highest version PMD advertises.
+The parser is based on the official Kotlin grammar, but it may lag behind the Kotlin compiler,
+so some newer language features may not be parsed correctly yet.
+If you find Kotlin code that PMD fails to parse, please [report an issue](https://github.com/pmd/pmd/issues).
+PRs to improve Kotlin parser coverage are welcome.
 
-The only Kotlin 2.x feature currently supported is **"Multidollar interpolation: improved handling of $ in string literals"**.
-This feature was preview in Kotlin 2.1.0 and stabilized in Kotlin 2.2.0.
-See [Multi-dollar string interpolation](https://kotlinlang.org/docs/strings.html#multi-dollar-string-interpolation).
-
-For informational purposes, PMD advertises Kotlin 2.2.0 as the highest supported version.
 Selecting a different Kotlin language version does not currently change the parser behavior (unlike Java).
 
-Other Kotlin 2.0.0 / 2.1.0 / 2.2.0 / 2.3.0 language features are not supported at this time.
-PRs to improve Kotlin parser coverage are welcome.
+Examples of newer language features that are supported:
+
+* Kotlin 1.9: [`..<` operator for open-ended ranges](https://kotlinlang.org/docs/ranges.html) ([#7171](https://github.com/pmd/pmd/issues/7171))
+* Kotlin 2.2: [Multi-dollar string interpolation](https://kotlinlang.org/docs/strings.html#multi-dollar-string-interpolation) ([#6003](https://github.com/pmd/pmd/issues/6003))
+  (preview in 2.1.0, stable in 2.2.0)
 
 ## Providing the auxiliary classpath
 
