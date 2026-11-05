@@ -275,7 +275,7 @@ trigger CaseAssignLevel on CaseAssignLevel__c (after delete, after insert, after
         <code-ref id="trigger"/>
     </test-code>
     <test-code>
-        <description>#5101 Switch cases contribute to the reporting threshold</description>
+        <description>#4863 Switch cases contribute to the reporting threshold</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>The method 'bar()' has a cyclomatic complexity of 12.</message>

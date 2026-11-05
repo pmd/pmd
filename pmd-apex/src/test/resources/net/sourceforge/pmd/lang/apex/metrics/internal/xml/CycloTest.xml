@@ -153,7 +153,7 @@
     </test-code>
 
     <test-code>
-        <description>#5101 Literal, enum, grouped and default switch cases</description>
+        <description>#4863 Literal, enum, grouped and default switch cases</description>
         <expected-problems>5</expected-problems>
         <expected-messages>
             <message>'Foo' has value 6.</message>
@@ -191,7 +191,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>#5101 Type cases and nested decisions</description>
+        <description>#4863 Type cases and nested decisions</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo' has value 6.</message>
