@@ -4,9 +4,12 @@
 
 package net.sourceforge.pmd.reporting;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -153,6 +157,41 @@ class DeterministicOutputListenerWrapperTest {
                 + "file013.dummy, file014.dummy, file015.dummy, file016.dummy, file017.dummy, "
                 + "file018.dummy, file019.dummy, file020.dummy, file021.dummy, file022.dummy"
                 + "] ... and 5 more", error.getMessage());
+    }
+
+    @Test
+    void wrappedListenerShouldBeClosedWhenNotAllFilesHaveBeenProcessed() throws Exception {
+        FileId file0 = FileId.fromPathLikeString("file0.dummy");
+        FileId file1 = FileId.fromPathLikeString("file1.dummy");
+        LanguageVersion lv = DummyLanguageModule.getInstance().getDefaultVersion();
+        AtomicBoolean closed = new AtomicBoolean();
+        Exception closeException = new IOException("close failed");
+        GlobalAnalysisListener delegate = new GlobalAnalysisListener() {
+            @Override
+            public FileAnalysisListener startFileAnalysis(TextFile file) {
+                return FileAnalysisListener.noop();
+            }
+
+            @Override
+            public void close() throws Exception {
+                closed.set(true);
+                throw closeException;
+            }
+        };
+
+        DeterministicOutputListenerWrapper wrapper = new DeterministicOutputListenerWrapper(delegate);
+        try (ListenerInitializer init = wrapper.initializer()) {
+            init.setNumberOfFilesToAnalyze(2);
+            init.setFilesToAnalyze(Arrays.asList(file0, file1));
+        }
+
+        // only file1's report arrives -> it stays buffered, waiting for file0
+        wrapper.startFileAnalysis(TextFile.forCharSeq("", file1, lv)).close();
+
+        AssertionError error = assertThrows(AssertionError.class, wrapper::close);
+        assertTrue(closed.get(), "The wrapped listener should have been closed");
+        // the exception from closing the wrapped listener doesn't replace the AssertionError
+        assertArrayEquals(new Throwable[] {closeException}, error.getSuppressed());
     }
 
     static class MyRuleReportingAlways extends FooRule {

@@ -417,6 +417,7 @@ public final class PmdAnalysis implements AutoCloseable {
             throw new RuntimeException("Exception while initializing analysis listeners", e);
         }
 
+        Throwable analysisFailure = null;
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
             for (final Rule rule : removeBrokenRules(rulesets)) {
                 // todo Just like we throw for invalid properties, "broken rules"
@@ -453,23 +454,91 @@ public final class PmdAnalysis implements AutoCloseable {
                         analyses.add(lpRegistry.getProcessor(lang).launchAnalysis(analysisTask));
                     }
                 } finally {
-                    Exception e = IOUtil.closeAll(analyses);
-                    if (e != null) {
-                        reporter.errorEx("Error while joining analysis", e);
-                    }
+                    joinAnalyses(analyses);
                 }
 
             } catch (LanguageTerminationException e) {
                 reporter.errorEx("Error while closing language processors", e);
             }
+        } catch (RuntimeException | Error e) {
+            analysisFailure = e;
+            throw e;
         } finally {
+            closeListener(listener, analysisFailure);
+        }
+    }
+
+    /**
+     * Waits for all analyses to finish. Every analysis is closed, even if
+     * closing a previous one threw an {@link Error}. Exceptions are only
+     * reported, the first Error is rethrown after all analyses are closed.
+     */
+    @SuppressWarnings("PMD.CloseResource") // each analysis is closed in the loop
+    private void joinAnalyses(List<AutoCloseable> analyses) {
+        Exception exception = null;
+        Error error = null;
+        for (AutoCloseable analysis : analyses) {
             try {
-                listener.close();
+                analysis.close();
             } catch (Exception e) {
-                reporter.errorEx("Exception while closing analysis listeners", e);
+                if (exception == null) {
+                    exception = e;
+                } else {
+                    addSuppressed(exception, e);
+                }
+            } catch (Error e) {
+                if (error == null) {
+                    error = e;
+                } else {
+                    addSuppressed(error, e);
+                }
+            }
+        }
+        if (exception != null) {
+            reporter.errorEx("Error while joining analysis", exception);
+        }
+        if (error != null) {
+            throw error;
+        }
+    }
+
+    /**
+     * Closes the analysis listeners. If the analysis already failed, a failure
+     * while closing is added to the original failure as suppressed, instead of
+     * replacing it. Otherwise, the original failure would be hidden, e.g. by
+     * the AssertionError of {@link DeterministicOutputListenerWrapper} when not
+     * all files were processed (see #6869).
+     *
+     * @param analysisFailure The failure of the analysis, which is being rethrown, or null
+     */
+    private void closeListener(GlobalAnalysisListener listener, Throwable analysisFailure) {
+        // If analysisFailure is set, the caller rethrows it after this method returns.
+        try {
+            listener.close();
+        } catch (Exception e) {
+            reporter.errorEx("Exception while closing analysis listeners", e);
+            if (analysisFailure == null) {
                 // todo better exception
                 throw new RuntimeException("Exception while closing analysis listeners", e);
             }
+            addSuppressed(analysisFailure, e);
+        } catch (Error e) {
+            if (analysisFailure == null) {
+                throw e;
+            }
+            reporter.errorEx("Exception while closing analysis listeners", e);
+            addSuppressed(analysisFailure, e);
+        }
+    }
+
+    /**
+     * Adds {@code suppressed} to {@code target}, unless both are the same
+     * instance ({@link Throwable#addSuppressed(Throwable)} would throw then).
+     * Throwable doesn't override equals, so this compares identity.
+     */
+    private static void addSuppressed(Throwable target, Throwable suppressed) {
+        if (!target.equals(suppressed)) {
+            target.addSuppressed(suppressed);
         }
     }
 

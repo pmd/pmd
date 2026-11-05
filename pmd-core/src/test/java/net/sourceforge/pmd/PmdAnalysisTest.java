@@ -11,8 +11,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -36,11 +38,14 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.SimpleTestTextFile;
+import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.renderers.CodeClimateRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -234,6 +239,42 @@ class PmdAnalysisTest {
         config.setClassLoader(this.getClass().getClassLoader());
 
         assertDoesNotThrow(() -> PmdAnalysis.create(config));
+    }
+
+    @Test
+    void failureWhileClosingListenersShouldNotHideAnalysisError() {
+        PMDConfiguration config = new PMDConfiguration();
+        config.setThreads(0);
+        config.setIgnoreIncrementalAnalysis(true);
+        config.setReporter(PmdReporter.quiet());
+        IOException closeException = new IOException("close failed");
+
+        Error error = assertThrows(Error.class, () -> {
+            try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+                pmd.addRuleSet(RuleSet.forSingleRule(new MockRule() {
+                    @Override
+                    public void apply(Node node, RuleContext ctx) {
+                        throw new Error("analysis error");
+                    }
+                }));
+                pmd.addListener(new GlobalAnalysisListener() {
+                    @Override
+                    public FileAnalysisListener startFileAnalysis(TextFile file) {
+                        return FileAnalysisListener.noop();
+                    }
+
+                    @Override
+                    public void close() throws Exception {
+                        throw closeException;
+                    }
+                });
+                pmd.files().addSourceFile(FileId.fromPathLikeString("fname1.dummy"), "some source");
+                pmd.performAnalysis();
+            }
+        });
+
+        assertEquals("analysis error", error.getMessage());
+        assertArrayEquals(new Throwable[] {closeException}, error.getSuppressed());
     }
 
     private static class FakeJvmLanguageModule extends DummyLanguageModule {

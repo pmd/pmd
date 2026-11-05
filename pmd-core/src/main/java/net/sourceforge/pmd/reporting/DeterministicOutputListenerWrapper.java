@@ -130,19 +130,22 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
 
     @Override
     public void close() throws Exception {
-        synchronized (lock) {
-            tryToFlushBuffer();
-            if (!reportBuffer.isEmpty()) {
-                // This would be a problem in PmdAnalysis, maybe because it didn't join
-                // on the parallel processing tasks, e.g. because an Error in one analysis
-                // thread aborted the analysis while other files were still running.
-                // Report which files are missing, so that this error gives a hint at
-                // the real cause.
-                throw new AssertionError("Closed listener but not all files have been processed:\n"
-                                             + unprocessedFiles());
+        // Always close the wrapped listener, even if the check below fails.
+        // Otherwise, e.g. a renderer would not flush its output.
+        try (GlobalAnalysisListener ignored = listener) {
+            synchronized (lock) {
+                tryToFlushBuffer();
+                if (!reportBuffer.isEmpty()) {
+                    // This would be a problem in PmdAnalysis, maybe because it didn't join
+                    // on the parallel processing tasks, e.g. because an Error in one analysis
+                    // thread aborted the analysis while other files were still running.
+                    // Report which files are missing, so that this error gives a hint at
+                    // the real cause.
+                    throw new AssertionError("Closed listener but not all files have been processed:\n"
+                                                 + unprocessedFiles());
+                }
             }
         }
-        listener.close();
     }
 
     /**

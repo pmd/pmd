@@ -66,6 +66,7 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
 
     @Override
     public void close() {
+        Error firstError = null;
         try {
             try {
                 for (Future<?> task : futureList) {
@@ -75,7 +76,12 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
                 task.getMessageReporter().error("Unknown error occurred while executing a PmdRunnable: {0}",
                         e.getCause().toString(), e.getCause());
                 if (e.getCause() instanceof Error) {
-                    throw (Error) e.getCause();
+                    firstError = (Error) e.getCause();
+                    // Fail fast: don't start the files that are still queued.
+                    // But the files that are already running must finish before
+                    // the error is rethrown, otherwise their reports arrive after
+                    // the listeners have been closed (see #6869).
+                    executor.shutdownNow();
                 }
             }
 
@@ -88,6 +94,36 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
             Thread.currentThread().interrupt();
         } finally {
             executor.shutdownNow();
+        }
+
+        if (firstError != null) {
+            addOtherErrorsAsSuppressed(firstError);
+            throw firstError;
+        }
+    }
+
+    /**
+     * Other files may have failed with an error as well, while they were still
+     * running when the first error was found. Only the futures that are done are
+     * checked: the futures of the files that were never started never complete.
+     */
+    private void addOtherErrorsAsSuppressed(Error firstError) {
+        for (Future<?> task : futureList) {
+            if (!task.isDone() || task.isCancelled()) {
+                continue;
+            }
+            try {
+                task.get();
+            } catch (ExecutionException e) {
+                Throwable cause = e.getCause();
+                // Throwable doesn't override equals, so this compares identity
+                if (cause instanceof Error && !cause.equals(firstError)) {
+                    firstError.addSuppressed(cause);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
         }
     }
 }
