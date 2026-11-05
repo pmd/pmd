@@ -84,7 +84,7 @@ class PMDCoverageTest {
             // exclude-patterns.
             assertThat(report.toString(), not(containsString("Error while parsing")));
         } catch (IOException ioe) {
-            fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
+            fail("Problem creating temporary file: " + ioe.getLocalizedMessage(), ioe);
         } catch (AssertionError ae) {
             System.out.println("\nReport:\n");
             System.out.println(report);
