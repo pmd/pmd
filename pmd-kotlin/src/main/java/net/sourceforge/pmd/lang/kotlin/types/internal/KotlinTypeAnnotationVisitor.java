@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.kotlin.types.internal;
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -18,13 +17,11 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtForStatement;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSimpleIdentifier;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
-import net.sourceforge.pmd.lang.kotlin.ast.internal.KotlinAstUtil;
+import net.sourceforge.pmd.lang.kotlin.ast.KtVariableDeclarationAttributes;
 import net.sourceforge.pmd.lang.kotlin.rule.internal.KotlinTypeAnalysisContext;
 import net.sourceforge.pmd.lang.kotlin.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
@@ -171,36 +168,30 @@ public final class KotlinTypeAnnotationVisitor {
         @Override
         public Void visitVariableDeclaration(KtVariableDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            // Destructured components only match their own DESTRUCTURED_VARIABLE entry, never
-            // the enclosing for-loop parameter, whose column range also covers "(a, b)".
-            boolean destructured = node.getParent() instanceof KtMultiVariableDeclaration;
             // Match by name within the enclosing declaration, without the first-candidate fallback
             // of selectDeclaration: a variable without its own declaration entry must not borrow
             // the type of a neighbouring one. Lines are bounded by the parent node and columns only
             // break ties, since the recorded range of a declaration does not always start at its
             // name (before kotlin-type-mapper 0.7.2, a property started at its initializer).
-            String name = KotlinAstUtil.textOf(node.firstChild(KtSimpleIdentifier.class));
-            List<DeclarationAst> candidates = decls.stream()
-                    .filter(d -> (destructured ? d.getKind() == DeclarationKind.DESTRUCTURED_VARIABLE : isVariableKind(d.getKind()))
+            String name = node.attributes(KtVariableDeclarationAttributes.class).getIdentifier();
+            decls.stream()
+                    .filter(d -> isVariableKind(d.getKind())
                             && d.getType() != null
                             && d.getLine() >= node.getBeginLine()
                             && d.getLine() <= node.getParent().getEndLine()
                             && d.getName().equals(name))
-                    .collect(Collectors.toList());
-            DeclarationAst decl = candidates.stream()
                     .filter(d -> columnsOverlap(node, d))
                     .findFirst()
-                    .orElse(candidates.isEmpty() ? null : candidates.get(0));
-            if (decl != null) {
-                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
-            }
+                    .ifPresent(decl -> InternalApiBridge.setType(node, toKotlinTypeName(decl.getType())));
+
             return visitChildren(node, data);
         }
 
         private static boolean isVariableKind(DeclarationKind kind) {
             return kind == DeclarationKind.PROPERTY
                     || kind == DeclarationKind.FOR_LOOP_VARIABLE
-                    || kind == DeclarationKind.LAMBDA_PARAMETER;
+                    || kind == DeclarationKind.LAMBDA_PARAMETER
+                    || kind == DeclarationKind.DESTRUCTURED_VARIABLE;
         }
 
         // Primary constructor val/var parameters (e.g. "class Foo(val name: String)")
