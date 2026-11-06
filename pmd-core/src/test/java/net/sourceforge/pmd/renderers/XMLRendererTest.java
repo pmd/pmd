@@ -183,7 +183,7 @@ class XMLRendererTest extends AbstractRendererTest {
         renderer.start();
         renderer.renderFileReport(report);
         renderer.end();
-        renderer.flush();
+        renderer.close();
 
         try (FileInputStream input = new FileInputStream(reportFile)) {
             return IOUtils.toString(input, expectedCharset);

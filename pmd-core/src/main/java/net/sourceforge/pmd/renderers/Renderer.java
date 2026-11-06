@@ -170,7 +170,15 @@ public interface Renderer extends PropertySource {
      */
     void end() throws IOException;
 
-    void flush() throws IOException;
+    /**
+     * @deprecated Since 7.30.0.
+     */
+    @Deprecated
+    default void flush() throws IOException {
+        close();
+    }
+
+    void close() throws IOException;
 
     /**
      * Sets the filename where the report should be written to. If no filename is provided,
@@ -252,7 +260,7 @@ public interface Renderer extends PropertySource {
                 Renderer.this.renderFileReport(configErrorReport.getResult());
                 try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                     end();
-                    flush();
+                    Renderer.this.close();
                 }
             }
         };

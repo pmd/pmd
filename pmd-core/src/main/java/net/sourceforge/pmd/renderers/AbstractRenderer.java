@@ -96,9 +96,17 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
         return writer;
     }
 
+    /**
+     * @deprecated Since 7.30.0.
+     */
+    @Deprecated
     @Override
-    // TODO: consider to rename the flush method - this is actually closing the writer
     public void flush() {
+        close();
+    }
+
+    @Override
+    public void close() {
         if (writer == null) {
             // might happen, if no writer is set. E.g. in maven-pmd-plugin's PmdCollectingRenderer
             return;
