@@ -61,6 +61,13 @@
             <directory>target</directory>
             <outputDirectory>sbom</outputDirectory>
         </fileSet>
+
+        <fileSet>
+            <directory>${project.build.directory}/controlsfx-8</directory>
+            <outputDirectory>lib/controlsfx-8</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+        </fileSet>
     </fileSets>
 
     <dependencySets>
@@ -69,8 +76,23 @@
             <scope>runtime</scope>
             <excludes>
                 <exclude>net.sourceforge.pmd:pmd-languages-deps:pom</exclude>
+                <!-- controlsfx goes to lib/controlsfx-11, see below -->
+                <exclude>org.controlsfx:controlsfx</exclude>
             </excludes>
             <outputDirectory>lib</outputDirectory>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0644</fileMode>
+            <useProjectArtifact>false</useProjectArtifact>
+        </dependencySet>
+        <!-- controlsfx in the version pmd-designer uses (11.x, Java 11+).
+             controlsfx 8 for Java 8 is copied separately to lib/controlsfx-8.
+             The start scripts select the matching one. -->
+        <dependencySet>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.controlsfx:controlsfx</include>
+            </includes>
+            <outputDirectory>lib/controlsfx-11</outputDirectory>
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
             <useProjectArtifact>false</useProjectArtifact>

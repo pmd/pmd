@@ -106,6 +106,7 @@
         <pmd.build-tools.version>40</pmd.build-tools.version>
 
         <pmd-designer.version>7.19.3</pmd-designer.version>
+<!--        <pmd-designer.version>7.19.4-SNAPSHOT</pmd-designer.version>-->
 
         <javacc.outputDirectory>${project.build.directory}/generated-sources/javacc</javacc.outputDirectory>
         <javacc.ant.wrapper>${project.basedir}/../javacc-wrapper.xml</javacc.ant.wrapper>
@@ -803,6 +804,8 @@
                                         <!-- pmd-kotlin uses kotlin-type-mapper which requires at least java 17 -->
                                         <exclude>nl.stokpop.typemapper:kotlin-type-mapper-model</exclude>
                                         <exclude>nl.stokpop.typemapper:kotlin-type-mapper-analyzer</exclude>
+                                        <!-- pmd-designer uses controlsfx 11.x, which requires at least java 11. pmd-dist ships additionally controlsfx 8 for Java 8 compatibility. -->
+                                        <exclude>org.controlsfx:controlsfx</exclude>
                                     </excludes>
                                     <ignoreClasses>
                                         <!-- asm dependency contains a java9 module-info.class -->
@@ -947,6 +950,11 @@
                 <groupId>net.sourceforge.pmd</groupId>
                 <artifactId>pmd-test-schema</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-designer</artifactId>
+                <version>${pmd-designer.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.checkerframework</groupId>
