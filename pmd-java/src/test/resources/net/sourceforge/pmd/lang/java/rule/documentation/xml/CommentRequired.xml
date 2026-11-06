@@ -25,6 +25,10 @@ public class Foo {
     * This is the comment for the second method
     */
     public void doSomething() {}
+    /** This is the comment for the record */
+    public record Bar() {}
+    /** This is the comment for the annotation interface */
+    public @interface Ann {}
 }
     ]]></code-fragment>
 
@@ -35,12 +39,46 @@ public class Foo {
     public Foo() {}
     public void doNothing() {}
     public void doSomething() {}
+    public record Bar() {}
+    public @interface Ann {}
 }
     ]]></code-fragment>
+    <code-fragment id="all-visibilities">
+/** Top level comment */
+public class TopLevel {
+    public class InnerClass {}
+    public record InnerRecord() {}
+    public String innerField;
+    public void innerMethod() {}
+    public enum InnerEnum { INSTANCE }
+    public @interface InnerAnnotation {}
 
+    protected class InnerProtectedClass {}
+    protected record InnerProtectedRecord() {}
+    protected String innerProtectedField;
+    protected void innerProtectedMethod() {}
+    protected enum InnerProtectedEnum { INSTANCE }
+    protected @interface InnerProtectedAnnotation {}
+
+
+    class InnerDefaultClass {}
+    record InnerDefaultRecord() {}
+    String innerDefaultField;
+    void innerDefaultMethod() {}
+    enum InnerDefaultEnum { INSTANCE }
+    @interface InnerDefaultAnnotation {}
+
+    private class InnerPrivateClass {}
+    private record InnerPrivateRecord() {}
+    private String innerPrivateField;
+    private void innerPrivateMethod() {}
+    private enum InnerPrivateEnum { INSTANCE }
+    private @interface InnerPrivateAnnotation {}
+}
+    </code-fragment>
     <test-code>
         <description>Missing comments - all required (default).</description>
-        <expected-problems>6</expected-problems>
+        <expected-problems>8</expected-problems>
         <code-ref id="without-any-comments"/>
     </test-code>
 
@@ -54,10 +92,10 @@ public class Foo {
         <description>Missing comments - only class level required. (deprecate property values test)</description>
         <rule-property name="classCommentRequirement">Required</rule-property>
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
-        <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
+        <rule-property name="methodCommentRequirement">Ignored</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="enumCommentRequirement">Ignored</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>3</expected-problems>
         <code-ref id="without-any-comments"/>
     </test-code>
 
@@ -65,10 +103,9 @@ public class Foo {
         <description>Missing comments - only class level required.</description>
         <rule-property name="classCommentRequirement">required</rule-property>
         <rule-property name="fieldCommentRequirement">ignored</rule-property>
-        <rule-property name="publicMethodCommentRequirement">ignored</rule-property>
-        <rule-property name="protectedMethodCommentRequirement">ignored</rule-property>
+        <rule-property name="methodCommentRequirement">ignored</rule-property>
         <rule-property name="enumCommentRequirement">ignored</rule-property>
-        <expected-problems>1</expected-problems>
+        <expected-problems>3</expected-problems>
         <code-ref id="without-any-comments"/>
     </test-code>
 
@@ -76,10 +113,9 @@ public class Foo {
         <description>Too many comments - all comments are unwanted.</description>
         <rule-property name="classCommentRequirement">unwanted</rule-property>
         <rule-property name="fieldCommentRequirement">unwanted</rule-property>
-        <rule-property name="publicMethodCommentRequirement">unwanted</rule-property>
-        <rule-property name="protectedMethodCommentRequirement">unwanted</rule-property>
+        <rule-property name="methodCommentRequirement">unwanted</rule-property>
         <rule-property name="enumCommentRequirement">unwanted</rule-property>
-        <expected-problems>6</expected-problems>
+        <expected-problems>8</expected-problems>
         <code-ref id="with-all-comments"/>
     </test-code>
 
@@ -126,18 +162,18 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] Package-private methods unwanted but present</description>
+        <description>[java] Methods unwanted but present</description>
         <rule-property name="classCommentRequirement">ignored</rule-property>
-        <rule-property name="packageMethodCommentRequirement">unwanted</rule-property>
+        <rule-property name="methodCommentRequirement">unwanted</rule-property>
         <expected-problems>3</expected-problems>
         <code-ref id="package-private-with-comments"/>
     </test-code>
 
     <test-code>
         <description>[java] Package-private requirement does not affect public or protected methods</description>
-        <rule-property name="classCommentRequirement">ignored</rule-property>
+        <rule-property name="classCommentRequirement">unwanted</rule-property>
         <rule-property name="fieldCommentRequirement">ignored</rule-property>
-        <rule-property name="publicMethodCommentRequirement">ignored</rule-property>
+        <rule-property name="methodCommentRequirement">ignored</rule-property>
         <rule-property name="enumCommentRequirement">ignored</rule-property>
         <rule-property name="packageMethodCommentRequirement">required</rule-property>
         <expected-problems>0</expected-problems>
@@ -618,7 +654,7 @@ public class CommentRequirement {
         <expected-linenumbers>3,4</expected-linenumbers>
         <code><![CDATA[
 /** Comment */
-@interface MyAnnotation1 {
+public @interface MyAnnotation1 {
     String name(); // comment required
     int version(); // comment required
 }
@@ -664,6 +700,7 @@ public class Foo {
 
     <test-code>
         <description>Verify location of violation</description>
+        <rule-property name="minimumVisibility">private</rule-property>
         <expected-problems>5</expected-problems>
         <expected-linenumbers>2-2,5-5,9-9,13-13,17-17</expected-linenumbers>
         <code><![CDATA[
@@ -687,5 +724,37 @@ Foo // <--violation: line 2
     () {}
 }
 ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Minimum visibility: public</description>
+        <rule-property name="fieldCommentRequirement">whenVisible</rule-property>
+        <rule-property name="minimumVisibility">public</rule-property>
+        <expected-problems>6</expected-problems>
+        <code-ref id="all-visibilities"/>
+    </test-code>
+
+    <test-code>
+        <description>Minimum visibility: protected</description>
+        <rule-property name="fieldCommentRequirement">whenVisible</rule-property>
+        <rule-property name="minimumVisibility">protected</rule-property>
+        <expected-problems>12</expected-problems>
+        <code-ref id="all-visibilities"/>
+    </test-code>
+
+    <test-code>
+        <description>Minimum visibility: package</description>
+        <rule-property name="fieldCommentRequirement">whenVisible</rule-property>
+        <rule-property name="minimumVisibility">package</rule-property>
+        <expected-problems>18</expected-problems>
+        <code-ref id="all-visibilities"/>
+    </test-code>
+
+    <test-code>
+        <description>Minimum visibility: private</description>
+        <rule-property name="fieldCommentRequirement">whenVisible</rule-property>
+        <rule-property name="minimumVisibility">private</rule-property>
+        <expected-problems>24</expected-problems>
+        <code-ref id="all-visibilities"/>
     </test-code>
 </test-data>
