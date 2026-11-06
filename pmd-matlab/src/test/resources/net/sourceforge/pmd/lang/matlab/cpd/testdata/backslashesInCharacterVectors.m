@@ -1,0 +1,11 @@
+names = {'hallo_welt', 'hello_world'};
+texEscape = strrep(names, '_', '\_');
+nameUnit = 'hello [world]';
+name = strtrim(regexprep(nameUnit, '\s\[.*\]$', ''));
+path = 'C:\Users\name\';
+slash = '\';
+slashes = '\\';
+quoted = '\''quoted''\';
+joined = 'C:\' + 'next';
+format = '\n\t\u1234\123';
+transposed = matrix';

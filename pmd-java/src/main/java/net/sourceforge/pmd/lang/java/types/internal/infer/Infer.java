@@ -947,8 +947,13 @@ public final class Infer {
     private void addBoundOrDefer(@Nullable MethodCallSite site, InferenceContext infCtx, MethodResolutionPhase phase, @NonNull ExprMirror arg, @NonNull JTypeMirror formalType) {
         ExprChecker exprChecker =
             (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, phase, site);
+        // Lambda result expressions and method reference return types are checked in an
+        // assignment context, which allows boxing even in the strict phase (JLS§15.27.3, §15.13.2).
+        MethodResolutionPhase resultPhase = phase.canBox() ? phase : MethodResolutionPhase.LOOSE;
+        ExprChecker resultChecker =
+            (ctx, exprType, formalType1) -> checkConvertibleOrDefer(ctx, exprType, formalType1, arg, resultPhase, site);
 
-        ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, site, this);
+        ExprCheckHelper helper = new ExprCheckHelper(infCtx, phase, exprChecker, resultChecker, site, this);
         if (!helper.isCompatible(formalType, arg)) {
             throw ResolutionFailedException.incompatibleFormalExprNoReason(logger, arg, formalType);
         }
@@ -991,7 +996,13 @@ public final class Infer {
     }
 
     /**
-     * Convertibility in *invocation* context.
+     * Convertibility in *invocation* context. If {@code canBox} is true,
+     * this is a loose invocation context: a boxing conversion may be
+     * followed by a widening reference conversion, and an unboxing
+     * conversion may be followed by a widening primitive conversion.
+     * A widening primitive conversion followed by a boxing conversion
+     * is not allowed (int is not convertible to Long), and the null type
+     * is not convertible to a primitive type.
      *
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.3
      */
@@ -1002,12 +1013,17 @@ public final class Infer {
         }
 
         if (canBox && exprType.isPrimitive() ^ formalType.isPrimitive()) {
-            // then boxing conversions may be useful
-            Convertibility result = TypeOps.isConvertible(exprType.box(), formalType.box());
+            if (exprType.isPrimitive()) {
+                return TypeOps.isConvertible(exprType.box(), formalType);
+            } else if (exprType.isBottom()) {
+                return Convertibility.NEVER;
+            }
+            // exprType may also be a type variable bounded by the box type
+            Convertibility result = TypeOps.isConvertible(exprType, formalType.box());
             if (!result.never()) {
                 return result;
             } else {
-                return TypeOps.isConvertible(exprType.unbox(), formalType.unbox());
+                return TypeOps.isConvertible(exprType.unbox(), formalType);
             }
         }
 
