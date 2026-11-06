@@ -9,6 +9,8 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
@@ -164,6 +166,49 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
                 val qualifier = acu.firstMethodCall().qualifier!!
                 qualifier shouldHaveType ts.UNKNOWN
                 qualifier.shouldBeA<ASTAmbiguousName>()
+            }
+        }
+    }
+
+    parserTestContainer("Lombok logger annotations") {
+        listOf(
+            "lombok.extern.slf4j.XSlf4j" to "org.slf4j.ext.XLogger",
+            "lombok.extern.java.Log" to "java.util.logging.Logger",
+            "lombok.extern.log4j.Log4j" to "org.apache.log4j.Logger",
+            "lombok.extern.log4j.Log4j2" to "org.apache.logging.log4j.Logger",
+            "lombok.extern.apachecommons.CommonsLog" to "org.apache.commons.logging.Log",
+            "lombok.extern.jbosslog.JBossLog" to "org.jboss.logging.Logger",
+            "lombok.extern.flogger.Flogger" to "com.google.common.flogger.FluentLogger",
+        ).forEach { (annotation, loggerType) ->
+            val code =
+                """
+                import $annotation;
+                @${annotation.substringAfterLast('.')}
+                public class Book {
+                    public void logMe() {
+                        log.info("Hello");
+                    }
+                }
+                """.trimIndent()
+
+            doTest("@${annotation.substringAfterLast('.')} creates a log field of type $loggerType") {
+                val acu = parser.parse(code)
+                acu.withTypeDsl {
+                    val qualifier = acu.firstMethodCall().qualifier!!
+                    qualifier.shouldBeA<ASTVariableAccess> {
+                        val field = it.referencedSym.shouldBeA<JFieldSymbol>()
+                        field.simpleName shouldBe "log"
+                        Modifier.isStatic(field.modifiers) shouldBe true
+                    }
+                    (qualifier.typeMirror.symbol as JClassSymbol).binaryName shouldBe loggerType
+                }
+            }
+
+            doTest("@${annotation.substringAfterLast('.')} does nothing when lombok support is disabled") {
+                val acu = parser.disableLombok().parse(code)
+                acu.withTypeDsl {
+                    acu.firstMethodCall().qualifier!!.shouldBeA<ASTAmbiguousName>()
+                }
             }
         }
     }
