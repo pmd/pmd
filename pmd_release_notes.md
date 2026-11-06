@@ -20,6 +20,8 @@ This is a minor release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* apex
+    * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * kotlin
