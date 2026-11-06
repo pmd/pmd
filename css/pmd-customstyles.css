@@ -10,10 +10,10 @@
 }
 
 #grid > div {
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 #grid .card-body {
-    padding-top: 0cm;
+    padding-top: 0;
 }
 #grid .card-header {
     font-weight: bold;
@@ -21,10 +21,10 @@
 
 /* Offsets contents by the height of the nav bar */
 #topbar-content-offset {
-    overflow: scroll;
+    overflow: auto;
     position: absolute;
     top: 50px; /* height of the nav bar */
-    bottom: 0px;
+    bottom: 0;
     width: 100%;
 }
 
