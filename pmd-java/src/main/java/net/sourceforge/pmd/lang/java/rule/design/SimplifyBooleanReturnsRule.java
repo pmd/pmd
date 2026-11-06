@@ -27,6 +27,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
@@ -40,6 +42,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
 public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
 
     private static final Set<BinaryOp> NEGATABLE_OPS = EnumSet.of(EQ, NE, GT, LT, GE, LE);
+    private static final int MAX_METHOD_CALLS = 2;
 
     public SimplifyBooleanReturnsRule() {
         super(ASTReturnStatement.class);
@@ -125,8 +128,11 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         }
 
         BinaryOp op = thenFalse || elseFalse ? CONDITIONAL_AND : CONDITIONAL_OR;
-        // the branch that is not a literal, if both are literals, prefers elseExpr
+        // the branch that is not a literal (the both-literal case was handled above)
         ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
+        if (isComplexExpression(branch)) {
+            return null;
+        }
 
         boolean conditionNegated = thenFalse || elseTrue;
         // from the above logic it is guaranteed that exactly one of the four booleans is true
@@ -144,6 +150,15 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
 
         return "return " + conditionNegation + "{condition} " + operator + " "
                 + branchChoice + ";";
+    }
+
+    private static boolean isComplexExpression(ASTExpression expr) {
+        // Keep guard clauses separate from lambdas and long call chains, even if
+        // merging would not require parentheses. Count calls in arguments too,
+        // but allow short expressions such as obj.getClass().equals(String.class).
+        return expr.descendants(ASTLambdaExpression.class).nonEmpty()
+            || expr.descendantsOrSelf().filterIs(ASTMethodCall.class)
+                   .take(MAX_METHOD_CALLS + 1).count() > MAX_METHOD_CALLS;
     }
 
     private static boolean needsNewParensWhenNegating(ASTExpression e) {
