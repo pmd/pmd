@@ -24,7 +24,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### Changed Rules
+* The Apex rule {% rule apex/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrue %} has a new property
+    `reportConnectApi`. It defaults to `true`. Set it to `false` to exempt test classes that call a `ConnectApi`
+    method, since most `ConnectApi` methods require `seeAllData=true` in tests (see [#7236](https://github.com/pmd/pmd/issues/7236)).
+
 ### 🐛️ Fixed Issues
+* apex-bestpractices
+    * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * kotlin
