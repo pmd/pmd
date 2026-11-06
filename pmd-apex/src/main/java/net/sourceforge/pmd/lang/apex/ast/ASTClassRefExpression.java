@@ -27,7 +27,7 @@ public final class ASTClassRefExpression extends AbstractApexNode.Single<TypeRef
      * does not depend on how the expression is used, so it is available even
      * when the class literal is passed directly as a method argument.
      *
-     * @since 7.29.0
+     * @since 7.30.0
      */
     public String getType() {
         return caseNormalizedTypeIfPrimitive(node.getTypeRef().asCodeString());
