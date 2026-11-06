@@ -889,4 +889,138 @@ class NodeStream {
             }
         }
     }
+
+    parserTest("#7148 lambda result may be boxed in strict phase") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Supplier;
+
+            class LambdaResult {
+                static void m(Supplier<Integer> s, int x) { }
+                static void m(Supplier<Integer> s, Integer x) { }
+
+                void t(int i) {
+                    // javac selects m(Supplier, int) in the strict phase
+                    m(() -> 1, i);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("m")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(Supplier::class[gen.t_Integer], int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7148 boxing of a lambda result does not widen first") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.IntSupplier;
+            import java.util.function.Supplier;
+
+            class LambdaResult {
+                static void h(Supplier<Long> s, int x) { }
+                static void h(Supplier<Integer> s, Integer x) { }
+                static void p(IntSupplier s, int x) { }
+                static void p(Supplier<Integer> s, Integer x) { }
+
+                void t(int i) {
+                    // 1 is not assignable to Long, so h(Supplier<Long>, int) is not applicable
+                    h(() -> 1, i);
+                    // null is not assignable to int, so p(IntSupplier, int) is not applicable
+                    p(() -> null, i);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val hCall = acu.firstMethodCall("h")
+        val pCall = acu.firstMethodCall("p")
+
+        spy.shouldBeOk {
+            hCall.methodType.shouldMatchMethod(
+                named = "h",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(Supplier::class[gen.t_Integer], gen.t_Integer),
+                returning = void
+            )
+            pCall.methodType.shouldMatchMethod(
+                named = "p",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(Supplier::class[gen.t_Integer], gen.t_Integer),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7148 lambda result may be boxed in strict phase, with an implicitly typed lambda argument") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Predicate;
+            import java.util.function.Supplier;
+
+            class ImplicitLambda {
+                private static void m(Supplier<Integer> s, Integer x, Predicate<String> p) { }
+                private static void m(Supplier<Integer> s, int x, Predicate<String> p) { }
+
+                void t(int i) {
+                    // javac selects m(Supplier, int, Predicate) in the strict phase
+                    m(() -> 1, i, t -> t.isEmpty());
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_ImplicitLambda = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("m")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = t_ImplicitLambda,
+                withFormals = listOf(Supplier::class[gen.t_Integer], int, java.util.function.Predicate::class[gen.t_String]),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7148 unboxing of a lambda result in the strict phase") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.IntSupplier;
+            import java.util.function.Supplier;
+
+            class LambdaResult {
+                static void m(IntSupplier s, int x) { }
+                static void m(Supplier<Integer> s, Integer x) { }
+
+                void t(int i, Integer value) {
+                    // javac selects m(IntSupplier, int) in the strict phase
+                    m(() -> value, i);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("m")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(java.util.function.IntSupplier::class.raw, int),
+                returning = void
+            )
+        }
+    }
 })

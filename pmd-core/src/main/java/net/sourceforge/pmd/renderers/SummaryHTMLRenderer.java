@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.reporting.Report;
@@ -65,7 +66,7 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         for (Entry<String, MutableInt> entry : summary.entrySet()) {
             String ruleName = entry.getKey();
             writer.write("<tr><td>");
-            writer.write(ruleName);
+            writer.write(StringEscapeUtils.escapeHtml4(ruleName));
             writer.write("</td><td align=center>");
             writer.write(String.valueOf(entry.getValue().intValue()));
             writer.println("</td></tr>");

@@ -217,12 +217,10 @@
 					<td>
 						[<xsl:value-of select="@ruleset" />.<xsl:value-of select="@rule" />]
 						 -
-						 <xsl:choose>
-						 <xsl:when test="@externalInfoUrl">
-						 <a href="{@externalInfoUrl}"><xsl:value-of select="text()" disable-output-escaping="yes" /></a>
-						 </xsl:when>
-						 <xsl:otherwise><xsl:value-of select="text()" disable-output-escaping="yes" /></xsl:otherwise>
-						 </xsl:choose>
+						<xsl:call-template name="info-link">
+							<xsl:with-param name="url" select="@externalInfoUrl"/>
+							<xsl:with-param name="label" select="text()"/>
+						</xsl:call-template>
 					</td>
 					<td>
 						<xsl:value-of select="@beginline" /> - <xsl:value-of select="@endline"/>
@@ -267,5 +265,24 @@
 			<xsl:if test="position() mod 2 = 1">a</xsl:if>
 			<xsl:if test="position() mod 2 = 0">b</xsl:if>
 		</xsl:attribute>
+	</xsl:template>
+
+	<xsl:template name="info-link">
+		<xsl:param name="url"/>
+		<xsl:param name="label"/>
+		<xsl:variable name="head"
+						select="translate(substring($url, 1, 8),
+						'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+						'abcdefghijklmnopqrstuvwxyz')"/>
+		<xsl:choose>
+			<xsl:when test="starts-with($head, 'https://') or starts-with($head, 'http://')">
+				<a href="{$url}" rel="noopener noreferrer">
+					<xsl:value-of select="$label"/>
+				</a>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$label"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 </xsl:stylesheet>
