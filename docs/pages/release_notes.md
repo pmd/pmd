@@ -59,6 +59,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
+    * [#7297](https://github.com/pmd/pmd/issues/7297): \[java] CloseResource: False positive for close() on a type that is not a resource
 * java-performance
     * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
 * kotlin

@@ -2508,4 +2508,151 @@ class StaticMockTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7297 [java] CloseResource: closeNotInFinally false positive for close() on a non-resource type</description>
+        <rule-property name="closeNotInFinally">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmd;
+
+import java.io.Closeable;
+
+/**
+ * Instance closing {@link TestInstance}.
+ */
+public final class TestInstanceUtils {
+
+    private TestInstanceUtils() {
+        // nothing to do, hidden
+    }
+
+    /**
+     * Test method for PMD, close not accepted outside finally block.
+     *
+     * @param testInstance test instance to call close
+     */
+    public static void invalid(final TestInstance testInstance) {
+        try {
+            testInstance.close();
+        } catch (Exception _) {
+            // nothing can be done further here
+        }
+    }
+
+    /**
+     * Test method for PMD, close accepted in a finally block.
+     *
+     * @param testInstance test instance to call close
+     */
+    public static void valid(final TestInstance testInstance) {
+        try {
+            // nothing to do
+        } finally {
+            try {
+                testInstance.close();
+            } catch (Exception _) {
+                // nothing can be done further here
+            }
+        }
+    }
+}
+
+/**
+ * Such a test instance class with a {@link #close()} method, but not implementing {@link Closeable} or {@link AutoCloseable}.
+ *
+ * @see Closeable
+ * @see AutoCloseable
+ */
+class TestInstance {
+
+    /**
+     * Close method not of {@link Closeable} or {@link AutoCloseable}.
+     *
+     * @throws Exception when closing fails
+     */
+    public void close() throws Exception {
+        // it's not important, that close must anything, name only significant
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7297 [java] CloseResource: closeNotInFinally still reports Closeable and AutoCloseable closed outside finally</description>
+        <rule-property name="closeNotInFinally">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,13</expected-linenumbers>
+        <expected-messages>
+            <message>'resource' is not closed within a finally block, thus might not be closed at all in case of exceptions</message>
+            <message>'resource' is not closed within a finally block, thus might not be closed at all in case of exceptions</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.Closeable;
+
+public class Foo {
+    public void invalidCloseable(final Closeable resource) {
+        try {
+            resource.close();
+        } catch (Exception _) {
+        }
+    }
+
+    public void invalidAutoCloseable(final AutoCloseable resource) {
+        try {
+            resource.close();
+        } catch (Exception _) {
+        }
+    }
+
+    public void valid(final Closeable resource) {
+        try {
+        } finally {
+            try {
+                resource.close();
+            } catch (Exception _) {
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7297 [java] CloseResource: closeNotInFinally still reports a type configured as a resource</description>
+        <rule-property name="types">pmd.TestInstance</rule-property>
+        <rule-property name="closeNotInFinally">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>'testInstance' is not closed within a finally block, thus might not be closed at all in case of exceptions</message>
+        </expected-messages>
+        <code><![CDATA[
+package pmd;
+
+public class Foo {
+    public void invalid(final TestInstance testInstance) {
+        try {
+            testInstance.close();
+        } catch (Exception _) {
+        }
+    }
+
+    public void valid(final TestInstance testInstance) {
+        try {
+        } finally {
+            try {
+                testInstance.close();
+            } catch (Exception _) {
+            }
+        }
+    }
+}
+
+class TestInstance {
+    public void close() throws Exception {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
