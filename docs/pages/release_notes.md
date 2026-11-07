@@ -29,6 +29,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
+* java
+    * [#7152](https://github.com/pmd/pmd/issues/7152): \[java] Type-name-qualified invocation filters out instance methods before overload resolution
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
 * kotlin
