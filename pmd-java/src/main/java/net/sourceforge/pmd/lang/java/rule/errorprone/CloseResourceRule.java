@@ -140,7 +140,9 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Boolean> DETECT_CLOSE_NOT_IN_FINALLY =
             booleanProperty("closeNotInFinally")
-                .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block").defaultValue(false).build();
+                .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block. "
+                        + "Applies only to the types configured in 'types'")
+                .defaultValue(false).build();
 
     private static final InvocationMatcher OBJECTS_NON_NULL = InvocationMatcher.parse("java.util.Objects#nonNull(_)");
     private static final InvocationMatcher FILESYSTEMS_GET_DEFAULT = InvocationMatcher.parse("java.nio.file.FileSystems#getDefault()");
@@ -859,9 +861,14 @@ public class CloseResourceRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
+        // Only resource types are subject to closeNotInFinally. A class that merely
+        // declares close() and is not a configured resource (Closeable/AutoCloseable
+        // by default, or a type listed in 'types') must not be reported.
         if (isCloseTargetMethodCall(node) && node.getQualifier() instanceof ASTVariableAccess) {
             ASTVariableAccess closedVar = (ASTVariableAccess) node.getQualifier();
-            if (isNotInFinallyBlock(closedVar) && !reportedVarNames.contains(closedVar.getName())) {
+            if (isResourceTypeOrSubtype(closedVar)
+                    && isNotInFinallyBlock(closedVar)
+                    && !reportedVarNames.contains(closedVar.getName())) {
                 ctx.addViolationWithMessage(closedVar, CLOSE_IN_FINALLY_BLOCK_MESSAGE,
                                             closedVar.getName());
             }
