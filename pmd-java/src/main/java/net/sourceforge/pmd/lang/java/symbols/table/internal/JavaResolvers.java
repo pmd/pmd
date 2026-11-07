@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
@@ -158,41 +159,9 @@ public final class JavaResolvers {
                 return t.streamMethods(
                     it -> it.nameEquals(simpleName)
                         && isAccessibleIn(nestRoot, it, true) // fetch protected methods
-                        && isNotStaticInterfaceMethod(it)
-                        && isDeclaredOrInherited(it)
+                        // methods that are not members must not shadow those of the enclosing classes
+                        && isMemberMethod(it, t.getSymbol())
                 ).collect(OverloadSet.collectMostSpecific(t)); // remove overridden, hidden methods
-            }
-
-            // Static interface methods are not inherited and are in fact not in scope in the subtypes.
-            // They must be explicitly qualified or imported.
-            private boolean isNotStaticInterfaceMethod(JMethodSymbol it) {
-                return !it.isStatic() || it.getEnclosingClass().equals(t.getSymbol())
-                    || !it.getEnclosingClass().isInterface();
-            }
-
-            // Methods of supertypes are members of this type only if they are inherited
-            // (JLS 8.4.8), which accessibility alone does not decide. Private methods are
-            // never inherited. A package-private method is not inherited by a subclass in
-            // another package, and the classes below that one cannot inherit it either.
-            // Methods that are not members must not shadow those of the enclosing classes.
-            private boolean isDeclaredOrInherited(JMethodSymbol it) {
-                JClassSymbol owner = it.getEnclosingClass();
-                if (owner.equals(t.getSymbol())) {
-                    return true;
-                }
-                int mods = it.getModifiers();
-                if (Modifier.isPublic(mods) || Modifier.isProtected(mods)) {
-                    return true;
-                } else if (Modifier.isPrivate(mods)) {
-                    return false;
-                }
-                String pack = owner.getPackageName();
-                for (JClassSymbol c = t.getSymbol(); c != null && !c.equals(owner); c = c.getSuperclass()) {
-                    if (!c.getPackageName().equals(pack)) {
-                        return false;
-                    }
-                }
-                return true;
             }
 
             @Override
@@ -390,6 +359,68 @@ public final class JavaResolvers {
             }
         }
         return hidden;
+    }
+
+    /**
+     * Returns true if a method of the given type or of one of its supertypes
+     * is a member of that type, which accessibility alone does not decide
+     * (JLS 8.2, 8.4.8, 9.4.1). Private methods of supertypes are not inherited.
+     * A package-private method is not inherited by a subclass in another package,
+     * and the classes below that one cannot inherit it either. Static interface
+     * methods are members only of the interface that declares them. An interface
+     * has only the public methods of its supertypes, so the protected methods of
+     * Object are not members of an interface (JLS 9.2).
+     *
+     * @param method A method of the given type or of one of its supertypes
+     * @param type   The type whose members are searched. If it is not a class
+     *               symbol, only the rule for static interface methods applies.
+     */
+    public static boolean isMemberMethod(JMethodSymbol method, @Nullable JTypeDeclSymbol type) {
+        JClassSymbol owner = method.getEnclosingClass();
+        if (owner.equals(type)) {
+            return true;
+        } else if (method.isStatic() && owner.isInterface()) {
+            return false;
+        } else if (!(type instanceof JClassSymbol)) {
+            return true;
+        }
+        int mods = method.getModifiers();
+        if (type.isInterface()) {
+            return Modifier.isPublic(mods);
+        } else if (Modifier.isPublic(mods) || Modifier.isProtected(mods)) {
+            return true;
+        } else if (Modifier.isPrivate(mods)) {
+            return false;
+        }
+        String pack = owner.getPackageName();
+        for (JClassSymbol c = (JClassSymbol) type; c != null && !c.equals(owner); c = c.getSuperclass()) {
+            if (!c.getPackageName().equals(pack)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if a method of a component of an intersection type is a
+     * member of the intersection. Its members are those of a notional class
+     * that extends the class component and implements the interface components,
+     * or of a notional interface if the class component is Object (JLS 4.9).
+     * Neither inherits private methods or static interface methods, even if a
+     * component declares them, and the notional interface has only public members.
+     *
+     * @param method     A method of a component of the intersection or of one of their supertypes
+     * @param classBound The class component of the intersection, null if it is Object
+     */
+    public static boolean isIntersectionMemberMethod(JMethodSymbol method, @Nullable JTypeDeclSymbol classBound) {
+        int mods = method.getModifiers();
+        boolean staticInterfaceMethod = method.isStatic() && method.getEnclosingClass().isInterface();
+        if (Modifier.isPrivate(mods) || staticInterfaceMethod) {
+            return false;
+        } else if (classBound == null) {
+            return Modifier.isPublic(mods);
+        }
+        return isMemberMethod(method, classBound);
     }
 
     /**
