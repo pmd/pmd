@@ -31,6 +31,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
+    * [#7297](https://github.com/pmd/pmd/issues/7297): \[java] CloseResource: False positive for close() on a type that is not a resource
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
