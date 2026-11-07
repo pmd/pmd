@@ -1854,7 +1854,7 @@ If the finalize() is implemented, it should do something besides just calling su
 //MethodDeclaration[@Name='finalize'][@Arity = 0]
    [Block[@Size=1]/ExpressionStatement/MethodCall[@MethodName = "finalize"][SuperExpression]]
 |
-//ExpressionStatement[MethodCall[@MethodName = "finalize"][SuperExpression[not(ClassType)]]]
+//Block/Block/ExpressionStatement[MethodCall[@MethodName = "finalize"][SuperExpression[not(ClassType)]]]
    /ancestor::*[not(self::Block[@Size = 1])][1]
    [self::MethodDeclaration[@Name = "finalize"][@Arity = 0]]
 ]]>
