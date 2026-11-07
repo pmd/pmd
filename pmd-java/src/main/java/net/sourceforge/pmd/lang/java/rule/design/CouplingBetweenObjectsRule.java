@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -50,16 +51,17 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         encounteredTypes.push(new HashSet<>());
         boolean prev = inInterface;
         inInterface = node.isInterface();
-        super.visit(node, data);
+        super.visit(node, ctx);
         inInterface = prev;
 
         Integer threshold = getProperty(THRESHOLD_DESCRIPTOR);
         int count = encounteredTypes.peek().size();
         if (count > threshold) {
-            asCtx(data).addViolation(node, count, threshold);
+            ctx.addViolation(node, count, threshold);
         }
 
         encounteredTypes.pop();
@@ -68,30 +70,34 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTType type = node.getResultTypeNode();
         checkVariableType(type);
-        return super.visit(node, data);
+        return super.visit(node, ctx);
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTType type = node.getTypeNode();
         checkVariableType(type);
-        return super.visit(node, data);
+        return super.visit(node, ctx);
     }
 
     @Override
     public Object visit(ASTFormalParameter node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTType type = node.getTypeNode();
         checkVariableType(type);
-        return super.visit(node, data);
+        return super.visit(node, ctx);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTType type = node.getTypeNode();
         checkVariableType(type);
-        return super.visit(node, data);
+        return super.visit(node, ctx);
     }
 
     /**
