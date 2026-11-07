@@ -425,6 +425,14 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
 
                 @Builder(builderClassName = "CustomBuilder")
                 static Desk of(String name) { return new Desk(name); }
+
+                @Builder
+                static Book book(String title) { return null; }
+            }
+
+            class Bar {
+                @Builder(builderClassName = "*Builder")
+                static Foo create(String x) { return null; }
             }
 
             @Builder
@@ -465,8 +473,15 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
 
         doTest("Builder on a constructor or method belongs to the enclosing class") {
             val acu = parser.parse(code)
-            acu.classSymbol("Desk").declaredClasses.map { it.simpleName } shouldBe listOf("DeskBuilder", "CustomBuilder")
+            val desk = acu.classSymbol("Desk")
+            // Method builders are named after the return type: Desk$BookBuilder, not Desk$DeskBuilder.
+            desk.declaredClasses.map { it.simpleName } shouldBe listOf("DeskBuilder", "CustomBuilder", "BookBuilder")
+            desk.declaredClasses[2].binaryName shouldBe "Desk\$BookBuilder"
             acu.classSymbol("Lamp").declaredClasses.map { it.simpleName } shouldBe listOf("LampBuilder")
+            // '*' in builderClassName is the return type as well.
+            val bar = acu.classSymbol("Bar")
+            bar.declaredClasses.map { it.simpleName } shouldBe listOf("FooBuilder")
+            bar.declaredClasses[0].binaryName shouldBe "Bar\$FooBuilder"
         }
 
         doTest("Do nothing when lombok support is disabled") {
