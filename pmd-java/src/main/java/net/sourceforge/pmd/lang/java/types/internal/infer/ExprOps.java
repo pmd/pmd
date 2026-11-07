@@ -254,9 +254,9 @@ public final class ExprOps {
             }
         } else {
             JClassType enclosing = mref.getEnclosingType();
-            accessible = mref.getTypeToSearch()
-                             .streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), enclosing.getSymbol()))
-                             .collect(OverloadSet.collectMostSpecific(enclosing));
+            accessible = TypeOps.getMemberSource(mref.getTypeToSearch())
+                    .streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), enclosing.getSymbol()))
+                    .collect(OverloadSet.collectMostSpecific(enclosing));
         }
 
         if (accessible.size() == 1) {
@@ -525,7 +525,9 @@ public final class ExprOps {
                         typeToSearch = capture(asSuper);
                     }
                 }
-                actualTypeToSearch = typeToSearch;
+                // the type to search may be a type variable, whose members come
+                // from its (possibly intersection) upper bound, which must be captured
+                actualTypeToSearch = TypeOps.getMemberSource(typeToSearch);
             }
 
             // Primary :: [TypeArguments] Identifier

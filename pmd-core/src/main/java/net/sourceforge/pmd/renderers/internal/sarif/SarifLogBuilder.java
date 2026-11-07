@@ -43,19 +43,7 @@ public class SarifLogBuilder {
     private final List<ToolConfigurationNotification> toolConfigurationNotifications = new ArrayList<>();
     private final List<ToolExecutionNotification> toolExecutionNotifications = new ArrayList<>();
 
-    public static SarifLogBuilder sarifLogBuilder() {
-        return new SarifLogBuilder();
-    }
-
-    public static SarifLogBuilder sarifLogBuilder(Function<FileId, String> fileUriRenderer) {
-        return new SarifLogBuilder(fileUriRenderer);
-    }
-
-    public SarifLogBuilder() {
-        this(FileId::getUriString);
-    }
-
-    private SarifLogBuilder(Function<FileId, String> fileUriRenderer) {
+    public SarifLogBuilder(Function<FileId, String> fileUriRenderer) {
         this.fileUriRenderer = fileUriRenderer;
     }
 

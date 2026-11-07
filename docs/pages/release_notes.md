@@ -24,55 +24,31 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
-### 🌟️ New and Changed Rules
-#### Changed Rules
-*   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
-    whose constant classification previously depended on a boxed static final field. Direct static field references
-    are still reported.
-*   The Java rule {% rule java/errorprone/UnconditionalIfStatement %} now excludes final local boolean constants,
-    consistently with its existing exclusion of named compile-time constants used for conditional compilation.
-*   The Java rule {% rule java/errorprone/UnusedNullCheckInEquals %} now recognizes final local String constants
-    and unqualified instance String constants as non-null receivers, avoiding unnecessary reports.
-*   The Java rule {% rule java/bestpractices/AvoidReassigningLoopVariables %}, with `forReassign=skip`, now accepts
-    a final local constant equal to one as the increment of a conditional skip.
-*   The Java rule {% rule java/bestpractices/UnusedAssignment %} now recognizes final local boolean constants
-    when analyzing short-circuit conditions, avoiding false positives caused by assignments that cannot execute.
-*   The Java rule {% rule java/bestpractices/LiteralsFirstInComparisons %} now recognizes final local String constants
-    and unqualified references to non-static final String constants. This may add violations when such a constant
-    is the argument of a comparison, or remove them when it is already the receiver.
-*   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
-    to use `var` when the explicit type name would be longer than a given minimum length configured with 
-    this property.
-
 ### 🐛️ Fixed Issues
+* apex
+    * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
+* apex-design
+    * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * core
     * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
-    * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
-    * [#7156](https://github.com/pmd/pmd/issues/7156): \[core] Analysis cache fails with ZipException on invalid archive on the auxclasspath
-* groovy
-    * [#7110](https://github.com/pmd/pmd/issues/7110): \[groovy] Fix #7100: CPD fails on GStrings ending in an interpolated variable
-* html
-    * [#5313](https://github.com/pmd/pmd/issues/5313): \[html] CPD gets end line wrong for HTML
-* java
-    * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
-    * [#7133](https://github.com/pmd/pmd/issues/7133): \[java] CPD: Constructor detection state leaks between files with --ignore-identifiers
-    * [#7145](https://github.com/pmd/pmd/issues/7145): \[java] Lambda with a parenthesized expression body is treated as void-compatible
-* java-bestpractices
-    * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
-    * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
-* java-codestyle
-    * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
-* java-design
-    * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
-    * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+* java-errorprone
+    * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
+* kotlin
+    * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
+    * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
 
 ### 🚨️ API Changes
-
-*   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
-    including local variables and unqualified instance fields. Numeric references are converted to their declared type.
-    Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
-    These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
-    `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+#### Experimental API
+* kotlin
+    * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
+      {% jdoc kotlin::lang.kotlin.ast.HasTypeName %}, so `VariableDeclaration` nodes have a `@TypeName` attribute.
+      This covers property and for-loop variables, lambda parameters, and each component of a
+      destructuring declaration (`val (a, b) = ...`, `for ((a, b) in ...)`, `{ (a, b) -> ... }`).
+      The XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly` and `pmd-kotlin:isNullable`
+      support `VariableDeclaration` nodes as well.
+    * A destructuring `PropertyDeclaration` (e.g. `val (a, b) = Pair(1, "x")`) no longer has a `@TypeName`.
+      Before, it wrongly got the type of the first component. To find destructured variables
+      by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

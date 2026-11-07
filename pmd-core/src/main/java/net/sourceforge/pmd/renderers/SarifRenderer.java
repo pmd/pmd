@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.renderers;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,7 +46,7 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        sarifLogBuilder = SarifLogBuilder.sarifLogBuilder(this::determineFileUri);
+        sarifLogBuilder = new SarifLogBuilder(this::determineFileUri);
     }
 
     private String determineFileUri(FileId fileId) {
@@ -54,9 +55,15 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
         if (path.isAbsolute()) {
             return fileId.getUriString();
         }
-        String uriPath = fileName.replace('\\', '/');
+        return convertToUri(fileName);
+    }
+
+    static String convertToUri(String fileName) {
+        String uriPath = fileName.replace(File.separatorChar, '/');
         // A colon in the first segment would otherwise be interpreted as a URI scheme.
-        if (uriPath.indexOf(':') >= 0 && uriPath.split("/", 2)[0].contains(":")) {
+        int colon = uriPath.indexOf(':');
+        int slash = uriPath.indexOf('/');
+        if (colon >= 0 && (slash < 0 || colon < slash)) {
             uriPath = "./" + uriPath;
         }
         try {

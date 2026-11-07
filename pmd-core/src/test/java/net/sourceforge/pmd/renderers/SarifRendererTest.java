@@ -13,6 +13,8 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -179,6 +181,26 @@ class SarifRendererTest extends AbstractRendererTest {
             .getAsJsonArray("locations").get(0).getAsJsonObject().getAsJsonObject("physicalLocation");
         assertEquals("src/Foo.java",
             physicalLocation.getAsJsonObject("artifactLocation").get("uri").getAsString());
+    }
+
+    @Test
+    void testConvertRelativePathToUri() {
+        assertEquals("src/Foo.java", SarifRenderer.convertToUri("src/Foo.java"));
+        assertEquals("src/na%C3%AFve%20100%25%23.java", SarifRenderer.convertToUri("src/naïve 100%#.java"));
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void testConvertRelativePathWithColonToUri() {
+        assertEquals("./a:b/c.java", SarifRenderer.convertToUri("a:b/c.java"));
+        assertEquals("./a:b.java", SarifRenderer.convertToUri("a:b.java"));
+        assertEquals("a/b:c.java", SarifRenderer.convertToUri("a/b:c.java"));
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void testConvertRelativePathWithBackslashToUri() {
+        assertEquals("a%5Cb.java", SarifRenderer.convertToUri("a\\b.java"));
     }
 
     protected String readFile(String relativePath) {

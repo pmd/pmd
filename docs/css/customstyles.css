@@ -13,8 +13,8 @@ body {
 
     div#toc {
         margin-top: 15px;
-        margin-left: 0px;
-        margin-right: 0px;
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .container {
@@ -152,7 +152,7 @@ h5[id],
 h6[id],
 dt[id] {
     padding-top: 20px;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 body h1 {
@@ -160,7 +160,7 @@ body h1 {
 }
 
 .post-content img {
-    margin: 12px 0px 3px 0px;
+    margin: 12px 0 3px 0;
     width: auto;
     height: auto;
     max-width: 100%;
@@ -169,7 +169,7 @@ body h1 {
 
 .post-content ol li,
 .post-content ul li {
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 .pageSummary {
@@ -281,14 +281,6 @@ p.post-meta {
     color: #777;
 }
 
-.entry-date {
-    font-size: 14px;
-    font-size: 0.875rem;
-    line-height: 1.71429;
-    margin-bottom: 0;
-    text-transform: uppercase;
-}
-
 /* search area */
 ul#results-container {
     list-style: none;
@@ -300,7 +292,7 @@ ul#results-container {
     max-width: 500px;
     border-left: 1px solid #dedede;
     box-shadow: 2px 3px 2px #dedede;
-    padding: 0px;
+    padding: 0;
     max-height: 500px;
     overflow-y: auto;
 }
@@ -330,7 +322,7 @@ ul#results-container a > strong {
 }
 
 div#toc ul li {
-    margin: 8px 0px 8px 22px;
+    margin: 8px 0 8px 22px;
     font-size: 90%;
     list-style: square;
 }
@@ -405,13 +397,13 @@ a.accordion-collapsed {
 .nav ul {
     padding: 0;
     /*margin: 0 0 0 18px;*/
-    margin: 0px;
+    margin: 0;
 }
 
 .nav {
     /* padding: 4px;*/
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 .nav > li {
@@ -470,7 +462,7 @@ a.accordion-collapsed {
 
 ul#mysidebar {
     display: block;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .nav ul li ul li a {
@@ -515,7 +507,7 @@ ul#mysidebar {
 }
 
 span.projectTitle {
-    font-family: Helvetica;
+    font-family: Helvetica sans-serif;
     font-weight: bold;
 }
 
@@ -670,7 +662,7 @@ a[data-toggle] {
 .summary {
     font-size: 120%;
     color: #808080;
-    margin: 20px 0px 20px 0px;
+    margin: 20px 0 20px 0;
     border-left: 5px solid #ed1951;
     padding-left: 10px;
 }
@@ -721,7 +713,7 @@ li img {
 
 div#toc ul li ul li {
     list-style-type: none;
-    margin: 5px 0px 0px 0px;
+    margin: 5px 0 0 0;
 }
 
 .tab-content {
@@ -766,7 +758,7 @@ div.tags {
 
 hr {
     background: #999;
-    margin: 10px 0px;
+    margin: 10px 0;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -803,7 +795,7 @@ a[data-toggle='tooltip'] {
 ol.series li {
     list-style-type: decimal;
     margin-left: 40px;
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .siteTagline {
@@ -813,16 +805,7 @@ ol.series li {
     font-family: monospace;
     text-align: center;
     line-height: 10px;
-    margin: 20px 0px;
-    display: block;
-}
-
-.versionTagline {
-    text-align: center;
-    margin-bottom: 20px;
-    font-family: courier;
-    color: silver;
-    color: #444;
+    margin: 20px 0;
     display: block;
 }
 
@@ -893,20 +876,20 @@ table code {
 }
 
 pre {
-    margin: 25px 0px;
+    margin: 25px 0;
 }
 
 #json-box-container pre {
-    margin: 0px;
+    margin: 0;
 }
 
 .video-js {
-    margin: 30px 0px;
+    margin: 30px 0;
 }
 
 video {
     display: block;
-    margin: 30px 0px;
+    margin: 30px 0;
     border: 1px solid #c0c0c0;
 }
 
@@ -923,7 +906,7 @@ dd {
 }
 
 .post-content img.inline {
-    margin: 0px;
+    margin: 0;
     margin-bottom: 6px;
 }
 
@@ -935,7 +918,7 @@ h2 code,
 h3 code,
 h4 code {
     color: inherit;
-    padding: 0px;
+    padding: 0;
 }
 
 .alert {
@@ -964,15 +947,6 @@ span.soft {
     color: #c0c0c0;
 }
 
-.endpoint {
-    padding: 15px;
-    background-color: #f0f0f0;
-    font-family: courier;
-    font-size: 110%;
-    margin: 20px 0px;
-    color: #444;
-}
-
 .parameter {
     font-family: courier;
     color: red !important;
@@ -981,7 +955,7 @@ span.soft {
 .formBoundary {
     border: 1px solid gray;
     padding: 15px;
-    margin: 15px 0px;
+    margin: 15px 0;
     background-color: whitesmoke;
 }
 
@@ -995,7 +969,7 @@ span.soft {
     /* sticky sidebar for big screens */
     #mysidebar {
         position: fixed !important;
-        overflow: scroll;
+        overflow-y: scroll;
         height: 80%;
     }
 }
@@ -1027,7 +1001,7 @@ span.soft {
 }
 
 .post-content img {
-    margin: 12px 0px 3px 0px;
+    margin: 12px 0 3px 0;
     width: auto;
     height: auto;
     max-width: 100%;
@@ -1039,7 +1013,7 @@ span.soft {
 }
 
 .post-content img {
-    margin: 12px 0px 3px 0px;
+    margin: 12px 0 3px 0;
     width: auto;
     height: auto;
     max-width: 100%;
@@ -1048,7 +1022,7 @@ span.soft {
 
 .videoThumbs img {
     float: left;
-    margin: 15px 15px 15px 0px;
+    margin: 15px 15px 15px 0;
     box-shadow: 2px 2px 1px #f0f0f0;
     border: 1px solid #dedede;
 }
@@ -1127,7 +1101,7 @@ div.results {
 }
 
 .post-list p {
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 time {
@@ -1135,7 +1109,7 @@ time {
 }
 
 p.post-meta time {
-    margin-right: 0px;
+    margin-right: 0;
 }
 
 span.label {
@@ -1201,7 +1175,6 @@ table thead th code.highlighter-rouge {
     font-size: 12px;
     hyphens: auto;
     float: left;
-    font-size: 12px;
 }
 
 .box:hover {
@@ -1225,7 +1198,7 @@ div.content {
 
 
 .box1 {
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 div.box.box1 {
@@ -1250,8 +1223,8 @@ div.box.box1 {
 }
 
 h4.panel-title {
-    padding-top: 0px;
-    margin-top: 0px;
+    padding-top: 0;
+    margin-top: 0;
 }
 
 .post-content .all-contributors-list img {
