@@ -65,25 +65,13 @@
             <then>
                 <replace file="${parser-file}"
                          token="public class ${parser-name}"
-                         value='
-/**${line.separator}
- * @deprecated Since 7.29.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
- * This class will be changed to package-private in PMD-8.0.0${line.separator}
- */${line.separator}
-@Deprecated${line.separator}
-@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
 public class ${parser-name}'/>
 
                 <!-- Parse tree classes for each element -->
                 <replace file="${parser-file}"
                          token="public static class "
-                         value='
-/**${line.separator}
- * @deprecated Since 7.29.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
- * This class will be changed to package-private in PMD-8.0.0${line.separator}
- */${line.separator}
-@Deprecated${line.separator}
-@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
 public static class '/>
             </then>
         </if>
@@ -114,12 +102,13 @@ public class ${base-visitor-name}'/>
                 <replace file="${listener-file}"
                          token='${line.separator} */'
                          value='${line.separator}
-* @deprecated Since 7.29.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
+* @deprecated Since 7.30.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
 * This class will be changed to package-private in PMD-8.0.0${line.separator}
 */'/>
                 <replace file="${listener-file}"
                          token="public interface ${listener-name}"
-                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+                         value='@Deprecated${line.separator}
+@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
 public interface ${listener-name}'/>
             </then>
         </if>
@@ -130,12 +119,13 @@ public interface ${listener-name}'/>
                 <replace file="${base-listener-file}"
                          token='${line.separator} */'
                          value='${line.separator}
-* @deprecated Since 7.29.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
+* @deprecated Since 7.30.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
 * This class will be changed to package-private in PMD-8.0.0${line.separator}
 */'/>
                 <replace file="${base-listener-file}"
                          token="public class ${base-listener-name}"
-                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+                         value='@Deprecated${line.separator}
+@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
 public class ${base-listener-name}'/>
             </then>
         </if>
@@ -147,7 +137,7 @@ public class ${base-listener-name}'/>
                          token="public class ${lexer-name}"
                          value='
 /**${line.separator}
- * @deprecated Since 7.29.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
+ * @deprecated Since 7.30.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
  * This class will be changed to package-private in PMD-8.0.0${line.separator}
  */${line.separator}
 @Deprecated${line.separator}

@@ -71,7 +71,6 @@ This is a {{ site.pmd.release_type }} release.
     * {% jdoc kotlin::lang.kotlin.ast.KotlinBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
     * {% jdoc kotlin::lang.kotlin.ast.KotlinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
     * {% jdoc kotlin::lang.kotlin.ast.KotlinListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
-    * {% jdoc kotlin::lang.kotlin.ast.KotlinParser %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * lua
     * {% jdoc lua::lang.lua.ast.LuaLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * rust
@@ -80,11 +79,14 @@ This is a {{ site.pmd.release_type }} release.
     * {% jdoc swift::lang.swift.ast.SwiftBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
     * {% jdoc swift::lang.swift.ast.SwiftLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
     * {% jdoc swift::lang.swift.ast.SwiftListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
-    * {% jdoc swift::lang.swift.ast.SwiftParser %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * tsql
     * {% jdoc tsql::lang.tsql.ast.TSqlLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * xml
     * {% jdoc xml::lang.xml.ast.XMLLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* The generated `KotlinParser` and `SwiftParser` classes and their nested AST node classes are
+  intentionally not deprecated yet. These classes still contain the public AST node types,
+  which have no replacement API yet. They will be deprecated once we have decided how to handle
+  the inner classes.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
