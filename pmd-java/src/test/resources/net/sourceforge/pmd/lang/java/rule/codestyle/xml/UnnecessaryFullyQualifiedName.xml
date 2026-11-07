@@ -1347,4 +1347,91 @@ class Example {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryFullyQualifiedName false positive for lombok @Builder.Default #6731</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package lombok;
+
+public @interface Builder {
+    String builderClassName() default "";
+
+    @interface Default {}
+}
+
+public @interface Value {}
+
+@Value
+@Builder(builderClassName = "Builder")
+class A {
+    @lombok.Builder.Default
+    String value = "";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6731 fully qualified @lombok.Builder is required when the builder class is named Builder</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package lombok;
+
+public @interface Builder {
+    String builderClassName() default "";
+
+    @interface Default {}
+}
+
+@lombok.Builder(builderClassName = "Builder")
+class A {
+    @lombok.Builder.Default
+    String value = "";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6731 builderClassName on a constructor hides Builder in the whole type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package lombok;
+
+public @interface Builder {
+    String builderClassName() default "";
+
+    @interface Default {}
+}
+
+class A {
+    @lombok.Builder(builderClassName = "Builder")
+    A(String value) {
+    }
+
+    @lombok.Builder.Default
+    String value = "";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6731 other builder class names are still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+package lombok;
+
+public @interface Builder {
+    String builderClassName() default "";
+
+    @interface Default {}
+}
+
+@Builder(builderClassName = "WidgetBuilder")
+class A {
+    @lombok.Builder.Default
+    String value = "";
+}
+        ]]></code>
+    </test-code>
 </test-data>
