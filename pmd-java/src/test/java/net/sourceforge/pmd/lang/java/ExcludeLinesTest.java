@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 class ExcludeLinesTest extends BaseParserTest {
 
@@ -30,8 +31,9 @@ class ExcludeLinesTest extends BaseParserTest {
 
             @Override
             public Object visit(ASTVariableId node, Object data) {
-                asCtx(data).addViolation(node);
-                return data;
+                RuleContext ctx = (RuleContext) data;
+                ctx.addViolation(node);
+                return null;
             }
         };
     }
