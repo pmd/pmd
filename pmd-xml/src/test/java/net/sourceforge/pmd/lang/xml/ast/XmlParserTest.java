@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.xml.ast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
@@ -41,6 +45,16 @@ class XmlParserTest extends BaseTreeDumpTest {
         doTest("bug1518");
     }
 
+    @Test
+    void xxeAttack() {
+        doTest("xxeAttack");
+        RootNode rootNode = getParser().parseResource("/xxeAttack.xml");
+        XmlNode descriptionText = rootNode.descendants()
+                .first(node -> "description".equals(node.getXPathNodeName()))
+                .firstChild(XmlNode.class);
+        assertNotEquals("Leak: XXE-TEST", descriptionText.getNode().getTextContent());
+        assertEquals("Leak: ", descriptionText.getNode().getTextContent());
+    }
 
     @Test
     void dtdIsNotLookedUp() {

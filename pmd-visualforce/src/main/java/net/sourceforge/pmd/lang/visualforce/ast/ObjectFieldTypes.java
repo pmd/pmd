@@ -36,6 +36,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.lang.visualforce.DataType;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 import com.google.common.reflect.ClassPath;
 
@@ -102,16 +103,12 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
         this.objectFileProcessed = new HashSet<>();
 
         try {
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory documentBuilderFactory = XmlUtil.newDocumentBuilderFactory();
             documentBuilderFactory.setNamespaceAware(false);
             documentBuilderFactory.setValidating(false);
             documentBuilderFactory.setIgnoringComments(true);
             documentBuilderFactory.setIgnoringElementContentWhitespace(true);
-            documentBuilderFactory.setExpandEntityReferences(false);
             documentBuilderFactory.setCoalescing(false);
-            documentBuilderFactory.setXIncludeAware(false);
-            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            documentBuilderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);

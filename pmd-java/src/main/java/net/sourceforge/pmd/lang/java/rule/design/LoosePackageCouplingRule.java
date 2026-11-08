@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * The loose package coupling Rule can be used to ensure coupling outside of a
@@ -56,6 +57,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         // Sort the restricted packages in reverse order. This will ensure the
         // child packages are in the list before their parent packages.
         this.restrictedPackages = new ArrayList<>(super.getProperty(PACKAGES_DESCRIPTOR));
@@ -63,13 +65,14 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
         this.thisPackage = node.getPackageName();
 
-        node.children(ASTImportDeclaration.class).forEach(it -> it.acceptVisitor(this, data));
+        node.children(ASTImportDeclaration.class).forEach(it -> it.acceptVisitor(this, ctx));
 
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
 
         String importPackage = node.getPackageName();
 
@@ -86,18 +89,18 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
                     // On demand imports automatically fail because they include
                     // everything
                     if (node.isImportOnDemand()) {
-                        asCtx(data).addViolation(node, node.getImportedName(), pkg);
+                        ctx.addViolation(node, node.getImportedName(), pkg);
                         break;
                     } else {
                         if (!isAllowedClass(node)) {
-                            asCtx(data).addViolation(node, node.getImportedName(), pkg);
+                            ctx.addViolation(node, node.getImportedName(), pkg);
                             break;
                         }
                     }
                 }
             }
         }
-        return data;
+        return null;
     }
 
     protected List<String> getRestrictedPackages() {

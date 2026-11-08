@@ -48,6 +48,7 @@ final class ExprCheckHelper {
     private final InferenceContext infCtx;
     private final MethodResolutionPhase phase;
     private final ExprChecker checker;
+    private final ExprChecker resultChecker;
     private final @Nullable MethodCallSite site;
     private final Infer infer;
     private final TypeSystem ts;
@@ -55,12 +56,14 @@ final class ExprCheckHelper {
     ExprCheckHelper(InferenceContext infCtx,
                     MethodResolutionPhase phase,
                     ExprChecker checker,
+                    ExprChecker resultChecker,
                     @Nullable MethodCallSite site,
                     Infer infer) {
 
         this.infCtx = infCtx;
         this.phase = phase;
         this.checker = checker;
+        this.resultChecker = resultChecker;
         this.site = site;
         this.infer = infer;
         this.ts = infer.getTypeSystem();
@@ -148,7 +151,13 @@ final class ExprCheckHelper {
             // in that case we need to infer that as well
             return isInvocationCompatible(targetType, (InvocationMirror) expr, isStandalone);
         } else if (expr instanceof BranchingMirror) {
-            return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));
+            // A standalone conditional was checked with its own type above. Its branches
+            // convert to that type, not to the target type (JLS 15.25), so they are only
+            // visited to finish their inference, each against its own standalone type.
+            return ((BranchingMirror) expr).branchesMatch(it -> {
+                JTypeMirror branchType = isStandalone ? it.getStandaloneType() : null;
+                return isCompatible(branchType != null ? branchType : targetType, it);
+            });
         }
 
         return false;
@@ -371,7 +380,7 @@ final class ExprCheckHelper {
                 //  Otherwise, the constraint reduces to ‹R' → R›, where R' is the
                 //  result of applying capture conversion (§5.1.10) to the return
                 //  type of the potentially applicable compile-time declaration.
-                checker.checkExprConstraint(infCtx, capture(r2), r);
+                resultChecker.checkExprConstraint(infCtx, capture(r2), r);
             }
             completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(exactMethod), true);
         } else if (TypeOps.isUnresolved(mref.getTypeToSearch())) {
@@ -477,7 +486,7 @@ final class ExprCheckHelper {
             if (ctdecl.getReturnType() == ts.NO_TYPE) {
                 throw ResolutionFailedException.incompatibleReturn(infer.getLogger(), mref, ctdecl.getReturnType(), r);
             } else {
-                checker.checkExprConstraint(infCtx, capture(ctdecl.getReturnType()), r);
+                resultChecker.checkExprConstraint(infCtx, capture(ctdecl.getReturnType()), r);
                 completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(ctdecl), false);
             }
         }
@@ -632,7 +641,7 @@ final class ExprCheckHelper {
                     // must use that context so that constraints and listeners are added
                     // to the parent context, since that one is responsible for solving
                     // the variables.
-                    ExprCheckHelper newChecker = new ExprCheckHelper(solvedCtx, phase, this.checker, site, infer);
+                    ExprCheckHelper newChecker = new ExprCheckHelper(solvedCtx, phase, this.resultChecker, this.resultChecker, site, infer);
                     for (ExprMirror expr : lambda.getResultExpressions()) {
                         if (!newChecker.isCompatible(groundResult, expr)) {
                             return;
