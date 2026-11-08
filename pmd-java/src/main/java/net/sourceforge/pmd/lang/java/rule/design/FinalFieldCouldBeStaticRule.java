@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
 
@@ -35,6 +36,7 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.hasModifiers(JModifier.FINAL)
             && !node.isStatic()
             && !node.getEnclosingType().isAnnotationPresent("lombok.experimental.UtilityClass")
@@ -43,7 +45,7 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
             for (ASTVariableId field : node) {
                 ASTExpression init = field.getInitializer();
                 if (init != null && isAllowedExpression(init) && !isUsedForSynchronization(field)) {
-                    asCtx(data).addViolation(field, field.getName());
+                    ctx.addViolation(field, field.getName());
                 }
             }
 
