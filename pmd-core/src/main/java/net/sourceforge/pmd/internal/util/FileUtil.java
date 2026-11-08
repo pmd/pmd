@@ -101,25 +101,6 @@ public final class FileUtil {
         return false;
     }
 
-    /**
-     * Reads the file, which contains the filelist. This is used for the
-     * command line arguments --filelist/-filelist for both PMD and CPD.
-     * The separator in the filelist is a comma and/or newlines.
-     *
-     * @param filelist the file which contains the list of path names
-     *
-     * @return a list of file paths
-     *
-     * @throws IOException if the file couldn't be read
-     */
-    public static List<Path> readFilelistEntries(Path filelist) throws IOException {
-        return Files.readAllLines(filelist).stream()
-                    .flatMap(it -> Arrays.stream(it.split(",")))
-                    .map(String::trim)
-                    .filter(StringUtils::isNotBlank)
-                    .map(Paths::get)
-                    .collect(Collectors.toList());
-    }
 
 
 }
