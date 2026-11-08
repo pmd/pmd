@@ -18,18 +18,16 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
+/**
+ * This rule is used to check whether user appends string directly instead of using StringBuffer or StringBuilder
+ * @since 3.1 (as xpath) / 3.8 (as Java)
+ */
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRule {
 
     public UseStringBufferForStringAppendsRule() {
         super(ASTVariableId.class);
     }
 
-    /**
-     * This method is used to check whether user appends string directly instead of using StringBuffer or StringBuilder
-     * @param node This is the expression of part of java code to be checked.
-     * @param data This is the rule context, which receives the violations.
-     * @return Object This always returns null. If a violation happens, it is added to data.
-     */
     @Override
     public Object visit(ASTVariableId node, Object data) {
         RuleContext ctx = (RuleContext) data;

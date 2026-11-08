@@ -82,7 +82,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
     private void visitTypeDecl(ASTTypeDeclaration node,
                                int level,
                                MetricOptions ncssOptions,
-                               RuleContext data) {
+                               RuleContext ctx) {
 
         if (JavaMetrics.NCSS.supports(node)) {
             int classSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
@@ -93,7 +93,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
                                           node.getSimpleName(),
                                           classSize + " (Highest = " + classHighest + ")", };
 
-                data.addViolation(node, (Object[]) messageParams);
+                ctx.addViolation(node, (Object[]) messageParams);
             }
         }
     }
@@ -102,12 +102,12 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
     private void visitMethod(ASTExecutableDeclaration node,
                              int level,
                              MetricOptions ncssOptions,
-                             RuleContext data) {
+                             RuleContext ctx) {
 
         if (JavaMetrics.NCSS.supports(node)) {
             int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
             if (methodSize >= level) {
-                data.addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                ctx.addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                   PrettyPrintingUtil.displaySignature(node), "" + methodSize);
             }
         }
