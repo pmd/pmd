@@ -15,9 +15,10 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * How this rule works: find additive expressions: + check that the addition is
- * between anything other than two literals if true and also the parent is
- * StringBuffer constructor or append, report a violation.
+ * How this rule works: Find additive expressions (+) and check
+ * whether the operands are anything other than two literals. If so,
+ * and the parent expression is a StringBuffer/StringBuilder
+ * constructor or an append call, report a violation.
  *
  * @author mgriffa
  */
