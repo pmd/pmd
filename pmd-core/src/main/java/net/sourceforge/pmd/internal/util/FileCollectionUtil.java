@@ -106,17 +106,6 @@ public final class FileCollectionUtil {
         }
     }
 
-
-    public static void collectFiles(FileCollector collector, List<Path> filePaths) {
-        for (Path rootLocation : filePaths) {
-            try {
-                addRoot(collector, rootLocation);
-            } catch (IOException e) {
-                collector.getReporter().errorEx("Error collecting {0}", new Object[]{ rootLocation }, e);
-            }
-        }
-    }
-
     public static void collectFileList(FileCollector collector, Path fileList) {
         LOG.debug("Reading file list {}.", fileList);
         if (!Files.exists(fileList)) {
@@ -132,6 +121,16 @@ public final class FileCollectionUtil {
             return;
         }
         collectFiles(collector, filePaths);
+    }
+
+    public static void collectFiles(FileCollector collector, List<Path> filePaths) {
+        for (Path rootLocation : filePaths) {
+            try {
+                addRoot(collector, rootLocation);
+            } catch (IOException e) {
+                collector.getReporter().errorEx("Error collecting {0}", new Object[]{ rootLocation }, e);
+            }
+        }
     }
 
     private static void addRoot(FileCollector collector, Path path) throws IOException {
