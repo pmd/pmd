@@ -88,6 +88,13 @@ class CpdCliTest extends BaseCliTest {
                 .verify(result -> result.checkStdOut(containsPattern(expectedReportPattern)));
     }
 
+    @Test
+    void reportTimestampCanBeDisabled() throws Exception {
+        runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR,
+                "--format", "xml", "--no-report-timestamp")
+                .verify(result -> result.checkStdOut(not(containsString("timestamp=\""))));
+    }
+
     private String getExpectedFileEntryXml(final String filename) {
         final int numberOfTokens = NUMBER_OF_TOKENS.get(filename);
         return String.format("    <file path=\"%s\" totalNumberOfTokens=\"%d\"/>\n",

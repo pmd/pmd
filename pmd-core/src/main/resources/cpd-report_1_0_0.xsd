@@ -22,7 +22,7 @@
             </xs:sequence>
             <xs:attribute name="version" type="xs:string" use="required"/>
             <xs:attribute name="pmdVersion" type="xs:string" use="required"/>
-            <xs:attribute name="timestamp" type="xs:string" use="required"/>
+            <xs:attribute name="timestamp" type="xs:string" use="optional"/>
         </xs:complexType>
     </xs:element>
 

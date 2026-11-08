@@ -42,6 +42,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     public static final PropertyDescriptor<String> ENCODING =
         PropertyFactory.stringProperty("encoding").desc("XML encoding format").defaultValue("UTF-8").build();
 
+    public static final PropertyDescriptor<Boolean> SHOW_TIMESTAMP =
+        PropertyFactory.booleanProperty("showTimestamp").desc("Whether to include the report timestamp").defaultValue(true).build();
+
     private static final String PMD_REPORT_NS_URI = "http://pmd.sourceforge.net/report/2.0.0";
     private static final String PMD_REPORT_NS_LOCATION = "https://pmd.github.io/schema/report_2_0_0.xsd";
     private static final String XSI_NS_PREFIX = "xsi";
@@ -53,6 +56,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     public XMLRenderer() {
         super(NAME, "XML format.");
         definePropertyDescriptor(ENCODING);
+        definePropertyDescriptor(SHOW_TIMESTAMP);
     }
 
     public XMLRenderer(String encoding) {
@@ -81,7 +85,9 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             xmlWriter.writeAttribute(XSI_NS_PREFIX, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation",
                     PMD_REPORT_NS_URI + " " + PMD_REPORT_NS_LOCATION);
             xmlWriter.writeAttribute("version", PMDVersion.VERSION);
-            xmlWriter.writeAttribute("timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()));
+            if (getProperty(SHOW_TIMESTAMP)) {
+                xmlWriter.writeAttribute("timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()));
+            }
             // FIXME: elapsed time not available until the end of the processing
             // xmlWriter.writeAttribute("time_elapsed", ...);
         } catch (XMLStreamException e) {

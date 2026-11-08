@@ -165,6 +165,10 @@ and then the violations grouped by file. The root object fields are
 
 [Example](report-examples/pmd-report-json.json)
 
+The XML and JSON renderers include a timestamp by default. To omit it for reproducible reports, set the
+`showTimestamp` renderer property to `false`, for example `-f xml -P showTimestamp=false` or
+`-f json -P showTimestamp=false`. The XML schema allows the timestamp attribute to be absent.
+
 
 ## summaryhtml
 

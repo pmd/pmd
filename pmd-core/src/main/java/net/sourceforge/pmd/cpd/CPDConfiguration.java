@@ -51,6 +51,8 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean skipDuplicates;
 
+    private boolean showTimestamp = true;
+
     private String rendererName = DEFAULT_RENDERER;
 
     private @Nullable CPDReportRenderer cpdReportRenderer;
@@ -174,6 +176,17 @@ public class CPDConfiguration extends AbstractConfiguration {
             this.cpdReportRenderer = null;
         }
         this.cpdReportRenderer = createRendererByName(rendererName, getSourceEncoding());
+        this.cpdReportRenderer.setShowTimestamp(showTimestamp);
+    }
+
+    /**
+     * Sets whether the XML report should include its timestamp.
+     */
+    public void setShowTimestamp(boolean showTimestamp) {
+        this.showTimestamp = showTimestamp;
+        if (cpdReportRenderer != null) {
+            cpdReportRenderer.setShowTimestamp(showTimestamp);
+        }
     }
 
 

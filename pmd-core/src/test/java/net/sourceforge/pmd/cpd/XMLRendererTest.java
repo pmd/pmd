@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -51,6 +52,16 @@ class XMLRendererTest {
     private static final String ENCODING = (String) System.getProperties().get("file.encoding");
     private static final String FORM_FEED = "\u000C"; // this character is invalid in XML 1.0 documents
     private static final String FORM_FEED_ENTITY = "&#12;"; // this is also not allowed in XML 1.0 documents
+
+    @Test
+    void timestampCanBeOmittedAndReportRemainsSchemaValid() throws Exception {
+        XMLRenderer renderer = new XMLRenderer();
+        renderer.setShowTimestamp(false);
+        String report = renderer.renderToString(new CpdTestUtils.CpdReportBuilder().build());
+
+        assertFalse(report.contains("timestamp="));
+        assertReportIsValidSchema(report);
+    }
 
     @Test
     void testWithNoDuplication() throws IOException, ParserConfigurationException, SAXException {

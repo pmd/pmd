@@ -93,6 +93,13 @@ class PmdCliTest extends BaseCliTest {
     }
 
     @Test
+    void xmlReportTimestampCanBeDisabledWithRendererProperty() throws Exception {
+        runCliSuccessfully("--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS,
+                "--format", "xml", "--property", "showTimestamp=false")
+                .verify(result -> result.checkStdOut(not(containsString("timestamp=\""))));
+    }
+
+    @Test
     void testPreExistingReportFileLongOption() throws Exception {
         Path reportFile = tempRoot().resolve("out/reportFile.txt");
         // now we create the file
