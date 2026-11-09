@@ -1106,9 +1106,10 @@ public class Foo {
 
     <test-code>
         <description>Other arguments whose type is inferred or unknown - unboxing should be flagged unless another overload may be selected</description>
-        <expected-problems>11</expected-problems>
-        <expected-linenumbers>41,43,44,45,46,47,48,52,53,54,63</expected-linenumbers>
+        <expected-problems>12</expected-problems>
+        <expected-linenumbers>41,43,44,45,46,47,48,52,53,54,59,63</expected-linenumbers>
         <expected-messages>
+            <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
             <message>Unnecessary explicit unboxing</message>
@@ -1180,7 +1181,7 @@ public class Foo {
                     r(value.intValue(), flag ? value : null); // the call would be ambiguous without intValue()
                     r(value.intValue(), Lib.COUNT); // the call may be ambiguous without intValue()
                     t(value.intValue(), flag ? 1 : 2L); // the call would be ambiguous without intValue()
-                    t(value.intValue(), Lib.count() + 1); // the call may be ambiguous without intValue()
+                    t(value.intValue(), Lib.count() + 1); // Lib.count() + 1 is typed as int, which cannot be passed to t(Integer, Long)
                     u(value.intValue(), () -> { }); // u(Integer, Task) may be selected without intValue()
                     z(value.intValue(), rawType); // z(Integer, Type) would be selected without intValue()
                     a(value.intValue(), task); // a(Integer, Runnable) would be selected without intValue()
