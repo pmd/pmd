@@ -205,6 +205,6 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     private boolean checksNothingInternal() {
         return getProperty(CHECK_BREAK_LOOP_TYPES_PROPERTY).isEmpty()
                 && getProperty(CHECK_CONTINUE_LOOP_TYPES_PROPERTY).isEmpty()
-            && getProperty(CHECK_RETURN_LOOP_TYPES_PROPERTY).isEmpty();
+                && getProperty(CHECK_RETURN_LOOP_TYPES_PROPERTY).isEmpty();
     }
 }
