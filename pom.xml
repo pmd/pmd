@@ -86,7 +86,7 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.6.1</surefire.version>
-        <checkstyle.version>14.3.0</checkstyle.version>
+        <checkstyle.version>14.4.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.18</ant.version>
@@ -529,7 +529,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.6.3</version>
+                    <version>3.7.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -658,7 +658,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.15</version>
+                    <version>0.8.16</version>
                 </plugin>
                 <plugin>
                     <groupId>org.cyclonedx</groupId>

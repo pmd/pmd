@@ -101,21 +101,21 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        RuleContext ctx = asCtx(data);
+        RuleContext ctx = (RuleContext) data;
         visitCall(node, ctx, "Method");
         return null;
     }
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        RuleContext ctx = asCtx(data);
+        RuleContext ctx = (RuleContext) data;
         visitCall(node, ctx, "Constructor");
         return null;
     }
 
     @Override
     public Object visit(ASTFieldAccess node, Object data) {
-        RuleContext ctx = asCtx(data);
+        RuleContext ctx = (RuleContext) data;
         visitFieldOrVariable(node, node.getReferencedSym(), ctx);
         return null;
     }
@@ -124,7 +124,7 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
     public Object visit(ASTVariableAccess node, Object data) {
         JVariableSymbol variableSymbol = node.getReferencedSym();
         if (variableSymbol instanceof JFieldSymbol) {
-            RuleContext ctx = asCtx(data);
+            RuleContext ctx = (RuleContext) data;
             visitFieldOrVariable(node, (JFieldSymbol) variableSymbol, ctx);
         }
         return null;
