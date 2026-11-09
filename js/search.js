@@ -1620,6 +1620,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "ControlFlowInTest (Java, Best Practices)",
+  "tags": "",
+  "keywords": "Control Flow In Test",
+  "url": "pmd_rules_java_bestpractices.html#controlflowintest",
+  "summary": "Control flow in test methods can make it difficult to determine which assertions are executed..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
   "title": "DefaultLabelNotLastInSwitch (Java, Best Practices)",
   "tags": "",
   "keywords": "Default Label Not Last In Switch",

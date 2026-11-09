@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AssertStatementInTest, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, EnumComparison, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitJupiterTestShouldBePackagePrivate, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OnDemandImport, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceJavaUtilVector, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, TypeNameMismatch, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AssertStatementInTest, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, ControlFlowInTest, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, EnumComparison, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitJupiterTestShouldBePackagePrivate, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OnDemandImport, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceJavaUtilVector, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, TypeNameMismatch, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2648,6 +2648,88 @@ For other scenarios, consider using a utility class. See Effective Java’s ‘U
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/ConstantsInInterface"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreIfHasMethods"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="controlflowintest">ControlFlowInTest</h2>
+
+<p><strong>Since:</strong> PMD 7.30.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Control flow in test methods can make it difficult to determine which
+assertions are executed and whether all intended cases are covered.</p>
+
+<p>This rule reports if statements, conditional expressions, switch statements
+and expressions, explicit throw statements, try statements with catch clauses,
+and plain try-finally statements.</p>
+
+<p>Loops are allowed by default. Set the property <code class="language-plaintext highlighter-rouge">allowLoops</code> to <code class="language-plaintext highlighter-rouge">false</code>
+to report for, enhanced for, while, and do-while loops as well.
+Other control flow inside an allowed loop is still reported.</p>
+
+<p>Prefer concrete examples or parameterized tests over conditional assertions.
+Use <code class="language-plaintext highlighter-rouge">assertThrows</code> or <code class="language-plaintext highlighter-rouge">assertDoesNotThrow</code> instead of manually catching exceptions.</p>
+
+<p>The rule checks test methods recognized by PMD’s JUnit and TestNG support,
+including lambda bodies within those methods. Methods and initializers of local
+or anonymous classes are not treated as part of the enclosing test.</p>
+
+<p>Try-with-resources statements without catch clauses are allowed.
+Plain try-finally statements are reported; prefer an @AfterEach method
+for test cleanup where appropriate.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/ControlFlowInTestRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.ControlFlowInTestRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.junit.jupiter.api.Test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">junit</span><span class="o">.</span><span class="na">jupiter</span><span class="o">.</span><span class="na">api</span><span class="o">.</span><span class="na">Assertions</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">ExampleTest</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kt">void</span> <span class="nf">checksValueConditionally</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">value</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="s">"42"</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// violation</span>
+            <span class="n">assertEquals</span><span class="o">(</span><span class="mi">42</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Test</span>
+    <span class="kt">void</span> <span class="nf">checksConcreteValue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">assertEquals</span><span class="o">(</span><span class="mi">42</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="s">"42"</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowLoops</td>
+      <td>true</td>
+      <td>Allow loops in test methods</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/ControlFlowInTest"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/ControlFlowInTest"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowLoops"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -5560,7 +5642,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 8, 2026 <br />
+             Site last generated: Nov 9, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
