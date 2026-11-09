@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>bad, local variable of type Vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+    void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, param of type Vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+
+public class Foo {
+    void bar(Vector v) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Generic vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+
+public class Foo {
+    void bar(Vector<Integer> v) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, not java.util.Vector</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.Vector;
+
+public class Foo {
+    void bar(Vector v) {
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Not about vector</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package pmd.false_positive;
+
+            import java.util.Map;
+            import java.util.function.Predicate;
+
+            public class AAntiFraudPolicy<C extends IAntiFraudCriterion> {
+
+                public static <E extends Enum<E> & IAntiFraudCriterion> AAntiFraudPolicy<E> of(Class<E> enumClass,
+                                                                                               Map<E, Predicate<AntiFraudCheckResult>> criterionChecks) {
+                    return new AAntiFraudPolicy<E>();
+                }
+
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 declaration typed as Vector is a single violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+    void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 constructor is reported when the variable is not a Vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class Foo {
+    void bar() {
+        Object v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 Stack is a Vector subclass and is reported once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Stack;
+import java.util.Vector;
+public class Foo {
+    void bar() {
+        Vector s = new Stack();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 extending Vector is still reported once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Vector;
+public class MyVec extends Vector {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6546 Stack constructor is reported when the variable is not a Vector</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Stack;
+public class Foo {
+    void bar() {
+        Object s = new Stack();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unresolved Vector without a package is ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.Annotation;
+@Annotation
+public class Foo {
+    void bar() {
+        Vector v = new Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fully qualified Vector is reported even with unrelated unresolved imports</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import some.OtherClass;
+public class Foo {
+    void bar() {
+        java.util.Vector v = new java.util.Vector();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No problem using List or Deque with modern implementations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+public class Foo {
+    List list = new ArrayList();
+    Deque deque = new ArrayDeque();
+}
+        ]]></code>
+    </test-code>
+</test-data>

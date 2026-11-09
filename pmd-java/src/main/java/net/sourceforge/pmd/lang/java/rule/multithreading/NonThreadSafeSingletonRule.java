@@ -77,8 +77,9 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.hasModifiers(JModifier.SYNCHRONIZED)) {
-            return data;
+            return null;
         }
 
         List<ASTIfStatement> ifStatements = node.descendants(ASTIfStatement.class).toList();
@@ -94,7 +95,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                 }
             }
             if (violation) {
-                asCtx(data).addViolation(ifStatement);
+                ctx.addViolation(ifStatement);
             }
         }
 
@@ -113,9 +114,9 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             if (!isNullCheckOnField(ternary.getCondition(), fieldVarId)) {
                 continue;
             }
-            asCtx(data).addViolation(assignment);
+            ctx.addViolation(assignment);
         }
-        return data;
+        return null;
     }
 
 

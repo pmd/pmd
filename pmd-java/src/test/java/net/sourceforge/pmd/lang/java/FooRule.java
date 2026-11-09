@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class FooRule extends AbstractJavaRule {
 
@@ -19,17 +20,19 @@ public class FooRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTClassDeclaration c, Object ctx) {
+    public Object visit(ASTClassDeclaration c, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if ("Foo".equalsIgnoreCase(c.getSimpleName())) {
-            asCtx(ctx).addViolation(c);
+            ctx.addViolation(c);
         }
         return super.visit(c, ctx);
     }
 
     @Override
-    public Object visit(ASTVariableId c, Object ctx) {
+    public Object visit(ASTVariableId c, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if ("Foo".equalsIgnoreCase(c.getName())) {
-            asCtx(ctx).addViolation(c);
+            ctx.addViolation(c);
         }
         return super.visit(c, ctx);
     }

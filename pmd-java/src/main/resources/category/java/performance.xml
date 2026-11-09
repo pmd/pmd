@@ -652,37 +652,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UseArrayListInsteadOfVector"
-          language="java"
-          since="3.0"
-          message="Use ArrayList instead of Vector"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraylistinsteadofvector">
-        <description>
-ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ConstructorCall/ClassType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-import java.util.*;
-public class SimpleTest extends TestCase {
-    public void testX() {
-    Collection c1 = new Vector();
-    Collection c2 = new ArrayList();    // achieves the same with much better performance
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="UseArrayListInsteadOfVector" ref="category/java/bestpractices.xml/ReplaceJavaUtilVector" deprecated="true" />
 
     <rule name="UseArraysAsList"
           language="java"
