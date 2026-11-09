@@ -42,7 +42,7 @@ This is a {{ site.pmd.release_type }} release.
 * java
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
 * java-bestpractices
-    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] new rule: ControlFlowInTest
+    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: false positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
