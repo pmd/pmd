@@ -47,7 +47,9 @@ public class ControlFlowInTestRule extends AbstractJavaRulechainRule {
         boolean allowLoops = getProperty(ALLOW_LOOPS);
 
         method.getBody().descendants()
+                // descent into lambdas
                 .crossFindBoundaries(true)
+                // but not into other anonymous classes
                 .filter(node -> node.ancestors(ASTMethodDeclaration.class).first() == method)
                 .filter(node -> node.ancestors(ASTTypeDeclaration.class).first()
                         == method.getEnclosingType())
