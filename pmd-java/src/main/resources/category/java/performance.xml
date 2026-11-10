@@ -27,8 +27,8 @@ with a `toString()` or `String.valueOf()` call does not generally improve perfor
         <priority>3</priority>
         <example>
 <![CDATA[
-String s = "" + 123;                // reported by this deprecated rule
-String t = Integer.toString(456);   // not reported, but not necessarily faster
+String s = "" + 123;                // reported, might be inefficient in old JDKs
+String t = Integer.toString(456);   // not reported
 ]]>
         </example>
     </rule>
