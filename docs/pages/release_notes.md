@@ -24,18 +24,34 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
+    reports control flow in test methods that can obscure which assertions
+    are executed. It checks conditionals, switch statements and expressions,
+    explicit throw statements, try statements with catch clauses,
+    and plain try-finally statements.
+    Loops are allowed by default and can be reported by setting
+    `allowLoops` to `false`.
+
 ### 🐛️ Fixed Issues
 * apex
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * java
+    * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
     * [#7152](https://github.com/pmd/pmd/issues/7152): \[java] Type-name-qualified invocation filters out instance methods before overload resolution
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
 * java-bestpractices
+    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: false positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
+* java-design
+    * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: false positive when static filed is used in constructor
+    * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: false negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
+    * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
