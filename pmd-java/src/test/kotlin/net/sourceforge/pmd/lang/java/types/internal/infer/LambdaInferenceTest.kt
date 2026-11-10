@@ -469,6 +469,47 @@ class Scratch {
         }
     }
 
+    parserTest("Value compatibility unit tests") {
+        val acu = parser.parse(
+            """
+class Scratch {
+
+    static {
+        Object a = g -> { return g.fetch(); };  // val
+        Object b = g -> { return; };            // void
+        Object c = g -> { };                    // void
+        Object d = g -> g + 2;                  // val
+        Object e = g -> o(g + 2);               // val + void
+        Object f = g -> new O(g + 2);           // val + void
+        Object h = g -> { throw new E(); };     // val + void 
+    }
+}
+
+        """.trimIndent()
+        )
+
+        val infer = Infer(testTypeSystem, 8, TypeInferenceLogger.noop())
+        val mirrors = JavaExprMirrors.forTypeResolution(infer)
+        val (a, b, c, d, e, f, h) = acu.descendants(ASTLambdaExpression::class.java)
+            .toList { mirrors.getTopLevelFunctionalMirror(it) as ExprMirror.LambdaExprMirror }
+
+        fun ExprMirror.LambdaExprMirror.shouldBeCompat(void: Boolean = false, value: Boolean = false) {
+            withClue(this) {
+                assertEquals(void, this.isVoidCompatible, "void compatible")
+                assertEquals(value, this.isValueCompatible, "value compatible")
+            }
+        }
+
+
+        a.shouldBeCompat(value = true)
+        b.shouldBeCompat(void = true)
+        c.shouldBeCompat(void = true)
+        d.shouldBeCompat(value = true)
+        e.shouldBeCompat(value = true, void = true)
+        f.shouldBeCompat(value = true, void = true)
+        h.shouldBeCompat(value = true, void = true)
+    }
+
     parserTestContainer("Lambda body compatibility", javaVersions = listOf(JavaVersion.J1_8, JavaVersion.Latest)) {
         suspend fun testBody(body: String, void: Boolean = false, value: Boolean = false) {
             doTest(body) {
