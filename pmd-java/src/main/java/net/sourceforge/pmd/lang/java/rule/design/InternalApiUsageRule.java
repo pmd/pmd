@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -130,7 +131,7 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
     }
 
     private void visitFieldOrVariable(ASTAssignableExpr.ASTNamedReferenceExpr node, JFieldSymbol fieldSymbol, RuleContext ctx) {
-        ASTClassDeclaration parentClass = node.ancestors(ASTClassDeclaration.class).first();
+        ASTTypeDeclaration parentClass = node.ancestors(ASTTypeDeclaration.class).first();
         JVariableSig signature = node.getSignature();
         if (signature != null) {
             JTypeMirror declaringType = signature.getDeclaringType();
@@ -142,7 +143,7 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
 
     private void visitCall(InvocationNode node, RuleContext data, String nodeType) {
         JMethodSig methodType = node.getMethodType();
-        ASTClassDeclaration parentClass = node.ancestors(ASTClassDeclaration.class).first();
+        ASTTypeDeclaration parentClass = node.ancestors(ASTTypeDeclaration.class).first();
         JTypeMirror declaringType = methodType.getDeclaringType();
         boolean sameUnit = areInSameEnclosingType(declaringType, parentClass);
         JExecutableSymbol methodSymbol = methodType.getSymbol();
@@ -166,7 +167,7 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
                                   JAccessibleElementSymbol methodSymbol, String methodName,
                                   JTypeMirror declaringType,
                                   boolean sameUnit) {
-        ASTClassDeclaration parentClass = node.ancestors(ASTClassDeclaration.class).first();
+        ASTTypeDeclaration parentClass = node.ancestors(ASTTypeDeclaration.class).first();
         PSet<SymbolicValue.SymAnnot> annotations = methodSymbol.getDeclaredAnnotations();
         for (SymbolicValue.SymAnnot annotation: annotations) {
             if ("TestOnly".equals(annotation.getSimpleName())
@@ -220,7 +221,7 @@ public class InternalApiUsageRule extends AbstractJavaRulechainRule {
         return !packageName.startsWith(basePackage);
     }
 
-    private boolean areInSameEnclosingType(JTypeMirror start, ASTClassDeclaration other) {
+    private boolean areInSameEnclosingType(JTypeMirror start, ASTTypeDeclaration other) {
         if (!(start instanceof JClassType) || other == null) {
             return false;
         }
