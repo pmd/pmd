@@ -216,7 +216,7 @@ public final class AbruptCompletionAnalysis {
             // so this analysis does not depend on type resolution. Plain enum
             // switches without a default can still complete normally.
             boolean isExhaustive = node.hasDefaultCase()
-                || node.getBranches().any(branch -> branch.getLabel().isPatternLabel()
+                    || node.getBranches().any(branch -> branch.getLabel().isPatternLabel()
                     || branch.getLabel().isCaseNull()
                     || branch.getLabel().getExprList().any(isConstantTrue));
 
