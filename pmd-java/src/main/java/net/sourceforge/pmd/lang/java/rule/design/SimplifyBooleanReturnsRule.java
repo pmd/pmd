@@ -47,13 +47,14 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTExpression expr = node.getExpr();
         if (expr == null
             || !expr.getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)
             || !isThenBranchOfSomeIf(node)) {
             return null;
         }
-        checkIf(node.ancestors(ASTIfStatement.class).firstOrThrow(), asCtx(data), expr);
+        checkIf(node.ancestors(ASTIfStatement.class).firstOrThrow(), ctx, expr);
         return null;
     }
 

@@ -676,4 +676,16 @@ Foo // <--violation: line 2
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4531 [java] MissingStaticMethodInNonInstantiatableClass false positive with multiple top-level classes</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+class Bar1 {}
+@UtilityClass
+class Bar2 {}
+        ]]></code>
+    </test-code>
 </test-data>

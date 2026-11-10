@@ -482,6 +482,57 @@ public interface YetAnotherConstantInterface {
         </example>
     </rule>
 
+    <rule name="ControlFlowInTest"
+          language="java"
+          since="7.30.0"
+          message="Control flow in a test can obscure its assertions"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ControlFlowInTestRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#controlflowintest">
+        <description>
+            Control flow in test methods can make it difficult to determine which
+            assertions are executed and whether all intended cases are covered.
+
+            This rule reports if statements, conditional expressions, switch statements
+            and expressions, explicit throw statements, try statements with catch clauses,
+            and plain try-finally statements.
+
+            Loops are allowed by default. Set the property `allowLoops` to `false`
+            to report for, enhanced for, while, and do-while loops as well.
+            Other control flow inside an allowed loop is still reported.
+
+            Prefer concrete examples or parameterized tests over conditional assertions.
+            Use `assertThrows` or `assertDoesNotThrow` instead of manually catching exceptions.
+
+            The rule checks test methods recognized by PMD's JUnit and TestNG support,
+            including lambda bodies within those methods. Methods and initializers of local
+            or anonymous classes are not treated as part of the enclosing test.
+
+            Try-with-resources statements without catch clauses are allowed.
+            Plain try-finally statements are reported; prefer an @AfterEach method
+            for test cleanup where appropriate.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExampleTest {
+    @Test
+    void checksValueConditionally() {
+        int value = Integer.parseInt("42");
+        if (value > 0) { // violation
+            assertEquals(42, value);
+        }
+    }
+
+    @Test
+    void checksConcreteValue() {
+        assertEquals(42, Integer.parseInt("42"));
+    }
+}
+        ]]></example>
+    </rule>
+
     <rule name="DefaultLabelNotLastInSwitchStmt" deprecated="true" ref="DefaultLabelNotLastInSwitch" />
 
     <rule name="DefaultLabelNotLastInSwitch"
@@ -1418,20 +1469,27 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="ReplaceVectorWithList"
+    <rule name="ReplaceJavaUtilVector"
           language="java"
-          since="3.4"
-          message="Consider replacing this Vector with the newer java.util.List"
+          since="7.29.0"
+          message="Consider replacing java.util.Vector with java.util.ArrayList or java.util.ArrayDeque"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacevectorwithlist">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacejavautilvector">
         <description>
 Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.
+For Stack, which extends Vector, consider java.util.Deque and an implementation such as java.util.ArrayDeque instead.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIsExactly('java.util.Vector')]
+//ClassType[pmd-java:typeIs('java.util.Vector')][
+  not(
+    parent::ConstructorCall/parent::VariableDeclarator/preceding-sibling::ClassType[
+      pmd-java:typeIs('java.util.Vector')
+    ]
+  )
+]
                 ]]></value>
             </property>
         </properties>
@@ -1447,6 +1505,8 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ReplaceVectorWithList" deprecated="true" ref="ReplaceJavaUtilVector" />
+
     <rule name="SimplifiableTestAssertion"
           language="java"
           since="6.37.0"
@@ -1457,6 +1517,9 @@ public class Foo {
             Reports test assertions that may be simplified using a more specific
             assertion method. This enables better error messages, and makes the
             assertions more readable.
+
+            With JUnit 5.8 or later, `assertTrue(a instanceof A)` may also be
+            simplified to `assertInstanceOf(A.class, a)`.
         </description>
         <priority>3</priority>
         <example>
@@ -1479,6 +1542,11 @@ class SomeTestClass {
 
         assertTrue(a == null); // could be assertNull(a);
         assertTrue(a != null); // could be assertNotNull(a);
+
+        assertEquals(null, a); // could be assertNull(a);
+        assertNotEquals(null, a); // could be assertNotNull(a);
+
+        assertEquals("a", "b"); // always fails, could be fail();
     }
 }
             ]]>

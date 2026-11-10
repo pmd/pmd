@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -40,6 +41,7 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
 abstract class AbstractRendererTest {
 
@@ -203,6 +205,39 @@ abstract class AbstractRendererTest {
         Report.ConfigurationError err = new Report.ConfigurationError(new FooRule(), "a configuration error");
         String actual = renderGlobal(getRenderer(), it -> it.onConfigError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
+    }
+
+    protected String renderExternalInfoUrlReport() throws IOException {
+        String actualReport = renderReport(getRenderer(), it -> {
+            Rule ruleValidUrl = createFooRule();
+            ruleValidUrl.setName("ValidUrl");
+            ruleValidUrl.setExternalInfoUrl("https://example.com/rule/abc");
+            RuleViolation violation = newRuleViolation(1, 1, 1, 1, ruleValidUrl);
+            it.onRuleViolation(violation);
+            it.onSuppressedRuleViolation(new Report.SuppressedViolation(violation, ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, ""));
+
+            Rule ruleValidUrl2 = createFooRule();
+            ruleValidUrl2.setName("ValidUrl2");
+            ruleValidUrl.setExternalInfoUrl(URI.create("https://example.com/rule?name=%22abc%22").toASCIIString());
+            RuleViolation violation2 = newRuleViolation(1, 1, 1, 1, ruleValidUrl2);
+            it.onRuleViolation(violation2);
+            it.onSuppressedRuleViolation(new Report.SuppressedViolation(violation2, ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, ""));
+
+            Rule ruleXss = createFooRule();
+            ruleXss.setName("Xss");
+            ruleXss.setExternalInfoUrl("\"><img src=x onerror=\"alert('attribute')\">");
+            RuleViolation violationXss = newRuleViolation(1, 1, 1, 1, ruleXss);
+            it.onRuleViolation(violationXss);
+            it.onSuppressedRuleViolation(new Report.SuppressedViolation(violationXss, ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, ""));
+
+            Rule ruleJavaScriptUrl = createFooRule();
+            ruleJavaScriptUrl.setName("JavaScript Alert");
+            ruleJavaScriptUrl.setExternalInfoUrl("javascript:alert('scheme')");
+            RuleViolation violationJavaScriptUrl = newRuleViolation(1, 1, 1, 1, ruleJavaScriptUrl);
+            it.onRuleViolation(violationJavaScriptUrl);
+            it.onSuppressedRuleViolation(new Report.SuppressedViolation(violationJavaScriptUrl, ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR, ""));
+        });
+        return actualReport;
     }
 
     protected String renderReport(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) throws IOException {
