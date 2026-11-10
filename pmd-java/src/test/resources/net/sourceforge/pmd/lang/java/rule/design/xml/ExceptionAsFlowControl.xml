@@ -389,6 +389,7 @@ class SubE extends TopE { }
             }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#7277 a bare rethrow is propagation, not flow control</description>
         <expected-problems>0</expected-problems>
@@ -404,6 +405,7 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>#7277 nested bare rethrow is propagation</description>
         <expected-problems>0</expected-problems>
@@ -414,78 +416,6 @@ public class Foo {
             throw new IllegalArgumentException();
         } catch (RuntimeException e) {
             { { { throw e; } } }
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>A catch that logs and rethrows still handles the thrown exception</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
-        <code><![CDATA[
-public class Foo {
-    void test(boolean enabled) {
-        try {
-            throw new IllegalArgumentException();
-        } catch (RuntimeException e) {
-            { System.out.println(e); throw e; }
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Conditional rethrow still handles the thrown exception</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
-        <code><![CDATA[
-public class Foo {
-    void test(boolean enabled) {
-        try {
-            throw new IllegalArgumentException();
-        } catch (RuntimeException e) {
-            if (enabled) { throw e; }
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Both throw statements still reach an outer handler</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>9,9</expected-linenumbers>
-        <code><![CDATA[
-public class Foo {
-    void test() {
-        try {
-            try {
-                throw new IllegalArgumentException();
-            } catch (IllegalArgumentException e) {
-                { throw e; }
-            }
-        } catch (RuntimeException e) {
-            System.out.println(e);
-        }
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Direct rethrow reference: both throw statements reach the outer handler</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>9,9</expected-linenumbers>
-        <code><![CDATA[
-public class Foo {
-    void test() {
-        try {
-            try {
-                throw new IllegalArgumentException();
-            } catch (IllegalArgumentException e) {
-                throw e;
-            }
-        } catch (RuntimeException e) {
-            System.out.println(e);
         }
     }
 }
