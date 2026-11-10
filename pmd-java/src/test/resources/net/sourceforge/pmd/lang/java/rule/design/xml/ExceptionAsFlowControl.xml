@@ -389,4 +389,36 @@ class SubE extends TopE { }
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7277 a bare rethrow is propagation, not flow control</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7277 nested bare rethrow is propagation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { { { throw e; } } }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
