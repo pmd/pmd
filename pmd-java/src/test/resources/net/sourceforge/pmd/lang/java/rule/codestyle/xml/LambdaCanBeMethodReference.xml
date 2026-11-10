@@ -433,4 +433,59 @@
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#7147 Protected methods of a superclass in another package</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>9,10,11,18,19</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `this::m`</message>
+            <message>Lambda expression could be written as a method reference: `super::m`</message>
+            <message>Lambda expression could be written as a method reference: `ProtectedSuper::u`</message>
+            <message>Lambda expression could be written as a method reference: `Sub.this::m`</message>
+            <message>Lambda expression could be written as a method reference: `Sub.super::m`</message>
+        </expected-messages>
+        <code><![CDATA[
+            package net.sourceforge.pmd.lang.java.rule.codestyle.lambdacanbemethodreference;
+
+            import java.util.function.BiConsumer;
+            import java.util.function.Consumer;
+            import net.sourceforge.pmd.lang.java.rule.codestyle.lambdacanbemethodreference.other.ProtectedSuper;
+
+            class Sub extends ProtectedSuper {
+                void t() {
+                    Consumer<Object> unqualified = x -> m(x);
+                    Consumer<Object> superQualified = x -> super.m(x);
+                    Consumer<Sub> staticCall = x -> u(x);
+                    // ProtectedSuper::m does not compile: m(Object) is not accessible through ProtectedSuper
+                    BiConsumer<Sub, Object> receiver = (s, x) -> s.m(x);
+                }
+
+                class Inner {
+                    void t() {
+                        Consumer<Object> outer = x -> m(x);
+                        Consumer<Object> outerSuper = x -> Sub.super.m(x);
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7147 Receiver parameter whose type is a type variable with a wildcard bound</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Lambda expression could be written as a method reference: `Comparable::compareTo`</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Comparator;
+
+            class Natural {
+                <T extends Comparable<? super T>> Comparator<T> natural() {
+                    return (a, b) -> a.compareTo(b);
+                }
+            }
+        ]]></code>
+    </test-code>
+
 </test-data>

@@ -5,8 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
-import static net.sourceforge.pmd.lang.java.types.TypeOps.lazyFilterAccessible;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -37,8 +36,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     @Override
     public @NonNull JClassType getEnclosingType() {
         if (myNode.isAnonymousClass()) {
-            // protected constructors are visible when building
-            // an anonymous class instance todo is that tested?
+            // The anonymous class invokes the constructor. getAccessibleCandidates
+            // accepts a protected constructor of another package for it through isAnonymous().
             return myNode.getAnonymousClassDeclaration().getTypeMirror();
         }
 
@@ -102,7 +101,10 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
     @Override
     public Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType) {
         List<JMethodSig> visibleCandidates = getVisibleCandidates(newType);
-        return lazyFilterAccessible(visibleCandidates, getEnclosingType().getSymbol());
+        JClassSymbol ctx = getEnclosingType().getSymbol();
+        boolean anonymous = isAnonymous();
+        return () -> IteratorUtil.filter(visibleCandidates.iterator(),
+                                         it -> JavaResolvers.isAccessibleConstructor(it.getSymbol(), ctx, anonymous));
     }
 
     @Override

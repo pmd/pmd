@@ -7,7 +7,11 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import javasymbols.testdata.ProtectedMembers
 import javasymbols.testdata.ProtectedOverloads
+import net.sourceforge.pmd.lang.test.ast.component6
+import net.sourceforge.pmd.lang.test.ast.component7
+import net.sourceforge.pmd.lang.test.ast.component8
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -1395,6 +1399,357 @@ class Scratch {
             val decl = ProtectedOverloads::class.decl
             instance.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
             static.methodType.shouldMatchMethod(named = "s", declaredIn = decl, withFormals = listOf(int), returning = void)
+        }
+    }
+
+    parserTest("#7147 protected method is accessible through a qualifier only if its type is a subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedMembers;
+            import javasymbols.testdata.impls.SubclassOfProtectedMembers;
+
+            class Sub extends ProtectedMembers {
+                Sub() { super(0); }
+
+                void t(ProtectedMembers base, SubclassOfProtectedMembers other, Sub sub, Integer value) {
+                    // m(Object) is not accessible through these types (JLS 6.6.2.1), javac selects m(int)
+                    base.m(value);
+                    other.m(value);
+                    // javac selects m(Object)
+                    sub.m(value);
+                    this.m(value);
+                    super.m(value);
+                    // the qualifier does not matter for a static method, javac selects s(Object)
+                    base.s(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (base, other, sub, self, sup, static) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedMembers::class.decl
+            base.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            other.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            sub.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            self.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            sup.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            static.methodType.shouldMatchMethod(named = "s", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+        }
+    }
+
+    parserTest("#7147 protected method is accessible in the classes nested in a subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedMembers;
+
+            class Sub extends ProtectedMembers {
+                Sub() { super(0); }
+
+                class Inner {
+                    void t(Sub sub, ProtectedMembers base, Integer value) {
+                        // javac selects m(Object)
+                        sub.m(value);
+                        Sub.this.m(value);
+                        Sub.super.m(value);
+                        // javac selects m(int)
+                        base.m(value);
+                    }
+                }
+
+                static class Nested {
+                    void t(Sub sub, Integer value) {
+                        // javac selects m(Object)
+                        sub.m(value);
+                    }
+                }
+
+                interface NestedInterface {
+                    default void t(Sub sub, Integer value) {
+                        // the interface is not a subclass, but it is in the body of Sub: javac selects m(Object)
+                        sub.m(value);
+                    }
+                }
+
+                class InnerSub extends ProtectedMembers {
+                    InnerSub() { super(0); }
+
+                    void t(Sub sub, Integer value) {
+                        // Sub is not a subclass of InnerSub, but the search goes on to Sub: javac selects m(Object)
+                        sub.m(value);
+                    }
+                }
+
+                void t(Sub sub, Integer value) {
+                    new Runnable() {
+                        public void run() {
+                            // javac selects m(Object)
+                            sub.m(value);
+                        }
+                    };
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (inner, innerThis, innerSuper, innerBase, nested, nestedInterface, innerSub, anonymous) =
+            acu.methodCalls().crossFindBoundaries().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedMembers::class.decl
+            inner.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            innerThis.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            innerSuper.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            innerBase.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            nested.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            nestedInterface.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            innerSub.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            anonymous.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+        }
+    }
+
+    parserTest("#7147 the qualifier type must be a subclass of the class whose body contains the call") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedMembers;
+
+            class Sub extends ProtectedMembers {
+                Sub() { super(0); }
+            }
+
+            class Unrelated {
+                void t(ProtectedMembers base, Integer value) {
+                    // Unrelated is not a subclass: javac selects s(int)
+                    base.s(value);
+                    new ProtectedMembers(0) {
+                        void u(ProtectedMembers other) {
+                            // ProtectedMembers is not a subclass of the anonymous class: javac selects m(int)
+                            other.m(value);
+                            // javac selects m(Object)
+                            this.m(value);
+                        }
+                    };
+                }
+
+                static class Nested extends ProtectedMembers {
+                    Nested() { super(0); }
+
+                    void t(Sub sub, Nested nested, Integer value) {
+                        // Sub is not a subclass of Nested, and Unrelated is not a subclass: javac selects m(int)
+                        sub.m(value);
+                        // javac selects m(Object)
+                        nested.m(value);
+                    }
+
+                    class Deeper {
+                        void t(Nested nested, Integer value) {
+                            // Deeper is not a subclass, but Nested is: javac selects m(Object)
+                            nested.m(value);
+                        }
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (static, anonOther, anonThis, sub, nested, deeper) = acu.methodCalls().crossFindBoundaries().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedMembers::class.decl
+            static.methodType.shouldMatchMethod(named = "s", declaredIn = decl, withFormals = listOf(int), returning = void)
+            anonOther.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            anonThis.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            sub.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            nested.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            deeper.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+        }
+    }
+
+    parserTest("#7147 protected method is accessible through a type variable only if its bound is a subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedMembers;
+
+            class Sub extends ProtectedMembers {
+                Sub() { super(0); }
+
+                <T extends Sub & Runnable, U extends ProtectedMembers & Runnable> void t(T t, U u, Integer value) {
+                    // javac selects m(Object)
+                    t.m(value);
+                    // javac selects m(int)
+                    u.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (t, u) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedMembers::class.decl
+            t.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            u.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+        }
+    }
+
+    parserTest("#7147 protected method of Object is not accessible through an Object qualifier or in an interface") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Sub {
+                void t(Object object, Sub sub) throws CloneNotSupportedException {
+                    // javac reports that clone() has protected access in Object
+                    object.clone();
+                    // javac selects Object.clone()
+                    sub.clone();
+                }
+            }
+
+            interface I {
+                default void t(Impl impl) throws CloneNotSupportedException {
+                    // an interface is not a subclass of Object (JLS 6.6.2): javac reports
+                    // that clone() has protected access in Object
+                    impl.clone();
+                }
+            }
+
+            class Impl implements I { }
+            """.trimIndent()
+        )
+
+        val (obj, sub, impl) = acu.methodCalls().toList()
+
+        spy.shouldHaveNoApplicableMethods(obj)
+        spy.shouldHaveNoApplicableMethods(impl)
+        sub.methodType.shouldMatchMethod(named = "clone", declaredIn = acu.typeSystem.OBJECT, withFormals = emptyList(), returning = acu.typeSystem.OBJECT)
+    }
+
+    parserTest("#7147 protected method of Object is not accessible through an intersection bound") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Test {
+                <T extends K & J> void t(T t) {
+                    // Object.clone() is not accessible through T (JLS 6.6.2.1): javac selects K.clone(Object...)
+                    t.clone();
+                }
+            }
+
+            class K {
+                public void clone(Object... args) { }
+            }
+
+            interface J { }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "clone",
+                declaredIn = acu.declaredTypeSignatures()[1],
+                withFormals = listOf(ts.OBJECT.toArray()),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7147 protected method is accessible through a qualifier whose type or superclass is unresolved") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Sub {
+                void t(Unknown unknown, Partial partial) throws CloneNotSupportedException {
+                    // with an incomplete auxclasspath, these types may be subclasses of Sub,
+                    // so Object.clone() stays accessible
+                    unknown.clone();
+                    partial.clone();
+                }
+            }
+
+            class Partial extends Missing { }
+            """.trimIndent()
+        )
+
+        val (unknown, partial) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            unknown.methodType.shouldMatchMethod(named = "clone", declaredIn = ts.OBJECT, withFormals = emptyList(), returning = ts.OBJECT)
+            partial.methodType.shouldMatchMethod(named = "clone", declaredIn = ts.OBJECT, withFormals = emptyList(), returning = ts.OBJECT)
+        }
+    }
+
+    parserTest("#7147 private and package-private methods and constructors of other classes stay inaccessible") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.PackagePrivateSuper;
+
+            class A {
+                private A(int x) { }
+                A(Object o) { }
+                private void m(int x) { }
+                void m(Object o) { }
+            }
+
+            class B {
+                void t(A a, PackagePrivateSuper p) {
+                    // A(int) and m(int) are private in another nest: javac selects A(Object) and m(Object)
+                    new A(1);
+                    a.m(1);
+                    // javac reports that m(long) is not public in PackagePrivateSuper
+                    p.m(1L);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val ctor = acu.firstCtorCall()
+        val (call, packagePrivate) = acu.methodCalls().toList()
+
+        spy.shouldHaveNoApplicableMethods(packagePrivate)
+        call.withTypeDsl {
+            val t_A = acu.firstTypeSignature()
+            ctor.methodType.shouldMatchMethod(named = "new", declaredIn = t_A, withFormals = listOf(ts.OBJECT), returning = t_A)
+            call.methodType.shouldMatchMethod(named = "m", declaredIn = t_A, withFormals = listOf(ts.OBJECT), returning = void)
+        }
+    }
+
+    parserTest("#7147 conflicting access modifiers do not stop the resolution of new expressions and qualified calls") {
+        val acu = parser.parse(
+            """
+            class A {
+                public private A(int x) { }
+                public A(String s) { }
+                public private void m(int x) { }
+                public void m(String s) { }
+            }
+
+            class B {
+                void t(A a) {
+                    // javac rejects the declarations of A(int) and m(int)
+                    new A("");
+                    a.m("");
+                }
+            }
+            """.trimIndent()
+        )
+
+        val ctor = acu.firstCtorCall()
+        val call = acu.firstMethodCall()
+
+        call.withTypeDsl {
+            val t_A = acu.firstTypeSignature()
+            ctor.methodType.shouldMatchMethod(named = "new", declaredIn = t_A, withFormals = listOf(ts.STRING), returning = t_A)
+            call.methodType.shouldMatchMethod(named = "m", declaredIn = t_A, withFormals = listOf(ts.STRING), returning = void)
         }
     }
 })

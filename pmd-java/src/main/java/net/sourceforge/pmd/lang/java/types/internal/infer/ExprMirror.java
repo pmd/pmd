@@ -17,6 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers.MethodAccessForm;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -337,6 +338,13 @@ public interface ExprMirror {
         default boolean isLhsAType() {
             return getLhsIfType() != null;
         }
+
+        /**
+         * Returns the form of the access to the referenced method, which
+         * decides whether a protected method of another package is accessible.
+         * This is not used for constructor references.
+         */
+        MethodAccessForm getMethodAccessForm();
 
         /**
          * Returns the name of the invoked method, or {@link JConstructorSymbol#CTOR_NAME}

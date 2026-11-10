@@ -41,6 +41,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * java
     * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
+    * [#7147](https://github.com/pmd/pmd/issues/7147): \[java] Protected access check ignores enclosing classes, the qualifier type and the constructor form
     * [#7152](https://github.com/pmd/pmd/issues/7152): \[java] Type-name-qualified invocation filters out instance methods before overload resolution
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
 * java-bestpractices
