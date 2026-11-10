@@ -46,6 +46,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: false positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
 * java-design
     * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: false positive when static filed is used in constructor
+    * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: false negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
