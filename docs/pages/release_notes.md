@@ -44,6 +44,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-bestpractices
     * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: false positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
+    * [#7310](https://github.com/pmd/pmd/issues/7310): \[java] UnusedAssignment: i++ in a do-while condition reported as never used, unlike in a while
 * java-design
     * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: false positive when static filed is used in constructor
 * java-errorprone

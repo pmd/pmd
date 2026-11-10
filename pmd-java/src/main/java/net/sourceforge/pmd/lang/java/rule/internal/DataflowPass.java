@@ -828,6 +828,11 @@ public final class DataflowPass {
             linkConditional(iter, cond, iter, breakTarget, true);
             // do a second round to make sure assignments can reach themselves.
             iter = acceptOpt(body, iter);
+            if (!checkFirstIter) {
+                // in do-while loops the condition is evaluated after the body,
+                // so the defs of the condition must reach it again
+                linkConditional(iter, cond, iter, breakTarget, true);
+            }
 
             SpanInfo result = popTargets(loop, breakTarget, continueTarget);
             result.absorb(iter);

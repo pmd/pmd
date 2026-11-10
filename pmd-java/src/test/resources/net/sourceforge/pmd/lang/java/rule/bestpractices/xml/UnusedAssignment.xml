@@ -4587,4 +4587,41 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] Increment in a do-while condition is read by the next check #7310</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void count() {
+        int i = 0;
+        do { } while (i++ < 10);
+    }
+
+    void countWhile() {
+        int i = 0;
+        while (i++ < 10) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Increment in a do-while condition overwritten by the body #7310</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>The updated value of variable 'i' is never used (overwritten on line 5)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void count() {
+        int i;
+        do {
+            i = 5;
+        } while (i++ < 10);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
