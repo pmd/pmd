@@ -3968,7 +3968,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Add Empty String",
   "url": "pmd_rules_java_performance.html#addemptystring",
-  "summary": "The conversion of literals to strings by concatenating them with empty strings is inefficient. It..."
+  "summary": "Reports the conversion of values to strings by concatenating them with empty strings. **Deprecated:** This..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/performance.md",
