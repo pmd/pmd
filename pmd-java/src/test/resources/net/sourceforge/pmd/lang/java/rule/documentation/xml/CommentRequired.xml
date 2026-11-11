@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
 
     <code-fragment id="with-all-comments"><![CDATA[
 /**
@@ -89,10 +89,22 @@ public class TopLevel {
     </test-code>
 
     <test-code>
-        <description>Missing comments - only class level required. (deprecate property values test)</description>
+        <description>Missing comments - only class level required. (deprecated values, non-deprecated properties)</description>
         <rule-property name="classCommentRequirement">Required</rule-property>
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
         <rule-property name="methodCommentRequirement">Ignored</rule-property>
+        <rule-property name="enumCommentRequirement">Ignored</rule-property>
+        <expected-problems>3</expected-problems>
+        <code-ref id="without-any-comments"/>
+    </test-code>
+
+
+    <test-code>
+        <description>Missing comments - only class level required. (deprecated values, deprecated properties)</description>
+        <rule-property name="classCommentRequirement">Required</rule-property>
+        <rule-property name="fieldCommentRequirement">Ignored</rule-property>
+        <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
+        <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="enumCommentRequirement">Ignored</rule-property>
         <expected-problems>3</expected-problems>
@@ -176,7 +188,8 @@ public class Foo {
         <rule-property name="methodCommentRequirement">ignored</rule-property>
         <rule-property name="enumCommentRequirement">ignored</rule-property>
         <rule-property name="packageMethodCommentRequirement">required</rule-property>
-        <expected-problems>0</expected-problems>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,6</expected-linenumbers>
         <code-ref id="without-any-comments"/>
     </test-code>
 
