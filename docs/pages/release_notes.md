@@ -62,6 +62,10 @@ This is a {{ site.pmd.release_type }} release.
 * java
     * {% jdoc !!java::lang.java.types.TypeOps#getMethodsOf(java::lang.java.types.JTypeMirror,java.lang.String,boolean,java::lang.java.symbols.JClassSymbol) %}
       is not used by PMD anymore.
+    * {% jdoc !!java::lang.java.types.TypeOps#accessibleMethodFilter(java.lang.String,java::lang.java.symbols.JClassSymbol) %},
+      {% jdoc !!java::lang.java.types.TypeOps#lazyFilterAccessible(java.util.List,java::lang.java.symbols.JClassSymbol) %} and
+      {% jdoc !!java::lang.java.types.TypeOps#filterAccessible(java.util.List,java::lang.java.symbols.JClassSymbol) %}
+      are not used by PMD anymore. They do not follow JLS 6.6.2 for protected members of another package.
 
 #### Experimental API
 * kotlin

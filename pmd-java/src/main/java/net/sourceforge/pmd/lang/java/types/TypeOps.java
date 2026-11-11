@@ -2048,14 +2048,29 @@ public final class TypeOps {
     // <editor-fold  defaultstate="collapsed" desc="Accessibility utils">
 
 
+    /**
+     * @deprecated Since 7.30.0. PMD does not use this method anymore. It does not follow
+     * JLS 6.6.2 for protected members of another package.
+     */
+    @Deprecated
     public static Predicate<JMethodSymbol> accessibleMethodFilter(String name, @NonNull JClassSymbol symbol) {
         return it -> it.nameEquals(name) && isAccessible(it, symbol);
     }
 
+    /**
+     * @deprecated Since 7.30.0. PMD does not use this method anymore. It does not follow
+     * JLS 6.6.2 for protected members of another package.
+     */
+    @Deprecated
     public static Iterable<JMethodSig> lazyFilterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
         return () -> IteratorUtil.filter(visible.iterator(), it -> isAccessible(it.getSymbol(), accessSite));
     }
 
+    /**
+     * @deprecated Since 7.30.0. PMD does not use this method anymore. It does not follow
+     * JLS 6.6.2 for protected members of another package.
+     */
+    @Deprecated
     public static List<JMethodSig> filterAccessible(List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
         return CollectionUtil.mapNotNull(visible, m -> isAccessible(m.getSymbol(), accessSite) ? m : null);
     }
