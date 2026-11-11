@@ -34,6 +34,14 @@ This is a {{ site.pmd.release_type }} release.
     Loops are allowed by default and can be reported by setting
     `allowLoops` to `false`.
 
+#### Deprecated Rules
+*   The Java rule {% rule java/performance/AddEmptyString %} is deprecated without replacement
+    and will be removed with PMD 8.0.0. Its performance claim is not valid on modern JDKs:
+    constant string concatenations are evaluated at compile time, and replacing concatenation
+    with `toString()` or `String.valueOf()` does not generally improve performance.
+    The rule is excluded when referencing the whole Performance category, but explicit rule
+    references continue to work during the deprecation period.
+
 ### 🐛️ Fixed Issues
 * apex
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
@@ -51,6 +59,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
+* java-performance
+    * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
