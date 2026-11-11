@@ -57,6 +57,11 @@ This is a {{ site.pmd.release_type }} release.
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
 
 ### 🚨️ API Changes
+#### Deprecations
+* java
+    * {% jdoc !!java::lang.java.types.TypeOps#getMethodsOf(java::lang.java.types.JTypeMirror,java.lang.String,boolean,java::lang.java.symbols.JClassSymbol) %}
+      is not used by PMD anymore.
+
 #### Experimental API
 * kotlin
     * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
