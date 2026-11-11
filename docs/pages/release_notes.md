@@ -42,6 +42,7 @@ This is a {{ site.pmd.release_type }} release.
 * java
     * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
+    * [#7313](https://github.com/pmd/pmd/issues/7313): \[java] Casts to boolean and boolean equality are not folded as constant expressions
 * java-bestpractices
     * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: false positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
