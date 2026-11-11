@@ -1251,8 +1251,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled until #7144 is fixed: a block lambda without return statements is value-compatible for the overload resolution only if it contains a throw -->
+    <test-code>
         <description>Lambda block bodies that cannot complete normally - #7144</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1260,7 +1259,6 @@ public class Foo {
             import java.util.function.Supplier;
 
             class Example {
-                static final boolean ON = true;
                 static void f(int value, Runnable task) { }
                 static void f(Integer value, Supplier<String> task) { }
                 static void v(int value, Callable<String> task) { }
@@ -1269,9 +1267,26 @@ public class Foo {
                 void test(Integer value) {
                     f(value.intValue(), () -> { while (true) { for (;;) { break; } } }); // f(Integer, Supplier) would be selected without intValue()
                     f(value.intValue(), () -> { while (1 < 2) { } }); // f(Integer, Supplier) would be selected without intValue()
+                    v(value.intValue(), () -> { while (true) { } }); // v(Object, Callable) would be selected without intValue()
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <!-- disabled until #7313 is fixed: a cast to boolean and == with two boolean operands are not folded as constant expressions -->
+        <description>Lambda block bodies whose loop condition is a boolean cast or a boolean equality - #7313</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Supplier;
+
+            class Example {
+                static final boolean ON = true;
+                static void f(int value, Runnable task) { }
+                static void f(Integer value, Supplier<String> task) { }
+                void test(Integer value) {
                     f(value.intValue(), () -> { while ((boolean) true) { } }); // f(Integer, Supplier) would be selected without intValue()
                     f(value.intValue(), () -> { while (ON == true) { } }); // f(Integer, Supplier) would be selected without intValue()
-                    v(value.intValue(), () -> { while (true) { } }); // v(Object, Callable) would be selected without intValue()
                 }
             }
         ]]></code>
