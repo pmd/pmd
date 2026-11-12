@@ -4,11 +4,17 @@
 
 package net.sourceforge.pmd.renderers;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLogBuilder;
 import net.sourceforge.pmd.reporting.Report;
@@ -40,7 +46,31 @@ public class SarifRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        sarifLogBuilder = SarifLogBuilder.sarifLogBuilder();
+        sarifLogBuilder = new SarifLogBuilder(this::determineFileUri);
+    }
+
+    private String determineFileUri(FileId fileId) {
+        String fileName = determineFileName(fileId);
+        Path path = Paths.get(fileName);
+        if (path.isAbsolute()) {
+            return fileId.getUriString();
+        }
+        return convertToUri(fileName);
+    }
+
+    static String convertToUri(String fileName) {
+        String uriPath = fileName.replace(File.separatorChar, '/');
+        // A colon in the first segment would otherwise be interpreted as a URI scheme.
+        int colon = uriPath.indexOf(':');
+        int slash = uriPath.indexOf('/');
+        if (colon >= 0 && (slash < 0 || colon < slash)) {
+            uriPath = "./" + uriPath;
+        }
+        try {
+            return new URI(null, null, uriPath, null).toASCIIString();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Invalid file name: " + fileName, e);
+        }
     }
 
     @Override

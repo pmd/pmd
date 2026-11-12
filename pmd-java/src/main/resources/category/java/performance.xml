@@ -12,18 +12,23 @@ Rules that flag suboptimal code.
     <rule name="AddEmptyString"
           language="java"
           since="4.0"
+          deprecated="true"
           message="Do not add empty strings"
           class="net.sourceforge.pmd.lang.java.rule.performance.AddEmptyStringRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#addemptystring">
         <description>
-The conversion of literals to strings by concatenating them with empty strings is inefficient.
-It is much better to use one of the type-specific `toString()` methods instead or `String.valueOf()`.
+Reports the conversion of values to strings by concatenating them with empty strings.
+
+**Deprecated:** This rule is deprecated since PMD 7.30.0 and will be removed with PMD 8.0.0.
+It has no replacement. Its performance claim is not valid on modern JDKs:
+constant string concatenations are evaluated at compile time, and replacing concatenation
+with a `toString()` or `String.valueOf()` call does not generally improve performance.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-String s = "" + 123;                // inefficient
-String t = Integer.toString(456);   // preferred approach
+String s = "" + 123;                // reported, might be inefficient in old JDKs
+String t = Integer.toString(456);   // not reported
 ]]>
         </example>
     </rule>
