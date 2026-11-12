@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
@@ -95,6 +96,24 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
                 sourceCode.offsetAtLineColumn(
                         TextPos2d.pos2d(sourceLocation.getEndLine(), sourceLocation.getEndColumn() + 1))
         ));
+    }
+
+    /**
+     * Only the signature of the method is reported, not its body.
+     */
+    @Override
+    public FileLocation getReportLocation() {
+        ASTBlockStatement body = firstChild(ASTBlockStatement.class);
+        if (body == null) {
+            return super.getReportLocation();
+        }
+        TextDocument document = getAstInfo().getTextDocument();
+        int start = getTextRegion().getStartOffset();
+        int end = body.getTextRegion().getStartOffset();
+        while (end > start && Character.isWhitespace(document.getText().charAt(end - 1))) {
+            end--;
+        }
+        return document.toLocation(TextRegion.fromBothOffsets(start, end));
     }
 
     @Override
