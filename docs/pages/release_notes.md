@@ -35,7 +35,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
 * misc
-    * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate antlr generated parser implementation classes
+    * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate ANTLR generated lexer implementation classes
 
 ### 🚨️ API Changes and Deprecations
 #### Experimental API
