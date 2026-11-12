@@ -421,4 +421,59 @@ class Example {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7329: Hard coded key field accessed through this</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+class Example {
+    byte[] keyBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+
+    void encrypt() {
+        new SecretKeySpec(this.keyBytes, "AES");
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7329: Copy of a hard coded key field accessed through this</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+class Example {
+    byte[] keyBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+
+    void encrypt() {
+        new SecretKeySpec(this.keyBytes.clone(), "AES");
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7329: Key field accessed through this is not reported when it is overwritten before use</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+class Example {
+    byte[] keyBytes = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+
+    void encrypt() {
+        this.keyBytes[0] = nextByte();
+        new SecretKeySpec(this.keyBytes, "AES");
+    }
+
+    byte nextByte() {
+        return 0;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

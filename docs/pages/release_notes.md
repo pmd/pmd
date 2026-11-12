@@ -92,6 +92,8 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
 * java-performance
     * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
     * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: False negative for a copy loop whose body has no braces
+* java-security
+    * [#7329](https://github.com/pmd/pmd/issues/7329): \[java] InsecureCryptoIv / HardCodedCryptoKey: hard-coded field passed as `this.field` not reported
 * jsp
     * [#5092](https://github.com/pmd/pmd/issues/5092): \[jsp] Parse error when `<!DOCTYPE>` or `<?xml?>` follows other content
 * kotlin
