@@ -357,6 +357,16 @@ conditions with a boolean `&&` operator in between.
 //IfStatement[@Else = false()]/IfStatement[@Else = false()]
 |
 //IfStatement[@Else = false()]/Block[count(*) = 1]/IfStatement[@Else = false()]
+|
+//IfStatement[@Else = false()][
+    let $inner := ., $outer := ancestor::IfStatement[1]
+    return exists($outer[@Else = false()])
+           and exists($inner/ancestor::*[ancestor::IfStatement[1] is $outer][2])
+           and (
+               every $mid in $inner/ancestor::*[ancestor::IfStatement[1] is $outer]
+               satisfies exists($mid[self::Block and count(*) = 1])
+           )
+]
 ]]>
                 </value>
             </property>
