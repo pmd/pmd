@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.StablePathMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
@@ -35,6 +36,7 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTInfixExpression node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.getOperator() == INSTANCEOF) {
 
             StablePathMatcher instanceOfSubject = StablePathMatcher.matching(node.getLeftOperand());
@@ -86,9 +88,9 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
                 if (leaf != instanceofOperand && isNullCheck(leaf, instanceOfSubject)
                     && negated != isInfixExprWithOperator(leaf, NE)) {
                     if (canRemoveWithoutReordering(operands, i, instanceofIdx, instanceOfSubject)) {
-                        asCtx(data).addViolation(leaf);
+                        ctx.addViolation(leaf);
                     } else {
-                        asCtx(data).addViolationWithMessage(leaf, MOVE_INSTANCEOF_MESSAGE);
+                        ctx.addViolationWithMessage(leaf, MOVE_INSTANCEOF_MESSAGE);
                     }
                 }
             }

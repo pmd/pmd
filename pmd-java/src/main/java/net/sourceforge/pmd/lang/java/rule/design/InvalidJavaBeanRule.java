@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
@@ -59,6 +60,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         String packageName = "";
         ASTPackageDeclaration packageDeclaration = node.getRoot().getPackageDeclaration();
         if (packageDeclaration != null) {
@@ -73,12 +75,12 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         String beanName = node.getSimpleName();
 
         if (getProperty(ENSURE_SERIALIZATION) && !TypeTestUtil.isA(Serializable.class, node)) {
-            asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' does not implement java.io.Serializable.",
+            ctx.addViolationWithMessage(node, "The bean ''{0}'' does not implement java.io.Serializable.",
                     beanName);
         }
 
         if (!hasNoArgConstructor(node)) {
-            asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' is missing a no-arg constructor.",
+            ctx.addViolationWithMessage(node, "The bean ''{0}'' is missing a no-arg constructor.",
                     beanName);
         }
 
@@ -94,43 +96,43 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         for (PropertyInfo propertyInfo : properties.values()) {
             if (!hasLombokGetterAnnotation(node) && !hasLombokSetterAnnotation(node)
                 && propertyInfo.hasMissingGetter() && propertyInfo.hasMissingSetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
+                ctx.addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
                         beanName, propertyInfo.getName());
             } else if (!hasLombokGetterAnnotation(node) && propertyInfo.hasMissingGetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
+                ctx.addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a getter for property ''{1}''.",
                         beanName, propertyInfo.getName());
 
             } else if (!hasLombokSetterAnnotation(node) && propertyInfo.hasMissingSetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
+                ctx.addViolationWithMessage(propertyInfo.getDeclaratorId(),
                         "The bean ''{0}'' is missing a setter for property ''{1}''.",
                         beanName, propertyInfo.getName());
 
             }
 
             if (propertyInfo.hasWrongGetterType()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
+                ctx.addViolationWithMessage(propertyInfo.getGetter(),
                         "The bean ''{0}'' should return a ''{1}'' in getter of property ''{2}''.",
                         beanName, propertyInfo.getTypeName(), propertyInfo.getName());
             }
             if (propertyInfo.hasWrongBooleanGetterName()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
+                ctx.addViolationWithMessage(propertyInfo.getGetter(),
                         "The bean ''{0}'' should use the method name ''is{1}'' for the getter of property ''{2}''.",
                         beanName, propertyInfo.getName(), propertyInfo.getName());
             }
             if (propertyInfo.hasWrongTypeGetterAndSetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
+                ctx.addViolationWithMessage(propertyInfo.getGetter(),
                         "The bean ''{0}'' has a property ''{1}'' with getter and setter that don''t have the same type.",
                         beanName, propertyInfo.getName());
             }
             if (propertyInfo.hasWrongIndexedGetterType()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.indexedGetter,
+                ctx.addViolationWithMessage(propertyInfo.indexedGetter,
                         "The bean ''{0}'' has a property ''{1}'' with an indexed getter using the wrong type.",
                         beanName, propertyInfo.getName());
             }
             if (propertyInfo.hasWrongIndexedSetterType()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.indexedSetter,
+                ctx.addViolationWithMessage(propertyInfo.indexedSetter,
                         "The bean ''{0}'' has a property ''{1}'' with an indexed setter using the wrong type.",
                         beanName, propertyInfo.getName());
             }
