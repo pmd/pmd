@@ -18,10 +18,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameterList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
@@ -139,12 +139,10 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
      * Malformed bodies may be neither (it's a compile error)
      */
     private static boolean isLambdaBodyCompatible(ASTBlock body, boolean voidCompatible) {
-        boolean noReturnsWithExpr = body.descendants(ASTReturnStatement.class).none(it -> it.getExpr() != null);
-        if (noReturnsWithExpr && !voidCompatible) {
-            // normally we should be determining whether the block must complete abruptly on all paths
-            return body.descendants(ASTThrowStatement.class).nonEmpty();
-        }
-        return noReturnsWithExpr == voidCompatible;
+        boolean returnFormsMatch = body.descendants(ASTReturnStatement.class)
+                                       .all(it -> voidCompatible == (it.getExpr() == null));
+        return returnFormsMatch
+            && (voidCompatible || !AbruptCompletionAnalysis.canCompleteNormally(body, expr -> Boolean.TRUE.equals(expr.getConstValue())));
     }
 
     /**

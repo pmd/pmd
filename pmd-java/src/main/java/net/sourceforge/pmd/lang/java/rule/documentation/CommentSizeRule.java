@@ -43,6 +43,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCompilationUnit cUnit, Object data) {
+        RuleContext ctx = (RuleContext) data;
 
         // Comments that make up the file header (e.g. a license/copyright header)
         // appear before the first declaration and are not subject to the limits,
@@ -56,14 +57,14 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
             }
 
             if (hasTooManyLines(comment)) {
-                asCtx(data).addViolationWithPosition(
+                ctx.addViolationWithPosition(
                     comment.getToken(),
                     cUnit.getAstInfo(),
                     comment.getReportLocation(),
                     getMessage() + ": Too many lines");
             }
 
-            reportLinesTooLong(cUnit, asCtx(data), comment);
+            reportLinesTooLong(cUnit, ctx, comment);
         }
 
         return null;
