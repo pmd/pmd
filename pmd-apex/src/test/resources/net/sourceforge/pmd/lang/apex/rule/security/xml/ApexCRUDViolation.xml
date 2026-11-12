@@ -1948,4 +1948,33 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6624 No CRUD check for DML on a list element accessed by index</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts, Contact[] contacts) {
+        update accounts[0];
+        insert contacts[1];
+        delete accounts[accounts.size() - 1];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6624 Proper CRUD check for DML on a list element accessed by index</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(List<Account> accounts) {
+        if (Account.sObjectType.getDescribe().isUpdateable()) {
+            update accounts[0];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
