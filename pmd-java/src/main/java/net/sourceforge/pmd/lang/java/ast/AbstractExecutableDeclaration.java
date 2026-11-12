@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 
 abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
@@ -25,10 +26,15 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
 
     void setIdentToken(JavaccToken identToken) {
         this.identToken = identToken;
-        setImage(identToken.getImage());
     }
 
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     * Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
+     */
     @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
     public String getImage() {
         return null;
     }
@@ -60,6 +66,6 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
 
     @Override
     public String getName() {
-        return super.getImage();
+        return identToken.getImage();
     }
 }

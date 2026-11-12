@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
 import com.github.oowekyala.ooxml.messages.OoxmlFacade;
@@ -138,8 +139,8 @@ public class TestSchemaParser {
     }
 
     private DocumentBuilder newDocumentBuilder() {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
+            DocumentBuilderFactory dbf = XmlUtil.newDocumentBuilderFactory();
             dbf.setSchema(version.getSchema());
             dbf.setNamespaceAware(true);
             return dbf.newDocumentBuilder();

@@ -88,6 +88,13 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             return null;
         }
 
+        if (JavaAstUtils.isAnonymousClassCreation(operand)) {
+            // The type of the expression is the anonymous class, which is a
+            // strict subtype of the instantiated type. Eg in `(Foo) new Foo() {}`
+            // the cast is not an identity cast, and may be necessary for inference.
+            operandType = ((ASTConstructorCall) operand).getAnonymousClassDeclaration().getTypeMirror();
+        }
+
         // Note that we assume that coercionType is convertible to
         // contextType because the code must compile
 

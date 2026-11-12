@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A field access expression.
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr, QualifiableExpression {
 
     private FieldSig typedSym;
+    private String fieldName;
 
 
     ASTFieldAccess(int id) {
@@ -37,14 +39,14 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
         assert fieldName != null;
         this.addChild(lhs, 0);
-        this.setImage(fieldName);
+        this.setName(fieldName);
     }
 
     ASTFieldAccess(ASTExpression lhs, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
         TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
         this.addChild((AbstractJavaNode) lhs, 0);
-        this.setImage(identifier.getImage());
+        this.setName(identifier.getImage());
         this.setFirstToken(lhs.getFirstToken());
         this.setLastToken(identifier);
     }
@@ -55,10 +57,23 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         return (ASTExpression) getChild(0);
     }
 
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
+    @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
+    public String getImage() {
+        return getName();
+    }
+
+    void setName(String name) {
+        this.fieldName = name;
+    }
 
     @Override
     public String getName() {
-        return getImage();
+        return fieldName;
     }
 
     @Override

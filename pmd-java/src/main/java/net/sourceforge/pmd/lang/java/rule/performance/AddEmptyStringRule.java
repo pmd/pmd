@@ -14,8 +14,13 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
+/**
+ * @deprecated Since 7.30.0. This rule has no replacement, as its performance claim is not valid on modern JDKs.
+ */
+@Deprecated
 public class AddEmptyStringRule extends AbstractJavaRulechainRule {
 
     public AddEmptyStringRule() {
@@ -24,26 +29,27 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!node.isEmpty()) {
             return null;
         }
         JavaNode parent = node.getParent();
-        checkExpr(data, parent, node);
+        checkExpr(ctx, parent, node);
         if (parent instanceof ASTVariableDeclarator) {
             ASTVariableId varId = ((ASTVariableDeclarator) parent).getVarId();
             if (varId.hasModifiers(JModifier.FINAL)) {
                 for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
-                    checkExpr(data, usage.getParent(), usage);
+                    checkExpr(ctx, usage.getParent(), usage);
                 }
             }
         }
         return null;
     }
 
-    private void checkExpr(Object data, JavaNode parent, JavaNode emptyStringNode) {
+    private void checkExpr(RuleContext ctx, JavaNode parent, JavaNode emptyStringNode) {
         if (JavaAstUtils.isInfixExprWithOperator(parent, BinaryOp.ADD)
             && parent.ancestors(ASTAnnotation.class).isEmpty()) {
-            asCtx(data).addViolationWithPosition(parent, parent.getAstInfo(),
+            ctx.addViolationWithPosition(parent, parent.getAstInfo(),
                 emptyStringNode.getReportLocation(), getMessage());
         }
     }

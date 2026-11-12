@@ -57,6 +57,8 @@ opps = "opps"
 oout = "oout"
 
 [default.extend-identifiers]
+# contributor names, e.g. in credits.md
+YukiAoto = "YukiAoto"
 # public APIs
 isWilcardParameterized="isWilcardParameterized"
 checkSelfDescendantAbreviation="checkSelfDescendantAbreviation"

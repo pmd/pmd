@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "all-contributors-cli": "^6.26.1"
+    "all-contributors-cli": "^7.0.0"
   },
   "overrides": {
     "tmp": "^0.2.7"
