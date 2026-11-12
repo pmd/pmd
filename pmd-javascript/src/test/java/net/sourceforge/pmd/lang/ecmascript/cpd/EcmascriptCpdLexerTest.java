@@ -64,4 +64,17 @@ class EcmascriptCpdLexerTest extends CpdTextComparisonTest {
     void testDecorators() {
         doTest("decorator");
     }
+
+    /**
+     * See: https://github.com/pmd/pmd/issues/1756
+     */
+    @Test
+    void testHashbangComment() {
+        doTest("hashbang");
+    }
+
+    @Test
+    void testHashbangOnlyAtStartOfFile() {
+        expectLexException("var i = 0;\n#!/usr/bin/env node\n");
+    }
 }
