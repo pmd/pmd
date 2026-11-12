@@ -262,7 +262,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean hasRunAsMode(AbstractDmlStatement node) {
-        return node.getRunAsMode().isPresent();
+        return node.getAccessMode() != AbstractDmlStatement.AccessMode.IMPLICIT;
     }
 
     @Override

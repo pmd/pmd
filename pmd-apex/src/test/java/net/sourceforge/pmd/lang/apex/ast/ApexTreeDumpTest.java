@@ -152,4 +152,12 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
     void anonymousBlock() {
         doTest("AnonymousBlock");
     }
+
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/7108">[apex] Expose DML access mode as an XPath attribute #7108</a>
+     */
+    @Test
+    void dmlAccessMode() {
+        doTest("DmlAccessMode");
+    }
 }

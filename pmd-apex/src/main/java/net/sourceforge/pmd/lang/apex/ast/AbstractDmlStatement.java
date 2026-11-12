@@ -4,12 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Optional;
-
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-import net.sourceforge.pmd.util.IteratorUtil;
 
 import com.google.summit.ast.statement.DmlStatement;
 
@@ -18,19 +13,40 @@ public abstract class AbstractDmlStatement extends AbstractApexNode.Single<DmlSt
         super(node);
     }
 
-    public Optional<String> getRunAsMode() {
-        DmlStatement.AccessLevel accessLevel = node.getAccess();
-        if (accessLevel != null) {
-            return Optional.of(accessLevel.name());
-        }
-        return Optional.empty();
+    /**
+     * Access mode of an Apex DML statement.
+     *
+     * @since 7.30.0
+     */
+    public enum AccessMode {
+        IMPLICIT,
+        USER_MODE,
+        SYSTEM_MODE
     }
 
-    @Override
-    public Iterator<Attribute> getXPathAttributesIterator() {
-        Iterator<Attribute> attributes = super.getXPathAttributesIterator();
-        return getRunAsMode()
-                .map(mode -> IteratorUtil.concat(attributes, Collections.singleton(new Attribute(this, "RunAsMode", mode)).iterator()))
-                .orElse(attributes);
+    /**
+     * Returns the access mode of this DML statement.
+     * The result is {@link AccessMode#IMPLICIT} when the statement has no {@code as user} or {@code as system} clause.
+     *
+     * @since 7.30.0
+     */
+    public AccessMode getAccessMode() {
+        DmlStatement.AccessLevel accessLevel = node.getAccess();
+        if (accessLevel == null) {
+            return AccessMode.IMPLICIT;
+        }
+        return AccessMode.valueOf(accessLevel.name());
+    }
+
+    /**
+     * @deprecated Since 7.30.0. Use {@link #getAccessMode()} instead. This method will be removed in PMD 8.0.0.
+     */
+    @Deprecated
+    public Optional<String> getRunAsMode() {
+        AccessMode accessMode = getAccessMode();
+        if (accessMode == AccessMode.IMPLICIT) {
+            return Optional.empty();
+        }
+        return Optional.of(accessMode.name());
     }
 }
