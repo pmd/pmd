@@ -271,6 +271,10 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 return false;
             }
 
+            if (rt == infer.getTypeSystem().NO_TYPE) {
+                return true;
+            }
+
             if (getSpecies(rt) != getSpecies(rs)) {
                 TypeSpecies requiredSpecies = getSpecies(rs);
                 boolean sameSpecies = true;
