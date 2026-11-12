@@ -64,12 +64,12 @@ public abstract class AttributeView<T extends KotlinNode> implements Node {
             result = new KtPropertyDeclarationAttributes((KotlinParser.KtPropertyDeclaration) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtVariableDeclaration) {
             result = new KtVariableDeclarationAttributes((KotlinParser.KtVariableDeclaration) kotlinNode);
+        } else if (kotlinNode instanceof KotlinParser.KtMultiVariableDeclaration) {
+            result = new KtMultiVariableDeclarationAttributes((KotlinParser.KtMultiVariableDeclaration) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtCompanionObject) {
             result = new KtCompanionObjectAttributes((KotlinParser.KtCompanionObject) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtCatchBlock) {
             result = new KtCatchBlockAttributes((KotlinParser.KtCatchBlock) kotlinNode);
-        } else if (kotlinNode instanceof KotlinParser.KtForStatement) {
-            result = new KtForStatementAttributes((KotlinParser.KtForStatement) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtFunctionValueParameter) {
             result = new KtFunctionValueParameterAttributes((KotlinParser.KtFunctionValueParameter) kotlinNode);
         } else if (kotlinNode instanceof KotlinParser.KtUnescapedAnnotation) {

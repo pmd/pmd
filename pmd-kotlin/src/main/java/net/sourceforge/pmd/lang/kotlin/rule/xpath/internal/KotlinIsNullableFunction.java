@@ -31,10 +31,10 @@ import nl.stokpop.typemapper.model.TypeAst;
  *   <li>{@code VariableDeclaration} -- property or for-loop variable type, lambda parameters,
  *       including each component of a destructuring declaration ({@code val (a, b) = ...});
  *       the destructuring {@code PropertyDeclaration} itself has no type</li>
+ *   <li>{@code MultiVariableDeclaration} -- type of the destructured value as a whole</li>
  *   <li>{@code FunctionDeclaration} -- return type</li>
  *   <li>{@code FunctionValueParameter} / {@code ClassParameter} -- parameter type</li>
  *   <li>{@code CatchBlock} -- caught exception type</li>
- *   <li>{@code ForStatement} -- loop variable type</li>
  * </ul>
  *
  * <p>Example XPath:

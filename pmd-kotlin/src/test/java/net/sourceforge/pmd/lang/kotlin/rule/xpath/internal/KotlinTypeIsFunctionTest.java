@@ -161,24 +161,6 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
     }
 
     @Test
-    void typeIsOnForStatementMatches() {
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/ParameterTypes.kt");
-        Report report = runXPath("//ForStatement[pmd-kotlin:typeIs('java.util.Calendar')]", kotlinFile);
-        assertNoErrors(report);
-        // for (item in items) where items: List<Calendar>, at line 37
-        assertViolationAtLine(report, 37, "Expected violation at line 37 (for Calendar loop variable)");
-    }
-
-    @Test
-    void typeIsOnForStatementNoMatch() {
-        File kotlinFile = getResource(TYPE_IS_RESOURCE_DIR + "/ParameterTypes.kt");
-        Report report = runXPath("//ForStatement[pmd-kotlin:typeIs('java.util.Calendar')]", kotlinFile);
-        assertNoErrors(report);
-        // for (s in items) where items: List<String>, at line 44 should NOT match
-        assertNoViolationAtLine(report, 44, "String for-loop should not match Calendar typeIs");
-    }
-
-    @Test
     void typeIsMatchesInferredTypeSubtypeViaSourceHierarchy() {
         // "val myValue = Simple("Hello")" -- type is INFERRED (no explicit annotation).
         // Simple is defined in the same file and implements Serializable.
@@ -315,6 +297,32 @@ class KotlinTypeIsFunctionTest extends BaseKotlinXPathFunctionTest {
                 "fun f() { val (a, b) = Pair(1, \"x\") }");
         assertNoErrors(report);
         assertViolationAtLine(report, 1, "Expected violation on the 'a' VariableDeclaration (kotlin.Int)");
+    }
+
+    @Test
+    void typeIsFindsForLoopsDestructuringAPair() {
+        Report report = runXPath(
+                "//ForStatement/MultiVariableDeclaration[pmd-kotlin:typeIs('kotlin.Pair')]",
+                "fun f(pairs: List<Pair<Int, String>>, items: List<String>) {\n"
+                        + "  for ((a, b) in pairs) { }\n"
+                        + "  for (item in items) { }\n"
+                        + "}");
+        assertNoErrors(report);
+        assertEquals(1, report.getViolations().size());
+        assertViolationAtLine(report, 2, "Expected violation on the destructuring for loop over Pair");
+    }
+
+    @Test
+    void typeIsOnMultiVariableDeclarationMatchesWholeValueOnly() {
+        String code = "fun f() { val (a, b) = Pair(1, \"x\") }";
+        Report pair = runXPath("//MultiVariableDeclaration[pmd-kotlin:typeIsExactly('kotlin.Pair')]", code);
+        assertNoErrors(pair);
+        assertEquals(1, pair.getViolations().size());
+
+        Report component = runXPath("//MultiVariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]", code);
+        assertNoErrors(component);
+        assertEquals(0, component.getViolations().size(),
+                "a component type must not leak onto the MultiVariableDeclaration");
     }
 
     @Test
