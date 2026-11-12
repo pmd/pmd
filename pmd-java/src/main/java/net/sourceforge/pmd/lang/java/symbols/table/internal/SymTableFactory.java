@@ -12,9 +12,11 @@ import static net.sourceforge.pmd.util.AssertionUtil.isValidJavaPackageName;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -398,7 +400,8 @@ final class SymTableFactory {
             types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE, t);                                                        // self name
         }
         types = TYPES.shadow(types, ScopeInfo.INHERITED, inherited.getLeft());                                           // inherited classes (note they shadow the enclosing type)
-        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(t.getDeclaredClasses()));       // inner classes declared here
+        // Live lookup: Lombok may add a generated member class after this table is built.
+        types = TYPES.shadow(types, ScopeInfo.ENCLOSING_TYPE_MEMBER, declaredClassesResolver(t));
         types = TYPES.shadow(types, ScopeInfo.TYPE_PARAM, TYPES.groupByName(sym.getTypeParameters()));                   // type parameters
 
         ShadowChainNode<JVariableSig, ScopeInfo> fields = varNode(parent);
@@ -415,6 +418,48 @@ final class SymTableFactory {
 
     JSymbolTable typesInFile(JSymbolTable parent, NodeStream<ASTTypeDeclaration> decls) {
         return SymbolTableImpl.withTypes(parent, TYPES.shadow(typeNode(parent), SAME_FILE, TYPES.groupByName(decls, ASTTypeDeclaration::getTypeMirror)));
+    }
+
+    /**
+     * Puts one member type in scope. Used for class-level annotations, which
+     * are resolved outside the type body.
+     */
+    JSymbolTable withMemberType(JSymbolTable parent, JClassType member) {
+        return SymbolTableImpl.withTypes(
+            parent,
+            TYPES.shadow(typeNode(parent), ScopeInfo.ENCLOSING_TYPE_MEMBER, TYPES.groupByName(member))
+        );
+    }
+
+    /**
+     * Member types are read from the class symbol on each lookup so classes
+     * added later (Lombok {@code @Builder}) stay visible. Instances are cached
+     * until the number of declared classes changes.
+     */
+    private static NameResolver<JTypeMirror> declaredClassesResolver(final JClassType type) {
+        return new NameResolver.SingleNameResolver<JTypeMirror>() {
+            private int cachedCount = -1;
+            private Map<String, JTypeMirror> byName = Collections.emptyMap();
+
+            @Override
+            public @Nullable JTypeMirror resolveFirst(String simpleName) {
+                List<JClassSymbol> declared = type.getSymbol().getDeclaredClasses();
+                if (declared.size() != cachedCount) {
+                    Map<String, JTypeMirror> next = new HashMap<>();
+                    for (JClassType member : type.getDeclaredClasses()) {
+                        next.putIfAbsent(member.getSymbol().getSimpleName(), member);
+                    }
+                    byName = next;
+                    cachedCount = declared.size();
+                }
+                return byName.get(simpleName);
+            }
+
+            @Override
+            public String toString() {
+                return "DeclaredClasses(" + type.getSymbol().getSimpleName() + ")";
+            }
+        };
     }
 
     JSymbolTable selfType(JSymbolTable parent, JClassType sym) {
