@@ -11,7 +11,7 @@ This is a small guide for GSoC Students and new contributors.
 ## 1. Check out PMD
 
 As you want to engage with PMD, your first task is, to find out what PMD is - if you didn't do this already.
-Read the [webpage](https://pmd.github.io), install PMD with the [Installation Guide](https://pmd.github.io/latest/pmd_userdocs_installation.html) and try it out.
+Read the [webpage](https://pmd.github.io), install PMD with the [Installation Guide](pmd_userdocs_installation.html) and try it out.
 
 
 Goals: Getting to know PMD, being able to run PMD locally
