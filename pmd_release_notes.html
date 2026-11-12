@@ -2106,13 +2106,13 @@ references continue to work during the deprecation period.</li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/7116">#7116</a>: [java] New rule: ControlFlowInTest</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7216">#7216</a>: [java] GuardLogStatement: false positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(…)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7216">#7216</a>: [java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(…)</li>
     </ul>
   </li>
   <li>java-design
     <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7279">#7279</a>: [java] InternalApiUsage: false positive when static filed is used in constructor</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7277">#7277</a>: [java] AvoidRethrowingException: false negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7277">#7277</a>: [java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7279">#7279</a>: [java] InternalApiUsage: False positive when static field is used in constructor</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -2132,9 +2132,14 @@ references continue to work during the deprecation period.</li>
       <li><a href="https://github.com/pmd/pmd/issues/7171">#7171</a>: [kotlin] Support the ..&lt; range operator (Kotlin 1.9)</li>
     </ul>
   </li>
+  <li>misc
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6655">#6655</a>: Deprecate ANTLR generated lexer implementation classes</li>
+    </ul>
+  </li>
 </ul>
 
-<h3 id="️-api-changes">🚨️ API Changes</h3>
+<h3 id="️-api-changes-and-deprecations">🚨️ API Changes and Deprecations</h3>
 <h4 id="experimental-api">Experimental API</h4>
 <ul>
   <li>kotlin
@@ -2150,6 +2155,88 @@ Before, it wrongly got the type of the first component. To find destructured var
 by type, query the component nodes instead: <code class="language-plaintext highlighter-rouge">//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]</code>.</li>
     </ul>
   </li>
+</ul>
+
+<h4 id="deprecations">Deprecations</h4>
+<ul>
+  <li>coco
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoLexer.html#"><code>CocoLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>css
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-css/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/css/ast/CssLexer.html#"><code>CssLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>csharp
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-cs/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/cs/ast/CSharpLexer.html#"><code>CSharpLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>dart
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-dart/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/dart/ast/DartLexer.html#"><code>DartLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>gherkin
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinLexer.html#"><code>GherkinLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>go
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-go/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/go/ast/GolangLexer.html#"><code>GolangLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>javascript
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/typescript/ast/TypeScriptLexer.html#"><code>TypeScriptLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>julia
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-julia/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/julia/ast/JuliaLexer.html#"><code>JuliaLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>kotlin
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinBaseListener.html#"><code>KotlinBaseListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinLexer.html#"><code>KotlinLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinListener.html#"><code>KotlinListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>lua
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lua/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/lua/ast/LuaLexer.html#"><code>LuaLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>rust
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-rust/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/rust/ast/RustLexer.html#"><code>RustLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>swift
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftBaseListener.html#"><code>SwiftBaseListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftLexer.html#"><code>SwiftLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftListener.html#"><code>SwiftListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>tsql
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-tsql/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/tsql/ast/TSqlLexer.html#"><code>TSqlLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>xml
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XMLLexer.html#"><code>XMLLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
+    </ul>
+  </li>
+  <li>The generated <code class="language-plaintext highlighter-rouge">KotlinParser</code> and <code class="language-plaintext highlighter-rouge">SwiftParser</code> classes and their nested AST node classes are
+intentionally not deprecated yet. These classes still contain the public AST node types,
+which have no replacement API yet. They will be deprecated once we have decided how to handle
+the inner classes.</li>
 </ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
@@ -2190,7 +2277,7 @@ by type, query the component nodes instead: <code class="language-plaintext high
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 11, 2026 <br />
+             Site last generated: Nov 12, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
