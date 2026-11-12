@@ -47,6 +47,7 @@ final class HTMLBodyWriter {
     private final FileNameRenderer fileNameRenderer;
 
     private boolean colorize = true;
+    private int violationCount = 1;
 
     HTMLBodyWriter(
             PrintWriter writer,
@@ -76,8 +77,6 @@ final class HTMLBodyWriter {
      * Writes the rows of the violation table.
      */
     void renderViolations(Iterator<RuleViolation> violations) {
-        int violationCount = 1;
-
         StringBuilder buf = new StringBuilder(500);
 
         while (violations.hasNext()) {
