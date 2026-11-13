@@ -57,13 +57,15 @@ This is a {{ site.pmd.release_type }} release.
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
+    * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
 * java-design
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
     * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: False positive when static field is used in constructor
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
 * java-performance
-    * [#7271](https://github.com/pmd/pmd/issues/7271): \[java] UseStringBufferForStringAppends: an append inside a forEach lambda is not reported
+    * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
+    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: a copy loop whose body has no braces is not reported
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
