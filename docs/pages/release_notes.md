@@ -66,6 +66,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
 * java-performance
     * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
+    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: a copy loop whose body has no braces is not reported
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
