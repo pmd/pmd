@@ -4624,4 +4624,76 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] Field assigned in a loop condition is used after a return #7310</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Object[] table;
+    Object next;
+    int index;
+
+    Object nextNode() {
+        Object e = next;
+        Object[] t = table;
+        do { } while (index < t.length && (next = t[index++]) == null);
+        return e;
+    }
+
+    Object nextNodeWhile() {
+        Object e = next;
+        Object[] t = table;
+        while (index < t.length && (next = t[index++]) == null) { }
+        return e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Field assigned in a loop condition overwritten before a return #7310</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to field 'next' is never used (overwritten on lines 9 and 10)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Object[] table;
+    Object next;
+    int index;
+
+    Object nextNode() {
+        Object e = next;
+        Object[] t = table;
+        do { } while (index < t.length && (next = t[index++]) == null);
+        next = null;
+        return e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Field assigned before a return and overwritten in a finally #7310</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to field 'f' is never used (overwritten on line 8)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    int f;
+    void m() {
+        try {
+            f = 1;
+            return;
+        } finally {
+            f = 2;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
