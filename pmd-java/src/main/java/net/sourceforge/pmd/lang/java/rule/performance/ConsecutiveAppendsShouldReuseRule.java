@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
@@ -32,6 +33,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTExpressionStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         Node nextSibling = node.asStream().followingSiblings().first();
         if (nextSibling instanceof ASTExpressionStatement) {
             @Nullable JVariableSymbol variable = getVariableAppended(node);
@@ -41,15 +43,16 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
                         && nextVariable.equals(variable)
                         && !(node.getParent() instanceof ASTIfStatement)
                 ) {
-                    asCtx(data).addViolation(node);
+                    ctx.addViolation(node);
                 }
             }
         }
-        return data;
+        return null;
     }
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         Node nextSibling = node.asStream().followingSiblings().first();
         if (nextSibling instanceof ASTExpressionStatement) {
             @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
@@ -57,11 +60,11 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
                 ASTVariableId varDecl = nextVariable.tryGetNode();
                 if (varDecl != null && node.getVarIds().any(it -> it == varDecl)
                     && isStringBuilderAppend(varDecl.getInitializer())) {
-                    asCtx(data).addViolation(node);
+                    ctx.addViolation(node);
                 }
             }
         }
-        return data;
+        return null;
     }
 
 

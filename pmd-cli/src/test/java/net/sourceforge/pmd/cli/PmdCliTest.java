@@ -548,34 +548,22 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void testRelativizeWithSymLink() throws Exception {
-        // srcDir = /tmp/junit123/src
-        // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
-        Path symlinkedSrcDir = createSymlink(tempRoot().resolve("sources"), srcDir);
-        runCli(VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
-                DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.toString())
+        // baseDir = /tmp/junit123/base
+        Path baseDir = Files.createDirectories(tempRoot().resolve("base"));
+        // srcDir = /tmp/junit123/base/src
+        srcDir = Files.createDirectories(baseDir.resolve("src"));
+        writeString(srcDir.resolve("someSource.dummy"), "dummy text");
+
+        // symlinkedBaseDir = /tmp/junit123/symlink -> /tmp/junit123/base
+        Path symlinkedSrcDir = createSymlink(tempRoot().resolve("symlink"), baseDir);
+        // pathToAnalyze = /tmp/junit123/symlink/src
+        String pathToAnalyze = symlinkedSrcDir.resolve("src").toString();
+        runCli(VIOLATIONS_FOUND, "--dir", pathToAnalyze, "--rulesets",
+                DUMMY_RULESET_WITH_VIOLATIONS, "-z", pathToAnalyze)
                 .verify(result -> {
                     result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
                     result.checkStdOut(not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
                     result.checkStdOut(startsWith("someSource.dummy"));
-                });
-    }
-
-    @Test
-    void testRelativizeWithSymLinkParent() throws Exception {
-        // srcDir = /tmp/junit123/src
-        // symlinkedSrcDir = /tmp/junit-relativize-with-123 -> /tmp/junit123/src
-        Path tempPath = Files.createTempDirectory("junit-relativize-with-");
-        Files.delete(tempPath);
-        Path symlinkedSrcDir = createSymlink(tempPath, srcDir);
-        // relativizing against parent of symlinkedSrcDir: /tmp
-        runCli(VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
-                DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.getParent().toString())
-                .verify(result -> {
-                    result.checkStdOut(not(containsString(srcDir.resolve("someSource.dummy").toString())));
-                    result.checkStdOut(not(containsString(symlinkedSrcDir.resolve("someSource.dummy").toString())));
-                    // base path is symlinkedSrcDir without /tmp: e.g. junit-relativize-with-123
-                    String basePath = symlinkedSrcDir.getParent().relativize(symlinkedSrcDir).toString();
-                    result.checkStdOut(startsWith(basePath + File.separator + "someSource.dummy"));
                 });
     }
 

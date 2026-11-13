@@ -2388,8 +2388,8 @@ See the property `annotations`.
                 <value>
 <![CDATA[
 let $topLevelClass := /*/ClassDeclaration return
-let $isLombokUtility := exists($topLevelClass[pmd-java:hasAnnotation('lombok.experimental.UtilityClass')]) return
 $topLevelClass[
+        let $isLombokUtility := pmd-java:hasAnnotation('lombok.experimental.UtilityClass') return
         (: non-instantiable :)
         $isLombokUtility or
         (
@@ -2408,6 +2408,7 @@ $topLevelClass[
         )
     ]
     [
+        let $isLombokUtility := pmd-java:hasAnnotation('lombok.experimental.UtilityClass') return
         (: With no visible static methods … :)
         not(ClassBody/MethodDeclaration[($isLombokUtility or pmd-java:modifiers() = "static") and @Visibility != "private"]) and
         (: … nor fields … :)

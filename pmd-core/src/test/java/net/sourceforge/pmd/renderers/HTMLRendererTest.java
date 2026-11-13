@@ -148,6 +148,45 @@ class HTMLRendererTest extends AbstractRendererTest {
     }
 
     @Test
+    void testLinkPrefixInvalid() throws IOException {
+        final HTMLRenderer renderer = new HTMLRenderer();
+        final String linkPrefix = "javascript:alert('hi');\" x=\"";
+        final String linePrefix = "L";
+        renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(linePrefix));
+        renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
+
+        String actual = renderReport(renderer, reportOneViolation());
+        assertEquals(filter(getExpected()), filter(actual));
+    }
+
+    @Test
+    void testLinkPrefixAbsolutePath() throws IOException {
+        final HTMLRenderer renderer = new HTMLRenderer();
+        final String linkPrefix = "/data/project/";
+        final String linePrefix = "L=\";";
+        renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(linePrefix));
+        renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
+
+        String actual = renderReport(renderer, reportOneViolation());
+        assertEquals(filter(getExpected("/data/project/", "L%3D%22%3B1")), filter(actual));
+    }
+
+    @Test
+    void testLinkPrefixRelativePath() throws IOException {
+        final HTMLRenderer renderer = new HTMLRenderer();
+        final String linkPrefix = "../data/project/";
+        final String linePrefix = "L";
+        renderer.setProperty(HTMLRenderer.LINK_PREFIX, linkPrefix);
+        renderer.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of(linePrefix));
+        renderer.setProperty(HTMLRenderer.HTML_EXTENSION, false);
+
+        String actual = renderReport(renderer, reportOneViolation());
+        assertEquals(filter(getExpected("../data/project/", "L1")), filter(actual));
+    }
+
+    @Test
     void testLinePrefixNotSet() throws IOException {
         final HTMLRenderer renderer = new HTMLRenderer();
         final String linkPrefix = "https://github.com/pmd/pmd/blob/main/";
@@ -169,5 +208,16 @@ class HTMLRendererTest extends AbstractRendererTest {
 
         String actual = renderReport(renderer, reportOneViolation());
         assertEquals(filter(getExpected(linkPrefix, "1")), filter(actual));
+    }
+
+    @Test
+    void externalInfoUrlReport() throws IOException {
+        String actualReport = renderExternalInfoUrlReport();
+        String expected = readFile("html/externalInfoUrlReport.html");
+        assertEquals(normalized(expected), normalized(actualReport));
+    }
+
+    private static String normalized(String in) {
+        return in.replaceAll("\\R", "\n");
     }
 }

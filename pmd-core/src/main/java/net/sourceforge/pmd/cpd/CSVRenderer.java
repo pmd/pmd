@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static net.sourceforge.pmd.util.internal.CsvEscapeUtil.quoteAndEscapeCsvColumn;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
 
@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * Example without {@code lineCountPerFile}:
  * <pre>{@code
  * lines,tokens,occurrences
- * 10,75,2,48,/var/file1,73,/var/file2
+ * 10,75,2,48,"/var/file1",73,"/var/file2"
  * }</pre>
  * This describes one match with the following characteristics:
  * <ul>
@@ -45,7 +45,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * Example with {@code lineCountPerFile}:
  * <pre>{@code
  * tokens,occurrences
- * 75,2,48,10,/var/file1,73,12,/var/file2
+ * 75,2,48,10,"/var/file1",73,12,"/var/file2"
  * }</pre>
  * This describes one match with the following characteristics:
  * <ul>
@@ -101,7 +101,7 @@ public class CSVRenderer implements CPDReportRenderer {
                 if (lineCountPerFile) {
                     writer.append(String.valueOf(loc.getLineCount())).append(separator);
                 }
-                writer.append(StringEscapeUtils.escapeCsv(report.getDisplayName(loc.getFileId())));
+                writer.append(quoteAndEscapeCsvColumn(report.getDisplayName(loc.getFileId())));
                 if (marks.hasNext()) {
                     writer.append(separator);
                 }

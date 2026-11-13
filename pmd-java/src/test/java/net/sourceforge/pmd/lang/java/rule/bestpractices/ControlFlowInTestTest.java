@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class ReplaceVectorWithListTest extends PmdRuleTst {
-    // no additional unit tests
+/**
+ * Tests for {@link ControlFlowInTestRule}.
+ */
+class ControlFlowInTestTest extends PmdRuleTst {
+    // Test cases are loaded from XML.
 }
