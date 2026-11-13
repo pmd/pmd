@@ -2391,8 +2391,12 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
+    (: Skip when a type argument is not an unbounded wildcard. The short form
+       would be a generic array creation error. List<?>[] is still reported.
+       (ArrayType|.) covers both standard and C-style array dimensions. :)
+    [not(parent::*/(ArrayType|.)/ClassType/TypeArguments[ClassType or WildcardType/ClassType])]
     [VariableId[@TypeInferred = false() and @ArrayType = true()]]
-    [ArrayAllocation/ArrayInitializer]
+    /ArrayAllocation[ArrayInitializer]
                 ]]></value>
             </property>
         </properties>
@@ -2432,7 +2436,7 @@ Foo[] x = { ... }; //Equivalent to above line
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
+   some $num in tokenize(@LiteralText, "[dDfFlLeE+\-]")
    satisfies not(
                   ( contains($num, ".")
                     and string-length(substring-before($num, ".")) <= $acceptableDecimalLength

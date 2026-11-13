@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 public final class XmlParserImpl {
     // never throws on unresolved resource
@@ -38,16 +39,17 @@ public final class XmlParserImpl {
     private Document parseDocument(String xmlData) throws ParseException {
         nodeCache.clear();
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory dbf = XmlUtil.newDocumentBuilderFactory();
             dbf.setNamespaceAware(true);
             dbf.setValidating(false);
             dbf.setIgnoringComments(false);
             dbf.setIgnoringElementContentWhitespace(false);
-            dbf.setExpandEntityReferences(true);
             dbf.setCoalescing(false);
-            dbf.setXIncludeAware(false);
-            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            // allow DOCTYPE but do not resolve external entities. See #SILENT_ENTITY_RESOLVER
+            // XmlUtil already disabled external entities, so SYSTEM entities won't be read.
+            // otherwise, we get an exception and can't parse XML files with a doctype declaration
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
+            dbf.setExpandEntityReferences(true);
             DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
             documentBuilder.setEntityResolver(SILENT_ENTITY_RESOLVER);
             return documentBuilder.parse(new InputSource(new StringReader(xmlData)));

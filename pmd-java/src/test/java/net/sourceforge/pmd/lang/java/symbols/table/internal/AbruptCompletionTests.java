@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -53,17 +54,13 @@ class AbruptCompletionTests extends BaseParserTest {
 
     private Executable canCompleteNormally(String stmt) {
         return canCompleteNormally(stmt, actual -> {
-            if (!actual) {
-                fail("Code CAN complete normally: `" + stmt + "`");
-            }
+            assertTrue(actual, "Code CAN complete normally: `" + stmt + "`");
         });
     }
 
     private Executable mustCompleteAbruptly(String stmt) {
         return canCompleteNormally(stmt, actual -> {
-            if (actual) {
-                fail("Code MUST complete abruptly: `" + stmt + "`");
-            }
+            assertFalse(actual, "Code MUST complete abruptly: `" + stmt + "`");
         });
     }
 
@@ -133,6 +130,7 @@ class AbruptCompletionTests extends BaseParserTest {
             canCompleteNormally("do { } while(foo);"),
             canCompleteNormally("do { continue; } while(foo);"),
             canCompleteNormally("do { break; } while(foo);"),
+            canCompleteNormally("outer: do { while(true) { continue outer; } } while(foo);"),
 
             canCompleteNormally("do { break; } while(true);"),
 
@@ -141,6 +139,15 @@ class AbruptCompletionTests extends BaseParserTest {
             mustCompleteAbruptly("do { continue; } while(true);"),
 
             mustCompleteAbruptly("do { return; } while(foo);")
+        );
+    }
+
+    @Test
+    void testConstantExpressionLoopDefaultPolicy() {
+        assertAll(
+            canCompleteNormally("while(1 < 2) { }"),
+            canCompleteNormally("for(;1 < 2;) { }"),
+            canCompleteNormally("do { } while(1 < 2);")
         );
     }
 
@@ -174,7 +181,12 @@ class AbruptCompletionTests extends BaseParserTest {
             canCompleteNormally("switch(foo) {}"),
             canCompleteNormally("switch(foo) { case 1: break; }"),
             canCompleteNormally("switch(foo) { case 1: break; case 2: foo(); }"),
-            canCompleteNormally("switch(foo) { case 1: return; case 2: foo(); }")
+            canCompleteNormally("switch(foo) { case 1: return; case 2: foo(); }"),
+            mustCompleteAbruptly("switch(foo) { default: case 1: return; }"),
+            mustCompleteAbruptly("switch(foo) { case 1: foo(); default: return; }"),
+            canCompleteNormally("switch(foo) { case 1: return; default: }"),
+            canCompleteNormally("switch(foo) { case 1: break; default: return; }"),
+            mustCompleteAbruptly("switch(foo) { case 1: switch(bar) { default: break; } default: return; }")
         );
     }
 

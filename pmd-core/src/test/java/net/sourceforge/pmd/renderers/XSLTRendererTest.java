@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
@@ -64,6 +67,13 @@ class XSLTRendererTest extends AbstractRendererTest {
         RuleViolation rv = newRuleViolation(new FooRule(), loc, "violation message");
         String result = renderReport(renderer, it -> it.onRuleViolation(rv));
         assertTrue(result.contains("violation message"));
+    }
+
+    @Test
+    void externalInfoUrlReport() throws IOException {
+        String actualReport = renderExternalInfoUrlReport();
+        String expected = readFile("externalInfoUrlReport.html");
+        assertEquals(filter(expected), filter(actualReport));
     }
 
     protected String readFile(String relativePath) {

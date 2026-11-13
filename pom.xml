@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.29.0-SNAPSHOT</version>
+    <version>7.30.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -73,7 +73,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2026-09-25T07:52:15Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-10-30T08:20:47Z</project.build.outputTimestamp>
 
         <maven.compiler.release>8</maven.compiler.release>
 
@@ -85,8 +85,8 @@
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>3.6.0</surefire.version>
-        <checkstyle.version>14.3.0</checkstyle.version>
+        <surefire.version>3.6.1</surefire.version>
+        <checkstyle.version>14.4.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.18</ant.version>
@@ -94,7 +94,7 @@
         <antlr.version>4.13.2</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.10</saxon.version>
-        <byte.buddy.version>1.18.14</byte.buddy.version>
+        <byte.buddy.version>1.18.17</byte.buddy.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -204,7 +204,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.7.0</version>
                     <executions>
                         <execution>
                             <id>add-kotlin-source-dir</id>
@@ -272,6 +272,9 @@
                         <failOnWarning>true</failOnWarning>
                         <compilerArgs>
                             <arg>-Xlint:-options</arg> <!-- allow &dash;&dash;release 8 flag -->
+                            <!-- Enable the warning: "deprecated item is not annotated with @Deprecated".
+                                 This is enabled by default when compiling for java9+ -->
+                            <arg>-Xlint:dep-ann</arg>
                         </compilerArgs>
                     </configuration>
                     <executions>
@@ -526,7 +529,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.6.3</version>
+                    <version>3.7.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -607,27 +610,27 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-xml</artifactId>
-                            <version>7.28.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -645,17 +648,17 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.22.0</version>
+                    <version>2.24.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.11.0</version>
+                    <version>0.12.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.15</version>
+                    <version>0.8.16</version>
                 </plugin>
                 <plugin>
                     <groupId>org.cyclonedx</groupId>
@@ -695,7 +698,7 @@
                 <plugin>
                     <groupId>com.github.siom79.japicmp</groupId>
                     <artifactId>japicmp-maven-plugin</artifactId>
-                    <version>0.26.5</version>
+                    <version>0.27.0</version>
                     <configuration>
                         <parameter>
                             <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
@@ -923,7 +926,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.11</version>
+                <version>9.11.1</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -993,7 +996,7 @@
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
-                <version>2.14.0</version>
+                <version>2.15.0</version>
             </dependency>
             <dependency>
                 <groupId>org.yaml</groupId>
@@ -1003,7 +1006,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.7.2-jre</version>
+                <version>33.8.0-jre</version>
             </dependency>
 
             <!-- scala-reflect and scala-library needed by pmd-apex via apex-link -->
