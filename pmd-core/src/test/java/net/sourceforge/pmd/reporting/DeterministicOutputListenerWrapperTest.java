@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -180,7 +181,7 @@ class DeterministicOutputListenerWrapperTest {
 
         MyRendererSpy() {
             super("rendererspy", "description");
-            setWriter(new PrintWriter(System.out));
+            setWriter(new StringWriter());
         }
 
         @Override
