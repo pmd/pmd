@@ -48,7 +48,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.dummy.MockRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 class PmdCliTest extends BaseCliTest {

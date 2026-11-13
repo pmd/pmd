@@ -4,6 +4,6 @@
 
     <description>Referenced by main.xml with a plain file name.</description>
 
-    <!-- note: this ruleset is in pmd-core/src/test/resources -->
+    <!-- note: this ruleset is in pmd-lang-dummy/src/main/resources -->
     <rule ref="rulesets/dummy/basic.xml/SampleXPathRule" />
 </ruleset>
