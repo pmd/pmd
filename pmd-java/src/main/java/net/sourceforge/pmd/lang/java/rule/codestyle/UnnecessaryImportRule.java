@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
@@ -288,12 +287,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAmbiguousName node, Object data) {
-        // ambiguous name means the symbol table could not resolve the first name
-
-        // An ambiguous name in an expression may be a type brought in by an on-demand import.
-        boolean onlyStatic = !(node.getParent() instanceof ASTClassType)
-            && !(node.getParent() instanceof ASTExpression);
-        recordFailedTypeResWithName(node, node.getFirstToken().getImage(), onlyStatic);
+        // Incomplete auxclasspath: an ambiguous name means the symbol table could not resolve the first name.
+        // It may be a type (from a type import or a static member type import) or a static field,
+        // so it may come from any import, static or not.
+        recordFailedTypeResWithName(node, node.getFirstToken().getImage(), false);
         return null;
     }
 
@@ -306,9 +303,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (!foundNamedImport) {
             LOG.debug("+ Since no such named import can be found, all {}on-demand-imports will be marked as used", target);
 
-            if (onlyStatics) {
-                staticImportsOnDemand.clear();
-            } else {
+            staticImportsOnDemand.clear();
+            if (!onlyStatics) {
                 typeImportsOnDemand.clear();
             }
         }
@@ -321,9 +317,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
+                // Incomplete auxclasspath: overload resolution failed. todo we're erring towards FPs
                 // don't try further, but still visit all ASTClassType nodes in the AST.
                 recordFailedTypeResWithName(node, node.getMethodName(), true);
-                return super.visit(node, ctx); // todo we're erring towards FPs
+                return super.visit(node, ctx);
             }
 
             ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =
@@ -357,6 +354,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             checkScopeChain(false, (JFieldSymbol) sym, scopeIter, ts -> true, true);
         }
         if (sym == null) {
+            // Incomplete auxclasspath: the unresolved variable may come from a static import
             recordFailedTypeResWithName(node, node.getName(), true);
         }
         return null;
@@ -442,7 +440,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             // maybe we're importing a subclass of the container.
             TypeSystem ts = symbolOwner.getTypeSystem();
             JClassSymbol importedContainer = ts.getClassSymbol(it.node.getImportedName());
-            return importedContainer == null // insufficient classpath, err towards FNs
+            // Incomplete auxclasspath: if the imported container is unresolved, err towards FNs
+            return importedContainer == null
                 || TypeTestUtil.isA(ts.rawType(symbolOwner), ts.rawType(importedContainer));
         }
     }
