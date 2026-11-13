@@ -237,7 +237,7 @@ final class ExprCheckHelper {
 
         if (asClass == null && TypeOps.isUnresolved(targetType)
             || asClass != null && TypeOps.isUnresolved(asClass)) {
-            // The type is unresolved, meaning classpath is incomplete.
+            // Incomplete auxclasspath: the type is unresolved.
             // We will treat the lambda/mref as if it is compatible with this
             // unresolved type. This is usually the right thing to do but
             // the types of lambda parameters may be unresolved.
