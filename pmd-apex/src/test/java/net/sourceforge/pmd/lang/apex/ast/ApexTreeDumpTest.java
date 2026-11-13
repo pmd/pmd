@@ -135,6 +135,14 @@ class ApexTreeDumpTest extends BaseTreeDumpTest {
         doTest("CalendarYearSoql");
     }
 
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/7182">[apex] Expose the referenced type name on ClassRefExpression for XPath rules</a>
+     */
+    @Test
+    void classRefExpressionTypeInfo() {
+        doTest("ClassRefExpressionTypeInfo");
+    }
+
     @Test
     void multilineStringLiterals() {
         doTest("MultilineStringLiterals");

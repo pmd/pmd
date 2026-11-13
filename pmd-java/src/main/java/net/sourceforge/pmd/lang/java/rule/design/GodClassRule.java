@@ -12,6 +12,7 @@ import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_C
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
 
 
@@ -49,8 +50,9 @@ public class GodClassRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!MetricsUtil.supportsAll(node, WEIGHED_METHOD_COUNT, TIGHT_CLASS_COHESION, ACCESS_TO_FOREIGN_DATA)) {
-            return data;
+            return null;
         }
 
         int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
@@ -59,11 +61,11 @@ public class GodClassRule extends AbstractJavaRulechainRule {
 
         if (wmc >= WMC_VERY_HIGH && atfd > FEW_ATFD_THRESHOLD && tcc < TCC_THRESHOLD) {
 
-            asCtx(data).addViolation(node, wmc,
-                                     StringUtil.percentageString(tcc, 3),
-                                     atfd);
+            ctx.addViolation(node, wmc,
+                             StringUtil.percentageString(tcc, 3),
+                             atfd);
         }
-        return data;
+        return null;
     }
 
 }

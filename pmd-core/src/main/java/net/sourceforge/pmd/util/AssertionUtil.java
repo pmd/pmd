@@ -15,9 +15,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class AssertionUtil {
 
-    private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|");
-    private static final Pattern BINARY_NAME_PATTERN = Pattern.compile("[\\w$]+(?:\\.[\\w$]+)*(?:\\[])*");
-    private static final Pattern BINARY_NAME_NO_ARRAY = Pattern.compile("[\\w$]++(?:\\.[\\w$]++)*");
+    private static final Pattern PACKAGE_PATTERN = Pattern.compile("[\\w$]+(\\.[\\w$]+)*|",
+            Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern BINARY_NAME_PATTERN = Pattern.compile("[\\w$]+(?:\\.[\\w$]+)*(?:\\[])*",
+            Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern BINARY_NAME_NO_ARRAY = Pattern.compile("[\\w$]++(?:\\.[\\w$]++)*",
+            Pattern.UNICODE_CHARACTER_CLASS);
 
     private static final boolean ASSERT_ENABLED;
 

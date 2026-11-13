@@ -26,63 +26,103 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
-*   The new Java rule {% rule java/codestyle/LocalVariableDeclarationShouldBeAtStartOfBlock %} enforces a code style
-    where all local variables are declared together at the start of their block, without initialization.
-    Optionally, the declarations can be required to be sorted by name or by type and name
-    (see properties `sortBy` and `caseSensitiveSorting`).
+*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
+    reports control flow in test methods that can obscure which assertions
+    are executed. It checks conditionals, switch statements and expressions,
+    explicit throw statements, try statements with catch clauses,
+    and plain try-finally statements.
+    Loops are allowed by default and can be reported by setting
+    `allowLoops` to `false`.
 
-#### Changed Rules
-*   The Java rule {% rule java/design/FinalFieldCouldBeStatic %} no longer reports casts or conditional expressions
-    whose constant classification previously depended on a boxed static final field. Direct static field references
-    are still reported.
-*   The Java rule {% rule java/errorprone/UnconditionalIfStatement %} now excludes final local boolean constants,
-    consistently with its existing exclusion of named compile-time constants used for conditional compilation.
-*   The Java rule {% rule java/errorprone/UnusedNullCheckInEquals %} now recognizes final local String constants
-    and unqualified instance String constants as non-null receivers, avoiding unnecessary reports.
-*   The Java rule {% rule java/bestpractices/AvoidReassigningLoopVariables %}, with `forReassign=skip`, now accepts
-    a final local constant equal to one as the increment of a conditional skip.
-*   The Java rule {% rule java/bestpractices/UnusedAssignment %} now recognizes final local boolean constants
-    when analyzing short-circuit conditions, avoiding false positives caused by assignments that cannot execute.
-*   The Java rule {% rule java/bestpractices/LiteralsFirstInComparisons %} now recognizes final local String constants
-    and unqualified references to non-static final String constants. This may add violations when such a constant
-    is the argument of a comparison, or remove them when it is already the receiver.
-*   The Java rule {% rule java/codestyle/UseExplicitTypes %} has a new property `allowLongTypeNames`. It allows
-    to use `var` when the explicit type name would be longer than a given minimum length configured with 
-    this property.
+#### Deprecated Rules
+*   The Java rule {% rule java/performance/AddEmptyString %} is deprecated without replacement
+    and will be removed with PMD 8.0.0. Its performance claim is not valid on modern JDKs:
+    constant string concatenations are evaluated at compile time, and replacing concatenation
+    with `toString()` or `String.valueOf()` does not generally improve performance.
+    The rule is excluded when referencing the whole Performance category, but explicit rule
+    references continue to work during the deprecation period.
 
 ### 🐛️ Fixed Issues
+* apex
+    * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-design
+    * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
     * [#6261](https://github.com/pmd/pmd/issues/6261): \[apex] AvoidBooleanMethodParameters: False positive on getter and setter
 * core
-    * [#6912](https://github.com/pmd/pmd/issues/6912): \[core] Include XML validation details in ruleset loading errors
-    * [#7156](https://github.com/pmd/pmd/issues/7156): \[core] Analysis cache fails with ZipException on invalid archive on the auxclasspath
-* groovy
-    * [#7110](https://github.com/pmd/pmd/issues/7110): \[groovy] Fix #7100: CPD fails on GStrings ending in an interpolated variable
-* html
-    * [#5313](https://github.com/pmd/pmd/issues/5313): \[html] CPD gets end line wrong for HTML
-    * [#7166](https://github.com/pmd/pmd/issues/7166): \[html] endcolumn of nodes is off-by-one
+    * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
 * java
-    * [#7060](https://github.com/pmd/pmd/issues/7060): \[java] getConstValue() returns null for constant expressions referencing final local variables
-    * [#7133](https://github.com/pmd/pmd/issues/7133): \[java] CPD: Constructor detection state leaks between files with --ignore-identifiers
-    * [#7145](https://github.com/pmd/pmd/issues/7145): \[java] Lambda with a parenthesized expression body is treated as void-compatible
+    * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
+    * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
 * java-bestpractices
-    * [#5159](https://github.com/pmd/pmd/issues/5159): \[java] UnusedAssignment false positive when using assert
-    * [#6984](https://github.com/pmd/pmd/issues/6984): \[java] ExhaustiveSwitchHasDefault: Improve violation message to list missing cases
-    * [#7063](https://github.com/pmd/pmd/issues/7063): \[java] ResultSet.next() ? x : y fires CheckResultSet
+    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
+    * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
 * java-codestyle
-    * [#6882](https://github.com/pmd/pmd/issues/6882): \[java] New Rule: Enforce local variable declarations to be at the start of a block
-    * [#6903](https://github.com/pmd/pmd/issues/6903): \[java] Enhance UseExplicitTypes to allow verbose long explicit types
+    * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
+    * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
 * java-design
-    * [#4815](https://github.com/pmd/pmd/issues/4815): \[java] ExceptionAsFlowControl false-positive on Lambda/asynchronous (7.0.0-rc4)
-    * [#7117](https://github.com/pmd/pmd/issues/7117): \[java] ExceptionAsFlowControl: false negative when the lambda is invoked by the method it is passed to
+    * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
+    * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: False positive when static field is used in constructor
+* java-errorprone
+    * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
+    * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
+* java-performance
+    * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
+* kotlin
+    * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
+    * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
+* misc
+    * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate ANTLR generated lexer implementation classes
 
-### 🚨️ API Changes
+### 🚨️ API Changes and Deprecations
+#### Experimental API
+* kotlin
+    * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
+      {% jdoc kotlin::lang.kotlin.ast.HasTypeName %}, so `VariableDeclaration` nodes have a `@TypeName` attribute.
+      This covers property and for-loop variables, lambda parameters, and each component of a
+      destructuring declaration (`val (a, b) = ...`, `for ((a, b) in ...)`, `{ (a, b) -> ... }`).
+      The XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly` and `pmd-kotlin:isNullable`
+      support `VariableDeclaration` nodes as well.
+    * A destructuring `PropertyDeclaration` (e.g. `val (a, b) = Pair(1, "x")`) no longer has a `@TypeName`.
+      Before, it wrongly got the type of the first component. To find destructured variables
+      by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
-*   Java constant folding now recognizes final primitive and String variables initialized with constant expressions,
-    including local variables and unqualified instance fields. Numeric references are converted to their declared type.
-    Boxed fields and field accesses qualified by expressions (such as `this.CONSTANT`) are not compile-time constants.
-    These changes affect `ASTExpression.getConstValue()`, `isCompileTimeConstant()`, and the XPath attribute
-    `@CompileTimeConstant`; custom Java and XPath rules relying on them may report different results.
+#### Deprecations
+* coco
+    * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* css
+    * {% jdoc css::lang.css.ast.CssLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* csharp
+    * {% jdoc cs::lang.cs.ast.CSharpLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* dart
+    * {% jdoc dart::lang.dart.ast.DartLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* gherkin
+    * {% jdoc gherkin::lang.gherkin.ast.GherkinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* go
+    * {% jdoc go::lang.go.ast.GolangLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* javascript
+    * {% jdoc javascript::lang.typescript.ast.TypeScriptLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* julia
+    * {% jdoc julia::lang.julia.ast.JuliaLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* kotlin
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc kotlin::lang.kotlin.ast.KotlinListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* lua
+    * {% jdoc lua::lang.lua.ast.LuaLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* rust
+    * {% jdoc rust::lang.rust.ast.RustLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* swift
+    * {% jdoc swift::lang.swift.ast.SwiftBaseListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+    * {% jdoc swift::lang.swift.ast.SwiftListener %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* tsql
+    * {% jdoc tsql::lang.tsql.ast.TSqlLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* xml
+    * {% jdoc xml::lang.xml.ast.XMLLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* The generated `KotlinParser` and `SwiftParser` classes and their nested AST node classes are
+  intentionally not deprecated yet. These classes still contain the public AST node types,
+  which have no replacement API yet. They will be deprecated once we have decided how to handle
+  the inner classes.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

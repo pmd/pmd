@@ -10,6 +10,7 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * A continue statement, that jumps to the next iteration of an enclosing loop.
@@ -25,6 +26,8 @@ public final class ASTContinueStatement extends AbstractStatement {
     private static final Function<Object, ASTLoopStatement> CONTINUE_TARGET_MAPPER =
         NodeStream.asInstanceOf(ASTLoopStatement.class);
 
+    private String label;
+
     ASTContinueStatement(int id) {
         super(id);
     }
@@ -37,10 +40,24 @@ public final class ASTContinueStatement extends AbstractStatement {
 
 
     /**
+     * @deprecated Since 7.29.0. Use {@link #getLabel()} instead.
+     */
+    @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Label")
+    public String getImage() {
+        return getLabel();
+    }
+
+    void setLabel(String label) {
+        this.label = label;
+    }
+
+    /**
      * Returns the label, or null if there is none.
      */
     public @Nullable String getLabel() {
-        return getImage();
+        return label;
     }
 
     /**
