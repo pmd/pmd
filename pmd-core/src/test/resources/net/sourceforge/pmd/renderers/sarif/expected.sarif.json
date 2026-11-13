@@ -47,7 +47,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "file://notAvailable.ext"
+                  "uri": "notAvailable.ext"
                 },
                 "region": {
                   "startLine": 1,
