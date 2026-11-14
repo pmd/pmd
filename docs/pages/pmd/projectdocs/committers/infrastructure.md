@@ -2,23 +2,24 @@
 title: Infrastructure
 permalink: pmd_projectdocs_committers_infrastructure.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: February 2025 (7.11.0)
+last_updated: November 2026 (7.30.0)
 ---
 
-This page describes, which infrastructure and services is used by the pmd project.
+This page describes which infrastructure and services are used by the pmd project.
 
 ## GitHub
 
 The main repository is hosted on <https://github.com/pmd>. We own the organization "pmd".
 
 *   source code in git repositories
-*   releases
+*   releases (<https://github.com/pmd/pmd/releases>, or via feed: <https://github.com/pmd/pmd/releases.atom>)
 *   issue tracker
 *   discussions
 *   pull requests
+*   commit notification via feeds, e.g. <https://github.com/pmd/pmd/commits/main.atom>
 *   [GitHub Actions for CI](pmd_devdocs_github_actions_workflows.html)
 
-Also the [main landing page](pmd_projectdocs_committers_main_landing_page.html) (<https://pmd.github.io>)
+The [main landing page](pmd_projectdocs_committers_main_landing_page.html) (<https://pmd.github.io>)
 is hosted using GitHub pages.
 
 ## SourceForge
@@ -29,12 +30,9 @@ Nowadays, it is used for:
 
 *   hosting an archive of binaries: <https://sourceforge.net/projects/pmd/files/>
 *   hosting an archive of documentation: <https://pmd.sourceforge.io/archive.html>
-*   mailing lists:
-    *   <pmd-commits@lists.sourceforge.net>
-    *   <pmd-devel@lists.sourceforge.net>
-*   discussion forum
+*   mailing list: <pmd-devel@lists.sourceforge.net>
 
-It also contains the old issue tracker.
+It also contains the old issue tracker and the old discussion forum.
 
 ## Domain, mail and homepage
 
