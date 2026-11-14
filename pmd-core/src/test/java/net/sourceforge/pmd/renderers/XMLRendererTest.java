@@ -50,41 +50,41 @@ class XMLRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpected() {
-        return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + EOL
+        return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">"
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" externalInfoUrl=\"https://example.org/rules/foo\" priority=\"5\">"
-                + EOL + "blah" + EOL + "</violation>" + EOL + "</file>" + EOL + "</pmd>" + EOL;
+                + "blah" + "</violation>" + "</file>" + "</pmd>";
     }
 
     @Override
     String getExpectedEmpty() {
-        return getHeader() + "</pmd>" + EOL;
+        return getHeader() + "</pmd>";
     }
 
     @Override
     String getExpectedMultiple() {
-        return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + EOL
+        return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">"
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" externalInfoUrl=\"https://example.org/rules/foo\" priority=\"5\">"
-                + EOL + "blah" + EOL + "</violation>" + EOL
+                + "blah" + "</violation>"
                 + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Boo\" ruleset=\"RuleSet\" externalInfoUrl=\"https://example.org/rules/boo\" priority=\"1\">"
-                + EOL + "blah" + EOL + "</violation>" + EOL + "</file>" + EOL + "</pmd>" + EOL;
+                + "blah" + "</violation>" + "</file>" + "</pmd>";
     }
 
     @Override
     String getExpectedError(ProcessingError error) {
         return getHeader() + "<error filename=\"file\" msg=\"RuntimeException: Error\">"
-                + EOL + "<![CDATA[" + error.getDetail() + "]]>" + EOL + "</error>" + EOL + "</pmd>" + EOL;
+                + "<![CDATA[" + error.getDetail() + "]]>" + "</error>" + "</pmd>";
     }
 
     @Override
     String getExpectedErrorWithoutMessage(ProcessingError error) {
         return getHeader() + "<error filename=\"file\" msg=\"NullPointerException: null\">"
-                + EOL + "<![CDATA[" + error.getDetail() + "]]>" + EOL + "</error>" + EOL + "</pmd>" + EOL;
+                + "<![CDATA[" + error.getDetail() + "]]>" + "</error>" + "</pmd>";
     }
 
     @Override
     String getExpectedError(ConfigurationError error) {
         return getHeader() + "<configerror rule=\"Foo\" msg=\"a configuration error\"/>"
-                + EOL + "</pmd>" + EOL;
+                + "</pmd>";
     }
 
     @Override
@@ -131,11 +131,11 @@ class XMLRendererTest extends AbstractRendererTest {
     }
 
     String getHeader() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOL
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                 + "<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\""
                 + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                 + " xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 https://pmd.github.io/schema/report_2_0_0.xsd\""
-                + " version=\"" + PMDVersion.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">" + EOL;
+                + " version=\"" + PMDVersion.VERSION + "\" timestamp=\"2014-10-06T19:30:51.262\">";
     }
 
     @Test
