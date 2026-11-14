@@ -8,10 +8,13 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
@@ -22,15 +25,28 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "summaryhtml";
 
+    private static final PropertyDescriptor<Optional<String>> LINE_PREFIX =
+        PropertyFactory.stringProperty("linePrefix")
+                       .desc("Prefix for line number anchor in the source file.")
+                       .toOptional("<none>")
+                       .defaultValue(Optional.empty())
+                       .build();
+
+    private static final PropertyDescriptor<String> LINK_PREFIX =
+        PropertyFactory.stringProperty("linkPrefix").desc("Path to HTML source.").defaultValue("").build();
+
+    private static final PropertyDescriptor<Boolean> HTML_EXTENSION =
+        PropertyFactory.booleanProperty("htmlExtension")
+                       .desc("Replace file extension with .html for the links.")
+                       .defaultValue(false)
+                       .build();
+
     public SummaryHTMLRenderer() {
         super(NAME, "Summary HTML format.");
 
-        // Note: we define the same properties as HTML Renderer
-        // we have to copy the values later from this renderer to the HTML
-        // Renderer
-        definePropertyDescriptor(HTMLRenderer.LINK_PREFIX);
-        definePropertyDescriptor(HTMLRenderer.LINE_PREFIX);
-        definePropertyDescriptor(HTMLRenderer.HTML_EXTENSION);
+        definePropertyDescriptor(LINK_PREFIX);
+        definePropertyDescriptor(LINE_PREFIX);
+        definePropertyDescriptor(HTML_EXTENSION);
     }
 
     @Override
@@ -45,12 +61,21 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         writer.write("<center><h2>Detail</h2></center>");
         writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
 
-        HTMLRenderer htmlRenderer = new HTMLRenderer();
-        htmlRenderer.setProperty(HTMLRenderer.LINK_PREFIX, getProperty(HTMLRenderer.LINK_PREFIX));
-        htmlRenderer.setProperty(HTMLRenderer.LINE_PREFIX, getProperty(HTMLRenderer.LINE_PREFIX));
-        htmlRenderer.setProperty(HTMLRenderer.HTML_EXTENSION, getProperty(HTMLRenderer.HTML_EXTENSION));
-        htmlRenderer.setShowSuppressedViolations(showSuppressedViolations);
-        htmlRenderer.renderBody(writer, report);
+        HTMLBodyWriter body = new HTMLBodyWriter(
+                writer,
+                getProperty(LINK_PREFIX),
+                getProperty(LINE_PREFIX).orElse(null),
+                getProperty(HTML_EXTENSION),
+                this::determineFileName
+        );
+        body.renderHeader();
+        body.renderViolations(report.getViolations().iterator());
+        body.renderFooter(
+                report.getProcessingErrors(),
+                report.getConfigurationErrors(),
+                report.getSuppressedViolations(),
+                showSuppressedViolations
+        );
 
         writer.println("</tr></table></body></html>");
     }
