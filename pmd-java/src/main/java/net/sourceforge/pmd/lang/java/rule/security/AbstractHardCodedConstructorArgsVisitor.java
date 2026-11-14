@@ -75,16 +75,16 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             return;
         }
 
-        ASTVariableAccess varAccess = null;
+        ASTNamedReferenceExpr varAccess = null;
         if (firstArgumentExpression instanceof ASTMethodCall) {
             // check for method call on a named variable
             ASTExpression expr = ((ASTMethodCall) firstArgumentExpression).getQualifier();
-            if (expr instanceof ASTVariableAccess) {
-                varAccess = (ASTVariableAccess) expr;
+            if (isNamedVariable(expr)) {
+                varAccess = (ASTNamedReferenceExpr) expr;
             }
-        } else if (firstArgumentExpression instanceof ASTVariableAccess) {
+        } else if (isNamedVariable(firstArgumentExpression)) {
             // check for named variable
-            varAccess = (ASTVariableAccess) firstArgumentExpression;
+            varAccess = (ASTNamedReferenceExpr) firstArgumentExpression;
         }
 
         if (varAccess != null && varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
@@ -133,6 +133,13 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         }
     }
 
+    /**
+     * Whether the expression is a named variable, or a field of this object accessed as {@code this.field}.
+     */
+    private static boolean isNamedVariable(ASTExpression expression) {
+        return expression instanceof ASTVariableAccess || JavaAstUtils.isSyntacticThisFieldAccess(expression);
+    }
+
     private Optional<Number> determineArrayLength(ASTArrayAllocation arrayAllocation) {
         ASTArrayTypeDim astArrayTypeDim = arrayAllocation.getTypeNode().getDimensions().get(0);
         if (astArrayTypeDim instanceof ASTArrayDimExpr) {
@@ -164,7 +171,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
      * @param varAccess
      * @return
      */
-    private boolean isArrayModifiedOrLeaked(ASTVariableId varDecl, ASTVariableAccess varAccess) {
+    private boolean isArrayModifiedOrLeaked(ASTVariableId varDecl, ASTNamedReferenceExpr varAccess) {
         boolean isArray = TypeTestUtil.isExactlyA(byte[].class, varDecl.getTypeMirror());
         if (!isArray) {
             return false;
@@ -188,7 +195,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
      * @param localUsages
      * @return
      */
-    private boolean arrayIsModifiedLocally(ASTVariableAccess varAccess, List<ASTNamedReferenceExpr> localUsages) {
+    private boolean arrayIsModifiedLocally(ASTNamedReferenceExpr varAccess, List<ASTNamedReferenceExpr> localUsages) {
         // if there are any writes to array elements which calculate values (e.g. return values of method calls)
         boolean anyWritesToArrayElements = localUsages.stream()
                 .filter(ref -> ref.getParent() instanceof ASTArrayAccess)
@@ -222,7 +229,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
      * @param varAccess
      * @param localUsages
      */
-    private boolean arrayIsLeaking(ASTVariableAccess varAccess, List<ASTNamedReferenceExpr> localUsages) {
+    private boolean arrayIsLeaking(ASTNamedReferenceExpr varAccess, List<ASTNamedReferenceExpr> localUsages) {
         // the variable is used in a method call - the method might change the array
         boolean leakIntoMethodCalls = localUsages.stream()
                 .anyMatch(ref -> ref.getParent() instanceof ASTArgumentList);
@@ -291,7 +298,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         return !arguments.isEmpty() && arguments.get(0).descendantsOrSelf().any(node -> node == literal);
     }
 
-    private void validateVarUsages(RuleContext ctx, ASTVariableAccess varAccess, ASTVariableId varDecl) {
+    private void validateVarUsages(RuleContext ctx, ASTNamedReferenceExpr varAccess, ASTVariableId varDecl) {
         List<ASTNamedReferenceExpr> localUsages = new ArrayList<>(varDecl.getLocalUsages());
         localUsages.sort(Node.COORDS_COMPARATOR);
         // remove accesses after the current usage (e.g. ctor call)
