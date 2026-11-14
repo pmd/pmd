@@ -688,4 +688,219 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: an append inside a forEach lambda is not reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Issue7271 {
+    private String log = "";
+
+    public void process(List<String> values) {
+        values.forEach(val -> {
+            log = log + val + ", ";
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: compound append inside forEach lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Issue7271Compound {
+    private String log = "";
+
+    public void process(List<String> values) {
+        values.forEach(val -> {
+            log += val + ", ";
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: append inside Map.forEach lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Map;
+
+public class Issue7271Map {
+    private String log = "";
+
+    public void process(Map<String, String> map) {
+        map.forEach((k, v) -> {
+            log = log + k + v;
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: append inside Stream.forEach lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Issue7271Stream {
+    private String log = "";
+
+    public void process(List<String> values) {
+        values.stream().forEach(val -> {
+            log = log + val;
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: append inside non-loop lambda should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Optional;
+
+public class Issue7271NonLoop {
+    private String log = "";
+
+    public void process(Optional<String> value) {
+        value.ifPresent(val -> {
+            log = log + val;
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: non-loop lambda inside loop should report outer loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+import java.util.Optional;
+
+public class Issue7271Nested {
+    private String log = "";
+
+    public void process(List<Optional<String>> list) {
+        for (Optional<String> opt : list) {
+            opt.ifPresent(val -> {
+                log = log + val;
+            });
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: expression lambda inside forEach</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Issue7271ExpressionLambda {
+    private String log = "";
+
+    public void process(List<String> values) {
+        values.forEach(val -> log += val);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: append inside Iterator.forEachRemaining lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Iterator;
+
+public class Issue7271Iterator {
+    private String log = "";
+
+    public void process(Iterator<String> it) {
+        it.forEachRemaining(val -> {
+            log += val;
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: append inside Stream.forEachOrdered lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Issue7271StreamForEachOrdered {
+    private String log = "";
+
+    public void process(List<String> values) {
+        values.stream().forEachOrdered(val -> {
+            log += val;
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: append inside IntStream.forEach lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import java.util.stream.IntStream;
+
+public class Issue7271IntStream {
+    private String log = "";
+
+    public void process(IntStream stream) {
+        stream.forEach(i -> {
+            log += i;
+        });
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7271 [java] UseStringBufferForStringAppends: append inside custom non-standard forEach should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Consumer;
+
+public class Issue7271CustomForEach {
+    private String log = "";
+
+    static class CustomHelper {
+        void forEach(Consumer<String> action) {
+            action.accept("test");
+        }
+    }
+
+    public void process(CustomHelper helper) {
+        helper.forEach(val -> {
+            log += val;
+        });
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
+
