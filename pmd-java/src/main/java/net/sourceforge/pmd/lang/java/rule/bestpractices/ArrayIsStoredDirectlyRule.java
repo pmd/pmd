@@ -122,22 +122,18 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
         if (call.getArguments().size() != 1 || call.getArguments().get(0) != arg) {
             return false;
         }
-        if ("singletonList".equals(call.getMethodName())
-                && TypeTestUtil.isA("java.util.Collections", call.getQualifier())) {
-            return true;
-        }
-        return "of".equals(call.getMethodName())
-                && TypeTestUtil.isA("java.util.List", call.getQualifier());
+        return ("singletonList".equals(call.getMethodName())
+                && TypeTestUtil.isA("java.util.Collections", call.getQualifier()))
+                || ("of".equals(call.getMethodName())
+                && TypeTestUtil.isA("java.util.List", call.getQualifier()));
     }
 
     private static boolean isElementRetrieval(ASTMethodCall call, ASTExpression receiver) {
         if (call.getQualifier() != receiver) {
             return false;
         }
-        if ("getFirst".equals(call.getMethodName()) && call.getArguments().size() == 0) {
-            return true;
-        }
-        return "get".equals(call.getMethodName()) && call.getArguments().size() == 1;
+        return ("getFirst".equals(call.getMethodName()) && call.getArguments().size() == 0)
+                || ("get".equals(call.getMethodName()) && call.getArguments().size() == 1);
     }
 
 }
