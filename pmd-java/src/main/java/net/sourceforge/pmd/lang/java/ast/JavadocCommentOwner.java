@@ -7,13 +7,13 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A node that may own a javadoc comment.
+ * A node that may own a Javadoc comment.
+ * Nodes referenced by a part of a comment (formal parameters, record components) are not considered owners.
  */
 public interface JavadocCommentOwner extends JavaNode {
-    // TODO can record components be documented individually?
 
     /**
-     * Returns the javadoc comment that applies to this declaration. If
+     * Returns the Javadoc comment that applies to this declaration. If
      * there is none, returns null.
      */
     default @Nullable JavadocComment getJavadocComment() {
