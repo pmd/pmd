@@ -471,4 +471,80 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7327 copy loop whose body has no braces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public void bar(int[] b) {
+        int[] a = new int[10];
+        for (int i=0;i<10;i++)
+            a[i] = b[i];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7327 copy loop whose body has no braces is ok when it is not a copy</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    public void bar() {
+        int[] a = new int[10];
+        for (int i=0;i<10;i++)
+            a[i] = i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7327 copy via while loop whose body has no braces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public void bar(int[] b) {
+        int i = 0;
+        int[] a = new int[10];
+        while (i < 10)
+            a[i] = b[i];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7327 copy via do-while loop whose body has no braces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public void bar() {
+        int i = 0;
+        do
+            a[i] = b[i];
+        while (i < 10);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7327 copy loop with a nested if whose body has no braces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    public void bar(int[] b, boolean cond) {
+        int[] a = new int[10];
+        for (int i=0;i<10;i++)
+            if (cond)
+                a[i] = b[i];
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
