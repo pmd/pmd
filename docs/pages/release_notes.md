@@ -55,6 +55,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-bestpractices
     * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
+    * [#7338](https://github.com/pmd/pmd/issues/7338): \[java] UnusedAssignment: false positive on conditionally overwritten field when method exits via return
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath

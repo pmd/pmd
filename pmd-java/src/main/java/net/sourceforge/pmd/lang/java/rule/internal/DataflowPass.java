@@ -961,6 +961,13 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTReturnStatement node, SpanInfo data) {
             super.visit(node, data);
+            if (!(JavaAstUtils.getReturnTarget(node) instanceof ASTLambdaExpression)) {
+                // Assignments to fields that reach a return may be observed
+                // after the method exits, just like those reaching the end
+                // of the body. Returns in lambdas do not leave the enclosing
+                // method, so they don't make field values escape.
+                useAllSelfFields(data, inStaticCtx, enclosingClassScope);
+            }
             return data.abruptCompletion(data.returnOrThrowTarget);
         }
 
