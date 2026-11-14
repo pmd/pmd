@@ -2,7 +2,7 @@
 title: Infrastructure
 permalink: pmd_projectdocs_committers_infrastructure.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: October 2026 (7.29.0)
+last_updated: November 2026 (7.30.0)
 ---
 
 This page describes which infrastructure and services are used by the pmd project.
@@ -12,7 +12,7 @@ This page describes which infrastructure and services are used by the pmd projec
 The main repository is hosted on <https://github.com/pmd>. We own the organization "pmd".
 
 *   source code in git repositories
-*   releases
+*   releases (<https://github.com/pmd/pmd/releases>, or via feed: <https://github.com/pmd/pmd/releases.atom>)
 *   issue tracker
 *   discussions
 *   pull requests
