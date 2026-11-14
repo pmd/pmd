@@ -51,6 +51,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
 * java
     * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
+    * [#7152](https://github.com/pmd/pmd/issues/7152): \[java] Type-name-qualified invocation filters out instance methods before overload resolution
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
     * [#7313](https://github.com/pmd/pmd/issues/7313): \[java] Casts to boolean and boolean equality are not folded as constant expressions
 * java-bestpractices
@@ -100,6 +101,9 @@ This is a {{ site.pmd.release_type }} release.
     * {% jdoc gherkin::lang.gherkin.ast.GherkinLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * go
     * {% jdoc go::lang.go.ast.GolangLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* java
+    * {% jdoc !!java::lang.java.types.TypeOps#getMethodsOf(java::lang.java.types.JTypeMirror,java.lang.String,boolean,java::lang.java.symbols.JClassSymbol) %}
+      has been deprecated. PMD does not use it anymore.
 * javascript
     * {% jdoc javascript::lang.typescript.ast.TypeScriptLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * julia
