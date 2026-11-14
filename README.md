@@ -4,7 +4,7 @@
 
 [![Join the chat](https://img.shields.io/gitter/room/pmd/pmd)](https://app.gitter.im/#/room/#pmd_pmd:gitter.im?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Snapshot](https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml/badge.svg?branch=main)](https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd)
+[![Maven Central](https://maven-badges.sml.io/sonatype-central/net.sourceforge.pmd/pmd/badge.svg)](https://maven-badges.sml.io/sonatype-central/net.sourceforge.pmd/pmd)
 [![Reproducible Builds](https://img.shields.io/badge/Reproducible_Builds-ok-green?labelColor=blue)](https://github.com/jvm-repo-rebuild/reproducible-central/tree/master/content/net/sourceforge/pmd#readme)
 [![Coverage Status](https://coveralls.io/repos/github/pmd/pmd/badge.svg?branch=main&v=1)](https://coveralls.io/github/pmd/pmd?branch=main)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea550046a02344ec850553476c4aa2ca)](https://app.codacy.com/organizations/gh/pmd/dashboard)
