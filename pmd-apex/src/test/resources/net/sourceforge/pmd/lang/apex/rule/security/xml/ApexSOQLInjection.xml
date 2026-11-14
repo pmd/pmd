@@ -4,6 +4,88 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
+    <test-code>
+        <description>#5734: Report a multiline query on the Database.query call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1(List<String> fields, String userToContactLookupField) {
+        Map<Id, User> allUsersById = new Map<Id, User>((List<User>) (Database.query('SELECT '
+                + fields.toLocalCSV() + ' FROM User WHERE Id IN :recipients OR '
+                + 'Email IN :recipients OR '
+                + userToContactLookupField + ' IN :recipients')));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5734: Report each unsafe variable on the multiline Database.countQuery call</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1(String objectName, String condition) {
+        Database.countQuery('SELECT COUNT() FROM '
+                + objectName + ' WHERE '
+                + condition);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5734: Report unsafe query variables on the call instead of the argument line</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1(String objectName) {
+        String query = 'SELECT Id FROM ' + objectName;
+        Database.query(
+                query);
+        Database.countQuery(
+                query);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5734: Single-line queries are still reported on the same line</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void test1(String objectName) {
+        Database.query('SELECT Id FROM ' + objectName);
+        Database.countQuery('SELECT COUNT() FROM ' + objectName);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5734: Sanitized multiline queries remain safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void test1(String name) {
+        Database.query('SELECT Id FROM Account WHERE Name = '
+                + String.escapeSingleQuotes(name));
+        Database.countQuery('SELECT COUNT() FROM Account WHERE Name = '
+                + String.escapeSingleQuotes(name));
+        String safeQuery = 'SELECT Id FROM Account WHERE Name = ' + String.escapeSingleQuotes(name);
+        Database.query(
+                safeQuery);
+        Database.countQuery(
+                safeQuery);
+    }
+}
+        ]]></code>
+    </test-code>
+
     <!-- Database.query() tests -->
     <test-code>
         <description>Potentially unsafe SOQL on concatenation of variables 1</description>

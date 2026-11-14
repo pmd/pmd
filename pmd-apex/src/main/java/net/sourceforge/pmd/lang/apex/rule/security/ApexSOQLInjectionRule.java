@@ -241,7 +241,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                         || Helper.isMethodName(parentCall, STRING, JOIN);
 
                 if (!isSafeMethod) {
-                    asCtx(data).addViolation(v);
+                    asCtx(data).addViolation(m);
                 }
             }
         }
@@ -254,7 +254,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
             if (selectContainingVariables.containsKey(nameFQ)) {
                 boolean isLiteral = selectContainingVariables.get(nameFQ);
                 if (!isLiteral) {
-                    asCtx(data).addViolation(var);
+                    asCtx(data).addViolation(m);
                 }
             }
         }
