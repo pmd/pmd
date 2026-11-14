@@ -20,8 +20,9 @@ CALL :set_conf_dir
 CALL :check_conf_dir
 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 
-CALL :add_pmd_classpath
 CALL :determine_java_version
+CALL :add_pmd_classpath
+IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 CALL :add_openjfx_classpath
 IF %ERRORLEVEL% NEQ 0 EXIT /B %ERRORLEVEL%
 CALL :determine_additional_java_opts
@@ -79,10 +80,6 @@ IF DEFINED CLASSPATH (
 )
 EXIT /B
 
-:add_pmd_classpath
-CALL :append_classpath "%CONF_DIR%;%LIB_DIR%/*"
-EXIT /B
-
 :determine_java_version
 rem sets the java_version_feature variable. This is e.g. "8" for java 1.8, "9" for java 9, "10" for java 10, ...
 rem sets the java_version_update variable. This is the update release counter: e.g. "17" for java 11.0.17
@@ -117,6 +114,26 @@ IF EXIST "%java_home_property%/jre/lib/javafx.properties" (
 )
 EXIT /B
 
+:add_pmd_classpath
+CALL :append_classpath "%CONF_DIR%;%LIB_DIR%/*"
+
+IF [%APPNAME%] == [designer] (
+  IF %java_version_feature% EQU 8 (
+    CALL :append_classpath "%LIB_DIR%/controlsfx-8/*"
+  ) ELSE (
+    IF %java_version_feature% GEQ 11 (
+      CALL :append_classpath "%LIB_DIR%/controlsfx-11/*"
+    ) ELSE (
+      echo.
+      echo    The Designer requires Java 8 or 11+. Java 9 and 10 are not supported.
+      echo    See https://docs.pmd-code.org/latest/pmd_userdocs_extending_designer_reference.html#installing-running-updating
+      echo    for instructions.
+      EXIT /B 2
+    )
+  )
+)
+EXIT /B
+
 :add_openjfx_classpath
 SET "PMD_OPENJFX_MODULE_PATH="
 IF [%APPNAME%] == [designer] (
@@ -139,9 +156,9 @@ IF [%APPNAME%] == [designer] (
       )
     )
 
-    IF %java_version_feature% LSS 10 (
+    IF %java_version_feature% LSS 11 (
       echo.
-      echo    For OpenJFX at least Java 10 is required. Newer OpenJFX version
+      echo    For OpenJFX at least Java 11 is required. Newer OpenJFX version
       echo    might require newer Java versions.
       EXIT /B 2
     )
