@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.xml.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 /**
@@ -18,4 +20,8 @@ public interface XmlNode extends GenericNode<XmlNode> {
      * @return The DOM node.
      */
     org.w3c.dom.Node getNode();
+
+    @Override
+    @NonNull
+    XmlRootNode getRoot();
 }

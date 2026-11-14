@@ -125,6 +125,17 @@ This is a {{ site.pmd.release_type }} release.
   which have no replacement API yet. They will be deprecated once we have decided how to handle
   the inner classes.
 
+#### Other API changes
+* xml
+    * The new class {% jdoc xml::lang.xml.ast.XmlRootNode %} is the root node of the XML AST. It
+      replaces the class `XmlParserImpl.RootXmlNode`, which was in an internal package.
+      {% jdoc !!xml::lang.xml.ast.XmlNode#getRoot() %} now returns `XmlRootNode`.
+    * {% jdoc xml::lang.xml.ast.XmlParser %} is now public and has moved from package
+      `net.sourceforge.pmd.lang.xml` into `net.sourceforge.pmd.lang.xml.ast`, like the parsers of
+      other languages.
+    * The internal package `net.sourceforge.pmd.lang.xml.ast.internal` has been removed. Its classes
+      are now package-private in `net.sourceforge.pmd.lang.xml.ast`.
+
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
