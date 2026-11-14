@@ -4587,4 +4587,98 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7338: field conditionally overwritten, method exits via return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int state;
+
+    int valueReturn(boolean c) {
+        state = 1;
+        if (c) {
+            state = 2;
+        }
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7338: field conditionally overwritten, void method exits via return</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int state;
+
+    void voidReturn(boolean c) {
+        state = 1;
+        if (c) {
+            state = 2;
+        }
+        return;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7338: early return keeps the first field value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int state;
+
+    int earlyReturn(boolean c) {
+        state = 1;
+        if (c) {
+            return 1;
+        }
+        state = 2;
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7338: unconditional overwrite before return is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private int state;
+
+    int overwritten() {
+        state = 1;
+        state = 2;
+        return state;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7338: return in a lambda does not make the field value escape</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private int state;
+
+    void m(boolean c) {
+        state = 1;
+        Runnable r = () -> {
+            if (c) {
+                return;
+            }
+        };
+        state = 2;
+        System.out.println(state);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
