@@ -470,4 +470,20 @@ class Foo {
     }
 }            ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] LocalVariableCouldBeFinal false positive for variable assigned in a do-while condition #7310</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Iterator;
+
+class Foo {
+    boolean skipEmpty(Iterator<String> it) {
+        boolean empty;
+        do { } while ((empty = it.next().isEmpty()) && it.hasNext());
+        return empty;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

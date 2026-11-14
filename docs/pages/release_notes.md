@@ -56,9 +56,11 @@ This is a {{ site.pmd.release_type }} release.
 * java-bestpractices
     * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
+    * [#7310](https://github.com/pmd/pmd/issues/7310): \[java] UnusedAssignment: i++ in a do-while condition reported as never used, unlike in a while
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
+    * [#7312](https://github.com/pmd/pmd/pull/7312): \[java] LocalVariableCouldBeFinal: False positive for variables assigned in a do-while condition
 * java-design
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
     * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: False positive when static field is used in constructor

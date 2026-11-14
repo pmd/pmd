@@ -828,6 +828,11 @@ public final class DataflowPass {
             linkConditional(iter, cond, iter, breakTarget, true);
             // do a second round to make sure assignments can reach themselves.
             iter = acceptOpt(body, iter);
+            if (!checkFirstIter) {
+                // in do-while loops the condition is evaluated after the body,
+                // so the defs of the condition must reach it again
+                linkConditional(iter, cond, iter, breakTarget, true);
+            }
 
             SpanInfo result = popTargets(loop, breakTarget, continueTarget);
             result.absorb(iter);
@@ -961,6 +966,11 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTReturnStatement node, SpanInfo data) {
             super.visit(node, data);
+            if (!data.isInTryWithFinally()) {
+                // assignments to fields may be observed after the method returns,
+                // unless a finally block overwrites them first
+                useAllSelfFields(data, JavaAstUtils.isInStaticCtx(node), enclosingClassScope);
+            }
             return data.abruptCompletion(data.returnOrThrowTarget);
         }
 
@@ -1567,6 +1577,16 @@ public final class DataflowPass {
 
         private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<JVariableSymbol, VarLocalInfo> reaching) {
             return new SpanInfo(parent, this.global, reaching);
+        }
+
+        /** Whether abrupt completion in this span goes through a finally block. */
+        boolean isInTryWithFinally() {
+            for (SpanInfo span = this; span != null; span = span.parent) {
+                if (span.myFinally != null) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /** Abrupt completion for return, continue, break. */
