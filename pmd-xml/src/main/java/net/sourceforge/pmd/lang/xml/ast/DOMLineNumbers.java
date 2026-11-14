@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xml.ast.internal;
+package net.sourceforge.pmd.lang.xml.ast;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,19 +12,21 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
  *
+ * @internal None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
  */
+@InternalApi // Marking this internal in case this class is changed to public
 class DOMLineNumbers {
-    private final RootXmlNode document;
+    private final XmlRootNode document;
     private final TextDocument textDocument;
     private Chars xmlString;
 
-    DOMLineNumbers(RootXmlNode root, TextDocument textDocument) {
+    DOMLineNumbers(XmlRootNode root, TextDocument textDocument) {
         this.document = root;
         this.xmlString = textDocument.getText();
         this.textDocument = textDocument;

@@ -6,18 +6,18 @@ package net.sourceforge.pmd.lang.xml;
 
 import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
-import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
+import net.sourceforge.pmd.lang.xml.ast.XmlRootNode;
 
 /**
  * @author Clément Fournier
  */
-public final class XmlParsingHelper extends BaseParsingHelper<XmlParsingHelper, RootXmlNode> {
+public final class XmlParsingHelper extends BaseParsingHelper<XmlParsingHelper, XmlRootNode> {
 
     public static final XmlParsingHelper XML = new XmlParsingHelper(XmlLanguageModule.getInstance(), Params.getDefault());
 
 
     private XmlParsingHelper(PmdCapableLanguage langName, Params params) {
-        super(langName, RootXmlNode.class, params);
+        super(langName, XmlRootNode.class, params);
     }
 
     @Override
