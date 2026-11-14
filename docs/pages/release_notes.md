@@ -58,6 +58,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
+    * [#7134](https://github.com/pmd/pmd/issues/7134): \[java] UnnecessaryBoxing: False negative when another overload takes an unrelated reference type
+    * [#7135](https://github.com/pmd/pmd/issues/7135): \[java] UnnecessaryBoxing: False positive when removing the conversion selects a more specific primitive overload
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
 * java-design
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
