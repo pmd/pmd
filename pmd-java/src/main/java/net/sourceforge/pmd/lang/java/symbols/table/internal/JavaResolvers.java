@@ -83,7 +83,7 @@ public final class JavaResolvers {
                     JModuleSymbol moduleSymbol = symbolResolver.resolveModule(module);
 
                     if (moduleSymbol == null) {
-                        // TODO: log warning about incomplete auxclasspath
+                        // Incomplete auxclasspath: module not found. TODO: log warning
                         return Collections.emptyList();
                     }
 

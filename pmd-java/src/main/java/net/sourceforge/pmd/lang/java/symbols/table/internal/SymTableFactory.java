@@ -326,7 +326,7 @@ final class SymTableFactory {
                 JClassSymbol containerClass = loadClassReportFailure(anImport, className);
 
                 if (containerClass == null) {
-                    // the auxclasspath is wrong
+                    // Incomplete auxclasspath: the container class of the static import is missing,
                     // bc static imports can't import toplevel types
                     // already reported
                     continue;

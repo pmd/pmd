@@ -68,7 +68,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                 OverloadSelectionResult selectionInfo = ref.getOverloadSelectionInfo();
                 JExecutableSymbol calledMethod = selectionInfo.getMethodType().getSymbol();
                 if (calledMethod.isUnresolved() || selectionInfo.isFailed()) {
-                    // When overload resolution failed, the selected symbol is an
+                    // Incomplete auxclasspath: when the called method is unresolved or
+                    // overload resolution failed, the selected symbol is an
                     // arbitrary fallback and we cannot trust which overload was
                     // actually called. Treat it like an unresolved call to avoid
                     // false positives on the other overloads.

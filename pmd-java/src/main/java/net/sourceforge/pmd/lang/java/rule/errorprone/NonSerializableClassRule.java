@@ -182,7 +182,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         if (!getProperty(CHECK_ABSTRACT_TYPES) && typeMirror instanceof JTypeVar) {
             notSerializable = false;
         }
-        // exclude unresolved types in general
+        // Incomplete auxclasspath: exclude unresolved types in general
         if (typeSymbol != null && typeSymbol.isUnresolved()) {
             notSerializable = false;
         }
