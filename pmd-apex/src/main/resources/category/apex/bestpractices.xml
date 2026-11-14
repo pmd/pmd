@@ -204,6 +204,11 @@ private class ATest {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue">
         <description>
 Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
+
+Most `ConnectApi` methods require `seeAllData=true` in tests. Set the property `reportConnectApi` to `false` to exempt test classes
+that call a `ConnectApi` method.
+
+See more here: &lt;https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/connectAPI_TestingApex.htm&gt;
         </description>
         <priority>3</priority>
         <example>

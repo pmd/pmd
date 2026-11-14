@@ -25,6 +25,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🌟️ New and Changed Rules
+
 #### New Rules
 *   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
     reports control flow in test methods that can obscure which assertions
@@ -33,6 +34,11 @@ This is a {{ site.pmd.release_type }} release.
     and plain try-finally statements.
     Loops are allowed by default and can be reported by setting
     `allowLoops` to `false`.
+    
+#### Changed Rules
+* The Apex rule {% rule apex/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrue %} has a new property
+    `reportConnectApi`. It defaults to `true`. Set it to `false` to exempt test classes that call a `ConnectApi`
+    method, since most `ConnectApi` methods require `seeAllData=true` in tests (see [#7236](https://github.com/pmd/pmd/issues/7236)).
 
 #### Deprecated Rules
 *   The Java rule {% rule java/performance/AddEmptyString %} is deprecated without replacement
@@ -45,6 +51,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛️ Fixed Issues
 * apex
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
+* apex-bestpractices
+    * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * core
