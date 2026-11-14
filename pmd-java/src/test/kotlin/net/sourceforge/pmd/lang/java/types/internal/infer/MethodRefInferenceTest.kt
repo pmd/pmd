@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
+import javasymbols.testdata.ProtectedMembers
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.component6
@@ -1191,6 +1192,112 @@ class Scratch {
                 withFormals = listOf(int, ToIntFunction::class[gen.t_String]),
                 returning = void
             )
+        }
+    }
+
+    parserTest("#7147 protected method is accessible through a method reference only if the qualifier type is a subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import java.util.function.BiConsumer;
+            import java.util.function.Consumer;
+            import java.util.function.Function;
+            import javasymbols.testdata.ProtectedMembers;
+            import javasymbols.testdata.impls.SubclassOfProtectedMembers;
+
+            class Sub extends ProtectedMembers {
+                Sub() { super(0); }
+
+                void t(ProtectedMembers base, Sub sub) {
+                    // m(Object) is not accessible through these types (JLS 6.6.2.1), javac selects m(int)
+                    Consumer<Integer> bound = base::m;
+                    BiConsumer<ProtectedMembers, Integer> unbound = ProtectedMembers::m;
+                    BiConsumer<SubclassOfProtectedMembers, Integer> sibling = SubclassOfProtectedMembers::m;
+                    // javac selects m(Object)
+                    Consumer<Integer> boundSub = sub::m;
+                    Consumer<Integer> boundSuper = super::m;
+                    // javac selects ProtectedMembers(int) (JLS 6.6.2.2)
+                    Function<Integer, ProtectedMembers> ctor = ProtectedMembers::new;
+                }
+            }
+
+            class SubOfConstructors extends ProtectedMembers.Constructors {
+                SubOfConstructors() { super(0); }
+
+                void t() {
+                    // an inexact reference, javac selects Constructors(int)
+                    Function<Integer, ProtectedMembers.Constructors> ctor = ProtectedMembers.Constructors::new;
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (bound, unbound, sibling, boundSub, boundSuper, ctor, inexactCtor) =
+            acu.descendants(ASTMethodReference::class.java).toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedMembers::class.decl
+            bound.referencedMethod.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            unbound.referencedMethod.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            sibling.referencedMethod.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            boundSub.referencedMethod.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            boundSuper.referencedMethod.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            ctor.referencedMethod.shouldMatchMethod(named = "new", declaredIn = decl, withFormals = listOf(int), returning = decl)
+            val ctorsDecl = ProtectedMembers.Constructors::class.decl
+            inexactCtor.referencedMethod.shouldMatchMethod(named = "new", declaredIn = ctorsDecl, withFormals = listOf(int), returning = ctorsDecl)
+        }
+    }
+
+    parserTest("#7147 method reference is exact if only one method of that name is accessible") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import java.util.function.Consumer;
+            import java.util.function.Function;
+            import javasymbols.testdata.ProtectedMembers;
+
+            class Sub extends ProtectedMembers {
+                Sub() { super(0); }
+
+                static void run(Consumer<Integer> c) { }
+                static void run(Function<Integer, String> f) { }
+
+                static void make(Consumer<Integer> c) { }
+                static void make(Function<Integer, ProtectedMembers> f) { }
+
+                void t(ProtectedMembers base) {
+                    // only r(int) is accessible, so base::r is exact and run(Function)
+                    // is more specific (JLS 15.12.2.5): javac selects it
+                    run(base::r);
+                    // only ProtectedMembers(int) is accessible: javac selects make(Function)
+                    make(ProtectedMembers::new);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val run = acu.firstMethodCall("run")
+        val make = acu.firstMethodCall("make")
+        val (method, ctor) = acu.descendants(ASTMethodReference::class.java).toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedMembers::class.decl
+            run.methodType.shouldMatchMethod(
+                named = "run",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(gen.t_Function[gen.t_Integer, gen.t_String]),
+                returning = void
+            )
+            method.referencedMethod.shouldMatchMethod(named = "r", declaredIn = decl, withFormals = listOf(int), returning = gen.t_String)
+            make.methodType.shouldMatchMethod(
+                named = "make",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(gen.t_Function[gen.t_Integer, decl]),
+                returning = void
+            )
+            ctor.referencedMethod.shouldMatchMethod(named = "new", declaredIn = decl, withFormals = listOf(int), returning = decl)
         }
     }
 })

@@ -13,9 +13,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers.MethodAccessForm;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -84,6 +86,11 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     @Override
     public JTypeMirror getTypeToSearch() {
         return myNode.getLhs().getTypeMirror();
+    }
+
+    @Override
+    public MethodAccessForm getMethodAccessForm() {
+        return myNode.getQualifier() instanceof ASTSuperExpression ? MethodAccessForm.SUPER : MethodAccessForm.QUALIFIED;
     }
 
     @Override

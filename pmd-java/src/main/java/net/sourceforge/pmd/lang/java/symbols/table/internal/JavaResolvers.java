@@ -27,9 +27,11 @@ import org.pcollections.PSet;
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver;
@@ -158,41 +160,9 @@ public final class JavaResolvers {
                 return t.streamMethods(
                     it -> it.nameEquals(simpleName)
                         && isAccessibleIn(nestRoot, it, true) // fetch protected methods
-                        && isNotStaticInterfaceMethod(it)
-                        && isDeclaredOrInherited(it)
+                        // methods that are not members must not shadow those of the enclosing classes
+                        && isMemberMethod(it, t.getSymbol())
                 ).collect(OverloadSet.collectMostSpecific(t)); // remove overridden, hidden methods
-            }
-
-            // Static interface methods are not inherited and are in fact not in scope in the subtypes.
-            // They must be explicitly qualified or imported.
-            private boolean isNotStaticInterfaceMethod(JMethodSymbol it) {
-                return !it.isStatic() || it.getEnclosingClass().equals(t.getSymbol())
-                    || !it.getEnclosingClass().isInterface();
-            }
-
-            // Methods of supertypes are members of this type only if they are inherited
-            // (JLS 8.4.8), which accessibility alone does not decide. Private methods are
-            // never inherited. A package-private method is not inherited by a subclass in
-            // another package, and the classes below that one cannot inherit it either.
-            // Methods that are not members must not shadow those of the enclosing classes.
-            private boolean isDeclaredOrInherited(JMethodSymbol it) {
-                JClassSymbol owner = it.getEnclosingClass();
-                if (owner.equals(t.getSymbol())) {
-                    return true;
-                }
-                int mods = it.getModifiers();
-                if (Modifier.isPublic(mods) || Modifier.isProtected(mods)) {
-                    return true;
-                } else if (Modifier.isPrivate(mods)) {
-                    return false;
-                }
-                String pack = owner.getPackageName();
-                for (JClassSymbol c = t.getSymbol(); c != null && !c.equals(owner); c = c.getSuperclass()) {
-                    if (!c.getPackageName().equals(pack)) {
-                        return false;
-                    }
-                }
-                return true;
             }
 
             @Override
@@ -390,6 +360,172 @@ public final class JavaResolvers {
             }
         }
         return hidden;
+    }
+
+    /**
+     * Returns true if a method of the given type or of one of its supertypes
+     * is a member of that type, which accessibility alone does not decide
+     * (JLS 8.2, 8.4.8, 9.4.1). Private methods of supertypes are not inherited.
+     * A package-private method is not inherited by a subclass in another package,
+     * and the classes below that one cannot inherit it either. Static interface
+     * methods are members only of the interface that declares them. An interface
+     * has only the public methods of its supertypes, so the protected methods of
+     * Object are not members of an interface (JLS 9.2).
+     *
+     * @param method A method of the given type or of one of its supertypes
+     * @param type   The type whose members are searched. If it is not a class
+     *               symbol, only the rule for static interface methods applies.
+     */
+    public static boolean isMemberMethod(JMethodSymbol method, @Nullable JTypeDeclSymbol type) {
+        JClassSymbol owner = method.getEnclosingClass();
+        if (owner.equals(type)) {
+            return true;
+        } else if (method.isStatic() && owner.isInterface()) {
+            return false;
+        } else if (!(type instanceof JClassSymbol)) {
+            return true;
+        }
+        int mods = method.getModifiers();
+        if (type.isInterface()) {
+            return Modifier.isPublic(mods);
+        } else if (Modifier.isPublic(mods) || Modifier.isProtected(mods)) {
+            return true;
+        } else if (Modifier.isPrivate(mods)) {
+            return false;
+        }
+        String pack = owner.getPackageName();
+        for (JClassSymbol c = (JClassSymbol) type; c != null && !c.equals(owner); c = c.getSuperclass()) {
+            if (!c.getPackageName().equals(pack)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if a method of a component of an intersection type is a
+     * member of the intersection. Its members are those of a notional class
+     * that extends the class component and implements the interface components,
+     * or of a notional interface if the class component is Object (JLS 4.9).
+     * Neither inherits private methods or static interface methods, even if a
+     * component declares them, and the notional interface has only public members.
+     *
+     * @param method     A method of a component of the intersection or of one of their supertypes
+     * @param classBound The class component of the intersection, null if it is Object
+     */
+    public static boolean isIntersectionMemberMethod(JMethodSymbol method, @Nullable JTypeDeclSymbol classBound) {
+        int mods = method.getModifiers();
+        boolean staticInterfaceMethod = method.isStatic() && method.getEnclosingClass().isInterface();
+        if (Modifier.isPrivate(mods) || staticInterfaceMethod) {
+            return false;
+        } else if (classBound == null) {
+            return Modifier.isPublic(mods);
+        }
+        return isMemberMethod(method, classBound);
+    }
+
+    /**
+     * The form of an access to a method, which matters for a protected
+     * method of another package (JLS 6.6.2.1).
+     */
+    public enum MethodAccessForm {
+        /**
+         * An unqualified name of an instance method, whose receiver is {@code this}
+         * or {@code Outer.this}. Unqualified invocations get their candidates from
+         * the symbol table, so only the method reference that
+         * {@code LambdaCanBeMethodReferenceRule} builds from such a call uses it.
+         */
+        UNQUALIFIED,
+        /** {@code super.m(..)}, {@code TypeName.super.m(..)}, {@code super::m} or {@code TypeName.super::m}. */
+        SUPER,
+        /** A qualifier that is an expression, a type name or a reference type. */
+        QUALIFIED
+    }
+
+    /**
+     * Returns true if the method is accessible from the given class, when it
+     * is accessed in the given form. A protected method of another package is
+     * accessible only in the body of a subclass S of the class that declares it,
+     * which includes the classes nested in S (JLS 6.6.2). An instance method
+     * accessed through a qualifier also needs the qualifying type to be S or a
+     * subclass of S (JLS 6.6.2.1). The super forms and unqualified names do not
+     * need it. If the qualifying type, or one of its superclasses below the
+     * declaring class, is unresolved, the qualifying type may be a subclass of S,
+     * and this condition passes.
+     *
+     * @param method         Method to test
+     * @param ctx            Innermost class that encloses the access
+     * @param qualifyingType Type of the qualifier, or the type to search of a method
+     *                       reference. Only used for {@link MethodAccessForm#QUALIFIED}.
+     * @param form           Form of the access
+     */
+    public static boolean isAccessibleMethod(JMethodSymbol method, @NonNull JClassSymbol ctx,
+                                             @NonNull JTypeMirror qualifyingType, MethodAccessForm form) {
+        if (!isProtectedOfAnotherPackage(method, ctx)) {
+            return isAccessibleIgnoringProtected(method, ctx);
+        }
+        JClassSymbol owner = method.getEnclosingClass();
+        for (JClassSymbol c = ctx; c != null; c = c.getEnclosingClass()) {
+            // the members of an interface nested in S are in the body of S, but the
+            // interface itself is not a subclass, so the search goes on outwards
+            if (!c.isInterface() && isSubtype(c, owner)
+                && (method.isStatic() || form != MethodAccessForm.QUALIFIED || mayBeSubtype(qualifyingType, c, owner))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the constructor is accessible from the given class. Outside
+     * its package, a protected constructor is accessible only through the creation
+     * of an anonymous class, or through {@code super(..)}, which does not use this
+     * method (JLS 6.6.2.2). It is not accessible through {@code new C(..)},
+     * {@code outer.new C(..)} or {@code C::new}.
+     *
+     * @param ctor      Constructor to test
+     * @param ctx       Innermost class that encloses the access, or the anonymous class
+     * @param anonymous Whether the constructor is invoked to create an anonymous class
+     */
+    public static boolean isAccessibleConstructor(JExecutableSymbol ctor, @NonNull JClassSymbol ctx, boolean anonymous) {
+        return isProtectedOfAnotherPackage(ctor, ctx) ? anonymous : isAccessibleIgnoringProtected(ctor, ctx);
+    }
+
+    private static boolean isProtectedOfAnotherPackage(JExecutableSymbol sym, JClassSymbol ctx) {
+        int mods = sym.getModifiers();
+        return Modifier.isProtected(mods) && !Modifier.isPublic(mods)
+            && !sym.getPackageName().equals(ctx.getPackageName());
+    }
+
+    // The checks of TypeOps.isAccessible for the other members. Unlike isAccessibleIn,
+    // they do not fail on conflicting access modifiers, which only invalid code has.
+    private static boolean isAccessibleIgnoringProtected(JExecutableSymbol sym, JClassSymbol ctx) {
+        int mods = sym.getModifiers();
+        if (Modifier.isPublic(mods)) {
+            return true;
+        } else if (Modifier.isPrivate(mods)) {
+            return ctx.getNestRoot().equals(sym.getEnclosingClass().getNestRoot());
+        }
+        return ctx.getPackageName().equals(sym.getPackageName());
+    }
+
+    // The method is a member of the qualifying type, so the class that declares it
+    // is that type or one of its superclasses. If a class below the declaring class is
+    // unresolved, the qualifying type may still be a subclass of c. This happens
+    // for the protected methods of Object, which unresolved classes have.
+    private static boolean mayBeSubtype(JTypeMirror qualifyingType, JClassSymbol c, JClassSymbol owner) {
+        if (qualifyingType.getAsSuper(c) != null) {
+            return true;
+        }
+        JTypeDeclSymbol sym = qualifyingType.getErasure().getSymbol();
+        for (JClassSymbol s = sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
+             s != null && !s.equals(owner);
+             s = s.getSuperclass()) {
+            if (s.isUnresolved()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

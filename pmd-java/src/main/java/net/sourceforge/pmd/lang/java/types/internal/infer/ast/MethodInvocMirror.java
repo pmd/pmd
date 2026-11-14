@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -14,12 +15,19 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers.MethodAccessForm;
+import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
@@ -67,9 +75,25 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
                 lhsType = lhs.getTypeMirror(getTypingContext());
             }
             lhsType = TypeOps.getMemberSource(lhsType);
-            boolean staticOnly = lhs instanceof ASTTypeExpression;
-
-            return TypeOps.getMethodsOf(lhsType, getName(), staticOnly, myNode.getEnclosingType().getSymbol());
+            Predicate<JMethodSymbol> isMember;
+            if (lhsType instanceof JIntersectionType) {
+                JTypeMirror primary = ((JIntersectionType) lhsType).getPrimaryBound();
+                // null if the intersection induces an interface (JLS 4.9)
+                JTypeDeclSymbol classBound = primary.isTop() ? null : primary.getSymbol();
+                isMember = it -> JavaResolvers.isIntersectionMemberMethod(it, classBound);
+            } else {
+                JTypeDeclSymbol type = lhsType.getSymbol();
+                isMember = it -> JavaResolvers.isMemberMethod(it, type);
+            }
+            JClassSymbol enclosing = myNode.getEnclosingType().getSymbol();
+            JTypeMirror qualifyingType = lhsType;
+            MethodAccessForm form = lhs instanceof ASTSuperExpression ? MethodAccessForm.SUPER : MethodAccessForm.QUALIFIED;
+            Predicate<JMethodSymbol> accessible =
+                it -> it.nameEquals(getName()) && JavaResolvers.isAccessibleMethod(it, enclosing, qualifyingType, form);
+            // Instance methods are candidates even for a TypeName qualifier. If one
+            // of them is chosen, the call is an error (JLS 15.12.3), as javac reports it.
+            return lhsType.streamMethods(accessible.and(isMember))
+                          .collect(OverloadSet.collectMostSpecific(lhsType)); // remove overridden, hidden methods
         }
     }
 
