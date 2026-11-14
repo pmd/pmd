@@ -354,9 +354,8 @@ conditions with a boolean `&&` operator in between.
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[@Else = false()]/IfStatement[@Else = false()]
-|
-//IfStatement[@Else = false()]/Block[count(*) = 1]/IfStatement[@Else = false()]
+//IfStatement[@Else = false()]
+    [ancestor::*[not(self::Block[count(*) = 1])][1][self::IfStatement][@Else = false()]]
 ]]>
                 </value>
             </property>
