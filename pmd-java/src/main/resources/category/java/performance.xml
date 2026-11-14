@@ -12,18 +12,23 @@ Rules that flag suboptimal code.
     <rule name="AddEmptyString"
           language="java"
           since="4.0"
+          deprecated="true"
           message="Do not add empty strings"
           class="net.sourceforge.pmd.lang.java.rule.performance.AddEmptyStringRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#addemptystring">
         <description>
-The conversion of literals to strings by concatenating them with empty strings is inefficient.
-It is much better to use one of the type-specific `toString()` methods instead or `String.valueOf()`.
+Reports the conversion of values to strings by concatenating them with empty strings.
+
+**Deprecated:** This rule is deprecated since PMD 7.30.0 and will be removed with PMD 8.0.0.
+It has no replacement. Its performance claim is not valid on modern JDKs:
+constant string concatenations are evaluated at compile time, and replacing concatenation
+with a `toString()` or `String.valueOf()` call does not generally improve performance.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-String s = "" + 123;                // inefficient
-String t = Integer.toString(456);   // preferred approach
+String s = "" + 123;                // reported, might be inefficient in old JDKs
+String t = Integer.toString(456);   // not reported
 ]]>
         </example>
     </rule>
@@ -74,7 +79,7 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
     [not(.//BreakStatement[not(parent::SwitchFallthroughBranch)])]
     [not(.//ThrowStatement)]
     [not(.//ReturnStatement)]
-    [count(Block//AssignmentExpression[@Operator='=']
+    [count((Block | ExpressionStatement)//AssignmentExpression[@Operator='=']
                                       (: no nested arrays or method calls as array index :)
                                       [count(ArrayAccess[not(.//ArrayAccess)]
                                                         [not(.//MethodCall)])=2]
@@ -652,37 +657,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UseArrayListInsteadOfVector"
-          language="java"
-          since="3.0"
-          message="Use ArrayList instead of Vector"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#usearraylistinsteadofvector">
-        <description>
-ArrayList is a much better Collection implementation than Vector if thread-safe operation is not required.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ConstructorCall/ClassType[pmd-java:typeIsExactly('java.util.Vector') or pmd-java:typeIsExactly('Vector')]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-import java.util.*;
-public class SimpleTest extends TestCase {
-    public void testX() {
-    Collection c1 = new Vector();
-    Collection c2 = new ArrayList();    // achieves the same with much better performance
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="UseArrayListInsteadOfVector" ref="category/java/bestpractices.xml/ReplaceJavaUtilVector" deprecated="true" />
 
     <rule name="UseArraysAsList"
           language="java"

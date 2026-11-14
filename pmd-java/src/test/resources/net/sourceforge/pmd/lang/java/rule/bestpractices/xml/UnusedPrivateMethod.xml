@@ -2838,4 +2838,217 @@ public interface UnusedPrivateMethodFalsePositivePrivateMethod {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7213 Fully qualified MethodSource reference to a private factory in the same class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo.after;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class StringUtilsTest {
+    private static Stream<String> arguments() {
+        return Stream.of("foo", "bar", "baz");
+    }
+
+    @ParameterizedTest
+    @MethodSource("demo.after.StringUtilsTest#arguments")
+    void test(String input) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 MethodSource references with an explicit empty parameter list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class ExampleTest {
+    @MethodSource({"simple()", "demo.ExampleTest#qualified()"})
+    void test(String input) { }
+
+    private static Stream<String> simple() { return Stream.of("foo"); }
+    private static Stream<String> qualified() { return Stream.of("bar"); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 Qualified MethodSource references use the binary name of a nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class OuterTest {
+    private static Stream<String> arguments() { return Stream.of("unused"); }
+
+    @Nested
+    class InnerTest {
+        @MethodSource("demo.OuterTest$InnerTest#arguments")
+        void test(String input) { }
+
+        private static Stream<String> arguments() { return Stream.of("foo"); }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 Qualified MethodSource reference in the default package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class ExampleTest {
+    @MethodSource("ExampleTest#arguments")
+    void test(String input) { }
+
+    private static Stream<String> arguments() { return Stream.of("foo"); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 MethodSource arrays and constant expressions retain the qualified owner</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class ExampleTest {
+    private static final String OWNER = "demo.ExampleTest#";
+
+    @MethodSource({OWNER + "first", OWNER + "second"})
+    void test(String input) { }
+
+    private static Stream<String> first() { return Stream.of("foo"); }
+    private static Stream<String> second() { return Stream.of("bar"); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 MethodSource references to other classes do not hide unused local methods</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>10,11,12</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class ExampleTest {
+    @MethodSource({"other.ExampleTest#external", "demo.OtherTest#sameFile", "ExampleTest#notQualified"})
+    void test(String input) { }
+
+    private static Stream<String> external() { return Stream.of("unused"); }
+    private static Stream<String> sameFile() { return Stream.of("unused"); }
+    private static Stream<String> notQualified() { return Stream.of("unused"); }
+}
+
+class OtherTest {
+    private static Stream<String> sameFile() { return Stream.of("used"); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 A no-argument MethodSource reference does not hide unused overloads</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class ExampleTest {
+    @MethodSource("demo.ExampleTest#arguments()")
+    void test(String input) { }
+
+    private static Stream<String> arguments() { return Stream.of("foo"); }
+    private static Stream<String> arguments(String unused) { return Stream.of("unused"); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 A MethodSource reference with parameters does not match a no-argument method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class ExampleTest {
+    @MethodSource("demo.ExampleTest#arguments(java.lang.String)")
+    void test(String input) { }
+
+    private static Stream<String> arguments() { return Stream.of("unused"); }
+    static Stream<String> arguments(String value) { return Stream.of(value); }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 A nested test can reference its outer class factory by qualified name</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class OuterTest {
+    private static Stream<String> arguments() { return Stream.of("foo"); }
+
+    @Nested
+    class InnerTest {
+        @MethodSource("demo.OuterTest#arguments")
+        void test(String input) { }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7213 A canonical nested class name does not match its binary name</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>13</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import java.util.stream.Stream;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class OuterTest {
+    @Nested
+    class InnerTest {
+        @MethodSource("demo.OuterTest.InnerTest#arguments")
+        void test(String input) { }
+
+        private static Stream<String> arguments() { return Stream.of("unused"); }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

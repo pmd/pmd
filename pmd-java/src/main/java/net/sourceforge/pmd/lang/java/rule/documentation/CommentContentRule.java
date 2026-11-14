@@ -37,11 +37,12 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        RuleContext ctx = (RuleContext) data;
 
         Pattern pattern = getProperty(DISALLOWED_TERMS_DESCRIPTOR);
 
         for (JavaComment comment : node.getComments()) {
-            reportIllegalTerms(asCtx(data), comment, pattern, node);
+            reportIllegalTerms(ctx, comment, pattern, node);
         }
 
         return null;

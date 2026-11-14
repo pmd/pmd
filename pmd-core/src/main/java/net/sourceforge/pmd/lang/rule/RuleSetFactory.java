@@ -30,14 +30,11 @@ import java.util.regex.PatternSyntaxException;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -74,8 +71,6 @@ import com.github.oowekyala.ooxml.messages.XmlSeverity;
  * their defaults.
  */
 final class RuleSetFactory {
-
-    private static final Logger LOG = LoggerFactory.getLogger(RuleSetFactory.class);
 
     private final ResourceLoader resourceLoader;
     private final LanguageRegistry languageRegistry;
@@ -274,40 +269,7 @@ final class RuleSetFactory {
 
 
     private DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
-        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-        try {
-            /*
-             * parser hardening
-             * https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
-             */
-            // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are prevented
-            // Xerces 2 only - http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
-            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-
-            // If you can't completely disable DTDs, then at least do the following:
-            // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-general-entities
-            // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-general-entities
-            // JDK7+ - http://xml.org/sax/features/external-general-entities
-            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-
-            // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-parameter-entities
-            // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities
-            // JDK7+ - http://xml.org/sax/features/external-parameter-entities
-            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-
-            // Disable external DTDs as well
-            dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-            // and these as well, per Timothy Morgan's 2014 paper: "XML Schema, DTD, and Entity Attacks"
-            dbf.setXIncludeAware(false);
-            dbf.setExpandEntityReferences(false);
-        } catch (final ParserConfigurationException e) {
-            // an unsupported feature... too bad, but won't fail execution due to this
-            LOG.warn("Ignored unsupported XML Parser Feature for parsing rulesets", e);
-        }
-
-        return dbf.newDocumentBuilder();
+        return XmlUtil.newDocumentBuilderFactory().newDocumentBuilder();
     }
 
     /**
