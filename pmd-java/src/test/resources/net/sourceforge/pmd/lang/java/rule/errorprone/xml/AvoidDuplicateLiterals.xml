@@ -204,4 +204,17 @@ public class AnnotationParams {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Duplication is detected even when parenthesized (#7274)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public class DupLiterals {
+    String a() { return "Hello, world"; }
+    String b() { return "Hello, world"; }
+    String c() { return "Hello, world"; }
+    String d() { return ("Hello, world"); }   // the same literal in parentheses: not counted, nothing reported
+}        ]]></code>
+    </test-code>
 </test-data>

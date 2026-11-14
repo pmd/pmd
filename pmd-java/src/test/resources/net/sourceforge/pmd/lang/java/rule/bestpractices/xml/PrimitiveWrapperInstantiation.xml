@@ -429,4 +429,21 @@ public class Integer {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>works if constructor argument is wrapped in braces</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>Do not use `new Boolean("true")`, prefer `Boolean.TRUE`</message>
+            <message>Do not use `new Boolean(true)`, prefer `Boolean.TRUE`</message>
+            <message>Do not use `new Integer(...)`, prefer `Integer.valueOf(...)`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Boolean b1 = new Boolean(("true"));
+    Boolean b2 = new Boolean((true));
+    Integer i = new Integer((1));
+}
+        ]]></code>
+    </test-code>
 </test-data>
