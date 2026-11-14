@@ -1121,6 +1121,9 @@ public class Bar {
         <description>
 Exposing internal arrays to the caller violates object encapsulation since elements can be
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
+
+Private methods are not reported, since an array returned from a private
+method does not leave the object that owns it.
         </description>
         <priority>3</priority>
         <example>
