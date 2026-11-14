@@ -75,6 +75,13 @@ This is a {{ site.pmd.release_type }} release.
     * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate ANTLR generated lexer implementation classes
 
 ### 🚨️ API Changes and Deprecations
+* apex
+    * DML statement nodes now expose `@AccessMode`.
+      The attribute is always present. Its value is `IMPLICIT`, `USER_MODE`, or `SYSTEM_MODE`.
+      `//DmlInsertStatement[@AccessMode='IMPLICIT']` and `//DmlInsertStatement[@AccessMode='SYSTEM_MODE']` select those statements.
+      `AbstractDmlStatement#getRunAsMode()` is deprecated and will be removed in PMD 8.0.0.
+      Use `getAccessMode()` instead ([#7108](https://github.com/pmd/pmd/issues/7108)).
+
 #### Experimental API
 * kotlin
     * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
