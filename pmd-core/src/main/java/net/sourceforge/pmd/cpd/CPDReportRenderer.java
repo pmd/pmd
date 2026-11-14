@@ -20,6 +20,14 @@ import java.io.Writer;
 public interface CPDReportRenderer {
 
     /**
+     * Configures whether the renderer should include a report timestamp.
+     * Renderers without a timestamp may ignore this setting.
+     */
+    default void setShowTimestamp(boolean showTimestamp) {
+        // Most report formats do not include a timestamp.
+    }
+
+    /**
      * Write out the contents of the report to the given writer.
      *
      * @param report The report to write
