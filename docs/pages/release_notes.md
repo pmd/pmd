@@ -47,6 +47,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
+    * [#6261](https://github.com/pmd/pmd/issues/6261): \[apex] AvoidBooleanMethodParameters: False positive on getter and setter
 * core
     * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
 * java
