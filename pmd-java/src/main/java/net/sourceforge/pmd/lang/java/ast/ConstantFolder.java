@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression.ConstResult;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -188,6 +189,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         Object res;
         if (t.isNumeric()) {
             res = numericCoercion(castValue.getValue(), t);
+        } else if (t.isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
+            res = booleanCoercion(castValue.getValue());
         } else if (TypeTestUtil.isExactlyA(String.class, node.getCastType())) {
             res = stringCoercion(castValue.getValue());
         } else {
@@ -541,6 +544,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
             Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
             return promoted.getLeft().equals(promoted.getRight()); // fixme Double.NaN
+        } else if (left instanceof Boolean && right instanceof Boolean) {
+            return left.equals(right);
         } else {
             return null; // not a constant expr on reference types
         }
@@ -626,6 +631,13 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 return doubleValue(v);
             }
             throw AssertionUtil.shouldNotReachHere("exhaustive enum: " + target);
+        }
+        return null;
+    }
+
+    private static Object booleanCoercion(Object v) {
+        if (v instanceof Boolean) {
+            return v;
         }
         return null;
     }

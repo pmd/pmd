@@ -562,6 +562,7 @@ class Scratch {
         testBody("{ for (; 1 < 2;) { } }", void = true, value = true)
         testBody("{ while (forever) { } }", void = true, value = true)
         testBody("{ while (FOREVER) { } }", void = true, value = true)
+        testBody("{ while (FOREVER == true) { } }", void = true, value = true)
         testBody("{ while (b) { } }", void = true)
         testBody("{ while (true || b) { } }", void = true)
 
