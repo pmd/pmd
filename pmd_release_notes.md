@@ -17,6 +17,7 @@ This is a minor release.
 * [🚨️ API Changes and Deprecations](#api-changes-and-deprecations)
     * [Experimental API](#experimental-api)
     * [Deprecations](#deprecations)
+    * [Other API changes](#other-api-changes)
 * [✨️ Merged pull requests](#merged-pull-requests)
 * [📦️ Dependency updates](#dependency-updates)
 * [📈️ Stats](#stats)
@@ -123,6 +124,17 @@ This is a minor release.
   intentionally not deprecated yet. These classes still contain the public AST node types,
   which have no replacement API yet. They will be deprecated once we have decided how to handle
   the inner classes.
+
+#### Other API changes
+* xml
+    * The new class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlRootNode.html#"><code>XmlRootNode</code></a> is the root node of the XML AST. It
+      replaces the class `XmlParserImpl.RootXmlNode`, which was in an internal package.
+      <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlNode.html#getRoot()"><code>XmlNode#getRoot</code></a> now returns `XmlRootNode`.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlParser.html#"><code>XmlParser</code></a> is now public and has moved from package
+      `net.sourceforge.pmd.lang.xml` into `net.sourceforge.pmd.lang.xml.ast`, like the parsers of
+      other languages.
+    * The internal package `net.sourceforge.pmd.lang.xml.ast.internal` has been removed. Its classes
+      are now package-private in `net.sourceforge.pmd.lang.xml.ast`.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

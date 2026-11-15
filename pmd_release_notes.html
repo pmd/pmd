@@ -2252,6 +2252,22 @@ which have no replacement API yet. They will be deprecated once we have decided 
 the inner classes.</li>
 </ul>
 
+<h4 id="other-api-changes">Other API changes</h4>
+<ul>
+  <li>xml
+    <ul>
+      <li>The new class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlRootNode.html#"><code>XmlRootNode</code></a> is the root node of the XML AST. It
+replaces the class <code class="language-plaintext highlighter-rouge">XmlParserImpl.RootXmlNode</code>, which was in an internal package.
+<a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlNode.html#getRoot()"><code>XmlNode#getRoot</code></a> now returns <code class="language-plaintext highlighter-rouge">XmlRootNode</code>.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlParser.html#"><code>XmlParser</code></a> is now public and has moved from package
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml</code> into <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.ast</code>, like the parsers of
+other languages.</li>
+      <li>The internal package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.ast.internal</code> has been removed. Its classes
+are now package-private in <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.ast</code>.</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 
@@ -2290,7 +2306,7 @@ the inner classes.</li>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 14, 2026 <br />
+             Site last generated: Nov 15, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
