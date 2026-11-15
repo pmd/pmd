@@ -557,7 +557,7 @@ The public key is available here:
 * <https://keys.openpgp.org/search?q=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838>
 * <https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&fingerprint=on&op=index>
 * <http://pgp.mit.edu/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&fingerprint=on&op=index>
-* <https://github.com/pmd/build-tools/blob/main/scripts/files/release-signing-key-2EFA55D0785C31F956F2F87EA0B5CA1A4E086838-public.asc>
+* <https://github.com/pmd/build-tools/blob/main/release-signing-key-2EFA55D0785C31F956F2F87EA0B5CA1A4E086838-public.asc>
 
 
 ### Old keys
