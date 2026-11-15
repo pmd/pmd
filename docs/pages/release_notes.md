@@ -25,7 +25,6 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🌟️ New and Changed Rules
-
 #### New Rules
 *   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
     reports control flow in test methods that can obscure which assertions
@@ -34,11 +33,14 @@ This is a {{ site.pmd.release_type }} release.
     and plain try-finally statements.
     Loops are allowed by default and can be reported by setting
     `allowLoops` to `false`.
-    
+
 #### Changed Rules
 * The Apex rule {% rule apex/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrue %} has a new property
-    `reportConnectApi`. It defaults to `true`. Set it to `false` to exempt test classes that call a `ConnectApi`
-    method, since most `ConnectApi` methods require `seeAllData=true` in tests (see [#7236](https://github.com/pmd/pmd/issues/7236)).
+    `reportConnectApi`. It defaults to `true`. Set it to `false`, and the rule does not report `seeAllData=true` on a
+    test class or test method that calls a `ConnectApi` method, since most `ConnectApi` methods require `seeAllData=true`
+    in tests. A call to a `setTest...` method does not stop the rule from reporting, because it only registers test data.
+    Nor does a call to the regular method whose test data a `setTest...` call in the same test registers
+    (see [#7236](https://github.com/pmd/pmd/issues/7236)).
 
 ### 🐛️ Fixed Issues
 * apex
