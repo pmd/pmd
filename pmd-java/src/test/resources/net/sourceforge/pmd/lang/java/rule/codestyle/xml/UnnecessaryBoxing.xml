@@ -1273,8 +1273,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
-        <!-- disabled until #7313 is fixed: a cast to boolean and == with two boolean operands are not folded as constant expressions -->
+    <test-code>
         <description>Lambda block bodies whose loop condition is a boolean cast or a boolean equality - #7313</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
