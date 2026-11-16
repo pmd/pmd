@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xml.ast.internal;
+package net.sourceforge.pmd.lang.xml.ast;
 
 
 import static java.util.Collections.emptyIterator;
@@ -12,17 +12,18 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.internal.CoordinateXPathFunction;
-import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 import net.sourceforge.pmd.util.IteratorUtil;
@@ -33,7 +34,9 @@ import net.sourceforge.pmd.util.IteratorUtil;
  *
  * @author Clément Fournier
  * @since 6.1.0
+ * @internal None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
  */
+@InternalApi // Marking this internal in case this class is changed to public
 class XmlNodeWrapper implements XmlNode {
 
     private DataMap<DataKey<?, ?>> dataMap;
@@ -169,4 +172,12 @@ class XmlNodeWrapper implements XmlNode {
         return node;
     }
 
+    @Override
+    public @NonNull XmlRootNode getRoot() {
+        XmlNode r = this;
+        while (r.getParent() != null) {
+            r = r.getParent();
+        }
+        return (XmlRootNode) r;
+    }
 }
