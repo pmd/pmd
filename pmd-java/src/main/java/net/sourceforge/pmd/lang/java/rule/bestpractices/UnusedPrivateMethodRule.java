@@ -37,6 +37,15 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     private static final Set<String> SERIALIZATION_METHODS =
         setOf("readObject", "readObjectNoData", "writeObject", "readResolve", "writeReplace");
 
+    private static final String JUNIT_METHOD_SOURCE =
+        "org.junit.jupiter.params.provider.MethodSource";
+
+    // Annotations whose string values name methods. Other annotation strings are not uses.
+    private static final Set<String> METHOD_REFERENCE_ANNOTATIONS = setOf(
+        JUNIT_METHOD_SOURCE,
+        "lombok.Builder.ObtainVia"
+    );
+
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         return listOf(
@@ -54,11 +63,11 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         RuleContext ctx = (RuleContext) param;
 
         // this does a couple of traversals:
-        // - one to find annotations that potentially reference a method
+        // - one to find method-reference annotations (not every annotation string)
         // - one to collect candidates, that is, potentially unused methods
         // - one to walk through all possible usages of methods, and delete used methods from the set
         Set<String> methodsUsedByAnnotations = JavaRuleUtil.getMembersUsedByAnnotations(file,
-            "org.junit.jupiter.params.provider.MethodSource");
+            JUNIT_METHOD_SOURCE, METHOD_REFERENCE_ANNOTATIONS);
         Map<JExecutableSymbol, ASTMethodDeclaration> candidates = findCandidates(file, methodsUsedByAnnotations);
 
         file.descendants()

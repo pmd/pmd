@@ -3051,4 +3051,158 @@ class OuterTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7340 Unused no-arg private method is reported when an overload is called</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+public class WRSuppress {
+    public void run() {
+        helper(1);
+    }
+
+    public void helper(int x) {
+        System.out.println(x);
+    }
+
+    private void helper() {
+        System.out.println("h");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 @SuppressWarnings string equal to the method name is not a use</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+public class WRSuppress {
+    @SuppressWarnings("helper")
+    public void run() {
+        helper(1);
+    }
+
+    public void helper(int x) {
+        System.out.println(x);
+    }
+
+    private void helper() {
+        System.out.println("h");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 @SuppressWarnings on the unused method itself is not a use</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class WRSuppress {
+    @SuppressWarnings("helper")
+    private void helper() {
+        System.out.println("h");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 A custom annotation string does not use a private method with parameters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>19</expected-linenumbers>
+        <code><![CDATA[
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+public class WRArity {
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface MethodTag {
+        String value();
+    }
+
+    @MethodTag("helper")
+    public void run() {
+        helper(1);
+    }
+
+    public void helper(int x) {
+        System.out.println(x);
+    }
+
+    private void helper(String s) {
+        System.out.println(s);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 A custom annotation string does not use a no-arg private method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>19</expected-linenumbers>
+        <code><![CDATA[
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+public class WRTag {
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface MethodTag {
+        String value();
+    }
+
+    @MethodTag("helper")
+    public void run() {
+        helper(1);
+    }
+
+    public void helper(int x) {
+        System.out.println(x);
+    }
+
+    private void helper() {
+        System.out.println("h");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 @MethodSource still marks the named no-arg method as used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.params.provider.MethodSource;
+
+public class WRMethodSource {
+    @MethodSource("helper")
+    void test() {
+    }
+
+    private void helper() {
+        System.out.println("h");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 @MethodSource still counts when another annotation repeats the method name</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.params.provider.MethodSource;
+
+public class WRBoth {
+    @SuppressWarnings("helper")
+    @MethodSource("helper")
+    void test() {
+    }
+
+    private void helper() {
+        System.out.println("h");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

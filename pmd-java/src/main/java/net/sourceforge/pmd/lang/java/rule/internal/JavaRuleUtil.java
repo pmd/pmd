@@ -12,6 +12,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -593,32 +594,75 @@ public final class JavaRuleUtil {
      * so in file containing {@code SuppressWarnings("foo")} field {@code foo} is considered as
      * referenced.
      *
+     * <p>String values of every annotation are included. Callers that should only honor
+     * specific annotations must use
+     * {@link #getMembersUsedByAnnotations(ASTCompilationUnit, String, Set)}.
+     *
      * @param unit compilation unit
      * @param parameterless parameterless annotation that references members of the same name
      *                      as the annotated member
      * @return members potentially referenced by annotations
      */
     public static Set<String> getMembersUsedByAnnotations(ASTCompilationUnit unit, String parameterless) {
+        return collectMembersUsedByAnnotations(unit, parameterless, null);
+    }
+
+    /**
+     * Like {@link #getMembersUsedByAnnotations(ASTCompilationUnit, String)}, but string
+     * constants are taken only from annotations named in {@code stringReferenceAnnotations}.
+     * The parameterless annotation is still recognized when it has no value.
+     *
+     * @param unit compilation unit
+     * @param parameterless parameterless annotation that references members of the same name
+     *                      as the annotated member
+     * @param stringReferenceAnnotations canonical names of annotations whose string members
+     *                                   name referenced members
+     * @return members potentially referenced by the selected annotations
+     */
+    public static Set<String> getMembersUsedByAnnotations(ASTCompilationUnit unit,
+                                                          String parameterless,
+                                                          Set<String> stringReferenceAnnotations) {
+        Objects.requireNonNull(stringReferenceAnnotations, "stringReferenceAnnotations");
+        return collectMembersUsedByAnnotations(unit, parameterless, stringReferenceAnnotations);
+    }
+
+    private static Set<String> collectMembersUsedByAnnotations(ASTCompilationUnit unit,
+                                                               String parameterless,
+                                                               @Nullable Set<String> stringReferenceAnnotations) {
         return unit.descendants(ASTAnnotation.class)
             .crossFindBoundaries()
             .toStream()
-            .flatMap(a -> extractMethodsFromAnnotation(a, parameterless))
+            .flatMap(a -> extractMethodsFromAnnotation(a, parameterless, stringReferenceAnnotations))
             .collect(Collectors.toSet());
     }
 
-    private static Stream<String> extractMethodsFromAnnotation(ASTAnnotation a, String parameterless) {
-        return Stream.concat(
-            a.getFlatValues().toStream()
+    private static Stream<String> extractMethodsFromAnnotation(ASTAnnotation annotation,
+                                                               String parameterless,
+                                                               @Nullable Set<String> stringReferenceAnnotations) {
+        boolean collectStrings = stringReferenceAnnotations == null
+            || referencesMembersByName(annotation, stringReferenceAnnotations);
+        Stream<String> referencedNames = collectStrings
+            ? annotation.getFlatValues().toStream()
                 .map(ASTMemberValue::getConstValue)
                 .map(asInstanceOf(String.class))
-                .filter(StringUtils::isNotEmpty),
-            NodeStream.of(a)
-                .filter(it -> TypeTestUtil.isA(parameterless, it)
-                    && it.getFlatValue("value").isEmpty())
-                .ancestors(ASTMethodDeclaration.class)
-                .take(1)
-                .toStream()
-                .map(ASTMethodDeclaration::getName)
-        );
+                .filter(StringUtils::isNotEmpty)
+            : Stream.empty();
+        Stream<String> parameterlessName = NodeStream.of(annotation)
+            .filter(it -> TypeTestUtil.isA(parameterless, it)
+                && it.getFlatValue("value").isEmpty())
+            .ancestors(ASTMethodDeclaration.class)
+            .take(1)
+            .toStream()
+            .map(ASTMethodDeclaration::getName);
+        return Stream.concat(referencedNames, parameterlessName);
+    }
+
+    private static boolean referencesMembersByName(ASTAnnotation annotation, Set<String> annotationNames) {
+        for (String annotationName : annotationNames) {
+            if (TypeTestUtil.isA(annotationName, annotation)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
