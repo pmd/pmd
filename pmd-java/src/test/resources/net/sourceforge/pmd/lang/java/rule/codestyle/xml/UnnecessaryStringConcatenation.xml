@@ -314,15 +314,19 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>Preserve custom toString conversion and its evaluation order</description>
-        <expected-problems>0</expected-problems>
+        <description>Object conversion can move to an enclosing concatenation on the right</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
         <code><![CDATA[
 class Example {
     String format(Object value) {
         String a = value + "";
         String b = "" + value;
         String c = "" + value + changeValueAndGetSuffix(value);
-        String d = "prefix" + (value + "");
+        String d = "prefix" + (value + ""); // violation
         return a + b + c + d;
     }
     String changeValueAndGetSuffix(Object value) {
@@ -333,16 +337,111 @@ class Example {
     </test-code>
 
     <test-code>
-        <description>Preserve conversions of arrays and boxed values</description>
-        <expected-problems>0</expected-problems>
+        <description>Preserve standalone array and boxed conversions but allow enclosing string conversion</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
         <code><![CDATA[
 class Example {
     String format(char[] chars, int[] numbers, Integer number) {
         String a = chars + "";
         String b = "" + numbers;
         String c = "" + chars + " suffix";
-        String d = "prefix" + (number + "");
+        String d = "prefix" + (number + ""); // violation
         return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Review: either empty operand can be removed from a nested object concatenation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(Object object) {
+        String a = "a" + (object + ""); // violation
+        String b = "a" + ("" + object); // violation
+        return a + b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested reference conversion supports arrays, boxed values and a nullable prefix</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String prefix, Object object, char[] chars, int[] numbers, Integer number) {
+        String a = prefix + (object + ""); // violation
+        String b = "prefix" + ("" + chars); // violation
+        String c = "prefix" + (numbers + ""); // violation
+        String d = "prefix" + ("" + number); // violation
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested conversion preserves the order of prefix, object creation and toString calls</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    StringBuilder calls = new StringBuilder();
+    String format() {
+        String a = prefix() + (value() + ""); // violation
+        String b = prefix() + ("" + value()); // violation
+        return a + b;
+    }
+    String prefix() {
+        calls.append("prefix;");
+        return "prefix";
+    }
+    Object value() {
+        calls.append("value;");
+        return new Object() {
+            @Override
+            public String toString() {
+                calls.append("toString;");
+                return "value";
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unresolved nested references and arrays remain conservative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(MissingType object, MissingType[] array) {
+        String a = "prefix" + (object + "");
+        String b = "prefix" + ("" + array);
+        String c = "prefix" + (object.getValue() + "");
+        return a + b + c;
     }
 }
         ]]></code>

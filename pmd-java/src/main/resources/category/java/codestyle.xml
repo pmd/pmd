@@ -2190,9 +2190,10 @@ The rule preserves empty strings needed for conversion, including conversion of
 null to `"null"`. For example, `"" + s + " suffix"` can be simplified to
 `s + " suffix"`, even if `s` is null, but a standalone `s + ""` is not reported
 unless `s` is known to be a constant string or another concatenation.
-Numeric additions and parentheses are taken into account. Conversions of other
-reference types are preserved because their `toString()` methods may have side
-effects.
+
+An enclosing concatenation can also make an empty literal redundant when the
+other operand is not a string. For example, `"prefix" + (object + "")` can be
+simplified to `"prefix" + object`.
 
 Empty text blocks are treated like empty string literals. Only the first redundant
 empty literal in each concatenation is reported at a time, since another empty
@@ -2205,10 +2206,11 @@ It does not merge nonempty literals or recommend replacing conversions like
         <example>
 <![CDATA[
 class Example {
-    String format(String value, int number) {
+    String format(String value, int number, Object object) {
         String redundant = "" + value + " suffix"; // reported: remove the leading ""
         String corrected = value + " suffix";
         String nested = "prefix" + (number + ""); // reported: remove the trailing ""
+        String nestedObject = "prefix" + (object + ""); // reported: remove the trailing ""
         String conversion = "" + number; // necessary to convert the number to a string
         return corrected;
     }

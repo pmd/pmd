@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -56,10 +57,12 @@ public class UnnecessaryStringConcatenationRule extends AbstractJavaRulechainRul
             // The enclosing concatenation still converts null to "null".
             return true;
         }
-        // Other reference types may have a toString() with side effects. Moving
-        // their conversion to the enclosing concatenation could change its order.
         JTypeMirror siblingType = sibling.getTypeMirror();
-        return (siblingType.isPrimitive() || siblingType.isBottom())
-            && TypeTestUtil.isExactlyA(String.class, JavaAstUtils.getOtherOperandIfInInfixExpr(concat));
+        ASTInfixExpression parent = (ASTInfixExpression) concat.getParent();
+        // On the right, the enclosing left operand has already been evaluated.
+        // Moving conversion to that concatenation preserves its evaluation order.
+        return TypeTestUtil.isExactlyA(String.class, JavaAstUtils.getOtherOperandIfInInfixExpr(concat))
+            && (siblingType.isPrimitive() || siblingType.isBottom()
+                || parent.getRightOperand() == concat && !TypeOps.isUnresolvedOrArray(siblingType));
     }
 }
