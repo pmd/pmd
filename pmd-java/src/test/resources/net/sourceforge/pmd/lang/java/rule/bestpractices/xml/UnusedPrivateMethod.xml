@@ -3205,4 +3205,442 @@ public class WRBoth {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7340 TestNG method-name attributes mark the named methods as used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Factory;
+import org.testng.annotations.Test;
+
+public class TestNgUses {
+    private static final String PROVIDER = "rows";
+
+    @Test(dataProvider = PROVIDER, dependsOnMethods = { "ready", "demo.TestNgUses.alsoReady" })
+    public void test(String value) {
+    }
+
+    @Factory(dataProvider = "instances")
+    public Object[] create(String name) {
+        return new Object[] { name };
+    }
+
+    @BeforeSuite(dependsOnMethods = "beforeSuiteHelper")
+    public void beforeSuite() {
+    }
+
+    @AfterSuite(dependsOnMethods = "afterSuiteHelper")
+    public void afterSuite() {
+    }
+
+    @BeforeTest(dependsOnMethods = "beforeTestHelper")
+    public void beforeTest() {
+    }
+
+    @AfterTest(dependsOnMethods = "afterTestHelper")
+    public void afterTest() {
+    }
+
+    @BeforeClass(dependsOnMethods = "beforeClassHelper")
+    public void beforeClass() {
+    }
+
+    @AfterClass(dependsOnMethods = "afterClassHelper")
+    public void afterClass() {
+    }
+
+    @BeforeGroups(dependsOnMethods = "beforeGroupsHelper")
+    public void beforeGroups() {
+    }
+
+    @AfterGroups(dependsOnMethods = "afterGroupsHelper")
+    public void afterGroups() {
+    }
+
+    @BeforeMethod(dependsOnMethods = "beforeMethodHelper")
+    public void beforeMethod() {
+    }
+
+    @AfterMethod(dependsOnMethods = "afterMethodHelper")
+    public void afterMethod() {
+    }
+
+    private Object[][] rows() {
+        return new Object[0][];
+    }
+
+    private void ready() {
+    }
+
+    private void alsoReady(int value) {
+    }
+
+    private Object[][] instances() {
+        return new Object[0][];
+    }
+
+    private void beforeSuiteHelper() {
+    }
+
+    private void afterSuiteHelper() {
+    }
+
+    private void beforeTestHelper() {
+    }
+
+    private void afterTestHelper() {
+    }
+
+    private void beforeClassHelper() {
+    }
+
+    private void afterClassHelper() {
+    }
+
+    private void beforeGroupsHelper() {
+    }
+
+    private void afterGroupsHelper() {
+    }
+
+    private void beforeMethodHelper() {
+    }
+
+    private void afterMethodHelper() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 TestNG descriptions, groups, and message patterns are not method uses</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>24,27</expected-linenumbers>
+        <code><![CDATA[
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.BeforeGroups;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class TestNgStrings {
+    @Test(description = "helper", groups = "helper", dependsOnGroups = "helper",
+          expectedExceptionsMessageRegExp = "helper", suiteName = "helper", testName = "helper")
+    public void test() {
+    }
+
+    @BeforeMethod(onlyForGroups = "helper", description = "helper")
+    public void setUp() {
+    }
+
+    @BeforeGroups("helper")
+    public void beforeGroups() {
+    }
+
+    @AfterGroups(value = "helper")
+    public void afterGroups() {
+    }
+
+    private void helper() {
+    }
+
+    private void helper(int value) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 A TestNG dependsOnMethods reference to another class does not hide local methods</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,13</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import org.testng.annotations.Test;
+
+public class Local {
+    @Test(dependsOnMethods = "other.Example.helper")
+    public void test() {
+    }
+
+    private void helper() {
+    }
+
+    private void helper(int value) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 MapStruct method-name attributes and @Named qualifiers mark the referenced methods as used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.mapstruct.BeanMapping;
+import org.mapstruct.InheritConfiguration;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.MapMapping;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.SubclassMapping;
+
+public abstract class MapStructUses {
+    @Mapping(target = "name", qualifiedByName = { "format", "englishToGerman" }, conditionQualifiedByName = "present")
+    @BeanMapping(qualifiedByName = "factory")
+    @IterableMapping(qualifiedByName = "element")
+    @MapMapping(keyQualifiedByName = "keyFormat", valueQualifiedByName = "valueFormat")
+    @SubclassMapping(source = String.class, target = String.class, qualifiedByName = "subclass")
+    @InheritConfiguration(name = "inheritFrom")
+    @InheritInverseConfiguration(name = "inheritInverse")
+    public abstract String map(String name);
+
+    private String format(String name) {
+        return name;
+    }
+
+    private boolean present(String name) {
+        return name != null;
+    }
+
+    private String factory() {
+        return "";
+    }
+
+    private String element(String name) {
+        return name;
+    }
+
+    private String keyFormat(String name) {
+        return name;
+    }
+
+    private String valueFormat(String name) {
+        return name;
+    }
+
+    private String subclass(String name) {
+        return name;
+    }
+
+    private String inheritFrom(String name) {
+        return name;
+    }
+
+    private String inheritInverse(String name) {
+        return name;
+    }
+
+    @Named("englishToGerman")
+    private String translate(String title) {
+        return title;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 MapStruct property names, formats, and expressions are not method uses</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>20,44</expected-linenumbers>
+        <code><![CDATA[
+import org.mapstruct.BeanMapping;
+import org.mapstruct.IterableMapping;
+import org.mapstruct.MapMapping;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
+public abstract class MapStructStrings {
+    @Mapping(target = "helper", source = "helper", expression = "helper",
+             defaultExpression = "helper", conditionExpression = "helper",
+             constant = "helper", dateFormat = "helper", numberFormat = "helper",
+             defaultValue = "helper", dependsOn = "helper", qualifiedByName = "format")
+    @BeanMapping(qualifiedByName = "factory", ignoreUnmappedSourceProperties = "helper")
+    @IterableMapping(dateFormat = "helper", numberFormat = "helper", qualifiedByName = "element")
+    @MapMapping(keyDateFormat = "helper", valueDateFormat = "helper",
+                keyNumberFormat = "helper", valueNumberFormat = "helper",
+                keyQualifiedByName = "keyFormat", valueQualifiedByName = "valueFormat")
+    public abstract String map(String helper);
+
+    @Named("notReferenced")
+    private String alias(String value) {
+        return value;
+    }
+
+    private String format(String value) {
+        return value;
+    }
+
+    private String factory() {
+        return "";
+    }
+
+    private String element(String value) {
+        return value;
+    }
+
+    private String keyFormat(String value) {
+        return value;
+    }
+
+    private String valueFormat(String value) {
+        return value;
+    }
+
+    private void helper() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 MyBatis method and select attributes mark the named methods as used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
+
+public class MyBatisUses {
+    @SelectProvider(type = MyBatisUses.class, method = "selectSql")
+    @InsertProvider(type = MyBatisUses.class, method = "insertSql")
+    @UpdateProvider(type = MyBatisUses.class, method = "updateSql")
+    @DeleteProvider(type = MyBatisUses.class, method = "deleteSql")
+    @Results({
+        @Result(property = "email", column = "id", one = @One(select = "loadEmail")),
+        @Result(property = "phones", column = "id", many = @Many(select = "demo.MyBatisUses.loadPhones"))
+    })
+    public Object find(int id) {
+        return null;
+    }
+
+    private static String selectSql(int id) {
+        return "select";
+    }
+
+    private static String insertSql() {
+        return "insert";
+    }
+
+    private static String updateSql(int id) {
+        return "update";
+    }
+
+    private static String deleteSql() {
+        return "delete";
+    }
+
+    private Object loadEmail(int id) {
+        return null;
+    }
+
+    private Object loadPhones(int id) {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 MyBatis nested classes are referenced by binary and canonical Class.method ids</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package demo;
+
+import org.apache.ibatis.annotations.Many;
+import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.testng.annotations.Test;
+
+public class Outer {
+    public static class Inner {
+        @Results(@Result(property = "email", column = "id", one = @One(select = "demo.Outer$Inner.loadEmail")))
+        @Test(dependsOnMethods = "demo.Outer$Inner.ready")
+        public Object find(int id) {
+            return null;
+        }
+
+        private Object loadEmail(int id) {
+            return null;
+        }
+
+        private void ready() {
+        }
+    }
+
+    public static class Other {
+        @Results(@Result(property = "phones", column = "id", many = @Many(select = "demo.Outer.Other.loadPhones")))
+        public Object find(int id) {
+            return null;
+        }
+
+        private Object loadPhones(int id) {
+            return null;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7340 MyBatis SQL, database ids, and column prefixes are not method uses</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>28,32</expected-linenumbers>
+        <code><![CDATA[
+package demo;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
+
+public class MyBatisStrings {
+    @Select("helper")
+    @Insert("helper")
+    @Update("helper")
+    @Delete("helper")
+    @SelectProvider(type = MyBatisStrings.class, method = "sql", databaseId = "helper")
+    @Results(@Result(property = "email", column = "id",
+        one = @One(select = "other.Mapper.loadEmail", columnPrefix = "helper", resultMap = "helper")))
+    public Object find(int id) {
+        return null;
+    }
+
+    private static String sql() {
+        return "select 1";
+    }
+
+    private Object loadEmail(int id) {
+        return null;
+    }
+
+    private void helper() {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

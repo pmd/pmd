@@ -2211,7 +2211,8 @@ public class Something {
         <description>
 Unused Private Method detects when a private method is declared but is unused.
 No-argument private methods referenced by JUnit `@MethodSource` or Lombok `@ObtainVia` are treated as used.
-Strings in other annotations are not method uses.
+Private methods named by known method-referencing annotations from TestNG, MapStruct, and MyBatis are treated as used.
+That set can be extended. Strings in other annotations are not method uses.
         </description>
         <priority>3</priority>
         <example>

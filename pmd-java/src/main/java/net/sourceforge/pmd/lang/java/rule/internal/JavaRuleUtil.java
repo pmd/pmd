@@ -12,6 +12,9 @@ import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamField;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -596,7 +599,8 @@ public final class JavaRuleUtil {
      *
      * <p>String values of every annotation are included. Callers that should only honor
      * specific annotations must use
-     * {@link #getMembersUsedByAnnotations(ASTCompilationUnit, String, Set)}.
+     * {@link #getMembersUsedByAnnotations(ASTCompilationUnit, String, Set)}
+     * or {@link #getMembersUsedByAnnotations(ASTCompilationUnit, String, Map)}.
      *
      * @param unit compilation unit
      * @param parameterless parameterless annotation that references members of the same name
@@ -623,46 +627,95 @@ public final class JavaRuleUtil {
                                                           String parameterless,
                                                           Set<String> stringReferenceAnnotations) {
         Objects.requireNonNull(stringReferenceAnnotations, "stringReferenceAnnotations");
-        return collectMembersUsedByAnnotations(unit, parameterless, stringReferenceAnnotations);
+        Map<String, Set<String>> attributes = new LinkedHashMap<>();
+        for (String annotation : stringReferenceAnnotations) {
+            attributes.put(annotation, Collections.emptySet());
+        }
+        return collectMembersUsedByAnnotations(unit, parameterless, attributes);
+    }
+
+    /**
+     * Like {@link #getMembersUsedByAnnotations(ASTCompilationUnit, String, Set)}, but each
+     * annotation may restrict which attributes are read.
+     *
+     * <p>A null or empty attribute set means every string member of that annotation.
+     * A non-empty set reads only those attributes. The parameterless annotation is
+     * ignored when {@code parameterless} is null.
+     *
+     * @param unit compilation unit
+     * @param parameterless parameterless annotation that references members of the same name
+     *                      as the annotated member, or null
+     * @param stringReferenceAttributes canonical annotation name to the attribute names that
+     *                                  hold member references
+     * @return members potentially referenced by the selected annotation attributes
+     */
+    public static Set<String> getMembersUsedByAnnotations(ASTCompilationUnit unit,
+                                                          @Nullable String parameterless,
+                                                          Map<String, Set<String>> stringReferenceAttributes) {
+        Objects.requireNonNull(stringReferenceAttributes, "stringReferenceAttributes");
+        return collectMembersUsedByAnnotations(unit, parameterless, stringReferenceAttributes);
     }
 
     private static Set<String> collectMembersUsedByAnnotations(ASTCompilationUnit unit,
-                                                               String parameterless,
-                                                               @Nullable Set<String> stringReferenceAnnotations) {
+                                                               @Nullable String parameterless,
+                                                               @Nullable Map<String, Set<String>> stringReferenceAttributes) {
         return unit.descendants(ASTAnnotation.class)
             .crossFindBoundaries()
             .toStream()
-            .flatMap(a -> extractMethodsFromAnnotation(a, parameterless, stringReferenceAnnotations))
+            .flatMap(a -> extractMethodsFromAnnotation(a, parameterless, stringReferenceAttributes))
             .collect(Collectors.toSet());
     }
 
     private static Stream<String> extractMethodsFromAnnotation(ASTAnnotation annotation,
-                                                               String parameterless,
-                                                               @Nullable Set<String> stringReferenceAnnotations) {
-        boolean collectStrings = stringReferenceAnnotations == null
-            || referencesMembersByName(annotation, stringReferenceAnnotations);
-        Stream<String> referencedNames = collectStrings
-            ? annotation.getFlatValues().toStream()
-                .map(ASTMemberValue::getConstValue)
-                .map(asInstanceOf(String.class))
-                .filter(StringUtils::isNotEmpty)
-            : Stream.empty();
-        Stream<String> parameterlessName = NodeStream.of(annotation)
-            .filter(it -> TypeTestUtil.isA(parameterless, it)
-                && it.getFlatValue("value").isEmpty())
-            .ancestors(ASTMethodDeclaration.class)
-            .take(1)
-            .toStream()
-            .map(ASTMethodDeclaration::getName);
+                                                               @Nullable String parameterless,
+                                                               @Nullable Map<String, Set<String>> stringReferenceAttributes) {
+        Stream<String> referencedNames = memberNames(annotation, stringReferenceAttributes);
+        Stream<String> parameterlessName = parameterless == null
+            ? Stream.empty()
+            : NodeStream.of(annotation)
+                .filter(it -> TypeTestUtil.isA(parameterless, it)
+                    && it.getFlatValue("value").isEmpty())
+                .ancestors(ASTMethodDeclaration.class)
+                .take(1)
+                .toStream()
+                .map(ASTMethodDeclaration::getName);
         return Stream.concat(referencedNames, parameterlessName);
     }
 
-    private static boolean referencesMembersByName(ASTAnnotation annotation, Set<String> annotationNames) {
-        for (String annotationName : annotationNames) {
-            if (TypeTestUtil.isA(annotationName, annotation)) {
-                return true;
+    private static Stream<String> memberNames(ASTAnnotation annotation,
+                                                  @Nullable Map<String, Set<String>> stringReferenceAttributes) {
+        if (stringReferenceAttributes == null) {
+            return constStrings(annotation.getFlatValues());
+        }
+        Set<String> attributes = attributesFor(annotation, stringReferenceAttributes);
+        if (attributes == null) {
+            return Stream.empty();
+        }
+        if (attributes.isEmpty()) {
+            return constStrings(annotation.getFlatValues());
+        }
+        return attributes.stream().flatMap(name -> constStrings(annotation.getFlatValue(name)));
+    }
+
+    private static Stream<String> constStrings(NodeStream<ASTMemberValue> values) {
+        return values.toStream()
+            .map(ASTMemberValue::getConstValue)
+            .map(asInstanceOf(String.class))
+            .filter(StringUtils::isNotEmpty);
+    }
+
+    /**
+     * Attributes to read for this annotation, or null when the annotation is not selected.
+     * An empty set means every string member.
+     */
+    private static @Nullable Set<String> attributesFor(ASTAnnotation annotation,
+                                                       Map<String, Set<String>> stringReferenceAttributes) {
+        for (Map.Entry<String, Set<String>> entry : stringReferenceAttributes.entrySet()) {
+            if (TypeTestUtil.isA(entry.getKey(), annotation)) {
+                Set<String> attributes = entry.getValue();
+                return attributes == null ? Collections.emptySet() : attributes;
             }
         }
-        return false;
+        return null;
     }
 }
