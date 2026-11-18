@@ -4,17 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -69,16 +75,65 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
                         continue nextFormal; // variable is overwritten
                     }
 
-                    // the RHS of an assignment
-                    if (usage.getParent() instanceof ASTAssignmentExpression && usage.getIndexInParent() == 1) {
-                        ASTAssignableExpr assigned = ((ASTAssignmentExpression) usage.getParent()).getLeftOperand();
+                    // the RHS of an assignment, possibly wrapped in calls
+                    // that return the same value, eg
+                    // Collections.singletonList(a).get(0)
+                    ASTExpression stored = unwrapValuePreservingWrappers(usage);
+                    if (stored.getParent() instanceof ASTAssignmentExpression && stored.getIndexInParent() == 1) {
+                        ASTAssignableExpr assigned = ((ASTAssignmentExpression) stored.getParent()).getLeftOperand();
                         if (JavaAstUtils.isRefToFieldOfThisInstance(assigned)) {
-                            context.addViolation(usage.getParent(), usage.getName());
+                            context.addViolation(stored.getParent(), usage.getName());
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Unwraps expressions that provably evaluate to the same value as the
+     * given expression: casts, single-element container creations
+     * ({@code Collections.singletonList(x)}, {@code List.of(x)}), and element
+     * retrievals from such containers ({@code get(0)}, {@code getFirst()}).
+     */
+    private static ASTExpression unwrapValuePreservingWrappers(ASTExpression expr) {
+        ASTExpression current = expr;
+        boolean inSingleElementContainer = false;
+        while (true) {
+            JavaNode parent = current.getParent();
+            if (parent instanceof ASTCastExpression && ((ASTCastExpression) parent).getOperand() == current) {
+                current = (ASTExpression) parent;
+            } else if (parent instanceof ASTArgumentList && parent.getParent() instanceof ASTMethodCall
+                    && isSingleElementContainerCreation((ASTMethodCall) parent.getParent(), current)) {
+                inSingleElementContainer = true;
+                current = (ASTExpression) parent.getParent();
+            } else if (parent instanceof ASTMethodCall && inSingleElementContainer
+                    && isElementRetrieval((ASTMethodCall) parent, current)) {
+                inSingleElementContainer = false;
+                current = (ASTExpression) parent;
+            } else {
+                break;
+            }
+        }
+        return current;
+    }
+
+    private static boolean isSingleElementContainerCreation(ASTMethodCall call, ASTExpression arg) {
+        if (call.getArguments().size() != 1 || call.getArguments().get(0) != arg) {
+            return false;
+        }
+        return ("singletonList".equals(call.getMethodName())
+                && TypeTestUtil.isA("java.util.Collections", call.getQualifier()))
+                || ("of".equals(call.getMethodName())
+                && TypeTestUtil.isA("java.util.List", call.getQualifier()));
+    }
+
+    private static boolean isElementRetrieval(ASTMethodCall call, ASTExpression receiver) {
+        if (call.getQualifier() != receiver) {
+            return false;
+        }
+        return ("getFirst".equals(call.getMethodName()) && call.getArguments().size() == 0)
+                || ("get".equals(call.getMethodName()) && call.getArguments().size() == 1);
     }
 
 }
