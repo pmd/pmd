@@ -2189,7 +2189,7 @@ to read.
 The rule preserves empty strings needed for conversion, including conversion of
 null to `"null"`. For example, `"" + s + " suffix"` can be simplified to
 `s + " suffix"`, even if `s` is null, but a standalone `s + ""` is not reported
-unless `s` is known to be a constant string or another concatenation.
+unless `s` is known to be a string or another concatenation.
 
 An enclosing concatenation can also make an empty literal redundant when the
 other operand is not a string. For example, `"prefix" + (object + "")` can be
@@ -2201,6 +2201,12 @@ string may still be needed for conversion. References to empty string constants
 are not reported. The rule checks `+` expressions, so `s += ""` is not reported.
 It does not merge nonempty literals or recommend replacing conversions like
 `1 + ""` with string literals.
+
+**Limitations:** This rule does not perform flow-sensitive nullability analysis.
+To preserve null conversion, it conservatively skips standalone concatenations
+with string values that are not compile-time constants or concatenation results.
+This can miss unnecessary concatenations even when a string is non-null, for
+example after a null check or initialization with a string literal.
         </description>
         <priority>3</priority>
         <example>

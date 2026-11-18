@@ -97,6 +97,26 @@ class Example {
     </test-code>
 
     <test-code>
+        <description>Limitation: nonconstant strings are skipped even after initialization or null checks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(String value) {
+        String initialized = "text";
+        String a = initialized + "";
+        String b = "" + initialized;
+        if (value != null) {
+            String c = value + "";
+            String d = "" + value;
+            return c + d;
+        }
+        return a + b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Nullable strings are still converted by the enclosing concatenation</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>3,4,5,6</expected-linenumbers>
