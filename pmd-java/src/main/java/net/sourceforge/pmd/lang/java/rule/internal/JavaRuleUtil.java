@@ -687,12 +687,13 @@ public final class JavaRuleUtil {
         if (stringReferenceAttributes == null) {
             return constStrings(annotation.getFlatValues());
         }
+        // An empty attribute set on a selected annotation means every string member.
+        // An annotation that is not selected contributes no names.
         Set<String> attributes = attributesFor(annotation, stringReferenceAttributes);
-        if (attributes == null) {
-            return Stream.empty();
-        }
         if (attributes.isEmpty()) {
-            return constStrings(annotation.getFlatValues());
+            return annotationIsSelected(annotation, stringReferenceAttributes)
+                ? constStrings(annotation.getFlatValues())
+                : Stream.empty();
         }
         return attributes.stream().flatMap(name -> constStrings(annotation.getFlatValue(name)));
     }
@@ -705,17 +706,28 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Attributes to read for this annotation, or null when the annotation is not selected.
-     * An empty set means every string member.
+     * Attributes to read for this annotation. An empty set means either that the
+     * annotation is not selected, or that every string member should be read.
+     * {@link #annotationIsSelected(ASTAnnotation, Map)} distinguishes those cases.
      */
-    private static @Nullable Set<String> attributesFor(ASTAnnotation annotation,
-                                                       Map<String, Set<String>> stringReferenceAttributes) {
+    private static Set<String> attributesFor(ASTAnnotation annotation,
+                                             Map<String, Set<String>> stringReferenceAttributes) {
         for (Map.Entry<String, Set<String>> entry : stringReferenceAttributes.entrySet()) {
             if (TypeTestUtil.isA(entry.getKey(), annotation)) {
                 Set<String> attributes = entry.getValue();
                 return attributes == null ? Collections.emptySet() : attributes;
             }
         }
-        return null;
+        return Collections.emptySet();
+    }
+
+    private static boolean annotationIsSelected(ASTAnnotation annotation,
+                                                Map<String, Set<String>> stringReferenceAttributes) {
+        for (Map.Entry<String, Set<String>> entry : stringReferenceAttributes.entrySet()) {
+            if (TypeTestUtil.isA(entry.getKey(), annotation)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
