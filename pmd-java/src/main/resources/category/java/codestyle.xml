@@ -2195,18 +2195,23 @@ An enclosing concatenation can also make an empty literal redundant when the
 other operand is not a string. For example, `"prefix" + (object + "")` can be
 simplified to `"prefix" + object`.
 
+The rule also reports `s += ""` when the local variable or parameter `s` is
+known to hold a non-null string. For example, `String s = "text"; s += "";`
+contains an unnecessary compound assignment.
+
 Empty text blocks are treated like empty string literals. Only the first redundant
 empty literal in each concatenation is reported at a time, since another empty
 string may still be needed for conversion. References to empty string constants
-are not reported. The rule checks `+` expressions, so `s += ""` is not reported.
+are not reported.
 It does not merge nonempty literals or recommend replacing conversions like
 `1 + ""` with string literals.
 
-**Limitations:** This rule does not perform flow-sensitive nullability analysis.
-To preserve null conversion, it conservatively skips standalone concatenations
-with string values that are not compile-time constants or concatenation results.
-This can miss unnecessary concatenations even when a string is non-null, for
-example after a null check or initialization with a string literal.
+**Limitations:** This rule cannot generally determine nullability. It recognizes
+constant strings, concatenation results, and local variables whose possible
+assignments all produce such values. Other values are conservatively skipped to
+preserve null conversion, even when they are non-null in practice, for example
+after a null check. Compound assignments to fields and array elements are not
+reported.
         </description>
         <priority>3</priority>
         <example>
@@ -2218,6 +2223,8 @@ class Example {
         String nested = "prefix" + (number + ""); // reported: remove the trailing ""
         String nestedObject = "prefix" + (object + ""); // reported: remove the trailing ""
         String conversion = "" + number; // necessary to convert the number to a string
+        String text = "text";
+        text += ""; // reported: remove the unnecessary compound assignment
         return corrected;
     }
 }
