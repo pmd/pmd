@@ -7,7 +7,9 @@
 *.md    text
 *.sh    text eol=lf
 *.bat   text eol=crlf
-mvnw.cmd text eol=crlf
+# we store mvnw.cmd with CRLF (without eol normalization) as dependabot creates updates
+# and doesn't use git - so it would always change it back to crlf.
+mvnw.cmd -text whitespace=cr-at-eol
 *.png   -text
 *.jpg   -text
 *.svgz  -text
