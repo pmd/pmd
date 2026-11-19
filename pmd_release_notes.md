@@ -12,6 +12,7 @@ This is a minor release.
 * [🚀️ New and noteworthy](#new-and-noteworthy)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
+    * [Changed Rules](#changed-rules)
     * [Deprecated Rules](#deprecated-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes and Deprecations](#api-changes-and-deprecations)
@@ -34,6 +35,14 @@ This is a minor release.
     Loops are allowed by default and can be reported by setting
     `allowLoops` to `false`.
 
+#### Changed Rules
+* The Apex rule [`ApexUnitTestShouldNotUseSeeAllDataTrue`](https://docs.pmd-code.org/pmd-doc-7.30.0-SNAPSHOT/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue) has a new property
+    `reportConnectApi`. It defaults to `true`. Set it to `false`, and the rule does not report `seeAllData=true` on a
+    test class or test method that calls a `ConnectApi` method, since most `ConnectApi` methods require `seeAllData=true`
+    in tests. A call to a `setTest...` method does not stop the rule from reporting, because it only registers test data.
+    Nor does a call to the regular method whose test data a `setTest...` call in the same test registers
+    (see [#7236](https://github.com/pmd/pmd/issues/7236)).
+
 #### Deprecated Rules
 *   The Java rule [`AddEmptyString`](https://docs.pmd-code.org/pmd-doc-7.30.0-SNAPSHOT/pmd_rules_java_performance.html#addemptystring) is deprecated without replacement
     and will be removed with PMD 8.0.0. Its performance claim is not valid on modern JDKs:
@@ -45,6 +54,8 @@ This is a minor release.
 ### 🐛️ Fixed Issues
 * apex
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
+* apex-bestpractices
+    * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * core

@@ -2075,6 +2075,16 @@ Loops are allowed by default and can be reported by setting
 <code class="language-plaintext highlighter-rouge">allowLoops</code> to <code class="language-plaintext highlighter-rouge">false</code>.</li>
 </ul>
 
+<h4 id="changed-rules">Changed Rules</h4>
+<ul>
+  <li>The Apex rule <a href="pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue"><code class="language-plaintext highlighter-rouge">ApexUnitTestShouldNotUseSeeAllDataTrue</code></a> has a new property
+  <code class="language-plaintext highlighter-rouge">reportConnectApi</code>. It defaults to <code class="language-plaintext highlighter-rouge">true</code>. Set it to <code class="language-plaintext highlighter-rouge">false</code>, and the rule does not report <code class="language-plaintext highlighter-rouge">seeAllData=true</code> on a
+  test class or test method that calls a <code class="language-plaintext highlighter-rouge">ConnectApi</code> method, since most <code class="language-plaintext highlighter-rouge">ConnectApi</code> methods require <code class="language-plaintext highlighter-rouge">seeAllData=true</code>
+  in tests. A call to a <code class="language-plaintext highlighter-rouge">setTest...</code> method does not stop the rule from reporting, because it only registers test data.
+  Nor does a call to the regular method whose test data a <code class="language-plaintext highlighter-rouge">setTest...</code> call in the same test registers
+  (see <a href="https://github.com/pmd/pmd/issues/7236">#7236</a>).</li>
+</ul>
+
 <h4 id="deprecated-rules">Deprecated Rules</h4>
 <ul>
   <li>The Java rule <a href="pmd_rules_java_performance.html#addemptystring"><code class="language-plaintext highlighter-rouge">AddEmptyString</code></a> is deprecated without replacement
@@ -2090,6 +2100,11 @@ references continue to work during the deprecation period.</li>
   <li>apex
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/7182">#7182</a>: [apex] Expose the referenced type name on ClassRefExpression for XPath rules</li>
+    </ul>
+  </li>
+  <li>apex-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/7236">#7236</a>: [apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi</li>
     </ul>
   </li>
   <li>apex-design

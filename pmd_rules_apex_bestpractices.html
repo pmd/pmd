@@ -2149,7 +2149,7 @@ patterns can be specified using the ‘additionalAssertMethodPattern’ property
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the 
+<p>Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the
 user running it.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestClassShouldHaveRunAsRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule</a></p>
@@ -2281,6 +2281,24 @@ annotation for test classes and methods.</p>
 
 <p>Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.</p>
 
+<p>Most <code class="language-plaintext highlighter-rouge">ConnectApi</code> methods require <code class="language-plaintext highlighter-rouge">seeAllData=true</code> in tests. Set the property <code class="language-plaintext highlighter-rouge">reportConnectApi</code> to <code class="language-plaintext highlighter-rouge">false</code>, and the rule
+does not report <code class="language-plaintext highlighter-rouge">seeAllData=true</code> on a test class or test method that calls such a method:</p>
+
+<ul>
+  <li>For <code class="language-plaintext highlighter-rouge">seeAllData=true</code> on a test class, the rule looks for the <code class="language-plaintext highlighter-rouge">ConnectApi</code> call in every method of the class,
+helper methods too.</li>
+  <li>For <code class="language-plaintext highlighter-rouge">seeAllData=true</code> on a test method, the rule looks for the <code class="language-plaintext highlighter-rouge">ConnectApi</code> call only in the body of that test method.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">ConnectApi</code> method whose name starts with <code class="language-plaintext highlighter-rouge">setTest</code>, such as <code class="language-plaintext highlighter-rouge">ConnectApi.ChatterFeeds.setTestGetFeedElementsFromFeed</code>,
+registers test data and uses no org data. So a call to it does not stop the rule from reporting <code class="language-plaintext highlighter-rouge">seeAllData=true</code>.</li>
+  <li>The regular method that a <code class="language-plaintext highlighter-rouge">setTest</code> method registers test data for, such as <code class="language-plaintext highlighter-rouge">ConnectApi.ChatterFeeds.getFeedElementsFromFeed</code>,
+returns that test data and uses no org data. So when the same test class or test method also calls its <code class="language-plaintext highlighter-rouge">setTest</code> method,
+a call to the regular method does not stop the rule from flagging <code class="language-plaintext highlighter-rouge">seeAllData=true</code> either.</li>
+  <li>The rule does not look in other classes. If the test calls a method of another class, and only that class calls
+<code class="language-plaintext highlighter-rouge">ConnectApi</code>, the rule flags <code class="language-plaintext highlighter-rouge">seeAllData=true</code>.</li>
+</ul>
+
+<p>See more here: <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/connectAPI_TestingApex.htm">https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/connectAPI_TestingApex.htm</a></p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrueRule.java">net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -2296,8 +2314,35 @@ annotation for test classes and methods.</p>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>reportConnectApi</td>
+      <td>true</td>
+      <td>Report seeAllData=true even where the annotated test class or test method calls a ConnectApi method that uses org data. Most ConnectApi methods require seeAllData=true in tests. Set this to false, and the rule does not report seeAllData=true on a test class or test method that calls one.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportConnectApi"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="avoidfutureannotation">AvoidFutureAnnotation</h2>
@@ -2342,11 +2387,11 @@ annotation for test classes and methods.</p>
 <span class="c1">// Recommended: Using Queueable interface with Finalizer to detect and handle job failure</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">QueueableExample</span> <span class="kd">implements</span> <span class="nc">Queueable</span><span class="o">,</span> <span class="nc">Finalizer</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="nc">String</span> <span class="n">accountId</span><span class="o">;</span>
-    
+
     <span class="kd">public</span> <span class="nf">QueueableExample</span><span class="o">(</span><span class="nc">String</span> <span class="n">accountId</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">this</span><span class="o">.</span><span class="na">accountId</span> <span class="o">=</span> <span class="n">accountId</span><span class="o">;</span>
     <span class="o">}</span>
-    
+
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">QueueableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
         <span class="nc">System</span><span class="o">.</span><span class="na">attachFinalizer</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
         <span class="nc">Account</span> <span class="n">acc</span> <span class="o">=</span> <span class="o">[</span><span class="no">SELECT</span> <span class="nc">Id</span><span class="o">,</span> <span class="nc">Name</span> <span class="no">FROM</span> <span class="nc">Account</span> <span class="no">WHERE</span> <span class="nc">Id</span> <span class="o">=</span> <span class="o">:</span><span class="n">accountId</span><span class="o">];</span>
