@@ -1,0 +1,328 @@
+name: PR Automation Apply
+run-name: PR Automation Apply for "${{ github.event.workflow_run.display_title }}"
+
+# This workflow runs privileged after "PR Automation" (pr-automation.yml) is completed.
+# For security reasons, it doesn't check out any code. It only uses the PR number
+# from the artifact (validated against the head sha of the triggering workflow run)
+# and then queries all other information about the PR freshly via GitHub API.
+on:
+  workflow_run:
+    workflows: [PR Automation]
+    types:
+      - completed
+
+permissions: {}
+
+jobs:
+  apply:
+    # only run in the official pmd repo, where we have access to the secrets and not on forks.
+    # "failure" is included, as the check "Allow edits by maintainers" might have failed - in that
+    # case we need to add a comment.
+    if: ${{ github.repository == 'pmd/pmd'
+            && github.event.workflow_run.event == 'pull_request'
+            && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure') }}
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
+    concurrency:
+      group: pr-automation-apply-${{ github.event.workflow_run.head_sha }}
+      cancel-in-progress: false
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 #v3.3.0
+        id: pmd-actions-helper-app-token
+        with:
+          client-id: ${{ secrets.PMD_ACTIONS_HELPER_CLIENT_ID }}
+          private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
+          owner: pmd
+          repositories: pmd
+          permission-actions: read # download workflow run artifacts
+          permission-contents: read # read pom.xml
+          permission-issues: write # update assignees, milestone, add comments
+          permission-pull-requests: write # update assignees, milestone, add comments
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #v8.0.2
+        with:
+          name: pr-automation
+          path: pr-automation
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+
+      - name: Get PR context
+        env:
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+          WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          # The artifact might come from a fork and is therefore untrusted. Validate it.
+          pr_number="$(tr -d '[:space:]' < pr-automation/pr-number.txt)"
+          if ! [[ "${pr_number}" =~ ^[0-9]+$ ]]; then
+            echo "::error::Invalid PR number in artifact"
+            exit 1
+          fi
+
+          gh api "repos/pmd/pmd/pulls/${pr_number}" > pr.json
+
+          head_sha="$(jq -r '.head.sha' pr.json)"
+          if [ "${head_sha}" != "${WORKFLOW_RUN_HEAD_SHA}" ]; then
+            # Either the PR number doesn't match the workflow run, or the PR has been updated
+            # in the meantime. In the latter case, a newer workflow run will handle the PR.
+            echo "::notice::Head SHA of PR #${pr_number} (${head_sha}) doesn't match workflow run head SHA (${WORKFLOW_RUN_HEAD_SHA}). Skipping."
+            echo "PR_STATE=skip" >> "${GITHUB_ENV}"
+            exit 0
+          fi
+
+          state="$(jq -r 'if .merged then "merged" else .state end' pr.json)"
+          echo "PR_NUMBER=${pr_number}" >> "${GITHUB_ENV}"
+          echo "PR_STATE=${state}" >> "${GITHUB_ENV}"
+          echo "PR #${pr_number} is ${state}"
+
+      - name: Prepare helper functions
+        env:
+          BOT_LOGIN: ${{ steps.pmd-actions-helper-app-token.outputs.app-slug }}[bot]
+        run: |
+          # Helper functions for sticky comments. A sticky comment is identified by a hidden
+          # marker (HTML comment) in its body and must be created by our app (BOT_LOGIN).
+          # The functions expect GH_TOKEN and PR_NUMBER to be set.
+          cat > pr-automation-functions.sh <<'EOF'
+          # find_comment <marker>: prints "<id> <node_id>" of the existing comment or nothing
+          find_comment() {
+            local marker="$1"
+            gh api --paginate "repos/pmd/pmd/issues/${PR_NUMBER}/comments" \
+              --jq ".[] | select(.user.login == \"${BOT_LOGIN}\" and (.body | contains(\"${marker}\"))) | \"\(.id) \(.node_id)\"" \
+              | head -n 1
+          }
+
+          # upsert_comment <marker> <body-file>: creates or updates the comment identified by marker.
+          # The marker is prepended to the body. Prints "<id> <node_id>" of the existing comment
+          # (before the update) or nothing, if a new comment has been created.
+          upsert_comment() {
+            local marker="$1"
+            local body_file="$2"
+            local existing
+            existing="$(find_comment "${marker}")"
+            { echo "${marker}"; cat "${body_file}"; } > "${body_file}.tmp"
+            if [ -z "${existing}" ]; then
+              gh api --method POST "repos/pmd/pmd/issues/${PR_NUMBER}/comments" -F "body=@${body_file}.tmp" > /dev/null
+            else
+              gh api --method PATCH "repos/pmd/pmd/issues/comments/${existing%% *}" -F "body=@${body_file}.tmp" > /dev/null
+            fi
+            rm "${body_file}.tmp"
+            echo "${existing}"
+          }
+          EOF
+          echo "BOT_LOGIN=${BOT_LOGIN}" >> "${GITHUB_ENV}"
+
+      - name: Add Job Summary
+        env:
+          WORKFLOW_RUN_DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+          WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+          WORKFLOW_RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          echo "### Run Info" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Triggered for PR [#${PR_NUMBER:-?}](https://github.com/pmd/pmd/pull/${PR_NUMBER:-}) (state: ${PR_STATE})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Called by [${WORKFLOW_RUN_DISPLAY_TITLE} (${WORKFLOW_RUN_NAME} #${WORKFLOW_RUN_NUMBER})](${WORKFLOW_RUN_HTML_URL})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "### Actions" >> "${GITHUB_STEP_SUMMARY}"
+
+      # 1. Open PR: Check "Allow edits by maintainers" and add/hide/unhide a sticky comment
+      - name: Check "Allow edits by maintainers"
+        if: ${{ env.PR_STATE == 'open' }}
+        env:
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          source pr-automation-functions.sh
+          marker="<!-- pmd-pr-automation:maintainer-can-modify -->"
+
+          head_repo="$(jq -r '.head.repo.full_name // empty' pr.json)"
+          if [ -z "${head_repo}" ]; then
+            echo "Head repository doesn't exist anymore - skipping."
+            exit 0
+          fi
+          if [ "${head_repo}" = "pmd/pmd" ]; then
+            echo "Pull request is created from a branch in pmd/pmd - skipping."
+            exit 0
+          fi
+          maintainer_can_modify="$(jq -r '.maintainer_can_modify' pr.json)"
+          owner_type="$(jq -r '.head.repo.owner.type' pr.json)"
+          author="$(jq -r '.user.login' pr.json)"
+
+          # find existing comment (only the ones created by us)
+          existing="$(find_comment "${marker}")"
+          comment_node_id="${existing#* }"
+          is_minimized="false"
+          if [ -n "${existing}" ]; then
+            is_minimized="$(gh api graphql \
+              -f query='query($id: ID!) { node(id: $id) { ... on IssueComment { isMinimized } } }' \
+              -f id="${comment_node_id}" --jq '.data.node.isMinimized')"
+          fi
+
+          if [ "${maintainer_can_modify}" = "true" ]; then
+            if [ -n "${existing}" ] && [ "${is_minimized}" != "true" ]; then
+              gh api graphql \
+                -f query='mutation($id: ID!) { minimizeComment(input: {subjectId: $id, classifier: RESOLVED}) { minimizedComment { isMinimized } } }' \
+                -f id="${comment_node_id}" > /dev/null
+              echo "* \"Allow edits by maintainers\" is enabled now: hid comment" >> "${GITHUB_STEP_SUMMARY}"
+            fi
+            echo "\"Allow edits by maintainers\" is enabled."
+            exit 0
+          fi
+
+          if [ "${owner_type}" = "Organization" ]; then
+            cat > comment.md <<EOF
+          Hi @${author}, thanks for your contribution!
+
+          This pull request has been created from a fork that is owned by an organization (\`${head_repo}\`).
+          For such forks, GitHub doesn't offer the option **"Allow edits by maintainers"**, so maintainers
+          can't update your branch (e.g. to merge the latest changes from main or to apply small fixes before merging).
+
+          Please fork pmd/pmd into your **personal account**, push your branch there and create a new pull request
+          from it. Then this pull request can be closed.
+
+          See also: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork
+          EOF
+          else
+            cat > comment.md <<EOF
+          Hi @${author}, thanks for your contribution!
+
+          It looks like the option **"Allow edits by maintainers"** is not enabled for this pull request.
+          Please enable it (in the right sidebar of this pull request), so that maintainers can update your branch,
+          e.g. to merge the latest changes from main or to apply small fixes before merging.
+
+          After enabling it, please re-run the failed check "Allow edits by maintainers" (or push a new commit).
+          This comment will then be hidden automatically.
+
+          See also: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork
+          EOF
+          fi
+          # remove indentation, otherwise the text would be rendered as code block
+          sed -i 's/^ *//' comment.md
+
+          upsert_comment "${marker}" comment.md > /dev/null
+          if [ -z "${existing}" ]; then
+            echo "* \"Allow edits by maintainers\" is not enabled: added comment" >> "${GITHUB_STEP_SUMMARY}"
+          else
+            if [ "${is_minimized}" = "true" ]; then
+              gh api graphql \
+                -f query='mutation($id: ID!) { unminimizeComment(input: {subjectId: $id}) { unminimizedComment { isMinimized } } }' \
+                -f id="${comment_node_id}" > /dev/null
+            fi
+            echo "* \"Allow edits by maintainers\" is not enabled: updated existing comment" >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      # 2. Merged PR: Merger becomes the (only) assignee
+      - name: Assign merger
+        if: ${{ env.PR_STATE == 'merged' }}
+        env:
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          merger="$(jq -r '.merged_by.login // empty' pr.json)"
+          merger_type="$(jq -r '.merged_by.type // empty' pr.json)"
+          if [ -z "${merger}" ] || [ "${merger_type}" = "Bot" ]; then
+            echo "::warning::Can't determine merger (merged_by: '${merger}', type: '${merger_type}') - not changing assignees."
+            exit 0
+          fi
+          current="$(jq -r '[.assignees[].login] | sort | join(",")' pr.json)"
+          if [ "${current}" = "${merger}" ]; then
+            echo "Merger ${merger} is already the assignee."
+            exit 0
+          fi
+          # PATCH replaces all assignees
+          gh api --method PATCH "repos/pmd/pmd/issues/${PR_NUMBER}" -f "assignees[]=${merger}" > /dev/null
+          echo "* Assigned merger @${merger} (previous assignees: ${current:-none})" >> "${GITHUB_STEP_SUMMARY}"
+
+      # 3. Merged PR: Verify/Set milestone
+      - name: Check milestone
+        if: ${{ env.PR_STATE == 'merged' }}
+        env:
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          source pr-automation-functions.sh
+          base_ref="$(jq -r '.base.ref' pr.json)"
+          current="$(jq -r '.milestone.title // empty' pr.json)"
+          merger="$(jq -r '.merged_by.login // empty' pr.json)"
+
+          # version of the base branch, e.g. "7.30.0-SNAPSHOT" -> "7.30.0"
+          pom_version="$(gh api --method GET -H "Accept: application/vnd.github.raw" \
+              "repos/pmd/pmd/contents/pom.xml" -f ref="${base_ref}" \
+            | sed -n '/<artifactId>pmd<\/artifactId>/,/<version>/ s/.*<version>\(.*\)<\/version>.*/\1/p' \
+            | head -n 1)"
+          pom_version="${pom_version%-SNAPSHOT}"
+
+          # open milestones with title "x.y.z", sorted by version: "title<TAB>number"
+          milestones="$(gh api --paginate "repos/pmd/pmd/milestones?state=open&per_page=100" \
+              --jq '.[] | select(.title | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) | "\(.title)\t\(.number)"' \
+            | sort -V)"
+          lowest="$(head -n 1 <<< "${milestones}" | cut -f 1)"
+          pom_milestone_number="$(awk -F '\t' -v v="${pom_version}" '$1 == v { print $2 }' <<< "${milestones}")"
+
+          echo "Current milestone: '${current}', pom version (${base_ref}): '${pom_version}', lowest open milestone: '${lowest}'"
+
+          expected=""
+          if [ -n "${pom_milestone_number}" ] && [ "${pom_version}" = "${lowest}" ]; then
+            expected="${pom_version}"
+          fi
+
+          details="* Milestone currently assigned: \`${current:-none}\`
+          * Version in pom.xml of branch \`${base_ref}\`: \`${pom_version:-unknown}\`
+          * Lowest (next) open milestone: \`${lowest:-none}\`"
+
+          if [ -z "${current}" ]; then
+            if [ -n "${expected}" ]; then
+              gh api --method PATCH "repos/pmd/pmd/issues/${PR_NUMBER}" -F "milestone=${pom_milestone_number}" > /dev/null
+              echo "* Set milestone ${expected}" >> "${GITHUB_STEP_SUMMARY}"
+              exit 0
+            fi
+            cat > comment.md <<EOF
+          @${merger} This pull request has been merged without a milestone. The milestone could not be
+          determined automatically, because the version in pom.xml and the lowest open milestone don't agree
+          (or there is no matching milestone).
+
+          ${details}
+
+          Please assign the correct milestone manually.
+          EOF
+          elif [ "${current}" = "${expected}" ]; then
+            echo "Milestone ${current} is correct."
+            exit 0
+          else
+            cat > comment.md <<EOF
+          @${merger} Please double check the milestone of this pull request. It doesn't match the expected
+          next version.
+
+          ${details}
+          EOF
+          fi
+          sed -i 's/^ *//' comment.md
+          upsert_comment "<!-- pmd-pr-automation:milestone -->" comment.md > /dev/null
+          echo "* Milestone needs to be checked: added comment" >> "${GITHUB_STEP_SUMMARY}"
+
+      # 4. Closed (not merged) PR: Remove milestone
+      - name: Remove milestone
+        if: ${{ env.PR_STATE == 'closed' }}
+        env:
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          source pr-automation-functions.sh
+          current="$(jq -r '.milestone.title // empty' pr.json)"
+          if [ -z "${current}" ]; then
+            echo "No milestone assigned."
+            exit 0
+          fi
+          gh api --method PATCH "repos/pmd/pmd/issues/${PR_NUMBER}" -F "milestone=null" > /dev/null
+          cat > comment.md <<EOF
+          This pull request has been closed without being merged, so the milestone \`${current}\` has been removed.
+
+          Maintainers: If this pull request has actually been merged (e.g. outside the GitHub UI),
+          please add the milestone again.
+          EOF
+          sed -i 's/^ *//' comment.md
+          upsert_comment "<!-- pmd-pr-automation:closed -->" comment.md > /dev/null
+          echo "* Removed milestone ${current}" >> "${GITHUB_STEP_SUMMARY}"
