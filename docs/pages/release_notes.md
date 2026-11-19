@@ -44,6 +44,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 * apex
+    * [#7108](https://github.com/pmd/pmd/issues/7108): \[apex] Expose DML AccessMode (`as user` / `as system`) for XPath rules
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
@@ -76,8 +77,6 @@ This is a {{ site.pmd.release_type }} release.
     * DML statement nodes now expose `@AccessMode`.
       The attribute is always present. Its value is `IMPLICIT`, `USER_MODE`, or `SYSTEM_MODE`.
       `//DmlInsertStatement[@AccessMode='IMPLICIT']` and `//DmlInsertStatement[@AccessMode='SYSTEM_MODE']` select those statements.
-      `AbstractDmlStatement#getRunAsMode()` is deprecated and will be removed in PMD 8.0.0.
-      Use `getAccessMode()` instead ([#7108](https://github.com/pmd/pmd/issues/7108)).
 
 #### Experimental API
 * kotlin
@@ -92,6 +91,9 @@ This is a {{ site.pmd.release_type }} release.
       by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 #### Deprecations
+* apex
+    * {% jdoc !!apex::lang.apex.ast.AbstractDmlStatement#getRunAsMode() %} has been deprecated. Use
+      {% apex::lang.apex.ast.AbstractDmlStatement#getAccessMode() %} instead.
 * coco
     * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * css
