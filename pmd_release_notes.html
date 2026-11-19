@@ -2099,6 +2099,7 @@ references continue to work during the deprecation period.</li>
 <ul>
   <li>apex
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/7108">#7108</a>: [apex] Expose DML AccessMode (<code class="language-plaintext highlighter-rouge">as user</code> / <code class="language-plaintext highlighter-rouge">as system</code>) for XPath rules</li>
       <li><a href="https://github.com/pmd/pmd/issues/7182">#7182</a>: [apex] Expose the referenced type name on ClassRefExpression for XPath rules</li>
     </ul>
   </li>
@@ -2169,6 +2170,16 @@ references continue to work during the deprecation period.</li>
 </ul>
 
 <h3 id="️-api-changes-and-deprecations">🚨️ API Changes and Deprecations</h3>
+<ul>
+  <li>apex
+    <ul>
+      <li>DML statement nodes now expose <code class="language-plaintext highlighter-rouge">@AccessMode</code>.
+The attribute is always present. Its value is <code class="language-plaintext highlighter-rouge">IMPLICIT</code>, <code class="language-plaintext highlighter-rouge">USER_MODE</code>, or <code class="language-plaintext highlighter-rouge">SYSTEM_MODE</code>.
+<code class="language-plaintext highlighter-rouge">//DmlInsertStatement[@AccessMode='IMPLICIT']</code> and <code class="language-plaintext highlighter-rouge">//DmlInsertStatement[@AccessMode='SYSTEM_MODE']</code> select those statements.</li>
+    </ul>
+  </li>
+</ul>
+
 <h4 id="experimental-api">Experimental API</h4>
 <ul>
   <li>kotlin
@@ -2188,6 +2199,12 @@ by type, query the component nodes instead: <code class="language-plaintext high
 
 <h4 id="deprecations">Deprecations</h4>
 <ul>
+  <li>apex
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractDmlStatement.html#getRunAsMode()"><code>AbstractDmlStatement#getRunAsMode</code></a> has been deprecated. Use
+<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractDmlStatement.html#getAccessMode()"><code>getAccessMode</code></a> instead.</li>
+    </ul>
+  </li>
   <li>coco
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoLexer.html#"><code>CocoLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>

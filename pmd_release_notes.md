@@ -53,6 +53,7 @@ This is a minor release.
 
 ### 🐛️ Fixed Issues
 * apex
+    * [#7108](https://github.com/pmd/pmd/issues/7108): \[apex] Expose DML AccessMode (`as user` / `as system`) for XPath rules
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-bestpractices
     * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
@@ -87,6 +88,11 @@ This is a minor release.
     * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate ANTLR generated lexer implementation classes
 
 ### 🚨️ API Changes and Deprecations
+* apex
+    * DML statement nodes now expose `@AccessMode`.
+      The attribute is always present. Its value is `IMPLICIT`, `USER_MODE`, or `SYSTEM_MODE`.
+      `//DmlInsertStatement[@AccessMode='IMPLICIT']` and `//DmlInsertStatement[@AccessMode='SYSTEM_MODE']` select those statements.
+
 #### Experimental API
 * kotlin
     * <a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtVariableDeclarationAttributes.html#"><code>KtVariableDeclarationAttributes</code></a> now implements
@@ -100,6 +106,9 @@ This is a minor release.
       by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 #### Deprecations
+* apex
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractDmlStatement.html#getRunAsMode()"><code>AbstractDmlStatement#getRunAsMode</code></a> has been deprecated. Use
+      <a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractDmlStatement.html#getAccessMode()"><code>getAccessMode</code></a> instead.
 * coco
     * <a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoLexer.html#"><code>CocoLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * css
