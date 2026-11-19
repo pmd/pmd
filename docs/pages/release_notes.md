@@ -93,7 +93,7 @@ This is a {{ site.pmd.release_type }} release.
 #### Deprecations
 * apex
     * {% jdoc !!apex::lang.apex.ast.AbstractDmlStatement#getRunAsMode() %} has been deprecated. Use
-      {% apex::lang.apex.ast.AbstractDmlStatement#getAccessMode() %} instead.
+      {% jdoc apex::lang.apex.ast.AbstractDmlStatement#getAccessMode() %} instead.
 * coco
     * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * css
