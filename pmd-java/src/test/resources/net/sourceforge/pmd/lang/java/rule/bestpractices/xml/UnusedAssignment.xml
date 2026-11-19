@@ -4587,4 +4587,109 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7269 overwritten inferred lambda parameter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.function.Consumer;
+class Sample {
+    void run() {
+        Consumer<String> consumer = value -> {
+            value = "replacement";
+            System.out.println(value);
+        };
+        consumer.accept("input");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7269 overwritten explicit lambda parameter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.function.Consumer;
+class Sample {
+    void run() {
+        Consumer<String> consumer = (String value) -> {
+            value = "replacement";
+            System.out.println(value);
+        };
+        consumer.accept("input");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7269 multiple lambda parameters keep independent definitions</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.function.BiFunction;
+class Sample {
+    String run() {
+        BiFunction<String, String, String> mapper = (left, right) -> {
+            left = "replacement";
+            return left + right;
+        };
+        return mapper.apply("first", "second");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7269 nested lambda retains captured outer parameter use</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.function.Consumer;
+import java.util.function.Function;
+class Sample {
+    Consumer<String> run() {
+        Function<String, Consumer<String>> factory = outer -> inner -> {
+            inner = "replacement";
+            System.out.println(outer + inner);
+        };
+        return factory.apply("prefix");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7269 reading a lambda parameter before overwriting is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Consumer;
+class Sample {
+    void run() {
+        Consumer<String> consumer = value -> {
+            System.out.println(value);
+            value = "replacement";
+            System.out.println(value);
+        };
+        consumer.accept("input");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7269 unused lambda parameters remain outside default unused-variable reporting</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Consumer;
+class Sample {
+    void run() {
+        Consumer<String> consumer = value -> System.out.println("constant");
+        consumer.accept("input");
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
