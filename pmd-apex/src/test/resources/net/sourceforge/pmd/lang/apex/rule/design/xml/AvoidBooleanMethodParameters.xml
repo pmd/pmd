@@ -74,4 +74,52 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#6261 Public Boolean property accessors are not method parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Boolean displayable { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6261 Global Boolean property accessors are not method parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+global class Foo {
+    global Boolean displayable { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6261 Explicit Boolean property accessors are not method parameters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Boolean flag;
+    public Boolean displayable {
+        get { return flag; }
+        set { flag = value; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6261 Ordinary Boolean setter methods still cause violations</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private Boolean flag;
+    public void setDisplayable(Boolean value) {
+        flag = value;
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
