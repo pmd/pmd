@@ -6,11 +6,12 @@ package net.sourceforge.pmd.test.schema;
 
 import java.net.URL;
 import java.util.Objects;
-import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.xml.sax.SAXException;
+
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 /**
  * Internal for now, there's only one version.
@@ -39,8 +40,8 @@ enum TestSchemaVersion {
     }
 
     private Schema parseSchema() {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         try {
+            SchemaFactory schemaFactory = XmlUtil.newSchemaFactory();
             return schemaFactory.newSchema(locateSchema());
         } catch (SAXException e) {
             throw new RuntimeException("Cannot parse schema " + this, e);

@@ -118,7 +118,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
                        it -> it.getVisibility() == Visibility.V_PRIVATE
                            && !hasIgnoredAnnotation(it)
                            && !hasExcludedName(it)
-                           && !(it.getArity() == 0 && methodsUsedByAnnotations.contains(it.getName())))
+                           && !isReferencedByAnnotation(it, methodsUsedByAnnotations))
                    .collect(Collectors.toMap(
                        ASTMethodDeclaration::getSymbol,
                        m -> m
@@ -126,8 +126,16 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
 
-
-
+    private static boolean isReferencedByAnnotation(ASTMethodDeclaration method, Set<String> references) {
+        if (method.getArity() != 0) {
+            return false;
+        }
+        String name = method.getName();
+        // JUnit MethodSource uses binary class names, including '$' for nested classes.
+        String qualifiedName = method.getEnclosingType().getBinaryName() + "#" + name;
+        return references.contains(name) || references.contains(name + "()")
+            || references.contains(qualifiedName) || references.contains(qualifiedName + "()");
+    }
 
     private boolean hasExcludedName(ASTMethodDeclaration node) {
         return SERIALIZATION_METHODS.contains(node.getName());

@@ -12,14 +12,17 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -33,7 +36,38 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTWhileStatement node, Object data) {
-        return null;
+        // Keep skipping checked navigation conditions and their bodies to avoid existing false positives.
+        if (containsNavigationCall(node.getCondition())) {
+            return null;
+        }
+        // A cached navigation result used as the loop condition also checks the navigation call.
+        if (isCheckedNavigationVariable(node.getCondition())) {
+            return null;
+        }
+        return super.visit(node, data);
+    }
+
+    // Intentionally broad: if any variable in the condition was declared with a navigation
+    // call, the whole body is skipped, so `boolean h = rs.next(); while (h && cond) { rs.next(); }`
+    // is not reported.
+    private boolean isCheckedNavigationVariable(ASTExpression condition) {
+        return condition.descendantsOrSelf().filterIs(ASTAssignableExpr.ASTNamedReferenceExpr.class).any(reference -> {
+            JVariableSymbol symbol = reference.getReferencedSym();
+            if (symbol == null) {
+                return false;
+            }
+            ASTVariableId variableId = symbol.tryGetNode();
+            if (variableId == null) {
+                return false;
+            }
+            ASTExpression initializer = variableId.getInitializer();
+            return initializer != null
+                && initializer.descendantsOrSelf().filterIs(ASTMethodCall.class).any(this::isResultSetMethod);
+        });
+    }
+
+    private boolean containsNavigationCall(ASTExpression condition) {
+        return condition.descendantsOrSelf().filterIs(ASTMethodCall.class).any(this::isResultSetMethod);
     }
 
     @Override
@@ -43,7 +77,11 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        return null;
+        // Keep skipping checked navigation conditions and their bodies to avoid existing false positives.
+        if (containsNavigationCall(node.getCondition())) {
+            return null;
+        }
+        return super.visit(node, data);
     }
 
     @Override

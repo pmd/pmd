@@ -27,13 +27,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponentList;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -59,6 +64,9 @@ import net.sourceforge.pmd.util.CollectionUtil;
 final class AstClassSym
     extends AbstractAstTParamOwner<ASTTypeDeclaration>
     implements JClassSymbol {
+
+    private static final String LOMBOK_BUILDER = "lombok.Builder";
+
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
     private final List<JClassSymbol> declaredClasses;
     private final List<JMethodSymbol> declaredMethods;
@@ -161,7 +169,10 @@ final class AstClassSym
                                : HashTreePSet.empty();
     }
 
-    public void processLombok(JavaAstProcessor processor) {
+    /**
+     * @return builder classes added by this call, in declaration order
+     */
+    public List<JClassSymbol> processLombok(JavaAstProcessor processor) {
         final String LOMBOK_SLF4J = "lombok.extern.slf4j.Slf4j";
         final String LOMBOK_GETTER = "lombok.Getter";
         final String LOMBOK_DATA = "lombok.Data";
@@ -200,6 +211,83 @@ final class AstClassSym
                         }
                     }
                 });
+
+        return addLombokBuilders();
+    }
+
+    /**
+     * Lombok {@code @Builder} adds a static nested class named {@code <TypeName>Builder},
+     * or the {@code builderClassName} attribute when that is set ({@code *} is the type name).
+     * On a method, that name is the return type's simple name; otherwise it is the enclosing type.
+     * An existing member class of that name is left in place.
+     *
+     * @return the synthetic builder classes added by this call, in declaration order
+     */
+    private List<JClassSymbol> addLombokBuilders() {
+        List<JClassSymbol> added = new ArrayList<>();
+        if (isInterface() || isAnonymousClass() || node.getSimpleName().isEmpty()) {
+            return added;
+        }
+        addLombokBuilder(node, added);
+        node.getOperations().forEach(op -> addLombokBuilder(op, added));
+        return added;
+    }
+
+    private void addLombokBuilder(Annotatable annotated, List<JClassSymbol> added) {
+        ASTAnnotation builder = annotated.getAnnotation(LOMBOK_BUILDER);
+        if (builder == null) {
+            return;
+        }
+        String builderName = lombokBuilderClassName(builder, lombokBuilderTypeName(annotated));
+        if (declaredClasses.stream().anyMatch(c -> c.nameEquals(builderName))) {
+            return;
+        }
+        JClassSymbol generated = ImplicitMemberSymbols.lombokBuilderClass(this, builderName);
+        declaredClasses.add(generated);
+        added.add(generated);
+    }
+
+    /**
+     * Name substituted for {@code *} in {@code builderClassName}. Lombok uses the
+     * enclosing type, except on methods, where it uses the return type
+     * ({@code static Foo create()} in {@code Bar} generates {@code Bar$FooBuilder}).
+     */
+    private String lombokBuilderTypeName(Annotatable annotated) {
+        if (annotated instanceof ASTMethodDeclaration) {
+            String returnTypeName = simpleNameForBuilder(((ASTMethodDeclaration) annotated).getResultTypeNode());
+            if (returnTypeName != null) {
+                return returnTypeName;
+            }
+        }
+        return node.getSimpleName();
+    }
+
+    /**
+     * Simple name Lombok uses for a method return type. Primitives are capitalized
+     * ({@code int} becomes {@code Int}), matching {@code returnTypeToBuilderClassName}.
+     * Arrays and other shapes return null so the caller falls back to the enclosing type.
+     */
+    private static @Nullable String simpleNameForBuilder(ASTType resultType) {
+        if (resultType instanceof ASTClassType) {
+            return ((ASTClassType) resultType).getSimpleName();
+        }
+        if (resultType instanceof ASTPrimitiveType) {
+            String name = ((ASTPrimitiveType) resultType).getKind().getSimpleName();
+            return Character.toTitleCase(name.charAt(0)) + name.substring(1);
+        }
+        if (resultType instanceof ASTVoidType) {
+            return "Void";
+        }
+        return null;
+    }
+
+    private static String lombokBuilderClassName(ASTAnnotation annotation, String typeName) {
+        ASTMemberValue configured = annotation.getAttribute("builderClassName");
+        Object value = configured == null ? null : configured.getConstValue();
+        if (!(value instanceof String) || ((String) value).isEmpty()) {
+            return typeName + "Builder";
+        }
+        return ((String) value).replace("*", typeName);
     }
 
     private int getLombokAccessModifier(ASTAnnotation annot) {

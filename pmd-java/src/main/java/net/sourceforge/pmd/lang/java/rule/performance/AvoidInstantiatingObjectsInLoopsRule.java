@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainRule {
 
@@ -32,17 +33,19 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
-        checkNode(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkNode(node, ctx);
+        return null;
     }
 
     @Override
     public Object visit(ASTArrayAllocation node, Object data) {
-        checkNode(node, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkNode(node, ctx);
+        return null;
     }
 
-    private void checkNode(JavaNode node, Object data) {
+    private void checkNode(JavaNode node, RuleContext ctx) {
         if (notInsideLoop(node)) {
             return;
         }
@@ -52,7 +55,7 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
                 && notBreakFollowing(node)
                 && notArrayAssignment(node)
                 && notCollectionAccess(node)) {
-            asCtx(data).addViolation(node);
+            ctx.addViolation(node);
         }
     }
 

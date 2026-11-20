@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,6 +30,10 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 class RuleSetSchemaTest {
 
@@ -55,14 +58,14 @@ class RuleSetSchemaTest {
 
     @Test
     void validateOnly() throws Exception {
-        Validator validator = PMDRuleSetEntityResolver.getSchemaVersion2().newValidator();
+        Validator validator = new PMDRuleSetEntityResolver().getSchemaVersion2().newValidator();
         validator.setErrorHandler(errorHandler);
         validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("2.0.0").getBytes(StandardCharsets.UTF_8))));
         Mockito.verifyNoInteractions(errorHandler);
     }
 
     private Document parseWithVersion2(String ruleset) throws SAXException, ParserConfigurationException, IOException {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbf = XmlUtil.newDocumentBuilderFactory();
         dbf.setNamespaceAware(true);
         dbf.setFeature("http://apache.org/xml/features/validation/schema", true);
         DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -103,7 +106,11 @@ class RuleSetSchemaTest {
 
     public static class PMDRuleSetEntityResolver implements EntityResolver {
         private static URL schema2 = PMDRuleSetEntityResolver.class.getResource("/ruleset_2_0_0.xsd");
-        private static SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        private final SchemaFactory schemaFactory;
+
+        PMDRuleSetEntityResolver() throws SAXNotSupportedException, SAXNotRecognizedException {
+            this.schemaFactory = XmlUtil.newSchemaFactory();
+        }
 
         @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
@@ -112,7 +119,7 @@ class RuleSetSchemaTest {
             return new InputSource(schema2.toExternalForm());
         }
 
-        public static Schema getSchemaVersion2() throws SAXException {
+        public Schema getSchemaVersion2() throws SAXException {
             return schemaFactory.newSchema(schema2);
         }
     }

@@ -97,19 +97,19 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR));
     }
 
-    private void checkCommentMeetsRequirement(Object data, JavadocCommentOwner node,
+    private void checkCommentMeetsRequirement(RuleContext ctx, JavadocCommentOwner node,
                                               PropertyDescriptor<CommentRequirement> descriptor) {
         switch (propertyValues.get(descriptor)) {
         case IGNORED:
             break;
         case REQUIRED:
             if (node.getJavadocComment() == null) {
-                commentRequiredViolation(data, node, descriptor);
+                commentRequiredViolation(ctx, node, descriptor);
             }
             break;
         case UNWANTED:
             if (node.getJavadocComment() != null) {
-                commentRequiredViolation(data, node, descriptor);
+                commentRequiredViolation(ctx, node, descriptor);
             }
             break;
         }
@@ -117,11 +117,11 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
 
     // Adds a violation
-    private void commentRequiredViolation(Object data, JavaNode node,
+    private void commentRequiredViolation(RuleContext ctx, JavaNode node,
                                           PropertyDescriptor<CommentRequirement> descriptor) {
 
 
-        asCtx(data).addViolationWithMessage(node,
+        ctx.addViolationWithMessage(node,
             DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name())
             + " are "
             + getProperty(descriptor).name().toLowerCase(Locale.ROOT));
@@ -130,60 +130,65 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration decl, Object data) {
-        checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkCommentMeetsRequirement(ctx, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR);
+        return null;
     }
 
 
     @Override
     public Object visit(ASTConstructorDeclaration decl, Object data) {
-        checkMethodOrConstructorComment(decl, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkMethodOrConstructorComment(decl, ctx);
+        return null;
     }
 
 
     @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (decl.isOverride()) {
-            checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, OVERRIDE_CMT_DESCRIPTOR);
         } else if (JavaRuleUtil.isGetterOrSetter(decl)) {
-            checkCommentMeetsRequirement(data, decl, ACCESSOR_CMT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, ACCESSOR_CMT_DESCRIPTOR);
         } else {
-            checkMethodOrConstructorComment(decl, data);
+            checkMethodOrConstructorComment(decl, ctx);
         }
-        return data;
+        return null;
     }
 
 
-    private void checkMethodOrConstructorComment(ASTExecutableDeclaration decl, Object data) {
+    private void checkMethodOrConstructorComment(ASTExecutableDeclaration decl, RuleContext ctx) {
         if (decl.getVisibility() == Visibility.V_PUBLIC) {
-            checkCommentMeetsRequirement(data, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         } else if (decl.getVisibility() == Visibility.V_PROTECTED) {
-            checkCommentMeetsRequirement(data, decl, PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         } else if (decl.getVisibility() == Visibility.V_PACKAGE) {
-            checkCommentMeetsRequirement(data, decl, PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         }
     }
 
 
     @Override
     public Object visit(ASTFieldDeclaration decl, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (JavaRuleUtil.isSerialVersionUID(decl)) {
-            checkCommentMeetsRequirement(data, decl, SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR);
         } else if (JavaRuleUtil.isSerialPersistentFields(decl)) {
-            checkCommentMeetsRequirement(data, decl, SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR);
         } else {
-            checkCommentMeetsRequirement(data, decl, FIELD_CMT_REQUIREMENT_DESCRIPTOR);
+            checkCommentMeetsRequirement(ctx, decl, FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         }
 
-        return data;
+        return null;
     }
 
 
     @Override
     public Object visit(ASTEnumDeclaration decl, Object data) {
-        checkCommentMeetsRequirement(data, decl, ENUM_CMT_REQUIREMENT_DESCRIPTOR);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkCommentMeetsRequirement(ctx, decl, ENUM_CMT_REQUIREMENT_DESCRIPTOR);
+        return null;
     }
 
     private boolean allCommentsAreIgnored() {

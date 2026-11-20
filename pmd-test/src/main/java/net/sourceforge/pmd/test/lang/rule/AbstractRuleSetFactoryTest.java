@@ -62,6 +62,7 @@ import net.sourceforge.pmd.lang.rule.RuleSetWriter;
 import net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
 
 /**
@@ -73,6 +74,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private static ValidateDefaultHandler validateDefaultHandler;
     private static SAXParser saxParser;
+    private static SAXParser saxParserDtdSupport;
 
     // todo rename this field to validCoreRules or something. Make private.
     protected Set<String> validXPathClassNames = new HashSet<>();
@@ -114,9 +116,8 @@ public abstract class AbstractRuleSetFactoryTest {
      */
     @BeforeAll
     static void init() throws Exception {
-        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+        SAXParserFactory saxParserFactory = XmlUtil.newSAXParserFactory();
         saxParserFactory.setValidating(true);
-        saxParserFactory.setNamespaceAware(true);
 
         // Hope we're using Xerces, or this may not work!
         // Note: Features are listed here
@@ -128,6 +129,12 @@ public abstract class AbstractRuleSetFactoryTest {
         validateDefaultHandler = new ValidateDefaultHandler();
 
         saxParser = saxParserFactory.newSAXParser();
+
+        SAXParserFactory saxParserFactoryDtd = XmlUtil.newSAXParserFactory();
+        // DTD parsing, we need to allow doctype declarations
+        // The ValidateDefaultHandler only allows our own DTD to be loaded, no other entities
+        saxParserFactoryDtd.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
+        saxParserDtdSupport = saxParserFactoryDtd.newSAXParser();
     }
 
     /**
@@ -455,7 +462,7 @@ public abstract class AbstractRuleSetFactoryTest {
         }
 
         try (InputStream modifiedStream = new ByteArrayInputStream(file.getBytes(StandardCharsets.UTF_8))) {
-            saxParser.parse(modifiedStream, validateDefaultHandler.resetValid());
+            saxParserDtdSupport.parse(modifiedStream, validateDefaultHandler.resetValid());
         }
         return validateDefaultHandler.isValid();
     }

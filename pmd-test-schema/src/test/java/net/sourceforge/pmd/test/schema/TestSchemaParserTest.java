@@ -16,15 +16,21 @@ import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.lang.PlainTextLanguage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
+
+import com.github.oowekyala.ooxml.messages.XmlException;
 
 /**
  * @author Clément Fournier
@@ -270,6 +276,21 @@ class TestSchemaParserTest {
         });
 
         assertThat(log, containsString("cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://pmd.sourceforge.net/rule-tests\":expected-linenumber}'"));
+    }
+
+    @Test
+    void xxeReverification(@TempDir Path tempdir) throws IOException {
+        Path marker = tempdir.resolve("pmd-xxe-test.txt");
+        Files.write(marker, "PMD_XXE_MARKER".getBytes(StandardCharsets.UTF_8));
+        String xml = "<?xml version='1.0'?>\n"
+                + "<!DOCTYPE test-data [<!ENTITY leak SYSTEM '" + marker.toUri() + "'>]>\n"
+                + "<test-data xmlns='http://pmd.sourceforge.net/rule-tests'>"
+                + "<test-code><description>&leak;</description>"
+                + "<expected-problems>0</expected-problems><code>hello</code>"
+                + "</test-code></test-data>";
+
+        XmlException xmlException = assertThrows(XmlException.class, () -> parseFile(xml));
+        assertThat(xmlException.getMessage(), containsString("DOCTYPE is disallowed"));
     }
 
     private RuleTestCollection parseFile(String file) throws IOException {

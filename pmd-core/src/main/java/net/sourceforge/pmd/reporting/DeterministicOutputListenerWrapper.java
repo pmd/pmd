@@ -6,12 +6,15 @@ package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -41,6 +44,9 @@ import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
  */
 public class DeterministicOutputListenerWrapper implements GlobalAnalysisListener {
     private static final Logger LOG = LoggerFactory.getLogger(DeterministicOutputListenerWrapper.class.getName());
+
+    /** Maximum number of file names per group in the error message of {@link #close()}. */
+    private static final int MAX_FILES_IN_MESSAGE = 10;
 
     private final GlobalAnalysisListener listener;
     private final Map<FileId, Integer> filesToIdx = new HashMap<>();
@@ -127,11 +133,68 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
         synchronized (lock) {
             tryToFlushBuffer();
             if (!reportBuffer.isEmpty()) {
-                // this would be a problem in PmdAnalysis, maybe because it didn't join on the parallel processing tasks.
-                throw new AssertionError("Closed listener but not all files have been processed");
+                // This would be a problem in PmdAnalysis, maybe because it didn't join
+                // on the parallel processing tasks, e.g. because an Error in one analysis
+                // thread aborted the analysis while other files were still running.
+                // Report which files are missing, so that this error gives a hint at
+                // the real cause.
+                throw new AssertionError("Closed listener but not all files have been processed:\n"
+                                             + unprocessedFiles());
             }
         }
         listener.close();
+    }
+
+    /**
+     * Builds the details for the error thrown by {@link #close()} when not all
+     * declared files have been output. The files are split into two groups:
+     * <ul>
+     *     <li>files that never delivered a report: their analysis was still
+     *         running or was never started</li>
+     *     <li>files that were analyzed, but whose reports are still buffered
+     *         because they are waiting for one of the files above</li>
+     * </ul>
+     * Each group shows its size and the first {@value #MAX_FILES_IN_MESSAGE}
+     * file names (sorted), followed by the number of files left out.
+     *
+     * <p>Must be called while holding {@link #lock}.
+     *
+     * @return the two groups, one per line, each indented by two spaces
+     */
+    private String unprocessedFiles() {
+        Set<Integer> bufferedIdx = reportBuffer.stream()
+                .map(w -> w.idx)
+                .collect(Collectors.toSet());
+        List<String> notProcessed = new ArrayList<>();
+        for (Map.Entry<FileId, Integer> entry : filesToIdx.entrySet()) {
+            int idx = entry.getValue();
+            if (idx >= nextToOutput && !bufferedIdx.contains(idx)) {
+                notProcessed.add(entry.getKey().getOriginalPath());
+            }
+        }
+
+        List<String> buffered = reportBuffer.stream()
+                .map(w -> w.textFile.getFileId().getOriginalPath())
+                .collect(Collectors.toList());
+        notProcessed.sort(null);
+        buffered.sort(null);
+
+        return "  " + describeGroup("never delivered a report", notProcessed)
+            + "\n  " + describeGroup("analyzed but still buffered", buffered);
+    }
+
+    /**
+     * Formats one group of {@link #unprocessedFiles()}, e.g.
+     * {@code "13 file(s) never delivered a report: [a, b, ...] ... and 3 more"}.
+     * Only the first {@value #MAX_FILES_IN_MESSAGE} file names are listed.
+     */
+    private static String describeGroup(String label, List<String> files) {
+        String message = files.size() + " file(s) " + label + ": ";
+        if (files.size() <= MAX_FILES_IN_MESSAGE) {
+            return message + files;
+        }
+        return message + files.subList(0, MAX_FILES_IN_MESSAGE)
+            + " ... and " + (files.size() - MAX_FILES_IN_MESSAGE) + " more";
     }
 
     @Override

@@ -110,4 +110,38 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7277 rethrow inside a bare block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { throw e; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7277 rethrow inside nested bare blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void test(boolean enabled) {
+        try {
+            throw new IllegalArgumentException();
+        } catch (RuntimeException e) {
+            { { { throw e; } } }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

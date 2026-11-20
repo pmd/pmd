@@ -76,6 +76,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
@@ -115,7 +116,8 @@ public final class SymbolTableResolver {
         ReferenceCtx ctx = ReferenceCtx.root(processor, root);
 
         root.descendants(ASTTypeDeclaration.class).forEach(td -> {
-            SymbolResolutionPass.desugarLombokMembers(ctx.processor, td);
+            List<JClassSymbol> builders = SymbolResolutionPass.desugarLombokMembers(ctx.processor, td);
+            addBuildersToAnnotationScope(helper, td, builders);
 
             // we now have new fields, that were not known before.
             // The updated symbol table now also knows about them.
@@ -124,6 +126,26 @@ public final class SymbolTableResolver {
             InternalApiBridge.retryDisambigWithCtx(td.descendants(ASTMethodCall.class)
                     .children(ASTAmbiguousName.class), ctx, updatedSymbolTable);
         });
+    }
+
+    private static void addBuildersToAnnotationScope(SymTableFactory helper, ASTTypeDeclaration td, List<JClassSymbol> builders) {
+        // Note: this mirrors a Lombok restriction, not Java scoping rules. In Java, member
+        // types are not in scope for annotations on the class itself. But since Lombok 1.18.48,
+        // @Builder(builderClassName = "Builder") does not compile unless the annotation is
+        // written fully qualified as @lombok.Builder. Putting the generated class in the
+        // annotation scope makes the simple name "Builder" no longer resolve to lombok.Builder,
+        // so UnnecessaryFullyQualifiedName does not report @lombok.Builder there.
+        if (builders.isEmpty()) {
+            return;
+        }
+        JSymbolTable annotationScope = td.getModifiers().getSymbolTable();
+        for (JClassSymbol builder : builders) {
+            JClassType memberType = td.getTypeMirror().getDeclaredClass(builder.getSimpleName());
+            if (memberType != null) {
+                annotationScope = helper.withMemberType(annotationScope, memberType);
+            }
+        }
+        InternalApiBridge.setSymbolTable(td.getModifiers(), annotationScope);
     }
 
     private static final class DeferredNode {

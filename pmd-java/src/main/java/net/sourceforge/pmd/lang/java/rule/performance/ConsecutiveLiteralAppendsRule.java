@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -96,13 +97,14 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTVariableId node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!isStringBuilderOrBuffer(node)) {
-            return data;
+            return null;
         }
 
         counter.initThreshold(getProperty(THRESHOLD_DESCRIPTOR));
         counter.reset();
-        checkConstructor(data, node);
+        checkConstructor(ctx, node);
 
         Node lastBlock = getFirstParentBlock(node);
         Node currentBlock = lastBlock;
@@ -123,27 +125,27 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
                     // see if it changed blocks
                     if (currentBlock != null && lastBlock != null && !currentBlock.equals(lastBlock)
                             || currentBlock == null ^ lastBlock == null) {
-                        checkForViolation(data);
+                        checkForViolation(ctx);
                         counter.reset();
                     }
 
-                    analyzeInvocation(data, methodCall);
+                    analyzeInvocation(ctx, methodCall);
                     lastBlock = currentBlock;
                 } else {
                     // other method calls the stringbuilder variable, e.g. calling delete, toString, etc.
-                    checkForViolation(data);
+                    checkForViolation(ctx);
                     counter.reset();
                 }
             }
             if (!(namedReference.getParent() instanceof ASTMethodCall)) {
                 // usage of the stringbuilder variable for any other purpose, e.g. as a argument for
                 // a different method call
-                checkForViolation(data);
+                checkForViolation(ctx);
                 counter.reset();
             }
         }
-        checkForViolation(data);
-        return data;
+        checkForViolation(ctx);
+        return null;
     }
 
     /**
@@ -152,7 +154,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
      *
      * @param node
      */
-    private void checkConstructor(Object data, ASTVariableId node) {
+    private void checkConstructor(RuleContext ctx, ASTVariableId node) {
         ASTExpression initializer = node.getInitializer();
         if (initializer == null) {
             return;
@@ -163,17 +165,17 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
             return;
         }
 
-        analyzeInvocation(data, constructorCall);
+        analyzeInvocation(ctx, constructorCall);
 
         // analyze chained calls to append
         Node parent = constructorCall.getParent();
         while (parent instanceof ASTMethodCall) {
-            analyzeInvocation(data, (ASTMethodCall) parent);
+            analyzeInvocation(ctx, (ASTMethodCall) parent);
             parent = parent.getParent();
         }
     }
 
-    private void analyzeInvocation(Object data, InvocationNode invocation) {
+    private void analyzeInvocation(RuleContext ctx, InvocationNode invocation) {
         if (!(invocation instanceof ASTExpression)) {
             return;
         }
@@ -182,9 +184,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         }
 
         if (isAdditive(invocation)) {
-            processAdditive(data, invocation);
+            processAdditive(ctx, invocation);
         } else if (isAppendingVariablesOrFields(invocation) || isAppendingInvocationResult(invocation)) {
-            checkForViolation(data);
+            checkForViolation(ctx);
             counter.reset();
         } else if (invocation.getArguments().getFirstChild() instanceof ASTStringLiteral
                 || invocation instanceof ASTMethodCall) {
@@ -192,11 +194,11 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         }
     }
 
-    private void processAdditive(Object data, InvocationNode invocation) {
+    private void processAdditive(RuleContext ctx, InvocationNode invocation) {
         ASTExpression firstArg = invocation.getArguments().getFirstChild();
         if (firstArg.descendants(ASTNamedReferenceExpr.class).count() > 0) {
             // at least one variable/field access found
-            checkForViolation(data);
+            checkForViolation(ctx);
 
             if (firstArg instanceof ASTInfixExpression) {
                 ASTExpression rightOperand = ((ASTInfixExpression) firstArg).getRightOperand();
@@ -255,10 +257,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
      * Helper method checks to see if a violation occurred, and adds a
      * RuleViolation if it did
      */
-    private void checkForViolation(Object data) {
+    private void checkForViolation(RuleContext ctx) {
         if (counter.isViolation()) {
             assert counter.getReportNode() != null;
-            asCtx(data).addViolation(counter.getReportNode(), String.valueOf(counter.getCounter()));
+            ctx.addViolation(counter.getReportNode(), String.valueOf(counter.getCounter()));
         }
     }
 

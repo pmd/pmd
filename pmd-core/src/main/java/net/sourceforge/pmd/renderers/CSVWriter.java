@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.renderers;
 
+import static net.sourceforge.pmd.util.internal.CsvEscapeUtil.quoteAndEscapeCsvColumn;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
@@ -38,7 +40,7 @@ class CSVWriter<T> {
             quoteAndCommify(buf, columns.get(i).title);
         }
 
-        quote(buf, columns.get(columns.size() - 1).title);
+        buf.append(quoteAndEscapeCsvColumn(columns.get(columns.size() - 1).title));
 
         buf.append(lineSeparator);
         writer.write(buf.toString());
@@ -61,7 +63,7 @@ class CSVWriter<T> {
                 quoteAndCommify(buf, columns.get(i).accessor.get(count, rv, separator));
             }
 
-            quote(buf, columns.get(lastColumnIdx).accessor.get(count, rv, separator));
+            buf.append(quoteAndEscapeCsvColumn(columns.get(lastColumnIdx).accessor.get(count, rv, separator)));
 
             buf.append(lineSeparator);
             writer.write(buf.toString());
@@ -69,15 +71,8 @@ class CSVWriter<T> {
         }
     }
 
-    private void quote(StringBuilder buffer, String s) {
-        if (s == null) {
-            s = "";
-        }
-        buffer.append('"').append(s).append('"');
-    }
-
     private void quoteAndCommify(StringBuilder buffer, String s) {
-        quote(buffer, s);
+        buffer.append(quoteAndEscapeCsvColumn(s));
         buffer.append(separator);
     }
 }

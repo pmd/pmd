@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -33,20 +34,21 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         LanguageVersion languageVersion = node.getTextDocument().getLanguageVersion();
 
         @NonNull
         ASTArgumentList arguments = node.getArguments();
         if (arguments.size() != 1) {
             // only consider the single argument constructors
-            return data;
+            return null;
         }
 
         // might be a String, an Integer, a Long, a Double, or a BigInteger
         Object constValue = arguments.get(0).getConstFoldingResult().getValue();
         if (constValue == null) {
             // skip further checks if no constFoldingResult is present
-            return data;
+            return null;
         }
 
         boolean java5 = languageVersion.compareToVersion("1.5") >= 0;
@@ -56,26 +58,26 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
         if (TypeTestUtil.isA(BigInteger.class, node)) {
             // BigInteger.ZERO, ONE: since 1.2
             if ("0".equals(constValue) || "1".equals(constValue)) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
             // BigInteger.TEN: since 1.5
             if (java5 && "10".equals(constValue)) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
             // BigInteger.TWO: since 9
             if (java9 && "2".equals(constValue)) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         } else if (TypeTestUtil.isA(BigDecimal.class, node)) {
             // BigDecimal.ZERO, ONE, TEN: since 1.5
             if (java5 && BIGDECIMAL_CONSTANTS.contains(String.valueOf(constValue))) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
             // BigDecimal.TWO: since 19
             if (java19 && "2".equals(String.valueOf(constValue))) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         }
-        return data;
+        return null;
     }
 }
