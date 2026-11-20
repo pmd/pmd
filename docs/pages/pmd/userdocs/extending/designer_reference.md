@@ -3,7 +3,7 @@ title: The rule designer
 short_title: Rule designer
 tags: [extending, userdocs]
 summary: "Learn about the usage and features of the rule designer."
-last_updated: May 2026 (7.25.0)
+last_updated: November 2026 (7.30.0)
 permalink: pmd_userdocs_extending_designer_reference.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -38,13 +38,13 @@ Example (for linux x64 only, with Java 21 and OpenJFX 21):
 ```shell
 $ mkdir $HOME/openjdk
 $ cd $HOME/openjdk
-$ wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.9%2B10/OpenJDK21U-jdk_x64_linux_hotspot_21.0.9_10.tar.gz
-$ tar xfz OpenJDK21U-jdk_x64_linux_hotspot_21.0.9_10.tar.gz
-$ export JAVA_HOME=$HOME/openjdk/jdk-21.0.9+10
+$ wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13.1%2B2/OpenJDK21U-jdk_x64_linux_hotspot_21.0.13.1_2.tar.gz
+$ tar xfz OpenJDK21U-jdk_x64_linux_hotspot_21.0.13.1_2.tar.gz
+$ export JAVA_HOME=$HOME/openjdk/jdk-21.0.13.1+2
 $ export PATH=$JAVA_HOME/bin:$PATH
-$ wget https://download2.gluonhq.com/openjfx/21.0.9/openjfx-21.0.9_linux-x64_bin-sdk.zip
-$ unzip -q openjfx-21.0.9_linux-x64_bin-sdk.zip
-$ export JAVAFX_HOME=$HOME/openjdk/javafx-sdk-21.0.9
+$ wget https://download2.gluonhq.com/openjfx/21.0.13.1/openjfx-21.0.13.1_linux-x64_bin-sdk.zip
+$ unzip -q openjfx-21.0.13.1_linux-x64_bin-sdk.zip
+$ export JAVAFX_HOME=$HOME/openjdk/javafx-sdk-21.0.13.1
 ```
 
 If the bin directory of your PMD distribution is on your shell's path, then you can then **launch the app** with
@@ -66,11 +66,20 @@ standard PMD startup scripts, which setups the classpath with the available PMD 
 
 ### Updating
 
-The latest version of the designer currently **works with PMD 7.0.0 and above**. You can simply replace
-pmd-designer-7.X.Y.jar with the [latest build](https://github.com/pmd/pmd-designer/releases) in the installation
-folder of your PMD distribution, and run it normally. Note that updating may cause some persisted state
-to get lost, for example the code snippet.
+The latest version of the designer currently **works with PMD 7.0.0 and above** (pmd-core API).
 
+However, since version 7.30.0, the designer doesn't bundle [ControlsFX](https://github.com/controlsfx/controlsfx)
+anymore. ControlsFX is a separate library, which is provided by the start scripts of
+**PMD's binary distribution 7.30.0 and later** (ControlsFX 8.x for Java 8, ControlsFX 11.x for Java 11+).
+
+You can replace `pmd-designer-7.X.Y.jar` with the [latest build](https://github.com/pmd/pmd-designer/releases/latest)
+in the installation folder of your PMD distribution, as long as that distribution is 7.30.0 or later.
+For older PMD distributions, either upgrade PMD or keep using pmd-designer 7.19.x.
+
+If you embed the designer in your own application, add `org.controlsfx:controlsfx` to the classpath.
+It is declared as a regular Maven dependency (11.x); when running on Java 8, select version 8.40.18 instead.
+
+Note that updating may cause some persisted state to get lost, for example the code snippet.
 
 # Usage reference
 
