@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
@@ -175,9 +176,9 @@ class JspDocStyleTest extends AbstractJspNodesTst {
                 + "<!DOCTYPE html>\n<html></html>");
 
         ASTDoctypeDeclaration doctype = root.descendants(ASTDoctypeDeclaration.class).firstOrThrow();
-        assertTrue(doctype.getParent() instanceof ASTContent, "Doctype should be part of the content");
+        assertInstanceOf(ASTContent.class, doctype.getParent(), "Doctype should be part of the content");
         ASTJspDirective directive = root.descendants(ASTJspDirective.class).firstOrThrow();
-        assertTrue(directive.getParent() instanceof ASTContent, "Directive should be part of the content");
+        assertInstanceOf(ASTContent.class, directive.getParent(), "Directive should be part of the content");
     }
 
     /**
@@ -187,8 +188,8 @@ class JspDocStyleTest extends AbstractJspNodesTst {
     void testDoctypeAtStartIsProlog() {
         ASTCompilationUnit root = jsp.parse("<?xml version=\"1.0\"?>\n<!-- comment -->\n<!DOCTYPE html>\n<html></html>");
 
-        assertTrue(root.descendants(ASTDeclaration.class).firstOrThrow().getParent() instanceof ASTCompilationUnit);
-        assertTrue(root.descendants(ASTDoctypeDeclaration.class).firstOrThrow().getParent() instanceof ASTCompilationUnit);
+        assertInstanceOf(ASTCompilationUnit.class, root.descendants(ASTDeclaration.class).firstOrThrow().getParent());
+        assertInstanceOf(ASTCompilationUnit.class, root.descendants(ASTDoctypeDeclaration.class).firstOrThrow().getParent());
     }
 
     /**
