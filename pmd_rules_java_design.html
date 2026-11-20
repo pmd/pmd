@@ -3713,7 +3713,7 @@ statements. For more details on the calculation, see the documentation
 While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
 full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
 it multiplies the complexity of statements in the same block. For more details on the calculation, see the
-documentation <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH"><code>NPATH</code></a>.</p>
+documentation <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH_COMP"><code>NPATH_COMP</code></a>.</p>
 
 <p>A threshold of 200 is generally considered the point where measures should be taken to reduce
 complexity and increase readability.</p>
@@ -3723,9 +3723,9 @@ complexity and increase readability.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span> <span class="c1">// Ncss = 252: reported!</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span> <span class="c1">// NPath = 336: reported!</span>
     <span class="kt">boolean</span> <span class="n">a</span><span class="o">,</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-    <span class="k">try</span> <span class="o">{</span> <span class="c1">// 2 * 2 + 2 = 6</span>
+    <span class="k">try</span> <span class="o">{</span> <span class="c1">// 2 * 2 * 2 = 8 (try and catch blocks multiply)</span>
       <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 2</span>
         <span class="nc">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
       <span class="o">}</span>
@@ -3734,7 +3734,7 @@ complexity and increase readability.</p>
         <span class="nc">List</span> <span class="n">buz</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
       <span class="o">}</span>
     <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 2</span>
+      <span class="k">if</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// * 2</span>
         <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
       <span class="o">}</span>
     <span class="o">}</span>
