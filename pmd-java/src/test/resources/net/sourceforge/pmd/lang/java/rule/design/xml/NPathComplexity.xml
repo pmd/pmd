@@ -4,6 +4,50 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
+    <test-code>
+        <description>Example from the rule documentation</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'bar()' has an NPath complexity of 336, current threshold is 200</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+  public static void bar() { // NPath = 336: reported!
+    boolean a, b = true;
+    try { // 2 * 2 * 2 = 8 (try and catch blocks multiply)
+      if (true) { // 2
+        List buz = new ArrayList();
+      }
+
+      for(int i = 0; i < 19; i++) { // * 2
+        List buz = new ArrayList();
+      }
+    } catch(Exception e) {
+      if (true) { // * 2
+        e.printStackTrace();
+      }
+    }
+
+    while (j++ < 20) { //  * 2
+      List buz = new ArrayList();
+    }
+
+    switch(j) { // * 7
+      case 1:
+      case 2: break;
+      case 3: j = 5; break;
+      case 4: if (b && a) { bar(); } break;
+      default: break;
+    }
+
+    do { // * 3
+        List buz = new ArrayList();
+    } while (a && j++ < 30);
+  }
+}
+        ]]></code>
+    </test-code>
+
     <code-fragment id="full-example"><![CDATA[
 import java.util.*;
 public class Foo {
