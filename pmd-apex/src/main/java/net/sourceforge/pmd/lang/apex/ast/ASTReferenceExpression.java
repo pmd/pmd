@@ -45,6 +45,14 @@ public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifi
         return nodes.stream().map(Identifier::getString).collect(Collectors.toList());
     }
 
+    /**
+     * @return the fully qualified name of the reference expression
+     * @since 7.29.0
+     */
+    public String getName() {
+        return String.join(".", getNames());
+    }
+
     public boolean isSafeNav() {
         return this.isSafe;
     }

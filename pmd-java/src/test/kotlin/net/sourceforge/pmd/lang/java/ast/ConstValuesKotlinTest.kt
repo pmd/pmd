@@ -118,6 +118,34 @@ class ConstValuesKotlinTest : ProcessorTestSpec({
         acu.initializerOf("result").constValue shouldBe null
     }
 
+    parserTest("Comparing or casting boxed Boolean locals is foldable but is not a constant expression") {
+        val acu = parser.parse(
+            """
+            class Foo {
+                void test() {
+                    final Boolean boxedTrue = true;
+                    final Boolean boxedFalse = false;
+                    final boolean primTrue = true;
+                    final boolean primFalse = false;
+                    boolean same = boxedTrue == boxedFalse;
+                    boolean unboxed = boxedTrue == true;
+                    boolean cast = (boolean) boxedTrue;
+                    boolean primSame = primTrue == primFalse;
+                }
+            }
+            """.trimIndent()
+        )
+
+        acu.initializerOf("same").constFoldingResult.value shouldBe false
+        acu.initializerOf("same").isCompileTimeConstant shouldBe false
+        acu.initializerOf("unboxed").constFoldingResult.value shouldBe true
+        acu.initializerOf("unboxed").isCompileTimeConstant shouldBe false
+        acu.initializerOf("cast").constFoldingResult.value shouldBe true
+        acu.initializerOf("cast").isCompileTimeConstant shouldBe false
+        acu.initializerOf("primSame").constFoldingResult.value shouldBe false
+        acu.initializerOf("primSame").isCompileTimeConstant shouldBe true
+    }
+
     parserTest("Local numeric constants use their declared types") {
         val acu = parser.parse(
             """

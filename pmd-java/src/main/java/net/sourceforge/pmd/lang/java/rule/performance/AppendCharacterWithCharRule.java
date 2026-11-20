@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule finds the following:
@@ -32,6 +33,7 @@ public class AppendCharacterWithCharRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.getParent() instanceof ASTArgumentList
             && node.length() == 1
             && ((ASTArgumentList) node.getParent()).size() == 1) {
@@ -42,10 +44,10 @@ public class AppendCharacterWithCharRule extends AbstractJavaRulechainRule {
                     && (TypeTestUtil.isDeclaredInClass(StringBuilder.class, call.getMethodType())
                     || TypeTestUtil.isDeclaredInClass(StringBuffer.class, call.getMethodType()))
                 ) {
-                    asCtx(data).addViolation(node);
+                    ctx.addViolation(node);
                 }
             }
         }
-        return data;
+        return null;
     }
 }

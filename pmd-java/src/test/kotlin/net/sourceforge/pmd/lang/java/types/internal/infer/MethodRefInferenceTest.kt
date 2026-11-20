@@ -1127,4 +1127,70 @@ class Scratch {
             staticMref.referencedMethod shouldBe static
         }
     }
+
+    parserTest("#7148 exact method ref return type may be boxed in strict phase") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Function;
+            import java.util.function.ToIntFunction;
+
+            class LambdaResult {
+                static int len(String s) { return s.length(); }
+
+                static void f(int x, Function<String, Integer> g) { }
+                static void f(Integer x, ToIntFunction<String> g) { }
+
+                void t(int i) {
+                    // javac selects f(int, Function) in the strict phase
+                    f(i, LambdaResult::len);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("f")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "f",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(int, gen.t_Function[gen.t_String, gen.t_Integer]),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7148 unboxing of a method reference result in the strict phase") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import java.util.function.Function;
+            import java.util.function.ToIntFunction;
+
+            class LambdaResult {
+                static Integer len(String s) { return s.length(); }
+
+                static void f(int x, ToIntFunction<String> g) { }
+                static void f(Integer x, Function<String, Integer> g) { }
+
+                void t(int i) {
+                    // javac selects f(int, ToIntFunction) in the strict phase
+                    f(i, LambdaResult::len);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val t_LambdaResult = acu.firstTypeSignature()
+        val call = acu.firstMethodCall("f")
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "f",
+                declaredIn = t_LambdaResult,
+                withFormals = listOf(int, ToIntFunction::class[gen.t_String]),
+                returning = void
+            )
+        }
+    }
 })

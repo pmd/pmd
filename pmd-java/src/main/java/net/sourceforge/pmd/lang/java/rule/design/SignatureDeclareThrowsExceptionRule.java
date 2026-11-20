@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -42,9 +43,10 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRulechainRu
 
     @Override
     public Object visit(ASTThrowsList throwsList, Object o) {
+        RuleContext ctx = (RuleContext) o;
         if (!isIgnored(throwsList.getOwner())
             && throwsList.toStream().any(it -> TypeTestUtil.isExactlyA(Exception.class, it))) {
-            asCtx(o).addViolation(throwsList);
+            ctx.addViolation(throwsList);
         }
         return null;
     }

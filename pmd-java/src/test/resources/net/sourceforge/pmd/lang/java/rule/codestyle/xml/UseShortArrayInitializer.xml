@@ -104,4 +104,50 @@ public class UseShortArrayExample {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4576 arrays of parameterized types are not shortened; unbounded wildcards still are</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>18,19,20</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class Foo {
+    @SuppressWarnings("unchecked")
+    public void bar() {
+        Set<Integer> set1 = new HashSet<>();
+        Map<Integer, String> map1 = new HashMap<>();
+
+        Set<Integer>[] skippedSets = new Set[] { set1 };
+        Map<?, String>[] skippedMaps1 = new Map[] { map1 };
+        Map<?, ? extends String>[] skippedMaps2 = new Map[] { map1 };
+        Set<Integer> skippedCStyle[] = new Set[] { set1 };
+        Map<?, ? extends String> skippedCStyle2[] = new Map[] { map1 };
+
+        Set<?>[] reportedSets = new Set[] { set1 };
+        Map<?, ?>[] reportedMaps = new Map<?, ?>[] { map1 };
+        Set<?> reportedCStyle[] = new Set[] { set1 };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation span is the array allocation, not the whole declarator</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-6</expected-linenumbers>
+        <code><![CDATA[
+public class UseShortArrayExample {
+    void foo() {
+        int[] x =
+            new int[] {
+                1, 2, 3
+            };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

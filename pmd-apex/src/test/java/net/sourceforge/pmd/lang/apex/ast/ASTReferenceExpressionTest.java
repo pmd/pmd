@@ -46,4 +46,17 @@ class ASTReferenceExpressionTest extends ApexParserTestBase {
         assertEquals(ReferenceType.STORE, reference.getReferenceType());
         assertFalse(reference.isSafeNav());
     }
+
+    @Test
+    void nameAttribute() {
+        ASTReferenceExpression reference1 = parse("class Foo { static SObjectDescribeOptions bar() { return SObjectDescribeOptions.DEFAULT; } }")
+                .descendants(ASTReferenceExpression.class)
+                .first();
+        assertEquals("SObjectDescribeOptions", reference1.getName());
+
+        ASTReferenceExpression reference2 = parse("class Foo { static Schema.SObjectDescribeOptions bar() { return Schema.SObjectDescribeOptions.DEFAULT; } }")
+                .descendants(ASTReferenceExpression.class)
+                .first();
+        assertEquals("Schema.SObjectDescribeOptions", reference2.getName());
+    }
 }

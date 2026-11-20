@@ -40,13 +40,14 @@ class CpdCliTest extends BaseCliTest {
     private static final String SRC_DIR = BASE_RES_PATH + "files/";
     private static final Path SRC_PATH = Paths.get(SRC_DIR).toAbsolutePath();
 
-    private static final String CPD_REPORT_HEADER_PATTERN = "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>\n"
-            + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
-            + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-            + "         pmdVersion=\".+?\"\n"
-            + "         timestamp=\".+?\"\n"
-            + "         version=\"1.0.0\"\n"
-            + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\">\n";
+    private static final String CPD_REPORT_HEADER_PATTERN = "<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>"
+            + "<pmd-cpd"
+            + " pmdVersion=\".+?\""
+            + " timestamp=\".+?\""
+            + " version=\"1.0.0\""
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + " xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\""
+            + " xmlns=\"https://pmd-code.org/schema/cpd-report\">\n";
 
     private static final Map<String, Integer> NUMBER_OF_TOKENS;
 
@@ -76,19 +77,20 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testEmptyResultRendering() throws Exception {
-        final String expectedFilesXml = getExpectedFileEntriesXml(NUMBER_OF_TOKENS.keySet());
+        String expectedReportPattern = (CPD_REPORT_HEADER_PATTERN
+                + "\\Q" // quote start
+                + getExpectedFileEntriesXml(NUMBER_OF_TOKENS.keySet())
+                + "</pmd-cpd>\n"
+                + "\\E") // quote end
+            .replace("\n", System.lineSeparator());
+
         runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")
-                .verify(result -> result.checkStdOut(containsPattern(CPD_REPORT_HEADER_PATTERN
-                        + "\\Q" // quote start
-                        + expectedFilesXml
-                        + "</pmd-cpd>\n"
-                        + "\\E" // quote end
-                )));
+                .verify(result -> result.checkStdOut(containsPattern(expectedReportPattern)));
     }
 
     private String getExpectedFileEntryXml(final String filename) {
         final int numberOfTokens = NUMBER_OF_TOKENS.get(filename);
-        return String.format("   <file path=\"%s\"\n         totalNumberOfTokens=\"%d\"/>\n",
+        return String.format("    <file path=\"%s\" totalNumberOfTokens=\"%d\"/>\n",
                 filename,
                 numberOfTokens);
     }
@@ -189,18 +191,15 @@ class CpdCliTest extends BaseCliTest {
 
     @Test
     void testNoDuplicatesResultRendering() throws Exception {
-        String expectedReportPattern = CPD_REPORT_HEADER_PATTERN
-            + "\\Q" // quote start
-            + "   <file path=\"" + SRC_PATH.resolve("dup1.java") + "\"\n"
-            + "         totalNumberOfTokens=\"89\"/>\n"
-            + "   <file path=\"" + SRC_PATH.resolve("dup2.java") + "\"\n"
-            + "         totalNumberOfTokens=\"89\"/>\n"
-            + "   <file path=\"" + SRC_PATH.resolve("fileWith_ISO8859_1_Encoding.java") + "\"\n"
-            + "         totalNumberOfTokens=\"5\"/>\n"
-            + "   <file path=\"" + SRC_PATH.resolve("fileWith_UTF_8_BOM_Encoding.java") + "\"\n"
-            + "         totalNumberOfTokens=\"5\"/>\n"
-            + "</pmd-cpd>\n"
-            + "\\E"; // quote end
+        String expectedReportPattern = (CPD_REPORT_HEADER_PATTERN
+                + "\\Q" // quote start
+                + "    <file path=\"" + SRC_PATH.resolve("dup1.java") + "\" totalNumberOfTokens=\"89\"/>\n"
+                + "    <file path=\"" + SRC_PATH.resolve("dup2.java") + "\" totalNumberOfTokens=\"89\"/>\n"
+                + "    <file path=\"" + SRC_PATH.resolve("fileWith_ISO8859_1_Encoding.java") + "\" totalNumberOfTokens=\"5\"/>\n"
+                + "    <file path=\"" + SRC_PATH.resolve("fileWith_UTF_8_BOM_Encoding.java") + "\" totalNumberOfTokens=\"5\"/>\n"
+                + "</pmd-cpd>\n"
+                + "\\E") // quote end
+            .replace("\n", System.lineSeparator());
 
         runCliSuccessfully("--minimum-tokens", "340", "--language", "java", "--dir", SRC_DIR, "--format", "xml")
                 .verify(result -> result.checkStdOut(containsPattern(expectedReportPattern)));

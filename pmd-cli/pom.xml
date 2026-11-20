@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.29.0-SNAPSHOT</version>
+        <version>7.30.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -27,12 +27,29 @@
                 <configuration>
                     <parameter>
                         <excludes combine.children="append">
+                            <exclude>me.tongfei.progressbar</exclude>
                             <exclude>net.sourceforge.pmd.cli.internal</exclude>
                             <exclude>net.sourceforge.pmd.cli.commands.internal</exclude>
                             <exclude>net.sourceforge.pmd.cli.commands.mixins.internal</exclude>
                             <exclude>net.sourceforge.pmd.cli.commands.typesupport.internal</exclude>
                         </excludes>
                     </parameter>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <!--
+                            Disable JLine's exec terminal provider, which is used by the progressbar.
+                            Under Windows in git bash (PWD/MSYSTEM are set), it runs "tty.exe" with the inherited
+                            stdin of the forked JVM. This hangs, as surefire is reading from stdin
+                            (command channel) at the same time. The tests don't need a real terminal.
+                        -->
+                        <org.jline.terminal.exec>false</org.jline.terminal.exec>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

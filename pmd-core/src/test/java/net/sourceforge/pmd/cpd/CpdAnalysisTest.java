@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -347,9 +346,7 @@ class CpdAnalysisTest {
         @Override
         public void addedFile(int fileCount) {
             files++;
-            if (files > expectedFilesCount) {
-                fail("File was added!");
-            }
+            assertFalse(files > expectedFilesCount, "File was added!");
         }
 
         @Override

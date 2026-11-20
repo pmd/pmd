@@ -28,7 +28,7 @@ those can be specified with the `--property` / `-P` option on the command-line.
 analysis tools. It has been approved as an OASIS standard" - <https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html>.
 
 SARIF schema can be found here: <https://github.com/oasis-tcs/sarif-spec/tree/main/sarif-2.1/schema>.
-In the generated report, we refer to the schema on [schemastore.org/json](https://www.schemastore.org/json/):
+In the generated report, we refer to the schema on [schemastore.org](https://www.schemastore.org/):
 <https://json.schemastore.org/sarif-2.1.0.json>.
 
 PMD holds an initial implementation version of SARIF rendering. This means SARIF allows for more complexity and the

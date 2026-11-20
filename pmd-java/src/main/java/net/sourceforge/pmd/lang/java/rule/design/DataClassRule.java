@@ -35,7 +35,8 @@ public class DataClassRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
-        visitTypeDecl((ASTTypeDeclaration) node, (RuleContext) data);
+        RuleContext ctx = (RuleContext) data;
+        visitTypeDecl((ASTTypeDeclaration) node, ctx);
         return null;
     }
 
@@ -53,9 +54,9 @@ public class DataClassRule extends AbstractJavaRulechainRule {
             int noam = MetricsUtil.computeMetric(NUMBER_OF_ACCESSORS, node);
             int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
 
-            asCtx(data).addViolation(node, node.getSimpleName(),
-                                     StringUtil.percentageString(woc, 3),
-                                     nopa, noam, wmc);
+            data.addViolation(node, node.getSimpleName(),
+                              StringUtil.percentageString(woc, 3),
+                              nopa, noam, wmc);
         }
     }
 

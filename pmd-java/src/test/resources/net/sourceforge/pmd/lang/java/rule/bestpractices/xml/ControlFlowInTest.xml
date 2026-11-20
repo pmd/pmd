@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>If in a test method is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        if (System.currentTimeMillis() > 0) {
+            assertTrue(true);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test without conditional execution is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        assertEquals(4, 2 + 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If in an ordinary method is allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    void ordinaryMethod() {
+        if (System.currentTimeMillis() > 0) {
+            System.out.println("Ready");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested if and else-if are reported separately</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksConditions() {
+        if (System.nanoTime() > 0) {
+            if (System.nanoTime() > 1) {
+                System.out.println("nested");
+            }
+        } else if (System.nanoTime() < 0) {
+            System.out.println("alternative");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ternary expression in an argument is reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        assertEquals(1, System.nanoTime() > 0 ? 1 : 2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statement is reported once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        int value = 1;
+        switch (value) {
+        case 1:
+            System.out.println("one");
+            break;
+        default:
+            System.out.println("other");
+            break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expression is reported once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExampleTest {
+    @Test
+    void checksResult() {
+        int value = 1;
+        int result = switch (value) {
+            case 1 -> 10;
+            default -> 20;
+        };
+        assertEquals(10, result);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try with multiple catches is reported once</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksException() {
+        try {
+            Integer.parseInt("invalid");
+        } catch (NumberFormatException e) {
+            System.out.println(e);
+        } catch (IllegalStateException e) {
+            System.out.println(e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Explicit throw in a test is reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksException() {
+        throw new IllegalStateException("failure");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try-with-resources is allowed but plain try-finally is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+import java.io.StringReader;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ExampleTest {
+    @Test
+    void checksResources() throws Exception {
+        try (StringReader reader = new StringReader("a")) {
+            assertEquals('a', reader.read());
+        }
+
+        try {
+            assertEquals(4, 2 + 2);
+        } finally {
+            System.out.println("cleanup");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>All loop types are allowed by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksLoops() {
+        for (int i = 0; i < 2; i++) {
+            System.out.println(i);
+        }
+
+        for (int value : new int[] {1, 2}) {
+            System.out.println(value);
+        }
+
+        int counter = 0;
+        while (counter < 2) {
+            counter++;
+        }
+
+        do {
+            counter--;
+        } while (counter > 0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>All loop types are reported when disabled</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,10,15,19</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksLoops() {
+        for (int i = 0; i < 2; i++) {
+            System.out.println(i);
+        }
+
+        for (int value : new int[] {1, 2}) {
+            System.out.println(value);
+        }
+
+        int counter = 0;
+        while (counter < 2) {
+            counter++;
+        }
+
+        do {
+            counter--;
+        } while (counter > 0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If inside an explicitly allowed loop is still reported</description>
+        <rule-property name="allowLoops">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksValues() {
+        for (int value : new int[] {1, 2}) {
+            if (value > 1) {
+                System.out.println(value);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 3, JUnit 4 and TestNG methods are checked</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+class LegacyTest extends junit.framework.TestCase {
+    public void testSomething() {
+        if (System.nanoTime() > 0) {
+            System.out.println("JUnit 3");
+        }
+    }
+}
+
+class JUnit4Test {
+    @org.junit.Test
+    public void checksSomething() {
+        if (System.nanoTime() > 0) {
+            System.out.println("JUnit 4");
+        }
+    }
+}
+
+class TestNgTest {
+    @org.testng.annotations.Test
+    public void checksSomething() {
+        if (System.nanoTime() > 0) {
+            System.out.println("TestNG");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Parameterized and repeated tests are checked</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+class ExampleTest {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(ints = {1, 2})
+    void checksParameter(int value) {
+        if (value > 0) {
+            System.out.println(value);
+        }
+    }
+
+    @org.junit.jupiter.api.RepeatedTest(2)
+    void checksRepeatedly() {
+        if (System.nanoTime() > 0) {
+            System.out.println("repeated");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Control flow inside a test lambda is reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+class ExampleTest {
+    @Test
+    void checksLambda() {
+        assertDoesNotThrow(() -> {
+            if (System.nanoTime() > 0) {
+                System.out.println("conditional");
+            }
+        });
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Methods of local and anonymous classes are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class ExampleTest {
+    @Test
+    void checksNestedCode() {
+        class Helper {
+            void execute() {
+                if (System.nanoTime() > 0) {
+                    System.out.println("local");
+                }
+            }
+        }
+
+        Runnable action = new Runnable() {
+            @Override
+            public void run() {
+                if (System.nanoTime() > 0) {
+                    System.out.println("anonymous");
+                }
+            }
+        };
+
+        new Helper().execute();
+        action.run();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Setup methods and ordinary helper methods are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class ExampleTest {
+    @org.junit.jupiter.api.BeforeEach
+    void setup() {
+        if (System.nanoTime() > 0) {
+            System.out.println("setup");
+        }
+    }
+
+    void helper() {
+        if (System.nanoTime() > 0) {
+            System.out.println("helper");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Direct assertions and exception assertion calls are allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class ExampleTest {
+    @Test
+    void checksResults() {
+        assertEquals(4, 2 + 2);
+        assertThrows(
+            NumberFormatException.class,
+            () -> Integer.parseInt("invalid")
+        );
+        assertDoesNotThrow(() -> Integer.parseInt("42"));
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

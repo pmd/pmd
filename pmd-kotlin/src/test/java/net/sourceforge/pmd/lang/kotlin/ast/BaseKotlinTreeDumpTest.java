@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import java.util.Collection;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
+
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
 
@@ -14,8 +19,21 @@ import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
  */
 public class BaseKotlinTreeDumpTest extends BaseTreeDumpTest {
 
+    private static class KotlinAttributePrinter extends RelevantAttributePrinter {
+        @Override
+        protected boolean ignoreAttribute(@NotNull Node node, @NotNull Attribute attribute) {
+            // ignore empty collections to remove noise from tree dumps. E.g.
+            // "@AnnotationFqNames = ()" is not output.
+            Object value = attribute.getValue();
+            if (value instanceof Collection && ((Collection<?>) value).isEmpty()) {
+                return true;
+            }
+            return super.ignoreAttribute(node, attribute);
+        }
+    }
+
     public BaseKotlinTreeDumpTest() {
-        super(new RelevantAttributePrinter(), ".kt");
+        super(new KotlinAttributePrinter(), ".kt");
     }
 
     @NonNull

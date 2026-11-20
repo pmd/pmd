@@ -16,23 +16,23 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
+/**
+ * This rule is used to check whether user appends string directly instead of using StringBuffer or StringBuilder
+ * @since 3.1 (as xpath) / 3.8 (as Java)
+ */
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRule {
 
     public UseStringBufferForStringAppendsRule() {
         super(ASTVariableId.class);
     }
 
-    /**
-     * This method is used to check whether user appends string directly instead of using StringBuffer or StringBuilder
-     * @param node This is the expression of part of java code to be checked.
-     * @param data This is the data to return.
-     * @return Object This returns the data passed in. If violation happens, violation is added to data.
-     */
     @Override
     public Object visit(ASTVariableId node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!TypeTestUtil.isA(String.class, node) || node.isForeachVariable()) {
-            return data;
+            return null;
         }
 
         // Remember how often the variable has been used on the right hand side
@@ -71,7 +71,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
             if (usage.getAccessType() == AccessType.WRITE && !isSimpleAssignment) {
                 if (isWithinLoop(usage)) {
                     // always report appends within a loop
-                    asCtx(data).addViolation(usage);
+                    ctx.addViolation(usage);
                 } else {
                     possibleViolations.add(usage);
                 }
@@ -81,10 +81,10 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
         // only report, if it is used more than once
         // then all usage locations are reported
         if (usageCounter > 1) {
-            possibleViolations.forEach(v -> asCtx(data).addViolation(v));
+            possibleViolations.forEach(v -> ctx.addViolation(v));
         }
 
-        return data;
+        return null;
     }
 
     private boolean isNotWithinLoop(Node name) {

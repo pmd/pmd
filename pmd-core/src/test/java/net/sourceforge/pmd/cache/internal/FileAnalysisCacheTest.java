@@ -9,12 +9,12 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
@@ -350,11 +350,8 @@ class FileAnalysisCacheTest {
                     + tempFolder.toFile().getAbsolutePath() + File.separator + "non-existing-dir");
 
             final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
-            try {
-                reloadedCache.checkValidity(rs, emptyList(), Collections.emptySet());
-            } catch (final Exception e) {
-                fail("Validity check failed when classpath includes non-existing directories");
-            }
+            assertDoesNotThrow(() -> reloadedCache.checkValidity(rs, emptyList(), Collections.emptySet()),
+                    "Validity check failed when classpath includes non-existing directories");
         });
     }
 

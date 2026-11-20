@@ -87,16 +87,15 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] UseArrayListInsteadOfVector ignores Vector when other classes are imported #4148 - sample 1</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <description>Unresolved Vector without a package is ignored</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.Annotation;
 // import java.util.Vector; Note: explicitly not importing... unresolved type
 @Annotation
 public class C {
     void x() {
-        Vector v = new Vector();  // should report a warning in this line, but no warnings
+        Vector v = new Vector();
     }
 }
 ]]></code>
@@ -118,8 +117,8 @@ public class C {
     </test-code>
 
     <test-code>
-        <description>Only consider Vector and not subclasses</description>
-        <expected-problems>0</expected-problems>
+        <description>#6546 Stack is reported once because the rule is an alias of ReplaceJavaUtilVector</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.util.Stack;
 class StackUser {
