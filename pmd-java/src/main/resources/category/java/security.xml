@@ -15,18 +15,36 @@ Rules that flag potential security flaws.
           class="net.sourceforge.pmd.lang.java.rule.security.HardCodedCryptoKeyRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#hardcodedcryptokey">
         <description>
-Do not use hard coded values for cryptographic operations. Please store keys outside of source code.
+Do not use hard-coded values for cryptographic operations. Store keys outside of source code or generate
+it from a random source.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-public class Foo {
-    void good() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(Properties.getKey(), "AES");
+public class HardCodedCryptoKeyExample {
+    void good() throws Exception {
+        // loading the key via properties from outside of the source code
+        SecretKey secretKey1 = new SecretKeySpec(Properties.getKey(), "AES");
+
+        // generating a fresh key
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(256);
+        SecretKey secretKey2 = keyGenerator.generateKey();
+
+        // generating from a password, the password is from outside the source code
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(Properties.getPassword().toCharArray(), Properties.getSalt().getBytes(), 65536, 256);
+        SecretKey secretKey3 = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
     }
 
     void bad() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec("my secret here".getBytes(), "AES");
+        SecretKey secretKey1 = new SecretKeySpec("my secret here".getBytes(), "AES");
+
+        byte[] key2 = new byte[] { 1, 2, 3 };
+        SecretKey secretKey2 = new SecretKeySpec(key2, "AES");
+
+        byte[] key3 = new byte[32];
+        SecretKey secretKey3 = new SecretKeySpec(key3, "AES");
     }
 }
 ]]>
@@ -40,24 +58,31 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.security.InsecureCryptoIvRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_security.html#insecurecryptoiv">
         <description>
-Do not use hard coded initialization vector in cryptographic operations. Please use a randomly generated IV.
+Do not use hard coded initialization vector in cryptographic operations. Use a randomly generated IV.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-public class Foo {
-    void good() {
-        SecureRandom random = new SecureRandom();
-        byte iv[] = new byte[16];
-        random.nextBytes(bytes);
+public class InsecureCryptoIvExample {
+    void good(SecretKey key) throws Exception {
+        SecureRandom random = SecureRandom.getInstanceStrong();
+        byte[] iv = new byte[Cipher.getInstance("AES").getBlockSize()];
+        random.nextBytes(iv);
+        IvParameterSpec ivParam = new IvParameterSpec(iv);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, ivParam);
     }
 
     void bad() {
-        byte[] iv = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
-    }
+        byte[] iv1 = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, };
+        IvParameterSpec ivParam1 = new IvParameterSpec(iv1);
 
-    void alsoBad() {
-        byte[] iv = "secret iv in here".getBytes();
+        byte[] iv2 = new byte[16];
+        IvParameterSpec ivParam2 = new IvParameterSpec(iv2);
+
+        byte[] iv3 = "secret iv in here".getBytes();
+        IvParameterSpec ivParam3 = new IvParameterSpec(iv3);
     }
 }
 ]]>

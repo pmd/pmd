@@ -1116,7 +1116,7 @@ void PackageDeclaration() :
   image=VoidName() {
     endTok = getToken(0);
     jjtThis.setNameRegion(startTok.getNext(), endTok);
-    jjtThis.setImage(image);
+    jjtThis.setName(image);
   }
   ";"
 }
@@ -1129,7 +1129,7 @@ void ImportDeclaration() :
        "static" {jjtThis.setStatic();}
      | LOOKAHEAD({isKeyword("module")}) <IDENTIFIER> {jjtThis.setModuleImport();}
     )?
-    image=VoidName() { jjtThis.setImage(image); }
+    image=VoidName() { jjtThis.setImportedName(image); }
     [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
@@ -1312,7 +1312,7 @@ void TypeParameter():
 {}
 {
    AnnotationList()
-   <IDENTIFIER> {setLastTokenImage(jjtThis);} [ "extends" IntersectionType() ]
+   <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); } [ "extends" IntersectionType() ]
 }
 
 void ClassOrInterfaceBody() #ClassBody:
@@ -2209,9 +2209,9 @@ void MemberSelector() #void :
    */
   {forceExprContext();} QualifiedAllocationExpr()
   // if there are type arguments, this is a method call
-|              (TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())   #MethodCall(3)
-| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                   #MethodCall(2)
-|              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                  #FieldAccess(1)
+|              (TypeArguments() <IDENTIFIER> {jjtThis.setMethodName(getToken(0).getImage());} ArgumentList())   #MethodCall(3)
+| LOOKAHEAD(2) (<IDENTIFIER> {jjtThis.setMethodName(getToken(0).getImage());} ArgumentList())                   #MethodCall(2)
+|              (<IDENTIFIER> {jjtThis.setName(getToken(0).getImage());})                                        #FieldAccess(1)
 }
 
 void MethodReference() #MethodReference(jjtree.nodeArity() + 1): // LHS is injected
@@ -2432,7 +2432,7 @@ void StatementNoIdent() #void:
 void LabeledStatement() :
 {}
 {
-  <IDENTIFIER> { setLastTokenImage(jjtThis); } ":" Statement()
+  <IDENTIFIER> { jjtThis.setLabel(getToken(0).getImage()); } ":" Statement()
 }
 
 void Block() :
@@ -2694,13 +2694,13 @@ void ForUpdate() :
 void BreakStatement() :
 {}
 {
-  "break" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
+  "break" [ <IDENTIFIER> { jjtThis.setLabel(getToken(0).getImage()); } ] ";"
 }
 
 void ContinueStatement() :
 {}
 {
-  "continue" [ <IDENTIFIER> { setLastTokenImage(jjtThis); } ] ";"
+  "continue" [ <IDENTIFIER> { jjtThis.setLabel(getToken(0).getImage()); } ] ";"
 }
 
 void ReturnStatement() :
@@ -2829,7 +2829,7 @@ void AnnotationMemberList():
 
 void ShorthandAnnotationValue() #MemberValuePair:
 {
-    jjtThis.setImage(ASTMemberValuePair.VALUE_ATTR);
+    jjtThis.setName(ASTMemberValuePair.VALUE_ATTR);
     jjtThis.setShorthand();
 }
 {
@@ -2840,7 +2840,7 @@ void ShorthandAnnotationValue() #MemberValuePair:
 void MemberValuePair():
 {}
 {
-    <IDENTIFIER> { setLastTokenImage(jjtThis); } "=" MemberValue()
+    <IDENTIFIER> { jjtThis.setName(getToken(0).getImage()); } "=" MemberValue()
 }
 
 void MemberValue() #void:

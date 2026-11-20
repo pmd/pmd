@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -63,15 +64,22 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             return false;
         }
 
-        ASTFieldDeclaration fieldDeclaration = varId.ancestors(ASTFieldDeclaration.class).firstOrThrow();
+        NodeStream<ASTFieldDeclaration> ancestors = varId.ancestors(ASTFieldDeclaration.class);
+        if (ancestors.isEmpty()) {
+            // e.g., this is a record.
+            return false;
+        }
+
+        ASTFieldDeclaration fieldDeclaration = ancestors.firstOrThrow();
         return checkNonStaticFields || fieldDeclaration.hasModifiers(JModifier.STATIC);
     }
 
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.hasModifiers(JModifier.SYNCHRONIZED)) {
-            return data;
+            return null;
         }
 
         List<ASTIfStatement> ifStatements = node.descendants(ASTIfStatement.class).toList();
@@ -87,7 +95,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                 }
             }
             if (violation) {
-                asCtx(data).addViolation(ifStatement);
+                ctx.addViolation(ifStatement);
             }
         }
 
@@ -106,9 +114,9 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
             if (!isNullCheckOnField(ternary.getCondition(), fieldVarId)) {
                 continue;
             }
-            asCtx(data).addViolation(assignment);
+            ctx.addViolation(assignment);
         }
-        return data;
+        return null;
     }
 
 

@@ -23,6 +23,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
+
 
 class CpdXsltTest {
     /* Sample ant build.xml file. Run with "ant cpdxsl".
@@ -50,11 +52,7 @@ class CpdXsltTest {
 
     private String runXslt(String stylesheet) throws Exception {
         XSLTErrorListener errorListener = new XSLTErrorListener();
-
-        // note: using the default JDK factory, otherwise we would use Saxon from PMD's classpath
-        // which supports more xslt features.
-        TransformerFactory factory = TransformerFactory
-                .newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
+        TransformerFactory factory = XmlUtil.newTransformerFactory();
         factory.setErrorListener(errorListener);
         StreamSource xslt = new StreamSource(new File("etc/xslt/" + stylesheet));
         Templates template = factory.newTemplates(xslt);

@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * <pre>
@@ -62,32 +63,33 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (node.isVoid() || node.getResultTypeNode() instanceof ASTPrimitiveType || node.getBody() == null) {
-            return data;
+            return null;
         }
 
         List<ASTReturnStatement> rsl = node.descendants(ASTReturnStatement.class).toList();
         if (rsl.size() != 1) {
-            return data;
+            return null;
         }
         ASTReturnStatement rs = rsl.get(0);
 
         ASTExpression returnExpr = rs.getExpr();
         if (!(returnExpr instanceof ASTNamedReferenceExpr)) {
-            return data;
+            return null;
         }
 
         JVariableSymbol returnVariable = ((ASTNamedReferenceExpr) returnExpr).getReferencedSym();
         // With Java5 and volatile keyword, DCL is no longer an issue
         if (returnVariable instanceof JFieldSymbol
             && Modifier.isVolatile(((JFieldSymbol) returnVariable).getModifiers())) {
-            return data;
+            return null;
         }
 
         // if the return variable is local and only written with the volatile
         // field, then it's ok, too
         if (isLocalOnlyStoredWithVolatileField(node, returnVariable)) {
-            return data;
+            return null;
         }
 
         List<ASTIfStatement> nestedIfs = node.descendants(ASTIfStatement.class)
@@ -104,12 +106,12 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                         .filter(innerIf -> JavaRuleUtil.isNullCheck(innerIf.getCondition(), returnVariable))
                         .flatMap(innerIf -> innerIf.descendants(ASTAssignmentExpression.class));
                     if (assignments.all(assignment -> JavaAstUtils.isReferenceToVar(assignment.getLeftOperand(), returnVariable))) {
-                        assignments.firstOpt().ifPresent(ignored -> asCtx(data).addViolation(node));
+                        assignments.firstOpt().ifPresent(ignored -> ctx.addViolation(node));
                     }
                 }
             }
         }
-        return data;
+        return null;
     }
 
     private boolean isLocalOnlyStoredWithVolatileField(ASTMethodDeclaration method, JVariableSymbol local) {

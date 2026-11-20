@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 /**
  * @author Clément Fournier
@@ -46,6 +47,16 @@ class ASTTypeParametersTest : ParserTestSpec({
                         classType("Runnable") {
                             annotation("N")
                         }
+                    }
+                }
+            }
+
+            // TODO Deprecated: Tests deprecated @Image attribute of TypeParameter
+            "<T>" should parseAs {
+                typeParamList {
+                    child<ASTTypeParameter> {
+                        it::getName shouldBe "T"
+                        it::getImage shouldBe it.name
                     }
                 }
             }

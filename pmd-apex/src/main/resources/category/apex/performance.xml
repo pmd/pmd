@@ -123,13 +123,13 @@ Properties:
         or lower-case(@MethodName) = "describesobjects"
     ]
     [not(VariableExpression/ReferenceExpression
-            [lower-case(@Image) = ("sobjectdescribeoptions", "fielddescribeoptions")]
+            [lower-case(@Name) = ("sobjectdescribeoptions", "schema.sobjectdescribeoptions", "fielddescribeoptions", "schema.fielddescribeoptions")]
          )
     ]
 |
 //ReferenceExpression
     [$noDefault = true()]
-    [lower-case(@Image) = "sobjectdescribeoptions"]
+    [lower-case(@Name) = ("sobjectdescribeoptions", "schema.sobjectdescribeoptions")]
     [parent::VariableExpression[lower-case(@Image) = "default"]]
 ]]>
                 </value>

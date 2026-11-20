@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 class XMLOldRendererTest {
     private static final String ENCODING = (String) System.getProperties().get("file.encoding");
@@ -30,11 +30,11 @@ class XMLOldRendererTest {
         renderer.render(new CpdTestUtils.CpdReportBuilder().build(), sw);
         String report = sw.toString();
 
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<pmd-cpd/>\n",
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><pmd-cpd/>" + System.lineSeparator(),
                 report,
                 "no namespace expected");
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
                 .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList nodes = doc.getChildNodes();
         Node n = nodes.item(0);
@@ -56,7 +56,7 @@ class XMLOldRendererTest {
         renderer.render(builder.build(), sw);
         String report = sw.toString();
 
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        Document doc = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
                 .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList dupes = doc.getElementsByTagName("duplication");
         assertEquals(1, dupes.getLength());

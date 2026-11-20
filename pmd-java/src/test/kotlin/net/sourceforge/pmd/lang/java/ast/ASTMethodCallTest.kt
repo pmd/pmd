@@ -76,6 +76,14 @@ class ASTMethodCallTest : ParserTestSpec({
                     }
                 }
             }
+
+            // TODO Deprecated: Tests deprecated @Image attribute
+            "foo()" should parseAs {
+                methodCall("foo") {
+                    it::getImage shouldBe it.methodName
+                    it::getArguments shouldBe argList {}
+                }
+            }
         }
     }
 })

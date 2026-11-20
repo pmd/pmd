@@ -14,13 +14,17 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
+import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleContext;
+import net.sourceforge.pmd.reporting.RuleViolation;
 
 class SummaryHTMLRendererTest extends AbstractRendererTest {
+
+    private static final String RULE_NAME = "Foo <script>should be escaped</script>";
 
     @Override
     Renderer getRenderer() {
@@ -29,6 +33,14 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
         result.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of("line_prefix"));
         result.setProperty(HTMLRenderer.HTML_EXTENSION, true);
         return result;
+    }
+
+    @Override
+    protected RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, Rule rule) {
+        if ("Foo".equals(rule.getName())) {
+            rule.setName(RULE_NAME);
+        }
+        return super.newRuleViolation(beginLine, beginColumn, endLine, endColumn, rule);
     }
 
     @Override
@@ -41,7 +53,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
         return "<html><head><title>PMD</title></head><body>" + EOL + "<center><h2>Summary</h2></center>" + EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + EOL
-                + "<tr><td>Foo</td><td align=center>1</td></tr>" + EOL + "</table>" + EOL
+                + "<tr><td>Foo &lt;script&gt;should be escaped&lt;/script&gt;</td><td align=center>1</td></tr>" + EOL + "</table>" + EOL
                 + "<center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL
                 + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
@@ -70,7 +82,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
         return "<html><head><title>PMD</title></head><body>" + EOL + "<center><h2>Summary</h2></center>" + EOL
                 + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + EOL
                 + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + EOL
-                + "<tr><td>Foo</td><td align=center>1</td></tr>" + EOL
+                + "<tr><td>Foo &lt;script&gt;should be escaped&lt;/script&gt;</td><td align=center>1</td></tr>" + EOL
                 + "<tr><td>Boo</td><td align=center>1</td></tr>" + EOL + "</table>" + EOL
                 + "<center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL
@@ -130,7 +142,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + "</table><hr/><center><h3>Suppressed warnings</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>"
                          + EOL + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"left\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
-                + "<td align=\"center\">1</td>" + EOL + "<td align=\"center\"><a href=\"https://example.org/rules/foo\">Foo</a></td>" + EOL
+                + "<td align=\"center\">1</td>" + EOL + "<td align=\"center\"><a href=\"https://example.org/rules/foo\">Foo &lt;script&gt;should be escaped&lt;/script&gt;</a></td>" + EOL
                          + "<td align=\"center\">//NOPMD</td>" + EOL + "<td align=\"center\">test</td>" + EOL
                          + "</tr>"
                 + EOL + "</table></tr></table></body></html>" + EOL, actual);
@@ -149,7 +161,9 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
             DummyRootNode root = helper.parse("dummy code", getSourceCodeFilename());
             root = root.withNoPmdComments(new SuppressionCommentImpl<>(root, "test"));
 
-            RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, new FooRule());
+            FooRule rule = new FooRule();
+            rule.setName(RULE_NAME);
+            RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, rule);
             ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");
         };
     }

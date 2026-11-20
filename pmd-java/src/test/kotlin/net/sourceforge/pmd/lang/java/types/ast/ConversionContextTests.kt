@@ -72,16 +72,16 @@ class ConversionContextTests : ProcessorTestSpec({
             // ternary is in double assignment context
             ternary should haveContext(ASSIGNMENT, double)
 
-            // but it has type int
-            ternary shouldHaveType int
+            // but it has type short
+            ternary shouldHaveType short
 
-            // more importantly, both branch expressions have context int and not double
+            // more importantly, both branch expressions have context short and not double
 
             num1 shouldHaveType int
             shortCast shouldHaveType short
 
-            num1 should haveContext(TERNARY, int)
-            shortCast should haveContext(TERNARY, int)
+            num1 should haveContext(TERNARY, short)
+            shortCast should haveContext(TERNARY, short)
             num5 should haveContext(CAST, short)
         }
     }

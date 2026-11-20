@@ -75,6 +75,17 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     * Note: This method always returns {@code null}. Don't use it. The deprecation is just a technicality.
+     */
+    @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
+    public String getImage() {
+        return null;
+    }
+
+    /**
      * Returns the signature of the method this method overrides in a
      * supertype. Note that this method may be implementing several methods
      * of super-interfaces at once, in that case, an arbitrary one is returned.

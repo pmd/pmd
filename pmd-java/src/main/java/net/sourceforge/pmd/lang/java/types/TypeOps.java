@@ -2063,12 +2063,16 @@ public final class TypeOps {
     /**
      * Methods and fields of a type variable come from its upper bound, which must be captured.
      * Capturing a type var does NOT capture its upper bound, so we must treat this
-     * case here.
+     * case here. Intersection bounds need their components captured individually.
      */
     public static JTypeMirror getMemberSource(JTypeMirror t) {
         if (t instanceof JTypeVar) {
             JTypeVar tv = (JTypeVar) t;
-            return capture(tv.getUpperBound());
+            return getMemberSource(tv.getUpperBound());
+        }
+        if (t instanceof JIntersectionType) {
+            return t.getTypeSystem().glb(
+                CollectionUtil.map(((JIntersectionType) t).getComponents(), TypeOps::getMemberSource));
         }
         return capture(t);
     }

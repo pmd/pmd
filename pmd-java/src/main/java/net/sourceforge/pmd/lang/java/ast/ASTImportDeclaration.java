@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
+
 /**
  * Represents an import declaration in a Java file.
  *
@@ -22,6 +24,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
     private boolean isImportOnDemand;
     private boolean isStatic;
     private boolean moduleImport;
+    private String importedName;
 
     ASTImportDeclaration(int id) {
         super(id);
@@ -70,11 +73,20 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * this is the name of the module.
      */
     public @NonNull String getImportedName() {
-        return super.getImage();
+        return importedName;
     }
 
+    void setImportedName(String name) {
+        this.importedName = name;
+    }
 
+    /**
+     * @deprecated Since 7.29.0. Use #getImportedName() instead. Note: This method always
+     * returns {@code null}. Don't use it. The deprecation is just a technicality.
+     */
     @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@ImportedName")
     public String getImage() {
         // the image was null before 7.0, best keep it that way
         return null;

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DomainConversion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonExtensionFunctionDefinitionAdapter;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
-import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
+import net.sourceforge.pmd.lang.xml.ast.XmlRootNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.util.DataMap;
@@ -124,7 +124,7 @@ final class SaxonDomXPathQuery {
         return xpath;
     }
 
-    public List<Node> evaluate(RootXmlNode root, PropertySource propertyValues) {
+    public List<Node> evaluate(XmlRootNode root, PropertySource propertyValues) {
         DocumentWrapper wrapper = getSaxonDomWrapper(root);
 
         try {
@@ -147,7 +147,7 @@ final class SaxonDomXPathQuery {
 
     }
 
-    private DocumentWrapper getSaxonDomWrapper(RootXmlNode node) {
+    private DocumentWrapper getSaxonDomWrapper(XmlRootNode node) {
         DataMap<DataKey<?, ?>> userMap = node.getUserMap();
         if (userMap.isSet(SAXON_DOM_WRAPPER)) {
             return userMap.get(SAXON_DOM_WRAPPER);

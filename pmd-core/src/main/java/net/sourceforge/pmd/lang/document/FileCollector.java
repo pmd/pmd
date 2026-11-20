@@ -143,7 +143,7 @@ public final class FileCollector implements AutoCloseable {
      * @return True if the file has been added
      */
     public boolean addFile(Path file) {
-        if (!Files.isRegularFile(file)) {
+        if (!Files.isRegularFile(file) || Files.isSymbolicLink(file)) {
             reporter.error("Not a regular file: {0}", file);
             return false;
         }
@@ -166,7 +166,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public boolean addFile(Path file, Language language) {
         AssertionUtil.requireParamNotNull("language", language);
-        if (!Files.isRegularFile(file)) {
+        if (!Files.isRegularFile(file) || Files.isSymbolicLink(file)) {
             reporter.error("Not a regular file: {0}", file);
             return false;
         }
@@ -273,12 +273,12 @@ public final class FileCollector implements AutoCloseable {
     }
 
     public boolean addDirectory(Path dir, boolean recurse) throws IOException {
-        if (!Files.isDirectory(dir)) {
+        if (!Files.isDirectory(dir) || Files.isSymbolicLink(dir)) {
             reporter.error("Not a directory {0}", dir);
             return false;
         }
         int maxDepth = recurse ? Integer.MAX_VALUE : 1;
-        Files.walkFileTree(dir, EnumSet.of(FileVisitOption.FOLLOW_LINKS), maxDepth, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(dir, EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 if (attrs.isRegularFile()) {

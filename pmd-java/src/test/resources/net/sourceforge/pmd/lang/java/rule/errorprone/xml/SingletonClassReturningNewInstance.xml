@@ -101,4 +101,54 @@ public final class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] SingletonClassReturningNewInstance false positive due to type cast #5158</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class ObjectArrayValidatorNoOp implements ObjectArrayValidator<Object, Object> {
+    private static final ObjectArrayValidatorNoOp INSTANCE = new ObjectArrayValidatorNoOp();
+
+    public static <T, E> ObjectArrayValidator<T, E> getInstance() {
+        @SuppressWarnings("unchecked")
+        ObjectArrayValidator<T, E> temp = (ObjectArrayValidator<T, E>) (Object) INSTANCE;
+        return temp;
+    }
+}
+interface ObjectArrayValidator<T, E> { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5158 A local that is assigned a new instance later is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance;
+    public static Singleton getInstance() {
+        Singleton result = instance;
+        if (result == null) {
+            result = new Singleton();
+        }
+        return result;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5158 A new instance behind a cast or a conditional is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Singleton {
+    private static Singleton instance;
+    public static Object getInstance() {
+        Object result = instance != null ? instance : (Object) new Singleton();
+        return result;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

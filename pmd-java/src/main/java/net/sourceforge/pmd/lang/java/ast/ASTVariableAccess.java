@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 
 /**
  * An unqualified reference to a variable (either local, or a field that
@@ -27,13 +28,14 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
 public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr {
 
     private JVariableSig typedSym;
+    private String name;
 
     /**
      * Constructor promoting an ambiguous name to a variable reference.
      */
     ASTVariableAccess(ASTAmbiguousName name) {
         super(JavaParserImplTreeConstants.JJTVARIABLEACCESS);
-        setImage(name.getFirstToken().getImage());
+        setName(name.getFirstToken().getImage());
     }
 
     ASTVariableAccess(JavaccToken identifier) {
@@ -41,7 +43,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
 
         TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
-        setImage(identifier.getImage());
+        setName(identifier.getImage());
         setFirstToken(identifier);
         setLastToken(identifier);
     }
@@ -51,9 +53,24 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
         super(id);
     }
 
+
+    /**
+     * @deprecated Since 7.29.0. Use {@link #getName()} instead.
+     */
+    @Override
+    @Deprecated
+    @DeprecatedAttribute(replaceWith = "@Name")
+    public String getImage() {
+        return getName();
+    }
+
+    private void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String getName() {
-        return getImage();
+        return name;
     }
 
 

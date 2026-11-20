@@ -103,7 +103,7 @@ Or use the CLI:
 3. Commit the changes: `git commit -am "Add @<username> as contributor`
 
 Where `username` is your GitHub username and `contribution` is a `,`-separated list
-of contributions. See [Emoji Key](https://allcontributors.org/docs/en/emoji-key) for a list
+of contributions. See [Emoji Key](https://allcontributors.org/en/reference/emoji-key/) for a list
 of valid types. Common types are: "code", "doc", "bug", "blog", "talk", "test", "tutorial".
 
 See also [cli documentation](https://allcontributors.org/docs/en/cli/usage)

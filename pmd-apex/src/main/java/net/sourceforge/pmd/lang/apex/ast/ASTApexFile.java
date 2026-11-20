@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
 import com.google.summit.ast.CompilationUnit;
 import com.nawforce.apexlink.api.TypeSummary;
@@ -132,11 +133,8 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
             return null;
         }
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = XmlUtil.newDocumentBuilderFactory();
             factory.setNamespaceAware(false);
-            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             Document document = factory.newDocumentBuilder().parse(metaXmlPath.toFile());
             NodeList nodes = document.getElementsByTagName("apiVersion");
             if (nodes.getLength() == 0) {

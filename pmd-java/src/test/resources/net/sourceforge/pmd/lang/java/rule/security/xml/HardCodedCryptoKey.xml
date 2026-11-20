@@ -5,6 +5,46 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
+        <description>Example from rule description</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>25,27,30</expected-linenumbers>
+        <code><![CDATA[
+import java.security.spec.KeySpec;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+public class HardCodedCryptoKeyExample {
+    void good() throws Exception {
+        // loading the key via properties from outside of the source code
+        SecretKey secretKey1 = new SecretKeySpec(Properties.getKey(), "AES");
+
+        // generating a fresh key
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(256);
+        SecretKey secretKey2 = keyGenerator.generateKey();
+
+        // generating from a password, the password is from outside the source code
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(Properties.getPassword().toCharArray(), Properties.getSalt().getBytes(), 65536, 256);
+        SecretKey secretKey3 = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+    }
+
+    void bad() {
+        SecretKey secretKey1 = new SecretKeySpec("my secret here".getBytes(), "AES");
+
+        byte[] key2 = new byte[] { 1, 2, 3 };
+        SecretKey secretKey2 = new SecretKeySpec(key2, "AES");
+
+        byte[] key3 = new byte[32];
+        SecretKey secretKey3 = new SecretKeySpec(key3, "AES");
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
         <description>Hard coded inline cryptographic key, bad</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
@@ -288,4 +328,97 @@ public class BadCase {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#7015: default-initialized array</description>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>5,8,12,18,22,26</expected-linenumbers>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+class Example {
+    void example1() {
+        SecretKeySpec keySpec = new SecretKeySpec(new byte[32], "AES");
+    }
+    void example2() {
+        byte[] key = new byte[32];
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+    }
+    void example3() {
+        byte[] key = new byte[32];
+        key[0] = 1;
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+    }
+    void example4() {
+        byte[] key;
+        key = new byte[32];
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+    }
+    void example5() {
+        byte[] key = new byte[32];
+        SecretKeySpec keySpec = new SecretKeySpec(key, 0, key.length, "AES");
+    }
+    void example6(byte[] source) {
+        byte[] key = new byte[32]; // Report: the later reassignment cannot change the key
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        key = source;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7015: Properly initialized/generated keys</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.security.SecureRandom;
+import javax.crypto.spec.SecretKeySpec;
+
+class ExampleGood {
+        void example1() {
+            byte[] key = new byte[32];
+            new SecureRandom().nextBytes(key);
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        }
+
+        native int load(byte[] key);
+        void example2() {
+            byte[] key = new byte[32];
+            load(key);
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        }
+
+        void example3(byte[] source) {
+            byte[] key = new byte[32];
+            System.arraycopy(source, 0, key, 0, key.length);
+            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with reused byte array variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+class Example {
+    void method(int ivLength) {
+        byte[] tmp = getRandomBytes();
+        SecretKey clientCipherKey = new SecretKeySpec(tmp, alg);
+        tmp = getRandomBytes();
+        SecretKey serverCipherKey = new SecretKeySpec(tmp, alg);
+
+        if (ivLength != 0) {
+            tmp = new byte[ivLength]; // this is not a problem, the default array is not used above for SecretKey
+            byte[] block = getRandomBytes();
+            System.arraycopy(block, 0, tmp, 0, ivLength);
+            IvParameterSpec clientIv = new IvParameterSpec(tmp);
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

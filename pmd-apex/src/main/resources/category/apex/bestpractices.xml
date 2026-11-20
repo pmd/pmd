@@ -71,7 +71,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveRunAsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas">
         <description>
-Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the 
+Apex unit tests should include at least one runAs method.  This makes the tests more robust, and independent from the
 user running it.
         </description>
         <priority>3</priority>
@@ -204,6 +204,22 @@ private class ATest {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue">
         <description>
 Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
+
+Most `ConnectApi` methods require `seeAllData=true` in tests. Set the property `reportConnectApi` to `false`, and the rule
+does not report `seeAllData=true` on a test class or test method that calls such a method:
+
+* For `seeAllData=true` on a test class, the rule looks for the `ConnectApi` call in every method of the class,
+  helper methods too.
+* For `seeAllData=true` on a test method, the rule looks for the `ConnectApi` call only in the body of that test method.
+* A `ConnectApi` method whose name starts with `setTest`, such as `ConnectApi.ChatterFeeds.setTestGetFeedElementsFromFeed`,
+  registers test data and uses no org data. So a call to it does not stop the rule from reporting `seeAllData=true`.
+* The regular method that a `setTest` method registers test data for, such as `ConnectApi.ChatterFeeds.getFeedElementsFromFeed`,
+  returns that test data and uses no org data. So when the same test class or test method also calls its `setTest` method,
+  a call to the regular method does not stop the rule from flagging `seeAllData=true` either.
+* The rule does not look in other classes. If the test calls a method of another class, and only that class calls
+  `ConnectApi`, the rule flags `seeAllData=true`.
+
+See more here: &lt;https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/connectAPI_TestingApex.htm&gt;
         </description>
         <priority>3</priority>
         <example>
@@ -266,11 +282,11 @@ public class FutureExample {
 // Recommended: Using Queueable interface with Finalizer to detect and handle job failure
 public class QueueableExample implements Queueable, Finalizer {
     private String accountId;
-    
+
     public QueueableExample(String accountId) {
         this.accountId = accountId;
     }
-    
+
     public void execute(QueueableContext context) {
         System.attachFinalizer(this);
         Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
