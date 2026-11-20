@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Using a Formatter (e.g. SimpleDateFormatter, DecimalFormatter) which is static can cause
@@ -60,19 +61,20 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (!node.hasModifiers(JModifier.STATIC)) {
-            return data;
+            return null;
         }
         ASTType cit = node.getTypeNode();
         if (!(cit instanceof ASTClassType)
             || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
-            return data;
+            return null;
         }
 
         ASTVariableId var = node.getVarIds().firstOrThrow();
         for (String formatter: THREAD_SAFE_FORMATTER) {
             if (TypeTestUtil.isA(formatter, var)) {
-                return data;
+                return null;
             }
         }
         for (ASTNamedReferenceExpr ref : var.getLocalUsages()) {
@@ -107,8 +109,8 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
                 continue;
             }
 
-            asCtx(data).addViolation(ref);
+            ctx.addViolation(ref);
         }
-        return data;
+        return null;
     }
 }

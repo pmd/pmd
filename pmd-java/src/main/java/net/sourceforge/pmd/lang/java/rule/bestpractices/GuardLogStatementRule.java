@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -241,7 +242,27 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(it -> isDirectAccess(it) || it.getConstFoldingResult().hasValue());
+                   .all(GuardLogStatementRule::isLowOverheadParam);
+    }
+
+    private static boolean isLowOverheadParam(ASTExpression it) {
+        return isDirectAccess(it) || it.getConstFoldingResult().hasValue()
+                || isStructuredLoggingArgument(it);
+    }
+
+    /**
+     * Whether the argument is a logstash structured argument whose own inputs
+     * are also low-overhead expressions.
+     */
+    private static boolean isStructuredLoggingArgument(ASTExpression it) {
+        if (!TypeTestUtil.isA("net.logstash.logback.argument.StructuredArgument", it)) {
+            return false;
+        }
+        if (it instanceof InvocationNode) {
+            return ((InvocationNode) it).getArguments().toStream()
+                    .all(GuardLogStatementRule::isLowOverheadParam);
+        }
+        return true;
     }
 
     private static boolean isDirectAccess(ASTExpression it) {

@@ -60,7 +60,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
             for (ASTFieldDeclaration field : type.getDeclarations().filterIs(ASTFieldDeclaration.class)) {
                 if (!isIgnored(field)) {
                     for (ASTVariableId varId : field.getVarIds()) {
-                        if (!fieldsUsedByAnnotations.contains(varId.getName())
+                        if (!isReferencedByAnnotation(varId, fieldsUsedByAnnotations)
                                 && JavaAstUtils.isNeverUsed(varId)) {
                             ctx.addViolation(varId, varId.getName());
                         }
@@ -69,6 +69,13 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
             }
         }
         return null;
+    }
+
+    private static boolean isReferencedByAnnotation(ASTVariableId field, Set<String> references) {
+        String name = field.getName();
+        // JUnit FieldSource uses binary class names, including '$' for nested classes, without parentheses.
+        String qualifiedName = field.getEnclosingType().getBinaryName() + "#" + name;
+        return references.contains(name) || references.contains(qualifiedName);
     }
 
     private boolean isIgnored(ASTFieldDeclaration field) {

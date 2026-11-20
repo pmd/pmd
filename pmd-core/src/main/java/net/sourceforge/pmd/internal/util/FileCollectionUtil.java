@@ -12,11 +12,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,17 +109,6 @@ public final class FileCollectionUtil {
         }
     }
 
-
-    public static void collectFiles(FileCollector collector, List<Path> filePaths) {
-        for (Path rootLocation : filePaths) {
-            try {
-                addRoot(collector, rootLocation);
-            } catch (IOException e) {
-                collector.getReporter().errorEx("Error collecting {0}", new Object[]{ rootLocation }, e);
-            }
-        }
-    }
-
     public static void collectFileList(FileCollector collector, Path fileList) {
         LOG.debug("Reading file list {}.", fileList);
         if (!Files.exists(fileList)) {
@@ -126,12 +118,42 @@ public final class FileCollectionUtil {
 
         List<Path> filePaths;
         try {
-            filePaths = FileUtil.readFilelistEntries(fileList);
+            filePaths = readFilelistEntries(fileList);
         } catch (IOException e) {
             collector.getReporter().errorEx("Error reading {0}", new Object[] { fileList }, e);
             return;
         }
         collectFiles(collector, filePaths);
+    }
+
+    /**
+     * Reads the file, which contains the filelist. This is used for the
+     * command line arguments --filelist/-filelist for both PMD and CPD.
+     * The separator in the filelist is a comma and/or newlines.
+     *
+     * @param filelist the file which contains the list of path names
+     *
+     * @return a list of file paths
+     *
+     * @throws IOException if the file couldn't be read
+     */
+    private static List<Path> readFilelistEntries(Path filelist) throws IOException {
+        return Files.readAllLines(filelist).stream()
+                .flatMap(it -> Arrays.stream(it.split(",")))
+                .map(String::trim)
+                .filter(StringUtils::isNotBlank)
+                .map(Paths::get)
+                .collect(Collectors.toList());
+    }
+
+    public static void collectFiles(FileCollector collector, List<Path> filePaths) {
+        for (Path rootLocation : filePaths) {
+            try {
+                addRoot(collector, rootLocation);
+            } catch (IOException e) {
+                collector.getReporter().errorEx("Error collecting {0}", new Object[]{ rootLocation }, e);
+            }
+        }
     }
 
     private static void addRoot(FileCollector collector, Path path) throws IOException {

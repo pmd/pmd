@@ -831,6 +831,9 @@ public final class JavaAstUtils {
      */
     public static boolean isJustRethrowException(ASTCatchClause clause) {
         ASTBlock body = clause.getBody();
+        while (body.size() == 1 && body.get(0) instanceof ASTBlock) {
+            body = (ASTBlock) body.get(0);
+        }
         if (body.size() == 1) {
             ASTStatement stmt = body.get(0);
             return stmt instanceof ASTThrowStatement

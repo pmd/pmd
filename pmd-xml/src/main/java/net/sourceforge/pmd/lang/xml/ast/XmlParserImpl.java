@@ -2,13 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xml.ast.internal;
+package net.sourceforge.pmd.lang.xml.ast;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,15 +19,16 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.xml.ast.XmlNode;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 
-public final class XmlParserImpl {
+/**
+ * @internal None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+ */
+@InternalApi // Marking this internal in case this class is changed to public
+final class XmlParserImpl {
     // never throws on unresolved resource
     private static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream(new byte[0]));
 
@@ -38,16 +38,17 @@ public final class XmlParserImpl {
     private Document parseDocument(String xmlData) throws ParseException {
         nodeCache.clear();
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory dbf = XmlUtil.newDocumentBuilderFactory();
             dbf.setNamespaceAware(true);
             dbf.setValidating(false);
             dbf.setIgnoringComments(false);
             dbf.setIgnoringElementContentWhitespace(false);
-            dbf.setExpandEntityReferences(true);
             dbf.setCoalescing(false);
-            dbf.setXIncludeAware(false);
-            dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            // allow DOCTYPE but do not resolve external entities. See #SILENT_ENTITY_RESOLVER
+            // XmlUtil already disabled external entities, so SYSTEM entities won't be read.
+            // otherwise, we get an exception and can't parse XML files with a doctype declaration
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
+            dbf.setExpandEntityReferences(true);
             DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
             documentBuilder.setEntityResolver(SILENT_ENTITY_RESOLVER);
             return documentBuilder.parse(new InputSource(new StringReader(xmlData)));
@@ -57,10 +58,10 @@ public final class XmlParserImpl {
     }
 
 
-    public RootXmlNode parse(ParserTask task) {
+    public XmlRootNode parse(ParserTask task) {
         String xmlData = task.getSourceText();
         Document document = parseDocument(xmlData);
-        RootXmlNode root = new RootXmlNode(this, document, task);
+        XmlRootNode root = new XmlRootNode(this, document, task);
         DOMLineNumbers lineNumbers = new DOMLineNumbers(root, task.getTextDocument());
         lineNumbers.determine();
         nodeCache.put(document, root);
@@ -83,52 +84,4 @@ public final class XmlParserImpl {
         }
         return wrapper;
     }
-
-
-    /**
-     * The root should implement {@link RootNode}.
-     */
-    public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
-
-        private final AstInfo<RootXmlNode> astInfo;
-
-        RootXmlNode(XmlParserImpl parser, Document domNode, ParserTask task) {
-            super(parser, domNode);
-            this.astInfo = new AstInfo<>(task, this);
-        }
-
-        @Override
-        public AstInfo<RootXmlNode> getAstInfo() {
-            return astInfo;
-        }
-
-        @Override
-        public XmlNode wrap(Node domNode) {
-            return super.wrap(domNode);
-        }
-
-        @Override
-        public Document getNode() {
-            return (Document) super.getNode();
-        }
-        
-        public String getXmlEncoding() {
-            return getNode().getXmlEncoding();
-        }
-        
-        public boolean isXmlStandalone() {
-            return getNode().getXmlStandalone();
-        }
-        
-        public String getXmlVersion() {
-            return getNode().getXmlVersion();
-        }
-
-        @Override
-        public Iterator<Attribute> getXPathAttributesIterator() {
-            // Expose this node's attributes through reflection
-            return new AttributeAxisIterator(this);
-        }
-    }
-
 }

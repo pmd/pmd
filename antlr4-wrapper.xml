@@ -100,8 +100,15 @@ public class ${base-visitor-name}'/>
             <available file="${listener-file}"/>
             <then>
                 <replace file="${listener-file}"
+                         token='${line.separator} */'
+                         value='${line.separator}
+* @deprecated Since 7.30.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
+* This class will be changed to package-private in PMD-8.0.0${line.separator}
+*/'/>
+                <replace file="${listener-file}"
                          token="public interface ${listener-name}"
-                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+                         value='@Deprecated${line.separator}
+@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
 public interface ${listener-name}'/>
             </then>
         </if>
@@ -110,8 +117,15 @@ public interface ${listener-name}'/>
             <available file="${base-listener-file}"/>
             <then>
                 <replace file="${base-listener-file}"
+                         token='${line.separator} */'
+                         value='${line.separator}
+* @deprecated Since 7.30.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
+* This class will be changed to package-private in PMD-8.0.0${line.separator}
+*/'/>
+                <replace file="${base-listener-file}"
                          token="public class ${base-listener-name}"
-                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+                         value='@Deprecated${line.separator}
+@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
 public class ${base-listener-name}'/>
             </then>
         </if>
@@ -121,7 +135,13 @@ public class ${base-listener-name}'/>
             <then>
                 <replace file="${lexer-file}"
                          token="public class ${lexer-name}"
-                         value='@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
+                         value='
+/**${line.separator}
+ * @deprecated Since 7.30.0. This class is an implementation detail that should have never been part of the public api.${line.separator}
+ * This class will be changed to package-private in PMD-8.0.0${line.separator}
+ */${line.separator}
+@Deprecated${line.separator}
+@net.sourceforge.pmd.annotation.Generated("org.antlr.v4.Tool")${line.separator}
 public class ${lexer-name}'/>
             </then>
         </if>

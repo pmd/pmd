@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UselessStringValueOfRule extends AbstractJavaRule {
 
@@ -24,13 +25,14 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (JavaAstUtils.isStringConcatExpr(node.getParent())) {
             ASTExpression valueOfArg = getValueOfArg(node);
             if (valueOfArg == null) {
-                return data; //not a valueOf call
+                return null; //not a valueOf call
             } else if (TypeTestUtil.isExactlyA(String.class, valueOfArg)) {
-                asCtx(data).addViolation(node); // valueOf call on a string
-                return data;
+                ctx.addViolation(node); // valueOf call on a string
+                return null;
             }
 
             ASTExpression sibling = JavaAstUtils.getOtherOperandIfInInfixExpr(node);
@@ -39,10 +41,10 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                 // In `String.valueOf(a) + String.valueOf(b)`,
                 // only report the second call
                 && (getValueOfArg(sibling) == null || node.getIndexInParent() == 1)) {
-                asCtx(data).addViolation(node);
+                ctx.addViolation(node);
             }
         }
-        return data;
+        return null;
     }
 
     private static @Nullable ASTExpression getValueOfArg(ASTExpression expr) {

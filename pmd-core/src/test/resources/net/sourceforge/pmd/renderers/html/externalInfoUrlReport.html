@@ -1,0 +1,58 @@
+<html><head><title>PMD</title></head><body>
+<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align="center" cellspacing="0" cellpadding="3"><tr>
+<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>
+<tr bgcolor="lightgrey"> 
+<td align="center">1</td>
+<td width="*%">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center" width="5%">1</td>
+<td width="*">This should be escaped: &quot;&lt;script&gt;alert(&#39;test&#39;)&lt;/script&gt;&quot;.</td>
+</tr>
+<tr> 
+<td align="center">2</td>
+<td width="*%">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center" width="5%">1</td>
+<td width="*"><a href="https://example.com/rule?name=%22abc%22">This should be escaped: &quot;&lt;script&gt;alert(&#39;test&#39;)&lt;/script&gt;&quot;.</a></td>
+</tr>
+<tr bgcolor="lightgrey"> 
+<td align="center">3</td>
+<td width="*%">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center" width="5%">1</td>
+<td width="*"><a href="https://example.org/rules/foo">This should be escaped: &quot;&lt;script&gt;alert(&#39;test&#39;)&lt;/script&gt;&quot;.</a></td>
+</tr>
+<tr> 
+<td align="center">4</td>
+<td width="*%">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center" width="5%">1</td>
+<td width="*">This should be escaped: &quot;&lt;script&gt;alert(&#39;test&#39;)&lt;/script&gt;&quot;.</td>
+</tr>
+</table><hr/><center><h3>Suppressed warnings</h3></center><table align="center" cellspacing="0" cellpadding="3"><tr>
+<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>
+<tr bgcolor="lightgrey"> 
+<td align="left">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center">1</td>
+<td align="center"><a href="https://example.com/rule?name=%22abc%22">ValidUrl</a></td>
+<td align="center">//NOPMD</td>
+<td align="center"></td>
+</tr>
+<tr> 
+<td align="left">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center">1</td>
+<td align="center"><a href="https://example.org/rules/foo">ValidUrl2</a></td>
+<td align="center">//NOPMD</td>
+<td align="center"></td>
+</tr>
+<tr bgcolor="lightgrey"> 
+<td align="left">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center">1</td>
+<td align="center">Xss</td>
+<td align="center">//NOPMD</td>
+<td align="center"></td>
+</tr>
+<tr> 
+<td align="left">someFilename&nbsp;thatNeedsEscaping.ext</td>
+<td align="center">1</td>
+<td align="center">JavaScript Alert</td>
+<td align="center">//NOPMD</td>
+<td align="center"></td>
+</tr>
+</table></body></html>
