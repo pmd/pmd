@@ -44,7 +44,9 @@ class CommentRequiredTest extends PmdRuleTst {
                 "minimumVisibility",
                 "publicMethodCommentRequirement",
                 "protectedMethodCommentRequirement",
-                "packageMethodCommentRequirement");
+                "packageMethodCommentRequirement",
+                "enumCommentRequirement",
+                "classCommentRequirement");
         List<PropertyDescriptor<?>> result = new ArrayList<>();
         for (PropertyDescriptor<?> property : rule.getPropertyDescriptors()) {
             if (property != Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR

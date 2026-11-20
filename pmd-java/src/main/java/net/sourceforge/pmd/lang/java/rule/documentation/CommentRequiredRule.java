@@ -9,6 +9,8 @@ import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.DEPREC
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
@@ -36,44 +38,50 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class CommentRequiredRule extends AbstractJavaRulechainRule {
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
+    private static final String METHOD_PROP_DEPRECATION = DEPRECATED_RULE_PROPERTY_MARKER + "When set, methodCommentRequirement is ignored and this property decides whether %s methods should have comments. Will be removed in PMD 8.0.0. Use methodCommentRequirement and minimumVisibility instead.";
     private static final Map<String, CommentRequirement> COMMENT_REQUIREMENT_DEPRECATED_MAPPING =
             CollectionUtil.mapOf("Required", CommentRequirement.REQUIRED, "Ignored", CommentRequirement.IGNORED,
                     "Unwanted", CommentRequirement.UNWANTED);
 
     private static final PropertyDescriptor<CommentRequirement> ACCESSOR_CMT_DESCRIPTOR
-            = requirementPropertyBuilder("accessorCommentRequirement", "Comments on getters and setters")
-            .defaultValue(CommentRequirement.IGNORED).build();
+            = requirementPropertyBuilder("accessorCommentRequirement", "Comments on getters and setters",
+            CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
-            = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
-            .defaultValue(CommentRequirement.IGNORED).build();
+            = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods",
+            CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> CLASS_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("classCommentRequirement", "Class comments")
-            .defaultValue(CommentRequirement.WHEN_VISIBLE).build();
+            = requirementPropertyBuilder("classCommentRequirement", "%s type comments",
+            DEPRECATED_RULE_PROPERTY_MARKER + "When set, overrides typeCommentRequirement for types other than enums. Will be removed in PMD 8.0. Use typeCommentRequirement instead.",
+            CommentRequirement.WHEN_VISIBLE).build();
+    private static final PropertyDescriptor<CommentRequirement> TYPE_CMT_REQUIREMENT_DESCRIPTOR
+            = requirementPropertyBuilder("typeCommentRequirement", "%s type comments", "Type comments",
+            CommentRequirement.WHEN_VISIBLE).build();
     private static final PropertyDescriptor<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("fieldCommentRequirement", "Field comments").build();
+            = requirementPropertyBuilder("fieldCommentRequirement", "%s field comments", "Field comments",
+            CommentRequirement.WHEN_VISIBLE).build();
     private static final PropertyDescriptor<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("publicMethodCommentRequirement",
-            DEPRECATED_RULE_PROPERTY_MARKER + "Has no effect and will be removed in PMD 8.0.0. Use methodCommentRequirement and minimumVisibility instead.").build();
+            = requirementPropertyBuilder("publicMethodCommentRequirement", "Public method and constructor comments",
+            String.format(METHOD_PROP_DEPRECATION, "public"), CommentRequirement.REQUIRED).build();
     private static final PropertyDescriptor<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("protectedMethodCommentRequirement",
-            DEPRECATED_RULE_PROPERTY_MARKER + "Has no effect and will be removed in PMD 8.0.0. Use methodCommentRequirement and minimumVisibility instead.").build();
+            = requirementPropertyBuilder("protectedMethodCommentRequirement", "Protected method and constructor comments",
+            String.format(METHOD_PROP_DEPRECATION, "protected"), CommentRequirement.REQUIRED).build();
     private static final PropertyDescriptor<CommentRequirement> PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("packageMethodCommentRequirement",
-            DEPRECATED_RULE_PROPERTY_MARKER + "For backwards compatibility, setting this to 'required' overrides minimumVisibility. Will be removed in PMD 8.0. Use methodCommentRequirement and minimumVisibility instead.")
-            .defaultValue(CommentRequirement.IGNORED).build();
+            = requirementPropertyBuilder("packageMethodCommentRequirement", "Package-private method and constructor comments",
+            String.format(METHOD_PROP_DEPRECATION, "package-private"), CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> METHOD_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("methodCommentRequirement", "Method and constructor comments")
-            .defaultValue(CommentRequirement.WHEN_VISIBLE).build();
+            = requirementPropertyBuilder("methodCommentRequirement", "%s method and constructor comments",
+            "Method and constructor comments, excluding getters, setters and overrides", CommentRequirement.WHEN_VISIBLE).build();
 
     private static final PropertyDescriptor<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("enumCommentRequirement", "Enum comments")
-            .defaultValue(CommentRequirement.WHEN_VISIBLE).build();
+            = requirementPropertyBuilder("enumCommentRequirement", "%s enum comments",
+            DEPRECATED_RULE_PROPERTY_MARKER + "When set, overrides typeCommentRequirement for enums. Will be removed in PMD 8.0. Use typeCommentRequirement instead.",
+            CommentRequirement.WHEN_VISIBLE).build();
     private static final PropertyDescriptor<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("serialVersionUIDCommentRequired", "Serial version UID comments")
-            .defaultValue(CommentRequirement.IGNORED).build();
+            = requirementPropertyBuilder("serialVersionUIDCommentRequired", "Serial version UID comments",
+            CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR
-            = requirementPropertyBuilder("serialPersistentFieldsCommentRequired", "Serial persistent fields comments")
-            .defaultValue(CommentRequirement.IGNORED).build();
+            = requirementPropertyBuilder("serialPersistentFieldsCommentRequired", "Serial persistent fields comments",
+            CommentRequirement.IGNORED).build();
 
     private static final PropertyDescriptor<NodeVisibility> MINIMUM_VISIBILITY
             = PropertyFactory.conventionalEnumProperty("minimumVisibility", NodeVisibility.class)
@@ -84,20 +92,23 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
     /** stores the resolved property values. This is necessary in order to transparently use deprecated properties. */
     private final Map<PropertyDescriptor<CommentRequirement>, CommentRequirement> propertyValues = new HashMap<>();
+    private final Map<Visibility, CommentRequirement> legacyMethodRequirements = new HashMap<>();
+    private CommentRequirement enumRequirement;
     private Visibility minimumVisibility = Visibility.V_PROTECTED;
 
     public CommentRequiredRule() {
         super(ASTBodyDeclaration.class);
         definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
         definePropertyDescriptor(ACCESSOR_CMT_DESCRIPTOR);
-        definePropertyDescriptor(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(METHOD_CMT_REQUIREMENT_DESCRIPTOR);
-        definePropertyDescriptor(ENUM_CMT_REQUIREMENT_DESCRIPTOR);
+        definePropertyDescriptor(TYPE_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(MINIMUM_VISIBILITY);
         // deprecated properties
+        definePropertyDescriptor(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
+        definePropertyDescriptor(ENUM_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -106,11 +117,19 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     @Override
     public void start(RuleContext ctx) {
         fillPropertyValues();
-        if (isPropertyOverridden(MINIMUM_VISIBILITY)) {
-            minimumVisibility = getProperty(MINIMUM_VISIBILITY).visibility;
-        } else if (getProperty(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.REQUIRED) {
-            minimumVisibility = Visibility.V_PACKAGE;
+        if (isPropertyOverridden(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR)
+            || isPropertyOverridden(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR)
+            || isPropertyOverridden(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR)) {
+            fillLegacyPropertyValues();
         }
+        minimumVisibility = getProperty(MINIMUM_VISIBILITY).visibility;
+    }
+
+    private void fillLegacyPropertyValues() {
+        legacyMethodRequirements.put(Visibility.V_PRIVATE, CommentRequirement.IGNORED);
+        legacyMethodRequirements.put(Visibility.V_PACKAGE, getProperty(PACKAGE_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
+        legacyMethodRequirements.put(Visibility.V_PROTECTED, getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
+        legacyMethodRequirements.put(Visibility.V_PUBLIC, getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR));
     }
 
     private void fillPropertyValues() {
@@ -118,47 +137,60 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         propertyValues.put(OVERRIDE_CMT_DESCRIPTOR, getProperty(OVERRIDE_CMT_DESCRIPTOR));
         propertyValues.put(FIELD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(METHOD_CMT_REQUIREMENT_DESCRIPTOR, getProperty(METHOD_CMT_REQUIREMENT_DESCRIPTOR));
-        propertyValues.put(ENUM_CMT_REQUIREMENT_DESCRIPTOR, getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR,
                 getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR));
         propertyValues.put(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR,
                 getProperty(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR));
-        propertyValues.put(CLASS_CMT_REQUIREMENT_DESCRIPTOR, getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR));
+        if (isPropertyOverridden(CLASS_CMT_REQUIREMENT_DESCRIPTOR)) {
+            propertyValues.put(TYPE_CMT_REQUIREMENT_DESCRIPTOR, getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR));
+        } else {
+            propertyValues.put(TYPE_CMT_REQUIREMENT_DESCRIPTOR, getProperty(TYPE_CMT_REQUIREMENT_DESCRIPTOR));
+        }
+        if (isPropertyOverridden(ENUM_CMT_REQUIREMENT_DESCRIPTOR)) {
+            enumRequirement = getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR);
+        }
     }
 
-    private void checkCommentMeetsRequirement(Object data, JavadocCommentOwner node,
+    private void checkCommentMeetsRequirement(RuleContext ctx, JavadocCommentOwner node,
                                               PropertyDescriptor<CommentRequirement> descriptor,
                                               ModifierOwner modifierOwner) {
-        switch (propertyValues.get(descriptor)) {
+        checkCommentMeetsRequirement(ctx, node, descriptor, modifierOwner, propertyValues.get(descriptor));
+    }
+
+    private void checkCommentMeetsRequirement(RuleContext ctx,
+                                              JavadocCommentOwner node,
+                                              PropertyDescriptor<CommentRequirement> descriptor,
+                                              ModifierOwner modifierOwner,
+                                              CommentRequirement requirement) {
+        Visibility effectiveVisibility = modifierOwner.getEffectiveVisibility();
+        switch (requirement) {
         case IGNORED:
             break;
         case REQUIRED:
             if (node.getJavadocComment() == null) {
-                commentRequiredViolation(data, node, "required", descriptor);
+                commentRequiredViolation(ctx, node, "required", descriptor, effectiveVisibility);
             }
             break;
         case UNWANTED:
             if (node.getJavadocComment() != null) {
-                commentRequiredViolation(data, node, "unwanted", descriptor);
+                commentRequiredViolation(ctx, node, "unwanted", descriptor, effectiveVisibility);
             }
             break;
         case WHEN_VISIBLE:
             if (node.getJavadocComment() == null) {
-                Visibility effectiveVisibility = modifierOwner.getEffectiveVisibility();
                 if (effectiveVisibility.compareTo(minimumVisibility) >= 0) {
-                    commentRequiredViolation(data, node, "required", descriptor);
+                    commentRequiredViolation(ctx, node, "required", descriptor, effectiveVisibility);
                 }
             }
-
         }
     }
 
 
     // Adds a violation
-    private void commentRequiredViolation(Object data, JavaNode node, String requirementType,
-                                          PropertyDescriptor<CommentRequirement> descriptor) {
-        asCtx(data).addViolationWithMessage(node,
-            DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name())
+    private void commentRequiredViolation(RuleContext ctx, JavaNode node, String requirementType,
+                                          PropertyDescriptor<CommentRequirement> descriptor, ModifierOwner.Visibility effectiveVisibility) {
+        ctx.addViolationWithMessage(node,
+            String.format(DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name()), StringUtils.capitalize(effectiveVisibility.toString()))
             + " are "
             + requirementType);
     }
@@ -166,70 +198,87 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration decl, Object data) {
-        checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR, decl);
-        return data;
+        RuleContext ctx = (RuleContext) data; 
+        checkCommentMeetsRequirement(ctx, decl, TYPE_CMT_REQUIREMENT_DESCRIPTOR, decl);
+        return null;
     }
 
     @Override
     public Object visit(ASTRecordDeclaration decl, Object data) {
-        checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR, decl);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkCommentMeetsRequirement(ctx, decl, TYPE_CMT_REQUIREMENT_DESCRIPTOR, decl);
+        return null;
     }
 
     @Override
     public Object visit(ASTAnnotationTypeDeclaration decl, Object data) {
-        checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR, decl);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        checkCommentMeetsRequirement(ctx, decl, TYPE_CMT_REQUIREMENT_DESCRIPTOR, decl);
+        return null;
     }
 
 
     @Override
     public Object visit(ASTConstructorDeclaration decl, Object data) {
-        checkMethodOrConstructorComment(decl, data);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        if (legacyMethodRequirements.isEmpty()) {
+            checkMethodOrConstructorComment(decl, ctx);
+        } else {
+            CommentRequirement requirement = legacyMethodRequirements.get(decl.getEffectiveVisibility());
+            checkCommentMeetsRequirement(ctx, decl, METHOD_CMT_REQUIREMENT_DESCRIPTOR, decl, requirement);
+        }
+        return null;
     }
-
 
     @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (decl.isOverride()) {
-            checkCommentMeetsRequirement(data, decl, OVERRIDE_CMT_DESCRIPTOR, decl);
+            checkCommentMeetsRequirement(ctx, decl, OVERRIDE_CMT_DESCRIPTOR, decl);
         } else if (JavaRuleUtil.isGetterOrSetter(decl)) {
-            checkCommentMeetsRequirement(data, decl, ACCESSOR_CMT_DESCRIPTOR, decl);
+            checkCommentMeetsRequirement(ctx, decl, ACCESSOR_CMT_DESCRIPTOR, decl);
+        } else if (legacyMethodRequirements.isEmpty()) {
+            checkMethodOrConstructorComment(decl, ctx);
         } else {
-            checkMethodOrConstructorComment(decl, data);
+            CommentRequirement requirement = legacyMethodRequirements.get(decl.getEffectiveVisibility());
+            checkCommentMeetsRequirement(ctx, decl, METHOD_CMT_REQUIREMENT_DESCRIPTOR, decl, requirement);
         }
-        return data;
+        return null;
     }
 
-
-    private void checkMethodOrConstructorComment(ASTExecutableDeclaration decl, Object data) {
+    private void checkMethodOrConstructorComment(ASTExecutableDeclaration decl, RuleContext data) {
         checkCommentMeetsRequirement(data, decl, METHOD_CMT_REQUIREMENT_DESCRIPTOR, decl);
     }
 
     @Override
     public Object visit(ASTFieldDeclaration decl, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (JavaRuleUtil.isSerialVersionUID(decl)) {
-            checkCommentMeetsRequirement(data, decl, SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR, decl);
+            checkCommentMeetsRequirement(ctx, decl, SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR, decl);
         } else if (JavaRuleUtil.isSerialPersistentFields(decl)) {
-            checkCommentMeetsRequirement(data, decl, SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR, decl);
+            checkCommentMeetsRequirement(ctx, decl, SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR, decl);
         } else {
-            checkCommentMeetsRequirement(data, decl, FIELD_CMT_REQUIREMENT_DESCRIPTOR, decl);
+            checkCommentMeetsRequirement(ctx, decl, FIELD_CMT_REQUIREMENT_DESCRIPTOR, decl);
         }
 
-        return data;
+        return null;
     }
 
 
     @Override
     public Object visit(ASTEnumDeclaration decl, Object data) {
-        checkCommentMeetsRequirement(data, decl, ENUM_CMT_REQUIREMENT_DESCRIPTOR, decl);
-        return data;
+        RuleContext ctx = (RuleContext) data;
+        if (enumRequirement != null) {
+            checkCommentMeetsRequirement(ctx, decl, TYPE_CMT_REQUIREMENT_DESCRIPTOR, decl, enumRequirement);
+        } else {
+            checkCommentMeetsRequirement(ctx, decl, TYPE_CMT_REQUIREMENT_DESCRIPTOR, decl);
+        }
+        return null;
     }
 
     private boolean allCommentsAreIgnored() {
         fillPropertyValues();
-        return propertyValues.values().stream().allMatch(CommentRequirement.IGNORED::equals);
+        return propertyValues.values().stream().allMatch(CommentRequirement.IGNORED::equals) && enumRequirement == null;
     }
 
     @Override
@@ -255,10 +304,14 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     }
 
     // pre-filled builder
-    private static GenericPropertyBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType) {
+    private static GenericPropertyBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType, CommentRequirement defaultValue) {
+        return requirementPropertyBuilder(name, commentType, commentType, defaultValue);
+    }
+
+    private static GenericPropertyBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType, String description, CommentRequirement defaultValue) {
         DESCRIPTOR_NAME_TO_COMMENT_TYPE.put(name, commentType);
         return PropertyFactory.enumPropertyTransitional(name, CommentRequirement.class, COMMENT_REQUIREMENT_DEPRECATED_MAPPING)
-                              .desc(commentType)
-                              .defaultValue(CommentRequirement.REQUIRED);
+                              .desc(description)
+                              .defaultValue(defaultValue);
     }
 }
