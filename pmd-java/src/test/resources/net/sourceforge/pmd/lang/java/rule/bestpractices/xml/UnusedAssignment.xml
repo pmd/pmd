@@ -4587,4 +4587,100 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] Field may be observed by a call on another object in a method #5016</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class RecursionGuard {
+    private boolean entered;
+    private boolean conflict;
+
+    public void run(final Runnable runnable) {
+        if (entered || conflict) {
+            return;
+        }
+        try {
+            entered = true;
+            runnable.run(); // may call run() again, which reads entered
+        } finally {
+            entered = false;
+        }
+    }
+
+    public void runWithoutFinally(final Runnable runnable) {
+        entered = true;
+        runnable.run();
+        entered = false;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Static field may be observed by a call in a static method #5016</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static boolean busy;
+
+    static void run(Runnable runnable) {
+        busy = true;
+        runnable.run();
+        busy = false;
+    }
+
+    static void runHelper() {
+        busy = true;
+        helper();
+        busy = false;
+    }
+
+    void runHelperFromInstanceMethod() {
+        busy = true;
+        helper();
+        busy = false;
+    }
+
+    static void helper() {
+        System.out.println(busy);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Field overwritten without a method call in between is still reported #5016</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,12,18</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to field 'entered' is never used (overwritten on line 8)</message>
+            <message>The value assigned to field 'list' is never used (overwritten on line 13)</message>
+            <message>The value assigned to field 'entered' is never used (overwritten on line 20)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    private boolean entered;
+    private java.util.List<String> list;
+
+    public void runBefore(Runnable runnable) {
+        runnable.run();
+        entered = true;
+        entered = false;
+    }
+
+    public void reset() {
+        list = new java.util.ArrayList<>(); // constructor calls are not considered
+        list = new java.util.ArrayList<>();
+    }
+
+    // in a ctor, `this` has not leaked, so the call cannot observe the field
+    public Foo(Runnable runnable) {
+        entered = true;
+        runnable.run();
+        entered = false;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
