@@ -324,6 +324,11 @@ ASTCompilationUnit CompilationUnit() :
 
 /**
  * The optional prolog of a JSP, including (xml) declarations and DTD.
+ * <p>
+ * Only a declaration/DTD preceded by nothing but comments is parsed as prolog.
+ * If other content (e.g. JSP directives) comes first, they are parsed as
+ * {@link #ContentElement()} instead, since for JSP they are just template text
+ * that may appear anywhere.
  */
 void Prolog() #void :
 {}
@@ -333,10 +338,10 @@ void Prolog() #void :
     	( CommentTag() | JspComment() )*
 	  	Declaration()
 	)?
-	
+
     (
-    	LOOKAHEAD( ( CommentTag() | JspComment() | JspDirective() | JspScriptlet() | JspDeclaration() )* 	DoctypeDeclaration() )
-    	( CommentTag() | JspComment() | JspDirective() | JspScriptlet() | JspDeclaration() )*
+    	LOOKAHEAD( ( CommentTag() | JspComment() )* 	DoctypeDeclaration() )
+    	( CommentTag() | JspComment() )*
 	    DoctypeDeclaration()
 	)?
 }
@@ -352,7 +357,9 @@ void Content() :
 
 /**
  * A single (non-text) element that can occur between a start-tag and end-tag of an element.
- * 
+ * <p>
+ * This includes (xml) declarations and DTDs that are not at the start of the file
+ * (see {@link #Prolog()}).
  */
 void ContentElement() #void :
 {}
@@ -365,8 +372,10 @@ void ContentElement() #void :
 	  | JspDeclaration() 
 	  | JspExpression() 
 	  | JspScriptlet()
-	  | JspDirective() 
+	  | JspDirective()
       | HtmlScript()
+      | Declaration()
+      | DoctypeDeclaration()
 	)
 }
 

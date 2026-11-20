@@ -132,6 +132,8 @@ class JspDocStyleTest extends AbstractJspNodesTst {
             "<%! int a = 1; %>\n",
             "<%-- comment --%>\n<%@ page contentType=\"text/html\" %>\n<!-- html comment -->\n",
             "<?xml version=\"1.0\"?>\n<%@ page contentType=\"text/html\" %>\n",
+            "<%= x %>\n",
+            "<%@ page contentType=\"text/html\" %>\n${foo}\n",
         };
         for (String prolog : prologs) {
             ASTCompilationUnit root = jsp.parse(prolog + "<!DOCTYPE html>\n<html></html>");
@@ -140,6 +142,67 @@ class JspDocStyleTest extends AbstractJspNodesTst {
             assertEquals(1, docTypeDeclarations.size(), "One doctype declaration expected for: " + prolog);
             assertEquals("html", docTypeDeclarations.get(0).getName(), "Correct doctype-name expected!");
             assertEquals(1, root.descendants(ASTElement.class).count(), "One element expected for: " + prolog);
+        }
+    }
+
+    /**
+     * A doctype declaration may follow custom actions, e.g. JSTL tags.
+     */
+    @Test
+    void testDoctypeAfterCustomAction() {
+        ASTCompilationUnit root = jsp.parse("<c:set var=\"ctx\" value=\"${pageContext.request.contextPath}\"/>\n"
+                + "<!DOCTYPE html>\n<html></html>");
+
+        assertEquals(1, root.descendants(ASTDoctypeDeclaration.class).count());
+        assertEquals(2, root.descendants(ASTElement.class).count());
+    }
+
+    /**
+     * Directives before the doctype stay in the content (this is relevant e.g. for the rule JspEncoding),
+     * the doctype is then also part of the content.
+     */
+    @Test
+    void testDoctypeAfterJspDirectiveIsContent() {
+        ASTCompilationUnit root = jsp.parse("<%@ page contentType=\"text/html; charset=UTF-8\" %>\n"
+                + "<!DOCTYPE html>\n<html></html>");
+
+        ASTDoctypeDeclaration doctype = root.descendants(ASTDoctypeDeclaration.class).firstOrThrow();
+        assertTrue(doctype.getParent() instanceof ASTContent, "Doctype should be part of the content");
+        ASTJspDirective directive = root.descendants(ASTJspDirective.class).firstOrThrow();
+        assertTrue(directive.getParent() instanceof ASTContent, "Directive should be part of the content");
+    }
+
+    /**
+     * Doctype or xml declaration at the start of the file are still parsed as prolog.
+     */
+    @Test
+    void testDoctypeAtStartIsProlog() {
+        ASTCompilationUnit root = jsp.parse("<?xml version=\"1.0\"?>\n<!-- comment -->\n<!DOCTYPE html>\n<html></html>");
+
+        assertTrue(root.descendants(ASTDeclaration.class).firstOrThrow().getParent() instanceof ASTCompilationUnit);
+        assertTrue(root.descendants(ASTDoctypeDeclaration.class).firstOrThrow().getParent() instanceof ASTCompilationUnit);
+    }
+
+    /**
+     * A xml declaration may follow JSP directives and scriptlets.
+     *
+     * @see <a href="https://github.com/pmd/pmd/issues/5092">#5092</a>
+     */
+    @Test
+    void testXmlDeclarationAfterJspDirectives() {
+        String[] codes = {
+            "<%@ page contentType=\"text/xml\" %><?xml version=\"1.0\"?>\n<root/>",
+            "<%@ page contentType=\"text/xml\" %>\n<?xml version=\"1.0\"?>\n<root/>",
+            // example from the Jakarta Pages spec, section 1.3.8
+            "<% response.setContentType(\"text/xml\");\n%><?xml version=\"1.0\" ?>\n<root/>",
+        };
+        for (String code : codes) {
+            ASTCompilationUnit root = jsp.parse(code);
+
+            List<ASTDeclaration> declarations = root.descendants(ASTDeclaration.class).toList();
+            assertEquals(1, declarations.size(), "One declaration expected for: " + code);
+            assertEquals("xml", declarations.get(0).getName(), "Correct declaration name expected for: " + code);
+            assertEquals(1, root.descendants(ASTElement.class).count(), "One element expected for: " + code);
         }
     }
 
