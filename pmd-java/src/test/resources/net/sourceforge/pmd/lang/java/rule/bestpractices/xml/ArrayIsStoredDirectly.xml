@@ -361,4 +361,63 @@ class Tester {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly: not reported for this.data = Collections.singletonList(a).get(0) #7341</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class ArrStoreVariant {
+    private int[] data;
+    public void setData(int[] a) {
+        this.data = java.util.Collections.singletonList(a).get(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly: not reported for this.data = List.of(a).get(0) #7341</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    private int[] data;
+    public void setData(int[] a) {
+        this.data = List.of(a).get(0);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly: no violation when only the wrapping list is stored #7341</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collections;
+import java.util.List;
+
+public class Foo {
+    private List<int[]> data;
+    public void setData(int[] a) {
+        this.data = Collections.singletonList(a);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly: no violation for get(1) on a single-element list #7341</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Collections;
+
+public class Foo {
+    private int[] data;
+    public void setData(int[] a) {
+        this.data = Collections.singletonList(a).get(1);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
