@@ -1123,4 +1123,303 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#5798 Short-circuit operators in an assignment don't add paths</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean, boolean)' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean c, boolean d) {
+        boolean x = a;
+        x = c || d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in a method argument don't add paths</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean)' has value 1.</message>
+            <message>'Test#foo(boolean)' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean b) {
+        foo(a && b);
+    }
+    void foo(boolean x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Negated short-circuit operators in an initializer don't add paths</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean)' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean b) {
+        boolean x = !(a && b);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Several short-circuit operators in an initializer don't add paths</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean, boolean, boolean)' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean b, boolean c, boolean d) {
+        boolean x = a && b && c || d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in the condition of a ternary in an initializer are counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean)' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean b) {
+        int x = a && b ? 1 : 2;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in the branch of a ternary in an initializer are not counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean, boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean b, boolean c, boolean d) {
+        boolean x = c ? a && b : d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in a return are counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    boolean m(boolean a, boolean b) {
+        return a && b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in a throw are counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean b) {
+        throw new IllegalStateException(String.valueOf(a && b));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in a yield are counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(int, boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    boolean m(int n, boolean a, boolean b) {
+        boolean v = switch (n) {
+            default -> { yield a && b; }
+        };
+        return v;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in an arm of a switch expression are counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(int, boolean, boolean, boolean)' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(int n, boolean a, boolean b, boolean c) {
+        boolean v = switch (n) {
+            case 1 -> a && b;
+            default -> c;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in an arm of a switch statement are not counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(int, boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(int n, boolean a, boolean b) {
+        boolean x;
+        switch (n) {
+            case 1 -> x = a && b;
+            default -> { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Switch expression wrapped in a cast: arm result is counted (Copilot review)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(int, boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(int n, boolean a, boolean b) {
+        boolean v = (boolean) switch (n) {
+            default -> a && b;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expression wrapped in a cast: same value as without cast (control test)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(int, boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(int n, boolean a, boolean b) {
+        boolean v = switch (n) {
+            default -> a && b;
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch expression as method argument: arms are counted</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>'Test#m(int)' has value 2.</message>
+            <message>'Test#foo(int)' has value 1.</message>
+            <message>'Test#a()' has value 1.</message>
+            <message>'Test#b()' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(int n) {
+        foo(switch (n) {
+            case 1 -> a();
+            default -> b();
+        });
+    }
+    void foo(int x) { }
+    int a() { return 1; }
+    int b() { return 2; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Short-circuit operators in for init and update are not counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean, boolean, boolean)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean x, boolean y, boolean p, boolean q) {
+        for (boolean f = x && y; f; f = p || q) {
+            dosomething();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5798 Lambda next to short-circuit operators in an initializer</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Test#m(boolean, boolean, boolean)' has value 1.</message>
+            <message>'(lambda) on line 4' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void m(boolean a, boolean b, boolean c) {
+        boolean x = a && b;
+        Runnable r = () -> {
+            if (c && x) dosomething();
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expression nested in an expression: throwing arm ends its path</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'Test#nested(int, boolean)' has value 3.</message>
+            <message>'Test#direct(int, boolean)' has value 3.</message>
+            <message>'Test#foo(int)' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void nested(int n, boolean b) {
+        foo(switch (n) {
+            case 1 -> throw new IllegalStateException();
+            default -> 2;
+        });
+        if (b) foo(1);
+    }
+    void direct(int n, boolean b) {
+        int v = switch (n) {
+            case 1 -> throw new IllegalStateException();
+            default -> 2;
+        };
+        if (b) foo(1);
+    }
+    void foo(int x) { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
