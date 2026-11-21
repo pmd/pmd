@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
+
+    <code-fragment id="classComment"><![CDATA[
+/// Class documentation
+public class Example {}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Markdown documentation before Java 23</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code-ref id="classComment"/>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Consecutive lines form one block regardless of indentation or slash count</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+class Example {
+    /// Method documentation
+      ///
+ /// More documentation
+    //// A separator
+    void method() {}
+}
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Blank lines separate markdown blocks</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+class Example {
+    /// First block
+
+    /// Second block
+    void method() {}
+}
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Ordinary comments separate markdown blocks</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <code><![CDATA[
+class Example {
+    /// First block
+    // Ordinary comment
+    /// Second block
+    void method() {}
+}
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Code between adjacent comment lines starts a new block</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class Example {
+    /// First block
+    int first; /// Second block
+    int second;
+}
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Dangling comments are migration risks too</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>1,4,7</expected-linenumbers>
+        <code><![CDATA[
+/// File header
+class Example {
+    void method() {
+        /// Implementation comment
+    }
+}
+/// Trailing comment
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Markdown next to traditional javadoc can change which comment is used</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,5</expected-linenumbers>
+        <code><![CDATA[
+/** Traditional class documentation */
+/// Previously an implementation comment
+class Example {
+    /** Traditional method documentation */
+    /// Previously an implementation comment
+    void method() {}
+}
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Ordinary comments and string contents do not count</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+// Ordinary comment
+/** Traditional documentation with /// inside */
+class Example {
+    /* A block comment with /// inside */
+    String slashes = "///";
+    char slash = '/';
+}
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Comment violations support NOPMD suppression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/// This comment is intentional NOPMD
+class Example {}
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Rule applies to Java 8 projects</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code-ref id="classComment"/>
+        <source-type>java 1.8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Rule applies to the oldest supported Java version</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code-ref id="classComment"/>
+        <source-type>java 1.3</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Markdown documentation is supported starting with Java 23</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="classComment"/>
+        <source-type>java 23</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Rule stays disabled for later Java versions</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="classComment"/>
+        <source-type>java 25</source-type>
+    </test-code>
+</test-data>

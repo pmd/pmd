@@ -108,6 +108,42 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="MarkdownJavadocBeforeJava23"
+          language="java"
+          maximumLanguageVersion="22"
+          since="7.30.0"
+          message="Triple-slash comment changes meaning in Java 23"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.MarkdownJavadocBeforeJava23Rule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#markdownjavadocbeforejava23">
+        <description>
+Reports comments starting with `///` in projects targeting Java versions before Java 23.
+These are ordinary comments in earlier versions, but become Markdown documentation comments
+with [JEP 467](https://openjdk.org/jeps/467). When migrating to Java 23, they may unexpectedly
+appear in generated API documentation or cause Javadoc errors.
+
+Use this migration helper before changing the project's Java version. Convert documentation
+that should already be published to `/** ... */`, and change implementation comments to `//`.
+Comments starting with more than three slashes are also affected.
+
+The rule reports the first line of each consecutive block, including comments that are not
+attached to a declaration. It does not run for Java 23 or later.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+// With Java 22 or earlier:
+/// This becomes documentation in Java 23 -- reported
+class Example {
+    /** Documentation that works in earlier Java versions -- OK */
+    void documented() {}
+
+    // An implementation comment -- OK
+    void method() {}
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UncommentedEmptyConstructor"
           language="java"
           since="3.4"
