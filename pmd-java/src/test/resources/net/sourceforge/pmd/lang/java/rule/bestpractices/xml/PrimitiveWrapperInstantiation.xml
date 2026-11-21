@@ -431,7 +431,7 @@ public class Integer {
     </test-code>
 
     <test-code>
-        <description>works if constructor argument is wrapped in braces</description>
+        <description>works if constructor argument is wrapped in parentheses</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
             <message>Do not use `new Boolean("true")`, prefer `Boolean.TRUE`</message>
