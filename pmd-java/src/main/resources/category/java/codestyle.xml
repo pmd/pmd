@@ -2175,6 +2175,63 @@ class Foo {
     </rule>
 
 
+    <rule name="UnnecessaryStringConcatenation"
+          language="java"
+          since="7.30.0"
+          message="Unnecessary empty string concatenation"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryStringConcatenationRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarystringconcatenation">
+        <description>
+Reports empty string literals that can be removed from a concatenation without
+changing its string value. Removing these operands makes the expression easier
+to read.
+
+The rule preserves empty strings needed for conversion, including conversion of
+null to `"null"`. For example, `"" + s + " suffix"` can be simplified to
+`s + " suffix"`, even if `s` is null, but a standalone `s + ""` is not reported
+unless `s` is known to be a string or another concatenation.
+
+An enclosing concatenation can also make an empty literal redundant when the
+other operand is not a string. For example, `"prefix" + (object + "")` can be
+simplified to `"prefix" + object`.
+
+The rule also reports `s += ""` when the local variable or parameter `s` is
+known to hold a non-null string. For example, `String s = "text"; s += "";`
+contains an unnecessary compound assignment.
+
+Empty text blocks are treated like empty string literals. Only the first redundant
+empty literal in each concatenation is reported at a time, since another empty
+string may still be needed for conversion. References to empty string constants
+are not reported.
+It does not merge nonempty literals or recommend replacing conversions like
+`1 + ""` with string literals.
+
+**Limitations:** This rule cannot generally determine nullability. It recognizes
+constant strings, concatenation results, and local variables whose possible
+assignments all produce such values. Other values are conservatively skipped to
+preserve null conversion, even when they are non-null in practice, for example
+after a null check. Compound assignments to fields and array elements are not
+reported.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Example {
+    String format(String value, int number, Object object) {
+        String redundant = "" + value + " suffix"; // reported: remove the leading ""
+        String corrected = value + " suffix";
+        String nested = "prefix" + (number + ""); // reported: remove the trailing ""
+        String nestedObject = "prefix" + (object + ""); // reported: remove the trailing ""
+        String conversion = "" + number; // necessary to convert the number to a string
+        String text = "text";
+        text += ""; // reported: remove the unnecessary compound assignment
+        return corrected;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UseDiamondOperator"
           language="java"
           since="6.11.0"

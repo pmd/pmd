@@ -1,0 +1,1066 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_1.xsd">
+
+    <test-code>
+        <description>Issue #7331: original example and its correction</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String s) {
+        String redundant = "" + s + " some other text"; // violation
+        String correct = s + " some other text";
+        return correct;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Issue #7331: redundant examples from the discussion</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String a = "a" + 1 + ""; // violation
+    String b = "a" + (1 + ""); // violation
+    String c = "a" + "" + 1; // violation
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constant strings on either side, including two empty strings</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,3,4,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String a = "" + "a"; // violation
+    String b = "b" + ""; // violation
+    String c = "" + ""; // violation
+    static final String TEXT = "text";
+    String d = TEXT + ""; // violation
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>A concatenation already produces a non-null string</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(Object value) {
+        String a = (value + " suffix") + ""; // violation
+        String b = "" + ("prefix" + value); // violation
+        return a + b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Standalone nullable strings require conversion</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(String value) {
+        String a = value + "";
+        String b = "" + value;
+        String c = ((value)) + "";
+        String d = (String) null + "";
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local initialization is known but null checks alone remain a limitation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String value) {
+        String initialized = "text";
+        String a = initialized + "";
+        String b = "" + initialized;
+        if (value != null) {
+            String c = value + "";
+            String d = "" + value;
+            return c + d;
+        }
+        return a + b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nullable strings are still converted by the enclosing concatenation</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String s, String t) {
+        String a = s + "" + 1; // violation
+        String b = 1 + (s + ""); // violation
+        String c = (s + "") + t; // violation
+        String d = s + ("" + t); // violation
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>A neighboring string preserves primitive conversion</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>3,4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(int number) {
+        String a = "" + number + ":"; // violation
+        String b = ":" + (number + ""); // violation
+        String c = number + "" + ":"; // violation
+        return a + b + c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Conversions of different primitive types</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>3,4,5,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(boolean flag, char letter, long count, float ratio, double value) {
+        String a = "" + flag + ":"; // violation
+        String b = ":" + (letter + ""); // violation
+        String c = count + "" + ":"; // violation
+        String d = "" + ratio + ":"; // violation
+        String e = ":" + (value + ""); // violation
+        return a + b + c + d + e;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Null conversion can be preserved by another string operand</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String a = "" + null + " suffix"; // violation
+    String b = "prefix" + (null + ""); // violation
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Preserve numeric addition and grouping</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(int n, int m) {
+        String a = "" + n + m;
+        String b = "" + n + m + " suffix";
+        String c = 1 + ("" + 2);
+        String d = "prefix" + (1 + "" + 2);
+        String e = (n + "" + m) + " suffix";
+        String f = "" + 1.0 + 2.0 + " suffix";
+        return a + b + c + d + e + f;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>A parenthesized numeric sum is a single operand</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(int n, int m) {
+        String a = "" + (n + m) + " suffix"; // violation
+        String b = "" + n + m + " suffix";
+        return a + b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Report only one empty literal in each chain</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String s) {
+        String a = "" + s + ""; // violation
+        String b = s + "" + ""; // violation
+        String c = "" + "" + ""; // violation
+        String d = "prefix" + "" + "" + s; // violation
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Retain the last required conversion after removing one empty literal</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String s, int n) {
+        String a = s + "";
+        String b = "" + n;
+        String c = "" + n + ""; // violation
+        String d = "" + "" + n; // violation
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Report the first removable literal in source order</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String s) {
+        return "" // violation
+            + s
+            + "";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Skip a necessary first literal and report a later redundant literal</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(int n, int m) {
+        return ""
+            + n + m
+            + ""; // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Standalone conversions and literal replacement are outside this rule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String a = 1 + "";
+    String b = null + "";
+    String c = 1 + "" + 1;
+    String d = "" + true;
+    String e = 'a' + "";
+    String f = "" + 1.5;
+    String g = "" + 1L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Object conversion can move to an enclosing concatenation on the right</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(Object value) {
+        String a = value + "";
+        String b = "" + value;
+        String c = "" + value + changeValueAndGetSuffix(value);
+        String d = "prefix" + (value + ""); // violation
+        return a + b + c + d;
+    }
+    String changeValueAndGetSuffix(Object value) {
+        return "suffix";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Preserve standalone array and boxed conversions but allow enclosing string conversion</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(char[] chars, int[] numbers, Integer number) {
+        String a = chars + "";
+        String b = "" + numbers;
+        String c = "" + chars + " suffix";
+        String d = "prefix" + (number + ""); // violation
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Review: either empty operand can be removed from a nested object concatenation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(Object object) {
+        String a = "a" + (object + ""); // violation
+        String b = "a" + ("" + object); // violation
+        return a + b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested reference conversion supports arrays, boxed values and a nullable prefix</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String prefix, Object object, char[] chars, int[] numbers, Integer number) {
+        String a = prefix + (object + ""); // violation
+        String b = "prefix" + ("" + chars); // violation
+        String c = "prefix" + (numbers + ""); // violation
+        String d = "prefix" + ("" + number); // violation
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested conversion preserves the order of prefix, object creation and toString calls</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    StringBuilder calls = new StringBuilder();
+    String format() {
+        String a = prefix() + (value() + ""); // violation
+        String b = prefix() + ("" + value()); // violation
+        return a + b;
+    }
+    String prefix() {
+        calls.append("prefix;");
+        return "prefix";
+    }
+    Object value() {
+        calls.append("value;");
+        return new Object() {
+            @Override
+            public String toString() {
+                calls.append("toString;");
+                return "value";
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unresolved nested references and arrays remain conservative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(MissingType object, MissingType[] array) {
+        String a = "prefix" + (object + "");
+        String b = "prefix" + ("" + array);
+        String c = "prefix" + (object.getValue() + "");
+        return a + b + c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>A folded string value does not guarantee a String expression type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format() {
+        final Object object = "text";
+        final CharSequence sequence = "text";
+        String a = object + "";
+        String b = "" + sequence;
+        String c = (true ? "text" : 1) + "";
+        String d = "" + object + " suffix";
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not assume unresolved operands are strings</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(MissingType unknown) {
+        String a = "" + unknown;
+        String b = "" + unknown + " suffix";
+        String c = "prefix" + (unknown + "");
+        String d = "" + unknown.getValue() + " suffix";
+        return a + b + c + d;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nonempty literals, constant references and compound assignments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    static final String EMPTY = "";
+    String format(String s) {
+        String a = "a" + "b";
+        String b = EMPTY + s + " suffix";
+        String c = s + " ";
+        s += "";
+        return a + b + c + s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Preserve repeated parentheses</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(int number) {
+        String a = "prefix" + ((number + (""))); // violation
+        String b = (("")) + ((number)) + " suffix"; // violation
+        String c = 1 + (("" + 2));
+        return a + b + c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Analyze concatenations inside method arguments independently</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String s) {
+        return "" // violation
+            + wrap(s + "" + " inner") // violation
+            + " outer";
+    }
+    String wrap(String s) {
+        return s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Preserve evaluation of method calls returning strings and primitives</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format() {
+        String a = "" + getText() + " suffix"; // violation
+        String b = "prefix" + (getNumber() + ""); // violation
+        String c = getText() + "";
+        return a + b + c;
+    }
+    String getText() { return null; }
+    int getNumber() { return 1; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constant concatenation in an annotation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+@Label("" + "label") // violation
+class Example { }
+@interface Label {
+    String value();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty text blocks and a nonempty text block</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2-3,4-5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String a = """
+        """ + "a";
+    String b = "b" + """
+        """;
+    String c = "c" + """
+
+        """;
+}
+        ]]></code>
+        <source-type>java 15</source-type>
+    </test-code>
+
+    <test-code>
+        <description>NOPMD suppresses the diagnostic</description>
+        <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="2">//NOPMD</suppressor>
+        </expected-suppressions>
+        <code><![CDATA[
+class Example {
+    String text = "" + "text"; // NOPMD
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SuppressWarnings suppresses the diagnostic</description>
+        <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="4">@SuppressWarnings</suppressor>
+        </expected-suppressions>
+        <code><![CDATA[
+class Example {
+    @SuppressWarnings("PMD.UnnecessaryStringConcatenation")
+    String format(String s) {
+        return "" + s + " suffix";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local string values use the same non-null policy for concatenation and compound assignment</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String value) {
+        String s = "text";
+        String a = s + ""; // violation
+        String b = "" + s; // violation
+        ((s)) += (""); // violation
+        s = value;
+        String c = s + "";
+        String d = "" + s;
+        s += "";
+        return a + b + c + d + s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Literal reassignment proves a local variable or parameter non-null</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,7,9</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String value) {
+        String s = null;
+        s = "text";
+        String a = s + ""; // violation
+        String b = "" + s; // violation
+        s += ""; // violation
+        value = "reassigned";
+        value += ""; // violation
+        return a + b + s + value;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Local concatenation results and preceding appends are non-null</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>4,5,8,9,12</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(Object value) {
+        String s = "prefix" + value;
+        String a = s + ""; // violation
+        s += ""; // violation
+        String t = null;
+        t += value;
+        String b = "" + t; // violation
+        t += ""; // violation
+        String u = null;
+        u += "";
+        u += ""; // violation
+        return a + b + s + t + u;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Empty local strings still have redundant concatenations</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format() {
+        String s = "";
+        String a = s + ""; // violation
+        String b = "" + s; // violation
+        s += ""; // violation
+        return a + b + s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>All reaching branches must assign non-null string values</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>9,10,11</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(boolean flag, Object value) {
+        String s;
+        if (flag) {
+            s = "text";
+        } else {
+            s = "prefix" + value;
+        }
+        String a = s + ""; // violation
+        String b = "" + s; // violation
+        s += ""; // violation
+        return a + b + s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nullable branches prevent reporting even after a non-null initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(boolean flag, String value) {
+        String s = "text";
+        if (flag) {
+            s = value;
+        }
+        String a = s + "";
+        String b = "" + s;
+        s += "";
+        return a + b + s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Loop-carried null assignments prevent reporting</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    void format(boolean flag) {
+        String s = "text";
+        while (flag) {
+            String a = s + "";
+            String b = "" + s;
+            s += "";
+            s = null;
+        }
+        String t = null;
+        while (flag) {
+            t += "";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Loops preserving non-null values allow reporting</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    void format(boolean flag) {
+        String s = "text";
+        while (flag) {
+            String a = s + ""; // violation
+            String b = "" + s; // violation
+            s += ""; // violation
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Exception and finally paths preserve possible null conversion</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    void format(boolean flag) {
+        String s = "text";
+        try {
+            s = null;
+            mayThrow();
+            s = "restored";
+        } catch (RuntimeException e) {
+            String a = s + "";
+            s += "";
+        }
+        String t = "text";
+        try {
+            if (flag) {
+                t = null;
+            }
+        } finally {
+            String b = "" + t;
+            t += "";
+        }
+    }
+    void mayThrow() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Short-circuit assignments must not hide a possible null value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(boolean flag) {
+        String s = "text";
+        boolean ignored = flag || (s = null) == null;
+        String a = s + "";
+        String b = "" + s;
+        s += "";
+        return a + b + s;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Null checks alone do not prove non-nullness for either form</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String format(String value) {
+        if (value != null) {
+            String a = value + "";
+            String b = "" + value;
+            value += "";
+            return a + b + value;
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fields and array elements remain conservative and retain evaluation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    String field = "text";
+    volatile String shared = "text";
+    void format() {
+        String a = field + "";
+        field += "";
+        shared += "";
+        holder().field += "";
+        String[] values = {"text"};
+        int index = 0;
+        values[index++] += "";
+        values[0] += "";
+    }
+    Example holder() { return this; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Unknown method results and local aliases are not assumed non-null</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    void format() {
+        String known = "text";
+        String alias = known;
+        String a = alias + "";
+        alias += "";
+        String unknown = getText();
+        String b = "" + unknown;
+        unknown += "";
+    }
+    String getText() { return "text"; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nonempty operands, constant references and numeric assignments are unaffected</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    static final String EMPTY = "";
+    void format() {
+        String s = "text";
+        s += " ";
+        s += EMPTY;
+        int number = 1;
+        number += 0;
+        number -= 0;
+        s = "";
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compound assignments used as values and in for updates</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,8</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format() {
+        String s = "text";
+        consume(s += ""); // violation
+        return s += ""; // violation
+    }
+    void loop(boolean flag) {
+        for (String s = "text"; flag; s += "") { // violation
+            consume(s);
+        }
+    }
+    void consume(String value) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Captured strings and variables local to lambdas</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    Runnable format() {
+        String captured = "text";
+        return () -> {
+            String a = captured + ""; // violation
+            String local = "text";
+            local += ""; // violation
+        };
+    }
+}
+        ]]></code>
+        <source-type>java 8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Nullable reassignment inside a lambda remains unknown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    java.util.function.Consumer<String> format() {
+        return value -> {
+            String a = value + "";
+            value += "";
+        };
+    }
+}
+        ]]></code>
+        <source-type>java 8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Compound assignments recognize empty text blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary empty string concatenation</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    String format(String value) {
+        String s = "text";
+        s += """
+            """;
+        value += """
+            """;
+        s += """
+
+            """;
+        return s + value;
+    }
+}
+        ]]></code>
+        <source-type>java 15</source-type>
+    </test-code>
+</test-data>
