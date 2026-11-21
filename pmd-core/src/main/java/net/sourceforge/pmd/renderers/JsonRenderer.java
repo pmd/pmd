@@ -15,6 +15,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
@@ -23,6 +25,9 @@ import com.google.gson.stream.JsonWriter;
 
 public class JsonRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "json";
+
+    public static final PropertyDescriptor<Boolean> SHOW_TIMESTAMP =
+        PropertyFactory.booleanProperty("showTimestamp").desc("Whether to include the report timestamp").defaultValue(true).build();
 
     private static final int FORMAT_VERSION = 0;
 
@@ -40,6 +45,7 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
 
     public JsonRenderer() {
         super(NAME, "JSON format.");
+        definePropertyDescriptor(SHOW_TIMESTAMP);
     }
 
     @Override
@@ -56,7 +62,9 @@ public class JsonRenderer extends AbstractIncrementingRenderer {
         jsonWriter.beginObject();
         jsonWriter.name("formatVersion").value(FORMAT_VERSION);
         jsonWriter.name("pmdVersion").value(PMDVersion.VERSION);
-        jsonWriter.name("timestamp").value(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
+        if (getProperty(SHOW_TIMESTAMP)) {
+            jsonWriter.name("timestamp").value(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new Date()));
+        }
         jsonWriter.name("files").beginArray();
     }
 

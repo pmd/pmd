@@ -97,6 +97,8 @@ Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/
 
 This format uses XML to output the duplications in a more structured format.
 The XML format can then further be processed using XSLT transformations. See [section xslt](#xslt) for examples.
+The timestamp is included by default and can be omitted with the CLI option `--no-report-timestamp`.
+The XML schema allows the timestamp attribute to be absent.
 
 Since PMD 7.3.0 any recoverable errors are also reported as additional elements `error` to help investigate
 any errors occurred during analysis.

@@ -43,6 +43,8 @@ public final class XMLRenderer implements CPDReportRenderer {
 
     private String encoding;
 
+    private boolean showTimestamp = true;
+
     private final boolean newFormat;
 
     /**
@@ -78,6 +80,11 @@ public final class XMLRenderer implements CPDReportRenderer {
 
     public String getEncoding() {
         return this.encoding;
+    }
+
+    @Override
+    public void setShowTimestamp(boolean showTimestamp) {
+        this.showTimestamp = showTimestamp;
     }
 
     private Document createDocument() {
@@ -121,7 +128,9 @@ public final class XMLRenderer implements CPDReportRenderer {
             // note: attributes as unqualified (no namespace) as per schema default property attributeFormDefault="unqualified"
             root.setAttribute("version", SCHEMA_VERSION);
             root.setAttribute("pmdVersion", PMDVersion.VERSION);
-            root.setAttribute("timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            if (showTimestamp) {
+                root.setAttribute("timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            }
         }
 
         final Map<FileId, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();

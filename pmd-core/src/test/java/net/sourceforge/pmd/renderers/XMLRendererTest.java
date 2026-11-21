@@ -7,6 +7,7 @@ package net.sourceforge.pmd.renderers;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.org.webcompere.systemstubs.SystemStubs.restoreSystemProperties;
 
@@ -42,6 +43,17 @@ class XMLRendererTest extends AbstractRendererTest {
 
     @TempDir
     private Path folder;
+
+    @Test
+    void timestampCanBeOmitted() throws Exception {
+        XMLRenderer renderer = new XMLRenderer();
+        renderer.setProperty(XMLRenderer.SHOW_TIMESTAMP, false);
+
+        String actual = renderReport(renderer, reportOneViolation());
+        Document document = XmlUtil.newDocumentBuilderFactory().newDocumentBuilder()
+                .parse(new InputSource(new StringReader(actual)));
+        assertNull(document.getDocumentElement().getAttributeNode("timestamp"));
+    }
 
     @Override
     Renderer getRenderer() {
