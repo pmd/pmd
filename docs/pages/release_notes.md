@@ -63,6 +63,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#5906](https://github.com/pmd/pmd/issues/5906): \[apex] MethodWithSameNameAsEnclosingClass: Violation range should only cover the method name
 * core
     * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
+    * [#7306](https://github.com/pmd/pmd/issues/7306): \[core] IntelliJ and DeterministicOutputListenerWrapperTest
 * java
     * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
