@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
@@ -25,6 +26,20 @@ import com.google.summit.ast.expression.LiteralExpression;
 abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<?>> implements ApexNode<Void> {
 
     private TextRegion region;
+
+    static FileLocation fromSourceLocation(TextDocument sourceCode, SourceLocation sourceLocation) {
+        if (sourceLocation.isUnknown()) {
+            return null;
+        }
+
+        // Column+1 because Summit columns are 0-based and PMD are 1-based
+        return sourceCode.toLocation(TextRegion.fromBothOffsets(
+                sourceCode.offsetAtLineColumn(
+                        TextPos2d.pos2d(sourceLocation.getStartLine(), sourceLocation.getStartColumn() + 1)),
+                sourceCode.offsetAtLineColumn(
+                        TextPos2d.pos2d(sourceLocation.getEndLine(), sourceLocation.getEndColumn() + 1))
+        ));
+    }
 
     /**
      * {@link AbstractApexNode} wrapper around a single {@link Node}.
@@ -43,11 +58,10 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
             if (loc.isUnknown()) {
                 return;
             }
-            // Column+1 because Summit columns are 0-based and PMD are 1-based
-            setRegion(TextRegion.fromBothOffsets(
-                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
-                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
-            ));
+            FileLocation fileLocation = fromSourceLocation(sourceCode, loc);
+            if (fileLocation != null) {
+                setRegion(fileLocation.getRegionInFile());
+            }
         }
 
         @Override
@@ -90,11 +104,10 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
             }
 
             if (!union.isUnknown()) {
-                // Column+1 because Summit columns are 0-based and PMD are 1-based
-                setRegion(TextRegion.fromBothOffsets(
-                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(union.getStartLine(), union.getStartColumn() + 1)),
-                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(union.getEndLine(), union.getEndColumn() + 1))
-                ));
+                FileLocation fileLocation = fromSourceLocation(sourceCode, union);
+                if (fileLocation != null) {
+                    setRegion(fileLocation.getRegionInFile());
+                }
             }
         }
 
