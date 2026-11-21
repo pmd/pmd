@@ -117,6 +117,11 @@ This is a {{ site.pmd.release_type }} release.
       {% jdoc apex::lang.apex.ast.AbstractDmlStatement#getAccessMode() %} instead.
 * coco
     * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* core
+    * {% jdoc !!core::renderers.Renderer#flush() %} has been renamed to {% jdoc core::renderers.Renderer#close() %}.
+      The old name has been deprecated and will remain available until PMD 8.
+    * {% jdoc !!core::renderers.AbstractRenderer#flush() %} has been renamed to {% jdoc core::renderers.AbstractRenderer#close() %}.
+      The old name has been deprecated and will remain available until PMD 8.
 * css
     * {% jdoc css::lang.css.ast.CssLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * csharp
