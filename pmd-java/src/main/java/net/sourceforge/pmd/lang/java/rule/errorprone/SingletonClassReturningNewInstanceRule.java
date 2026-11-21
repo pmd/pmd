@@ -62,7 +62,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
     private boolean mayHoldNewInstance(ASTVariableAccess variableAccess) {
         JVariableSymbol symbol = variableAccess.getReferencedSym();
         if (symbol == null || !(symbol.tryGetNode() instanceof ASTVariableId)) {
-            // unresolved: keep reporting, as before
+            // Incomplete auxclasspath: unresolved, keep reporting, as before
             return true;
         }
         ASTVariableId varId = symbol.tryGetNode();

@@ -57,7 +57,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
         MethodCtDecl ctDecl = getCtDecl();
         AssertionUtil.validateState(ctDecl != null, "overload resolution is not complete");
         if (ctDecl.isFailed()) {
-            return false; // be conservative
+            return false; // Incomplete auxclasspath: be conservative
         }
         if (!myNode.getMethodType().getSymbol().equals(ctDecl.getMethodType().getSymbol())) {
             return false;
