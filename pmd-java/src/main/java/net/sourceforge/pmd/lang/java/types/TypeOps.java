@@ -2077,6 +2077,10 @@ public final class TypeOps {
         return capture(t);
     }
 
+    /**
+     * @deprecated Since 7.30.0. PMD does not use this method anymore.
+     */
+    @Deprecated
     public static List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly, @NonNull JClassSymbol enclosing) {
         if (staticOnly && type.isInterface()) {
             // static methods, start on interface
