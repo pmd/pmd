@@ -34,6 +34,14 @@ This is a {{ site.pmd.release_type }} release.
     Loops are allowed by default and can be reported by setting
     `allowLoops` to `false`.
 
+#### Changed Rules
+* The Apex rule {% rule apex/bestpractices/ApexUnitTestShouldNotUseSeeAllDataTrue %} has a new property
+    `reportConnectApi`. It defaults to `true`. Set it to `false`, and the rule does not report `seeAllData=true` on a
+    test class or test method that calls a `ConnectApi` method, since most `ConnectApi` methods require `seeAllData=true`
+    in tests. A call to a `setTest...` method does not stop the rule from reporting, because it only registers test data.
+    Nor does a call to the regular method whose test data a `setTest...` call in the same test registers
+    (see [#7236](https://github.com/pmd/pmd/issues/7236)).
+
 #### Deprecated Rules
 *   The Java rule {% rule java/performance/AddEmptyString %} is deprecated without replacement
     and will be removed with PMD 8.0.0. Its performance claim is not valid on modern JDKs:
@@ -44,7 +52,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 * apex
+    * [#7108](https://github.com/pmd/pmd/issues/7108): \[apex] Expose DML AccessMode (`as user` / `as system`) for XPath rules
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
+* apex-bestpractices
+    * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * core
@@ -52,13 +63,17 @@ This is a {{ site.pmd.release_type }} release.
 * java
     * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
+    * [#7313](https://github.com/pmd/pmd/issues/7313): \[java] Casts to boolean and boolean equality are not folded as constant expressions
 * java-bestpractices
+    * [#5016](https://github.com/pmd/pmd/issues/5016): \[java] UnusedAssignment: False positive boolean flag for execution and reset in finally
+    * [#7070](https://github.com/pmd/pmd/issues/7070): \[java] CheckResultSet: False negative caused by unrelated if/while
     * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
 * java-design
+    * [#5798](https://github.com/pmd/pmd/issues/5798): \[java] NPathComplexity: Short-circuit operators outside of conditions counted as branches
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
     * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: False positive when static field is used in constructor
 * java-errorprone
@@ -67,6 +82,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-performance
     * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
     * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: a copy loop whose body has no braces is not reported
+* jsp
+    * [#5092](https://github.com/pmd/pmd/issues/5092): \[jsp] Parse error when `<!DOCTYPE>` or `<?xml?>` follows other content
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
@@ -74,6 +91,11 @@ This is a {{ site.pmd.release_type }} release.
     * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate ANTLR generated lexer implementation classes
 
 ### 🚨️ API Changes and Deprecations
+* apex
+    * DML statement nodes now expose `@AccessMode`.
+      The attribute is always present. Its value is `IMPLICIT`, `USER_MODE`, or `SYSTEM_MODE`.
+      `//DmlInsertStatement[@AccessMode='IMPLICIT']` and `//DmlInsertStatement[@AccessMode='SYSTEM_MODE']` select those statements.
+
 #### Experimental API
 * kotlin
     * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
@@ -87,6 +109,9 @@ This is a {{ site.pmd.release_type }} release.
       by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 #### Deprecations
+* apex
+    * {% jdoc !!apex::lang.apex.ast.AbstractDmlStatement#getRunAsMode() %} has been deprecated. Use
+      {% jdoc apex::lang.apex.ast.AbstractDmlStatement#getAccessMode() %} instead.
 * coco
     * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * css
@@ -123,6 +148,17 @@ This is a {{ site.pmd.release_type }} release.
   intentionally not deprecated yet. These classes still contain the public AST node types,
   which have no replacement API yet. They will be deprecated once we have decided how to handle
   the inner classes.
+
+#### Other API changes
+* xml
+    * The new class {% jdoc xml::lang.xml.ast.XmlRootNode %} is the root node of the XML AST. It
+      replaces the class `XmlParserImpl.RootXmlNode`, which was in an internal package.
+      {% jdoc !!xml::lang.xml.ast.XmlNode#getRoot() %} now returns `XmlRootNode`.
+    * {% jdoc xml::lang.xml.ast.XmlParser %} is now public and has moved from package
+      `net.sourceforge.pmd.lang.xml` into `net.sourceforge.pmd.lang.xml.ast`, like the parsers of
+      other languages.
+    * The internal package `net.sourceforge.pmd.lang.xml.ast.internal` has been removed. Its classes
+      are now package-private in `net.sourceforge.pmd.lang.xml.ast`.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

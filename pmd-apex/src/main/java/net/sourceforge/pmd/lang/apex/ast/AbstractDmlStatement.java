@@ -13,11 +13,40 @@ public abstract class AbstractDmlStatement extends AbstractApexNode.Single<DmlSt
         super(node);
     }
 
-    public Optional<String> getRunAsMode() {
+    /**
+     * Access mode of an Apex DML statement.
+     *
+     * @since 7.30.0
+     */
+    public enum AccessMode {
+        IMPLICIT,
+        USER_MODE,
+        SYSTEM_MODE
+    }
+
+    /**
+     * Returns the access mode of this DML statement.
+     * The result is {@link AccessMode#IMPLICIT} when the statement has no {@code as user} or {@code as system} clause.
+     *
+     * @since 7.30.0
+     */
+    public AccessMode getAccessMode() {
         DmlStatement.AccessLevel accessLevel = node.getAccess();
-        if (accessLevel != null) {
-            return Optional.of(accessLevel.name());
+        if (accessLevel == null) {
+            return AccessMode.IMPLICIT;
         }
-        return Optional.empty();
+        return AccessMode.valueOf(accessLevel.name());
+    }
+
+    /**
+     * @deprecated Since 7.30.0. Use {@link #getAccessMode()} instead. This method will be removed in PMD 8.0.0.
+     */
+    @Deprecated
+    public Optional<String> getRunAsMode() {
+        AccessMode accessMode = getAccessMode();
+        if (accessMode == AccessMode.IMPLICIT) {
+            return Optional.empty();
+        }
+        return Optional.of(accessMode.name());
     }
 }
