@@ -36,6 +36,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers.MethodAccessForm;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -272,12 +273,18 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         LambdaAsMethodRefMirror(LambdaExprMirror lambda, ASTMethodCall call) {
             this.lambda = lambda;
             this.call = call;
+            boolean receiverIsFirstParam = call.getArguments().size() != lambda.getParamCount();
             this.isLhsType = call.getQualifier() == null && call.getMethodType().isStatic()
-                             || call.getArguments().size() != lambda.getParamCount()
+                             || receiverIsFirstParam
                              || call.getQualifier() instanceof ASTTypeExpression;
 
-            this.lhsType = call.getQualifier() == null ? call.getMethodType().getDeclaringType()
-                                                       : call.getQualifier().getTypeMirror();
+            if (receiverIsFirstParam) {
+                // the method reference names the raw declaring type of the method (see buildMethodRefString)
+                this.lhsType = call.getMethodType().getDeclaringType().getErasure();
+            } else {
+                this.lhsType = call.getQualifier() == null ? call.getMethodType().getDeclaringType()
+                                                           : call.getQualifier().getTypeMirror();
+            }
         }
 
         @Override
@@ -307,6 +314,17 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         @Override
         public @Nullable JTypeMirror getLhsIfType() {
             return isLhsType ? lhsType : null;
+        }
+
+        @Override
+        public MethodAccessForm getMethodAccessForm() {
+            ASTExpression qualifier = call.getQualifier();
+            if (qualifier == null && !call.getMethodType().isStatic()) {
+                // the method reference is this::m or Outer.this::m,
+                // while the type to search is the declaring type of the method
+                return MethodAccessForm.UNQUALIFIED;
+            }
+            return qualifier instanceof ASTSuperExpression ? MethodAccessForm.SUPER : MethodAccessForm.QUALIFIED;
         }
 
         @Override
