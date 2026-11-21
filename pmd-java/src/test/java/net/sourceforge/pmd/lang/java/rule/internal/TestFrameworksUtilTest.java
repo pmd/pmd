@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.has
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.hasTestNGTests;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit4Class;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit5Class;
+import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit5NestedClass;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isTestClass;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isTestNGClass;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -252,6 +253,56 @@ class TestFrameworksUtilTest {
             assertFalse(isJUnit5Class(classDecl));
             assertFalse(isTestClass(classDecl));
             assertTrue(hasJUnit5Tests(classDecl));
+        }
+    }
+
+    @Nested
+    @DisplayName("Tests for isJUnit5NestedClass()")
+    class IsJUnit5NestedClass {
+        @Test
+        void aNestedClassWithNestedAnnotationIsANestedTestClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.junit.jupiter.api.Nested; class A { @Nested class B {} }"
+            );
+            ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
+
+            assertTrue(isJUnit5NestedClass(classDecl));
+        }
+
+        @Test
+        void aNestedClassWithoutAnnotationIsNotANestedTestClass() {
+            ASTCompilationUnit root = java.parse("class A { class B {} }");
+            ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
+
+            assertFalse(isJUnit5NestedClass(classDecl));
+        }
+
+        @Test
+        void aNestedClassWithADifferentAnnotationIsNotANestedTestClass() {
+            ASTCompilationUnit root = java.parse("class A { @Deprecated class B {} }");
+            ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
+
+            assertFalse(isJUnit5NestedClass(classDecl));
+        }
+
+        @Test
+        void aNestedAbstractClassWithNestedAnnotationIsNotANestedTestClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.junit.jupiter.api.Nested; class A { @Nested abstract class B {} }"
+            );
+            ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
+
+            assertFalse(isJUnit5NestedClass(classDecl));
+        }
+
+        @Test
+        void aNestedInterfaceWithNestedAnnotationIsNotANestedTestClass() {
+            ASTCompilationUnit root = java.parse(
+                    "import org.junit.jupiter.api.Nested; class A { @Nested interface B {} }"
+            );
+            ASTClassDeclaration classDecl = root.descendants(ASTClassDeclaration.class).last();
+
+            assertFalse(isJUnit5NestedClass(classDecl));
         }
     }
 
