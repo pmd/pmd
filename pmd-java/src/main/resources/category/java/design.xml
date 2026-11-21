@@ -806,6 +806,34 @@ of Object-Oriented Systems.* Springer, Berlin, 1 edition, October 2006. Page 80.
         <priority>3</priority>
     </rule>
 
+
+
+    <rule name="IfStatementCanBeSwitch"
+          language="java"
+          since="7.29.0"
+          message="The if statement can be converted to a switch"
+          class="net.sourceforge.pmd.lang.java.rule.design.IfStatementCanBeSwitchRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ifstatementcanbeswitch">
+        <description>
+            Long sequence of `if` statements can be harder to read then the equivalent switch statement.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+
+void check(int i) {
+    if (i == 1) {
+        System.out.println("A");
+    } else if (i == 2) {
+        System.out.println("A");
+    } else if (i == 3) {
+        System.out.println("A");
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ImmutableField"
           language="java"
           since="2.0"
