@@ -333,4 +333,334 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7276: indexed array copy inside bare blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class NestedIndexedCopy {
+    List<Integer> copy(Integer[] values) {
+        List<Integer> result = new ArrayList<>(values.length);
+        for (int i = 0; i < values.length; i++) {
+            { { result.add(values[i]); } }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: enhanced array copy inside bare blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class NestedForeachCopy {
+    List<Integer> copy(Integer[] values) {
+        List<Integer> result = new ArrayList<>();
+        for (Integer value : values) {
+            { { result.add(value); } }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: do not recommend copying a filtered array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class FilteredCopy {
+    List<Integer> copy(Integer[] values) {
+        List<Integer> result = new ArrayList<>();
+        for (Integer value : values) {
+            { if (value != null) { result.add(value); } }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: preserve the existing exclusion for a sibling if statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class ConditionalSibling {
+    List<Integer> copy(Integer[] values) {
+        List<Integer> result = new ArrayList<>();
+        for (Integer value : values) {
+            {
+                if (value == null) { continue; }
+                result.add(value);
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: do not cross an inner loop while matching an outer copy loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class InnerLoop {
+    List<Integer> copy(Integer[] values) {
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            for (int j = 1; j < values.length; j++) {
+                { result.add(values[i]); }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: primitive arrays and transformed elements still do not match</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class NonCopies {
+    void primitive(int[] values) {
+        List<Integer> result = new ArrayList<>();
+        for (int value : values) { { result.add(value); } }
+    }
+    void transformed(Integer[] values) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            { result.add(values[i].toString()); }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: indexed copy filtered by an if in a sibling bare block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class FilteredIndexedSiblingBlocks {
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            { if (values[i] == null) { continue; } }
+            { result.add(values[i]); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: foreach copy filtered by an if in a sibling bare block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class FilteredForeachSiblingBlocks {
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (String value : values) {
+            { if (value == null) { continue; } }
+            { result.add(value); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: bind array elements to the matched inner loop variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class OuterLoopElement {
+    void indexed(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            for (int j = 0; j < values.length; j++) {
+                { result.add(values[i]); }
+            }
+        }
+    }
+    void enhanced(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (String outer : values) {
+            for (String inner : values) {
+                { result.add(outer); }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: sibling switch continue filters the array before bare-block add</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class SwitchContinueBeforeCopy {
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (String value : values) {
+            switch (value) {
+            case "skip":
+                continue;
+            default:
+                break;
+            }
+            { result.add(value); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: sibling switch labelled break exits the copy loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class SwitchBreakBeforeCopy {
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        copying: for (String value : values) {
+            switch (value) {
+            case "stop":
+                break copying;
+            default:
+                break;
+            }
+            { result.add(value); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: sibling switch return truncates the copied array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class SwitchReturnBeforeCopy {
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (String value : values) {
+            switch (value) {
+            case "stop":
+                return result;
+            default:
+                break;
+            }
+            { result.add(value); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: sibling try catch continue filters the array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class TryContinueBeforeCopy {
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (String value : values) {
+            try {
+                Integer.parseInt(value);
+            } catch (NumberFormatException ex) {
+                continue;
+            }
+            { result.add(value); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: sibling try finally break exits the array copy</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class TryBreakBeforeCopy {
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (String value : values) {
+            try {
+                if (value.isEmpty()) {
+                    break;
+                }
+            } finally {
+            }
+            { result.add(value); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7276: side effect outside a newly nested add prevents replacing the whole loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+class ExtraSideEffect {
+    int calls;
+    List<String> copy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (String value : values) {
+            calls++;
+            { result.add(value); }
+        }
+        return result;
+    }
+    List<String> indexedCopy(String[] values) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            calls++;
+            { result.add(values[i]); }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
