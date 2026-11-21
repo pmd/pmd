@@ -490,4 +490,194 @@ class LombokTest : IntelliMarker, ProcessorTestSpec({
             acu.classSymbol("Desk").declaredClasses.map { it.simpleName } shouldBe emptyList()
         }
     }
+
+    parserTestContainer("Lombok @Builder annotation on a class") {
+        val code =
+            """
+            import lombok.Builder;
+
+            @Builder
+            public class Book {
+                private String title;
+                private int pages;
+                private final String isbn = "123";
+                private static int count;
+                @Builder.Default
+                private final String language = "en";
+
+                public static void main(String[] args) {
+                    Book b = Book.builder().title("Dune").pages(412).language("de").build();
+                }
+            }
+            """.trimIndent()
+
+        doTest("Creates the builder class and the builder method") {
+            val acu = parser.parse(code)
+            acu.withTypeDsl {
+                val classSymbol = acu.typeDeclarations().firstOrThrow().symbol
+                classSymbol.declaredMethods.map { it.simpleName }.toSet() shouldBe setOf("main", "builder")
+
+                val builderMethod = classSymbol.declaredMethods.first { it.simpleName == "builder" }
+                Modifier.isStatic(builderMethod.modifiers) shouldBe true
+                Modifier.isPublic(builderMethod.modifiers) shouldBe true
+
+                val builderClass = classSymbol.getDeclaredClass("BookBuilder")!!
+                builderClass.binaryName shouldBe "Book\$BookBuilder"
+                builderClass.enclosingClass shouldBe classSymbol
+                Modifier.isStatic(builderClass.modifiers) shouldBe true
+                builderClass.declaredMethods.map { it.simpleName }.toSet() shouldBe
+                    setOf("title", "pages", "language", "build")
+
+                acu.methodCalls().toList().forEach {
+                    it.overloadSelectionInfo.isFailed shouldBe false
+                }
+                acu.varId("b") shouldHaveType classSymbol.typeSystem.declaration(classSymbol)
+                acu.methodCalls().firstOrThrow().methodType.symbol.simpleName shouldBe "build"
+                acu.methodCalls().firstOrThrow() shouldHaveType classSymbol.typeSystem.declaration(classSymbol)
+            }
+        }
+
+        doTest("Do nothing when lombok support is disabled") {
+            val acu = parser.disableLombok().parse(code)
+            acu.withTypeDsl {
+                val classSymbol = acu.typeDeclarations().firstOrThrow().symbol
+                classSymbol.declaredMethods.map { it.simpleName }.toSet() shouldBe setOf("main")
+                classSymbol.declaredClasses shouldBe emptyList()
+            }
+        }
+    }
+
+    parserTestContainer("Lombok @Builder annotation with custom names") {
+        val code =
+            """
+            import lombok.AccessLevel;
+            import lombok.Builder;
+
+            @Builder(builderClassName = "Maker", builderMethodName = "make", buildMethodName = "create",
+                     setterPrefix = "with", toBuilder = true, access = AccessLevel.PACKAGE)
+            public class Book {
+                private String title;
+
+                public static void main(String[] args) {
+                    Book b = Book.make().withTitle("Dune").create().toBuilder().create();
+                }
+            }
+            """.trimIndent()
+
+        doTest("Uses the names from the annotation") {
+            val acu = parser.parse(code)
+            acu.withTypeDsl {
+                val classSymbol = acu.typeDeclarations().firstOrThrow().symbol
+                classSymbol.declaredMethods.map { it.simpleName }.toSet() shouldBe setOf("main", "make", "toBuilder")
+                val toBuilder = classSymbol.declaredMethods.first { it.simpleName == "toBuilder" }
+                Modifier.isStatic(toBuilder.modifiers) shouldBe false
+
+                val builderClass = classSymbol.getDeclaredClass("Maker")!!
+                Modifier.isPublic(builderClass.modifiers) shouldBe false
+                builderClass.declaredMethods.map { it.simpleName }.toSet() shouldBe setOf("withTitle", "create")
+
+                acu.methodCalls().toList().forEach {
+                    it.overloadSelectionInfo.isFailed shouldBe false
+                }
+                acu.varId("b") shouldHaveType classSymbol.typeSystem.declaration(classSymbol)
+            }
+        }
+    }
+
+    parserTestContainer("Lombok @Builder annotation with a handwritten builder class") {
+        val code =
+            """
+            import lombok.Builder;
+
+            @Builder
+            public class Book {
+                private String title;
+
+                public static class BookBuilder {
+                    public BookBuilder upperTitle(String title) {
+                        return title(title.toUpperCase());
+                    }
+                }
+
+                public static void main(String[] args) {
+                    Book b = Book.builder().upperTitle("Dune").build();
+                }
+            }
+            """.trimIndent()
+
+        doTest("Adds the missing methods to the handwritten builder class") {
+            val acu = parser.parse(code)
+            acu.withTypeDsl {
+                val classSymbol = acu.typeDeclarations().firstOrThrow().symbol
+                classSymbol.declaredClasses.size shouldBe 1
+                val builderClass = classSymbol.getDeclaredClass("BookBuilder")!!
+                builderClass.declaredMethods.map { it.simpleName }.toSet() shouldBe setOf("upperTitle", "title", "build")
+
+                acu.methodCalls().toList().forEach {
+                    it.overloadSelectionInfo.isFailed shouldBe false
+                }
+                acu.varId("b") shouldHaveType classSymbol.typeSystem.declaration(classSymbol)
+            }
+        }
+    }
+
+    parserTestContainer("Lombok @Builder annotation without generated members") {
+        val code =
+            """
+            import lombok.Builder;
+
+            @Builder
+            class Box<T> {
+                private T value;
+            }
+
+            class Desk {
+                private String name;
+
+                @Builder
+                Desk(String name) {}
+
+                @Builder(builderClassName = "OfBuilder")
+                static Desk of(String name) { return new Desk(name); }
+            }
+
+            @Builder(builderClassName = "*Maker")
+            class Star {
+                private int n;
+
+                static Star one() {
+                    return Star.builder().n(1).build();
+                }
+            }
+            """.trimIndent()
+
+        fun ASTCompilationUnit.classSymbol(simpleName: String) =
+            typeDeclarations().filter { it.simpleName == simpleName }.firstOrThrow().symbol
+
+        doTest("Builders of generic classes, constructors and methods are empty") {
+            val acu = parser.parse(code)
+            val box = acu.classSymbol("Box")
+            box.declaredMethods shouldBe emptyList()
+            box.getDeclaredClass("BoxBuilder")!!.declaredMethods shouldBe emptyList()
+
+            val desk = acu.classSymbol("Desk")
+            desk.declaredMethods.map { it.simpleName } shouldBe listOf("of")
+            desk.declaredClasses.map { it.simpleName } shouldBe listOf("DeskBuilder", "OfBuilder")
+            desk.declaredClasses.forEach { it.declaredMethods shouldBe emptyList() }
+        }
+
+        doTest("Members are added to a builder class named with a wildcard") {
+            val acu = parser.parse(code)
+            acu.withTypeDsl {
+                val star = acu.classSymbol("Star")
+                val builderClass = star.getDeclaredClass("StarMaker")!!
+                builderClass.declaredMethods.map { it.simpleName } shouldBe listOf("n", "build")
+
+                acu.methodCalls().toList().forEach {
+                    it.overloadSelectionInfo.isFailed shouldBe false
+                }
+                acu.methodCalls().firstOrThrow() shouldHaveType star.typeSystem.declaration(star)
+            }
+        }
+    }
 })
