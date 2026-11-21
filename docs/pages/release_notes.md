@@ -59,6 +59,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
+* apex-errorprone
+    * [#5906](https://github.com/pmd/pmd/issues/5906): \[apex] MethodWithSameNameAsEnclosingClass: Violation range should only cover the method name
 * core
     * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
 * java
@@ -74,6 +76,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
 * java-design
+    * [#5798](https://github.com/pmd/pmd/issues/5798): \[java] NPathComplexity: Short-circuit operators outside of conditions counted as branches
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
     * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: False positive when static field is used in constructor
 * java-errorprone
