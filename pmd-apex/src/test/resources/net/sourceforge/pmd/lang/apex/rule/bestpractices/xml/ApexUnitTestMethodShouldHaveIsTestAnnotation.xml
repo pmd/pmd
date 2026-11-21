@@ -88,7 +88,7 @@ public class TestFactory {
     </test-code>
 
     <test-code>
-        <description>Violation range covers only the method signature #5669</description>
+        <description>Violation range covers only the method name #5669</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2-2</expected-linenumbers>
         <code><![CDATA[
