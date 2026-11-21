@@ -6,31 +6,13 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.lang.document.FileId;
-import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
-import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Renderer to basic HTML format.
@@ -39,9 +21,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * XSLT transformation + stylesheet. No need to hard-code HTML markup here.
  */
 public class HTMLRenderer extends AbstractIncrementingRenderer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HTMLRenderer.class);
-
-    private static final Set<String> ALLOWED_SCHEMES = CollectionUtil.setOf("http", "https");
 
     public static final String NAME = "html";
 
@@ -62,11 +41,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                        .defaultValue(false)
                        .build();
 
-    private String linkPrefix;
-    private String linePrefix;
-    private boolean replaceHtmlExtension;
-
-    boolean colorize = true;
+    private HTMLBodyWriter body;
 
     public HTMLRenderer() {
         super(NAME, "HTML format");
@@ -81,256 +56,49 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         return "html";
     }
 
-    private static String escape(String s) {
-        return StringEscapeUtils.escapeHtml4(s);
-    }
-
-    /**
-     * Write the body of the main body of the HTML content.
-     */
-    public void renderBody(PrintWriter writer, Report report) throws IOException {
-        linkPrefix = safeUrl(getProperty(LINK_PREFIX));
-        linePrefix = getProperty(LINE_PREFIX).orElse(null);
-        replaceHtmlExtension = getProperty(HTML_EXTENSION);
-
-        writer.write("<center><h3>PMD report</h3></center>");
-        writer.write("<center><h3>Problems found</h3></center>");
-        writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
-        writer.println("<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>");
-        setWriter(writer);
-        renderFileReport(report);
-        writer.write("</table>");
-        glomProcessingErrors(writer, errors);
-        if (showSuppressedViolations) {
-            glomSuppressions(writer, suppressed);
-        }
-        glomConfigurationErrors(writer, configErrors);
-    }
-
     @Override
     public void start() throws IOException {
-        linkPrefix = safeUrl(getProperty(LINK_PREFIX));
-        linePrefix = getProperty(LINE_PREFIX).orElse(null);
-        replaceHtmlExtension = getProperty(HTML_EXTENSION);
-
+        body = new HTMLBodyWriter(
+                writer,
+                getProperty(LINK_PREFIX),
+                getProperty(LINE_PREFIX).orElse(null),
+                getProperty(HTML_EXTENSION),
+                this::determineFileName
+        );
         writer.println("<html><head><title>PMD</title></head><body>");
-        writer.write("<center><h3>PMD report</h3></center>");
-        writer.write("<center><h3>Problems found</h3></center>");
-        writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
-        writer.println("<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>");
+        body.renderHeader();
     }
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        glomRuleViolations(writer, violations);
+        body.renderViolations(violations);
     }
 
     @Override
     public void end() throws IOException {
-        writer.write("</table>");
-        glomProcessingErrors(writer, errors);
-        if (showSuppressedViolations) {
-            glomSuppressions(writer, suppressed);
-        }
-        glomConfigurationErrors(writer, configErrors);
+        body.renderFooter(errors, configErrors, suppressed, showSuppressedViolations);
         writer.println("</body></html>");
     }
 
-    private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {
-        int violationCount = 1;
-
-        StringBuilder buf = new StringBuilder(500);
-
-        while (violations.hasNext()) {
-            RuleViolation rv = violations.next();
-            buf.setLength(0);
-            buf.append("<tr");
-            if (colorize) {
-                buf.append(" bgcolor=\"lightgrey\"");
-            }
-            colorize = !colorize;
-            buf.append("> ").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(System.lineSeparator());
-            buf.append("<td width=\"*%\">")
-               .append(renderFileNameEscaped(rv.getFileId(), rv.getBeginLine()))
-               .append("</td>")
-                .append(System.lineSeparator());
-            buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
-
-            String d = escape(rv.getDescription());
-
-            String infoUrl = safeUrl(rv.getRule().getExternalInfoUrl());
-            if (StringUtils.isNotBlank(infoUrl)) {
-                d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
-            }
-            buf.append("<td width=\"*\">")
-               .append(d)
-               .append("</td>")
-               .append(System.lineSeparator())
-               .append("</tr>")
-                .append(System.lineSeparator());
-            writer.write(buf.toString());
-            violationCount++;
-        }
-    }
-
     /**
-     * Converts the given URL to be safe for using as the value of a href attribute.
-     *
-     * @param raw the URL to convert
-     * @return the safe URL or an empty string if the URL is invalid
+     * @deprecated since 7.30.0
      */
-    private static String safeUrl(String raw) {
-        if (raw == null || raw.isEmpty()) {
-            return "";
-        }
-        URI uri;
-        try {
-            uri = new URI(raw); // rejects spaces, tabs, control chars, quotes
-        } catch (URISyntaxException e) {
-            LOGGER.debug("Ignoring invalid URL: {}", raw, e);
-            return "";
-        }
-
-        String scheme = uri.getScheme();
-        if (scheme == null && uri.getRawAuthority() == null) {
-            // relative reference: allow paths, but not "//host/..."
-            return uri.toASCIIString();
-        }
-
-        if (scheme == null
-                || !ALLOWED_SCHEMES.contains(scheme.toLowerCase(Locale.ROOT))
-                || uri.getHost() == null) {   // e.g. "https:foo" (opaque)
-            LOGGER.debug("Ignoring URL due to invalid scheme: {}", raw);
-            return "";
-        }
-        return uri.toASCIIString();
-    }
-
-    private String renderFileNameEscaped(FileId fileId, int beginLine) {
-        String actualLineSelector = linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine;
-        String actualLineSelectorEncoded = null;
-        try {
-            actualLineSelectorEncoded = URLEncoder.encode(actualLineSelector, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        return maybeWrap(escape(determineFileName(fileId)), actualLineSelectorEncoded);
-    }
-
-    private String renderRuleNameEscaped(Rule rule) {
-        String name = escape(rule.getName());
-        String infoUrl = safeUrl(rule.getExternalInfoUrl());
-        if (StringUtils.isNotBlank(infoUrl)) {
-            return "<a href=\"" + infoUrl + "\">" + name + "</a>";
-        }
-        return name;
-    }
-
-    private void glomProcessingErrors(PrintWriter writer, List<Report.ProcessingError> errors) throws IOException {
-
-        if (errors.isEmpty()) {
-            return;
-        }
-
-        writer.write("<hr/>");
-        writer.write("<center><h3>Processing errors</h3></center>");
-        writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
-        writer.println("<th>File</th><th>Problem</th></tr>");
-
-        StringBuilder buf = new StringBuilder(500);
-        boolean colorize = true;
-        for (Report.ProcessingError pe : errors) {
-            buf.setLength(0);
-            buf.append("<tr");
-            if (colorize) {
-                buf.append(" bgcolor=\"lightgrey\"");
-            }
-            colorize = !colorize;
-            buf.append("> ").append(System.lineSeparator());
-            buf.append("<td>").append(renderFileNameEscaped(pe.getFileId(), -1)).append("</td>").append(System.lineSeparator());
-            buf.append("<td><pre>").append(escape(pe.getDetail())).append("</pre></td>").append(System.lineSeparator());
-            buf.append("</tr>").append(System.lineSeparator());
-            writer.write(buf.toString());
-        }
-        writer.write("</table>");
-    }
-
-    private void glomSuppressions(PrintWriter writer, List<Report.SuppressedViolation> suppressed) throws IOException {
-        if (suppressed.isEmpty()) {
-            return;
-        }
-
-        writer.write("<hr/>");
-        writer.write("<center><h3>Suppressed warnings</h3></center>");
-        writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
-        writer.println("<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>");
-
-        StringBuilder buf = new StringBuilder(500);
-        boolean colorize = true;
-        for (Report.SuppressedViolation sv : suppressed) {
-            buf.setLength(0);
-            buf.append("<tr");
-            if (colorize) {
-                buf.append(" bgcolor=\"lightgrey\"");
-            }
-            colorize = !colorize;
-            buf.append("> ").append(System.lineSeparator());
-            RuleViolation rv = sv.getRuleViolation();
-            String userMessage = Optional.ofNullable(sv.getUserMessage()).orElse("");
-            buf.append("<td align=\"left\">").append(renderFileNameEscaped(rv.getFileId(), rv.getBeginLine())).append("</td>").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(renderRuleNameEscaped(rv.getRule())).append("</td>").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(escape(sv.getSuppressor().getId())).append("</td>").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(escape(userMessage)).append("</td>").append(System.lineSeparator());
-            buf.append("</tr>").append(System.lineSeparator());
-            writer.write(buf.toString());
-        }
-        writer.write("</table>");
-    }
-
-    private void glomConfigurationErrors(final PrintWriter writer, final List<ConfigurationError> configErrors) throws IOException {
-        if (configErrors.isEmpty()) {
-            return;
-        }
-
-        writer.write("<hr/>");
-        writer.write("<center><h3>Configuration errors</h3></center>");
-        writer.println("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>");
-        writer.println("<th>Rule</th><th>Problem</th></tr>");
-
-        StringBuilder buf = new StringBuilder(500);
-        boolean colorize = true;
-        for (Report.ConfigurationError ce : configErrors) {
-            buf.setLength(0);
-            buf.append("<tr");
-            if (colorize) {
-                buf.append(" bgcolor=\"lightgrey\"");
-            }
-            colorize = !colorize;
-            buf.append("> ").append(System.lineSeparator());
-            buf.append("<td>").append(renderRuleNameEscaped(ce.rule())).append("</td>").append(System.lineSeparator());
-            buf.append("<td>").append(escape(ce.issue())).append("</td>").append(System.lineSeparator());
-            buf.append("</tr>").append(System.lineSeparator());
-            writer.write(buf.toString());
-        }
-        writer.write("</table>");
-    }
-
-    private String maybeWrap(String filenameEscaped, String line) {
-        if (StringUtils.isBlank(linkPrefix)) {
-            return filenameEscaped;
-        }
-        String newFileName = filenameEscaped.replace('\\', '/');
-
-        if (replaceHtmlExtension) {
-            int index = filenameEscaped.lastIndexOf('.');
-            if (index >= 0) {
-                newFileName = filenameEscaped.substring(0, index);
-            }
-        }
-
-        return "<a href=\"" + linkPrefix + newFileName + (replaceHtmlExtension ? ".html#" : "#") + line + "\">"
-            + newFileName + "</a>";
+    @Deprecated
+    public void renderBody(PrintWriter writer, Report report) throws IOException {
+        HTMLBodyWriter bodyWriter = new HTMLBodyWriter(
+                writer,
+                getProperty(LINK_PREFIX),
+                getProperty(LINE_PREFIX).orElse(null),
+                getProperty(HTML_EXTENSION),
+                this::determineFileName
+        );
+        bodyWriter.renderHeader();
+        bodyWriter.renderViolations(report.getViolations().iterator());
+        bodyWriter.renderFooter(
+                report.getProcessingErrors(),
+                report.getConfigurationErrors(),
+                report.getSuppressedViolations(),
+                showSuppressedViolations
+        );
     }
 }

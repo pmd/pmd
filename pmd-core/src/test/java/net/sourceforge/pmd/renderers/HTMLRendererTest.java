@@ -5,13 +5,17 @@
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
@@ -215,6 +219,19 @@ class HTMLRendererTest extends AbstractRendererTest {
         String actualReport = renderExternalInfoUrlReport();
         String expected = readFile("html/externalInfoUrlReport.html");
         assertEquals(normalized(expected), normalized(actualReport));
+    }
+
+    @Test
+    void testViolationCountIsContinuousAcrossFiles() throws Exception {
+        String actual = renderReportWithFiles(getRenderer(), Arrays.asList("file1.dummy", "file2.dummy"),
+            (fileName, listener) -> listener.onRuleViolation(newRuleViolation(createFooRule(),
+                FileLocation.range(FileId.fromPathLikeString(fileName), TextRange2d.range2d(1, 1, 1, 1)),
+                "blah")));
+
+        assertTrue(actual.contains("file1.dummy"));
+        assertTrue(actual.contains("file2.dummy"));
+        assertTrue(actual.contains("<td align=\"center\">1</td>"));
+        assertTrue(actual.contains("<td align=\"center\">2</td>"));
     }
 
     private static String normalized(String in) {

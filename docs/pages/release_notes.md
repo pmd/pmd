@@ -117,6 +117,9 @@ This is a {{ site.pmd.release_type }} release.
       {% jdoc apex::lang.apex.ast.AbstractDmlStatement#getAccessMode() %} instead.
 * coco
     * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
+* core
+    * {% jdoc core::renderers.HTMLRenderer#renderBody(java.io.PrintWriter,net.sourceforge.pmd.reporting.Report) %} has been deprecated.
+      It was only used to allow SummaryHTMLRenderer access to HTMLRenderers internals. This has now been refactored.
 * css
     * {% jdoc css::lang.css.ast.CssLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * csharp
