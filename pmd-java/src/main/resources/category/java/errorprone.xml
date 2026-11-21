@@ -3341,6 +3341,8 @@ named "testXXX" (JUnit3) or use annotations (e.g. `@Test`).
 
 The regular expression to match can be configured using the property `testClassPattern`. To disable the detection of
 possible test classes by name, set this property to an empty string.
+
+Abstract classes and interfaces aren't reported, since they can be used as base classes for tests.
         </description>
         <priority>3</priority>
         <example>
