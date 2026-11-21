@@ -50,4 +50,83 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>bare block between the two if statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class CifVariant {
+    void bar(int x, int y) {
+        if (x > 1) {
+            {
+                if (y > 1) {
+                    System.out.println(x + y);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>several bare blocks between the two if statements</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class CifDeeper {
+    void bar(int x, int y) {
+        if (x > 1) {
+            {
+                {
+                    if (y > 1) {
+                        System.out.println(x + y);
+                    }
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bare block with a sibling statement is not collapsible</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class CifSibling {
+    void bar(int x, int y) {
+        if (x > 1) {
+            {
+                int z = 5;
+                if (y > 1) {
+                    System.out.println(x + y);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>comment inside the bare block is not a statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class CifComment {
+    void bar(int x, int y) {
+        if (x > 1) {
+            {
+                // keep the conditions
+                if (y > 1) {
+                    System.out.println(x + y);
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
