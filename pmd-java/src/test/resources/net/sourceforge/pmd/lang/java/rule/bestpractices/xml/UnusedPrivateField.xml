@@ -1098,4 +1098,17 @@ class ExampleTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>An unrelated annotation string still counts as a field use</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("bar")
+    void baz() {}
+
+    private int bar;
+}
+        ]]></code>
+    </test-code>
 </test-data>
