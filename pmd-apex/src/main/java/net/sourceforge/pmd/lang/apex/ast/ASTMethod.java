@@ -101,7 +101,7 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     }
 
     /**
-     * Only the signature of the method is reported, not its body.
+     * Only the name of the method is reported, not its body.
      */
     @Override
     public FileLocation getReportLocation() {
