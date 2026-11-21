@@ -82,6 +82,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
+    * [#7309](https://github.com/pmd/pmd/issues/7309): \[java] TestClassWithoutTestCases: document that abstract classes and interfaces are not checked
 * java-multithreading
     * [#2786](https://github.com/pmd/pmd/issues/2786): \[java] False positive for UseConcurrentHashMap on ConcurrentSkipListMap 
 * java-performance
