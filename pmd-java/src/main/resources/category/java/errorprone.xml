@@ -3339,8 +3339,8 @@ Test classes typically start or end with the affix "Test", "Tests" or "TestCase"
 is not a good practice, since most people will assume it is a test case. Test classes have test methods
 named "testXXX" (JUnit3) or use annotations (e.g. `@Test`).
 
-Classes identified only by the name pattern are not reported if they are abstract classes or interfaces,
-since those can provide a base for test cases without containing tests themselves.
+Abstract classes and interfaces are not reported, since they are commonly base types for test cases and hold
+no tests themselves. Classes annotated with JUnit 5's `@Nested` are checked regardless.
 
 The regular expression to match can be configured using the property `testClassPattern`. To disable the detection of
 possible test classes by name, set this property to an empty string.
