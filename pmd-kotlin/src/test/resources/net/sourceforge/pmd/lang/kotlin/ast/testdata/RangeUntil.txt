@@ -80,7 +80,7 @@
    |  |        |  |              |  |  +- T-NL[@Text = "\n"]
    |  |        |  |              |  +- Statement[]
    |  |        |  |              |  |  +- LoopStatement[]
-   |  |        |  |              |  |     +- ForStatement[@TypeName = "kotlin.Int"]
+   |  |        |  |              |  |     +- ForStatement[]
    |  |        |  |              |  |        +- T-FOR[@Text = "for"]
    |  |        |  |              |  |        +- T-LPAREN[@Text = "("]
    |  |        |  |              |  |        +- VariableDeclaration[@Identifier = "i", @TypeName = "kotlin.Int"]

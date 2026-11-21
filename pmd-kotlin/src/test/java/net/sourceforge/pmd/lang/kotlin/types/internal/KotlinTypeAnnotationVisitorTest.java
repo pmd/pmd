@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtDelegationSpecifier;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtForStatement;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionValueParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtSingleAnnotation;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUnescapedAnnotation;
@@ -183,6 +183,67 @@ class KotlinTypeAnnotationVisitorTest {
         assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(vars.get(1))));
     }
 
+    // --- MultiVariableDeclaration (type of the whole destructured value) ---
+
+    @Test
+    void multiVariableDeclarationOfValHasTypeOfWholeValue() {
+        KtKotlinFile root = PARSER.parse("fun f() { val (a, b) = Pair(1, \"x\") }");
+        KtMultiVariableDeclaration multi = root.descendants(KtMultiVariableDeclaration.class).first();
+        assertEquals("kotlin.Pair<kotlin.Int, kotlin.String>",
+                KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(multi)));
+    }
+
+    @Test
+    void multiVariableDeclarationOfForLoopHasTypeOfElement() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(pairs: List<Pair<Int, String>>) { for ((a, b) in pairs) { } }");
+        KtMultiVariableDeclaration multi = root.descendants(KtMultiVariableDeclaration.class).first();
+        assertEquals("kotlin.Pair<kotlin.Int, kotlin.String>",
+                KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(multi)));
+    }
+
+    @Test
+    void multiVariableDeclarationOfLambdaParameterHasTypeOfParameter() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f(pairs: List<Pair<Int, String>>) { pairs.forEach { (a, b) -> } }");
+        KtMultiVariableDeclaration multi = root.descendants(KtMultiVariableDeclaration.class).first();
+        assertEquals("kotlin.Pair<kotlin.Int, kotlin.String>",
+                KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(multi)));
+    }
+
+    @Test
+    void multiVariableDeclarationWithSingleOrUnderscoreComponentHasWholeType() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f() {\n  val (only) = Pair(1, \"x\")\n  val (_, b) = Pair(1, \"x\")\n}");
+        List<KtMultiVariableDeclaration> multis = root.descendants(KtMultiVariableDeclaration.class).toList();
+        assertEquals(2, multis.size());
+        for (KtMultiVariableDeclaration multi : multis) {
+            assertEquals("kotlin.Pair<kotlin.Int, kotlin.String>",
+                    KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(multi)));
+        }
+    }
+
+    @Test
+    void multiVariableDeclarationsOnOneLineResolvedByColumn() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f() { val (a, b) = Pair(1, \"x\"); val (c, d) = Pair(\"s\", 2.0) }");
+        List<KtMultiVariableDeclaration> multis = root.descendants(KtMultiVariableDeclaration.class).toList();
+        assertEquals(2, multis.size());
+        assertEquals("kotlin.Pair<kotlin.Int, kotlin.String>",
+                KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(multis.get(0))));
+        assertEquals("kotlin.Pair<kotlin.String, kotlin.Double>",
+                KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(multis.get(1))));
+    }
+
+    @Test
+    void multiLineMultiVariableDeclarationHasWholeType() {
+        KtKotlinFile root = PARSER.parse(
+                "fun f() {\n  val (\n    a,\n    b\n  ) = Pair(1, \"x\")\n}");
+        KtMultiVariableDeclaration multi = root.descendants(KtMultiVariableDeclaration.class).first();
+        assertEquals("kotlin.Pair<kotlin.Int, kotlin.String>",
+                KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(multi)));
+    }
+
     // --- FunctionDeclaration ---
 
     @Test
@@ -201,17 +262,6 @@ class KotlinTypeAnnotationVisitorTest {
         KtCatchBlock catchBlock = root.descendants(KtCatchBlock.class).first();
         assertNotNull(catchBlock);
         assertEquals("java.lang.IllegalArgumentException", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(catchBlock)));
-    }
-
-    // --- ForStatement ---
-
-    @Test
-    void forStatementLoopVariableTypeNameSet() {
-        KtKotlinFile root = PARSER.parse(
-                "fun f(items: List<String>) { for (item in items) { } }");
-        KtForStatement forStmt = root.descendants(KtForStatement.class).first();
-        assertNotNull(forStmt);
-        assertEquals("kotlin.String", KotlinTypeName.displayStringOf(KotlinNodeTypeData.getType(forStmt)));
     }
 
     @Test

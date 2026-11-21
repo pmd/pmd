@@ -21,11 +21,13 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
  *   <li>{@code VariableDeclaration} -- property or for-loop variable type, lambda parameters,
  *       including each component of a destructuring declaration ({@code val (a, b) = ...});
  *       the destructuring {@code PropertyDeclaration} itself has no type</li>
+ *   <li>{@code MultiVariableDeclaration} -- type of the destructured value as a whole, e.g.
+ *       {@code Pair<Int, String>}, for {@code val (a, b) = ...}, {@code for ((a, b) in ...)}
+ *       and {@code { (a, b) -> }}</li>
  *   <li>{@code ClassParameter} -- primary constructor {@code val}/{@code var} parameter type</li>
  *   <li>{@code FunctionDeclaration} -- return type</li>
  *   <li>{@code FunctionValueParameter} -- function / constructor parameter type</li>
  *   <li>{@code CatchBlock} -- caught exception type</li>
- *   <li>{@code ForStatement} -- loop variable type</li>
  * </ul>
  *
  * <p>Subtype checking uses the type hierarchy built by kotlin-type-mapper via reflection.
@@ -40,7 +42,6 @@ import net.sourceforge.pmd.lang.kotlin.types.KotlinTypeName;
  * //FunctionDeclaration[pmd-kotlin:typeIs('kotlin.String')]                  -- return type
  * //FunctionValueParameter[pmd-kotlin:typeIs('java.util.Map')]               -- parameter type
  * //CatchBlock[pmd-kotlin:typeIs('java.io.IOException')]                     -- exception type
- * //ForStatement[pmd-kotlin:typeIs('kotlin.String')]                         -- loop variable type
  * }</pre>
  *
  * @since 7.28.0
