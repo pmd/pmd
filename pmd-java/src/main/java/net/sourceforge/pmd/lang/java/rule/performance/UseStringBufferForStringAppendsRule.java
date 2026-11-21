@@ -8,13 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -23,6 +31,21 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * @since 3.1 (as xpath) / 3.8 (as Java)
  */
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRule {
+
+    private static final CompoundInvocationMatcher LOOP_METHOD_MATCHER = InvocationMatcher.parseAll(
+        "java.lang.Iterable#forEach(_*)",
+        "java.util.Iterator#forEachRemaining(_*)",
+        "java.util.Spliterator#forEachRemaining(_*)",
+        "java.util.Map#forEach(_*)",
+        "java.util.stream.Stream#forEach(_*)",
+        "java.util.stream.Stream#forEachOrdered(_*)",
+        "java.util.stream.IntStream#forEach(_*)",
+        "java.util.stream.IntStream#forEachOrdered(_*)",
+        "java.util.stream.LongStream#forEach(_*)",
+        "java.util.stream.LongStream#forEachOrdered(_*)",
+        "java.util.stream.DoubleStream#forEach(_*)",
+        "java.util.stream.DoubleStream#forEachOrdered(_*)"
+    );
 
     public UseStringBufferForStringAppendsRule() {
         super(ASTVariableId.class);
@@ -88,10 +111,32 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
     }
 
     private boolean isNotWithinLoop(Node name) {
-        return name.ancestors(ASTLoopStatement.class).isEmpty();
+        return !isWithinLoop(name);
     }
 
-    private boolean isWithinLoop(Node name) {
-        return !isNotWithinLoop(name);
+    static boolean isWithinLoop(Node name) {
+        for (Node ancestor : name.ancestors()) {
+            if (ancestor instanceof ASTLoopStatement) {
+                return true;
+            } else if (ancestor instanceof ASTLambdaExpression && isLambdaLoop((ASTLambdaExpression) ancestor)) {
+                return true;
+            } else if (ancestor instanceof ASTBodyDeclaration) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    static boolean isLambdaLoop(ASTLambdaExpression lambda) {
+        JavaNode node = lambda;
+        if (node.getParent() instanceof ASTCastExpression) {
+            node = (JavaNode) node.getParent();
+        }
+        JavaNode argumentList = node.getParent();
+        if (argumentList instanceof ASTArgumentList && argumentList.getParent() instanceof ASTMethodCall) {
+            return LOOP_METHOD_MATCHER.anyMatch(argumentList.getParent());
+        }
+        return false;
     }
 }
+
