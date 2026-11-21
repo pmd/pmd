@@ -1,0 +1,132 @@
+name: Rule violation (false-negative)
+description: Let us know about a false-negative (no violation is reported on problematic code)
+title: "[<lang>] "
+labels: ["a:false-negative"]
+type: False Negative
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+        Please replace `<lang>` in the title with the language this applies to, such as `[java]` or `[apex]`.
+        Before submitting, please check whether the issue has already been reported:
+        https://github.com/pmd/pmd/issues
+
+  - type: input
+    id: pmd-version
+    attributes:
+      label: PMD Version
+      description: The PMD version you are using. If possible, please check whether the issue still occurs with the latest release.
+      placeholder: 7.x.y
+    validations:
+      required: true
+
+  - type: input
+    id: rule-name
+    attributes:
+      label: Rule Name
+      placeholder: e.g. UnusedPrivateField
+    validations:
+      required: true
+
+  - type: input
+    id: rule-doc-link
+    attributes:
+      label: Rule Documentation Link
+      description: |
+        A link to the rule's documentation makes it easier for us and others to check
+        what the rule is supposed to report. You can find all rules in the
+        [PMD documentation](https://docs.pmd-code.org/latest/).
+      placeholder: https://docs.pmd-code.org/latest/pmd_rules_java_bestpractices.html#unusedprivatefield
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Why is the code a problem that should be reported? Please explain why you think the rule should flag it.
+      placeholder: The rule does not report ..., but this is a problem because ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: code-sample
+    attributes:
+      label: Code Sample
+      description: |
+        Please provide a minimal, self-contained code sample that reproduces the false-negative.
+        Mark the line where the violation should be reported (e.g. with a comment) and wrap the code
+        in a code block (```java ... ```).
+      placeholder: |
+        ```java
+        class Foo {
+            // violation expected here
+        }
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: expectation
+    attributes:
+      label: Actual and Expected Outcome
+      description: What does PMD report, and what did you expect instead?
+      placeholder: |
+        PMD should report a violation at line ..., but doesn't. This is a false-negative.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: origin
+    attributes:
+      label: How did you find this problem?
+      description: |
+        All reports are welcome! This just helps us understand the impact and prioritize.
+      options:
+        - A real bug or issue in my own or my team's code that PMD should have caught
+        - Another tool (e.g. a different linter or IDE inspection) reports it, but PMD doesn't
+        - While analyzing third-party / open-source code
+        - While reviewing the rule, its documentation or implementation
+        - While writing tests or constructing examples
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: origin-details
+    attributes:
+      label: Impact and Further Details
+      description: |
+        Optional: Anything else about how you found this, or how it affects you?
+        E.g. did the missed problem cause a bug, or was it caught later in code review or testing?
+        If another tool reports it, which tool and which check?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Running PMD Through
+      options:
+        - CLI
+        - Ant
+        - Maven
+        - Gradle
+        - Designer
+        - IDE plugin (Eclipse, IntelliJ, VS Code, ...)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: story
+    attributes:
+      label: Did PMD help you today? Did it make you happy in any way?
+      description: |
+        If you have anything positive to share, we'd love to hear it! Reading bug reports
+        all day can be tiring, and a little positive note goes a long way.
+        (Idea borrowed from [Joey Hess](https://joeyh.name/blog/entry/two_holiday_stories/))
+    validations:
+      required: false

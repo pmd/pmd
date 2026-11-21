@@ -1,0 +1,95 @@
+name: New Rule
+description: Suggest a new rule for PMD
+title: "[<lang>] "
+labels: ["a:new-rule"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new rule!
+
+        Please replace `<lang>` in the title with the language this applies to, such as `[java]` or `[apex]`.
+
+        Before submitting, please check:
+          * whether the rule has already been suggested: https://github.com/pmd/pmd/issues
+          * whether an existing rule already covers this, maybe with a property: https://docs.pmd-code.org/latest/
+
+  - type: input
+    id: rule-name
+    attributes:
+      label: Proposed Rule Name
+      description: A short name in PascalCase that describes what the rule checks. Don't worry, we can still change it later.
+      placeholder: e.g. EmptyCatchBlocks
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Proposed Rule Category
+      description: |
+        See the [category descriptions](https://docs.pmd-code.org/latest/pmd_release_notes_old_pmd6.html#rule-categories) if you are unsure.
+      options:
+        - Best Practices
+        - Code Style
+        - Design
+        - Documentation
+        - Error Prone
+        - Multithreading
+        - Performance
+        - Security
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        What should the rule detect, and why is this a problem (e.g. it can cause bugs,
+        hurts performance or readability)? If available, please add references, such as
+        language documentation or similar checks in other tools.
+      placeholder: The rule should report ..., because ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: code-sample
+    attributes:
+      label: Code Sample
+      description: |
+        Please provide code that the rule should flag. If possible, also show how the code
+        should look instead, so that it no longer violates the rule.
+      placeholder: |
+        ```java
+        class Foo {
+            // violation should be reported here
+        }
+
+        class Bar {
+            // compliant version, no violation
+        }
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: exceptions
+    attributes:
+      label: Cases That Should Not Be Flagged
+      description: |
+        Are there situations where the pattern is fine and the rule should not report a violation?
+        Thinking about this early helps us avoid false-positives.
+    validations:
+      required: false
+
+  - type: textarea
+    id: properties
+    attributes:
+      label: Possible Properties
+      description: |
+        Should this rule be customizable via properties? If so, please list them with a short
+        description, e.g. `ignoredAnnotations`: annotations that suppress the check.
+    validations:
+      required: false
