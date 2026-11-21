@@ -93,4 +93,142 @@ public class Outer {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7278: a wrapped super call satisfies the last-action check</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class OneBlock {
+    protected void finalize() throws Throwable {
+        { super.finalize(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: cleanup followed by a nested super call is accepted</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class LastCall {
+    protected void finalize() throws Throwable {
+        cleanup();
+        { { super.finalize(); } }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: a call before later cleanup is still insufficient</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class LaterCleanup {
+    protected void finalize() throws Throwable {
+        { super.finalize(); cleanup(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: a call in an earlier inner block is still insufficient</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class LaterBlock {
+    protected void finalize() throws Throwable {
+        { { super.finalize(); } { cleanup(); } }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: conditional super calls do not satisfy an unconditional last action</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Conditional {
+    boolean enabled;
+    protected void finalize() throws Throwable {
+        if (enabled) { super.finalize(); }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: a nested class finalizer does not satisfy the enclosing finalizer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Outer {
+    protected void finalize() throws Throwable {
+        class Inner {
+            protected void finalize() throws Throwable {
+                super.finalize();
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: preserve the existing direct try-finally path</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class TryFinally {
+    protected void finalize() throws Throwable {
+        try { cleanup(); } finally { super.finalize(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: a block containing no super call is still reported</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class NoSuper {
+    protected void finalize() throws Throwable {
+        { cleanup(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: wrapped outer qualified super is not the inner superclass call</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Base { }
+class Outer extends Base {
+    class Inner extends Base {
+        protected void finalize() throws Throwable {
+            { Outer.super.finalize(); }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: preserve prior direct qualified super behavior</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base { }
+class Outer extends Base {
+    class Inner extends Base {
+        protected void finalize() throws Throwable {
+            Outer.super.finalize();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
