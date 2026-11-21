@@ -56,6 +56,7 @@ This is a minor release.
     * [#7108](https://github.com/pmd/pmd/issues/7108): \[apex] Expose DML AccessMode (`as user` / `as system`) for XPath rules
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-bestpractices
+    * [#5669](https://github.com/pmd/pmd/issues/5669): \[apex] ApexUnitTestMethodShouldHaveIsTestAnnotation: Violation range should only cover the method name
     * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
