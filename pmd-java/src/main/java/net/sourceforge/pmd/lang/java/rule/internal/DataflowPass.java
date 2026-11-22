@@ -700,6 +700,11 @@ public final class DataflowPass {
             });
 
             if (finallyClause != null) {
+                // The finally is about to run. A return inside it, or after this
+                // try has finished, is no longer waiting on this finally.
+                // myFinally stays set so abruptCompletion still does not merge
+                // those defs into the method end state.
+                before.finallyEntered = true;
                 if (finalState.abruptCompletionTargets.contains(finalState.returnOrThrowTarget)) {
                     // this represents the finally clause when it was entered
                     // because of abrupt completion
@@ -1387,6 +1392,10 @@ public final class DataflowPass {
         // needs to go through the finally span (the finally must absorb it)
         SpanInfo myFinally = null;
 
+        // Set when this span's finally body is entered. myFinally is not cleared
+        // on the normal path, so a finally is pending only while this is false.
+        boolean finallyEntered;
+
 
         /**
          * Inside a try block, we assume that any method/ctor call may
@@ -1632,12 +1641,13 @@ public final class DataflowPass {
 
         /**
          * Whether an enclosing {@code finally} still has to run before control
-         * reaches {@link #returnOrThrowTarget}. Same walk as {@link #abruptCompletion}.
+         * reaches {@link #returnOrThrowTarget}. A finally that has already been
+         * entered is not pending. Same walk as {@link #abruptCompletion}.
          */
         boolean reachesPendingFinally() {
             SpanInfo current = this;
             while (current != null) {
-                if (current.myFinally != null) {
+                if (current.myFinally != null && !current.finallyEntered) {
                     return true;
                 }
                 if (current == returnOrThrowTarget) { // NOPMD CompareObjectsWithEqual this is what we want
