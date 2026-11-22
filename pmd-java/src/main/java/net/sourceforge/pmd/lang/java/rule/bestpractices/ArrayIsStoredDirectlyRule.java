@@ -4,12 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.List;
+
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
@@ -54,14 +60,30 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
     }
 
     private void checkAssignments(RuleContext context, ASTExecutableDeclaration method) {
-        if (method.getVisibility() == Visibility.V_PRIVATE && getProperty(ALLOW_PRIVATE)
-            || method.getBody() == null) {
+        if (method.getBody() == null) {
+            return;
+        }
+
+        // constructors of enums are implicitly private and cannot be made
+        // accessible on purpose, so the allowance below would silently disable
+        // the rule for all of them
+        ASTEnumBody enumBody = method instanceof ASTConstructorDeclaration
+                               ? method.ancestors(ASTEnumBody.class).first()
+                               : null;
+        if (enumBody == null && getProperty(ALLOW_PRIVATE)
+            && method.getVisibility() == Visibility.V_PRIVATE) {
             return;
         }
 
         nextFormal:
         for (ASTFormalParameter formal : method.getFormalParameters()) {
             if (formal.getTypeMirror().isArray()) {
+                if (enumBody != null && formal.isVarargs() && !isArrayPassedToVarargs(enumBody, method, formal)) {
+                    // the compiler creates a new array for the varargs parameter,
+                    // so the stored array cannot be reached by the caller (only the
+                    // enum constants call this constructor)
+                    continue;
+                }
                 for (ASTNamedReferenceExpr usage : formal.getVarId().getLocalUsages()) {
                     // We assume usages order corresponds to control-flow order
                     // This may not hold, but it's as precise as the rule was before 7.0
@@ -79,6 +101,29 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
                 }
             }
         }
+    }
+
+    /**
+     * Returns true if some enum constant passes an array to the varargs parameter,
+     * e.g. {@code CONST(someArray)} instead of {@code CONST(element1, element2)}.
+     * In the latter case the compiler creates the array for the constructor.
+     */
+    private boolean isArrayPassedToVarargs(ASTEnumBody enumBody, ASTExecutableDeclaration constructor,
+                                           ASTFormalParameter varargs) {
+        List<ASTFormalParameter> formals = constructor.getFormalParameters().toList();
+        int index = formals.indexOf(varargs);
+        for (ASTEnumConstant constant : enumBody.children(ASTEnumConstant.class)) {
+            ASTArgumentList arguments = constant.getArguments();
+            if (arguments == null || arguments.size() != formals.size()) {
+                // either no arguments at all or a list of varargs elements
+                continue;
+            }
+            ASTExpression argument = arguments.toList().get(index);
+            if (argument.getTypeMirror().isArray()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
