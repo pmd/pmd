@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
 
     <code-fragment id="with-all-comments"><![CDATA[
 /**
@@ -89,10 +89,22 @@ public class TopLevel {
     </test-code>
 
     <test-code>
-        <description>Missing comments - only class level required. (deprecate property values test)</description>
+        <description>Missing comments - only class level required. (deprecated values, non-deprecated properties)</description>
         <rule-property name="classCommentRequirement">Required</rule-property>
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
         <rule-property name="methodCommentRequirement">Ignored</rule-property>
+        <rule-property name="enumCommentRequirement">Ignored</rule-property>
+        <expected-problems>3</expected-problems>
+        <code-ref id="without-any-comments"/>
+    </test-code>
+
+
+    <test-code>
+        <description>Missing comments - only class level required. (deprecated values, deprecated properties)</description>
+        <rule-property name="classCommentRequirement">Required</rule-property>
+        <rule-property name="fieldCommentRequirement">Ignored</rule-property>
+        <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
+        <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="enumCommentRequirement">Ignored</rule-property>
         <expected-problems>3</expected-problems>
@@ -100,21 +112,42 @@ public class TopLevel {
     </test-code>
 
     <test-code>
-        <description>Missing comments - only class level required.</description>
+        <description>Missing comments - only type comments required.</description>
+        <rule-property name="typeCommentRequirement">required</rule-property>
+        <rule-property name="fieldCommentRequirement">ignored</rule-property>
+        <rule-property name="methodCommentRequirement">ignored</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>1,3,7,8</expected-linenumbers>
+        <code-ref id="without-any-comments"/>
+    </test-code>
+
+    <test-code>
+        <description>Missing comments - only class comments required (deprecated property)</description>
         <rule-property name="classCommentRequirement">required</rule-property>
         <rule-property name="fieldCommentRequirement">ignored</rule-property>
         <rule-property name="methodCommentRequirement">ignored</rule-property>
         <rule-property name="enumCommentRequirement">ignored</rule-property>
         <expected-problems>3</expected-problems>
+        <expected-linenumbers>1,7,8</expected-linenumbers>
+        <code-ref id="without-any-comments"/>
+    </test-code>
+
+    <test-code>
+        <description>Missing comments - only enum comments required (deprecated property)</description>
+        <rule-property name="classCommentRequirement">ignored</rule-property>
+        <rule-property name="fieldCommentRequirement">ignored</rule-property>
+        <rule-property name="methodCommentRequirement">ignored</rule-property>
+        <rule-property name="enumCommentRequirement">required</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code-ref id="without-any-comments"/>
     </test-code>
 
     <test-code>
         <description>Too many comments - all comments are unwanted.</description>
-        <rule-property name="classCommentRequirement">unwanted</rule-property>
+        <rule-property name="typeCommentRequirement">unwanted</rule-property>
         <rule-property name="fieldCommentRequirement">unwanted</rule-property>
         <rule-property name="methodCommentRequirement">unwanted</rule-property>
-        <rule-property name="enumCommentRequirement">unwanted</rule-property>
         <expected-problems>8</expected-problems>
         <code-ref id="with-all-comments"/>
     </test-code>
@@ -171,9 +204,10 @@ public class Foo {
 
     <test-code>
         <description>[java] Package-private requirement does not affect public or protected methods</description>
-        <rule-property name="classCommentRequirement">unwanted</rule-property>
+        <rule-property name="classCommentRequirement">ignored</rule-property>
         <rule-property name="fieldCommentRequirement">ignored</rule-property>
-        <rule-property name="methodCommentRequirement">ignored</rule-property>
+        <rule-property name="publicMethodCommentRequirement">ignored</rule-property>
+        <rule-property name="protectedMethodCommentRequirement">ignored</rule-property>
         <rule-property name="enumCommentRequirement">ignored</rule-property>
         <rule-property name="packageMethodCommentRequirement">required</rule-property>
         <expected-problems>0</expected-problems>
@@ -248,6 +282,7 @@ public class CommentRequired implements Serializable {
 
     <test-code>
         <description>comment required on serialVersionUID of wrong type</description>
+        <rule-property name="fieldCommentRequirement">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
@@ -288,6 +323,7 @@ public class CommentRequired implements java.io.Serializable {
 
     <test-code>
         <description>#1684 comment required on serialPersistentFields of wrong type</description>
+        <rule-property name="fieldCommentRequirement">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
@@ -303,6 +339,7 @@ public class CommentRequired implements java.io.Serializable {
 
     <test-code>
         <description>#1684 comment required on serialPersistentFields of wrong visibility</description>
+        <rule-property name="fieldCommentRequirement">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -319,6 +356,7 @@ public class CommentRequired implements java.io.Serializable {
 
     <test-code>
         <description>#1684 comment required on serialPersistentFields not static</description>
+        <rule-property name="fieldCommentRequirement">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -335,6 +373,7 @@ public class CommentRequired implements java.io.Serializable {
 
     <test-code>
         <description>#1684 comment required on serialPersistentFields not final</description>
+        <rule-property name="fieldCommentRequirement">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -590,6 +629,10 @@ public class CommentRequired {
         <rule-property name="fieldCommentRequirement">ignored</rule-property>
         <rule-property name="accessorCommentRequirement">unwanted</rule-property>
         <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Comments on public getters and setters are unwanted</message>
+            <message>Comments on anonymous getters and setters are unwanted</message>
+        </expected-messages>
         <code><![CDATA[
 /**
  * Comment required test class.
@@ -637,6 +680,9 @@ public class CommentRequirement {}
         <rule-property name="methodWithOverrideCommentRequirement">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Comments on public overriding methods are required</message>
+        </expected-messages>
         <code><![CDATA[
 /** Comment */
 public class CommentRequirement {
@@ -731,6 +777,14 @@ Foo // <--violation: line 2
         <rule-property name="fieldCommentRequirement">whenVisible</rule-property>
         <rule-property name="minimumVisibility">public</rule-property>
         <expected-problems>6</expected-problems>
+        <expected-messages>
+            <message>Public type comments are required</message>
+            <message>Public type comments are required</message>
+            <message>Public field comments are required</message>
+            <message>Public method and constructor comments are required</message>
+            <message>Public type comments are required</message>
+            <message>Public type comments are required</message>
+        </expected-messages>
         <code-ref id="all-visibilities"/>
     </test-code>
 
@@ -756,5 +810,77 @@ Foo // <--violation: line 2
         <rule-property name="minimumVisibility">private</rule-property>
         <expected-problems>24</expected-problems>
         <code-ref id="all-visibilities"/>
+    </test-code>
+
+    <test-code>
+        <description>Should use effective visibility</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private class Foo {
+    public int bar;
+    public enum Enum {}
+    public Foo() {}
+    public void doNothing() {}
+    public void doSomething() {}
+    public record Bar() {}
+    public @interface Ann {}
+    public interface Face {}
+    public class Clazz {}
+}
+       ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Should use effective visibility: nested</description>
+        <rule-property name="typeCommentRequirement">ignored</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private interface Bar {
+        void foo();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Annotations and records (#4515)</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>3,4,5,7</expected-linenumbers>
+        <code><![CDATA[
+/** Holds two public types */
+public class Wrapper {
+    public @interface MyAnnotation1 { // comment required
+        String name(); // comment required
+        int version(); // comment required
+    }
+    public record MyRecord(int a) {} // comment required
+}
+        ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>Private method</description>
+        <rule-property name="minimumVisibility">private</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/** Missing comment for method and constructor */
+public class Foo {
+    private Foo() {}
+    private void foo() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Private method (deprecated property, minimumVisibility ignored)</description>
+        <rule-property name="minimumVisibility">private</rule-property>
+        <rule-property name="packageMethodCommentRequirement">unwanted</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/** Missing comment for method and constructor */
+public class Foo {
+    private Foo() {}
+    private void foo() {}
+}
+        ]]></code>
     </test-code>
 </test-data>

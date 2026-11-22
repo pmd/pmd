@@ -33,7 +33,22 @@ A rule for the politically correct... we don't want to offend anyone.
           class="net.sourceforge.pmd.lang.java.rule.documentation.CommentRequiredRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentrequired">
         <description>
-Denotes whether javadoc (formal) comments are required (or unwanted) for specific language elements.
+Denotes whether Javadoc (formal) comments are required (or unwanted) for specific language elements.
+
+By default, comments are required for elements that are protected or public, except for overriding methods, getters and setters.
+To restrict this to public elements only, or to require comments for elements with lower visibility,
+change the `minimumVisibility` property accordingly. It's possible to further refine this for each element type
+by setting `typeCommentRequirement`, `methodCommentRequirement`, `fieldCommentRequirement`, `accessorCommentRequirement`,
+`serialVersionUIDCommentRequired` and `serialPersistentFieldsCommentRequired` properties. These have four possible values:
+
+* `whenVisible`: elements must have a comment if their visibility is at least `minimumVisibility`, comments at lower visibility are optional
+* `ignored`: elements are not checked
+* `required`: elements must have a comment, regardless of their visibility
+* `unwanted`: elements are not allowed to have a comment at any visibility
+
+The rule has several properties that are deprecated since PMD 7.30 that override its behavior for methods, enums,
+and types other than enums. See property descriptions for details.
+
         </description>
         <priority>3</priority>
         <example>
@@ -81,7 +96,7 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.documentation.DanglingJavadocRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#danglingjavadoc">
         <description>
-Javadoc comments that do not belong to a class, method or field are ignored by the JavaDoc tool
+Javadoc comments that do not belong to a class, method or field are ignored by the Javadoc tool
 and don't end up in the generated API documentation. Such comments are either misplaced
 (e.g. between annotations and method declaration) or should be block comments.
 
