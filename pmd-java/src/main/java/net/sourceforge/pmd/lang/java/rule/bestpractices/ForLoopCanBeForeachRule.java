@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
@@ -34,8 +35,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.AssignmentOp;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
+import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -283,7 +289,27 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
                                      ASTNamedReferenceExpr collection,
                                      OccurrenceMatcher getMatcher) {
 
+        // The index may be declared before the loop, e.g. "int i = 0; for (; i < l.size(); i++)".
+        // Then it may also be used outside of this loop, e.g. in another loop (see #4094).
+        boolean indexDeclaredOutside = loop.getInit() == null;
+        DataflowResult dataflow = null;
+        if (indexDeclaredOutside) {
+            dataflow = DataflowPass.getDataflowResult(loop.getRoot());
+            if (!startsAtZero(loop, index, dataflow)) {
+                return false;
+            }
+        }
+
         for (ASTNamedReferenceExpr usage : index.getLocalUsages()) {
+            if (indexDeclaredOutside && !isInside(usage, loop)) {
+                // A usage outside of this loop doesn't matter, as long as it
+                // doesn't see a value of the index computed by this loop.
+                if (isPlainOverwrite(usage) || !seesValueFromLoop(usage, loop, dataflow)) {
+                    continue;
+                }
+                return false;
+            }
+
             ASTExpression toplevel = JavaAstUtils.getTopLevelExpr(usage);
             boolean isInUpdateOrCond =
                 loop.getUpdate() == toplevel.getParent()
@@ -294,6 +320,69 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             }
         }
         return true;
+    }
+
+    /**
+     * Whether the index, which is declared before the loop, is always 0
+     * when the loop is entered. The only other value, that may reach the
+     * condition of the loop, is the one from the update of the loop itself.
+     */
+    private static boolean startsAtZero(ASTForStatement loop, ASTVariableId index, DataflowResult dataflow) {
+        if (!index.isLocalVariable()) {
+            return false;
+        }
+        // If the loop is nested in another loop, that doesn't also contain the declaration
+        // of the index, the index might keep its value from a previous run of this loop.
+        if (loop.ancestors(ASTLoopStatement.class).any(outer -> !isInside(index, outer))) {
+            return false;
+        }
+        if (!(loop.getCondition() instanceof ASTInfixExpression)) {
+            return false;
+        }
+        ASTExpression indexInCondition = ((ASTInfixExpression) loop.getCondition()).getLeftOperand();
+        if (!(indexInCondition instanceof ASTNamedReferenceExpr)) {
+            return false;
+        }
+        ReachingDefinitionSet reaching = dataflow.getReachingDefinitions((ASTNamedReferenceExpr) indexInCondition);
+        if (reaching.isNotFullyKnown()) {
+            return false;
+        }
+        boolean anyFromOutside = false;
+        for (AssignmentEntry definition : reaching.getReaching()) {
+            if (isInside(definition.getLocation(), loop)) {
+                // the update of this loop, e.g. i++
+                continue;
+            }
+            if (!isLiteralInt(definition.getRhsAsExpression(), 0)) {
+                return false;
+            }
+            anyFromOutside = true;
+        }
+        return anyFromOutside;
+    }
+
+    /**
+     * Whether the usage might read a value of the index, that was assigned inside the loop.
+     */
+    private static boolean seesValueFromLoop(ASTNamedReferenceExpr usage, ASTForStatement loop, DataflowResult dataflow) {
+        ReachingDefinitionSet reaching = dataflow.getReachingDefinitions(usage);
+        return reaching.isNotFullyKnown()
+            || reaching.getReaching().stream().anyMatch(definition -> isInside(definition.getLocation(), loop));
+    }
+
+    /**
+     * Whether the usage only overwrites the index without reading it, e.g. {@code i = 0}.
+     */
+    private static boolean isPlainOverwrite(ASTNamedReferenceExpr usage) {
+        if (!(usage.getParent() instanceof ASTAssignmentExpression)) {
+            return false;
+        }
+        ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
+        return assignment.getOperator() == AssignmentOp.ASSIGN && assignment.getLeftOperand() == usage;
+    }
+
+    private static boolean isInside(JavaNode node, JavaNode ancestor) {
+        return node.ancestors().any(it -> it == ancestor);
     }
 
     private static boolean isReplaceableIteratorLoop(ASTVariableId var, ASTForStatement stmt) {
