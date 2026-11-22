@@ -4683,4 +4683,80 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] Field store that reaches a return is not a dead store #7338</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int state;
+
+    // false positive: conditional overwrite, method exits via return
+    int valueReturn(boolean c) {
+        state = 1; // reported
+        if (c) {
+            state = 2;
+        }
+        return 0;
+    }
+
+    // false positive: same with explicit void return
+    void voidReturn(boolean c) {
+        state = 1; // reported
+        if (c) {
+            state = 2;
+        }
+        return;
+    }
+
+    // false positive: early return keeps the first value
+    int earlyReturn(boolean c) {
+        state = 1; // reported
+        if (c) {
+            return 1;
+        }
+        state = 2;
+        return 0;
+    }
+
+    // OK: identical code, normal completion
+    void normalCompletion(boolean c) {
+        state = 1; // not reported
+        if (c) {
+            state = 2;
+        }
+    }
+
+    // OK: identical code with a local variable
+    int localVariable(boolean c) {
+        int s = 1; // not reported
+        if (c) {
+            s = 2;
+        }
+        System.out.println(s);
+        return 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] Field store overwritten on every path before return is still reported #7338</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The value assigned to field 'f' is never used (overwritten on line 6)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    private int f;
+
+    void overwrittenBeforeReturn() {
+        f = 1;
+        f = 2;
+        return;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

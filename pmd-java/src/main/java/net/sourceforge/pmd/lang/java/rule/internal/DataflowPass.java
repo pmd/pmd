@@ -955,7 +955,9 @@ public final class DataflowPass {
         }
 
 
-        // both of those exit the scope of the method/ctor, so their assignments go dead
+        // Both exit the method or ctor, so local assignments go dead.
+        // Field values that reach a return still escape; see visit(ASTReturnStatement).
+        // Thrown field values are left as-is.
 
         @Override
         public SpanInfo visit(ASTThrowStatement node, SpanInfo data) {
@@ -966,7 +968,29 @@ public final class DataflowPass {
         @Override
         public SpanInfo visit(ASTReturnStatement node, SpanInfo data) {
             super.visit(node, data);
+            // A field value that reaches a return is visible to callers, same as
+            // one that reaches normal completion. abruptCompletion drops this span,
+            // and useAllSelfFields only sees that empty end state, so the store is
+            // never marked used (#7338). use() only: an unbound assignment would
+            // also affect ImmutableField and SingularField. Lambda returns target
+            // their own span and do not exit the method. A pending finally may
+            // still overwrite the field before the method actually exits.
+            if (data.returnOrThrowTarget.exitsMethodOrCtor && !data.reachesPendingFinally()) {
+                useLiveSelfFields(data);
+            }
             return data.abruptCompletion(data.returnOrThrowTarget);
+        }
+
+        /**
+         * Marks enclosing-class fields that this span is already tracking as used.
+         * Fields that are not in the span are ignored by {@link SpanInfo#use}.
+         */
+        private void useLiveSelfFields(SpanInfo state) {
+            for (JFieldSymbol field : enclosingClassScope.getDeclaredFields()) {
+                if (!inStaticCtx || field.isStatic()) {
+                    state.use(field, null);
+                }
+            }
         }
 
         // following deals with assignment
@@ -1194,6 +1218,7 @@ public final class DataflowPass {
                     ASTMethodDeclaration method = (ASTMethodDeclaration) decl;
                     if (method.getBody() != null) {
                         SpanInfo span = data.forkCapturingNonLocal();
+                        span.exitsMethodOrCtor = true;
                         boolean staticCtx = method.isStatic();
                         span.declareSpecialFieldValues(node.getSymbol(), staticCtx);
                         SpanInfo endState;
@@ -1266,6 +1291,7 @@ public final class DataflowPass {
             SpanInfo ctorEndState = ctors.isEmpty() ? ctorHeader : null;
             for (ASTBodyDeclaration ctor : ctors) {
                 SpanInfo ctorBody = ctorHeader.forkCapturingNonLocal();
+                ctorBody.exitsMethodOrCtor = true;
                 ctorBody.declareSpecialFieldValues(classSymbol, true);
                 SpanInfo state = instanceVisitor.acceptOpt(ctor, ctorBody);
                 ctorEndState = ctorEndState == null ? state : ctorEndState.absorb(state);
@@ -1402,6 +1428,13 @@ public final class DataflowPass {
          */
         private final SpanInfo returnOrThrowTarget;
 
+        /**
+         * Set on the root span of a method or constructor body. A return whose
+         * {@link #returnOrThrowTarget} is that span leaves the method, so field
+         * values that reach it escape. Lambda bodies are separate root spans
+         * and leave this false.
+         */
+        private boolean exitsMethodOrCtor;
 
         private SpanInfo(GlobalAlgoState global) {
             this(null, global, new LinkedHashMap<>());
@@ -1595,6 +1628,24 @@ public final class DataflowPass {
 
         private SpanInfo doFork(/*nullable*/ SpanInfo parent, Map<JVariableSymbol, VarLocalInfo> reaching) {
             return new SpanInfo(parent, this.global, reaching);
+        }
+
+        /**
+         * Whether an enclosing {@code finally} still has to run before control
+         * reaches {@link #returnOrThrowTarget}. Same walk as {@link #abruptCompletion}.
+         */
+        boolean reachesPendingFinally() {
+            SpanInfo current = this;
+            while (current != null) {
+                if (current.myFinally != null) {
+                    return true;
+                }
+                if (current == returnOrThrowTarget) { // NOPMD CompareObjectsWithEqual this is what we want
+                    return false;
+                }
+                current = current.parent;
+            }
+            return false;
         }
 
         /** Abrupt completion for return, continue, break. */
