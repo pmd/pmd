@@ -350,7 +350,7 @@ public final class JavaMetrics {
      *  // entry
      *  if (foo) return x;
      *  // join
-     *  if (bar) = 3;
+     *  if (bar) b = 3;
      *  // exit
      * }</pre>
      * Here there is only one path from {@code entry} to {@code join},
@@ -361,9 +361,24 @@ public final class JavaMetrics {
      * paths from {@code entry} to the end of the block or function (the
      * return statement still counts).
      *
-     * <p>Note that shortcut boolean operators are counted as control flow
-     * branches, especially if they happen in the condition of a control flow
-     * statement. For instance
+     * <p>Shortcut boolean operators ({@code &&} and {@code ||}) are counted
+     * as control flow branches in the following places:
+     * <ul>
+     *     <li>the condition of a control flow statement ({@code if}, {@code while},
+     *     {@code do}, {@code for}), and the condition of a conditional expression
+     *     ({@code a ? b : c}), wherever it appears;</li>
+     *     <li>the expression of a {@code return}, {@code throw} or {@code yield}
+     *     statement, and the result of an arm of a switch expression.</li>
+     * </ul>
+     * Everywhere else, they don't add paths. For instance, in
+     * {@code boolean x = a && b;}, {@code x = a || b;} or {@code foo(a && b);}
+     * the statement counts as a single path, as long as it doesn't contain
+     * a conditional or switch expression. This follows Nejmeh's definition,
+     * where a sequential statement has an NPath complexity of 1 and only the
+     * expressions of control flow structures and of return statements add the
+     * number of their {@code &&} and {@code ||} operators. Counting them in
+     * {@code throw}, {@code yield} and switch arms is an extension of
+     * the {@code return} case to Java. For an example in a condition:
      * <pre>{@code
      *  // entry
      *  if (foo || bar)
@@ -379,6 +394,9 @@ public final class JavaMetrics {
      * In total, there are 2 * 2 paths that start at {@code entry} and
      * end at the return statement, and 1 path that goes from {@code entry}
      * to {@code exit}, so the total is 5 paths.
+     *
+     * @see <a href="https://doi.org/10.1145/42372.42379">B. A. Nejmeh, NPATH: a measure of execution
+     *      path complexity and its applications, Communications of the ACM 31(2), 1988, pp. 188-200</a>
      */
     public static final Metric<ReturnScopeNode, Long> NPATH_COMP =
             Metric.of(JavaMetrics::computeNpath, NodeStream.asInstanceOf(ReturnScopeNode.class),
