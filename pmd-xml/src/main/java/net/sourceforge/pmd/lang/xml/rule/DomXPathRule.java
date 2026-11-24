@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
-import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
+import net.sourceforge.pmd.lang.xml.ast.XmlRootNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -143,7 +143,7 @@ public class DomXPathRule extends AbstractRule {
 
     @Override
     public void apply(Node node, RuleContext ctx) {
-        RootXmlNode root = (RootXmlNode) node;
+        XmlRootNode root = (XmlRootNode) node;
         SaxonDomXPathQuery query = getXPathQuery();
         for (Node foundNode : query.evaluate(root, this)) {
             ctx.addViolation(foundNode);
