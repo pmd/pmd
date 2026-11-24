@@ -2173,8 +2173,10 @@ a commit status and check status to the PR and finally adds a PR comment.</p>
 called <strong>pmd-pull-requests</strong>. This bucket is served via AWS Cloudfront (for having TLS) under
 the URL <a href="https://pull-requests.pmd-code.org">https://pull-requests.pmd-code.org</a>. Note, there is no directory listing. The results
 of each pull request are uploaded under the folders “pr-{PR_NUMBER}/{PR_SHA}/docs” and “pr-{PR_NUMBER}/{PR_SHA}/regression”,
-respectively. The data in the S3 bucket is available for 60 days, after that the files are removed
-automatically (hopefully). Since the head SHA of the PR is included in the URL, an updated PR will upload
+respectively. The workflow <a href="#cleanup-pull-request-reports">Cleanup Pull Request Reports</a>
+removes the files of a pull request 14 days after it has been closed or merged. As a fallback, in case
+this workflow doesn’t run, the S3 bucket is configured to remove files automatically after 120 days.
+Since the head SHA of the PR is included in the URL, an updated PR will upload
 new versions of the artifacts. Otherwise, Cloudfront’s cache might prevent us from seeing the
 updated artifacts.</p>
 
@@ -2215,6 +2217,52 @@ Disallow: /
 temporary. These temporary created documentation pages should not end up in any search result.
 This also helps to avoid unnecessary traffic and load for both the hosting side and the
 crawling side.</p>
+
+<h2 id="cleanup-pull-request-reports">Cleanup Pull Request Reports</h2>
+
+<ul>
+  <li>Builds: <a href="https://github.com/pmd/pmd/actions/workflows/cleanup-pull-requests.yml">https://github.com/pmd/pmd/actions/workflows/cleanup-pull-requests.yml</a></li>
+  <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/cleanup-pull-requests.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/cleanup-pull-requests.yml</a></li>
+</ul>
+
+<p>This workflow removes stale documentation previews and regression tester reports from the AWS S3 bucket
+<strong>pmd-pull-requests</strong>, which have been uploaded by <a href="#publish-results-from-pull-requests">Publish Results from Pull Requests</a>.
+This avoids wasting space, as we have many pull requests.</p>
+
+<p>It runs once a week (scheduled on Sunday) and can also be started manually. When started manually,
+the input “dry-run” only lists the stale reports without deleting anything, and the input “retention-days”
+(default: 14) defines how many days after a pull request has been closed its reports are kept.</p>
+
+<p>The workflow works as follows:</p>
+
+<ol>
+  <li>It lists the whole bucket via AWS CLI and reports the used space (number of objects, size) in the job summary.</li>
+  <li>For each folder “pr-{PR_NUMBER}” in the bucket, the state of the pull request is determined using
+<a href="https://cli.github.com/manual/">GitHub’s CLI</a> and the GraphQL API (in batches of 100 pull requests,
+using the automatic “GITHUB_TOKEN” with the permission “pull-requests: read”).
+If a pull request has been closed or merged more than 14 days ago, the complete folder “pr-{PR_NUMBER}”
+(docs and regression reports of all SHAs) is deleted. Open pull requests are not touched. If the state
+of a pull request can’t be determined, it is skipped. The removed folders are listed in the job summary.</li>
+  <li>At the end, the used space of the bucket is listed again and compared with the value from the beginning.</li>
+</ol>
+
+<p>It needs the same <strong>secrets</strong> as “Publish Results from Pull Requests”:</p>
+
+<ul>
+  <li>AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID</li>
+  <li>AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY</li>
+</ul>
+
+<p>The AWS user of this access key needs the following <strong>AWS S3 permissions</strong> on the bucket <strong>pmd-pull-requests</strong>:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">s3:ListBucket</code> on <code class="language-plaintext highlighter-rouge">arn:aws:s3:::pmd-pull-requests</code>: to list the bucket (“aws s3 ls”) and to find the
+files to delete (“aws s3 rm –recursive”).</li>
+  <li><code class="language-plaintext highlighter-rouge">s3:DeleteObject</code> on <code class="language-plaintext highlighter-rouge">arn:aws:s3:::pmd-pull-requests/*</code>: to delete the files.</li>
+</ul>
+
+<p>Both permissions are included in the permission policy described below
+in <a href="#repository-pmdpmd">Secrets and Variables</a>.</p>
 
 <h2 id="publish-snapshot">Publish Snapshot</h2>
 
@@ -2469,6 +2517,7 @@ More information about creating and renewing this key, see below <a href="#relea
     <p><code class="language-plaintext highlighter-rouge">AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID</code> and <code class="language-plaintext highlighter-rouge">AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY</code>: Used by
 “Publish Results From Pull Request” to upload the regression report and documentation to the AWS S3
 bucket “pmd-pull-requests”: http://pmd-pull-requests.s3-website.eu-central-1.amazonaws.com/.
+They are also used by “Cleanup Pull Request Reports” to remove stale reports from this bucket.
 This access key corresponds to the user “arn:aws:iam::624352026855:user/pmd-pull-requests”, which is
 granted write access to this bucket via the following permission policy:</p>
 
@@ -2492,6 +2541,12 @@ granted write access to this bucket via the following permission policy:</p>
   </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>    </div>
+    <p>The workflows need these permissions:</p>
+    <ul>
+      <li>“Publish Results From Pull Request”: <code class="language-plaintext highlighter-rouge">s3:PutObject</code> (and <code class="language-plaintext highlighter-rouge">s3:List*</code> for “aws s3 sync”).</li>
+      <li>“Cleanup Pull Request Reports”: <code class="language-plaintext highlighter-rouge">s3:List*</code> (includes <code class="language-plaintext highlighter-rouge">s3:ListBucket</code>) and <code class="language-plaintext highlighter-rouge">s3:DeleteObject</code>.</li>
+    </ul>
+
     <p>New access key/users need to be created via AWS.</p>
   </li>
 </ul>
@@ -2838,7 +2893,7 @@ curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87E
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2026 (7.27.0)<br /> Site last generated: Nov 21, 2026 <br />
+            November 2026 (7.30.0)<br /> Site last generated: Nov 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
