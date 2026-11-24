@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.apex.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextPos2d;
-import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
+import com.google.summit.ast.Identifier;
 import com.google.summit.ast.SourceLocation;
 import com.google.summit.ast.declaration.MethodDeclaration;
 
@@ -43,18 +43,23 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     private final String returnType;
     private final SourceLocation sourceLocation;
 
+    // optional identifier node from summit ast. Can be null for synthetic ASTMethod nodes.
+    private final Identifier identifier;
+    
     ASTMethod(
         String name,
         String internalName,
         List<String> parameterTypes,
         String returnType,
-        SourceLocation sourceLocation) {
+        SourceLocation sourceLocation,
+        Identifier identifier) {
 
         this.name = name;
         this.internalName = internalName;
         this.parameterTypes = parameterTypes;
         this.returnType = returnType;
         this.sourceLocation = sourceLocation;
+        this.identifier = identifier;
     }
 
     static ASTMethod fromNode(MethodDeclaration node) {
@@ -74,7 +79,8 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
                 .map(p -> caseNormalizedTypeIfPrimitive(p.getType().asCodeString()))
                 .collect(Collectors.toList()),
             caseNormalizedTypeIfPrimitive(node.getReturnType().asCodeString()),
-            node.getSourceLocation());
+            node.getSourceLocation(),
+            node.getId());
     }
 
 
@@ -88,13 +94,22 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
         if (sourceLocation.isUnknown()) {
             return;
         }
-        // Column+1 because Summit columns are 0-based and PMD are 1-based
-        setRegion(TextRegion.fromBothOffsets(
-                sourceCode.offsetAtLineColumn(
-                        TextPos2d.pos2d(sourceLocation.getStartLine(), sourceLocation.getStartColumn() + 1)),
-                sourceCode.offsetAtLineColumn(
-                        TextPos2d.pos2d(sourceLocation.getEndLine(), sourceLocation.getEndColumn() + 1))
-        ));
+        FileLocation fileLocation = fromSourceLocation(sourceCode, sourceLocation);
+        if (fileLocation != null) {
+            setRegion(fileLocation.getRegionInFile());
+        }
+    }
+
+    /**
+     * Only the name of the method is reported, not its body.
+     */
+    @Override
+    public FileLocation getReportLocation() {
+        if (identifier == null || identifier.getSourceLocation().isUnknown()) {
+            return super.getReportLocation();
+        }
+
+        return fromSourceLocation(getAstInfo().getTextDocument(), identifier.getSourceLocation());
     }
 
     @Override

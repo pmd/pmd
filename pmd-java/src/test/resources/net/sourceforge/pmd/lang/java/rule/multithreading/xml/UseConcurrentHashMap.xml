@@ -53,6 +53,7 @@ public class ConcurrentApp {
 }
         ]]></code>
     </test-code>
+
     <test-code>
         <description>FP with Properties</description>
         <expected-problems>0</expected-problems>
@@ -67,4 +68,42 @@ public class ConcurrentApp {
          ]]></code>
      </test-code>
 
+    <test-code>
+        <description>#2786 ConcurrentSkipListMap is already a concurrent map</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Map;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+class SkipListMapDeclarations {
+    final Map<String, String> field = new ConcurrentSkipListMap<>();
+    void maps() {
+        Map<String, String> local = new ConcurrentSkipListMap<>();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2786 concurrent subclasses are allowed and ordinary maps remain reported</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,11</expected-linenumbers>
+        <code><![CDATA[
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+class ConcurrentMapKinds {
+    static class CustomMap extends ConcurrentSkipListMap<String, String> { }
+    void maps() {
+        Map<String, String> hash = new HashMap<>(); // violation
+        Map<String, String> tree = new TreeMap<>(); // violation
+        Map<String, String> concurrent = new ConcurrentHashMap<>();
+        Map<String, String> custom = new CustomMap();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -106,8 +106,10 @@ Both the "docs-artifact" and the "pmd-regression-tester" artifact are uploaded t
 called **pmd-pull-requests**. This bucket is served via AWS Cloudfront (for having TLS) under
 the URL <https://pull-requests.pmd-code.org>. Note, there is no directory listing. The results
 of each pull request are uploaded under the folders "pr-{PR_NUMBER}/{PR_SHA}/docs" and "pr-{PR_NUMBER}/{PR_SHA}/regression",
-respectively. The data in the S3 bucket is available for 60 days, after that the files are removed
-automatically (hopefully). Since the head SHA of the PR is included in the URL, an updated PR will upload
+respectively. The workflow [Cleanup Pull Request Reports](#cleanup-pull-request-reports)
+removes the files of a pull request 14 days after it has been closed or merged. As a fallback, in case
+this workflow doesn't run, the S3 bucket is configured to remove files automatically after 120 days.
+Since the head SHA of the PR is included in the URL, an updated PR will upload
 new versions of the artifacts. Otherwise, Cloudfront's cache might prevent us from seeing the
 updated artifacts.
 
@@ -215,6 +217,44 @@ comment is done via the GraphQL mutations `minimizeComment` and `unminimizeComme
 
 Note: Pull requests from first-time contributors might require approval before workflows are run. In that
 case, the automation runs only after the approval.
+
+## Cleanup Pull Request Reports
+
+* Builds: <https://github.com/pmd/pmd/actions/workflows/cleanup-pull-requests.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/cleanup-pull-requests.yml>
+
+This workflow removes stale documentation previews and regression tester reports from the AWS S3 bucket
+**pmd-pull-requests**, which have been uploaded by [Publish Results from Pull Requests](#publish-results-from-pull-requests).
+This avoids wasting space, as we have many pull requests.
+
+It runs once a week (scheduled on Sunday) and can also be started manually. When started manually,
+the input "dry-run" only lists the stale reports without deleting anything, and the input "retention-days"
+(default: 14) defines how many days after a pull request has been closed its reports are kept.
+
+The workflow works as follows:
+
+1. It lists the whole bucket via AWS CLI and reports the used space (number of objects, size) in the job summary.
+2. For each folder "pr-{PR_NUMBER}" in the bucket, the state of the pull request is determined using
+   [GitHub's CLI](https://cli.github.com/manual/) and the GraphQL API (in batches of 100 pull requests,
+   using the automatic "GITHUB_TOKEN" with the permission "pull-requests: read").
+   If a pull request has been closed or merged more than 14 days ago, the complete folder "pr-{PR_NUMBER}"
+   (docs and regression reports of all SHAs) is deleted. Open pull requests are not touched. If the state
+   of a pull request can't be determined, it is skipped. The removed folders are listed in the job summary.
+3. At the end, the used space of the bucket is listed again and compared with the value from the beginning.
+
+It needs the same **secrets** as "Publish Results from Pull Requests":
+
+* AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID
+* AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY
+
+The AWS user of this access key needs the following **AWS S3 permissions** on the bucket **pmd-pull-requests**:
+
+* `s3:ListBucket` on `arn:aws:s3:::pmd-pull-requests`: to list the bucket ("aws s3 ls") and to find the
+  files to delete ("aws s3 rm --recursive").
+* `s3:DeleteObject` on `arn:aws:s3:::pmd-pull-requests/*`: to delete the files.
+
+Both permissions are included in the permission policy described below
+in [Secrets and Variables](#repository-pmdpmd).
 
 ## Publish Snapshot
 
@@ -394,8 +434,10 @@ See <https://github.com/pmd/pmd/settings/secrets/actions>
 * `AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID` and `AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY`: Used by
   "Publish Results From Pull Request" to upload the regression report and documentation to the AWS S3
   bucket "pmd-pull-requests": http://pmd-pull-requests.s3-website.eu-central-1.amazonaws.com/.
+  They are also used by "Cleanup Pull Request Reports" to remove stale reports from this bucket.
   This access key corresponds to the user "arn:aws:iam::624352026855:user/pmd-pull-requests", which is
   granted write access to this bucket via the following permission policy:
+
 
   ```json
   {
@@ -418,6 +460,10 @@ See <https://github.com/pmd/pmd/settings/secrets/actions>
     ]
   }
   ```
+  The workflows need these permissions:
+  * "Publish Results From Pull Request": `s3:PutObject` (and `s3:List*` for "aws s3 sync").
+  * "Cleanup Pull Request Reports": `s3:List*` (includes `s3:ListBucket`) and `s3:DeleteObject`.
+
   New access key/users need to be created via AWS.
 
 ### Repository pmd/docker
