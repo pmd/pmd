@@ -61,6 +61,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * apex-errorprone
     * [#5906](https://github.com/pmd/pmd/issues/5906): \[apex] MethodWithSameNameAsEnclosingClass: Violation range should only cover the method name
+* apex-security
+    * [#5633](https://github.com/pmd/pmd/issues/5633): \[apex] ApexCRUDViolation: SObject name case sensitive in Schema checks
 * core
     * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
 * java
