@@ -80,6 +80,7 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
+    * [#7396](https://github.com/pmd/pmd/issues/7396): \[java] UnnecessaryImport: Fix StackOverflowError for very long Javadoc references
 * java-design
     * [#5798](https://github.com/pmd/pmd/issues/5798): \[java] NPathComplexity: Short-circuit operators outside of conditions counted as branches
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
