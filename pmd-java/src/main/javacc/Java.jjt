@@ -2891,6 +2891,8 @@ void AnnotationTypeMemberDeclaration() #void:
 {
  ModifierList()
  (
+   LOOKAHEAD({isRecordStart()}) RecordDeclaration()
+  |
    LOOKAHEAD(Type() <IDENTIFIER> "(") AnnotationMethodDeclaration()
   |
    ClassOrInterfaceDeclaration()
