@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
@@ -15,12 +16,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -67,8 +72,8 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
         // constructors of enums are implicitly private and cannot be made
         // accessible on purpose, so the allowance below would silently disable
         // the rule for all of them
-        ASTEnumBody enumBody = method instanceof ASTConstructorDeclaration
-                               ? method.ancestors(ASTEnumBody.class).first()
+        ASTEnumBody enumBody = method instanceof ASTConstructorDeclaration && method.getParent() instanceof ASTEnumBody
+                               ? (ASTEnumBody) method.getParent()
                                : null;
         if (enumBody == null && getProperty(ALLOW_PRIVATE)
             && method.getVisibility() == Visibility.V_PRIVATE) {
@@ -78,10 +83,10 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
         nextFormal:
         for (ASTFormalParameter formal : method.getFormalParameters()) {
             if (formal.getTypeMirror().isArray()) {
-                if (enumBody != null && formal.isVarargs() && !isArrayPassedToVarargs(enumBody, method, formal)) {
-                    // the compiler creates a new array for the varargs parameter,
-                    // so the stored array cannot be reached by the caller (only the
-                    // enum constants call this constructor)
+                if (enumBody != null && !isExternalArrayPassedToEnumConstructor(enumBody, (ASTConstructorDeclaration) method, formal)) {
+                    // only enum constants (or sibling constructors) in the enum body can call this
+                    // constructor; if every call passes varargs elements or a freshly created array,
+                    // no external reference to the stored array can exist
                     continue;
                 }
                 for (ASTNamedReferenceExpr usage : formal.getVarId().getLocalUsages()) {
@@ -104,26 +109,57 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Returns true if some enum constant passes an array to the varargs parameter,
-     * e.g. {@code CONST(someArray)} instead of {@code CONST(element1, element2)}.
-     * In the latter case the compiler creates the array for the constructor.
+     * Returns true if some call to {@code constructor} within {@code enumBody}
+     * passes an existing array expression to {@code formal} rather than varargs
+     * elements or a freshly allocated array (e.g. {@code new String[]{"a"}}).
      */
-    private boolean isArrayPassedToVarargs(ASTEnumBody enumBody, ASTExecutableDeclaration constructor,
-                                           ASTFormalParameter varargs) {
+    private boolean isExternalArrayPassedToEnumConstructor(ASTEnumBody enumBody,
+                                                           ASTConstructorDeclaration constructor,
+                                                           ASTFormalParameter formal) {
         List<ASTFormalParameter> formals = constructor.getFormalParameters().toList();
-        int index = formals.indexOf(varargs);
+        int index = formals.indexOf(formal);
         for (ASTEnumConstant constant : enumBody.children(ASTEnumConstant.class)) {
-            ASTArgumentList arguments = constant.getArguments();
-            if (arguments == null || arguments.size() != formals.size()) {
-                // either no arguments at all or a list of varargs elements
-                continue;
+            if (passesExternalArray(constant, constructor, formals, index)) {
+                return true;
             }
-            ASTExpression argument = arguments.toList().get(index);
-            if (argument.getTypeMirror().isArray()) {
+        }
+        for (ASTConstructorDeclaration otherCtor : enumBody.children(ASTConstructorDeclaration.class)) {
+            ASTExplicitConstructorInvocation explicit = otherCtor.getBody().firstChild(ASTExplicitConstructorInvocation.class);
+            if (explicit != null && explicit.isThis() && passesExternalArray(explicit, constructor, formals, index)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean passesExternalArray(InvocationNode invocation,
+                                        ASTConstructorDeclaration constructor,
+                                        List<ASTFormalParameter> formals,
+                                        int index) {
+        ASTArgumentList arguments = invocation.getArguments();
+        if (arguments == null) {
+            return false;
+        }
+        OverloadSelectionResult overload = invocation.getOverloadSelectionInfo();
+        if (!overload.isFailed()) {
+            if (!constructor.getSymbol().equals(overload.getMethodType().getSymbol())) {
+                return false;
+            }
+            if (overload.isVarargsCall()) {
+                return false;
+            }
+            if (index >= arguments.size()) {
+                return false;
+            }
+            ASTExpression argument = arguments.get(index);
+            return !(argument instanceof ASTArrayAllocation || argument instanceof ASTNullLiteral);
+        }
+        if (arguments.size() != formals.size()) {
+            // either no arguments at all or a list of varargs elements
+            return false;
+        }
+        ASTExpression argument = arguments.get(index);
+        return argument.getTypeMirror().isArray() && !(argument instanceof ASTArrayAllocation);
     }
 
 }

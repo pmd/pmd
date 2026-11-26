@@ -371,9 +371,8 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] ArrayIsStoredDirectly at enum constructor, array parameter #4870</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <description>[java] ArrayIsStoredDirectly at enum constructor, inline array parameter #4870</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public enum Foo {
     A(new String[]{"a"}),
@@ -383,6 +382,45 @@ public enum Foo {
 
     Foo(String[] args) {
         a = args;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly at enum constructor, inline array to varargs #4870</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+    A("a"),
+    B(new String[]{"b"});
+
+    private final String[] a;
+
+    Foo(String... args) {
+        a = args;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ArrayIsStoredDirectly at enum constructor, external array to array parameter #4870</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>11</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static String[] strings = new String[]{"a", "b"};
+
+    public enum Test {
+        A(new String[]{"a"}),
+        C(strings);
+
+        private final String[] a;
+
+        Test(String[] args) {
+            a = args;
+        }
     }
 }
 ]]></code>
