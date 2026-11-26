@@ -9,13 +9,13 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,7 +59,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * Finding missed CRUD checks for SOQL and DML operations.
@@ -149,9 +150,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private final Map<String, Pattern> compiledAuthMethodPatternCache = new HashMap<>();
 
     private Map<String, String> varToTypeMapping;
-    private HashMultimap<String, String> typeToDMLOperationMapping;
+    private SetMultimap<String, String> typeToDMLOperationMapping;
     private Map<String, String> checkedTypeToDMLOperationViaESAPI;
-    private HashMultimap<String, String> checkedTypeToDMLOperationsViaAuthPattern;
+    private SetMultimap<String, String> checkedTypeToDMLOperationsViaAuthPattern;
     private Map<String, ASTMethod> classMethods;
 
     public ApexCRUDViolationRule() {
@@ -169,11 +170,16 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         // At the start of each rule execution, these member variables need to be fresh. So they're initialized in the
         // .start() method instead of the constructor, since .start() is called before every execution.
         varToTypeMapping = new HashMap<>();
-        typeToDMLOperationMapping = HashMultimap.create();
-        checkedTypeToDMLOperationViaESAPI = new HashMap<>();
-        checkedTypeToDMLOperationsViaAuthPattern = HashMultimap.create();
+        // Apex is case-insensitive, so type names are compared ignoring case
+        typeToDMLOperationMapping = caseInsensitiveSetMultimap();
+        checkedTypeToDMLOperationViaESAPI = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        checkedTypeToDMLOperationsViaAuthPattern = caseInsensitiveSetMultimap();
         classMethods = new WeakHashMap<>();
         super.start(ctx);
+    }
+
+    private static SetMultimap<String, String> caseInsensitiveSetMultimap() {
+        return Multimaps.newSetMultimap(new TreeMap<>(String.CASE_INSENSITIVE_ORDER), HashSet::new);
     }
 
     @Override
@@ -540,13 +546,32 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private void extractObjectAndFields(final List<String> listIdentifiers, final String method,
             final String definingType) {
 
-        int flsIndex = Collections.lastIndexOfSubList(listIdentifiers, Arrays.asList(RESERVED_KEYS_FLS));
-        if (flsIndex != -1) {
+        int flsIndex = lastIndexOfReservedKeysFLS(listIdentifiers);
+        if (flsIndex != -1 && flsIndex + RESERVED_KEYS_FLS.length < listIdentifiers.size()) {
             String objectTypeName = listIdentifiers.get(flsIndex + RESERVED_KEYS_FLS.length);
             if (!typeToDMLOperationMapping.get(definingType + ":" + objectTypeName).contains(method)) {
                 typeToDMLOperationMapping.put(definingType + ":" + objectTypeName, method);
             }
         }
+    }
+
+    /**
+     * Finds the last occurrence of "Schema.sObjectType" in the identifiers, ignoring case.
+     */
+    private static int lastIndexOfReservedKeysFLS(final List<String> identifiers) {
+        for (int i = identifiers.size() - RESERVED_KEYS_FLS.length; i >= 0; i--) {
+            boolean matches = true;
+            for (int j = 0; j < RESERVED_KEYS_FLS.length; j++) {
+                if (!RESERVED_KEYS_FLS[j].equalsIgnoreCase(identifiers.get(i + j))) {
+                    matches = false;
+                    break;
+                }
+            }
+            if (matches) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void checkForCRUD(final ApexNode<?> node, final Object data, final String crudMethod) {
@@ -684,7 +709,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isProperESAPICheckForDML(final String typeToCheck, final String dmlOperation) {
-        final boolean hasMapping = checkedTypeToDMLOperationViaESAPI.containsKey(typeToCheck);
+        final boolean hasMapping = typeToCheck != null && checkedTypeToDMLOperationViaESAPI.containsKey(typeToCheck);
         if (hasMapping) {
             if (ANY.equals(dmlOperation)) {
                 return true;
@@ -716,7 +741,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
             final String typeCheck) {
-        boolean missingKey = !typeToDMLOperationMapping.containsKey(typeCheck);
+        boolean missingKey = typeCheck == null || !typeToDMLOperationMapping.containsKey(typeCheck);
         boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod)
                 && !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
         boolean noSecurityEnforced = !isWithSecurityEnforced(node);
@@ -1000,7 +1025,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private boolean isProperAuthPatternBasedCheckForDML(final String typeToCheck, final String dmlOperation) {
-        final boolean hasMapping = checkedTypeToDMLOperationsViaAuthPattern.containsKey(typeToCheck);
+        final boolean hasMapping = typeToCheck != null && checkedTypeToDMLOperationsViaAuthPattern.containsKey(typeToCheck);
         if (hasMapping) {
             if (ANY.equals(dmlOperation)) {
                 return true;

@@ -1948,4 +1948,68 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5633 Object name in Schema check is matched ignoring case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class Foo {
+    public static void lowercaseInSchemaCheck() {
+        if (Schema.sObjectType.contact.isAccessible()) {
+            SObject[] recs = [SELECT Id FROM Contact LIMIT 1];
+        }
+    }
+
+    public static void lowercaseInQuery() {
+        if (Schema.sObjectType.Lead.isAccessible()) {
+            SObject[] recs = [SELECT Id FROM lead LIMIT 1];
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5633 Schema.SObjectType is recognized with any capitalization</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class Foo {
+    public static void capitalizedSObjectType() {
+        if (Schema.SObjectType.Account.isAccessible()) {
+            SObject[] recs = [SELECT Id FROM Account LIMIT 1];
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5633 Custom object name in Schema check is matched ignoring case for DML</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class Foo {
+    public static void createRule() {
+        if (Schema.sObjectType.My_Custom_rule__c.isCreateable()) {
+            insert new My_Custom_Rule__c(Name = 'Rule');
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5633 Wrong CRUD check is still reported when object name case differs</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public with sharing class Foo {
+    public static void updateContact() {
+        Contact c = new Contact();
+        if (Schema.sObjectType.contact.isCreateable()) {
+            update c;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
