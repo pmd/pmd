@@ -361,4 +361,27 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7341 Store the original array through Collections.singletonList</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>9,10</expected-linenumbers>
+        <code><![CDATA[
+import static java.util.Collections.singletonList;
+
+import java.util.Arrays;
+
+class Foo {
+    private int[] data;
+
+    void setData(int[] input) {
+        this.data = java.util.Collections.singletonList(input).get(0);
+        this.data = singletonList(input).get(0);
+        this.data = singletonList(input.clone()).get(0);
+        this.data = Arrays.asList(input, new int[0]).get(1);
+        this.data = singletonList(input).get(1);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

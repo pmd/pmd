@@ -4,17 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -25,6 +27,9 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * user from affecting the original array.
  */
 public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
+
+    private static final InvocationMatcher SINGLETON_LIST = InvocationMatcher.parse("java.util.Collections#singletonList(_)");
+    private static final InvocationMatcher LIST_GET = InvocationMatcher.parse("java.util.List#get(int)");
 
     private static final PropertyDescriptor<Boolean> ALLOW_PRIVATE =
         PropertyFactory.booleanProperty("allowPrivate")
@@ -69,16 +74,26 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
                         continue nextFormal; // variable is overwritten
                     }
 
-                    // the RHS of an assignment
-                    if (usage.getParent() instanceof ASTAssignmentExpression && usage.getIndexInParent() == 1) {
-                        ASTAssignableExpr assigned = ((ASTAssignmentExpression) usage.getParent()).getLeftOperand();
-                        if (JavaAstUtils.isRefToFieldOfThisInstance(assigned)) {
-                            context.addViolation(usage.getParent(), usage.getName());
-                        }
+                    ASTAssignmentExpression assignment = usage.ancestors(ASTAssignmentExpression.class).first();
+                    if (assignment != null && JavaAstUtils.isRefToFieldOfThisInstance(assignment.getLeftOperand())
+                        && storedValue(assignment.getRightOperand()) == usage) {
+                        context.addViolation(assignment, usage.getName());
                     }
                 }
             }
         }
+    }
+
+    private static ASTExpression storedValue(ASTExpression rhs) {
+        if (rhs instanceof ASTMethodCall && LIST_GET.matchesCall(rhs)) {
+            ASTMethodCall get = (ASTMethodCall) rhs;
+            ASTExpression qualifier = get.getQualifier();
+            if (qualifier instanceof ASTMethodCall && SINGLETON_LIST.matchesCall(qualifier)
+                && JavaAstUtils.isLiteralInt(get.getArguments().get(0), 0)) {
+                return ((ASTMethodCall) qualifier).getArguments().get(0);
+            }
+        }
+        return rhs;
     }
 
 }
