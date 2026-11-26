@@ -1,0 +1,52 @@
+name: Feature Request
+description: Suggest an idea or improvement for PMD
+labels: ["an:enhancement"]
+type: Feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a feature!
+
+        If you want to suggest a new rule, please use the "New Rule" template instead.
+        Before submitting, please check whether the feature has already been requested:
+        https://github.com/pmd/pmd/issues
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Problem or Use Case
+      description: |
+        What are you trying to do, and what is missing or difficult today?
+        Describing your use case helps us understand the need, even if the solution turns out different.
+      placeholder: When I ..., I would like to ..., but currently ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like PMD to support this? This can be a rough idea.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternative-solutions
+    attributes:
+      label: Alternatives Considered
+      description: |
+        Have you tried other approaches or workarounds? Why don't they work well enough?
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Anything else that helps us understand the request, e.g. how you run PMD
+        (CLI, Maven, Gradle, IDE, ...), integrations with other tools, or examples
+        from similar tools.
+    validations:
+      required: false

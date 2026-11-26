@@ -23,6 +23,11 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Updated PMD Designer
+This PMD release ships a new version of the pmd-designer.
+PMD's binary distribution now ships ControlsFX 8 for Java 8 and ControlsFX 11 for OpenJFX and Java 11+.
+Java 9 and 10 are not supported.  
+For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pmd-designer/releases/tag/7.30.0).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
@@ -83,10 +88,10 @@ This is a {{ site.pmd.release_type }} release.
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
 * java-multithreading
-    * [#2786](https://github.com/pmd/pmd/issues/2786): \[java] False positive for UseConcurrentHashMap on ConcurrentSkipListMap 
+    * [#2786](https://github.com/pmd/pmd/issues/2786): \[java] UseConcurrentHashMap: False positive for ConcurrentSkipListMap
 * java-performance
     * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
-    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: a copy loop whose body has no braces is not reported
+    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: False negative for a copy loop whose body has no braces
 * javascript
     * [#1756](https://github.com/pmd/pmd/issues/1756): \[javascript] Support files containing a shebang with CPD
 * jsp
