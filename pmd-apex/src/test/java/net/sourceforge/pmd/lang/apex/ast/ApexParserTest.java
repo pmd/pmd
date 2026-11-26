@@ -84,11 +84,11 @@ class ApexParserTest extends ApexParserTestBase {
         // "public" modifier for class
         assertPosition(classNode.getChild(0), 1, 1, 1, 7);
 
-        // identifier: "method1"                                                                                                                                                                  
+        // identifier: "method1"
         Node method1 = classNode.getChild(1);
         assertEquals("method1", ((ASTMethod) method1).getCanonicalName());
-        // "method1" - spans from return type to end of its block statement. (It excludes modifiers.)
-        assertPosition(method1, 2, 12, 5, 6);
+        // "method1" - reported location is just the identifier
+        assertPosition(method1, 2, 17, 2, 24);
         // "public" modifier for "method1"
         assertPosition(method1.getChild(0), 2, 5, 2, 11);
 
@@ -115,12 +115,12 @@ class ApexParserTest extends ApexParserTestBase {
 
         ASTUserClassOrInterface<?> rootNode = parse(code);
 
-        // The method subtree spans the return type to the end of the method body.
+        // The reported location of a method is only its identifier, not its body.
         Node method1 = rootNode.getChild(1);
-        assertPosition(method1, 2, 12, 3, 6);
+        assertPosition(method1, 2, 17, 2, 24);
 
         Node method2 = rootNode.getChild(2);
-        assertPosition(method2, 4, 12, 5, 6);
+        assertPosition(method2, 4, 17, 4, 24);
     }
 
     @Test
@@ -209,7 +209,7 @@ class ApexParserTest extends ApexParserTestBase {
         List<ASTMethod> methods = classes.get(0).children(ASTMethod.class).toList();
         assertEquals(1, methods.size()); // m(). No synthetic clone()
         assertEquals("m", methods.get(0).getImage());
-        assertPosition(methods.get(0), 4, 16, 7, 10);
+        assertPosition(methods.get(0), 4, 21, 4, 22);
 
         // Position of the first inner class is its identifier
         assertPosition(classes.get(0), 3, 12, 8, 6);

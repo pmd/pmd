@@ -23,6 +23,11 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Updated PMD Designer
+This PMD release ships a new version of the pmd-designer.
+PMD's binary distribution now ships ControlsFX 8 for Java 8 and ControlsFX 11 for OpenJFX and Java 11+.
+Java 9 and 10 are not supported.  
+For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pmd-designer/releases/tag/7.30.0).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
@@ -52,11 +57,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 * apex
+    * [#7108](https://github.com/pmd/pmd/issues/7108): \[apex] Expose DML AccessMode (`as user` / `as system`) for XPath rules
     * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
 * apex-bestpractices
+    * [#5669](https://github.com/pmd/pmd/issues/5669): \[apex] ApexUnitTestMethodShouldHaveIsTestAnnotation: Violation range should only cover the method name
     * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
+* apex-errorprone
+    * [#5906](https://github.com/pmd/pmd/issues/5906): \[apex] MethodWithSameNameAsEnclosingClass: Violation range should only cover the method name
 * core
     * [#5760](https://github.com/pmd/pmd/issues/5760): \[core] SarifRenderer does not respect relativizeRoots
 * java
@@ -64,20 +73,27 @@ This is a {{ site.pmd.release_type }} release.
     * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
     * [#7313](https://github.com/pmd/pmd/issues/7313): \[java] Casts to boolean and boolean equality are not folded as constant expressions
 * java-bestpractices
+    * [#5016](https://github.com/pmd/pmd/issues/5016): \[java] UnusedAssignment: False positive boolean flag for execution and reset in finally
+    * [#7070](https://github.com/pmd/pmd/issues/7070): \[java] CheckResultSet: False negative caused by unrelated if/while
     * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
     * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
 * java-design
+    * [#5798](https://github.com/pmd/pmd/issues/5798): \[java] NPathComplexity: Short-circuit operators outside of conditions counted as branches
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
     * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: False positive when static field is used in constructor
 * java-errorprone
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
+* java-multithreading
+    * [#2786](https://github.com/pmd/pmd/issues/2786): \[java] UseConcurrentHashMap: False positive for ConcurrentSkipListMap
 * java-performance
     * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
-    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: a copy loop whose body has no braces is not reported
+    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: False negative for a copy loop whose body has no braces
+* jsp
+    * [#5092](https://github.com/pmd/pmd/issues/5092): \[jsp] Parse error when `<!DOCTYPE>` or `<?xml?>` follows other content
 * kotlin
     * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
@@ -85,6 +101,11 @@ This is a {{ site.pmd.release_type }} release.
     * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate ANTLR generated lexer implementation classes
 
 ### 🚨️ API Changes and Deprecations
+* apex
+    * DML statement nodes now expose `@AccessMode`.
+      The attribute is always present. Its value is `IMPLICIT`, `USER_MODE`, or `SYSTEM_MODE`.
+      `//DmlInsertStatement[@AccessMode='IMPLICIT']` and `//DmlInsertStatement[@AccessMode='SYSTEM_MODE']` select those statements.
+
 #### Experimental API
 * kotlin
     * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
@@ -98,6 +119,9 @@ This is a {{ site.pmd.release_type }} release.
       by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 #### Deprecations
+* apex
+    * {% jdoc !!apex::lang.apex.ast.AbstractDmlStatement#getRunAsMode() %} has been deprecated. Use
+      {% jdoc apex::lang.apex.ast.AbstractDmlStatement#getAccessMode() %} instead.
 * coco
     * {% jdoc coco::lang.coco.ast.CocoLexer %} has been deprecated. The class is an implementation detail and should have never been part of the public API.
 * css
