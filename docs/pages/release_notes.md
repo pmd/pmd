@@ -64,6 +64,7 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
     * [#7236](https://github.com/pmd/pmd/issues/7236): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi
 * apex-design
     * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
+    * [#7294](https://github.com/pmd/pmd/issues/7294): \[apex] CognitiveComplexity: Falsely detects recursion when calling another object's method with the same name
 * apex-errorprone
     * [#5906](https://github.com/pmd/pmd/issues/5906): \[apex] MethodWithSameNameAsEnclosingClass: Violation range should only cover the method name
 * core

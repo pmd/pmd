@@ -361,6 +361,57 @@
     </test-code>
 
     <test-code>
+        <description>Method calls on other objects or overloaded methods are not counted as recursion (#7294)</description>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>'ValueCollection#add(String)' has value 1.</message>
+            <message>'ValueCollection#add(String, String)' has value 0.</message>
+            <message>'ValueCollection#recurseWithThis(Integer)' has value 4.</message>
+            <message>'ValueCollection#recurseStatic(Integer)' has value 4.</message>
+            <message>'ValueCollection#callChainedThis(String)' has value 0.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class ValueCollection {
+              private List<String> values = new List<String>();
+
+              public void add(String value) {
+                if (value != null) { // +1
+                  values.add(value); // +0 (called on another object)
+                  add(value, value); // +0 (different arity)
+                }
+              }
+
+              public void add(String value1, String value2) {
+                values.add(value1);
+                values.add(value2);
+              }
+
+              public Integer recurseWithThis(Integer n) {
+                if (n <= 1) { // +1
+                  return 1;
+                } else { // +1
+                  return n * this.recurseWithThis(n - 1); // +2 (nesting = 1)
+                }
+              }
+
+              public static Integer recurseStatic(Integer n) {
+                if (n <= 1) { // +1
+                  return 1;
+                } else { // +1
+                  return n * ValueCollection.recurseStatic(n - 1); // +2 (nesting = 1)
+                }
+              }
+
+              public void callChainedThis(String value) {
+                this.values.add(value);
+              }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
         <description>Switch statements only gain 1 complexity regardless of the number of cases</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
