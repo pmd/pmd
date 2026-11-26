@@ -87,6 +87,21 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-controlsfx-8</id>
+                        <phase>prepare-package</phase> <!-- before the assembly runs in package -->
+                        <goals><goal>copy</goal></goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.controlsfx</groupId>
+                                    <artifactId>controlsfx</artifactId>
+                                    <version>8.40.18</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/controlsfx-8</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-ant</id>
                         <phase>pre-integration-test</phase>
                         <goals>
@@ -145,7 +160,6 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-designer</artifactId>
-            <version>${pmd-designer.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
