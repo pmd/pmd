@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import javasymbols.testdata.ProtectedOverloads
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
@@ -651,6 +652,749 @@ class Scratch {
                     }
                 }
             }
+        }
+    }
+
+    parserTest("#7152 type-name-qualified call also considers instance methods") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Foo {
+                static void m(int x) { }
+                void m(Object o) { }
+
+                void t(Integer value) {
+                    // javac selects m(Object) and reports that it is not static (JLS 15.12.3)
+                    Foo.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 type-name-qualified call selects the most specific static method") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Sup {
+                static void m(Object o) { }
+            }
+
+            class Foo extends Sup {
+                void m(int x) { }
+
+                void t(Integer value) {
+                    Foo.m(value); // Sup.m(Object) is applicable by strict invocation
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (sup) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = sup,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 interface-qualified call also considers abstract methods") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface I {
+                void m(Object o);
+                static void m(int x) { }
+            }
+
+            class Foo {
+                void t(Integer value) {
+                    I.m(value); // javac selects m(Object) and reports that it is not static
+                    I.m(1);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (i) = acu.declaredTypeSignatures()
+        val (abstractCall, staticCall) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            abstractCall.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = i,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+            staticCall.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = i,
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 static method of a superinterface is not a candidate") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface J {
+                static void s(Object o) { }
+            }
+
+            interface K extends J { }
+
+            class Foo implements J {
+                void t(Integer value) {
+                    K.s(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldHaveNoApplicableMethods(acu.firstMethodCall())
+    }
+
+    parserTest("#7152 static interface method is not a member of an implementing class") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface J {
+                static void s(Object o) { }
+            }
+
+            class Sup implements J {
+                static void s(int x) { }
+            }
+
+            class Foo extends Sup {
+                void t(Integer value) {
+                    Foo.s(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, sup) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "s",
+                declaredIn = sup,
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 static interface method is not a member of the type of an expression qualifier") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface J {
+                static void s(Object o) { }
+            }
+
+            class Impl implements J { }
+
+            class Foo {
+                void t(Impl x, Integer value) {
+                    x.s(value); // javac: cannot find symbol
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldHaveNoApplicableMethods(acu.firstMethodCall())
+    }
+
+    parserTest("#7152 private method of the superclass is not a member of the qualifier type") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                static class Parent {
+                    private void m(Object o) { }
+                }
+
+                static class Child extends Parent {
+                    static void m(int x) { }
+                }
+
+                void t(Child child, Integer value) {
+                    // Parent.m(Object) is accessible in this nest, but not inherited (JLS 8.2)
+                    Child.m(value);
+                    child.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, _, child) = acu.declaredTypeSignatures()
+        val (typeCall, exprCall) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            typeCall.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = child,
+                withFormals = listOf(int),
+                returning = void
+            )
+            exprCall.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = child,
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 package-private method of a superclass in another package is not a member of the qualifier type") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata;
+
+            import javasymbols.testdata.deep.SubclassOfPackagePrivateSuper;
+
+            class Foo extends SubclassOfPackagePrivateSuper {
+                static void m(Object o) { }
+
+                void t() {
+                    // PackagePrivateSuper.m(long) is accessible here, but not inherited by Foo
+                    Foo.m(1);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 inherited instance method is a candidate for a type name qualifier") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Parent {
+                public void m(Object o) { }
+            }
+
+            class Child extends Parent {
+                static void m(int x) { }
+
+                void t(Integer value) {
+                    // javac selects Parent.m(Object) and reports that it is not static
+                    Child.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (parent) = acu.declaredTypeSignatures()
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = parent,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 protected method of Object is not a member of an interface type") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface I { }
+
+            class Foo {
+                void t(I i) {
+                    i.clone(); // javac: cannot find symbol
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldHaveNoApplicableMethods(acu.firstMethodCall())
+    }
+
+    parserTest("#7152 protected method of Object is not in scope in an interface body") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface I {
+                default void d() {
+                    clone(); // javac: cannot find symbol
+                }
+            }
+            """.trimIndent()
+        )
+
+        spy.shouldHaveNoApplicableMethods(acu.firstMethodCall())
+    }
+
+    parserTest("#7152 public methods of Object and redeclared methods are members of an interface type") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface I { }
+
+            interface J {
+                Object clone();
+            }
+
+            class Foo {
+                void t(I i, J j) {
+                    i.hashCode();
+                    j.clone();
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, j) = acu.declaredTypeSignatures()
+        val (hashCodeCall, cloneCall) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            hashCodeCall.methodType.shouldMatchMethod(
+                named = "hashCode",
+                declaredIn = ts.OBJECT,
+                withFormals = emptyList(),
+                returning = int
+            )
+            cloneCall.methodType.shouldMatchMethod(
+                named = "clone",
+                declaredIn = j,
+                withFormals = emptyList(),
+                returning = ts.OBJECT
+            )
+        }
+    }
+
+    parserTest("#7152 private method of the superclass is not a member of an intersection bound") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                interface Marker { }
+
+                static class Parent {
+                    private void m(Object o) { }
+                }
+
+                static class Child extends Parent {
+                    static void m(int x) { }
+                }
+
+                <T extends Child & Marker> void t(T t, Integer value) {
+                    t.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val child = acu.declaredTypeSignatures().first { it.symbol.simpleName == "Child" }
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = child,
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 static interface method of a component is not a member of an intersection") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                interface I {
+                    static void m(Object o) { }
+                }
+
+                static class C {
+                    static void m(int x) { }
+                }
+
+                <T extends C & I> void t(T t, Integer value) {
+                    t.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val declaring = acu.declaredTypeSignatures().first { it.symbol.simpleName == "C" }
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = declaring,
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 private method of the class component is not a member of an intersection") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                interface Marker { }
+
+                static class C {
+                    private void m(Object o) { }
+                    static void m(int x) { }
+                }
+
+                <T extends C & Marker> void t(T t, Integer value) {
+                    t.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val declaring = acu.declaredTypeSignatures().first { it.symbol.simpleName == "C" }
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = declaring,
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 type variable bounded by a type variable has the members of the class bound") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                static class Parent {
+                    private void m(Object o) { }
+                }
+
+                static class Child extends Parent {
+                    static void m(int x) { }
+                }
+
+                <T extends Child, U extends T> void t(U u, Integer value) {
+                    u.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val declaring = acu.declaredTypeSignatures().first { it.symbol.simpleName == "Child" }
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = declaring,
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 private method of the only bound of a type variable is a candidate") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                static class C {
+                    private void m(Object o) { }
+                    static void m(int x) { }
+                }
+
+                <T extends C> void t(T t, Integer value) {
+                    // javac selects m(Object) and reports that it has private access
+                    t.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val declaring = acu.declaredTypeSignatures().first { it.symbol.simpleName == "C" }
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = declaring,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 protected method of Object is not a member of an intersection of interfaces") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                interface I {
+                    void clone(Object... xs);
+                }
+
+                interface J { }
+
+                <T extends I & J> void t(T t) {
+                    // javac resolves this to I.clone(Object...)
+                    t.clone();
+                }
+
+                <T extends Object & I> void o(T t) {
+                    t.clone();
+                }
+            }
+            """.trimIndent()
+        )
+
+        val i = acu.declaredTypeSignatures().first { it.symbol.simpleName == "I" }
+        val (andJ, andObject) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            andJ.methodType.shouldMatchMethod(
+                named = "clone",
+                declaredIn = i,
+                withFormals = listOf(ts.OBJECT.toArray()),
+                returning = void
+            )
+            andObject.methodType.shouldMatchMethod(
+                named = "clone",
+                declaredIn = i,
+                withFormals = listOf(ts.OBJECT.toArray()),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 public method of Object is a member of an intersection of interfaces") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                interface I { }
+
+                interface J { }
+
+                <T extends I & J> void t(T t) {
+                    t.hashCode();
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "hashCode",
+                declaredIn = ts.OBJECT,
+                withFormals = emptyList(),
+                returning = int
+            )
+        }
+    }
+
+    parserTest("#7152 protected instance method is a candidate through a type name only if the type is a subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedOverloads;
+            import javasymbols.testdata.impls.SubclassOfProtectedOverloads;
+
+            class Sub extends ProtectedOverloads {
+                void t(Integer value) {
+                    // m(Object) is not accessible through these types (JLS 6.6.2.1), javac selects m(int)
+                    ProtectedOverloads.m(value);
+                    SubclassOfProtectedOverloads.m(value);
+                    // javac selects m(Object) and reports that it is not static
+                    Sub.m(value);
+                    // the qualifier does not matter for a static method
+                    ProtectedOverloads.s(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (base, other, sub, static) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedOverloads::class.decl
+            base.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            other.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            sub.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            static.methodType.shouldMatchMethod(named = "s", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+        }
+    }
+
+    parserTest("#7152 protected method of Object does not hide a method of the enclosing class in an interface body") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class Outer {
+                static void clone(int x) { }
+
+                interface I {
+                    default void d() {
+                        // Object.clone() is not a member of I, so the search goes on to Outer
+                        clone(1);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "clone",
+                declaredIn = acu.firstTypeSignature(),
+                withFormals = listOf(int),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 protected instance method is a candidate through a type name in the same package") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata;
+
+            class SamePackage {
+                void t(Integer value) {
+                    // javac selects m(Object) and reports that it is not static
+                    ProtectedOverloads.m(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val call = acu.firstMethodCall()
+
+        spy.shouldBeOk {
+            call.methodType.shouldMatchMethod(
+                named = "m",
+                declaredIn = ProtectedOverloads::class.decl,
+                withFormals = listOf(ts.OBJECT),
+                returning = void
+            )
+        }
+    }
+
+    parserTest("#7152 protected instance method is a candidate through a type name of an enclosing subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedOverloads;
+
+            class Nested extends ProtectedOverloads {
+                class Inner extends ProtectedOverloads {
+                    void u(Integer value) {
+                        // Nested is not a subclass of Inner, but Nested encloses this call and is a subclass:
+                        // javac selects m(Object) and reports that it is not static
+                        Nested.m(value);
+                        // javac selects m(int)
+                        ProtectedOverloads.m(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (nested, base) = acu.methodCalls().crossFindBoundaries().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedOverloads::class.decl
+            nested.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            base.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+        }
+    }
+
+    parserTest("#7152 protected methods are candidates through a type name in a class nested in a subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedOverloads;
+
+            class Nested extends ProtectedOverloads {
+                class Plain {
+                    void u(Integer value) {
+                        // javac selects m(Object) and reports that it is not static
+                        Nested.m(value);
+                        // javac selects m(int)
+                        ProtectedOverloads.m(value);
+                        // javac selects s(Object)
+                        ProtectedOverloads.s(value);
+                    }
+                }
+
+                static class StaticPlain {
+                    void v(Integer value) {
+                        // javac selects s(Object)
+                        ProtectedOverloads.s(value);
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (nested, base, static, staticInStatic) = acu.methodCalls().crossFindBoundaries().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedOverloads::class.decl
+            nested.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            base.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            static.methodType.shouldMatchMethod(named = "s", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+            staticInStatic.methodType.shouldMatchMethod(named = "s", declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = void)
+        }
+    }
+
+    parserTest("#7152 protected methods are not candidates through a type name outside a subclass") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedOverloads;
+
+            class Unrelated {
+                void t(Integer value) {
+                    // javac selects m(int) and s(int)
+                    ProtectedOverloads.m(value);
+                    ProtectedOverloads.s(value);
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (instance, static) = acu.methodCalls().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedOverloads::class.decl
+            instance.methodType.shouldMatchMethod(named = "m", declaredIn = decl, withFormals = listOf(int), returning = void)
+            static.methodType.shouldMatchMethod(named = "s", declaredIn = decl, withFormals = listOf(int), returning = void)
         }
     }
 })
