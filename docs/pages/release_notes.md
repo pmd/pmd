@@ -88,10 +88,10 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
     * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
     * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
 * java-multithreading
-    * [#2786](https://github.com/pmd/pmd/issues/2786): \[java] False positive for UseConcurrentHashMap on ConcurrentSkipListMap 
+    * [#2786](https://github.com/pmd/pmd/issues/2786): \[java] UseConcurrentHashMap: False positive for ConcurrentSkipListMap
 * java-performance
     * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
-    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: a copy loop whose body has no braces is not reported
+    * [#7327](https://github.com/pmd/pmd/issues/7327): \[java] AvoidArrayLoops: False negative for a copy loop whose body has no braces
 * jsp
     * [#5092](https://github.com/pmd/pmd/issues/5092): \[jsp] Parse error when `<!DOCTYPE>` or `<?xml?>` follows other content
 * kotlin
