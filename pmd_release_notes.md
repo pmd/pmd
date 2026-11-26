@@ -10,6 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Updated PMD Designer](#updated-pmd-designer)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
@@ -24,6 +25,11 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+#### Updated PMD Designer
+This PMD release ships a new version of the pmd-designer.
+PMD's binary distribution now ships ControlsFX 8 for Java 8 and ControlsFX 11 for OpenJFX and Java 11+.
+Java 9 and 10 are not supported.  
+For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pmd-designer/releases/tag/7.30.0).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
