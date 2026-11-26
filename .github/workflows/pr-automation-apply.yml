@@ -56,7 +56,7 @@ jobs:
         run: |
           set -euo pipefail
           # The artifact might come from a fork and is therefore untrusted. Validate it.
-          pr_number="$(tr -d '[:space:]' < pr-automation/pr-number.txt)"
+          pr_number="$(< pr-automation/pr-number.txt)"
           if ! [[ "${pr_number}" =~ ^[0-9]+$ ]]; then
             echo "::error::Invalid PR number in artifact"
             exit 1
