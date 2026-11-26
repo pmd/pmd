@@ -115,6 +115,16 @@ class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
+    void recordInAnnotationInterface() {
+        doTest("RecordInAnnotationInterface");
+    }
+
+    @Test
+    void recordInAnnotationInterfaceBeforeJava16ShouldFail() {
+        assertThrows(ParseException.class, () -> java15.parseResource("RecordInAnnotationInterface.java"));
+    }
+
+    @Test
     void recordIsARestrictedIdentifier() {
         assertThrows(ParseException.class, () -> java16.parse("public class record {}"));
     }
