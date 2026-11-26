@@ -213,7 +213,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         return false;
     }
 
-    void visitComments(ASTCompilationUnit node) {
+    private void visitComments(ASTCompilationUnit node) {
         // todo improve that when we have a javadoc parser
         for (JavaComment comment : node.getComments()) {
             if (!(comment instanceof JavadocComment)) {
