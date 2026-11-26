@@ -46,6 +46,13 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
     in tests. A call to a `setTest...` method does not stop the rule from reporting, because it only registers test data.
     Nor does a call to the regular method whose test data a `setTest...` call in the same test registers
     (see [#7236](https://github.com/pmd/pmd/issues/7236)).
+* The Java rule {% rule java/documentation/CommentRequired %} was modified to be more configurable
+   and its default configuration changed to only report missing comments for public and protected elements.
+   Several existing properties have been deprecated, new properties `minimumVisibility`, `methodCommentRequirement`
+   and `typeCommentRequirement` were added, and both the new and old properties support a new value to
+   only report elements above given visibility threshold. To enforce the old behavior set `minimumVisibility`
+   to `private`. Setting both the new and the deprecated properties is discouraged, interactions between them
+   are explained in the rule documentation.
 
 #### Deprecated Rules
 *   The Java rule {% rule java/performance/AddEmptyString %} is deprecated without replacement

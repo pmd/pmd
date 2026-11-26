@@ -46,7 +46,7 @@ public enum JModifier {
     NATIVE(Modifier.NATIVE),
 
     STRICTFP(Modifier.STRICT);
-    /* IMPORTANT: when adding a constant, keep the order aligned with JLS (links in JavaDoc) */
+    /* IMPORTANT: when adding a constant, keep the order aligned with JLS (links in Javadoc) */
 
     private final String token;
     private final int reflect;
