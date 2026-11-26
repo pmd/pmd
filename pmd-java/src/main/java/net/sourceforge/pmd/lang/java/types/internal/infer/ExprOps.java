@@ -21,6 +21,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaResolvers.MethodAccessForm;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -249,14 +251,13 @@ public final class ExprOps {
                     return null;
                 }
 
-                accessible = TypeOps.filterAccessible(lhs.getConstructors(),
-                                                      mref.getEnclosingType().getSymbol());
+                accessible = accessibleConstructors(mref, lhs);
             }
         } else {
             JClassType enclosing = mref.getEnclosingType();
-            accessible = TypeOps.getMemberSource(mref.getTypeToSearch())
-                    .streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), enclosing.getSymbol()))
-                    .collect(OverloadSet.collectMostSpecific(enclosing));
+            JTypeMirror typeToSearch = TypeOps.getMemberSource(mref.getTypeToSearch());
+            accessible = typeToSearch.streamMethods(accessibleMethodFilter(mref, typeToSearch))
+                                     .collect(OverloadSet.collectMostSpecific(enclosing));
         }
 
         if (accessible.size() == 1) {
@@ -503,7 +504,7 @@ public final class ExprOps {
                 } else if (typeToSearch instanceof JClassType && mref.isConstructorRef()) {
                     // ClassType :: [TypeArguments] new
                     // TODO treatment of raw constructors is whacky
-                    return TypeOps.lazyFilterAccessible(typeToSearch.getConstructors(), mref.getEnclosingType().getSymbol());
+                    return accessibleConstructors(mref, typeToSearch);
                 }
 
                 if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType
@@ -536,9 +537,22 @@ public final class ExprOps {
             // TypeName.super :: [TypeArguments] Identifier
             // ReferenceType :: [TypeArguments] Identifier
 
-            Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol());
+            Predicate<JMethodSymbol> prefilter = accessibleMethodFilter(mref, actualTypeToSearch);
             return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
+    }
+
+    private static Predicate<JMethodSymbol> accessibleMethodFilter(MethodRefMirror mref, JTypeMirror typeToSearch) {
+        String name = mref.getMethodName();
+        JClassSymbol ctx = mref.getEnclosingType().getSymbol();
+        MethodAccessForm form = mref.getMethodAccessForm();
+        return it -> it.nameEquals(name) && JavaResolvers.isAccessibleMethod(it, ctx, typeToSearch, form);
+    }
+
+    private static List<JMethodSig> accessibleConstructors(MethodRefMirror mref, JTypeMirror type) {
+        JClassSymbol ctx = mref.getEnclosingType().getSymbol();
+        return CollectionUtil.mapNotNull(type.getConstructors(),
+                                         it -> JavaResolvers.isAccessibleConstructor(it.getSymbol(), ctx, false) ? it : null);
     }
 
 

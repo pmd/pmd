@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
+import javasymbols.testdata.ProtectedMembers
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.types.*
@@ -392,6 +393,48 @@ class CtorInferenceTest : ProcessorTestSpec({
         ctorCall.withTypeDsl {
             ctorCall shouldHaveType t_ConcreteCacheLoader[ts.OBJECT, int.box()]
             acu.varId("cache") shouldHaveType t_Cache[ts.STRING, int.box()]
+        }
+    }
+
+    parserTest("#7147 protected constructor of another package is accessible only through super or an anonymous class") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            package javasymbols.testdata.deep;
+
+            import javasymbols.testdata.ProtectedMembers;
+
+            class Sub extends ProtectedMembers {
+                Sub(Integer value) {
+                    // javac selects ProtectedMembers(Object)
+                    super(value);
+                }
+
+                void t(Integer value) {
+                    // javac selects ProtectedMembers(int) (JLS 6.6.2.2)
+                    new ProtectedMembers(value);
+                    // javac selects ProtectedMembers(Object)
+                    new ProtectedMembers(value) { };
+                }
+            }
+
+            class Unrelated {
+                void t(Integer value) {
+                    // javac selects ProtectedMembers(Object)
+                    new ProtectedMembers(value) { };
+                }
+            }
+            """.trimIndent()
+        )
+
+        val superCall = acu.descendants(ASTExplicitConstructorInvocation::class.java).firstOrThrow()
+        val (newCall, anonInSub, anonInUnrelated) = acu.ctorCalls().crossFindBoundaries().toList()
+
+        spy.shouldBeOk {
+            val decl = ProtectedMembers::class.decl
+            superCall.methodType.shouldMatchMethod(named = JConstructorSymbol.CTOR_NAME, declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = decl)
+            newCall.methodType.shouldMatchMethod(named = JConstructorSymbol.CTOR_NAME, declaredIn = decl, withFormals = listOf(int), returning = decl)
+            anonInSub.methodType.shouldMatchMethod(named = JConstructorSymbol.CTOR_NAME, declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = decl)
+            anonInUnrelated.methodType.shouldMatchMethod(named = JConstructorSymbol.CTOR_NAME, declaredIn = decl, withFormals = listOf(ts.OBJECT), returning = decl)
         }
     }
 })
