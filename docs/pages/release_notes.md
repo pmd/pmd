@@ -23,6 +23,20 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### Security fixes
+All known security vulnerabilities are described in full detail on the page
+[PMD Security]({{ baseurl }}pmd_about_security.html). This release, the following
+security vulnerabilities were fixed:
+*   [GHSA-p8c4-pmh9-36vf](https://github.com/pmd/pmd/security/advisories/GHSA-p8c4-pmh9-36vf):
+    Uncontrolled recursion (StackOverflowError) in regex matching of several PMD rules for crafted input.  
+    Several rules (`UnnecessaryImport`, `AvoidUsingHardCodedIP`, `VfUnescapeEl`) used regular expressions
+    that could throw a `StackOverflowError` on crafted, very long input (for example a Javadoc comment,
+    string literal or attribute value of a few kilobytes), which aborted the whole analysis run. The patterns
+    now match in linear time without deep recursion, so such input no longer causes an error.  
+    Affected versions: `net.sourceforge.pmd:pmd-core` >= 7.0.0, <= 7.29.0;
+    `net.sourceforge.pmd:pmd-java` >= 6.34.0, <= 7.29.0;
+    `net.sourceforge.pmd:pmd-visualforce` >= 5.6.0, <= 7.29.0
+
 #### Updated PMD Designer
 This PMD release ships a new version of the pmd-designer.
 PMD's binary distribution now ships ControlsFX 8 for Java 8 and ControlsFX 11 for OpenJFX and Java 11+.
