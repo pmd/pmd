@@ -1,6 +1,6 @@
 name: Rule violation (false-positive)
 description: Let us know about a false-positive (a violation is reported on code that is not problematic)
-title: "[<lang>] "
+title: "[<lang>] <rule name>: False positive when ..."
 labels: ["a:false-positive"]
 type: False Positive
 body:
@@ -108,6 +108,7 @@ body:
     attributes:
       label: Running PMD Through
       options:
+        - (Please select)
         - CLI
         - Ant
         - Maven

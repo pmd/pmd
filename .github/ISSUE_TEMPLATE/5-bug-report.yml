@@ -80,6 +80,7 @@ body:
     attributes:
       label: Running PMD Through
       options:
+        - (Please select)
         - CLI
         - Ant
         - Maven

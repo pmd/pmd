@@ -18,7 +18,10 @@ body:
     id: rule-name
     attributes:
       label: Proposed Rule Name
-      description: A short name in PascalCase that describes what the rule checks. Don't worry, we can still change it later.
+      description: |
+        A short name in PascalCase that describes the problem the rule detects, not how the rule
+        detects it. See the [guidelines for standard rules](https://docs.pmd-code.org/latest/pmd_devdocs_major_rule_guidelines.html)
+        for naming tips. Don't worry, we can still change it later.
       placeholder: e.g. EmptyCatchBlocks
     validations:
       required: true
