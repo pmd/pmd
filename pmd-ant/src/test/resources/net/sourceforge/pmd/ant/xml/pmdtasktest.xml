@@ -27,7 +27,7 @@
 
     <target name="testRelativizeWith">
         <pmd noCache="true">
-            <!-- note: this ruleset is in pmd-core/src/test/resources -->
+            <!-- note: this ruleset is in pmd-lang-dummy/src/main/resources -->
             <ruleset>rulesets/dummy/basic.xml</ruleset>
             <formatter type="text" toFile="${pmd.home}/target/pmd-ant-test.txt" />
             <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/">
@@ -52,7 +52,7 @@
 
     <target name="testXmlFormatter">
         <pmd noCache="true">
-            <!-- note: this ruleset is in pmd-core/src/test/resources -->
+            <!-- note: this ruleset is in pmd-lang-dummy/src/main/resources -->
             <ruleset>rulesets/dummy/basic.xml</ruleset>
             <formatter type="xml" toFile="${pmd.home}/target/pmd-ant-xml.xml" />
             <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">

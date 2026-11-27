@@ -65,13 +65,11 @@
         <!-- Test dependencies -->
 
         <dependency>
-            <!-- Test classes of pmd-core, which contain dummy language modules. -->
+            <!-- The dummy language, used to test the tooling independent of a real language -->
             <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-core</artifactId>
+            <artifactId>pmd-lang-dummy</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
-            <classifier>tests</classifier>
-            <type>test-jar</type>
         </dependency>
 
         <dependency>
