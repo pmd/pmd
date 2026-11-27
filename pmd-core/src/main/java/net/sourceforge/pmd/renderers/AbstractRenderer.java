@@ -97,7 +97,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     }
 
     /**
-     * @deprecated Since 7.30.0.
+     * @deprecated Since 7.31.0.
      */
     @Deprecated
     @Override
