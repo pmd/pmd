@@ -1,0 +1,78 @@
+name: PR Automation
+run-name: PR Automation for "${{ github.event.pull_request.title }}"
+
+# This workflow runs unprivileged in the context of the pull request (no pull_request_target!).
+# It only collects the PR number and verifies "Allow edits by maintainers".
+# All modifications of the PR (comments, assignee, milestone) are done by the
+# privileged workflow "PR Automation Apply" (pr-automation-apply.yml), which
+# is triggered via workflow_run once this workflow is completed.
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+permissions: {}
+
+jobs:
+  pr-info:
+    name: PR Info
+    # only run in the official pmd repo and not on forks
+    if: ${{ github.repository == 'pmd/pmd' }}
+    runs-on: ubuntu-slim
+    timeout-minutes: 2
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Store PR number
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          mkdir -p pr-automation
+          echo "${PR_NUMBER}" > pr-automation/pr-number.txt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 #v7.0.2
+        with:
+          name: pr-automation
+          path: pr-automation/pr-number.txt
+          retention-days: 1
+
+  maintainer-can-modify:
+    name: Allow edits by maintainers
+    # only run in the official pmd repo and not on forks
+    if: ${{ github.repository == 'pmd/pmd' && github.event.action != 'closed' }}
+    runs-on: ubuntu-slim
+    timeout-minutes: 2
+    permissions:
+      pull-requests: read
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check "Allow edits by maintainers"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          # Note: Don't use the event payload, but query the current state. When this job is
+          # re-run, the event payload would be the same as in the first run.
+          pr_json="$(gh api "repos/pmd/pmd/pulls/${PR_NUMBER}")"
+          head_repo="$(jq -r '.head.repo.full_name // empty' <<< "${pr_json}")"
+          maintainer_can_modify="$(jq -r '.maintainer_can_modify' <<< "${pr_json}")"
+
+          if [ -z "${head_repo}" ]; then
+            echo "::warning::The head repository of this pull request doesn't exist anymore."
+            exit 0
+          fi
+          if [ "${head_repo}" = "pmd/pmd" ]; then
+            echo "Pull request is created from a branch in pmd/pmd - maintainers can edit."
+            exit 0
+          fi
+          if [ "${maintainer_can_modify}" != "true" ]; then
+            echo "::error::The option \"Allow edits by maintainers\" is not enabled for this pull request (head repository: ${head_repo}). Please enable it and re-run this check."
+            exit 1
+          fi
+          echo "\"Allow edits by maintainers\" is enabled."
