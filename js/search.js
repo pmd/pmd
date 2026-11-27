@@ -3028,6 +3028,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/documentation.md",
+  "title": "MarkdownJavadocBeforeJava23 (Java, Documentation)",
+  "tags": "",
+  "keywords": "Markdown Javadoc Before Java23",
+  "url": "pmd_rules_java_documentation.html#markdownjavadocbeforejava23",
+  "summary": "Reports comments starting with `///` in projects targeting Java versions before Java 23. These are..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/documentation.md",
   "title": "UncommentedEmptyConstructor (Java, Documentation)",
   "tags": "",
   "keywords": "Uncommented Empty Constructor",

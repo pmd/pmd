@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that are related to code documentation.">
-<meta name="keywords" content=" Documentation, CommentContent, CommentRequired, CommentSize, DanglingJavadoc, UncommentedEmptyConstructor, UncommentedEmptyMethodBody">
+<meta name="keywords" content=" Documentation, CommentContent, CommentRequired, CommentSize, DanglingJavadoc, MarkdownJavadocBeforeJava23, UncommentedEmptyConstructor, UncommentedEmptyMethodBody">
 <title>Documentation | PMD Source Code Analyzer</title>
 
 
@@ -2303,6 +2303,45 @@ converted into a block comment or removed completely.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/documentation.xml/DanglingJavadoc"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="markdownjavadocbeforejava23">MarkdownJavadocBeforeJava23</h2>
+
+<p><strong>Since:</strong> PMD 7.31.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p><strong>Maximum Language Version:</strong> Java 22</p>
+
+<p>Reports comments starting with <code class="language-plaintext highlighter-rouge">///</code> in projects targeting Java versions before Java 23.
+These are ordinary comments in earlier versions, but become Markdown documentation comments
+with <a href="https://openjdk.org/jeps/467">JEP 467</a>. When migrating to Java 23, they may unexpectedly
+appear in generated API documentation or cause Javadoc errors.</p>
+
+<p>Use this migration helper before changing the project’s Java version. Convert documentation
+that should already be published to <code class="language-plaintext highlighter-rouge">/** ... */</code>, and change implementation comments to <code class="language-plaintext highlighter-rouge">//</code>.
+Comments starting with more than three slashes are also affected.</p>
+
+<p>The rule reports the first line of each consecutive block, including comments that are not
+attached to a declaration. It does not run for Java 23 or later.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/documentation/MarkdownJavadocBeforeJava23Rule.java">net.sourceforge.pmd.lang.java.rule.documentation.MarkdownJavadocBeforeJava23Rule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// With Java 22 or earlier:</span>
+<span class="c1">/// This becomes documentation in Java 23 -- reported</span>
+<span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
+    <span class="cm">/** Documentation that works in earlier Java versions -- OK */</span>
+    <span class="kt">void</span> <span class="nf">documented</span><span class="o">()</span> <span class="o">{}</span>
+
+    <span class="c1">// An implementation comment -- OK</span>
+    <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/documentation.xml/MarkdownJavadocBeforeJava23"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="uncommentedemptyconstructor">UncommentedEmptyConstructor</h2>
