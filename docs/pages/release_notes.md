@@ -32,7 +32,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 * java
-    * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor 
+    * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor
+* java-bestpractices
+    * [#7308](https://github.com/pmd/pmd/issues/7308): \[java\] MethodReturnsInternalArray: document that private methods are not checked 
 * java-design
     * [#7328](https://github.com/pmd/pmd/issues/7328): \[java] CollapsibleIfStatements: not reported when a bare block separates the two if statements
 * java-documentation
