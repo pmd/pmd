@@ -15,7 +15,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
 /**
  * Finds comments whose meaning changes when migrating to Java 23.
  *
- * @since 7.30.0
+ * @since 7.31.0
  */
 public class MarkdownJavadocBeforeJava23Rule extends AbstractJavaRulechainRule {
 
