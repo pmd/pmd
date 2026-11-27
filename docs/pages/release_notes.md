@@ -24,7 +24,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+*   The new Java rule {% rule java/documentation/MarkdownJavadocBeforeJava23 %}
+    reports comments starting with `///`, so they can be reviewed before
+    switching to Java 23. The rule stays off for Java 23 and later.
+
 ### 🐛️ Fixed Issues
+* java-documentation
+    * [#7057](https://github.com/pmd/pmd/issues/7057): \[java\] New rule: MarkdownJavadocBeforeJava23
 
 ### 🚨️ API Changes
 
