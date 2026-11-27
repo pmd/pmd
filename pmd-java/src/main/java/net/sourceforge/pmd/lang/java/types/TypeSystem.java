@@ -774,6 +774,14 @@ public final class TypeSystem {
         resolver.logStats();
     }
 
+    /**
+     * Called at the end of the analysis to release any resource the
+     * bootstrap symbol resolver may still be holding open.
+     */
+    public void close() {
+        resolver.close();
+    }
+
     private static final class NullType implements JTypeMirror {
 
         private final TypeSystem ts;

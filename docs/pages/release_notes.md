@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java
+    * [#7266](https://github.com/pmd/pmd/issues/7266): \[java] Class file streams opened by `AsmSymbolResolver` are never closed, and `ResolutionFailure.UNKNOWN` keeps the whole type system reachable
 
 ### 🚨️ API Changes
 

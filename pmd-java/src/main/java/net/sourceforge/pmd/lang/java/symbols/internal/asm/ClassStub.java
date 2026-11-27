@@ -80,6 +80,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     private final ParseLock parseLock;
 
+    private final Loader loader;
+
     /** Note that '.' is forbidden because in internal names they're replaced by slashes '/'. */
     private static final Pattern INTERNAL_NAME_FORBIDDEN_CHARS = Pattern.compile("[;<>\\[.]");
 
@@ -92,6 +94,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
         this.resolver = resolver;
         this.names = new Names(internalName);
+        this.loader = loader;
 
         this.parseLock = new CheckedParseLock("ClassStub:" + internalName) {
             @Override
@@ -640,6 +643,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     boolean isNotParsed() {
         return this.parseLock.isNotParsed();
+    }
+
+    Loader getLoader() {
+        return loader;
     }
 
 

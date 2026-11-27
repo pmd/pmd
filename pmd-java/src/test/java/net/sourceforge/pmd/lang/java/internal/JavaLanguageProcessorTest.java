@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,13 +16,16 @@ import static uk.org.webcompere.systemstubs.SystemStubs.tapSystemErr;
 import static uk.org.webcompere.systemstubs.SystemStubs.withEnvironmentVariable;
 
 import java.io.File;
+import java.io.FilterInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -33,6 +37,7 @@ import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.internal.AuxClasspathUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
@@ -185,6 +190,30 @@ class JavaLanguageProcessorTest {
                 AuxClasspathUtil.toRawClasspath(AuxClasspathUtil.expandClasspath(auxClasspath), AuxClasspathUtil.getPlatformClasspath()));
     }
 
+    /**
+     * Class stubs open their stream eagerly, but only close it when they are parsed. The streams
+     * of classes that were looked up but never parsed must be closed together with the processor,
+     * otherwise the files stay open (and e.g. locked on Windows) until the JVM exits.
+     */
+    @Test
+    void closeShouldCloseStreamsOfClassesThatWereNeverParsed() throws Exception {
+        TrackingClassLoader classLoader = new TrackingClassLoader();
+        JavaLanguageProperties properties =
+                (JavaLanguageProperties) JavaLanguageModule.getInstance().newPropertyBundle();
+        properties.setClassLoader(classLoader);
+
+        try (JavaLanguageProcessor processor = new JavaLanguageProcessor(properties)) {
+            TypeSystem ts = processor.getTypeSystem();
+            // the stubs of these classes are only parsed lazily, when a member is accessed
+            assertNotNull(ts.getClassSymbol("java.util.ArrayList"));
+            assertNotNull(ts.getClassSymbol("java.util.HashMap"));
+            // this one is parsed, which closes its stream
+            assertNotNull(ts.getClassSymbol("java.util.LinkedList").getSuperclass());
+        }
+
+        assertThat(classLoader.getOpenResources(), is(empty()));
+    }
+
     private void assertPlatformClassesFound(String auxClasspath) throws Exception {
         LanguagePropertyBundle properties = JavaLanguageModule.getInstance().newPropertyBundle();
         properties.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, auxClasspath);
@@ -213,5 +242,47 @@ class JavaLanguageProcessorTest {
             rawClasspath += File.pathSeparator + AuxClasspathUtil.getPlatformClasspath().toString();
         }
         return rawClasspath;
+    }
+
+    /**
+     * Remembers the streams it hands out, in order to find out which of them were never closed.
+     */
+    private static final class TrackingClassLoader extends ClassLoader {
+        private final List<TrackedStream> streams = new CopyOnWriteArrayList<>();
+
+        TrackingClassLoader() {
+            super(JavaLanguageProcessorTest.class.getClassLoader());
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name) {
+            InputStream stream = super.getResourceAsStream(name);
+            if (stream == null) {
+                return null;
+            }
+            TrackedStream tracked = new TrackedStream(name, stream);
+            streams.add(tracked);
+            return tracked;
+        }
+
+        List<String> getOpenResources() {
+            return streams.stream().filter(s -> !s.closed).map(s -> s.name).collect(Collectors.toList());
+        }
+    }
+
+    private static final class TrackedStream extends FilterInputStream {
+        private final String name;
+        private volatile boolean closed;
+
+        TrackedStream(String name, InputStream in) {
+            super(in);
+            this.name = name;
+        }
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            super.close();
+        }
     }
 }

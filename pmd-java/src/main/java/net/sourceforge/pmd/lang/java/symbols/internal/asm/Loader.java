@@ -16,6 +16,16 @@ abstract class Loader {
 
     abstract @Nullable InputStream getInputStream() throws IOException;
 
+    /**
+     * Releases any resource this loader may already be holding open,
+     * without having gone through {@link #getInputStream()}. This is used
+     * to close a stream that was opened eagerly (see {@link StreamLoader})
+     * for a class/package/module that ended up never being parsed.
+     */
+    void close() throws IOException {
+        // most loaders don't hold on to any resource before getInputStream() is called
+    }
+
 
     static class FailedLoader extends Loader {
 
@@ -45,6 +55,11 @@ abstract class Loader {
         @Override
         @NonNull InputStream getInputStream() {
             return stream;
+        }
+
+        @Override
+        void close() throws IOException {
+            stream.close();
         }
 
         @Override
