@@ -10,6 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Security fixes](#security-fixes)
     * [Updated PMD Designer](#updated-pmd-designer)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
@@ -25,6 +26,20 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+#### Security fixes
+All known security vulnerabilities are described in full detail on the page
+[PMD Security](https://docs.pmd-code.org/pmd-doc-7.30.0-SNAPSHOT/pmd_about_security.html). This release, the following
+security vulnerabilities were fixed:
+*   [GHSA-p8c4-pmh9-36vf](https://github.com/pmd/pmd/security/advisories/GHSA-p8c4-pmh9-36vf):
+    Uncontrolled recursion (StackOverflowError) in regex matching of several PMD rules for crafted input.  
+    Several rules (`UnnecessaryImport`, `AvoidUsingHardCodedIP`, `VfUnescapeEl`) used regular expressions
+    that could throw a `StackOverflowError` on crafted, very long input (for example a Javadoc comment,
+    string literal or attribute value of a few kilobytes), which aborted the whole analysis run. The patterns
+    now match in linear time without deep recursion, so such input no longer causes an error.  
+    Affected versions: `net.sourceforge.pmd:pmd-core` >= 7.0.0, <= 7.29.0;
+    `net.sourceforge.pmd:pmd-java` >= 6.34.0, <= 7.29.0;
+    `net.sourceforge.pmd:pmd-visualforce` >= 5.6.0, <= 7.29.0
+
 #### Updated PMD Designer
 This PMD release ships a new version of the pmd-designer.
 PMD's binary distribution now ships ControlsFX 8 for Java 8 and ControlsFX 11 for OpenJFX and Java 11+.
@@ -82,6 +97,7 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
 * java-codestyle
     * [#6731](https://github.com/pmd/pmd/issues/6731): \[java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation
     * [#7215](https://github.com/pmd/pmd/issues/7215): \[java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath
+    * [#7396](https://github.com/pmd/pmd/issues/7396): \[java] UnnecessaryImport: Fix StackOverflowError for very long Javadoc references
 * java-design
     * [#5798](https://github.com/pmd/pmd/issues/5798): \[java] NPathComplexity: Short-circuit operators outside of conditions counted as branches
     * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead

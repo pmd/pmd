@@ -2062,6 +2062,22 @@
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
+<h4 id="security-fixes">Security fixes</h4>
+<p>All known security vulnerabilities are described in full detail on the page
+<a href="pmd_about_security.html">PMD Security</a>. This release, the following
+security vulnerabilities were fixed:</p>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-p8c4-pmh9-36vf">GHSA-p8c4-pmh9-36vf</a>:
+Uncontrolled recursion (StackOverflowError) in regex matching of several PMD rules for crafted input.<br />
+Several rules (<code class="language-plaintext highlighter-rouge">UnnecessaryImport</code>, <code class="language-plaintext highlighter-rouge">AvoidUsingHardCodedIP</code>, <code class="language-plaintext highlighter-rouge">VfUnescapeEl</code>) used regular expressions
+that could throw a <code class="language-plaintext highlighter-rouge">StackOverflowError</code> on crafted, very long input (for example a Javadoc comment,
+string literal or attribute value of a few kilobytes), which aborted the whole analysis run. The patterns
+now match in linear time without deep recursion, so such input no longer causes an error.<br />
+Affected versions: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-core</code> &gt;= 7.0.0, &lt;= 7.29.0;
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-java</code> &gt;= 6.34.0, &lt;= 7.29.0;
+<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-visualforce</code> &gt;= 5.6.0, &lt;= 7.29.0</li>
+</ul>
+
 <h4 id="updated-pmd-designer">Updated PMD Designer</h4>
 <p>This PMD release ships a new version of the pmd-designer.
 PMD’s binary distribution now ships ControlsFX 8 for Java 8 and ControlsFX 11 for OpenJFX and Java 11+.
@@ -2148,6 +2164,7 @@ references continue to work during the deprecation period.</li>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6731">#6731</a>: [java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation</li>
       <li><a href="https://github.com/pmd/pmd/issues/7215">#7215</a>: [java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath</li>
+      <li><a href="https://github.com/pmd/pmd/issues/7396">#7396</a>: [java] UnnecessaryImport: Fix StackOverflowError for very long Javadoc references</li>
     </ul>
   </li>
   <li>java-design
@@ -2362,7 +2379,7 @@ are now package-private in <code class="language-plaintext highlighter-rouge">ne
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 26, 2026 <br />
+             Site last generated: Nov 27, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2058,6 +2058,125 @@
 
 <h2 id="security-vulnerabilities">Security Vulnerabilities</h2>
 
+<h3 id="ghsa-p8c4-pmh9-36vf">GHSA-p8c4-pmh9-36vf</h3>
+<p><strong>Published:</strong> 2026-11-27</p>
+
+<p><strong>CVE:</strong> Requested</p>
+
+<p><strong>Severity:</strong> Low</p>
+
+<p><strong>Summary:</strong></p>
+
+<p>Several PMD rules and utilities use regular expressions with repeated groups, for example a dotted name such
+as <code class="language-plaintext highlighter-rouge">(?:\.[\w$]+)*</code>. The Java regex engine processes such groups recursively, with one stack frame per
+repetition. A crafted input with a few thousand repetitions causes a <code class="language-plaintext highlighter-rouge">StackOverflowError</code>.
+By default PMD does not run in error recovery mode, so the error aborts the whole analysis run instead
+of only failing one file.</p>
+
+<p><strong>Versions Affected:</strong></p>
+
+<ul>
+  <li>net.sourceforge.pmd:pmd-core &gt;= 7.0.0, &lt;= 7.29.0</li>
+  <li>net.sourceforge.pmd:pmd-java &gt;= 6.34.0, &lt;= 7.29.0</li>
+  <li>net.sourceforge.pmd:pmd-visualforce &gt;= 5.6.0, &lt;= 7.29.0</li>
+</ul>
+
+<p><strong>Details:</strong></p>
+
+<p>The affected patterns include:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">UnnecessaryImportRule</code> (<code class="language-plaintext highlighter-rouge">pmd-java</code>): Javadoc references such as <code class="language-plaintext highlighter-rouge">@see</code>, <code class="language-plaintext highlighter-rouge">{@link}</code> and Markdown links.
+A comment of about 4 KB containing <code class="language-plaintext highlighter-rouge">a.a.a. ...</code> is enough.</li>
+  <li><code class="language-plaintext highlighter-rouge">AvoidUsingHardCodedIPRule</code> (<code class="language-plaintext highlighter-rouge">pmd-java</code>): the IPv6 pattern, applied to string literals of the analyzed code.
+A literal of about 2 KB, for example <code class="language-plaintext highlighter-rouge">"a:a:a: ..."</code>, triggers the error.</li>
+  <li><code class="language-plaintext highlighter-rouge">VfUnescapeElRule</code> (<code class="language-plaintext highlighter-rouge">pmd-visualforce</code>): attribute placeholder pattern, at about 3 KB.</li>
+  <li><code class="language-plaintext highlighter-rouge">AssertionUtil</code> (<code class="language-plaintext highlighter-rouge">pmd-core</code>): name validation patterns. These are only reachable with unusually long names from
+rule configuration or compiled code.</li>
+</ul>
+
+<p>The matching time itself stays small. The problem is the recursion depth, not exponential backtracking.</p>
+
+<p><strong>PoC:</strong></p>
+
+<p>Each snippet is a <code class="language-plaintext highlighter-rouge">&lt;test-code&gt;</code> element to add to the existing XML test file. The long names are shortened. The XML comment above each test says what to expand and how far, so you can paste the full length in or generate it once.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">UnnecessaryImport.xml</code> (<code class="language-plaintext highlighter-rouge">pmd-java/src/test/resources/.../rule/codestyle/xml/</code>)
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c">&lt;!-- The dotted names below ("a.a.a. ...") must be repeated about 5000 times
+       (10 KB or more) to trigger the StackOverflowError without the fix. --&gt;</span>
+  <span class="nt">&lt;test-code&gt;</span>
+      <span class="nt">&lt;description&gt;</span>SOE: very long dotted name in Javadoc references<span class="nt">&lt;/description&gt;</span>
+      <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
+      <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
+import java.util.List;
+public class Foo {
+  /** {@link a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a} */
+  void a() {}
+  /** @see List */
+  void b() {}
+  /** [a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a] */
+  void c() {}
+}
+      ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
+  <span class="nt">&lt;/test-code&gt;</span>
+</code></pre></div>    </div>
+    <p>The <code class="language-plaintext highlighter-rouge">@see List</code> reference after the long names checks that matching still works for later references, so the <code class="language-plaintext highlighter-rouge">List</code> import counts as used.</p>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">AvoidUsingHardCodedIP.xml</code> (<code class="language-plaintext highlighter-rouge">pmd-java/src/test/resources/.../rule/bestpractices/xml/</code>)
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c">&lt;!-- The literal below ("a:a:a: ...") must be repeated about 5000 times
+       (10 KB or more) to trigger the StackOverflowError without the fix.
+       It passes the quick pre-check: first character is hex, at least two colons. --&gt;</span>
+  <span class="nt">&lt;test-code&gt;</span>
+      <span class="nt">&lt;description&gt;</span>SOE: very long string that looks like an IPv6 address<span class="nt">&lt;/description&gt;</span>
+      <span class="nt">&lt;expected-problems&gt;</span>0<span class="nt">&lt;/expected-problems&gt;</span>
+      <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
+public class Foo {
+  String s = "a:a:a:a:a:a:a:a:a:a:a:a:a:a:a:a:a:a:a:a:!";
+}
+      ]]&gt;</span><span class="nt">&lt;/code&gt;</span>
+  <span class="nt">&lt;/test-code&gt;</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>The trailing <code class="language-plaintext highlighter-rouge">!</code> makes the string not a valid address, so the regex fails after consuming all segments, as in my reproduction.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">VfUnescapeEl.xml</code> (<code class="language-plaintext highlighter-rouge">pmd-visualforce/src/test/resources/.../rule/security/xml/</code>)
+```xml
+  <!-- The attribute value below ("aaaa...") must be repeated about 5000 times
+       (5 KB or more) to trigger the StackOverflowError without the fix. -->
+    <test-code>
+      <description>SOE: very long placeholder-like attribute value</description>
+      <expected-problems>0</expected-problems>
+      <code>&lt;![CDATA[
+</code></test-code>
+  </li>
+</ul>
+<apex:page>
+    <apex:outputText value="{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}" escape="false" />
+</apex:page>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ]]&gt;&lt;/code&gt;
+&lt;/test-code&gt; ```
+</code></pre></div></div>
+
+<p><strong>Impact:</strong></p>
+
+<p>An attacker who can add a crafted source file to a project that is analyzed with PMD can abort the analysis run.
+A typical case is a pull request from a fork in a CI pipeline that runs PMD. There is no impact on confidentiality
+or integrity. The result is a denial of service of the analysis run only, limited to the affected run.</p>
+
+<p><strong>Fixes:</strong></p>
+<ul>
+  <li>See <a href="https://github.com/pmd/pmd/pull/7396">#7396</a> [java] UnnecessaryImport: Fix StackOverflowError for very long Javadoc references</li>
+</ul>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-p8c4-pmh9-36vf">GHSA-p8c4-pmh9-36vf</a> - Uncontrolled recursion (StackOverflowError) in regex matching of several PMD rules for crafted input</li>
+</ul>
+
 <h3 id="ghsa-jm8j-h474-h54h">GHSA-jm8j-h474-h54h</h3>
 <p><strong>Published:</strong> 2026-10-30</p>
 
@@ -2979,7 +3098,7 @@ because of a 2017-09-15 change.)</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            October 2026 (7.29.0)<br /> Site last generated: Nov 26, 2026 <br />
+            November 2026 (7.30.0)<br /> Site last generated: Nov 27, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
