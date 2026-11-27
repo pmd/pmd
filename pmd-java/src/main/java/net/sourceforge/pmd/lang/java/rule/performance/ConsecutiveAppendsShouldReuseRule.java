@@ -78,7 +78,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
             current = current.getParent();
         }
 
-        Node next = current.asStream().followingSiblings().first();
+        Node next = current.getNextSibling();
         while (next instanceof ASTBlock && next.getNumChildren() == 1) {
             next = next.getChild(0);
         }
