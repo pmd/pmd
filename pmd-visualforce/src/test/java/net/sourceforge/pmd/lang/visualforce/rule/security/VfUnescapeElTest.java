@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.rule.Rule;
@@ -101,6 +102,26 @@ class VfUnescapeElTest extends PmdRuleTst {
             assertEquals(EXPECTED_RULE_MESSAGE, ruleViolation.getDescription());
             assertEquals(firstLineWithErrors + i, ruleViolation.getBeginLine());
         }
+    }
+
+    /**
+     * Regression test for GHSA-p8c4-pmh9-36vf: a very long placeholder-like attribute value
+     * must not cause a StackOverflowError in the regex matching.
+     */
+    @Test
+    void veryLongPlaceholderShouldNotStackOverflow() {
+        String code = "<apex:page>\n"
+                + "    <apex:outputText value=\"{" + StringUtils.repeat("a", 50_000) + "}\" escape=\"false\">\n"
+                + "        <apex:param value=\"{! here }\" />\n"
+                + "    </apex:outputText>\n"
+                + "</apex:page>\n";
+
+        Rule rule = findRule("category/visualforce/security.xml", "VfUnescapeEl");
+        Report report = VfParsingHelper.DEFAULT.executeRule(rule, code);
+
+        // the long value is still recognized as placeholder, so the unescaped param is reported
+        assertEquals(1, report.getViolations().size(), "Number of violations");
+        assertEquals(3, report.getViolations().get(0).getBeginLine());
     }
 
     /**
