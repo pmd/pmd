@@ -18,9 +18,9 @@ public class Example {}
     </test-code>
 
     <test-code>
-        <description>Consecutive lines form one block regardless of indentation or slash count</description>
+        <description>Consecutive lines form one block regardless of indentation or slash count - Verify location of violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
+        <expected-linenumbers>2-2</expected-linenumbers>
         <code><![CDATA[
 class Example {
     /// Method documentation
@@ -158,9 +158,8 @@ class Example {}
     </test-code>
 
     <test-code>
-        <description>Rule stays disabled for later Java versions</description>
+        <description>Rule stays disabled for latest Java version</description>
         <expected-problems>0</expected-problems>
         <code-ref id="classComment"/>
-        <source-type>java 25</source-type>
     </test-code>
 </test-data>
