@@ -44,8 +44,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String APEX_PAGE_MESSAGES = "apex:pagemessages";
     private static final String APEX_SELECT_OPTION = "apex:selectoption";
     private static final String FALSE = "false";
-    private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
-    private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
+    private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)++$");
+    private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*+\\}");
     private static final Set<ElEscapeDetector.Escaping> JSENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
     private static final Set<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
 

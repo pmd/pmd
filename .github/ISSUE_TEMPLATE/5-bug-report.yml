@@ -1,0 +1,113 @@
+name: Bug Report
+description: Report a crash, an error or other unexpected behavior of PMD
+title: "[<lang>] "
+labels: ["a:bug"]
+type: Bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+        Please replace `<lang>` in the title with the language this applies to, such as `[java]` or `[apex]`.
+        If the bug is not specific to a language, use `[core]`.
+
+        If a rule reports a violation on code that is fine, or misses a problem, please use the
+        "Rule violation (false-positive)" or "Rule violation (false-negative)" template instead.
+
+        Before submitting, please check whether the issue has already been reported:
+        https://github.com/pmd/pmd/issues
+
+  - type: input
+    id: pmd-version
+    attributes:
+      label: PMD Version
+      description: The PMD version you are using. If possible, please check whether the issue still occurs with the latest release.
+      placeholder: 7.x.y
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect to happen instead?
+      placeholder: When I run PMD with ..., it ... I expected ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: |
+        How can we reproduce the bug? Please include the command or build configuration you use,
+        and the ruleset if the bug seems to depend on it. A link to a small sample project is also very welcome.
+      placeholder: |
+        1.  ... (e.g. if you're using Maven: `mvn clean verify`)
+        2.  ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: code-sample
+    attributes:
+      label: Code Sample
+      description: |
+        If the bug occurs while analyzing specific code, please provide a minimal code sample
+        that triggers it, wrapped in a code block (```java ... ```).
+      placeholder: |
+        ```java
+        class Foo {
+        }
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: stacktrace
+    attributes:
+      label: Stacktrace
+      description: |
+        If PMD reports an error or crashes, please paste the complete stacktrace,
+        including all "Caused by" sections. It is formatted as code automatically.
+      render: text
+    validations:
+      required: false
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Running PMD Through
+      options:
+        - (Please select)
+        - CLI
+        - Ant
+        - Maven
+        - Gradle
+        - Designer
+        - IDE plugin (Eclipse, IntelliJ, VS Code, ...)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Anything else that might help. For errors like ClassNotFoundException, LinkageError or
+        reflection failures, please include your JDK version and operating system.
+    validations:
+      required: false
+
+  - type: textarea
+    id: story
+    attributes:
+      label: Did PMD help you today? Did it make you happy in any way?
+      description: |
+        If you have anything positive to share, we'd love to hear it! Reading bug reports
+        all day can be tiring, and a little positive note goes a long way.
+        (Idea borrowed from [Joey Hess](https://joeyh.name/blog/entry/two_holiday_stories/))
+    validations:
+      required: false
