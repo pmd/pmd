@@ -111,7 +111,7 @@ public class Foo {
     <rule name="MarkdownJavadocBeforeJava23"
           language="java"
           maximumLanguageVersion="22"
-          since="7.30.0"
+          since="7.31.0"
           message="Triple-slash comment changes meaning in Java 23"
           class="net.sourceforge.pmd.lang.java.rule.documentation.MarkdownJavadocBeforeJava23Rule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#markdownjavadocbeforejava23">
