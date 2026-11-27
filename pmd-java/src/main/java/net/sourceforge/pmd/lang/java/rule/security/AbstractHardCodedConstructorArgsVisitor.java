@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulechainRule {
 
@@ -47,6 +48,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         // skip anonymous classes with body - they might transform their byte[] constructor argument - we don't analyze this
         ASTAnonymousClassDeclaration anonClass = node.getAnonymousClassDeclaration();
         if (anonClass != null && !anonClass.getBody().isEmpty()) {
@@ -56,10 +58,10 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         if (TypeTestUtil.isExactlyA(type, node)) {
             ASTArgumentList arguments = node.getArguments();
             if (arguments.size() > 0) {
-                validateProperKeyArgument(data, arguments.get(0));
+                validateProperKeyArgument(ctx, arguments.get(0));
             }
         }
-        return data;
+        return null;
     }
 
     /**
@@ -68,7 +70,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
      *
      * <p>Then checks the expression for being a string literal or array
      */
-    private void validateProperKeyArgument(Object data, ASTExpression firstArgumentExpression) {
+    private void validateProperKeyArgument(RuleContext ctx, ASTExpression firstArgumentExpression) {
         if (firstArgumentExpression == null) {
             return;
         }
@@ -93,11 +95,11 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
                     return;
                 }
 
-                validateProperKeyArgument(data, varDecl.getInitializer());
-                validateVarUsages(data, varAccess, varDecl);
+                validateProperKeyArgument(ctx, varDecl.getInitializer());
+                validateVarUsages(ctx, varAccess, varDecl);
             } else if (varAccess.isCompileTimeConstant()
                     && varAccess.getConstValue() instanceof String) {
-                asCtx(data).addViolation(varAccess);
+                ctx.addViolation(varAccess);
             }
         } else if (firstArgumentExpression instanceof ASTConstructorCall) {
             ASTConstructorCall constructorCall = (ASTConstructorCall) firstArgumentExpression;
@@ -105,29 +107,29 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             if (arguments.size() == 1
                     && TypeTestUtil.isExactlyA(String.class, constructorCall.getTypeNode())
                     && TypeTestUtil.isExactlyA(char[].class, arguments.get(0))) {
-                validateHardCodedCharArray(data, arguments.get(0));
+                validateHardCodedCharArray(ctx, arguments.get(0));
             } else {
-                addViolationForStringLiteral(data, firstArgumentExpression);
+                addViolationForStringLiteral(ctx, firstArgumentExpression);
             }
         } else if (firstArgumentExpression instanceof ASTArrayAllocation) {
             // hard-coded array (default initialized or with constant values)
             ASTArrayInitializer arrayInit = ((ASTArrayAllocation) firstArgumentExpression).getArrayInitializer();
             if (arrayInit != null) {
-                asCtx(data).addViolation(arrayInit);
+                ctx.addViolation(arrayInit);
             } else {
                 // default-initialized array with length > 0
                 Optional<Number> length = determineArrayLength((ASTArrayAllocation) firstArgumentExpression);
                 // when length is null, then the expression is not a constant (e.g. method call)
                 if (!length.isPresent() || length.get().intValue() > 0) {
-                    asCtx(data).addViolation(firstArgumentExpression);
+                    ctx.addViolation(firstArgumentExpression);
                 }
             }
         } else if (firstArgumentExpression instanceof ASTArrayInitializer) {
             // hard coded array
-            asCtx(data).addViolation(firstArgumentExpression);
+            ctx.addViolation(firstArgumentExpression);
         } else {
             // string literal
-            addViolationForStringLiteral(data, firstArgumentExpression);
+            addViolationForStringLiteral(ctx, firstArgumentExpression);
         }
     }
 
@@ -239,19 +241,19 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         return leakIntoMethodCalls || leakIntoFields;
     }
 
-    private void validateHardCodedCharArray(Object data, ASTExpression expression) {
+    private void validateHardCodedCharArray(RuleContext ctx, ASTExpression expression) {
         if (expression instanceof ASTVariableAccess) {
             ASTVariableId varDecl = ((ASTVariableAccess) expression).getReferencedSym().tryGetNode();
             if (varDecl != null) {
-                validateHardCodedCharArray(data, varDecl.getInitializer());
+                validateHardCodedCharArray(ctx, varDecl.getInitializer());
             }
         } else if (expression instanceof ASTArrayAllocation) {
             ASTArrayInitializer arrayInit = ((ASTArrayAllocation) expression).getArrayInitializer();
             if (isConstantCharArray(arrayInit)) {
-                asCtx(data).addViolation(arrayInit);
+                ctx.addViolation(arrayInit);
             }
         } else if (expression instanceof ASTArrayInitializer && isConstantCharArray((ASTArrayInitializer) expression)) {
-            asCtx(data).addViolation(expression);
+            ctx.addViolation(expression);
         }
     }
 
@@ -267,13 +269,13 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         return true;
     }
 
-    private void addViolationForStringLiteral(Object data, ASTExpression expression) {
+    private void addViolationForStringLiteral(RuleContext ctx, ASTExpression expression) {
         ASTStringLiteral literal = expression.descendantsOrSelf()
                 .filterIs(ASTStringLiteral.class)
                 .filterNot(AbstractHardCodedConstructorArgsVisitor::isPropertyName)
                 .first();
         if (literal != null) {
-            asCtx(data).addViolation(literal);
+            ctx.addViolation(literal);
         }
     }
 
@@ -289,7 +291,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         return !arguments.isEmpty() && arguments.get(0).descendantsOrSelf().any(node -> node == literal);
     }
 
-    private void validateVarUsages(Object data, ASTVariableAccess varAccess, ASTVariableId varDecl) {
+    private void validateVarUsages(RuleContext ctx, ASTVariableAccess varAccess, ASTVariableId varDecl) {
         List<ASTNamedReferenceExpr> localUsages = new ArrayList<>(varDecl.getLocalUsages());
         localUsages.sort(Node.COORDS_COMPARATOR);
         // remove accesses after the current usage (e.g. ctor call)
@@ -301,7 +303,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             .filter(u -> u.getParent() instanceof ASTAssignmentExpression)
             .forEach(usage -> {
                 ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
-                validateProperKeyArgument(data, assignment.getRightOperand());
+                validateProperKeyArgument(ctx, assignment.getRightOperand());
             });
     }
 }

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class StringInstantiationRule extends AbstractJavaRule {
 
@@ -22,6 +23,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         ASTArgumentList args = node.getArguments();
         if (args.size() <= 1
             && TypeTestUtil.isExactlyA(String.class, node.getTypeNode())) {
@@ -30,10 +32,10 @@ public class StringInstantiationRule extends AbstractJavaRule {
                         || TypeTestUtil.isExactlyA(char[].class, args.get(0))
                         || TypeOps.isUnresolved(args.get(0).getTypeMirror()))) {
                 // byte/char array ctor is ok
-                return data;
+                return null;
             }
-            asCtx(data).addViolation(node);
+            ctx.addViolation(node);
         }
-        return data;
+        return null;
     }
 }

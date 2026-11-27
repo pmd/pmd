@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
@@ -30,30 +31,33 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         depth = 0;
         depthLimit = getProperty(PROBLEM_DEPTH_DESCRIPTOR);
-        return super.visit(node, data);
+        super.visit(node, ctx);
+        return null;
     }
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if (depth + 1 == depthLimit) {
-            asCtx(data).addViolation(node);
+            ctx.addViolation(node);
             // return early so that if-else chains are only reported once
-            return data;
+            return null;
         }
         // deep ifs in if condition are highly unlikely, but possible via lambdas
-        node.getCondition().acceptVisitor(this, data);
+        node.getCondition().acceptVisitor(this, ctx);
         depth++;
-        node.getThenBranch().acceptVisitor(this, data);
+        node.getThenBranch().acceptVisitor(this, ctx);
         depth--;
         ASTStatement elseBranch = node.getElseBranch();
         if (elseBranch != null) {
             int elseIncrement = elseBranch instanceof ASTIfStatement ? 0 : 1;
             depth += elseIncrement;
-            elseBranch.acceptVisitor(this, data);
+            elseBranch.acceptVisitor(this, ctx);
             depth -= elseIncrement;
         }
-        return data;
+        return null;
     }
 }

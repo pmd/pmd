@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  *
@@ -21,16 +22,17 @@ public class UseIndexOfCharRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
+        RuleContext ctx = (RuleContext) data;
         if ("indexOf".equals(node.getMethodName()) || "lastIndexOf".equals(node.getMethodName())) {
             if (TypeTestUtil.isA(String.class, node.getQualifier())
                 && node.getArguments().size() >= 1) { // there are two overloads of each
                 ASTExpression arg = node.getArguments().get(0);
                 if (arg instanceof ASTStringLiteral && ((ASTStringLiteral) arg).getConstValue().length() == 1) {
-                    asCtx(data).addViolation(node);
+                    ctx.addViolation(node);
                 }
             }
         }
-        return data;
+        return null;
     }
 
 }

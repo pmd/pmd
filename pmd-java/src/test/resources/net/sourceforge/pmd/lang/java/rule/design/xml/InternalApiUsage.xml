@@ -230,6 +230,59 @@ public final class Parent {
     </test-code>
 
     <test-code>
+        <description>#7279 VisibleForTesting field from the same record</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package other.lib;
+import com.google.common.annotations.VisibleForTesting;
+
+public record Version(String value) {
+
+    @VisibleForTesting
+    public static final String DEFAULT_VALUE = "1.0";
+
+    public Version() {
+        this(DEFAULT_VALUE);
+    }
+
+    @VisibleForTesting
+    static Version parse(String value) {
+        return new Version(value.isEmpty() ? Version.DEFAULT_VALUE : value);
+    }
+
+    public static Version of(String value) {
+        return parse(value);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7279 VisibleForTesting members from the same enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package other.lib;
+import com.google.common.annotations.VisibleForTesting;
+
+public enum Color {
+    RED, GREEN;
+
+    @VisibleForTesting
+    static final Color DEFAULT = RED;
+
+    @VisibleForTesting
+    static Color fallback() {
+        return DEFAULT;
+    }
+
+    public static Color of(String name) {
+        return name == null ? fallback() : valueOf(name);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>VisibleForTesting from different class</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>

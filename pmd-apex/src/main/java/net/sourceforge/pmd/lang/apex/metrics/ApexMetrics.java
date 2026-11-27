@@ -45,6 +45,8 @@ public final class ApexMetrics {
      * <ul>
      *  <li>Methods have a base complexity of 1.
      *  <li>+1 for every control flow statement (if, catch, throw, do, while, for, break, continue) and conditional expression (?:).
+     *  <li>+1 for every value or type matched by a switch {@code when} block.
+     *      {@code when else} does not count.
      *  <li>else, finally and default do not count;
      *  <li>+1 for every boolean operator ({@code &&}, {@code ||}) in
      *  the guard condition of a control flow statement. That’s because
