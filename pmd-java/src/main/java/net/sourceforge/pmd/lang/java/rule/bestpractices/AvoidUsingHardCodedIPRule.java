@@ -47,7 +47,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
     private static final String IPV4_REGEXP = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";
 
     // Uses IPv4 pattern, but changes the groups to be non-capture
-    private static final String IPV6_REGEXP = "(?:(?:[0-9a-fA-F]{1,4})?\\:)+(?:[0-9a-fA-F]{1,4}|"
+    private static final String IPV6_REGEXP = "(?:(?:[0-9a-fA-F]{1,4})?\\:)++(?:[0-9a-fA-F]{1,4}|"
         + IPV4_REGEXP.replace("(", "(?:") + ")?";
 
     private static final Pattern IPV4_PATTERN = Pattern.compile("^" + IPV4_REGEXP + "$");
