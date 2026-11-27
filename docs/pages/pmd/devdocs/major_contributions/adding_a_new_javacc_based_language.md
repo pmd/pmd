@@ -57,7 +57,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     The grammar files are placed in directory `src/main/javacc`.
 *   There is nothing preventing any other parser implementation, as long as you have some way to convert an input
     stream into an AST tree. Doing it as a JJT simplifies maintenance down the road.
-*   See this link for reference: [https://javacc.java.net/doc/JJTree.html](https://javacc.java.net/doc/JJTree.html)
+*   See this link for reference: [https://javacc.github.io/javacc/documentation/jjtree.html](https://javacc.github.io/javacc/documentation/jjtree.html)
 
 ### 3.  Create AST node classes
 *   For each AST node that your parser can generate, there should be a class

@@ -1182,7 +1182,7 @@ The NPath complexity of a method is the number of acyclic execution paths throug
 While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
 full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
 it multiplies the complexity of statements in the same block. For more details on the calculation, see the
-documentation {% jdoc java::lang.java.metrics.JavaMetrics#NPATH %}.
+documentation {% jdoc java::lang.java.metrics.JavaMetrics#NPATH_COMP %}.
 
 A threshold of 200 is generally considered the point where measures should be taken to reduce
 complexity and increase readability.
@@ -1191,9 +1191,9 @@ complexity and increase readability.
         <example>
             <![CDATA[
 public class Foo {
-  public static void bar() { // Ncss = 252: reported!
+  public static void bar() { // NPath = 336: reported!
     boolean a, b = true;
-    try { // 2 * 2 + 2 = 6
+    try { // 2 * 2 * 2 = 8 (try and catch blocks multiply)
       if (true) { // 2
         List buz = new ArrayList();
       }
@@ -1202,7 +1202,7 @@ public class Foo {
         List buz = new ArrayList();
       }
     } catch(Exception e) {
-      if (true) { // 2
+      if (true) { // * 2
         e.printStackTrace();
       }
     }

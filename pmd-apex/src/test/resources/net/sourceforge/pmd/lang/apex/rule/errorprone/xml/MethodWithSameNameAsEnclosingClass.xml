@@ -33,4 +33,29 @@ public interface Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Report only the method identifier, not the body #5906</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    Integer foo(double x,
+                double y) {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Report only the method identifier, not the body, without parameters #5906</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    Integer foo() {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
