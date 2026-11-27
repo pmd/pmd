@@ -24,6 +24,7 @@ sidebar: pmd_sidebar
 > For executing the Designer (`pmd designer`) using [OpenJDK](https://jdk.java.net) or Java 11+, you need 
 > additionally [JavaFX](https://gluonhq.com/products/javafx/). Download it, extract it and set the environment 
 > variable `JAVAFX_HOME` pointing at that directory.
+> Java 9 and 10 are not supported. See [The rule designer](pmd_userdocs_extending_designer_reference.html).
 
 
 ### Installation
