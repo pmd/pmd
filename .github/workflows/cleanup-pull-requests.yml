@@ -1,0 +1,224 @@
+name: Cleanup Pull Request Reports
+on:
+  schedule:
+    # weekly, on Sunday at 03:17 UTC
+    - cron: '17 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Only list the stale reports, but do not delete anything'
+        type: boolean
+        default: false
+      retention-days:
+        description: 'Number of days after a PR has been closed, before its reports are deleted'
+        type: number
+        default: 14
+
+permissions:
+  pull-requests: read # query state of pull requests
+
+concurrency:
+  group: cleanup-pull-requests
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    # only run in the official pmd repo, where we have access to the secrets and not on forks
+    if: ${{ github.repository == 'pmd/pmd' }}
+    runs-on: ubuntu-slim
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: eu-central-1
+      BUCKET: pmd-pull-requests
+      # Token required for GH CLI:
+      GH_TOKEN: ${{ github.token }}
+      DRY_RUN: ${{ inputs.dry-run || false }}
+      RETENTION_DAYS: ${{ inputs.retention-days || 14 }}
+    steps:
+      - name: Bucket usage (before)
+        run: |
+          set -u
+          listing="${RUNNER_TEMP}/listing-before.txt"
+          # "aws s3 ls" exits with 1 if the bucket is empty
+          rc=0
+          aws s3 ls "s3://${BUCKET}" --recursive > "${listing}" || rc=$?
+          if [ "${rc}" -ne 0 ] && { [ "${rc}" -ne 1 ] || [ -s "${listing}" ]; }; then
+            echo "::error::Listing s3://${BUCKET} failed with exit code ${rc}"
+            exit 1
+          fi
+
+          # line format: "<date> <time> <size> <key>"
+          read -r objects bytes < <(awk '{ n++; s += $3 } END { printf "%d %.0f\n", n, s }' "${listing}")
+
+          # size and object count per pr-<N> folder: "<N>\t<bytes>\t<objects>"
+          awk '{
+                 split($4, p, "/")
+                 if (p[1] ~ /^pr-[0-9]+$/) { k = substr(p[1], 4); b[k] += $3; c[k]++ }
+               }
+               END { for (k in b) printf "%s\t%.0f\t%d\n", k, b[k], c[k] }' "${listing}" \
+            | sort -n > "${RUNNER_TEMP}/pr-sizes.tsv"
+          pr_folders="$(wc -l < "${RUNNER_TEMP}/pr-sizes.tsv")"
+
+          echo "BEFORE_OBJECTS=${objects}" >> "${GITHUB_ENV}"
+          echo "BEFORE_BYTES=${bytes}" >> "${GITHUB_ENV}"
+          echo "BEFORE_PR_FOLDERS=${pr_folders}" >> "${GITHUB_ENV}"
+
+          summary="### Bucket usage before cleanup
+
+          | Bucket | Objects | Size | PR folders |
+          |--------|--------:|-----:|-----------:|
+          | s3://${BUCKET} | ${objects} | $(numfmt --to=iec-i --suffix=B -- "${bytes}") | ${pr_folders} |
+          "
+          echo "${summary}"
+          echo "${summary}" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Find and delete stale reports
+        run: |
+          set -u
+          cutoff="$(date -u -d "${RETENTION_DAYS} days ago" +%s)"
+          echo "Removing reports of PRs closed before $(date -u -d "@${cutoff}" -Is) (retention: ${RETENTION_DAYS} days, dry-run: ${DRY_RUN})"
+
+          declare -A pr_bytes pr_objects
+          prs=()
+          while IFS=$'\t' read -r number bytes objects; do
+            prs+=("${number}")
+            pr_bytes["${number}"]="${bytes}"
+            pr_objects["${number}"]="${objects}"
+          done < "${RUNNER_TEMP}/pr-sizes.tsv"
+
+          # Query the state of the PRs in batches of 100 using GraphQL aliases.
+          # Fields are separated by \u001f (unit separator), so that empty fields are preserved by "read".
+          states="${RUNNER_TEMP}/pr-states.txt"
+          : > "${states}"
+          unresolved=0
+          for ((i = 0; i < ${#prs[@]}; i += 100)); do
+            query="query { repository(owner: \"${GITHUB_REPOSITORY_OWNER}\", name: \"${GITHUB_REPOSITORY#*/}\") {"
+            for number in "${prs[@]:i:100}"; do
+              query+=" pr${number}: pullRequest(number: ${number}) { number state closedAt mergedAt title }"
+            done
+            query+=" } }"
+
+            # gh exits with non-zero, if the response contains any errors (e.g. a PR number can't be resolved),
+            # but it still prints the partial data.
+            response="$(gh api graphql -f query="${query}")" || true
+            if ! jq -e '.data.repository' > /dev/null 2>&1 <<< "${response}"; then
+              echo "::error::Querying the state of the pull requests failed: ${response}"
+              exit 1
+            fi
+            for key in $(jq -r '.data.repository | to_entries[] | select(.value == null) | .key' <<< "${response}"); do
+              echo "::warning::Could not determine the state of ${key/pr/PR #} - skipping it"
+              unresolved=$((unresolved + 1))
+            done
+            jq -r '.data.repository | to_entries[] | select(.value != null) | .value
+                   | [.number, .state, (.closedAt // ""), (.mergedAt // ""), (.title | gsub("[|]"; "\\|") | gsub("\u001f"; " "))]
+                   | map(tostring) | join("\u001f")' <<< "${response}" >> "${states}"
+          done
+
+          kept_open=0
+          kept_recent=0
+          removed=0
+          removed_bytes=0
+          failed=0
+          rows=""
+          while IFS=$'\x1f' read -r number state closed_at merged_at title; do
+            if [ "${state}" = "OPEN" ] || [ -z "${closed_at}" ]; then
+              kept_open=$((kept_open + 1))
+              continue
+            fi
+            if [ "$(date -u -d "${closed_at}" +%s)" -gt "${cutoff}" ]; then
+              kept_recent=$((kept_recent + 1))
+              continue
+            fi
+
+            if [ -n "${merged_at}" ]; then status="merged"; else status="closed"; fi
+            bytes="${pr_bytes[${number}]}"
+            objects="${pr_objects[${number}]}"
+            result=""
+            if [ "${DRY_RUN}" != "true" ]; then
+              echo "Removing s3://${BUCKET}/pr-${number}/ (${objects} objects, ${bytes} bytes)"
+              if ! aws s3 rm "s3://${BUCKET}/pr-${number}/" --recursive --only-show-errors; then
+                echo "::error::Failed to remove s3://${BUCKET}/pr-${number}/"
+                failed=$((failed + 1))
+                result=" ❌ failed"
+              fi
+            else
+              echo "Would remove s3://${BUCKET}/pr-${number}/ (${objects} objects, ${bytes} bytes)"
+            fi
+            if [ -z "${result}" ]; then
+              removed=$((removed + 1))
+              removed_bytes=$((removed_bytes + bytes))
+            fi
+            rows+="| [#${number}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${number})${result} | ${title} | ${status} | ${closed_at} | ${objects} | $(numfmt --to=iec-i --suffix=B -- "${bytes}") |"$'\n'
+          done < "${states}"
+
+          if [ "${DRY_RUN}" = "true" ]; then
+            heading="### Stale reports (dry-run, nothing deleted)"
+            removed_label="Would be removed"
+          else
+            heading="### Removed stale reports"
+            removed_label="Removed"
+          fi
+          {
+            echo "${heading}"
+            echo ""
+            echo "Reports of PRs closed more than ${RETENTION_DAYS} days ago (before $(date -u -d "@${cutoff}" -Is))."
+            echo ""
+            echo "| PR folders | Count |"
+            echo "|------------|------:|"
+            echo "| Checked | ${#prs[@]} |"
+            echo "| Kept (open) | ${kept_open} |"
+            echo "| Kept (closed within the last ${RETENTION_DAYS} days) | ${kept_recent} |"
+            echo "| Skipped (state unknown) | ${unresolved} |"
+            echo "| ${removed_label} | ${removed} ($(numfmt --to=iec-i --suffix=B -- "${removed_bytes}")) |"
+            echo "| Failed | ${failed} |"
+            echo ""
+            if [ -n "${rows}" ]; then
+              echo "| PR | Title | State | Closed at | Objects | Size |"
+              echo "|----|-------|-------|-----------|--------:|-----:|"
+              echo -n "${rows}"
+            else
+              echo "None"
+            fi
+            echo ""
+          } | tee -a "${GITHUB_STEP_SUMMARY}"
+
+          if [ "${failed}" -gt 0 ]; then
+            exit 1
+          fi
+
+      - name: Bucket usage (after)
+        if: ${{ !cancelled() && env.BEFORE_BYTES != '' }}
+        run: |
+          set -u
+          if [ "${DRY_RUN}" = "true" ]; then
+            summary="### Bucket usage after cleanup
+
+          Dry-run: nothing has been deleted, the bucket usage is unchanged.
+          "
+          else
+            listing="${RUNNER_TEMP}/listing-after.txt"
+            rc=0
+            aws s3 ls "s3://${BUCKET}" --recursive > "${listing}" || rc=$?
+            if [ "${rc}" -ne 0 ] && { [ "${rc}" -ne 1 ] || [ -s "${listing}" ]; }; then
+              echo "::error::Listing s3://${BUCKET} failed with exit code ${rc}"
+              exit 1
+            fi
+            read -r objects bytes < <(awk '{ n++; s += $3 } END { printf "%d %.0f\n", n, s }' "${listing}")
+            pr_folders="$(awk '{ split($4, p, "/"); if (p[1] ~ /^pr-[0-9]+$/ && !(p[1] in f)) { f[p[1]] = 1; n++ } } END { print n + 0 }' "${listing}")"
+
+            summary="### Bucket usage after cleanup
+
+          | | Objects | Size | PR folders |
+          |-|--------:|-----:|-----------:|
+          | Before | ${BEFORE_OBJECTS} | $(numfmt --to=iec-i --suffix=B -- "${BEFORE_BYTES}") | ${BEFORE_PR_FOLDERS} |
+          | After | ${objects} | $(numfmt --to=iec-i --suffix=B -- "${bytes}") | ${pr_folders} |
+          | Difference | $((objects - BEFORE_OBJECTS)) | $(numfmt --to=iec-i --suffix=B -- "$((bytes - BEFORE_BYTES))") | $((pr_folders - BEFORE_PR_FOLDERS)) |
+          "
+          fi
+          echo "${summary}"
+          echo "${summary}" >> "${GITHUB_STEP_SUMMARY}"

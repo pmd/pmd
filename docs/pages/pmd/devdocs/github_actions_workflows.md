@@ -5,7 +5,7 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: July 2026 (7.27.0)
+last_updated: November 2026 (7.30.0)
 ---
 
 > [!NOTE]
@@ -106,8 +106,10 @@ Both the "docs-artifact" and the "pmd-regression-tester" artifact are uploaded t
 called **pmd-pull-requests**. This bucket is served via AWS Cloudfront (for having TLS) under
 the URL <https://pull-requests.pmd-code.org>. Note, there is no directory listing. The results
 of each pull request are uploaded under the folders "pr-{PR_NUMBER}/{PR_SHA}/docs" and "pr-{PR_NUMBER}/{PR_SHA}/regression",
-respectively. The data in the S3 bucket is available for 60 days, after that the files are removed
-automatically (hopefully). Since the head SHA of the PR is included in the URL, an updated PR will upload
+respectively. The workflow [Cleanup Pull Request Reports](#cleanup-pull-request-reports)
+removes the files of a pull request 14 days after it has been closed or merged. As a fallback, in case
+this workflow doesn't run, the S3 bucket is configured to remove files automatically after 120 days.
+Since the head SHA of the PR is included in the URL, an updated PR will upload
 new versions of the artifacts. Otherwise, Cloudfront's cache might prevent us from seeing the
 updated artifacts.
 
@@ -147,6 +149,112 @@ The reasons, why we don't want to have the pages there indexed: They are short-l
 temporary. These temporary created documentation pages should not end up in any search result.
 This also helps to avoid unnecessary traffic and load for both the hosting side and the
 crawling side.
+
+## PR Automation
+
+* Builds: <https://github.com/pmd/pmd/actions/workflows/pr-automation.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/pr-automation.yml>
+* Builds: <https://github.com/pmd/pmd/actions/workflows/pr-automation-apply.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/pr-automation-apply.yml>
+
+These two workflows automate some housekeeping tasks for pull requests. Both only run in the
+repository pmd/pmd (not on forks) and use the small runner image `ubuntu-slim` to save resources.
+
+We don't use the event `pull_request_target`, as it's easy to accidentally run untrusted code with
+elevated permissions. Instead, the automation is split into two workflows:
+
+1. **PR Automation** (`pr-automation.yml`) is triggered by `pull_request` for the types
+   `opened`, `reopened`, `synchronize` and `closed` (a merged pull request is a closed pull request with
+   the flag "merged"). It runs without any secrets and only with read permissions. It has two jobs:
+   * "PR Info" stores the pull request number in the artifact "pr-automation".
+   * "Allow edits by maintainers" checks, whether the option "Allow edits by maintainers" is enabled
+     for pull requests from forks. If not, this check fails. The check queries the current state of
+     the pull request via GitHub API, so that the contributor can enable the option and simply re-run the
+     failed check. This job doesn't run for closed pull requests.
+2. **PR Automation Apply** (`pr-automation-apply.yml`) is triggered via `workflow_run`, when "PR Automation"
+   is completed (with success or failure). It runs in the context of our own repository and uses the
+   secrets `PMD_ACTIONS_HELPER_CLIENT_ID` and `PMD_ACTIONS_HELPER_PRIVATE_KEY` to create a temporary
+   token via [create-github-app-token](https://github.com/actions/create-github-app-token), which can
+   add comments and update the pull request. It doesn't check out any code.
+   The pull request number from the artifact is untrusted: It is validated to be a number and
+   the head SHA of the pull request must match the head SHA of the triggering workflow run. All other
+   information about the pull request is queried freshly via GitHub API.
+
+Depending on the state of the pull request, the following tasks are executed:
+
+* **Open pull request: "Allow edits by maintainers"**: Maintainers might want to push to a pull request
+  before merging it, e.g. to update the release notes, merge the latest changes from main or rerun
+  the regression tests. Therefore, the option "Allow edits by maintainers" should be enabled.
+  If it is not enabled for a pull request from a fork, a comment is added that asks the contributor
+  to enable it. Forks that are owned by an organization don't provide this option at all, so
+  in that case the comment asks to create a new pull request from a fork in a personal account.
+  There is only one such comment per pull request: once the option is enabled (and the check
+  is re-run or a new commit is pushed), the comment is hidden as "resolved". If the option is disabled again
+  later, the same comment is shown again.
+* **Merged pull request: Assignee**: The maintainer who merged the pull request is set as the (only) assignee.
+  Any other assignees are replaced. That way, maintainers can easily find the pull requests
+  they merged. It also indicates ownership: The merger finally accepted the change and is responsible for
+  maintaining it (of course with the help of others). For attribution, the author of the pull request is used.
+* **Merged pull request: Milestone**: A merged pull request must be assigned to a milestone. The expected
+  milestone is determined from the version in pom.xml of the base branch (without "-SNAPSHOT"). This
+  version must also be the lowest (next) open milestone with a version-like title (x.y.z).
+  * No milestone assigned, and the expected milestone could be determined: The milestone is set.
+  * No milestone assigned, but pom.xml and the lowest open milestone don't agree: A comment asks the merger
+    to assign the milestone manually.
+  * Milestone already assigned and correct: Nothing is done.
+  * Milestone already assigned, but not the expected one: The milestone is not changed. A comment
+    asks the merger to double-check it.
+* **Closed (not merged) pull request: Milestone**: A closed pull request must not have a milestone. If
+  it has one, the milestone is removed and a comment is added. That way, maintainers can verify this,
+  e.g. if the pull request has actually been merged outside the GitHub UI and therefore appears as closed.
+
+All comments are "sticky": Each comment contains a hidden marker (an HTML comment like
+`<!-- pmd-pr-automation:milestone -->`). If a comment with this marker created by our GitHub App
+already exists, it is updated instead of creating a new one. That way, re-runs don't create duplicate comments.
+The comments are created and updated directly via the [GitHub REST API](https://docs.github.com/en/rest/issues/comments)
+using [GitHub's CLI](https://cli.github.com/manual/) (`gh api`). Hiding and unhiding the "Allow edits by maintainers"
+comment is done via the GraphQL mutations `minimizeComment` and `unminimizeComment`.
+
+Note: Pull requests from first-time contributors might require approval before workflows are run. In that
+case, the automation runs only after the approval.
+
+## Cleanup Pull Request Reports
+
+* Builds: <https://github.com/pmd/pmd/actions/workflows/cleanup-pull-requests.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/cleanup-pull-requests.yml>
+
+This workflow removes stale documentation previews and regression tester reports from the AWS S3 bucket
+**pmd-pull-requests**, which have been uploaded by [Publish Results from Pull Requests](#publish-results-from-pull-requests).
+This avoids wasting space, as we have many pull requests.
+
+It runs once a week (scheduled on Sunday) and can also be started manually. When started manually,
+the input "dry-run" only lists the stale reports without deleting anything, and the input "retention-days"
+(default: 14) defines how many days after a pull request has been closed its reports are kept.
+
+The workflow works as follows:
+
+1. It lists the whole bucket via AWS CLI and reports the used space (number of objects, size) in the job summary.
+2. For each folder "pr-{PR_NUMBER}" in the bucket, the state of the pull request is determined using
+   [GitHub's CLI](https://cli.github.com/manual/) and the GraphQL API (in batches of 100 pull requests,
+   using the automatic "GITHUB_TOKEN" with the permission "pull-requests: read").
+   If a pull request has been closed or merged more than 14 days ago, the complete folder "pr-{PR_NUMBER}"
+   (docs and regression reports of all SHAs) is deleted. Open pull requests are not touched. If the state
+   of a pull request can't be determined, it is skipped. The removed folders are listed in the job summary.
+3. At the end, the used space of the bucket is listed again and compared with the value from the beginning.
+
+It needs the same **secrets** as "Publish Results from Pull Requests":
+
+* AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID
+* AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY
+
+The AWS user of this access key needs the following **AWS S3 permissions** on the bucket **pmd-pull-requests**:
+
+* `s3:ListBucket` on `arn:aws:s3:::pmd-pull-requests`: to list the bucket ("aws s3 ls") and to find the
+  files to delete ("aws s3 rm --recursive").
+* `s3:DeleteObject` on `arn:aws:s3:::pmd-pull-requests/*`: to delete the files.
+
+Both permissions are included in the permission policy described below
+in [Secrets and Variables](#repository-pmdpmd).
 
 ## Publish Snapshot
 
@@ -303,7 +411,8 @@ See <https://github.com/organizations/pmd/settings/secrets/actions>
   create a temporary GitHub token, that has more permissions to access other repositories.
   This is used to trigger the workflow in pmd/docker from pmd/pmd to create and upload a new docker image and
   also in "publish-snapshot" to push to repository pmd/pmd-eclipse-plugin-p2-site during the build
-  of pmd/pmd-eclipse-plugin.  
+  of pmd/pmd-eclipse-plugin. "Publish Results from Pull Requests" and "PR Automation Apply" use it to add comments
+  and update pull requests.  
   A new private key can be generated through GitHub organization settings.
 
 * `PMD_CI_GPG_PASSPHRASE` and `PMD_CI_GPG_PRIVATE_KEY`: That's the secret GPG key used to sign our releases,
@@ -325,8 +434,10 @@ See <https://github.com/pmd/pmd/settings/secrets/actions>
 * `AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID` and `AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY`: Used by
   "Publish Results From Pull Request" to upload the regression report and documentation to the AWS S3
   bucket "pmd-pull-requests": http://pmd-pull-requests.s3-website.eu-central-1.amazonaws.com/.
+  They are also used by "Cleanup Pull Request Reports" to remove stale reports from this bucket.
   This access key corresponds to the user "arn:aws:iam::624352026855:user/pmd-pull-requests", which is
   granted write access to this bucket via the following permission policy:
+
 
   ```json
   {
@@ -349,6 +460,10 @@ See <https://github.com/pmd/pmd/settings/secrets/actions>
     ]
   }
   ```
+  The workflows need these permissions:
+  * "Publish Results From Pull Request": `s3:PutObject` (and `s3:List*` for "aws s3 sync").
+  * "Cleanup Pull Request Reports": `s3:List*` (includes `s3:ListBucket`) and `s3:DeleteObject`.
+
   New access key/users need to be created via AWS.
 
 ### Repository pmd/docker
