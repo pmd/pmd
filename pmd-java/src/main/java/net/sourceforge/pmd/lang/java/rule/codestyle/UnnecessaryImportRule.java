@@ -91,8 +91,14 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
      * @exception package.class label
      */
 
-    /* package.class#member(param, param) */
-    private static final String TYPE_PART_GROUP = "((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?";
+    /*
+     * regex to match "package.class#member(param, param)"
+     *
+     * fullname will be "package.class". Uses possessive quantifiers (*+) to prevent backtracking.
+     * params will be "param, param" (without parentheses)
+     */
+    private static final String TYPE_PART_GROUP =
+             "(?<fullname>\\p{Alpha}\\w*+(?:\\.\\p{Alpha}\\w*+)*+)?(?:#\\w*+(?:\\((?<params>[\\w.,\\s\\[\\]]*+)\\))?+)?+";
 
     private static final Pattern SEE_PATTERN = Pattern.compile("@see\\s+" + TYPE_PART_GROUP);
 
@@ -105,7 +111,13 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final Pattern EXCEPTION_PATTERN = Pattern.compile("@exception\\s+(\\p{Alpha}\\w*)");
 
-    /* // @link substring="a" target="package.class#member(param, param)" */
+    /*
+     * Java 18, JEP 413: Code Snippets in Java API Documentation
+     * 
+     * https://openjdk.org/jeps/413
+     * 
+     * // @link substring="a" target="package.class#member(param, param)"
+     */
     private static final Pattern LINK_IN_SNIPPET = Pattern
         .compile("//\\s*@link\\s+(?:.*?)?target=[\"']?" + TYPE_PART_GROUP + "[\"']?");
 

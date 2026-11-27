@@ -4,13 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 class SymbolTableResolverTest extends BaseParserTest {
     @Test
@@ -46,5 +51,29 @@ class SymbolTableResolverTest extends BaseParserTest {
         ASTRecordComponent component = record.getRecordComponents()
                 .children(ASTRecordComponent.class).firstOrThrow();
         assertNotNull(((ASTClassType) component.getTypeNode()).getReferencedSym());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "new StringReader(text) {};",
+        "new StringReader(text);",
+        "{ String content = text; yield new StringReader(content) {}; }"
+    })
+    void switchPatternVariableTypeShouldBeResolvedBeforeConstructorInference(String arm) {
+        ASTCompilationUnit compilationUnit = java.withDefaultVersion("21").parse(
+                "import java.io.Reader;\n"
+                        + "import java.io.StringReader;\n"
+                        + "class Repro {\n"
+                        + "    Reader readerFor(Object value) {\n"
+                        + "        return switch (value) {\n"
+                        + "            case String text -> " + arm + "\n"
+                        + "            default -> Reader.nullReader();\n"
+                        + "        };\n"
+                        + "    }\n"
+                        + "}\n");
+        ASTConstructorCall constructor = compilationUnit.descendants(ASTConstructorCall.class)
+                .crossFindBoundaries().firstOrThrow();
+        assertFalse(constructor.getOverloadSelectionInfo().isFailed());
+        assertTrue(TypeTestUtil.isExactlyA(String.class, constructor.getArguments().get(0)));
     }
 }
