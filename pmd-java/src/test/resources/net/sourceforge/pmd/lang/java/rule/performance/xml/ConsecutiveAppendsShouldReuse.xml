@@ -316,7 +316,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: first append in a bare block</description>
+        <description>#3775: first append in a bare block</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
@@ -330,7 +330,7 @@ class BareFirstAppender {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: append after a declaration in a bare block</description>
+        <description>#3775: append after a declaration in a bare block</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
@@ -344,7 +344,7 @@ class BareNextAppender {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: nested bare blocks preserve consecutive append locations</description>
+        <description>#3775: nested bare blocks preserve consecutive append locations</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,7</expected-linenumbers>
         <code><![CDATA[
@@ -363,7 +363,7 @@ class NestedBareAppenders {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: assignment followed by an append in a bare block</description>
+        <description>#3775: assignment followed by an append in a bare block</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
@@ -377,7 +377,7 @@ class AssignedBareAppender {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: if branches remain separate with mixed block forms</description>
+        <description>#3775: if branches remain separate with mixed block forms</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class ConditionalAppenders {
@@ -401,7 +401,7 @@ class ConditionalAppenders {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: do not leave loop, try, synchronized, lambda or switch bodies</description>
+        <description>#3775: do not leave loop, try, synchronized, lambda or switch bodies</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class BoundedAppenders {
@@ -445,7 +445,7 @@ class BoundedAppenders {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: do not flatten blocks with other statements</description>
+        <description>#3775: do not flatten blocks with other statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class InterveningAppenders {
@@ -474,7 +474,7 @@ class InterveningAppenders {
     </test-code>
 
     <test-code>
-        <description>#3775 regression: different variables and a block-local declaration stay separate</description>
+        <description>#3775: different variables and a block-local declaration stay separate</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class DistinctAppenders {
