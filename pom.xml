@@ -1140,15 +1140,9 @@
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-test-junit</artifactId>
+                <artifactId>kotlin-test-junit5</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.kotest</groupId>
@@ -1449,6 +1443,7 @@
         <module>pmd-jsp</module>
         <module>pmd-julia</module>
         <module>pmd-kotlin</module>
+        <module>pmd-lang-dummy</module>
         <module>pmd-lang-test</module>
         <module>pmd-matlab</module>
         <module>pmd-modelica</module>

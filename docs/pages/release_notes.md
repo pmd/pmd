@@ -40,6 +40,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7328](https://github.com/pmd/pmd/issues/7328): \[java] CollapsibleIfStatements: not reported when a bare block separates the two if statements
 * java-documentation
     * [#7057](https://github.com/pmd/pmd/issues/7057): \[java\] New rule: MarkdownJavadocBeforeJava23
+* java-performance
+    * [#3775](https://github.com/pmd/pmd/issues/3775): \[java\] ConsecutiveAppendsShouldReuse: False Negative when .append is wrapped by brace.
 
 ### 🚨️ API Changes
 
