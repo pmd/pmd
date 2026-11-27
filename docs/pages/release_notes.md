@@ -187,12 +187,92 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#7172](https://github.com/pmd/pmd/pull/7172): Fix #6655: Deprecate antlr4 generated lexers - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7175](https://github.com/pmd/pmd/pull/7175): \[core] Fix #5760: Honor relative paths in SARIF reports - [subotac](https://github.com/subotac) (@subotac)
+* [#7176](https://github.com/pmd/pmd/pull/7176): \[apex] Fix #4863: Count switch cases in cyclomatic complexity - [subotac](https://github.com/subotac) (@subotac)
+* [#7179](https://github.com/pmd/pmd/pull/7179): \[kotlin] Fix #7171: Support the ..< range operator (Kotlin 1.9) - [Andrew Hannah](https://github.com/ahannah9) (@ahannah9)
+* [#7181](https://github.com/pmd/pmd/pull/7181): \[core] chore: Report unprocessed files in DeterministicOutputListenerWrapper - [Shivam Maurya](https://github.com/shivampwm2020) (@shivampwm2020)
+* [#7192](https://github.com/pmd/pmd/pull/7192): \[java] Fix #7070: CheckResultSet under unrelated if and while conditions - [João Gabriel Alves Junior](https://github.com/Gabrieljr42) (@Gabrieljr42)
+* [#7195](https://github.com/pmd/pmd/pull/7195): \[doc] Remove unnecessary scrollbars - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#7196](https://github.com/pmd/pmd/pull/7196): \[apex] Fix #7108: Expose DML AccessMode as XPath attribute - [João Gabriel Alves Junior](https://github.com/Gabrieljr42) (@Gabrieljr42)
+* [#7198](https://github.com/pmd/pmd/pull/7198): \[java] Fix #6731: Support lombok.Builder (fix UnnecessaryFullyQualifiedName false positive) - [markxu](https://github.com/markjoin123) (@markjoin123)
+* [#7201](https://github.com/pmd/pmd/pull/7201): \[apex] Fix #7182: Expose the referenced type name on ClassRefExpression - [Lyin-OTTF](https://github.com/Lyin-OTTF) (@Lyin-OTTF)
+* [#7202](https://github.com/pmd/pmd/pull/7202): \[java] Fix #4531: MissingStaticMethodInNonInstantiatableClass false positive with multiple top-level classes - [markxu](https://github.com/markjoin123) (@markjoin123)
+* [#7217](https://github.com/pmd/pmd/pull/7217): \[java] Fix #7215: Handle qualified types from unresolved on-demand imports - [Eymen Onar](https://github.com/Eymenonar) (@Eymenonar)
+* [#7218](https://github.com/pmd/pmd/pull/7218): \[java] Fix #7144: Fix lambda block body compatibility - [Noor Ahmadi](https://github.com/noor-ahmadi) (@noor-ahmadi)
+* [#7225](https://github.com/pmd/pmd/pull/7225): \[java] Fix #7216: GuardLogStatement: accept logstash structured arguments - [Prince Jain](https://github.com/princejain756) (@princejain756)
+* [#7235](https://github.com/pmd/pmd/pull/7235): \[java] Fix #5016: UnusedAssignment: field may be read by a method call - [Vincent Potuček](https://github.com/Pankraz76) (@Pankraz76)
+* [#7237](https://github.com/pmd/pmd/pull/7237): \[apex] Fix #7236: ApexUnitTestShouldNotUseSeeAllDataTrue: Add reportConnectApi property - [David Schach](https://github.com/dschach) (@dschach)
+* [#7243](https://github.com/pmd/pmd/pull/7243): \[java] Lombok: don't double the `is` prefix of boolean getters - [Vincent Potuček](https://github.com/Pankraz76) (@Pankraz76)
+* [#7244](https://github.com/pmd/pmd/pull/7244): \[core] Fix #7240: Accept non-ASCII letters in Java binary and package names - [JohnnyXu](https://github.com/xubenqiang) (@xubenqiang)
+* [#7246](https://github.com/pmd/pmd/pull/7246): \[java] Fix #7116: Add ControlFlowInTest rule - [Michal Kollarčik](https://github.com/MichalKollarcik) (@MichalKollarcik)
+* [#7252](https://github.com/pmd/pmd/pull/7252): \[jsp] Fix #5092: Allow XML declaration and doctype after other content - [Daksh Tyagi](https://github.com/InnoxCodes) (@InnoxCodes)
+* [#7253](https://github.com/pmd/pmd/pull/7253): \[java] Fix #5798: NPath should not count && and || in plain value expressions - [Daksh Tyagi](https://github.com/InnoxCodes) (@InnoxCodes)
+* [#7255](https://github.com/pmd/pmd/pull/7255): \[dist] Ship ControlsFX 8 and 11 for the designer - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7256](https://github.com/pmd/pmd/pull/7256): \[doc] Fix deleted assertion rule names in PMD 7 release notes - [Greg Oledzki](https://github.com/greg-at-moderne) (@greg-at-moderne)
+* [#7257](https://github.com/pmd/pmd/pull/7257): \[cli] Refactor progress bar logic - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7258](https://github.com/pmd/pmd/pull/7258): \[doc] Remove pmd-commits mailing list from doc - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7263](https://github.com/pmd/pmd/pull/7263): \[apex] Fix #5669: Report ApexUnitTestMethodShouldHaveIsTestAnnotation only on the method name - [HawkForge](https://github.com/HawkForge) (@HawkForge)
+* [#7264](https://github.com/pmd/pmd/pull/7264): \[apex] Fix #5906: MethodWithSameNameAsEnclosingClass range is too broad - [HawkForge](https://github.com/HawkForge) (@HawkForge)
+* [#7280](https://github.com/pmd/pmd/pull/7280): \[java] Fix #7279: InternalApiUsage false positive in records and enums - [dodoshell](https://github.com/dodoshell) (@dodoshell)
+* [#7283](https://github.com/pmd/pmd/pull/7283): \[java] Fix #7275: Handle bare blocks in AvoidBranchingStatementAsLastInLoop - [kayokoi Zhang](https://github.com/wozhenbang2004) (@wozhenbang2004)
+* [#7286](https://github.com/pmd/pmd/pull/7286): \[doc] Add commercial support section - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7287](https://github.com/pmd/pmd/pull/7287): \[java] Fix #7277: Recognize rethrows through bare blocks - [João Gabriel Alves Junior](https://github.com/Gabrieljr42) (@Gabrieljr42)
+* [#7301](https://github.com/pmd/pmd/pull/7301): \[java] Prepare deprecation of asCtx in pmd-java (part of #4814) - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7303](https://github.com/pmd/pmd/pull/7303): \[core] Remove FileUtil.java - [Sören Glimm](https://github.com/UncleOwen) (@UncleOwen)
+* [#7311](https://github.com/pmd/pmd/pull/7311): \[java] Fix #6237: Deprecate AddEmptyString without replacement - [Amrit Kang](https://github.com/amritkang165) (@amritkang165)
+* [#7314](https://github.com/pmd/pmd/pull/7314): \[java] Fix #7313: Fold casts to boolean and boolean equality - [sary](https://github.com/saryn17) (@saryn17)
+* [#7334](https://github.com/pmd/pmd/pull/7334): \[doc] Fix dead links in the docs and README - [Mark Santos](https://github.com/markksantos) (@markksantos)
+* [#7344](https://github.com/pmd/pmd/pull/7344): \[cli] Fix hanging PmdCliTest under Windows with git bash - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7351](https://github.com/pmd/pmd/pull/7351): \[xml] refactor: move internal AST classes into package lang.xml.ast - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7368](https://github.com/pmd/pmd/pull/7368): chore: Store mvnw.cmd with CRLF as-is - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7369](https://github.com/pmd/pmd/pull/7369): \[doc] Improve issue templates using forms - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7370](https://github.com/pmd/pmd/pull/7370): \[ci] Add PR automation workflows - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7371](https://github.com/pmd/pmd/pull/7371): \[ci] Add workflow to clean up stale pull request reports - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#7375](https://github.com/pmd/pmd/pull/7375): \[java] Fix #2786: Exempt ConcurrentMap implementations from UseConcurrentHashMap - [kayokoi Zhang](https://github.com/wozhenbang2004) (@wozhenbang2004)
+* [#7396](https://github.com/pmd/pmd/pull/7396): \[java] UnnecessaryImport: Fix StackOverflowError for very long Javadoc references - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#7265](https://github.com/pmd/pmd/pull/7265): Bump PMD from 7.28.0 to 7.29.0
+* [#7288](https://github.com/pmd/pmd/pull/7288): chore(deps): bump ruby/setup-ruby from 1.335.0 to 1.336.0
+* [#7289](https://github.com/pmd/pmd/pull/7289): chore(deps): bump org.jacoco:jacoco-maven-plugin from 0.8.15 to 0.8.16
+* [#7290](https://github.com/pmd/pmd/pull/7290): chore(deps): bump csv from 3.3.6 to 3.3.7 in /docs
+* [#7291](https://github.com/pmd/pmd/pull/7291): chore(deps): bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.3 to 3.7.0
+* [#7292](https://github.com/pmd/pmd/pull/7292): chore(deps-dev): bump all-contributors-cli from 6.26.1 to 7.0.0
+* [#7293](https://github.com/pmd/pmd/pull/7293): chore(deps): bump com.puppycrawl.tools:checkstyle from 14.3.0 to 14.4.0
+* [#7316](https://github.com/pmd/pmd/pull/7316): chore(deps): bump actions/setup-java from 6.1.0 to 6.2.0
+* [#7317](https://github.com/pmd/pmd/pull/7317): chore(deps): bump ruby/setup-ruby from 1.336.0 to 1.338.0
+* [#7318](https://github.com/pmd/pmd/pull/7318): chore(deps): bump byte.buddy.version from 1.18.16 to 1.18.17
+* [#7319](https://github.com/pmd/pmd/pull/7319): chore(deps): bump crate-ci/typos from 1.51.1 to 1.52.0
+* [#7320](https://github.com/pmd/pmd/pull/7320): chore(deps-dev): bump com.google.guava:guava from 33.7.2-jre to 33.8.0-jre
+* [#7321](https://github.com/pmd/pmd/pull/7321): chore(deps-dev): bump net.logstash.logback:logstash-logback-encoder from 8.1 to 9.0
+* [#7322](https://github.com/pmd/pmd/pull/7322): chore(deps-dev): bump org.codehaus.mojo:versions-maven-plugin from 2.23.0 to 2.24.0
+* [#7324](https://github.com/pmd/pmd/pull/7324): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.26.5 to 0.27.0
+* [#7325](https://github.com/pmd/pmd/pull/7325): chore(deps): bump org.codehaus.mojo:build-helper-maven-plugin from 3.6.2 to 3.7.0
+* [#7326](https://github.com/pmd/pmd/pull/7326): chore(deps): bump org.jsoup:jsoup from 1.23.2 to 1.24.1
+* [#7350](https://github.com/pmd/pmd/pull/7350): chore(deps): bump addressable from 2.9.0 to 2.9.1 in /docs
+* [#7352](https://github.com/pmd/pmd/pull/7352): chore(deps): bump nokogiri from 1.19.4 to 1.19.5 in /.ci/files
+* [#7356](https://github.com/pmd/pmd/pull/7356): chore(deps): bump actions/setup-java from 6.2.0 to 6.3.0
+* [#7357](https://github.com/pmd/pmd/pull/7357): chore(deps): bump org.codehaus.mojo:build-helper-maven-plugin from 3.7.0 to 3.8.0
+* [#7358](https://github.com/pmd/pmd/pull/7358): chore(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.6.4 to 3.7.0
+* [#7359](https://github.com/pmd/pmd/pull/7359): chore(deps): bump org.apache.maven:apache-maven from 3.10.0 to 3.10.1
+* [#7360](https://github.com/pmd/pmd/pull/7360): chore(deps): bump org.apache.commons:commons-lang3 from 3.21.0 to 3.22.0
+* [#7361](https://github.com/pmd/pmd/pull/7361): chore(deps-dev): bump all-contributors-cli from 7.0.0 to 7.0.2
+* [#7362](https://github.com/pmd/pmd/pull/7362): chore(deps-dev): bump org.codehaus.mojo:versions-maven-plugin from 2.24.0 to 2.25.2
+* [#7363](https://github.com/pmd/pmd/pull/7363): chore(deps-dev): bump org.apache.maven.plugins:maven-help-plugin from 3.5.2 to 3.6.0
+* [#7364](https://github.com/pmd/pmd/pull/7364): chore(deps): bump crate-ci/typos from 1.52.0 to 1.52.2
+* [#7385](https://github.com/pmd/pmd/pull/7385): chore(deps): bump actions/create-github-app-token from 3.3.0 to 3.4.0
+* [#7386](https://github.com/pmd/pmd/pull/7386): chore(deps): bump ruby/setup-ruby from 1.338.0 to 1.343.0
+* [#7387](https://github.com/pmd/pmd/pull/7387): chore(deps): bump org.apache.maven:apache-maven from 3.10.1 to 3.10.2
+* [#7389](https://github.com/pmd/pmd/pull/7389): chore(deps-dev): bump all-contributors-cli from 7.0.2 to 7.0.3
+* [#7390](https://github.com/pmd/pmd/pull/7390): chore(deps-dev): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.8.0.7211 to 5.9.0.7382
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 84 commits
+* 73 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
-
