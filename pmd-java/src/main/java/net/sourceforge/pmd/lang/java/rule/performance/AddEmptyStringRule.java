@@ -17,6 +17,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 
+/**
+ * @deprecated Since 7.30.0. This rule has no replacement, as its performance claim is not valid on modern JDKs.
+ */
+@Deprecated
 public class AddEmptyStringRule extends AbstractJavaRulechainRule {
 
     public AddEmptyStringRule() {

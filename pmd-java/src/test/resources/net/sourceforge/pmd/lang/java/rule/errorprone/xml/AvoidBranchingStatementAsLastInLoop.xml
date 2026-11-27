@@ -412,4 +412,21 @@ class AvoidBranchingStatement{
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7275: a return remains unconditional through nested bare blocks</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+class NestedReturn {
+    String value() {
+        for (;;) {
+            { {
+                return "value";
+            } }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

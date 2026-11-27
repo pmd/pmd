@@ -119,4 +119,180 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi defaults to true: a test class that calls ConnectApi is still reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData = true)
+public class ChatterUsersTest {
+    @IsTest
+    static void testGetUser() {
+        ConnectApi.UserDetail me = ConnectApi.ChatterUsers.getUser(null, 'me');
+        Assert.areEqual(UserInfo.getUserId(), me.id, 'wrong user');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: class-level SeeAllData=true is not reported when a method of the class calls ConnectApi, a helper method too</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest(SeeAllData = true)
+public class ChatterUsersTest {
+    @IsTest
+    static void testGetUser() {
+        Assert.areEqual(UserInfo.getUserId(), getMe().id, 'wrong user');
+    }
+
+    private static ConnectApi.UserDetail getMe() {
+        return ConnectApi.ChatterUsers.getUser(null, 'me');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: method-level SeeAllData=true is not reported when the test method calls ConnectApi, in any case</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+public class ChatterUsersTest {
+    @IsTest(seeAlLData = TRUE)
+    static void testGetUser() {
+        connectapi.userdetail me = CONNECTAPI.chatterusers.GETUSER(null, 'me');
+        Assert.areEqual(UserInfo.getUserId(), me.id, 'wrong user');
+    }
+
+    @IsTest(SeeAllData = 'true')
+    static void testGetComment() {
+        ConnectApi.Comment c = ConnectApi.ChatterFeeds.getComment(null, '0D7000000000000');
+        Assert.isNotNull(c, 'comment not found');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: method-level SeeAllData=true is reported when only a helper method calls ConnectApi, because only the test method itself is searched</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+public class ChatterUsersTest {
+    @IsTest(SeeAllData = true)
+    static void testGetUser() {
+        Assert.areEqual(UserInfo.getUserId(), getMe().id, 'wrong user');
+    }
+
+    private static ConnectApi.UserDetail getMe() {
+        return ConnectApi.ChatterUsers.getUser(null, 'me');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: a ConnectApi call in another test method does not exempt a test method that only queries</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+public class T {
+    @IsTest(SeeAllData = true)
+    static void soqlOnly() {
+        List<Account> a = [SELECT Id FROM Account];
+        Assert.isFalse(a.isEmpty(), 'no accounts');
+    }
+
+    @IsTest
+    static void usesConnectApi() {
+        ConnectApi.UserDetail me = ConnectApi.ChatterUsers.getUser(null, 'me');
+        Assert.isNotNull(me, 'user not found');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: a setTest method does not need SeeAllData=true, so a class that only registers test data is reported</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData = true)
+private class NewsFeedClassTest {
+    @IsTest
+    static void doTest() {
+        ConnectApi.FeedElementPage testPage = new ConnectApi.FeedElementPage();
+        testPage.elements = new List<ConnectApi.FeedItem>{ new ConnectApi.FeedItem(), new ConnectApi.FeedItem() };
+        ConnectApi.ChatterFeeds.setTestGetFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me', testPage);
+        Test.startTest();
+        Assert.areEqual(2, NewsFeedClass.getNewsFeedCount(), 'wrong count');
+        Test.stopTest();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: a regular method whose test data is registered by its setTest method does not need SeeAllData=true either</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+@IsTest
+private class NewsFeedTest {
+    @IsTest(SeeAllData = true)
+    static void doTest() {
+        ConnectApi.FeedElementPage testPage = new ConnectApi.FeedElementPage();
+        ConnectApi.ChatterFeeds.setTestGetFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me', testPage);
+        ConnectApi.FeedElementPage page = connectapi.chatterfeeds.GetFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me');
+        Assert.areEqual(testPage, page, 'wrong page');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: a ConnectApi call with no registered test data still exempts the test, beside a setTest call</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+private class NewsFeedTest {
+    @IsTest(SeeAllData = true)
+    static void doTest() {
+        ConnectApi.ChatterFeeds.setTestGetFeedElementsFromFeed(null, ConnectApi.FeedType.News, 'me', new ConnectApi.FeedElementPage());
+        ConnectApi.UserDetail me = ConnectApi.ChatterUsers.getUser(null, 'me');
+        Assert.isNotNull(me, 'user not found');
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7236 reportConnectApi=false: SeeAllData=true is still reported when the class does not call ConnectApi</description>
+        <rule-property name="reportConnectApi">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,3</expected-linenumbers>
+        <code><![CDATA[
+@IsTest(SeeAllData = true)
+public class AccountServiceTest {
+    @IsTest(SeeAllData = true)
+    public static void testAccounts() {
+        ConnectApiHelper.doSomething();
+        ConnectApi.FeedElementPage page = new ConnectApi.FeedElementPage();
+        List<Account> accounts = [SELECT Id FROM Account LIMIT 1];
+        Assert.isFalse(accounts.isEmpty(), 'no accounts');
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
