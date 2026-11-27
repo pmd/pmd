@@ -12,14 +12,19 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     <rule name="InvalidDependencyTypes"
           language="pom"
           since="5.4"
-          message="By default, Maven only recognizes the following types: pom, jar, maven-plugin, ejb, war, ear, rar, par."
+          message="Dependency type is not included in the configured valid types."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_pom_errorprone.html#invaliddependencytypes">
         <description>
 If you use an invalid dependency type in the dependency management section, Maven doesn't fail. Instead,
 the entry is just ignored, which might have the effect, that the wrong version of the dependency is used.
 
-The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear, rar, par.
+The default `validTypes` list includes dependency types supported by Maven 3 and Maven 4,
+including `bom`, `classpath-jar`, `modular-jar`, `fatjar`, `processor`, `classpath-processor`,
+`modular-processor`, and `test-java-source`.
+
+Override `validTypes` to support additional types provided by extensions, or to restrict the
+allowed types for a particular Maven version.
         </description>
         <priority>3</priority>
         <properties>
@@ -31,7 +36,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
                 </value>
             </property>
             <property name="validTypes"
-                      value="pom,jar,maven-plugin,ejb,war,ear,rar,par"
+                      value="pom,jar,maven-plugin,ejb,war,ear,rar,par,ejb-client,test-jar,java-source,javadoc,bom,classpath-jar,modular-jar,fatjar,processor,classpath-processor,modular-processor,test-java-source"
                       type="List[String]"
                       description="Set of valid types."/>
         </properties>
@@ -45,7 +50,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
       <groupId>org.jboss.arquillian</groupId>
       <artifactId>arquillian-bom</artifactId>
       <version>${arquillian.version}</version>
-      <type>bom</type> <!-- not a valid type ! 'pom' is ! -->
+      <type>invalid-type</type> <!-- not a recognized dependency type -->
       <scope>import</scope>
     </dependency>
     ...

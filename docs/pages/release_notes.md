@@ -61,6 +61,11 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
     Nor does a call to the regular method whose test data a `setTest...` call in the same test registers
     (see [#7236](https://github.com/pmd/pmd/issues/7236)).
 
+* The POM rule {% rule pom/errorprone/InvalidDependencyTypes %} now accepts Maven 4 dependency types,
+    including `bom`, `classpath-jar`, `modular-jar`, and annotation processor types, by default.
+    The default list also includes `ejb-client`, `test-jar`, `java-source`, and `javadoc`.
+    The `validTypes` property can still be used to customize the accepted types.
+
 #### Deprecated Rules
 *   The Java rule {% rule java/performance/AddEmptyString %} is deprecated without replacement
     and will be removed with PMD 8.0.0. Its performance claim is not valid on modern JDKs:
@@ -114,6 +119,8 @@ For the changes, see [PMD Designer Changelog (7.30.0)](https://github.com/pmd/pm
     * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
 * misc
     * [#6655](https://github.com/pmd/pmd/issues/6655): Deprecate ANTLR generated lexer implementation classes
+* pom-errorprone
+    * [#7393](https://github.com/pmd/pmd/issues/7393): \[maven] InvalidDependencyTypes: False positive with Maven 4 and compile-plugin 4.x
 
 ### 🚨️ API Changes and Deprecations
 * apex

@@ -45,7 +45,7 @@
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${arquillian.version}</version>
-                <type>bom</type>
+                <type>custom-type</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
@@ -55,8 +55,8 @@
     </test-code>
 
     <test-code>
-        <description>Simple POM file with bom</description>
-        <rule-property name="validTypes">bom</rule-property>
+        <description>Custom dependency type is allowed when configured</description>
+        <rule-property name="validTypes">custom-type</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -71,8 +71,192 @@
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${arquillian.version}</version>
-                <type>bom</type>
+                <type>custom-type</type>
                 <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Archive and POM dependency types are valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example</groupId>
+    <artifactId>dependency-types</artifactId>
+    <version>1.0</version>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-pom</artifactId>
+                <version>1.0</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-jar</artifactId>
+                <version>1.0</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-maven-plugin</artifactId>
+                <version>1.0</version>
+                <type>maven-plugin</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-ejb</artifactId>
+                <version>1.0</version>
+                <type>ejb</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-ejb-client</artifactId>
+                <version>1.0</version>
+                <type>ejb-client</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-war</artifactId>
+                <version>1.0</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-ear</artifactId>
+                <version>1.0</version>
+                <type>ear</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-rar</artifactId>
+                <version>1.0</version>
+                <type>rar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-par</artifactId>
+                <version>1.0</version>
+                <type>par</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-test-jar</artifactId>
+                <version>1.0</version>
+                <type>test-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-java-source</artifactId>
+                <version>1.0</version>
+                <type>java-source</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-javadoc</artifactId>
+                <version>1.0</version>
+                <type>javadoc</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7393 Maven 4 dependency types are valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example</groupId>
+    <artifactId>dependency-types</artifactId>
+    <version>1.0</version>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-bom</artifactId>
+                <version>1.0</version>
+                <type>bom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-classpath-jar</artifactId>
+                <version>1.0</version>
+                <type>classpath-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-modular-jar</artifactId>
+                <version>1.0</version>
+                <type>modular-jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-fatjar</artifactId>
+                <version>1.0</version>
+                <type>fatjar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-processor</artifactId>
+                <version>1.0</version>
+                <type>processor</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-classpath-processor</artifactId>
+                <version>1.0</version>
+                <type>classpath-processor</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-modular-processor</artifactId>
+                <version>1.0</version>
+                <type>modular-processor</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-test-java-source</artifactId>
+                <version>1.0</version>
+                <type>test-java-source</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Configured valid types replace the defaults</description>
+        <rule-property name="validTypes">jar</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example</groupId>
+    <artifactId>dependency-types</artifactId>
+    <version>1.0</version>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-jar</artifactId>
+                <version>1.0</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>example-bom</artifactId>
+                <version>1.0</version>
+                <type>bom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
