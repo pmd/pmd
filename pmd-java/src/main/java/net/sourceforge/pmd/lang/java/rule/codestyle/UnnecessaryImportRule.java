@@ -91,8 +91,14 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
      * @exception package.class label
      */
 
-    /* package.class#member(param, param) */
-    private static final String TYPE_PART_GROUP = "((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?";
+    /*
+     * regex to match "package.class#member(param, param)"
+     *
+     * fullname will be "package.class". Uses possessive quantifiers (*+) to prevent backtracking.
+     * params will be "param, param" (without parentheses)
+     */
+    private static final String TYPE_PART_GROUP =
+             "(?<fullname>\\p{Alpha}\\w*+(?:\\.\\p{Alpha}\\w*+)*+)?(?:#\\w*+(?:\\((?<params>[\\w.,\\s\\[\\]]*+)\\))?+)?+";
 
     private static final Pattern SEE_PATTERN = Pattern.compile("@see\\s+" + TYPE_PART_GROUP);
 
@@ -105,7 +111,13 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     private static final Pattern EXCEPTION_PATTERN = Pattern.compile("@exception\\s+(\\p{Alpha}\\w*)");
 
-    /* // @link substring="a" target="package.class#member(param, param)" */
+    /*
+     * Java 18, JEP 413: Code Snippets in Java API Documentation
+     * 
+     * https://openjdk.org/jeps/413
+     * 
+     * // @link substring="a" target="package.class#member(param, param)"
+     */
     private static final Pattern LINK_IN_SNIPPET = Pattern
         .compile("//\\s*@link\\s+(?:.*?)?target=[\"']?" + TYPE_PART_GROUP + "[\"']?");
 
@@ -287,11 +299,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTAmbiguousName node, Object data) {
-        // ambiguous name means the symbol table could not resolve the first name
-
-        // only consider static imports
-        boolean onlyStatic = !(node.getParent() instanceof ASTClassType);
-        recordFailedTypeResWithName(node, node.getFirstToken().getImage(), onlyStatic);
+        // Incomplete auxclasspath: an ambiguous name means the symbol table could not resolve the first name.
+        // It may be a type (from a type import or a static member type import) or a static field,
+        // so it may come from any import, static or not.
+        recordFailedTypeResWithName(node, node.getFirstToken().getImage(), false);
         return null;
     }
 
@@ -304,9 +315,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (!foundNamedImport) {
             LOG.debug("+ Since no such named import can be found, all {}on-demand-imports will be marked as used", target);
 
-            if (onlyStatics) {
-                staticImportsOnDemand.clear();
-            } else {
+            staticImportsOnDemand.clear();
+            if (!onlyStatics) {
                 typeImportsOnDemand.clear();
             }
         }
@@ -319,9 +329,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
+                // Incomplete auxclasspath: overload resolution failed. todo we're erring towards FPs
                 // don't try further, but still visit all ASTClassType nodes in the AST.
                 recordFailedTypeResWithName(node, node.getMethodName(), true);
-                return super.visit(node, ctx); // todo we're erring towards FPs
+                return super.visit(node, ctx);
             }
 
             ShadowChainIterator<JMethodSig, ScopeInfo> scopeIter =
@@ -355,6 +366,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             checkScopeChain(false, (JFieldSymbol) sym, scopeIter, ts -> true, true);
         }
         if (sym == null) {
+            // Incomplete auxclasspath: the unresolved variable may come from a static import
             recordFailedTypeResWithName(node, node.getName(), true);
         }
         return null;
@@ -440,7 +452,8 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             // maybe we're importing a subclass of the container.
             TypeSystem ts = symbolOwner.getTypeSystem();
             JClassSymbol importedContainer = ts.getClassSymbol(it.node.getImportedName());
-            return importedContainer == null // insufficient classpath, err towards FNs
+            // Incomplete auxclasspath: if the imported container is unresolved, err towards FNs
+            return importedContainer == null
                 || TypeTestUtil.isA(ts.rawType(symbolOwner), ts.rawType(importedContainer));
         }
     }

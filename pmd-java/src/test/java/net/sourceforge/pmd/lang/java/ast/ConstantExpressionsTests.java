@@ -65,8 +65,10 @@ class ConstantExpressionsTests extends BaseParserTest {
             isConst("(int) 2f", 2),
             isConst("(short) 2f", (short) 2f),
             isConst("(long) 2f", 2L),
+            isConst("(boolean) true", true),
 
             // those are type errors
+            notConst("(boolean) 1"),
             notConst("(Object) 1"),
             notConst("(String) null"),
             notConst("(char) null"),
@@ -290,11 +292,15 @@ class ConstantExpressionsTests extends BaseParserTest {
             isConst("2 != 2d", false),
             isConst("'x' != (int) 'x'", false),
             isConst("'x' == (int) 'x'", true),
+            isConst("true == true", true),
+            isConst("false == false", true),
+            isConst("true != false", true),
 
 
             notConst("\"\" == \"\""),
             notConst("\"\" != \"\""),
-            notConst("2 != \"\"")
+            notConst("2 != \"\""),
+            notConst("true == 1")
         );
     }
 

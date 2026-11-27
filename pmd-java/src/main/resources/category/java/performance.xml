@@ -79,7 +79,7 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
     [not(.//BreakStatement[not(parent::SwitchFallthroughBranch)])]
     [not(.//ThrowStatement)]
     [not(.//ReturnStatement)]
-    [count(Block//AssignmentExpression[@Operator='=']
+    [count((Block | ExpressionStatement)//AssignmentExpression[@Operator='=']
                                       (: no nested arrays or method calls as array index :)
                                       [count(ArrayAccess[not(.//ArrayAccess)]
                                                         [not(.//MethodCall)])=2]

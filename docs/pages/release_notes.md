@@ -26,57 +26,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
-*   The new Java rule {% rule java/bestpractices/ControlFlowInTest %}
-    reports control flow in test methods that can obscure which assertions
-    are executed. It checks conditionals, switch statements and expressions,
-    explicit throw statements, try statements with catch clauses,
-    and plain try-finally statements.
-    Loops are allowed by default and can be reported by setting
-    `allowLoops` to `false`.
-
-#### Deprecated Rules
-*   The Java rule {% rule java/performance/AddEmptyString %} is deprecated without replacement
-    and will be removed with PMD 8.0.0. Its performance claim is not valid on modern JDKs:
-    constant string concatenations are evaluated at compile time, and replacing concatenation
-    with `toString()` or `String.valueOf()` does not generally improve performance.
-    The rule is excluded when referencing the whole Performance category, but explicit rule
-    references continue to work during the deprecation period.
+*   The new Java rule {% rule java/documentation/MarkdownJavadocBeforeJava23 %}
+    reports comments starting with `///`, so they can be reviewed before
+    switching to Java 23. The rule stays off for Java 23 and later.
 
 ### 🐛️ Fixed Issues
-* apex
-    * [#7182](https://github.com/pmd/pmd/issues/7182): \[apex] Expose the referenced type name on ClassRefExpression for XPath rules
-* apex-design
-    * [#4863](https://github.com/pmd/pmd/issues/4863): \[apex] CyclomaticComplexity: False negative with switch statements
 * java
-    * [#7144](https://github.com/pmd/pmd/issues/7144): \[java] Lambda block body that cannot complete normally is not treated as value-compatible
-    * [#7240](https://github.com/pmd/pmd/issues/7240): \[java] "Not a Java binary name" when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped 
-* java-bestpractices
-    * [#7116](https://github.com/pmd/pmd/issues/7116): \[java] New rule: ControlFlowInTest
-    * [#7216](https://github.com/pmd/pmd/issues/7216): \[java] GuardLogStatement: false positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(...)
+    * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor 
 * java-design
-    * [#7279](https://github.com/pmd/pmd/issues/7279): \[java] InternalApiUsage: false positive when static filed is used in constructor
-    * [#7277](https://github.com/pmd/pmd/issues/7277): \[java] AvoidRethrowingException: false negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead
-* java-errorprone
-    * [#4531](https://github.com/pmd/pmd/issues/4531): \[java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes
-    * [#7275](https://github.com/pmd/pmd/issues/7275): \[java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block
-* java-performance
-    * [#6327](https://github.com/pmd/pmd/issues/6327): \[java] AddEmptyString: Deprecate rule because performance claim is not valid anymore
-* kotlin
-    * [#7168](https://github.com/pmd/pmd/pull/7168): \[kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak
-    * [#7171](https://github.com/pmd/pmd/issues/7171): \[kotlin] Support the ..< range operator (Kotlin 1.9)
+    * [#7328](https://github.com/pmd/pmd/issues/7328): \[java] CollapsibleIfStatements: not reported when a bare block separates the two if statements
+* java-documentation
+    * [#7057](https://github.com/pmd/pmd/issues/7057): \[java\] New rule: MarkdownJavadocBeforeJava23
 
 ### 🚨️ API Changes
-#### Experimental API
-* kotlin
-    * {% jdoc kotlin::lang.kotlin.ast.KtVariableDeclarationAttributes %} now implements
-      {% jdoc kotlin::lang.kotlin.ast.HasTypeName %}, so `VariableDeclaration` nodes have a `@TypeName` attribute.
-      This covers property and for-loop variables, lambda parameters, and each component of a
-      destructuring declaration (`val (a, b) = ...`, `for ((a, b) in ...)`, `{ (a, b) -> ... }`).
-      The XPath functions `pmd-kotlin:typeIs`, `pmd-kotlin:typeIsExactly` and `pmd-kotlin:isNullable`
-      support `VariableDeclaration` nodes as well.
-    * A destructuring `PropertyDeclaration` (e.g. `val (a, b) = Pair(1, "x")`) no longer has a `@TypeName`.
-      Before, it wrongly got the type of the first component. To find destructured variables
-      by type, query the component nodes instead: `//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]`.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
