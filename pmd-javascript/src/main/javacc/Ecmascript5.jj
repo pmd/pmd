@@ -80,6 +80,22 @@ SPECIAL_TOKEN : {
     < SINGLE_LINE_COMMENT: "//" (~["\n", "\r", "\u2028", "\u2029"])* (<EOL>)* >
 }
 
+/* 12.5 (ES2023) - HASHBANG COMMENTS */
+<DEFAULT>
+SPECIAL_TOKEN : {
+    < HASHBANG_COMMENT: "#!" (~["\n", "\r", "\u2028", "\u2029"])* >
+    {
+        // a hashbang comment is only valid at the very start of the file
+        if (matchedToken.getRegion().getStartOffset() != 0) {
+            throw new net.sourceforge.pmd.lang.ast.LexException(
+                matchedToken.getReportLocation().getStartLine(),
+                matchedToken.getReportLocation().getStartColumn(),
+                input_stream.getTokenDocument().getTextDocument().getFileId(),
+                "Hashbang comment is only allowed at the start of the file", null);
+        }
+    }
+}
+
 <DEFAULT,NOREGEXP,NOEOL>
 MORE :
 {

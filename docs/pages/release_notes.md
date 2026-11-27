@@ -39,6 +39,8 @@ This is a {{ site.pmd.release_type }} release.
     * [#7328](https://github.com/pmd/pmd/issues/7328): \[java] CollapsibleIfStatements: not reported when a bare block separates the two if statements
 * java-documentation
     * [#7057](https://github.com/pmd/pmd/issues/7057): \[java\] New rule: MarkdownJavadocBeforeJava23
+* javascript
+    * [#1756](https://github.com/pmd/pmd/issues/1756): \[javascript] Support files containing a shebang with CPD
 
 ### 🚨️ API Changes
 
