@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -34,7 +35,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTExpressionStatement node, Object data) {
         RuleContext ctx = (RuleContext) data;
-        Node nextSibling = node.asStream().followingSiblings().first();
+        Node nextSibling = getNextStatement(node);
         if (nextSibling instanceof ASTExpressionStatement) {
             @Nullable JVariableSymbol variable = getVariableAppended(node);
             if (variable != null) {
@@ -53,7 +54,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
-        Node nextSibling = node.asStream().followingSiblings().first();
+        Node nextSibling = getNextStatement(node);
         if (nextSibling instanceof ASTExpressionStatement) {
             @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
             if (nextVariable != null) {
@@ -67,6 +68,22 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         return null;
     }
 
+
+    private @Nullable Node getNextStatement(Node node) {
+        Node current = node;
+        // Only cross single-statement blocks nested in another block, not control-flow boundaries.
+        while (current.getParent() instanceof ASTBlock
+                && current.getParent().getNumChildren() == 1
+                && current.getParent().getParent() instanceof ASTBlock) {
+            current = current.getParent();
+        }
+
+        Node next = current.getNextSibling();
+        while (next instanceof ASTBlock && next.getNumChildren() == 1) {
+            next = next.getChild(0);
+        }
+        return next;
+    }
 
     private @Nullable JVariableSymbol getVariableAppended(ASTExpressionStatement node) {
         ASTExpression expr = node.getExpr();
