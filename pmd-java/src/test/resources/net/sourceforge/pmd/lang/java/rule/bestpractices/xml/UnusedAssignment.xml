@@ -4626,7 +4626,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] Field assigned in a loop condition is used after a return #7310</description>
+        <description>[java] Field assigned in a loop condition is not reported as unused #7310</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
