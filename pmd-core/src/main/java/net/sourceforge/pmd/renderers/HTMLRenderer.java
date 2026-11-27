@@ -81,7 +81,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     }
 
     /**
-     * @deprecated since 7.30.0
+     * @deprecated since 7.31.0
      */
     @Deprecated
     public void renderBody(PrintWriter writer, Report report) throws IOException {
