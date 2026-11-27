@@ -3885,6 +3885,9 @@ the same as interfaces can be configured with the property <code class="language
 <p>Exposing internal arrays to the caller violates object encapsulation since elements can be
 removed or replaced outside of the object that owns it. It is safer to return a copy of the array.</p>
 
+<p>Private methods are not reported, since an array returned from a private
+method does not leave the object that owns it.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/MethodReturnsInternalArrayRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.MethodReturnsInternalArrayRule</a></p>
 
 <p><strong>Example(s):</strong></p>
