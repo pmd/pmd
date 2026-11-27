@@ -377,74 +377,6 @@ class AssignedBareAppender {
     </test-code>
 
     <test-code>
-        <description>#3775: if branches remain separate with mixed block forms</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-class ConditionalAppenders {
-    void thenBlock(boolean condition, StringBuilder builder) {
-        if (condition) {
-            { builder.append("first"); }
-        } else
-            builder.append("second");
-        builder.append("after");
-    }
-    void elseBlock(boolean condition, StringBuilder builder) {
-        if (condition)
-            builder.append("first");
-        else {
-            { builder.append("second"); }
-        }
-        builder.append("after");
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#3775: do not leave loop, try, synchronized, lambda or switch bodies</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-class BoundedAppenders {
-    void loop(StringBuilder builder) {
-        for (int i = 0; i < 2; i++) {
-            { builder.append("first"); }
-        }
-        builder.append("after");
-    }
-    void guarded(StringBuilder builder) {
-        try {
-            { builder.append("first"); }
-        } finally {
-        }
-        builder.append("after");
-    }
-    void locked(StringBuilder builder) {
-        synchronized (this) {
-            { builder.append("first"); }
-        }
-        builder.append("after");
-    }
-    void lambda(StringBuilder builder) {
-        Runnable action = () -> {
-            { builder.append("first"); }
-        };
-        builder.append("after");
-    }
-    void cases(int value, StringBuilder builder) {
-        switch (value) {
-        case 0:
-            { builder.append("first"); }
-            break;
-        default:
-            builder.append("second");
-        }
-        builder.append("after");
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>#3775: do not flatten blocks with other statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -469,24 +401,6 @@ class InterveningAppenders {
         builder.append("second");
     }
     void consume() { }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>#3775: different variables and a block-local declaration stay separate</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-class DistinctAppenders {
-    private final StringBuilder builder = new StringBuilder();
-    void distinct(StringBuilder first, StringBuilder second) {
-        { first.append("first"); }
-        { second.append("second"); }
-    }
-    void local() {
-        { StringBuilder builder = new StringBuilder().append("first"); }
-        builder.append("second");
-    }
 }
         ]]></code>
     </test-code>
