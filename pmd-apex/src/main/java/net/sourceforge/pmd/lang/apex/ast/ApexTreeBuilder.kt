@@ -243,7 +243,8 @@ class ApexTreeBuilder(private val task: ParserTask, private val proc: ApexLangua
                   /* internalName= */ "<invoke>",
                   /* parameterTypes= */ emptyList(),
                   /* returnType= */ "void",
-                 SourceLocation.UNKNOWN,
+                  /* sourceLocation= */ SourceLocation.UNKNOWN,
+                  /* identifier= */ null,
                 ).also{ it.setParent(this) }
                 // 3. Add the expected ASTModifier child node
                 buildModifiers(emptyList()).also { it.setParent(invokeMethod) }
