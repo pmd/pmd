@@ -432,8 +432,11 @@ public final class SymbolTableResolver {
 
             for (ASTSwitchBranch branch : node.getBranches()) {
                 ASTSwitchLabel label = branch.getLabel();
+                NodeStream<ASTPattern> patterns = label.children(ASTPattern.class);
+                // Inference in the guard or branch can need the pattern variable's type.
+                patterns.forEach(pattern -> setTopSymbolTableAndVisit(pattern, ctx));
                 // Collect all bindings. Composite label with bindings would be a compilation error.
-                BindSet bindings = label.children(ASTPattern.class)
+                BindSet bindings = patterns
                          .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
