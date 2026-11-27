@@ -14,8 +14,6 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import net.sourceforge.pmd.lang.rule.xpath.CommentNode;
-import net.sourceforge.pmd.lang.rule.xpath.TextNode;
 import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
 
 /**
@@ -23,17 +21,16 @@ import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapp
  */
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
-    private String xpathName = "dummyNode";
     private String image;
     private TextRegion region = TextRegion.caretAt(0);
 
     @Override
-    public void addChild(DummyNode child, int index) {
+    protected void addChild(DummyNode child, int index) {
         super.addChild(child, index);
     }
 
     @Override
-    public void setParent(DummyNode node) {
+    protected void setParent(DummyNode node) {
         super.setParent(node);
     }
 
@@ -42,18 +39,12 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         return region;
     }
 
-    public void setRegion(TextRegion region) {
+    void setRegion(TextRegion region) {
         this.region = region;
     }
 
-    /**
-     * Nodes with an image that starts with `#` also set the xpath name.
-     */
-    public void setImage(String image) {
+    void setImage(String image) {
         this.image = image;
-        if (image.startsWith("#")) {
-            xpathName = image;
-        }
     }
 
     @Override
@@ -68,7 +59,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
     @Override
     public String getXPathNodeName() {
-        return xpathName;
+        return "dummyNode";
     }
 
     /**
@@ -85,7 +76,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
         private AstInfo<DummyRootNode> astInfo;
 
-        public DummyRootNode(ParserTask task) {
+        DummyRootNode(ParserTask task) {
             this.astInfo = new AstInfo<>(task, this);
         }
 
@@ -102,36 +93,6 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         @Override
         public String getXPathNodeName() {
             return "dummyRootNode";
-        }
-    }
-
-    /**
-     * A text node, created for {@code (#text ...)}.
-     */
-    public static class DummyTextNode extends DummyNode implements TextNode {
-        @Override
-        public String getText() {
-            return getImage();
-        }
-
-        @Override
-        public String getXPathNodeName() {
-            return TextNode.super.getXPathNodeName();
-        }
-    }
-
-    /**
-     * A comment node, created for {@code (#comment ...)}.
-     */
-    public static class DummyCommentNode extends DummyNode implements CommentNode {
-        @Override
-        public String getData() {
-            return getImage();
-        }
-
-        @Override
-        public String getXPathNodeName() {
-            return CommentNode.super.getXPathNodeName();
         }
     }
 }

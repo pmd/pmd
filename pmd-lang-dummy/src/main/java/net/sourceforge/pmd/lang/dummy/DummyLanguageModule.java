@@ -8,18 +8,14 @@ import java.util.Objects;
 
 import net.sourceforge.pmd.cpd.AnyCpdLexer;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
-import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.dummy.DummyNode.DummyRootNode;
@@ -28,10 +24,16 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 
 /**
- * Dummy language used for testing PMD's tooling.
+ * Dummy language used for testing PMD's tooling (e.g. pmd-ant, pmd-cli, pmd-test).
  *
  * <p>The parser creates a tree of nodes that corresponds to the nesting structure
  * of parentheses in the text, see {@link #readLispNode(ParserTask)}.
+ *
+ * <p>Special behavior for testing error handling:
+ * <ul>
+ *     <li>The parser of the language version {@code parserThrows} always throws a {@link ParseException}.</li>
+ *     <li>The CPD lexer throws a lex exception, if the text contains {@link #CPD_THROW_LEX_EXCEPTION}.</li>
+ * </ul>
  */
 public class DummyLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
 
@@ -39,34 +41,18 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
     public static final String TERSE_NAME = "dummy";
     private static final String PARSER_THROWS = "parserThrows";
 
-    public static final String CPD_THROW_MALFORMED_SOURCE_EXCEPTION = ":throw_malformed_source_exception:";
     public static final String CPD_THROW_LEX_EXCEPTION = ":throw_lex_source_exception:";
-    public static final String CPD_THROW_OTHER_EXCEPTION = ":throw_other_exception:";
 
     public DummyLanguageModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy", "txt")
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy")
                               .addVersion("1.0")
-                              .addVersion("1.1")
                               .addVersion("1.2")
-                              .addVersion("1.3")
-                              .addVersion("1.4")
-                              .addVersion("1.5", "5")
-                              .addVersion("1.6", "6")
-                              .addDefaultVersion("1.7", "7")
-                              .addVersion(PARSER_THROWS)
-                              .addVersion("1.8", "8"), new Handler());
+                              .addDefaultVersion("1.7")
+                              .addVersion(PARSER_THROWS), new Handler());
     }
 
     public static DummyLanguageModule getInstance() {
         return (DummyLanguageModule) Objects.requireNonNull(LanguageRegistry.PMD.getLanguageByFullName(NAME));
-    }
-
-    @Override
-    public LanguagePropertyBundle newPropertyBundle() {
-        LanguagePropertyBundle bundle = super.newPropertyBundle();
-        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
-        bundle.definePropertyDescriptor(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
-        return bundle;
     }
 
     @Override
@@ -79,24 +65,8 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
                 TextPos2d lc = doc.lineColumnAtOffset(offset);
                 throw tokens.makeLexException(lc.getLine(), lc.getColumn(), "test exception", null);
             }
-            offset = text.indexOf(CPD_THROW_MALFORMED_SOURCE_EXCEPTION, 0);
-            if (offset != -1) {
-                FileLocation lc = doc.toLocation(TextRegion.caretAt(offset));
-                throw new MalformedSourceException("test exception", null, lc);
-            }
-            offset = text.indexOf(CPD_THROW_OTHER_EXCEPTION, 0);
-            if (offset != -1) {
-                throw new IllegalArgumentException("test exception");
-            }
             base.tokenize(doc, tokens);
         };
-    }
-
-    /**
-     * Returns the language version, whose parser always throws a {@link ParseException}.
-     */
-    public LanguageVersion getVersionWhereParserThrows() {
-        return getVersion(PARSER_THROWS);
     }
 
     private static final class Handler extends AbstractPmdLanguageVersionHandler {
@@ -127,7 +97,7 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
      * children "b" and "c". "x" is ignored. The node "a" is not the root
      * node, it has a {@link DummyRootNode} as parent, whose image is "".
      */
-    public static DummyRootNode readLispNode(ParserTask task) {
+    private static DummyRootNode readLispNode(ParserTask task) {
         final DummyRootNode root = new DummyRootNode(task);
         root.setRegion(task.getTextDocument().getEntireRegion());
 
@@ -137,14 +107,7 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '(') {
-                DummyNode node;
-                if (text.startsWith("#text", i + 1)) {
-                    node = new DummyNode.DummyTextNode();
-                } else if (text.startsWith("#comment", i + 1)) {
-                    node = new DummyNode.DummyCommentNode();
-                } else {
-                    node = new DummyNode();
-                }
+                DummyNode node = new DummyNode();
                 node.setParent(top);
                 top.addChild(node, top.getNumChildren());
                 // setup coordinates, temporary (will be completed when node closes)
