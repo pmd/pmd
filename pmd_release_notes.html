@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.30.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.31.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.30.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.31.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.30.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 27-November-2026</div>
+    <li class="sidebarTitle">PMD 7.31.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 28-December-2026</div>
     
     
     
@@ -2055,291 +2055,17 @@
     </details>
 
   
-<h2 id="27-november-2026---7300-snapshot">27-November-2026 - 7.30.0-SNAPSHOT</h2>
+<h2 id="28-december-2026---7310-snapshot">28-December-2026 - 7.31.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.30.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.31.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
-<h4 id="security-fixes">Security fixes</h4>
-<p>All known security vulnerabilities are described in full detail on the page
-<a href="pmd_about_security.html">PMD Security</a>. This release, the following
-security vulnerabilities were fixed:</p>
-<ul>
-  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-p8c4-pmh9-36vf">GHSA-p8c4-pmh9-36vf</a>:
-Uncontrolled recursion (StackOverflowError) in regex matching of several PMD rules for crafted input.<br />
-Several rules (<code class="language-plaintext highlighter-rouge">UnnecessaryImport</code>, <code class="language-plaintext highlighter-rouge">AvoidUsingHardCodedIP</code>, <code class="language-plaintext highlighter-rouge">VfUnescapeEl</code>) used regular expressions
-that could throw a <code class="language-plaintext highlighter-rouge">StackOverflowError</code> on crafted, very long input (for example a Javadoc comment,
-string literal or attribute value of a few kilobytes), which aborted the whole analysis run. The patterns
-now match in linear time without deep recursion, so such input no longer causes an error.<br />
-Affected versions: <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-core</code> &gt;= 7.0.0, &lt;= 7.29.0;
-<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-java</code> &gt;= 6.34.0, &lt;= 7.29.0;
-<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd:pmd-visualforce</code> &gt;= 5.6.0, &lt;= 7.29.0</li>
-</ul>
-
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-<p>This PMD release ships a new version of the pmd-designer.
-PMD’s binary distribution now ships ControlsFX 8 for Java 8 and ControlsFX 11 for OpenJFX and Java 11+.
-Java 9 and 10 are not supported.<br />
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.30.0">PMD Designer Changelog (7.30.0)</a>.</p>
-
-<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#controlflowintest"><code class="language-plaintext highlighter-rouge">ControlFlowInTest</code></a>
-reports control flow in test methods that can obscure which assertions
-are executed. It checks conditionals, switch statements and expressions,
-explicit throw statements, try statements with catch clauses,
-and plain try-finally statements.
-Loops are allowed by default and can be reported by setting
-<code class="language-plaintext highlighter-rouge">allowLoops</code> to <code class="language-plaintext highlighter-rouge">false</code>.</li>
-</ul>
-
-<h4 id="changed-rules">Changed Rules</h4>
-<ul>
-  <li>The Apex rule <a href="pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue"><code class="language-plaintext highlighter-rouge">ApexUnitTestShouldNotUseSeeAllDataTrue</code></a> has a new property
-  <code class="language-plaintext highlighter-rouge">reportConnectApi</code>. It defaults to <code class="language-plaintext highlighter-rouge">true</code>. Set it to <code class="language-plaintext highlighter-rouge">false</code>, and the rule does not report <code class="language-plaintext highlighter-rouge">seeAllData=true</code> on a
-  test class or test method that calls a <code class="language-plaintext highlighter-rouge">ConnectApi</code> method, since most <code class="language-plaintext highlighter-rouge">ConnectApi</code> methods require <code class="language-plaintext highlighter-rouge">seeAllData=true</code>
-  in tests. A call to a <code class="language-plaintext highlighter-rouge">setTest...</code> method does not stop the rule from reporting, because it only registers test data.
-  Nor does a call to the regular method whose test data a <code class="language-plaintext highlighter-rouge">setTest...</code> call in the same test registers
-  (see <a href="https://github.com/pmd/pmd/issues/7236">#7236</a>).</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_performance.html#addemptystring"><code class="language-plaintext highlighter-rouge">AddEmptyString</code></a> is deprecated without replacement
-and will be removed with PMD 8.0.0. Its performance claim is not valid on modern JDKs:
-constant string concatenations are evaluated at compile time, and replacing concatenation
-with <code class="language-plaintext highlighter-rouge">toString()</code> or <code class="language-plaintext highlighter-rouge">String.valueOf()</code> does not generally improve performance.
-The rule is excluded when referencing the whole Performance category, but explicit rule
-references continue to work during the deprecation period.</li>
-</ul>
 
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7108">#7108</a>: [apex] Expose DML AccessMode (<code class="language-plaintext highlighter-rouge">as user</code> / <code class="language-plaintext highlighter-rouge">as system</code>) for XPath rules</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7182">#7182</a>: [apex] Expose the referenced type name on ClassRefExpression for XPath rules</li>
-    </ul>
-  </li>
-  <li>apex-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5669">#5669</a>: [apex] ApexUnitTestMethodShouldHaveIsTestAnnotation: Violation range should only cover the method name</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7236">#7236</a>: [apex] ApexUnitTestShouldNotUseSeeAllDataTrue: False positive for test classes that call ConnectApi</li>
-    </ul>
-  </li>
-  <li>apex-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4863">#4863</a>: [apex] CyclomaticComplexity: False negative with switch statements</li>
-    </ul>
-  </li>
-  <li>apex-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5906">#5906</a>: [apex] MethodWithSameNameAsEnclosingClass: Violation range should only cover the method name</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5760">#5760</a>: [core] SarifRenderer does not respect relativizeRoots</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/7144">#7144</a>: [java] Lambda block body that cannot complete normally is not treated as value-compatible</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7240">#7240</a>: [java] “Not a Java binary name” when importing a class with non-ASCII (e.g. Japanese) letters in its name; the whole file is skipped</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7313">#7313</a>: [java] Casts to boolean and boolean equality are not folded as constant expressions</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5016">#5016</a>: [java] UnusedAssignment: False positive boolean flag for execution and reset in finally</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7070">#7070</a>: [java] CheckResultSet: False negative caused by unrelated if/while</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7116">#7116</a>: [java] New rule: ControlFlowInTest</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7216">#7216</a>: [java] GuardLogStatement: False positive on SLF4J parameterised calls whose arguments are wrapped with logstash value(…)</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6731">#6731</a>: [java] UnnecessaryFullyQualifiedName: False positive for lombok.Builder annotation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7215">#7215</a>: [java] UnnecessaryImport: False positive for on-demand imports with incomplete aux-classpath</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7396">#7396</a>: [java] UnnecessaryImport: Fix StackOverflowError for very long Javadoc references</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5798">#5798</a>: [java] NPathComplexity: Short-circuit operators outside of conditions counted as branches</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7277">#7277</a>: [java] AvoidRethrowingException: False negative if rethrow is wrapped in a block, ExceptionAsFlowControl false positive instead</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7279">#7279</a>: [java] InternalApiUsage: False positive when static field is used in constructor</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4531">#4531</a>: [java] MissingStaticMethodInNonInstantiatableClass: False positive with multiple top-level classes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7275">#7275</a>: [java] AvoidBranchingStatementAsLastInLoop: False negative when the statement is in a bare block</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2786">#2786</a>: [java] UseConcurrentHashMap: False positive for ConcurrentSkipListMap</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6327">#6327</a>: [java] AddEmptyString: Deprecate rule because performance claim is not valid anymore</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7327">#7327</a>: [java] AvoidArrayLoops: False negative for a copy loop whose body has no braces</li>
-    </ul>
-  </li>
-  <li>jsp
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5092">#5092</a>: [jsp] Parse error when <code class="language-plaintext highlighter-rouge">&lt;!DOCTYPE&gt;</code> or <code class="language-plaintext highlighter-rouge">&lt;?xml?&gt;</code> follows other content</li>
-    </ul>
-  </li>
-  <li>kotlin
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/pull/7168">#7168</a>: [kotlin] Add @<!-- -->TypeName to VariableDeclaration, fix destructuring type leak</li>
-      <li><a href="https://github.com/pmd/pmd/issues/7171">#7171</a>: [kotlin] Support the ..&lt; range operator (Kotlin 1.9)</li>
-    </ul>
-  </li>
-  <li>misc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6655">#6655</a>: Deprecate ANTLR generated lexer implementation classes</li>
-    </ul>
-  </li>
-</ul>
 
-<h3 id="️-api-changes-and-deprecations">🚨️ API Changes and Deprecations</h3>
-<ul>
-  <li>apex
-    <ul>
-      <li>DML statement nodes now expose <code class="language-plaintext highlighter-rouge">@AccessMode</code>.
-The attribute is always present. Its value is <code class="language-plaintext highlighter-rouge">IMPLICIT</code>, <code class="language-plaintext highlighter-rouge">USER_MODE</code>, or <code class="language-plaintext highlighter-rouge">SYSTEM_MODE</code>.
-<code class="language-plaintext highlighter-rouge">//DmlInsertStatement[@AccessMode='IMPLICIT']</code> and <code class="language-plaintext highlighter-rouge">//DmlInsertStatement[@AccessMode='SYSTEM_MODE']</code> select those statements.</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="experimental-api">Experimental API</h4>
-<ul>
-  <li>kotlin
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KtVariableDeclarationAttributes.html#"><code>KtVariableDeclarationAttributes</code></a> now implements
-<a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/HasTypeName.html#"><code>HasTypeName</code></a>, so <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> nodes have a <code class="language-plaintext highlighter-rouge">@TypeName</code> attribute.
-This covers property and for-loop variables, lambda parameters, and each component of a
-destructuring declaration (<code class="language-plaintext highlighter-rouge">val (a, b) = ...</code>, <code class="language-plaintext highlighter-rouge">for ((a, b) in ...)</code>, <code class="language-plaintext highlighter-rouge">{ (a, b) -&gt; ... }</code>).
-The XPath functions <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIs</code>, <code class="language-plaintext highlighter-rouge">pmd-kotlin:typeIsExactly</code> and <code class="language-plaintext highlighter-rouge">pmd-kotlin:isNullable</code>
-support <code class="language-plaintext highlighter-rouge">VariableDeclaration</code> nodes as well.</li>
-      <li>A destructuring <code class="language-plaintext highlighter-rouge">PropertyDeclaration</code> (e.g. <code class="language-plaintext highlighter-rouge">val (a, b) = Pair(1, "x")</code>) no longer has a <code class="language-plaintext highlighter-rouge">@TypeName</code>.
-Before, it wrongly got the type of the first component. To find destructured variables
-by type, query the component nodes instead: <code class="language-plaintext highlighter-rouge">//VariableDeclaration[pmd-kotlin:typeIs('kotlin.Int')]</code>.</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractDmlStatement.html#getRunAsMode()"><code>AbstractDmlStatement#getRunAsMode</code></a> has been deprecated. Use
-<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/AbstractDmlStatement.html#getAccessMode()"><code>getAccessMode</code></a> instead.</li>
-    </ul>
-  </li>
-  <li>coco
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-coco/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/coco/ast/CocoLexer.html#"><code>CocoLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>css
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-css/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/css/ast/CssLexer.html#"><code>CssLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>csharp
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-cs/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/cs/ast/CSharpLexer.html#"><code>CSharpLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>dart
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-dart/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/dart/ast/DartLexer.html#"><code>DartLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>gherkin
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-gherkin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/gherkin/ast/GherkinLexer.html#"><code>GherkinLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>go
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-go/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/go/ast/GolangLexer.html#"><code>GolangLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>javascript
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-javascript/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/typescript/ast/TypeScriptLexer.html#"><code>TypeScriptLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>julia
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-julia/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/julia/ast/JuliaLexer.html#"><code>JuliaLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>kotlin
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinBaseListener.html#"><code>KotlinBaseListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinLexer.html#"><code>KotlinLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-kotlin/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/kotlin/ast/KotlinListener.html#"><code>KotlinListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>lua
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lua/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/lua/ast/LuaLexer.html#"><code>LuaLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>rust
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-rust/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/rust/ast/RustLexer.html#"><code>RustLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>swift
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftBaseListener.html#"><code>SwiftBaseListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftLexer.html#"><code>SwiftLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-swift/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/swift/ast/SwiftListener.html#"><code>SwiftListener</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>tsql
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-tsql/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/tsql/ast/TSqlLexer.html#"><code>TSqlLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>xml
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XMLLexer.html#"><code>XMLLexer</code></a> has been deprecated. The class is an implementation detail and should have never been part of the public API.</li>
-    </ul>
-  </li>
-  <li>The generated <code class="language-plaintext highlighter-rouge">KotlinParser</code> and <code class="language-plaintext highlighter-rouge">SwiftParser</code> classes and their nested AST node classes are
-intentionally not deprecated yet. These classes still contain the public AST node types,
-which have no replacement API yet. They will be deprecated once we have decided how to handle
-the inner classes.</li>
-</ul>
-
-<h4 id="other-api-changes">Other API changes</h4>
-<ul>
-  <li>xml
-    <ul>
-      <li>The new class <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlRootNode.html#"><code>XmlRootNode</code></a> is the root node of the XML AST. It
-replaces the class <code class="language-plaintext highlighter-rouge">XmlParserImpl.RootXmlNode</code>, which was in an internal package.
-<a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlNode.html#getRoot()"><code>XmlNode#getRoot</code></a> now returns <code class="language-plaintext highlighter-rouge">XmlRootNode</code>.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.30.0-SNAPSHOT/net/sourceforge/pmd/lang/xml/ast/XmlParser.html#"><code>XmlParser</code></a> is now public and has moved from package
-<code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml</code> into <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.ast</code>, like the parsers of
-other languages.</li>
-      <li>The internal package <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.ast.internal</code> has been removed. Its classes
-are now package-private in <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.xml.ast</code>.</li>
-    </ul>
-  </li>
-</ul>
+<h3 id="️-api-changes">🚨️ API Changes</h3>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
