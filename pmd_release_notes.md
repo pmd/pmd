@@ -38,6 +38,8 @@ This is a minor release.
     * [#7057](https://github.com/pmd/pmd/issues/7057): \[java\] New rule: MarkdownJavadocBeforeJava23
 * java-performance
     * [#3775](https://github.com/pmd/pmd/issues/3775): \[java\] ConsecutiveAppendsShouldReuse: False Negative when .append is wrapped by brace.
+* java-security
+    * [#7329](https://github.com/pmd/pmd/issues/7329): \[java] InsecureCryptoIv / HardCodedCryptoKey: hard-coded field passed as `this.field` not reported
 
 ### 🚨️ API Changes
 
