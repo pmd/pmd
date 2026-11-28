@@ -114,6 +114,12 @@ public class OuterClass {
         <description>
 Constructors and methods receiving arrays should clone objects and store the copy.
 This prevents future changes from the user from affecting the original array.
+
+Note that the constructor of an enum is implicitly private and is therefore checked
+even though `allowPrivate` is true. An array or varargs parameter of such a
+constructor is only reported when an enum constant passes an existing array
+reference to it, because otherwise a fresh array is created for each enum
+constant.
         </description>
         <priority>3</priority>
         <example>

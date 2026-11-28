@@ -34,6 +34,7 @@ This is a {{ site.pmd.release_type }} release.
 * java
     * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor
 * java-bestpractices
+    * [#4870](https://github.com/pmd/pmd/issues/4870): \[java] ArrayIsStoredDirectly: False negative for an array stored in an enum constructor
     * [#7308](https://github.com/pmd/pmd/issues/7308): \[java\] MethodReturnsInternalArray: document that private methods are not checked 
     * [#7310](https://github.com/pmd/pmd/issues/7310): \[java] UnusedAssignment: i++ in a do-while condition reported as never used, unlike in a while
 * java-design
