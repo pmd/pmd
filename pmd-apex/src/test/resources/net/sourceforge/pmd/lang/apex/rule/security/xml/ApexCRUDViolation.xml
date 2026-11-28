@@ -1948,4 +1948,114 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5463 SOQL in property getter without user mode - violation expected, same as in a method</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>10,15</expected-linenumbers>
+        <code><![CDATA[
+public with sharing class MyClass {
+    private Id m_pid;
+
+    public MyClass(Id pid) {
+        m_pid = pid;
+    }
+
+    public List<ChildRecord__c> ChildRecords {
+        get {
+            return [SELECT Id, Name FROM ChildRecord__c WHERE ParentId = :m_pid];
+        }
+    }
+
+    public List<ChildRecord__c> queryChildRecords() {
+        return [SELECT Id, Name FROM ChildRecord__c WHERE ParentId = :m_pid];
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5463 SOQL in property getter with user mode - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class MyClass {
+    private Id m_pid;
+
+    public List<ChildRecord__c> ChildRecords {
+        get {
+            return [SELECT Id, Name FROM ChildRecord__c WHERE ParentId = :m_pid WITH USER_MODE];
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5463 SOQL in property getter with CRUD check - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class MyClass {
+    public List<Contact> Contacts {
+        get {
+            if (Contact.sObjectType.getDescribe().isAccessible()) {
+                return [SELECT Id, Name FROM Contact];
+            }
+            return null;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4019 SOQL in property setter without CRUD check - violation expected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String creditMethod;
+    public Id hourCreditTypeId {
+        get;
+        set {
+            this.hourCreditTypeId = value;
+            Hour_Credit_Type__c t = [SELECT Method__c FROM Hour_Credit_Type__c WHERE Id = :value];
+            this.creditMethod = t.Method__c;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4019 DML in property setter without CRUD check - violation expected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public Id contactId {
+        get;
+        set {
+            Contact c = new Contact(Id = value, LastName = 'Last');
+            update c;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4019 DML in property setter with user mode - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Id contactId {
+        get;
+        set {
+            Contact c = new Contact(Id = value, LastName = 'Last');
+            update as user c;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

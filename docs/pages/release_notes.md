@@ -31,6 +31,9 @@ This is a {{ site.pmd.release_type }} release.
     switching to Java 23. The rule stays off for Java 23 and later.
 
 ### 🐛️ Fixed Issues
+* apex-security
+    * [#4019](https://github.com/pmd/pmd/issues/4019): \[apex] False negative for ApexCRUDViolation inside of property getter/setter
+    * [#5463](https://github.com/pmd/pmd/issues/5463): \[apex] ApexCRUDViolation - DML Inside of Apex Properties Not Evaluated for User_Mode AccessLevel
 * java
     * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor
 * java-bestpractices
