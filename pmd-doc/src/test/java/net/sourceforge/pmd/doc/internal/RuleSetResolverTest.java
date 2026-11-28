@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.doc.internal;
 
-import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,16 +21,10 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 class RuleSetResolverTest {
 
-    private static final List<String> EXCLUDED_RULESETS = listOf(
-            FilenameUtils.normalize("pmd-test/src/main/resources/rulesets/dummy/basic.xml")
-    );
-
     @Test
     void resolveAllRulesets() {
         Path basePath = FileSystems.getDefault().getPath(".").resolve("..").toAbsolutePath().normalize();
         List<String> additionalRulesets = GenerateRuleDocsCmd.findAdditionalRulesets(basePath);
-
-        filterRuleSets(additionalRulesets);
 
         assertFalse(additionalRulesets.isEmpty());
 
@@ -46,13 +39,5 @@ class RuleSetResolverTest {
     void testAdditionalRulesetPattern() {
         String filePath = FilenameUtils.normalize("/home/foo/pmd/pmd-java/src/main/resources/rulesets/java/quickstart.xml");
         assertTrue(GenerateRuleDocsCmd.ADDITIONAL_RULESET_PATTERN.matcher(filePath).matches());
-    }
-
-    private void filterRuleSets(List<String> additionalRulesets) {
-        additionalRulesets.removeIf(this::isExcluded);
-    }
-
-    private boolean isExcluded(String fileName) {
-        return EXCLUDED_RULESETS.stream().anyMatch(fileName::endsWith);
     }
 }

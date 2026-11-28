@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.30.0-SNAPSHOT</version>
+    <version>7.31.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -71,7 +71,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2026-10-30T08:20:47Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-11-27T07:56:20Z</project.build.outputTimestamp>
 
         <maven.compiler.release>8</maven.compiler.release>
 
@@ -608,27 +608,27 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.30.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.30.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.30.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.30.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-xml</artifactId>
-                            <version>7.29.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.30.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -1140,15 +1140,9 @@
             </dependency>
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-test-junit</artifactId>
+                <artifactId>kotlin-test-junit5</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>io.kotest</groupId>
@@ -1449,6 +1443,7 @@
         <module>pmd-jsp</module>
         <module>pmd-julia</module>
         <module>pmd-kotlin</module>
+        <module>pmd-lang-dummy</module>
         <module>pmd-lang-test</module>
         <module>pmd-matlab</module>
         <module>pmd-modelica</module>
