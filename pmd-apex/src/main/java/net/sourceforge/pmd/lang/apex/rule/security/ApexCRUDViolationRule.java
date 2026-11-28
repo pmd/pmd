@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTArrayLoadExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -566,7 +567,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         checkInlineObject(node, data, crudMethod);
         checkInlineNonArgsObject(node, data, crudMethod);
 
-        final ASTVariableExpression variable = node.firstChild(ASTVariableExpression.class);
+        final ASTVariableExpression variable = getDmlTargetVariable(node);
         if (variable != null) {
             final String type = varToTypeMapping.get(Helper.getFQVariableName(variable));
             if (type != null) {
@@ -588,6 +589,22 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             checkInlineObject(inlineListInit, data, crudMethod);
             checkInlineNonArgsObject(inlineListInit, data, crudMethod);
         }
+    }
+
+    /**
+     * Returns the variable that is the target of the DML operation: {@code accounts} in
+     * {@code update accounts;} and also in {@code update accounts[0];} (list element accessed by index).
+     */
+    private ASTVariableExpression getDmlTargetVariable(final ApexNode<?> node) {
+        final ASTVariableExpression variable = node.firstChild(ASTVariableExpression.class);
+        if (variable != null) {
+            return variable;
+        }
+        final ASTArrayLoadExpression arrayLoad = node.firstChild(ASTArrayLoadExpression.class);
+        if (arrayLoad != null) {
+            return arrayLoad.firstChild(ASTVariableExpression.class);
+        }
+        return null;
     }
 
     private void checkInlineObject(final ApexNode<?> node, final Object data, final String crudMethod) {
