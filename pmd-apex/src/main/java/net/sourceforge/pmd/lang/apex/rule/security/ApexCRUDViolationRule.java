@@ -420,8 +420,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             addVariableToMapping(Helper.getFQVariableName(field), fieldType);
         }
 
-        return data;
-
+        // visit the getter and setter bodies, they can contain SOQL and DML too
+        return super.visit(node, data);
     }
 
     private void collectCRUDMethodLevelChecks(final ASTMethodCallExpression node) {
