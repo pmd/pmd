@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -15,6 +17,7 @@ import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
@@ -29,9 +32,10 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
     @Override
     Renderer getRenderer() {
         Renderer result = new SummaryHTMLRenderer();
-        result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
-        result.setProperty(HTMLRenderer.LINE_PREFIX, Optional.of("line_prefix"));
-        result.setProperty(HTMLRenderer.HTML_EXTENSION, true);
+        result.setProperty((PropertyDescriptor<String>) result.getPropertyDescriptor("linkPrefix"), "link_prefix");
+        result.setProperty((PropertyDescriptor<Optional<String>>) result.getPropertyDescriptor("linePrefix"),
+                Optional.of("line_prefix"));
+        result.setProperty((PropertyDescriptor<Boolean>) result.getPropertyDescriptor("htmlExtension"), true);
         return result;
     }
 
@@ -154,6 +158,18 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
         renderer.setShowSuppressedViolations(false);
         String actual = renderReport(renderer, createEmptyReportWithSuppression());
         assertEquals(getExpectedEmpty(), actual);
+    }
+
+    @Test
+    void testFileNameRendererIsUsed() throws Exception {
+        Renderer renderer = getRenderer();
+        renderer.setFileNameRenderer(fileId -> "custom-display-name");
+
+        String actual = renderReport(renderer, reportOneViolation());
+
+        assertTrue(actual.contains("<a href=\"link_prefixcustom-display-name.html#line_prefix1\">"
+                + "custom-display-name</a>"));
+        assertFalse(actual.contains(getSourceCodeFilename()));
     }
 
     private Consumer<FileAnalysisListener> createEmptyReportWithSuppression() {

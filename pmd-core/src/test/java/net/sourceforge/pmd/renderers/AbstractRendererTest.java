@@ -15,6 +15,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.commons.io.FileUtils;
@@ -256,6 +258,25 @@ abstract class AbstractRendererTest {
                 throw new AssertionError(e);
             }
         }, expectedEncoding);
+    }
+
+    /**
+     * Renders a report for the given files. The callback is called once per
+     * file with the file name and its listener.
+     */
+    protected String renderReportWithFiles(Renderer renderer, List<String> fileNames,
+                                           BiConsumer<? super String, ? super FileAnalysisListener> listenerEffects) throws IOException {
+        return renderGlobal(renderer, globalListener -> {
+            LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
+            for (String fileName : fileNames) {
+                TextFile dummyFile = TextFile.forCharSeq("dummyText", FileId.fromPathLikeString(fileName), version);
+                try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
+                    listenerEffects.accept(fileName, fal);
+                } catch (Exception e) {
+                    throw new AssertionError(e);
+                }
+            }
+        });
     }
 
     private String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects) throws IOException {
