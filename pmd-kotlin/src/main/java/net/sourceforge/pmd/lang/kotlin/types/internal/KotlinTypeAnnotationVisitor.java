@@ -14,9 +14,9 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtCatchBlock;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassParameter;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtConstructorInvocation;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtForStatement;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtUserType;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtVariableDeclaration;
@@ -36,6 +36,7 @@ import nl.stokpop.typemapper.model.TypeAst;
  *
  * <ul>
  *   <li>type data on {@code VariableDeclaration} nodes (variable type)</li>
+ *   <li>type data on {@code MultiVariableDeclaration} nodes (type of the destructured value as a whole)</li>
  *   <li>type data on {@code PropertyDeclaration} nodes (property type)</li>
  *   <li>type data on {@code ClassParameter} nodes -- primary constructor
  *       {@code val}/{@code var} params (e.g. {@code class Foo(val name: String)})</li>
@@ -43,7 +44,6 @@ import nl.stokpop.typemapper.model.TypeAst;
  *   <li>type data on {@code FunctionValueParameter} nodes (parameter type)
  *       -- delegated to {@link FunctionParameterAnnotator}</li>
  *   <li>type data on {@code CatchBlock} nodes (caught exception type)</li>
- *   <li>type data on {@code ForStatement} nodes (loop variable type)</li>
  *   <li>type data on {@code UnescapedAnnotation} <em>and</em>
  *       {@code SingleAnnotation} nodes (annotation FQN)
  *       -- delegated to {@link AnnotationFqnAnnotator}</li>
@@ -75,9 +75,9 @@ public final class KotlinTypeAnnotationVisitor {
     }
 
     /**
-     * Annotates all {@code VariableDeclaration}, {@code PropertyDeclaration},
-     * {@code FunctionDeclaration}, {@code ClassDeclaration}, {@code CatchBlock}, and
-     * {@code ForStatement} nodes in the given AST root, and sets {@code @TypeName} on
+     * Annotates all {@code VariableDeclaration}, {@code MultiVariableDeclaration},
+     * {@code PropertyDeclaration}, {@code FunctionDeclaration}, {@code ClassDeclaration},
+     * and {@code CatchBlock} nodes in the given AST root, and sets {@code @TypeName} on
      * their annotation children as well as on {@code FunctionValueParameter} children of
      * function declarations.
      *
@@ -164,7 +164,7 @@ public final class KotlinTypeAnnotationVisitor {
         // and each of "a"/"b" in destructuring declarations ("val (a, b) = ...",
         // "for ((a, b) in ...)", "{ (a, b) -> ... }"). Matched individually (narrow,
         // precise column range) so each gets its own correct type, instead of relying
-        // on the wider PropertyDeclaration/ForStatement-level match.
+        // on the wider PropertyDeclaration-level match.
         @Override
         public Void visitVariableDeclaration(KtVariableDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
@@ -226,14 +226,19 @@ public final class KotlinTypeAnnotationVisitor {
             return visitChildren(node, data);
         }
 
+        // The pattern "(a, b)" of "val (a, b) = x", "for ((a, b) in xs)" and "{ (a, b) -> }" is
+        // recorded with exactly the range of the parenthesised pattern, so a column overlap
+        // identifies it; no first-candidate fallback, so a pattern never borrows another one's type.
         @Override
-        public Void visitForStatement(KtForStatement node, Void data) {
+        public Void visitMultiVariableDeclaration(KtMultiVariableDeclaration node, Void data) {
             List<DeclarationAst> decls = ctx.declarationsAt(absPath, node.getBeginLine());
-            DeclarationAst decl = selectDeclaration(decls, node,
-                    d -> d.getKind() == DeclarationKind.FOR_LOOP_VARIABLE && d.getType() != null);
-            if (decl != null) {
-                InternalApiBridge.setType(node, toKotlinTypeName(decl.getType()));
-            }
+            decls.stream()
+                    .filter(d -> d.getKind() == DeclarationKind.DESTRUCTURING_DECLARATION
+                            && d.getType() != null
+                            && d.getLine() == node.getBeginLine()
+                            && d.getColumn() == node.getBeginColumn())
+                    .findFirst()
+                    .ifPresent(decl -> InternalApiBridge.setType(node, toKotlinTypeName(decl.getType())));
             return visitChildren(node, data);
         }
 

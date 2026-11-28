@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtMultiVariableDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtPropertyDeclaration;
 
 import nl.stokpop.typemapper.model.DeclarationAst;
@@ -27,14 +28,21 @@ final class DeclarationFallback {
      * {@code PropertyDeclaration} ({@code val (a, b) = ...}) has no single type; its
      * components are recorded as {@code DESTRUCTURED_VARIABLE} on the same line and must
      * not leak onto the whole declaration. Query the component {@code VariableDeclaration}
-     * nodes instead.
+     * nodes instead, or the {@code MultiVariableDeclaration} for the type of the whole
+     * destructured value, which is the only node that matches {@code DESTRUCTURING_DECLARATION}.
      */
     static List<DeclarationAst> relevantTo(Node contextNode, List<DeclarationAst> decls) {
+        if (contextNode instanceof KtMultiVariableDeclaration) {
+            return decls.stream()
+                    .filter(d -> d.getKind() == DeclarationKind.DESTRUCTURING_DECLARATION)
+                    .collect(Collectors.toList());
+        }
         if (!(contextNode instanceof KtPropertyDeclaration)) {
             return decls;
         }
         return decls.stream()
-                .filter(d -> d.getKind() != DeclarationKind.DESTRUCTURED_VARIABLE)
+                .filter(d -> d.getKind() != DeclarationKind.DESTRUCTURED_VARIABLE
+                        && d.getKind() != DeclarationKind.DESTRUCTURING_DECLARATION)
                 .collect(Collectors.toList());
     }
 }
