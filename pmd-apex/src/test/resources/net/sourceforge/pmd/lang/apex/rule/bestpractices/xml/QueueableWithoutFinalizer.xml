@@ -48,4 +48,41 @@ public class UserUpdater implements Queueable, Finalizer {
 }
         ]]></code>
     </test-code>
+
+  <test-code>
+    <description>Queueable written with its System namespace, without finalizer</description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+public class Foo implements System.Queueable {
+  public void execute(QueueableContext context) {
+    insert new Account(Name = 'x');
+  }
+}
+        ]]></code>
+  </test-code>
+
+  <test-code>
+    <description>QueueableContext written with its System namespace, without finalizer</description>
+    <expected-problems>1</expected-problems>
+    <code><![CDATA[
+public class Foo implements Queueable {
+  public void execute(System.QueueableContext context) {
+    insert new Account(Name = 'x');
+  }
+}
+        ]]></code>
+  </test-code>
+
+  <test-code>
+    <description>Queueable and QueueableContext written with their System namespace, with finalizer</description>
+    <expected-problems>0</expected-problems>
+    <code><![CDATA[
+public class Foo implements System.Queueable {
+  public void execute(System.QueueableContext context) {
+    System.attachFinalizer(new MyFinalizer());
+    insert new Account(Name = 'x');
+  }
+}
+        ]]></code>
+  </test-code>
 </test-data>

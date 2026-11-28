@@ -28,6 +28,7 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
     private static final String EXECUTE = "execute";
     private static final String QUEUEABLE = "queueable";
     private static final String QUEUEABLE_CONTEXT = "queueablecontext";
+    private static final String SYSTEM_PREFIX = "system.";
     private static final String SYSTEM_ATTACH_FINALIZER = "system.attachfinalizer";
 
     @Override
@@ -57,7 +58,7 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
     /** Determines if the class implements the Queueable interface. */
     private boolean implementsTheQueueableInterface(ASTUserClass theClass) {
         for (String interfaceName : theClass.getInterfaceNames()) {
-            if (QUEUEABLE.equalsIgnoreCase(interfaceName)) {
+            if (isSystemType(QUEUEABLE, interfaceName)) {
                 return true;
             }
         }
@@ -73,7 +74,15 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
             return false;
         }
         List<ASTParameter> parameters = theMethod.descendants(ASTParameter.class).toList();
-        return parameters.size() == 1 && QUEUEABLE_CONTEXT.equalsIgnoreCase(parameters.get(0).getType());
+        return parameters.size() == 1 && isSystemType(QUEUEABLE_CONTEXT, parameters.get(0).getType());
+    }
+
+    /**
+     * Determines if the type name is the given type of the {@code System} namespace,
+     * written with or without the namespace (ex: {@code Queueable} or {@code System.Queueable}).
+     */
+    private boolean isSystemType(String systemTypeName, String typeName) {
+        return systemTypeName.equalsIgnoreCase(typeName) || (SYSTEM_PREFIX + systemTypeName).equalsIgnoreCase(typeName);
     }
 
     /**
