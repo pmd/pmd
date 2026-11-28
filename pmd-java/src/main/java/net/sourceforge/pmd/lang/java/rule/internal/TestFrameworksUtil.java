@@ -312,9 +312,12 @@ public final class TestFrameworksUtil {
 
     private static boolean isJUnit5NestedClass(JTypeMirror innerClassMirror) {
         TypeSystem ts = innerClassMirror.getTypeSystem();
+        JTypeDeclSymbol symbol = innerClassMirror.getSymbol();
 
-        return innerClassMirror.getSymbol().getDeclaredAnnotations().stream().anyMatch(
-                it -> TypeTestUtil.isA(JUNIT5_NESTED, ts.typeOf(it.getAnnotationSymbol(), false)));
+        return !innerClassMirror.isInterface()
+                && symbol instanceof JClassSymbol && !((JClassSymbol) symbol).isAbstract()
+                && symbol.getDeclaredAnnotations().stream().anyMatch(
+                        it -> TypeTestUtil.isA(JUNIT5_NESTED, ts.typeOf(it.getAnnotationSymbol(), false)));
     }
 
     public static boolean isExpectExceptionCall(ASTMethodCall call) {
