@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 
@@ -18,6 +19,14 @@ import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
 class JsonRendererTest extends AbstractRendererTest {
+
+    @Test
+    void timestampCanBeOmitted() throws IOException {
+        JsonRenderer renderer = new JsonRenderer();
+        renderer.setProperty(JsonRenderer.SHOW_TIMESTAMP, false);
+        String actual = renderReport(renderer, reportOneViolation());
+        assertFalse(actual.contains("\"timestamp\""));
+    }
 
     @Override
     Renderer getRenderer() {

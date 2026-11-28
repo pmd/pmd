@@ -44,6 +44,9 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             description = "Ignore multiple copies of files of the same name and length in comparison.")
     private boolean skipDuplicates;
 
+    @Option(names = "--no-report-timestamp", description = "Omit the timestamp from XML reports.")
+    private boolean noReportTimestamp;
+
 
 
 
@@ -116,6 +119,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setMinimumTileSize(minimumTokens);
         configuration.setNoSkipBlocks(noSkipBlocks);
         configuration.setRendererName(rendererName);
+        configuration.setShowTimestamp(!noReportTimestamp);
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
 
