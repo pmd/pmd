@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -16,9 +15,10 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * How this rule works: find additive expressions: + check that the addition is
- * between anything other than two literals if true and also the parent is
- * StringBuffer constructor or append, report a violation.
+ * How this rule works: Find additive expressions (+) and check
+ * whether the operands are anything other than two literals. If so,
+ * and the parent expression is a StringBuffer/StringBuilder
+ * constructor or an append call, report a violation.
  *
  * @author mgriffa
  */
@@ -52,17 +52,5 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
             && !arg.getConstFoldingResult().hasValue()) {
             ctx.addViolation(arg);
         }
-    }
-
-    static boolean isInStringBufferOperationChain(Node node, String append) {
-        // TODO this was replaced by something that doesn't really work
-        // this was/is used by ConsecutiveLiteralAppendsRule
-        if (!(node instanceof ASTExpression)) {
-            return false;
-        }
-        Node parent = node.getParent();
-
-        return parent instanceof ASTMethodCall
-            && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
     }
 }
