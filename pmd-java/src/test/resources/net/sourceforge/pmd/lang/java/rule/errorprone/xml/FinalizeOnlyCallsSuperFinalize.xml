@@ -28,4 +28,125 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#7278: a single wrapped super call is still redundant</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class OneBlock {
+    protected void finalize() throws Throwable {
+        { super.finalize(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: nested bare blocks do not change a redundant finalizer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class ManyBlocks {
+    protected void finalize() throws Throwable {
+        { { { super.finalize(); } } }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: a finalizer that performs cleanup is not redundant</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class CleanupFirst {
+    protected void finalize() throws Throwable {
+        cleanup();
+        { super.finalize(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: do not flatten a block containing multiple statements</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class WorkInsideBlock {
+    protected void finalize() throws Throwable {
+        { cleanup(); super.finalize(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: do not cross a conditional boundary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Conditional {
+    boolean enabled;
+    protected void finalize() throws Throwable {
+        if (enabled) { super.finalize(); }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: do not mistake a call in another method for a finalizer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class OtherMethod {
+    void dispose() throws Throwable {
+        { super.finalize(); }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: preserve the existing try-finally distinction</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class TryFinally {
+    protected void finalize() throws Throwable {
+        try { cleanup(); } finally { super.finalize(); }
+    }
+    void cleanup() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: wrapped outer qualified super is not the inner superclass call</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Base { }
+class Outer extends Base {
+    class Inner extends Base {
+        protected void finalize() throws Throwable {
+            { Outer.super.finalize(); }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#7278: preserve prior direct qualified super behavior</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Base { }
+class Outer extends Base {
+    class Inner extends Base {
+        protected void finalize() throws Throwable {
+            Outer.super.finalize();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
