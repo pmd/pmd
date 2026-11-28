@@ -682,7 +682,8 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement
+(
+for $loop in //ForStatement
   [ForInit
     [LocalVariableDeclaration
       [PrimitiveType[@Kind = 'int']]
@@ -696,20 +697,34 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
        | AssignmentExpression[@Operator = '+='][NumericLiteral[@IntLiteral][@ValueAsInt = 1]]]
     ]
   ]
-  /*[last()][not(IfStatement)]/ExpressionStatement/
-    MethodCall
-      [pmd-java:matchesSig('java.util.List#add(_)')]
-      [ArgumentList/ArrayAccess
-        [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
-      ]
+return $loop/*[last()][not(IfStatement)]
+  /descendant::ExpressionStatement
+  [ancestor::*[not(self::Block)][1] is $loop]
+  [parent::Block[parent::* is $loop]
+   or (every $block in ancestor::Block[ancestor::*[not(self::Block)][1] is $loop]
+       satisfies count($block/*) = 1)]
+  /MethodCall
+    [pmd-java:matchesSig('java.util.List#add(_)')]
+    [ArgumentList/ArrayAccess
+      [VariableAccess[@Name = $loop/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
+    ]
+)
 |
-//ForeachStatement
+(
+for $loop in //ForeachStatement
   [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
-  /*[last()][not(IfStatement)]/ExpressionStatement/MethodCall
-      [pmd-java:matchesSig('java.util.List#add(_)')]
-      [ArgumentList
-        [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
-      ]
+return $loop/*[last()][not(IfStatement)]
+  /descendant::ExpressionStatement
+  [ancestor::*[not(self::Block)][1] is $loop]
+  [parent::Block[parent::* is $loop]
+   or (every $block in ancestor::Block[ancestor::*[not(self::Block)][1] is $loop]
+       satisfies count($block/*) = 1)]
+  /MethodCall
+    [pmd-java:matchesSig('java.util.List#add(_)')]
+    [ArgumentList
+      [VariableAccess[@Name = $loop/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
+    ]
+)
 ]]>
                 </value>
             </property>
