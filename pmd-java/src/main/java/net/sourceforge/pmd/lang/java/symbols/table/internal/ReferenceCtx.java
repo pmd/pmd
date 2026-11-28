@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticE
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -54,6 +55,15 @@ public final class ReferenceCtx {
         return new ReferenceCtx(processor, root.getPackageName(), null);
     }
 
+    /**
+     * Returns the context of the header of the given type declaration,
+     * that is, its enclosing class.
+     */
+    public static ReferenceCtx ofTypeHeader(JavaAstProcessor processor, ASTTypeDeclaration decl) {
+        ASTTypeDeclaration enclosing = decl.getEnclosingType();
+        return new ReferenceCtx(processor, decl.getPackageName(), enclosing == null ? null : enclosing.getSymbol());
+    }
+
     public ReferenceCtx scopeDownToNested(JClassSymbol newEnclosing) {
         assert enclosingClass == null || enclosingClass.equals(newEnclosing.getEnclosingClass())
             : "Not a child class of the current context (" + this + "): " + newEnclosing;
@@ -72,16 +82,14 @@ public final class ReferenceCtx {
 
     public @Nullable JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name, JavaNode errorLocation) {
         if (classSym instanceof JClassSymbol) {
-            JClassType c = (JClassType) classSym.getTypeSystem().typeOf(classSym, false);
-            @NonNull List<JClassType> found = JavaResolvers.getMemberClassResolver(c, packageName, enclosingClass, name).resolveHere(name);
-            JClassType result = maybeAmbiguityError(name, errorLocation, found);
-            return result == null ? null : result.getSymbol();
+            @NonNull List<JClassSymbol> found = JavaResolvers.getMemberClassResolver((JClassSymbol) classSym, packageName, enclosingClass, name).resolveHere(name);
+            return maybeAmbiguityError(name, errorLocation, found, Function.identity());
         }
         return null;
     }
 
 
-    <T extends JTypeMirror> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found) {
+    <T> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found, Function<? super T, ? extends JTypeDeclSymbol> symbolOf) {
         if (found.isEmpty()) {
             return null;
         } else if (found.size() > 1) {
@@ -94,8 +102,8 @@ public final class ReferenceCtx {
                 errorLocation,
                 AMBIGUOUS_NAME_REFERENCE,
                 name,
-                canonicalNameOf(found.get(0).getSymbol()),
-                canonicalNameOf(found.get(1).getSymbol())
+                canonicalNameOf(symbolOf.apply(found.get(0))),
+                canonicalNameOf(symbolOf.apply(found.get(1)))
             );
             // fallthrough and use the first one anyway
         }
@@ -154,7 +162,7 @@ public final class ReferenceCtx {
     }
 
     public JTypeMirror resolveSingleTypeName(JSymbolTable symTable, String image, JavaNode errorLoc) {
-        return maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
+        return maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image), JTypeMirror::getSymbol);
     }
 
 

@@ -13,8 +13,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,11 +100,12 @@ public final class SymbolTableResolver {
     public static void traverse(JavaAstProcessor processor, ASTCompilationUnit root) {
         SymTableFactory helper = new SymTableFactory(root.getPackageName(), processor);
         ReferenceCtx ctx = ReferenceCtx.root(processor, root);
+        Map<ASTTypeDeclaration, JSymbolTable> bodyTables = new HashMap<>();
         Set<DeferredNode> todo = Collections.singleton(new DeferredNode(root, ctx, SymbolTableImpl.EMPTY));
         do {
-            Set<DeferredNode> newDeferred = new HashSet<>();
+            Set<DeferredNode> newDeferred = new LinkedHashSet<>();
             for (DeferredNode deferred : todo) {
-                MyVisitor visitor = new MyVisitor(helper, todo, newDeferred);
+                MyVisitor visitor = new MyVisitor(helper, bodyTables, todo, newDeferred);
                 visitor.traverse(deferred);
             }
             todo = newDeferred;
@@ -186,12 +189,15 @@ public final class SymbolTableResolver {
 
         private final Deque<JClassType> enclosingType = new ArrayDeque<>();
 
+        /** Symbol tables of type bodies, built before visiting them. See {@link #prepareTypeTables(NodeStream, JSymbolTable)}. */
+        private final Map<ASTTypeDeclaration, JSymbolTable> bodyTables;
         private final Set<DeferredNode> deferredInPrevRound;
         private final Set<DeferredNode> newDeferred;
         private final StatementVisitor stmtVisitor = new StatementVisitor();
 
-        MyVisitor(SymTableFactory helper, Set<DeferredNode> deferredInPrevRound, Set<DeferredNode> newDeferred) {
+        MyVisitor(SymTableFactory helper, Map<ASTTypeDeclaration, JSymbolTable> bodyTables, Set<DeferredNode> deferredInPrevRound, Set<DeferredNode> newDeferred) {
             f = helper;
+            this.bodyTables = bodyTables;
             this.deferredInPrevRound = deferredInPrevRound;
             this.newDeferred = newDeferred;
         }
@@ -275,10 +281,9 @@ public final class SymbolTableResolver {
 
             setTopSymbolTable(node);
 
-            for (ASTTypeDeclaration td : typeDecls) {
-                // preprocess all sibling types
-                processTypeHeader(td, ctx);
-            }
+            prepareTypeTables(typeDecls, top());
+            // preprocess all sibling types
+            disambigTypeHeaders(typeDecls, ctx);
 
             // All of the header symbol tables belong to the CompilationUnit
             visitChildren(node, ctx);
@@ -289,27 +294,49 @@ public final class SymbolTableResolver {
         }
 
 
-        private void processTypeHeader(ASTTypeDeclaration node, ReferenceCtx ctx) {
-            setTopSymbolTable(node.getModifiers());
+        /**
+         * Sets the symbol tables of the headers of the given types, and
+         * builds the symbol tables of their bodies, recursively for their
+         * member types. This is done before disambiguating any header.
+         * Disambiguating a header may need the supertypes of any other type
+         * of the file, including member types, which are then disambiguated
+         * on demand. That needs their header to have its symbol table (#4436).
+         *
+         * <p>Building those tables doesn't need the supertypes to be disambiguated.
+         */
+        private void prepareTypeTables(NodeStream<? extends ASTTypeDeclaration> decls, JSymbolTable enclosing) {
+            for (ASTTypeDeclaration td : decls) {
+                setHeaderSymbolTables(td, enclosing);
+                JSymbolTable body = f.typeBody(enclosing, td.getTypeMirror());
+                bodyTables.put(td, body);
+                prepareTypeTables(td.getDeclarations(ASTTypeDeclaration.class), body);
+            }
+        }
 
-            int pushed = pushOnStack(f.selfType(top(), node.getTypeMirror()));
-            pushed += pushOnStack(f.typeHeader(top(), node.getSymbol()));
+        private void disambigTypeHeaders(NodeStream<? extends ASTTypeDeclaration> siblings, ReferenceCtx ctx) {
+            for (ASTTypeDeclaration td : siblings) {
+                // resolve the supertypes, necessary for TypeMemberSymTable
+                f.disambig(headerNodes(td), ctx); // extends/implements
+            }
+        }
 
+        private void setHeaderSymbolTables(ASTTypeDeclaration node, JSymbolTable enclosing) {
+            InternalApiBridge.setSymbolTable(node.getModifiers(), enclosing);
+
+            JSymbolTable selfType = f.selfType(enclosing, node.getTypeMirror());
+            JSymbolTable header = f.typeHeader(selfType, node.getSymbol());
+            for (JavaNode it : headerNodes(node)) {
+                InternalApiBridge.setSymbolTable(it, header);
+            }
+            InternalApiBridge.setSymbolTable(node, selfType);
+        }
+
+        private static NodeStream<? extends JavaNode> headerNodes(ASTTypeDeclaration node) {
             NodeStream<? extends JavaNode> notBody = node.children().drop(1).dropLast(1);
             if (node instanceof ASTRecordDeclaration) {
                 notBody = notBody.drop(1); // drop record components
             }
-            for (JavaNode it : notBody) {
-                setTopSymbolTable(it);
-            }
-
-            popStack(pushed - 1);
-
-            // resolve the supertypes, necessary for TypeMemberSymTable
-            f.disambig(notBody, ctx); // extends/implements
-
-            setTopSymbolTable(node);
-            popStack();
+            return notBody;
         }
 
         @Override
@@ -320,7 +347,13 @@ public final class SymbolTableResolver {
             ReferenceCtx bodyCtx = ctx.scopeDownToNested(node.getSymbol());
 
             // the following is just for the body
-            pushed += pushOnStack(f.typeBody(top(), node.getTypeMirror()));
+            JSymbolTable body = bodyTables.get(node);
+            if (body == null) {
+                // anonymous class
+                body = f.typeBody(top(), node.getTypeMirror());
+                prepareTypeTables(node.getDeclarations(ASTTypeDeclaration.class), body);
+            }
+            pushed += pushOnStack(body);
 
             setTopSymbolTable(node.getBody());
             if (node instanceof ASTRecordDeclaration) {
@@ -334,8 +367,7 @@ public final class SymbolTableResolver {
             }
 
             // preprocess siblings
-            node.getDeclarations(ASTTypeDeclaration.class)
-                .forEach(d -> processTypeHeader(d, bodyCtx));
+            disambigTypeHeaders(node.getDeclarations(ASTTypeDeclaration.class), bodyCtx);
 
 
             // process fields first, their type is needed for JSymbolTable#resolveValue
@@ -478,7 +510,8 @@ public final class SymbolTableResolver {
                 } else if (st instanceof ASTLocalClassStatement) {
                     ASTTypeDeclaration local = ((ASTLocalClassStatement) st).getDeclaration();
                     pushed += pushOnStack(f.localTypeSymTable(top(), local.getTypeMirror()));
-                    processTypeHeader(local, ctx);
+                    prepareTypeTables(NodeStream.of(local), top());
+                    disambigTypeHeaders(NodeStream.of(local), ctx);
                 }
 
                 if (st instanceof ASTStatement) {

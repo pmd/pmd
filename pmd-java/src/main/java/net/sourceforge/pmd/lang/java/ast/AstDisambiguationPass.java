@@ -58,6 +58,46 @@ final class AstDisambiguationPass {
         nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx));
     }
 
+    /**
+     * Returns the symbol of a supertype in the header of a type declaration,
+     * disambiguating it now if needed. This is used to walk the hierarchy of
+     * a type while type headers are being disambiguated, which may happen in
+     * any order (#4436). Returns null if the supertype is itself being
+     * disambiguated, which happens with cyclic inheritance (a compile-time
+     * error). If the header has no symbol table yet, this falls back to
+     * full type resolution.
+     */
+    static @Nullable JTypeDeclSymbol getOrDisambigSupertypeSym(ASTClassType supertype) {
+        if (supertype.getReferencedSym() != null) {
+            return supertype.getReferencedSym();
+        } else if (supertype.isBeingDisambiguated()) {
+            return null;
+        }
+
+        AbstractJavaNode clause = (AbstractJavaNode) supertype.getParent();
+        if (clause.symbolTable == null) {
+            // The header has not been processed by the symbol table resolver yet.
+            // The symbol table we would inherit from the parent is not the right one.
+            return supertype.getTypeMirror().getSymbol();
+        }
+
+        ASTTypeDeclaration decl = clause.ancestors(ASTTypeDeclaration.class).firstOrThrow();
+        ReferenceCtx ctx = ReferenceCtx.ofTypeHeader(InternalApiBridge.getProcessor(supertype), decl);
+        supertype.acceptVisitor(DisambigVisitor.INSTANCE, ctx);
+        return supertype.getReferencedSym();
+    }
+
+    /**
+     * Disambiguates a supertype in the header of a type declaration now
+     * if needed, so that its type can be built. Returns false if the
+     * supertype is being disambiguated, so that its type cannot be built
+     * yet. This happens with cyclic inheritance (a compile-time error).
+     */
+    static boolean ensureSupertypeDisambiguated(ASTClassType supertype) {
+        getOrDisambigSupertypeSym(supertype);
+        return !supertype.isBeingDisambiguated();
+    }
+
     static void retryDisambigWithCtx(NodeStream<? extends ASTAmbiguousName> nodes, ReferenceCtx ctx, JSymbolTable symbolTable) {
         assert ctx != null : "Null context";
         nodes.forEach(it -> {
@@ -158,22 +198,54 @@ final class AstDisambiguationPass {
         @Override
         public Void visit(ASTClassType type, ReferenceCtx ctx) {
 
-            if (type.getReferencedSym() != null) {
+            if (type.getReferencedSym() != null || type.isBeingDisambiguated()) {
                 return null;
             }
 
+            type.setBeingDisambiguated(true);
+            try {
+                disambigClassType(type, ctx);
+            } finally {
+                type.setBeingDisambiguated(false);
+            }
+            return null;
+        }
+
+        private void disambigClassType(ASTClassType type, ReferenceCtx ctx) {
             if (type.getFirstChild() instanceof ASTAmbiguousName) {
                 type.getFirstChild().acceptVisitor(this, ctx);
             }
 
-            // revisit children, which may have changed
-            visitChildren(type, ctx);
+            // The type arguments are visited after the symbol of this type
+            // is set. They may refer to member types of the class whose
+            // header contains this type, eg `class Foo extends Sup implements I<Foo.Inner>`.
+            // Looking up those members walks the supertypes of that class
+            // by symbol, so this type must already have its symbol (#4436).
+            ASTTypeArguments typeArgs = type.getTypeArguments();
 
-            if (type.getReferencedSym() != null) {
-                postProcess(type, ctx);
-                return null;
+            // revisit children, which may have changed
+            for (int i = 0; i < type.getNumChildren(); i++) {
+                JavaNode child = type.getChild(i);
+                if (child != typeArgs) {
+                    child.acceptVisitor(this, ctx);
+                }
             }
 
+            if (type.getReferencedSym() == null) {
+                setClassSymbol(type, ctx);
+            }
+
+            if (typeArgs != null) {
+                typeArgs.acceptVisitor(this, ctx);
+            }
+
+            if (type.getReferencedSym() != null) {
+                // the symbol is null for qualified ctor calls
+                postProcess(type, ctx);
+            }
+        }
+
+        private static void setClassSymbol(ASTClassType type, ReferenceCtx ctx) {
             ASTClassType lhsType = type.getQualifier();
             if (lhsType != null) {
                 JTypeDeclSymbol lhsSym = lhsType.getReferencedSym();
@@ -185,18 +257,13 @@ final class AstDisambiguationPass {
                     // Leave the reference null, this is handled lazily,
                     // because the interaction it depends on the type of
                     // the qualifier
-                    return null;
+                    return;
                 }
 
-                if (type.getReferencedSym() == null) {
-                    setClassSymbolIfNoQualifier(type, ctx);
-                }
+                setClassSymbolIfNoQualifier(type, ctx);
             }
 
             assert type.getReferencedSym() != null : "Null symbol for " + type;
-
-            postProcess(type, ctx);
-            return null;
         }
 
         private static void setClassSymbolIfNoQualifier(ASTClassType type, ReferenceCtx ctx) {

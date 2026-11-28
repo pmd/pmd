@@ -472,10 +472,12 @@ final class AstClassSym
         } else if (node instanceof ASTClassDeclaration) {
 
             ASTClassType superClass = node.getSuperClassTypeNode();
-            return superClass == null
-                   ? ts.OBJECT
-                   // this cast relies on the fact that the superclass is not a type variable
-                   : (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
+            if (superClass == null || !InternalApiBridge.ensureSupertypeDisambiguated(superClass)) {
+                // the second case is cyclic inheritance, a compile-time error
+                return ts.OBJECT;
+            }
+            // this cast relies on the fact that the superclass is not a type variable
+            return (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
 
         } else if (isAnonymousClass()) {
 
@@ -522,6 +524,14 @@ final class AstClassSym
 
         }
 
+        ASTClassType superclassNode = node.getSuperClassTypeNode();
+        if (superclassNode != null) {
+            JClassSymbol superclass = classSymbolOf(superclassNode);
+            // null if the inheritance is cyclic (or the superclass is a type var),
+            // which is a compile-time error
+            return superclass != null ? superclass : factory.types().OBJECT.getSymbol();
+        }
+
         JClassType sup = getSuperclassType(Substitution.EMPTY);
         return sup == null ? null : sup.getSymbol();
     }
@@ -534,8 +544,9 @@ final class AstClassSym
                 // we play safe here, but the symbol is either a JClassSymbol
                 // or a JTypeParameterSymbol, with the latter case being a
                 // compile-time error
-                JTypeDeclSymbol sym = n.getTypeMirror().getSymbol();
-                return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
+                // null if the inheritance is cyclic (or the interface is a type var),
+                // which is a compile-time error
+                return classSymbolOf(n);
             }
         );
         if (isAnnotation()) {
@@ -544,9 +555,25 @@ final class AstClassSym
         return itfs;
     }
 
+    /**
+     * Returns the class symbol referenced by a supertype node, disambiguating
+     * it if needed. This avoids building the full type of the supertype, which
+     * requires its type arguments to be disambiguated too. This is needed to
+     * walk the hierarchy of this class while type headers are being disambiguated,
+     * as they may refer to member types of this class (#4436).
+     */
+    private static @Nullable JClassSymbol classSymbolOf(ASTClassType supertypeNode) {
+        JTypeDeclSymbol sym = InternalApiBridge.getOrDisambigSupertypeSym(supertypeNode);
+        return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
+    }
+
     @Override
     public List<JClassType> getSuperInterfaceTypes(Substitution subst) {
-        List<JClassType> itfs = CollectionUtil.map(node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
+        List<JClassType> itfs = CollectionUtil.mapNotNull(
+            node.getSuperInterfaceTypeNodes(),
+            // skip the interface if the inheritance is cyclic, a compile-time error
+            n -> InternalApiBridge.ensureSupertypeDisambiguated(n) ? (JClassType) TypeOps.subst(n.getTypeMirror(), subst) : null
+        );
         if (isAnnotation()) {
             itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationType()), itfs);
         }
