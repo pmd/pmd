@@ -30,10 +30,15 @@ This is a {{ site.pmd.release_type }} release.
     reports comments starting with `///`, so they can be reviewed before
     switching to Java 23. The rule stays off for Java 23 and later.
 
+*   The new Java rule {% rule java/bestpractices/UseInstanceofPattern %}
+    reports casts that can be replaced by a pattern variable from a JEP 394
+    instanceof check.
+
 ### 🐛️ Fixed Issues
 * java
     * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor
 * java-bestpractices
+    * [#5761](https://github.com/pmd/pmd/issues/5761): \[java\] New Rule: UsePatternVariable
     * [#7308](https://github.com/pmd/pmd/issues/7308): \[java\] MethodReturnsInternalArray: document that private methods are not checked 
     * [#7310](https://github.com/pmd/pmd/issues/7310): \[java] UnusedAssignment: i++ in a do-while condition reported as never used, unlike in a while
 * java-design

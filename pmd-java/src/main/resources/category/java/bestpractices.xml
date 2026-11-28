@@ -2290,6 +2290,29 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseInstanceofPattern"
+          language="java"
+          since="7.31.0"
+          minimumLanguageVersion="16"
+          message="This cast can be combined with the instanceof check"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UseInstanceofPatternRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#useinstanceofpattern">
+        <description>
+            Reports casts that can be replaced by a pattern variable from a JEP 394
+            instanceof check. If the instanceof already declares a pattern variable,
+            the existing variable can be used instead of casting the subject again.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+        if (obj instanceof Foo) {
+            bar((Foo) obj); // violation
+        }
+        if (obj instanceof Foo foo) {
+            bar((Foo) obj); // violation: use foo
+        }
+        ]]></example>
+    </rule>
+
     <rule name="UseStandardCharsets"
           language="java"
           since="6.34.0"

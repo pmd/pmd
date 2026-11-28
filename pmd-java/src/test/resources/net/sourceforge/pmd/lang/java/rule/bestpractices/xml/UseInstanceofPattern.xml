@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>positive if guard, cast in then</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-4</expected-linenumbers>
+        <expected-messages>
+            <message>This cast can be combined with the instanceof check</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negated guard with early exit</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (!(obj instanceof Foo)) {
+                        return;
+                    }
+                    bar((Foo) obj);
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negated guard, cast in else</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (!(obj instanceof Foo)) {
+                    } else {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>positive guard in logical and chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo && true) {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negated guard in logical or chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (!(obj instanceof Foo) || true) {
+                        return;
+                    }
+                    bar((Foo) obj);
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested ifs</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                        if (true) {
+                            bar((Foo) obj);
+                        }
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>this subject</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m() {
+                    if (this instanceof Foo) {
+                        bar((Foo) this);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>block guard early exit outer</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (!(obj instanceof Foo)) {
+                        return;
+                    }
+                    {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>block guard positive with abrupt else</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                    } else {
+                        return;
+                    }
+                    bar((Foo) obj);
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>existing pattern variable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Use the existing pattern variable 'foo' instead of this cast</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo foo) {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>existing pattern variable message name</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Use the existing pattern variable 'x' instead of this cast</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo x) {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ternary positive</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    Object r = obj instanceof Foo ? ((Foo) obj).toString() : null;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ternary negated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    Object r = !(obj instanceof Foo) ? null : ((Foo) obj).toString();
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>nested ternary with outer guard</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj, boolean b) {
+                    Object r = obj instanceof Foo ? (b ? ((Foo) obj).toString() : null) : null;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>and chain direct</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo && ((Foo) obj).toString() != null) { }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>or chain direct</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                boolean m(Object obj) {
+                    return !(obj instanceof Foo) || ((Foo) obj).toString() != null;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>longer and chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (true && obj instanceof Foo && ((Foo) obj).toString() != null) { }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>longer or chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (!(obj instanceof Foo) || a() || ((Foo) obj).toString() != null) { }
+                }
+                boolean a() { return false; }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>and chain nested in or chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj, boolean a) {
+                    if (a || obj instanceof Foo && ((Foo) obj).toString() != null) { }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>or chain nested in and chain</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj, boolean a) {
+                    if (obj instanceof Foo && (a || ((Foo) obj).toString() != null)) { }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: no guard</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    bar((Foo) obj);
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: cast before guard</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    bar((Foo) obj);
+                    if (obj instanceof Foo) { }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: cast in wrong branch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                    } else {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: guard in other block no abrupt</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                    }
+                    bar((Foo) obj);
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: positive guard, cast in else</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                    } else {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: negated guard, cast in then</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (!(obj instanceof Foo)) {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: type mismatch</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof String) {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: mixed and or chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                boolean m(Object obj) {
+                    return (obj instanceof Foo || true) && ((Foo) obj).toString() != null;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: reassignment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                        obj = null;
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: reassignment of local variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object o) {
+                    Object obj = o;
+                    if (obj instanceof Foo) {
+                        obj = null;
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: lambda boundary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                        Runnable r = () -> bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: local and anonymous class boundary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                        class Inner {
+                            void n() {
+                                bar((Foo) obj);
+                            }
+                        }
+                        Runnable r = new Runnable() {
+                            public void run() {
+                                bar((Foo) obj);
+                            }
+                        };
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: lambda boundary in ternary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    Runnable r = obj instanceof Foo ? () -> bar((Foo) obj) : null;
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: lambda boundary in logical chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                boolean m(Object obj) {
+                    return obj instanceof Foo && call(() -> bar((Foo) obj));
+                }
+                boolean call(Runnable r) { r.run(); return true; }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: positive guard abrupt else then cast</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                        return;
+                    } else {
+                    }
+                    bar((Foo) obj);
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: cast is a leaf of a logical chain</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                Object m(Object left, Object right) {
+                    if (left instanceof Boolean && right instanceof Boolean) {
+                        left = null;
+                        return (Boolean) left || (Boolean) right;
+                    }
+                    right = null;
+                    return null;
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>negative: java 15 filter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                void m(Object obj) {
+                    if (obj instanceof Foo) {
+                        bar((Foo) obj);
+                    }
+                }
+                void bar(Foo f) {}
+            }
+        ]]></code>
+        <source-type>java 15</source-type>
+    </test-code>
+</test-data>
