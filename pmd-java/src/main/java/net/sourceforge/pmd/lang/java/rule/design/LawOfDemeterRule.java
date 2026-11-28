@@ -225,7 +225,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
 
     private int methodCallDegree(ASTMethodCall call) {
-        if (call.getOverloadSelectionInfo().isFailed() // be conservative
+        if (call.getOverloadSelectionInfo().isFailed() // Incomplete auxclasspath: be conservative
             || call.getMethodType().isStatic() // static methods are taken to be construction methods.
             || isCallOnThisInstance(call) != OptionalBool.NO
             || call.getQualifier() == null // either static or call on this. Prevents NPE when unresolved
@@ -295,7 +295,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
             // a field symbol, normally
             return expr.getReferencedSym() instanceof JFieldSymbol
                    ? fieldAccessDegree(expr)
-                   : TRUSTED; // unresolved, or failure in data flow pass
+                   : TRUSTED; // Incomplete auxclasspath: unresolved, or failure in data flow pass
         }
 
         // note this max could be changed to min to get a more conservative

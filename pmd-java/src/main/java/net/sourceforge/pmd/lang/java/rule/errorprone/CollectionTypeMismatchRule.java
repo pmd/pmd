@@ -251,7 +251,7 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isCompatibleType(JTypeMirror argType, JTypeMirror expectedType) {
-        // If argType is unresolved, be conservative and assume compatibility
+        // Incomplete auxclasspath: if argType is unresolved, be conservative and assume compatibility
         // This prevents false positives when external dependencies can't be resolved
         if (TypeOps.isUnresolved(argType)) {
             return true;
