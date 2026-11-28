@@ -46,6 +46,12 @@ This is a {{ site.pmd.release_type }} release.
     * [#7329](https://github.com/pmd/pmd/issues/7329): \[java] InsecureCryptoIv / HardCodedCryptoKey: hard-coded field passed as `this.field` not reported
 
 ### 🚨️ API Changes
+#### Deprecations
+* core
+    * {% jdoc !!core::renderers.Renderer#flush() %} has been renamed to {% jdoc core::renderers.Renderer#close() %}.
+      The old name has been deprecated and will remain available until PMD 8.
+    * {% jdoc !!core::renderers.AbstractRenderer#flush() %} has been renamed to {% jdoc core::renderers.AbstractRenderer#close() %}.
+      The old name has been deprecated and will remain available until PMD 8.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

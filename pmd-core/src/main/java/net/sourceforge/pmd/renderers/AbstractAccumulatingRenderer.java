@@ -99,7 +99,7 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
                 try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                     outputReport(reportBuilder.getResult());
                     end();
-                    flush();
+                    AbstractAccumulatingRenderer.this.close();
                 }
             }
         };
