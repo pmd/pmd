@@ -525,4 +525,138 @@ class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4094 Index declared outside, used in loops in both if/else branches</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void loop1(List<String> l, boolean tag) {
+        int i = 0;
+        if (tag) {
+            for (; i < l.size(); i++) {
+                System.out.println(l.get(i));
+            }
+        } else {
+            for (; i < l.size(); i++) {
+                System.out.println(l.get(i));
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4094 Index declared outside, reset to 0 between two consecutive loops</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,9</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void loop(List<String> l) {
+        int i = 0;
+        for (; i < l.size(); i++) {
+            System.out.println(l.get(i));
+        }
+        i = 0;
+        for (; i < l.size(); i++) {
+            System.out.println(l.get(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4094 Index declared outside, single loop in if branch with empty else (regression)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void loop2(List<String> l, boolean tag) {
+        int i = 0;
+        if (tag) {
+            for (; i < l.size(); i++) {
+                System.out.println(l.get(i));
+            }
+        } else {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4094 Index declared outside, read after the loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    int loop(List<String> l) {
+        int i = 0;
+        for (; i < l.size(); i++) {
+            System.out.println(l.get(i));
+        }
+        return i;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4094 Index declared outside, does not start at 0</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void loop(List<String> l) {
+        int i = 5;
+        for (; i < l.size(); i++) {
+            System.out.println(l.get(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4094 Index declared outside, two consecutive loops without reset</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void loop(List<String> l) {
+        int i = 0;
+        for (; i < l.size(); i++) {
+            System.out.println(l.get(i));
+        }
+        for (; i < l.size(); i++) {
+            System.out.println(l.get(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4094 Index declared outside of an enclosing loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+class Foo {
+    void loop(List<String> l, int n) {
+        int i = 0;
+        for (int k = 0; k < n; k++) {
+            for (; i < l.size(); i++) {
+                System.out.println(l.get(i));
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
