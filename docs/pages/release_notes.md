@@ -35,12 +35,17 @@ This is a {{ site.pmd.release_type }} release.
     * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor
 * java-bestpractices
     * [#7308](https://github.com/pmd/pmd/issues/7308): \[java\] MethodReturnsInternalArray: document that private methods are not checked 
+    * [#7310](https://github.com/pmd/pmd/issues/7310): \[java] UnusedAssignment: i++ in a do-while condition reported as never used, unlike in a while
 * java-design
     * [#7328](https://github.com/pmd/pmd/issues/7328): \[java] CollapsibleIfStatements: not reported when a bare block separates the two if statements
 * java-documentation
     * [#7057](https://github.com/pmd/pmd/issues/7057): \[java\] New rule: MarkdownJavadocBeforeJava23
 * java-errorprone
     * [#7309](https://github.com/pmd/pmd/issues/7309): \[java] TestClassWithoutTestCases: document that abstract classes and interfaces are not checked
+* java-performance
+    * [#3775](https://github.com/pmd/pmd/issues/3775): \[java\] ConsecutiveAppendsShouldReuse: False Negative when .append is wrapped by brace.
+* java-security
+    * [#7329](https://github.com/pmd/pmd/issues/7329): \[java] InsecureCryptoIv / HardCodedCryptoKey: hard-coded field passed as `this.field` not reported
 
 ### 🚨️ API Changes
 

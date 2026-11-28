@@ -13,8 +13,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.dummy.DummyLanguageModule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 class PmdCommandTest extends BaseCommandTest<PmdCommand> {
