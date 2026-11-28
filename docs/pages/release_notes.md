@@ -31,6 +31,8 @@ This is a {{ site.pmd.release_type }} release.
     switching to Java 23. The rule stays off for Java 23 and later.
 
 ### 🐛️ Fixed Issues
+* core
+    * [#7306](https://github.com/pmd/pmd/issues/7306): \[core] IntelliJ and DeterministicOutputListenerWrapperTest
 * java
     * [#7392](https://github.com/pmd/pmd/issues/7392): \[java\] PMD 7.29.0 fails to resolve a switch pattern variable passed to an anonymous class constructor
 * java-bestpractices
